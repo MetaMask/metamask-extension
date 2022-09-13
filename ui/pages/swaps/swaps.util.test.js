@@ -1,20 +1,26 @@
 import nock from 'nock';
 import { MOCKS } from '../../../test/jest';
 import {
-  ETH_SYMBOL,
-  WETH_SYMBOL,
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  ETH_SYMBOL,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  ETH_WETH_CONTRACT_ADDRESS,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  WETH_CONTRACT_ADDRESS,
+  WBNB_CONTRACT_ADDRESS,
+  WMATIC_CONTRACT_ADDRESS,
   ETHEREUM,
   POLYGON,
   BSC,
+  GOERLI,
+  AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -32,6 +38,9 @@ import {
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
   countDecimals,
+  shouldEnableDirectWrapping,
+  showRemainingTimeInMinAndSec,
+  getSwapsTokensReceivedFromTxMeta,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -49,8 +58,7 @@ describe('Swaps Util', () => {
       zeroEx: {
         trade: {
           // the ethereum transaction data for the swap
-          data:
-            '0xa6c3bf330000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000004e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021486a000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005efe3c3b5dfc3a75ffc8add04bbdbac1e42fa234bf4549d8dab1bc44c8056eaf0e1dfe8600000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000001c4dc1600f3000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000036691c4f426eb8f42f150ebde43069a31cb080ad000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000021486a00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010400000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000005efe201b',
+          data: '0xa6c3bf330000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000004e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021486a000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005efe3c3b5dfc3a75ffc8add04bbdbac1e42fa234bf4549d8dab1bc44c8056eaf0e1dfe8600000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000001c4dc1600f3000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000036691c4f426eb8f42f150ebde43069a31cb080ad000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000021486a00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010400000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000005efe201b',
           from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
           value: '0x14401eab384000',
           to: '0x61935cbdd02287b511119ddb11aeb42f1593b7ef',
@@ -67,8 +75,7 @@ describe('Swaps Util', () => {
         aggregator: 'zeroEx',
         aggType: 'AGG',
         approvalNeeded: {
-          data:
-            '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+          data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
           to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
           value: '0x0',
           from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
@@ -87,8 +94,8 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://api.metaswap.codefi.network')
-        .get('/trades')
+      nock('https://swap.metaswap.codefi.network')
+        .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
 
@@ -113,9 +120,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/tokens')
+        .get('/networks/1/tokens')
         .reply(200, TOKENS);
     });
 
@@ -132,9 +139,9 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/aggregatorMetadata')
+        .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
     });
 
@@ -151,9 +158,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/topAssets')
+        .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
     });
 
@@ -186,197 +193,113 @@ describe('Swaps Util', () => {
   });
 
   describe('isContractAddressValid', () => {
-    let swapMetaData;
     let usedTradeTxParams;
 
     beforeEach(() => {
-      swapMetaData = {
-        available_quotes: undefined,
-        average_savings: undefined,
-        best_quote_source: 'paraswap',
-        custom_slippage: true,
-        estimated_gas: '134629',
-        fee_savings: undefined,
-        gas_fees: '47.411896',
-        median_metamask_fee: undefined,
-        other_quote_selected: false,
-        other_quote_selected_source: '',
-        performance_savings: undefined,
-        slippage: 5,
-        suggested_gas_price: '164',
-        token_from: ETH_SYMBOL,
-        token_from_amount: '1',
-        token_to: WETH_SYMBOL,
-        token_to_amount: '1.0000000',
-        used_gas_price: '164',
-      };
       usedTradeTxParams = {
         data: 'testData',
         from: '0xe53a5bc256898bfa5673b20aceeb2b2152075d17',
         gas: '2427c',
         gasPrice: '27592f5a00',
-        to: ETH_WETH_CONTRACT_ADDRESS,
+        to: WETH_CONTRACT_ADDRESS,
         value: '0xde0b6b3a7640000',
       };
     });
 
-    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is ETH_WETH contract address', () => {
+    it('returns true if "to" is WETH contract address', () => {
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns true if "token_from" is WETH, "token_to" is ETH and "to" is ETH_WETH contract address', () => {
-      swapMetaData.token_from = WETH_SYMBOL;
-      swapMetaData.token_to = ETH_SYMBOL;
-      expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
-      ).toBe(true);
-    });
-
-    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is ETH_WETH contract address with some uppercase chars', () => {
+    it('returns true if "to" is WETH contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0xc02AAA39B223fe8d0a0e5c4f27ead9083c756cc2';
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is mainnet contract address', () => {
+    it('returns true if "to" is ETH mainnet contract address on ETH mainnet', () => {
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns true if "token_from" is WETH, "token_to" is ETH and "to" is mainnet contract address', () => {
-      swapMetaData.token_from = WETH_SYMBOL;
-      swapMetaData.token_to = ETH_SYMBOL;
-      usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
+    it('returns true if "to" is WBNB contract address on BSC mainnet', () => {
+      usedTradeTxParams.to = WBNB_CONTRACT_ADDRESS;
+      expect(isContractAddressValid(usedTradeTxParams.to, BSC_CHAIN_ID)).toBe(
+        true,
+      );
+    });
+
+    it('returns true if "to" is WMATIC contract address on Polygon mainnet', () => {
+      usedTradeTxParams.to = WMATIC_CONTRACT_ADDRESS;
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, POLYGON_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns false if "token_from" is ETH, "token_to" is WETH and "to" is BSC contract address', () => {
+    it('returns false if "to" is BSC contract address on ETH mainnet', () => {
       usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
-      ).toBe(false);
-    });
-
-    it('returns false if "token_from" is WETH, "token_to" is ETH and "to" is BSC contract address', () => {
-      swapMetaData.token_from = WETH_SYMBOL;
-      swapMetaData.token_to = ETH_SYMBOL;
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
-      expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
       ).toBe(false);
     });
 
     it('returns false if contractAddress is null', () => {
-      expect(
-        isContractAddressValid(null, swapMetaData, LOCALHOST_CHAIN_ID),
-      ).toBe(false);
+      expect(isContractAddressValid(null, LOCALHOST_CHAIN_ID)).toBe(false);
     });
 
     it('returns false if chainId is incorrect', () => {
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          'incorrectChainId',
-        ),
+        isContractAddressValid(usedTradeTxParams.to, 'incorrectChainId'),
       ).toBe(false);
     });
 
-    it('returns true if "token_from" is BAT and "to" is mainnet contract address', () => {
-      swapMetaData.token_from = 'BAT';
-      usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
-      expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          MAINNET_CHAIN_ID,
-        ),
-      ).toBe(true);
-    });
-
-    it('returns true if "token_to" is BAT and "to" is BSC contract address', () => {
-      swapMetaData.token_to = 'BAT';
+    it('returns true if "to" is BSC contract address on BSC network', () => {
       usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
+      expect(isContractAddressValid(usedTradeTxParams.to, BSC_CHAIN_ID)).toBe(
+        true,
+      );
+    });
+
+    it('returns true if "to" is Polygon contract address on Polygon network', () => {
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[POLYGON_CHAIN_ID];
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          BSC_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, POLYGON_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns true if "token_to" is BAT and "to" is testnet contract address', () => {
-      swapMetaData.token_to = 'BAT';
+    it('returns true if "to" is Goerli contract address on Goerli network', () => {
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[GOERLI_CHAIN_ID];
+      expect(
+        isContractAddressValid(usedTradeTxParams.to, GOERLI_CHAIN_ID),
+      ).toBe(true);
+    });
+
+    it('returns true if "to" is testnet contract address', () => {
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[LOCALHOST_CHAIN_ID];
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          LOCALHOST_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns true if "token_to" is BAT and "to" is testnet contract address with some uppercase chars', () => {
-      swapMetaData.token_to = 'BAT';
+    it('returns true if "to" is testnet contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0x881D40237659C251811CEC9c364ef91dC08D300C';
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          LOCALHOST_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
       ).toBe(true);
     });
 
-    it('returns false if "token_to" is BAT and "to" has mismatch with current chainId', () => {
-      swapMetaData.token_to = 'BAT';
+    it('returns false if "to" has mismatch with current chainId', () => {
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
-        isContractAddressValid(
-          usedTradeTxParams.to,
-          swapMetaData,
-          LOCALHOST_CHAIN_ID,
-        ),
+        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
       ).toBe(false);
     });
   });
@@ -394,8 +317,16 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
     });
 
+    it('returns "goerli" for Goerli chain ID', () => {
+      expect(getNetworkNameByChainId(GOERLI_CHAIN_ID)).toBe(GOERLI);
+    });
+
+    it('returns "avalanche" for Avalanche chain ID', () => {
+      expect(getNetworkNameByChainId(AVALANCHE_CHAIN_ID)).toBe(AVALANCHE);
+    });
+
     it('returns an empty string for an unsupported network', () => {
-      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe('');
+      expect(getNetworkNameByChainId(KOVAN_CHAIN_ID)).toBe('');
     });
   });
 
@@ -403,7 +334,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled and cannot use API v2 for localhost chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -413,15 +343,26 @@ describe('Swaps Util', () => {
       ).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
+    it('returns info that Swaps are enabled and cannot use API v2 for Goerli chain ID', () => {
       const expectedSwapsLiveness = {
-        swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
+        swapsFeatureIsLive: true,
       };
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          RINKEBY_CHAIN_ID,
+          GOERLI_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: false,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          KOVAN_CHAIN_ID,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -429,7 +370,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled and can use API v2 for mainnet chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -442,7 +382,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled but can only use API v1 for mainnet chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
       swapsFeatureFlags[ETHEREUM].extension_active = false;
@@ -471,6 +410,263 @@ describe('Swaps Util', () => {
 
     it('returns 9 decimals for number: 1.123456789', () => {
       expect(countDecimals(1.123456789)).toBe(9);
+    });
+  });
+
+  describe('shouldEnableDirectWrapping', () => {
+    const randomTokenAddress = '0x881d40237659c251811cec9c364ef91234567890';
+
+    it('returns true if swapping from ETH to WETH', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from ETH with uppercase chars to WETH', () => {
+      const ethAddressWithUpperCaseChars =
+        '0X0000000000000000000000000000000000000000';
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          ethAddressWithUpperCaseChars,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WETH to ETH', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          WETH_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WETH with uppercase chars to ETH', () => {
+      const wethContractAddressWithUpperCaseChars =
+        '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          wethContractAddressWithUpperCaseChars,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from ETH to a non-WETH token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true if swapping from BNB to WBNB', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          WBNB_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WBNB to BNB', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          WBNB_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from BNB to a non-WBNB token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true if swapping from MATIC to WMATIC', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          WMATIC_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WMATIC to MATIC', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          WMATIC_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from MATIC to a non-WMATIC token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false if a source token is undefined', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          undefined,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false if a destination token is undefined', () => {
+      expect(
+        shouldEnableDirectWrapping(MAINNET_CHAIN_ID, WETH_CONTRACT_ADDRESS),
+      ).toBe(false);
+    });
+  });
+
+  describe('showRemainingTimeInMinAndSec', () => {
+    it('returns 0:00 if we do not pass an integer', () => {
+      expect(showRemainingTimeInMinAndSec('5')).toBe('0:00');
+    });
+
+    it('returns 0:05 if 5 seconds are remaining', () => {
+      expect(showRemainingTimeInMinAndSec(5)).toBe('0:05');
+    });
+
+    it('returns 2:59', () => {
+      expect(showRemainingTimeInMinAndSec(179)).toBe('2:59');
+    });
+  });
+
+  describe('getFeeForSmartTransaction', () => {
+    it('returns estimated for for STX', () => {
+      // TODO: Implement tests for this function.
+      expect(true).toBe(true);
+    });
+  });
+
+  describe('getSwapsTokensReceivedFromTxMeta', () => {
+    const createProps = () => {
+      return {
+        tokenSymbol: ETH_SYMBOL,
+        txMeta: {
+          swapMetaData: {
+            token_to_amount: 5,
+          },
+          txReceipt: {
+            status: '0x0',
+          },
+          preTxBalance: '8b11',
+          postTxBalance: '8b11',
+        },
+        tokenAddress: '0x881d40237659c251811cec9c364ef91234567890',
+        accountAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+        tokenDecimals: 6,
+        approvalTxMeta: null,
+        chainId: MAINNET_CHAIN_ID,
+      };
+    };
+
+    it('returns an estimated amount if preTxBalance and postTxBalance are the same for ETH', () => {
+      const props = createProps();
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBe(props.txMeta.swapMetaData.token_to_amount);
+    });
+
+    it('returns null if there is no txMeta', () => {
+      const props = createProps();
+      props.txMeta = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.txReceipt', () => {
+      const props = createProps();
+      props.txMeta.txReceipt = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.postTxBalance', () => {
+      const props = createProps();
+      props.txMeta.postTxBalance = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.preTxBalance', () => {
+      const props = createProps();
+      props.txMeta.preTxBalance = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
     });
   });
 });

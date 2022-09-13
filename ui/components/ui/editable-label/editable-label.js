@@ -7,6 +7,11 @@ class EditableLabel extends Component {
     onSubmit: PropTypes.func.isRequired,
     defaultValue: PropTypes.string,
     className: PropTypes.string,
+    accountsNames: PropTypes.array,
+  };
+
+  static contextTypes = {
+    t: PropTypes.func,
   };
 
   state = {
@@ -16,8 +21,9 @@ class EditableLabel extends Component {
 
   handleSubmit() {
     const { value } = this.state;
+    const { accountsNames } = this.props;
 
-    if (value === '') {
+    if (value === '' || accountsNames.includes(value)) {
       return;
     }
 
@@ -28,6 +34,7 @@ class EditableLabel extends Component {
 
   renderEditing() {
     const { value } = this.state;
+    const { accountsNames } = this.props;
 
     return [
       <input
@@ -43,7 +50,8 @@ class EditableLabel extends Component {
         }}
         onChange={(event) => this.setState({ value: event.target.value })}
         className={classnames('large-input', 'editable-label__input', {
-          'editable-label__input--error': value === '',
+          'editable-label__input--error':
+            value === '' || accountsNames.includes(value),
         })}
         autoFocus
       />,
@@ -73,13 +81,25 @@ class EditableLabel extends Component {
   }
 
   render() {
-    const { isEditing } = this.state;
-    const { className } = this.props;
+    const { isEditing, value } = this.state;
+    const { className, accountsNames } = this.props;
 
     return (
-      <div className={classnames('editable-label', className)}>
-        {isEditing ? this.renderEditing() : this.renderReadonly()}
-      </div>
+      <>
+        <div className={classnames('editable-label', className)}>
+          {isEditing ? this.renderEditing() : this.renderReadonly()}
+        </div>
+        {accountsNames.includes(value) ? (
+          <div
+            className={classnames(
+              'editable-label__error',
+              'editable-label__error-amount',
+            )}
+          >
+            {this.context.t('accountNameDuplicate')}
+          </div>
+        ) : null}
+      </>
     );
   }
 }

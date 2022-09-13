@@ -5,7 +5,7 @@
   align-items: center;
   max-width: 442px;
   padding: 0 18px;
-  color: black;
+  color: var(--color-text-default);
 
   &__wrapper {
     display: flex;
@@ -27,11 +27,18 @@
   &__description {
     text-align: center;
 
-    div {
+    p {
       @include Paragraph;
+
+      text-align: start;
+      margin-bottom: 22px;
     }
 
-    @media screen and (max-width: 575px) {
+    a {
+      color: var(--color-primary-default);
+    }
+
+    @include screen-sm-max {
       font-size: 0.9rem;
     }
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import CurrencyInput from '../../ui/currency-input';
+import CurrencyInput from '../currency-input';
 import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component';
 
 describe('UserPreferencedCurrencyInput Component', () => {
@@ -12,16 +12,20 @@ describe('UserPreferencedCurrencyInput Component', () => {
       expect(wrapper.find(CurrencyInput)).toHaveLength(1);
     });
 
-    it('should render useFiat for CurrencyInput based on preferences.useNativeCurrencyAsPrimaryCurrency', () => {
+    it('should render featureSecondary for CurrencyInput based on preferences.useNativeCurrencyAsPrimaryCurrency', () => {
       const wrapper = shallow(
         <UserPreferencedCurrencyInput useNativeCurrencyAsPrimaryCurrency />,
       );
 
       expect(wrapper).toHaveLength(1);
       expect(wrapper.find(CurrencyInput)).toHaveLength(1);
-      expect(wrapper.find(CurrencyInput).props().useFiat).toStrictEqual(false);
+      expect(
+        wrapper.find(CurrencyInput).props().featureSecondary,
+      ).toStrictEqual(false);
       wrapper.setProps({ useNativeCurrencyAsPrimaryCurrency: false });
-      expect(wrapper.find(CurrencyInput).props().useFiat).toStrictEqual(true);
+      expect(
+        wrapper.find(CurrencyInput).props().featureSecondary,
+      ).toStrictEqual(true);
     });
   });
 });

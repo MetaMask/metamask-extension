@@ -1,6 +1,11 @@
 #!/usr/bin/env node
-const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+
 const { runCommand, runInShell } = require('./lib/run-command');
+const { getVersion } = require('./lib/get-version');
+const { BuildType } = require('./lib/build-type');
 
 start().catch((error) => {
   console.error(error);
@@ -8,34 +13,63 @@ start().catch((error) => {
 });
 
 async function start() {
-  if (!process.env.SENTRY_ORG) {
-    throw new Error('Missing required "SENTRY_ORG" environment variable');
-  } else if (!process.env.SENTRY_PROJECT) {
-    throw new Error('Missing required "SENTRY_PROJECT" environment variable');
-  }
+  const { argv } = yargs(hideBin(process.argv)).usage(
+    '$0 [options]',
+    'Publish a release to Sentry',
+    (_yargs) =>
+      _yargs
+        .option('org', {
+          default: 'metamask',
+          description: 'The Sentry organization',
+          type: 'string',
+        })
+        .option('project', {
+          default: 'metamask',
+          description: 'The Sentry project to publish',
+          type: 'string',
+        })
+        .option('build-type', {
+          default: BuildType.main,
+          description: 'The MetaMask extension build type',
+          choices: Object.values(BuildType),
+        })
+        .option('build-version', {
+          default: 0,
+          description: 'The MetaMask extension build version',
+          type: 'number',
+        }),
+  );
+
+  const { buildType, buildVersion, org, project } = argv;
+
+  process.env.SENTRY_ORG = org;
+  process.env.SENTRY_PROJECT = project;
 
   const authWorked = await checkIfAuthWorks();
   if (!authWorked) {
     throw new Error(`Sentry auth failed`);
   }
+
+  const version = getVersion(buildType, buildVersion);
+
   // check if version exists or not
-  const versionAlreadyExists = await checkIfVersionExists();
+  const versionAlreadyExists = await checkIfVersionExists(version);
   // abort if versions exists
   if (versionAlreadyExists) {
     console.log(
-      `Version "${VERSION}" already exists on Sentry, skipping version creation`,
+      `Version "${version}" already exists on Sentry, skipping version creation`,
     );
   } else {
     // create sentry release
-    console.log(`creating Sentry release for "${VERSION}"...`);
-    await runCommand('sentry-cli', ['releases', 'new', VERSION]);
+    console.log(`creating Sentry release for "${version}"...`);
+    await runCommand('sentry-cli', ['releases', 'new', version]);
     console.log(
-      `removing any existing files from Sentry release "${VERSION}"...`,
+      `removing any existing files from Sentry release "${version}"...`,
     );
     await runCommand('sentry-cli', [
       'releases',
       'files',
-      VERSION,
+      version,
       'delete',
       '--all',
     ]);
@@ -43,18 +77,23 @@ async function start() {
 
   // check if version has artifacts or not
   const versionHasArtifacts =
-    versionAlreadyExists && (await checkIfVersionHasArtifacts());
+    versionAlreadyExists && (await checkIfVersionHasArtifacts(version));
   if (versionHasArtifacts) {
     console.log(
-      `Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`,
+      `Version "${version}" already has artifacts on Sentry, skipping sourcemap upload`,
     );
     return;
   }
 
+  const additionalUploadArgs = [];
+  if (buildType !== BuildType.main) {
+    additionalUploadArgs.push('--dist-directory', `dist-${buildType}`);
+  }
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
     '--release',
-    VERSION,
+    version,
+    ...additionalUploadArgs,
   ]);
 }
 
@@ -64,17 +103,17 @@ async function checkIfAuthWorks() {
   );
 }
 
-async function checkIfVersionExists() {
+async function checkIfVersionExists(version) {
   return await doesNotFail(() =>
-    runCommand('sentry-cli', ['releases', 'info', VERSION]),
+    runCommand('sentry-cli', ['releases', 'info', version]),
   );
 }
 
-async function checkIfVersionHasArtifacts() {
+async function checkIfVersionHasArtifacts(version) {
   const [artifact] = await runCommand('sentry-cli', [
     'releases',
     'files',
-    VERSION,
+    version,
     'list',
   ]);
   // When there's no artifacts, we get a response from the shell like this ['', '']

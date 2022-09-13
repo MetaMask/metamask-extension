@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
@@ -9,11 +9,11 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
-import { getUseNewSwapsApi } from '../../../../ducks/swaps/swaps';
+import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
-    <img src="images/search.svg" width="17" height="17" alt="" />
+    <SearchIcon size={20} color="var(--color-icon-muted)" />
   </InputAdornment>
 );
 
@@ -25,20 +25,21 @@ export default function ListItemSearch({
   searchPlaceholderText,
   defaultToAll,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const fuseRef = useRef();
-  const [searchQuery, setSearchQuery] = useState('');
   const chainId = useSelector(getCurrentChainId);
-  const useNewSwapsApi = useSelector(getUseNewSwapsApi);
 
   /**
    * Search a custom token for import based on a contract address.
-   * @param {String} contractAddress
+   *
+   * @param {string} contractAddress
    */
   const handleSearchTokenForImport = async (contractAddress) => {
     setSearchQuery(contractAddress);
     try {
-      const token = await fetchToken(contractAddress, chainId, useNewSwapsApi);
+      const token = await fetchToken(contractAddress, chainId);
       if (token) {
         token.primaryLabel = token.symbol;
         token.secondaryLabel = token.name;
@@ -127,4 +128,6 @@ ListItemSearch.propTypes = {
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.func,
+  setSearchQuery: PropTypes.func,
 };

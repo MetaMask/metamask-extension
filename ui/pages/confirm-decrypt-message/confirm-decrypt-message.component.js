@@ -9,15 +9,14 @@ import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
 import Copy from '../../components/ui/icon/copy-icon.component';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -35,7 +34,7 @@ export default class ConfirmDecryptMessage extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
-    domainMetadata: PropTypes.object,
+    subjectMetadata: PropTypes.object,
   };
 
   state = {
@@ -44,51 +43,14 @@ export default class ConfirmDecryptMessage extends Component {
     hasCopied: false,
   };
 
-  componentDidMount = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = async (event) => {
-    const {
-      clearConfirmTransaction,
-      cancelDecryptMessage,
-      txData,
-    } = this.props;
-    const { metricsEvent } = this.context;
-    await cancelDecryptMessage(txData, event);
-    metricsEvent({
-      eventOpts: {
-        category: 'Messages',
-        action: 'Decrypt Message Request',
-        name: 'Cancel Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-  };
-
-  _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Messages',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.MESSAGES,
+      event: 'Copy',
+      properties: {
         action: 'Decrypt Message Copy',
-        name: 'Copy',
+        legacy_event: true,
       },
     });
     this.setState({ hasCopied: true });
@@ -176,11 +138,11 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBody = () => {
-    const { decryptMessageInline, domainMetadata, txData } = this.props;
+    const { decryptMessageInline, subjectMetadata, txData } = this.props;
     const { t } = this.context;
 
-    const originMetadata = domainMetadata[txData.msgParams.origin];
-    const name = originMetadata?.hostname || txData.msgParams.origin;
+    const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
+    const name = targetSubjectMetadata?.name || txData.msgParams.origin;
     const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
 
     const {
@@ -197,10 +159,10 @@ export default class ConfirmDecryptMessage extends Component {
         {this.renderAccountInfo()}
         <div className="request-decrypt-message__visual">
           <section>
-            {originMetadata?.icon ? (
+            {targetSubjectMetadata?.iconUrl ? (
               <img
                 className="request-decrypt-message__visual-identicon"
-                src={originMetadata.icon}
+                src={targetSubjectMetadata.iconUrl}
                 alt=""
               />
             ) : (
@@ -217,15 +179,13 @@ export default class ConfirmDecryptMessage extends Component {
             {hasError ? errorMessage : ''}
           </div>
           <div
-            className={classnames({
-              'request-decrypt-message__message-cover': true,
+            className={classnames('request-decrypt-message__message-cover', {
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
           />
           <div
-            className={classnames({
-              'request-decrypt-message__message-lock': true,
+            className={classnames('request-decrypt-message__message-lock', {
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
@@ -247,9 +207,11 @@ export default class ConfirmDecryptMessage extends Component {
               });
             }}
           >
-            <img src="images/lock.svg" alt="" />
-            <div className="request-decrypt-message__message-lock-text">
-              {t('decryptMetamask')}
+            <div className="request-decrypt-message__message-lock__container">
+              <i className="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon" />
+              <div className="request-decrypt-message__message-lock__container__text">
+                {t('decryptMetamask')}
+              </div>
             </div>
           </div>
         </div>
@@ -257,7 +219,8 @@ export default class ConfirmDecryptMessage extends Component {
           <div
             className={classnames({
               'request-decrypt-message__message-copy': true,
-              'request-decrypt-message__message-copy--pressed': copyToClipboardPressed,
+              'request-decrypt-message__message-copy--pressed':
+                copyToClipboardPressed,
             })}
             onClick={() => this.copyMessage()}
             onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
@@ -272,7 +235,7 @@ export default class ConfirmDecryptMessage extends Component {
               <div className="request-decrypt-message__message-copy-text">
                 {t('decryptCopy')}
               </div>
-              <Copy size={17} color="#3098DC" />
+              <Copy size={17} color="var(--color-primary-default)" />
             </Tooltip>
           </div>
         ) : (
@@ -291,22 +254,22 @@ export default class ConfirmDecryptMessage extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { metricsEvent, t } = this.context;
+    const { trackEvent, t } = this.context;
 
     return (
       <div className="request-decrypt-message__footer">
         <Button
-          type="default"
+          type="secondary"
           large
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancelDecryptMessage(txData, event);
-            metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            trackEvent({
+              category: EVENT.CATEGORIES.MESSAGES,
+              event: 'Cancel',
+              properties: {
                 action: 'Decrypt Message Request',
-                name: 'Cancel',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();
@@ -316,17 +279,17 @@ export default class ConfirmDecryptMessage extends Component {
           {t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await decryptMessage(txData, event);
-            metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            trackEvent({
+              category: EVENT.CATEGORIES.MESSAGES,
+              event: 'Confirm',
+              properties: {
                 action: 'Decrypt Message Request',
-                name: 'Confirm',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();

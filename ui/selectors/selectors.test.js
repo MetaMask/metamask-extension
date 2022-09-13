@@ -1,4 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -22,12 +23,12 @@ describe('Selectors', () => {
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
@@ -39,16 +40,16 @@ describe('Selectors', () => {
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        'Ledger Hardware',
+        KEYRING_TYPES.LEDGER,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        'Trezor Hardware',
+        KEYRING_TYPES.TREZOR,
       );
     });
   });
@@ -78,6 +79,47 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#checkNetworkOrAccountNotSupports1559', () => {
+    it('returns false if network and account supports EIP-1559', () => {
+      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          keyrings: [
+            {
+              type: KEYRING_TYPES.LEDGER,
+              accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            },
+          ],
+        },
+      });
+      expect(not1559Network).toStrictEqual(false);
+    });
+
+    it('returns true if network does not support EIP-1559', () => {
+      let not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networkDetails: {
+            EIPS: { 1559: false },
+          },
+        },
+      });
+      expect(not1559Network).toStrictEqual(true);
+      not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networkDetails: {
+            EIPS: { 1559: false },
+          },
+        },
+      });
+      expect(not1559Network).toStrictEqual(true);
+    });
+  });
+
   describe('#getAddressBook', () => {
     it('should return the address book', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
@@ -93,9 +135,8 @@ describe('Selectors', () => {
   });
 
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
-    const accountsWithSendEther = selectors.accountsWithSendEtherInfoSelector(
-      mockState,
-    );
+    const accountsWithSendEther =
+      selectors.accountsWithSendEtherInfoSelector(mockState);
     expect(accountsWithSendEther).toHaveLength(2);
     expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
     expect(accountsWithSendEther[0].address).toStrictEqual(
@@ -105,9 +146,8 @@ describe('Selectors', () => {
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
-    const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(
-      mockState,
-    );
+    const currentAccountwithSendEther =
+      selectors.getCurrentAccountWithSendEtherInfo(mockState);
     expect(currentAccountwithSendEther.balance).toStrictEqual('0x0');
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -128,5 +168,99 @@ describe('Selectors', () => {
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
+  });
+
+  it('#getUseTokenDetection', () => {
+    const useTokenDetection = selectors.getUseTokenDetection(mockState);
+    expect(useTokenDetection).toStrictEqual(true);
+  });
+
+  it('#getTokenList', () => {
+    const tokenList = selectors.getTokenList(mockState);
+    expect(tokenList).toStrictEqual({
+      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
+        address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        symbol: 'WBTC',
+        decimals: 8,
+        name: 'Wrapped Bitcoin',
+        iconUrl: 'https://s3.amazonaws.com/airswap-token-images/WBTC.png',
+        aggregators: [
+          'airswapLight',
+          'bancor',
+          'cmc',
+          'coinGecko',
+          'kleros',
+          'oneInch',
+          'paraswap',
+          'pmm',
+          'totle',
+          'zapper',
+          'zerion',
+          'zeroEx',
+        ],
+        occurrences: 12,
+      },
+      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
+        address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+        symbol: 'YFI',
+        decimals: 18,
+        name: 'yearn.finance',
+        iconUrl:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png',
+        aggregators: [
+          'airswapLight',
+          'bancor',
+          'cmc',
+          'coinGecko',
+          'kleros',
+          'oneInch',
+          'paraswap',
+          'pmm',
+          'totle',
+          'zapper',
+          'zerion',
+          'zeroEx',
+        ],
+        occurrences: 12,
+      },
+    });
+  });
+  it('#getAdvancedGasFeeValues', () => {
+    const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
+    expect(advancedGasFee).toStrictEqual({
+      maxBaseFee: '75',
+      priorityFee: '2',
+    });
+  });
+  it('#getIsAdvancedGasFeeDefault', () => {
+    const isAdvancedGasFeeDefault =
+      selectors.getIsAdvancedGasFeeDefault(mockState);
+    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
+  });
+  it('#getAppIsLoading', () => {
+    const appIsLoading = selectors.getAppIsLoading(mockState);
+    expect(appIsLoading).toStrictEqual(false);
+  });
+  it('#getNotifications', () => {
+    const notifications = selectors.getNotifications(mockState);
+
+    expect(notifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+      mockState.metamask.notifications.test2,
+    ]);
+  });
+  it('#getUnreadNotificationsCount', () => {
+    const unreadNotificationCount =
+      selectors.getUnreadNotificationsCount(mockState);
+
+    expect(unreadNotificationCount).toStrictEqual(1);
+  });
+
+  it('#getUnreadNotifications', () => {
+    const unreadNotifications = selectors.getUnreadNotifications(mockState);
+
+    expect(unreadNotifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+    ]);
   });
 });

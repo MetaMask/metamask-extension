@@ -104,10 +104,7 @@ export default class ConnectedAccountsList extends PureComponent {
         onShowOptions={this.showAccountOptions.bind(null, address)}
         show={accountWithOptionsShown === address}
       >
-        <MenuItem
-          iconClassName="disconnect-icon"
-          onClick={this.disconnectAccount}
-        >
+        <MenuItem iconClassName="fa fa-ban" onClick={this.disconnectAccount}>
           {t('disconnectThisAccount')}
         </MenuItem>
       </ConnectedAccountsListOptions>
@@ -128,11 +125,8 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   render() {
-    const {
-      connectedAccounts,
-      selectedAddress,
-      shouldRenderListOptions,
-    } = this.props;
+    const { connectedAccounts, selectedAddress, shouldRenderListOptions } =
+      this.props;
     const { t } = this.context;
 
     return (

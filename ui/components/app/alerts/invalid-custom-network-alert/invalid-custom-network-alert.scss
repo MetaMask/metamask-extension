@@ -16,7 +16,7 @@
   }
 
   &__content-link {
-    color: $primary-blue;
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
@@ -37,7 +37,6 @@
     & &-button {
       height: 40px;
       width: 50%;
-      border-radius: 100px;
       margin-right: 24px;
 
       &:last-of-type {
@@ -50,8 +49,8 @@
     margin-bottom: 16px;
     padding: 16px;
     font-size: 14px;
-    border: 1px solid $accent-red;
-    background: #f8eae8;
+    border: 1px solid var(--color-error-default);
+    background: var(--color-error-muted);
     border-radius: 3px;
   }
 }

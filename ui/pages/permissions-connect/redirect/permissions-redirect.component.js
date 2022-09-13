@@ -1,56 +1,57 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import SiteIcon from '../../../components/ui/site-icon';
+import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography/typography';
+import {
+  TYPOGRAPHY,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 
-export default function PermissionsRedirect({ domainMetadata }) {
+export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
 
   return (
     <div className="permissions-redirect">
       <div className="permissions-redirect__result">
-        {t('connecting')}
+        <Typography boxProps={{ marginBottom: 4 }} variant={TYPOGRAPHY.H3}>
+          {t('connecting')}
+        </Typography>
         <div className="permissions-redirect__icons">
           <SiteIcon
-            icon={domainMetadata.icon}
-            name={domainMetadata.name}
+            icon={subjectMetadata.iconUrl}
+            name={subjectMetadata.name}
             size={64}
+            className="permissions-redirect__site-icon"
           />
-          <div className="permissions-redirect__center-icon">
-            <span className="permissions-redirect__check" />
-            {renderBrokenLine()}
-          </div>
-          <SiteIcon icon="/images/logo/metamask-fox.svg" size={64} />
+          <Box
+            className="permissions-redirect__center-icon"
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            <i className="fa fa-check fa-lg permissions-redirect__check" />
+            <div className="permissions-redirect__dashed-line" />
+          </Box>
+          <SiteIcon
+            icon="/images/logo/metamask-fox.svg"
+            size={64}
+            className="permissions-redirect__site-icon"
+          />
         </div>
       </div>
     </div>
   );
-
-  function renderBrokenLine() {
-    return (
-      <svg
-        width="131"
-        height="2"
-        viewBox="0 0 131 2"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M0 1H134"
-          stroke="#CDD1E4"
-          strokeLinejoin="round"
-          strokeDasharray="8 7"
-        />
-      </svg>
-    );
-  }
 }
 
 PermissionsRedirect.propTypes = {
-  domainMetadata: PropTypes.shape({
+  subjectMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
-    icon: PropTypes.string,
-    host: PropTypes.string.isRequired,
+    iconUrl: PropTypes.string,
+    subjectType: PropTypes.string,
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
   }),

@@ -27,11 +27,6 @@ describe('Token Cell', () => {
         type: 'mainnet',
       },
     },
-    appState: {
-      sidebar: {
-        isOpen: true,
-      },
-    },
   };
 
   const middlewares = [thunk];
@@ -50,7 +45,6 @@ describe('Token Cell', () => {
             symbol="TEST"
             string="5.000"
             currentCurrency="usd"
-            image="./test-image"
             onClick={onClick}
           />
         </MemoryRouter>
@@ -66,7 +60,6 @@ describe('Token Cell', () => {
     expect(wrapper.find(Identicon).prop('address')).toStrictEqual(
       '0xAnotherToken',
     );
-    expect(wrapper.find(Identicon).prop('image')).toStrictEqual('./test-image');
   });
 
   it('renders token balance', () => {

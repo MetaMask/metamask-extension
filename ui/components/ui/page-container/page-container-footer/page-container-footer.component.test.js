@@ -45,7 +45,7 @@ describe('Page Footer', () => {
     it('has button type of default', () => {
       expect(
         wrapper.find('.page-container__footer-button').first().prop('type'),
-      ).toStrictEqual('default');
+      ).toStrictEqual('secondary');
     });
 
     it('has children text of Cancel', () => {

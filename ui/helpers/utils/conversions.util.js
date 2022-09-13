@@ -162,8 +162,26 @@ export function hexWEIToDecETH(hexWEI) {
   });
 }
 
+export function decWEIToDecETH(hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+  });
+}
+
 export function addHexes(aHexWEI, bHexWEI) {
   return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  });
+}
+
+export function subtractHexes(aHexWEI, bHexWEI) {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',

@@ -14,6 +14,7 @@ export default function SwapsFooter({
   showTermsOfService,
   showTopBorder,
   className = '',
+  cancelText,
 }) {
   const t = useContext(I18nContext);
 
@@ -27,10 +28,9 @@ export default function SwapsFooter({
         <PageContainerFooter
           onCancel={onCancel}
           hideCancel={hideCancel}
-          cancelText={t('back')}
+          cancelText={cancelText || t('back')}
           onSubmit={onSubmit}
           submitText={submitText}
-          submitButtonType="confirm"
           footerClassName={classnames(
             'swaps-footer__custom-page-container-footer-class',
             className,
@@ -38,7 +38,8 @@ export default function SwapsFooter({
           footerButtonClassName={classnames(
             'swaps-footer__custom-page-container-footer-button-class',
             {
-              'swaps-footer__custom-page-container-footer-button-class--single': hideCancel,
+              'swaps-footer__custom-page-container-footer-button-class--single':
+                hideCancel,
             },
           )}
           disabled={disabled}
@@ -67,4 +68,5 @@ SwapsFooter.propTypes = {
   showTermsOfService: PropTypes.bool,
   showTopBorder: PropTypes.bool,
   className: PropTypes.string,
+  cancelText: PropTypes.string,
 };

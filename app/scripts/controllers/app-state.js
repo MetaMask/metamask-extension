@@ -5,8 +5,7 @@ import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
-   * @constructor
-   * @param {Object} opts
+   * @param {object} opts
    */
   constructor(opts = {}) {
     const {
@@ -16,6 +15,7 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
+      qrHardwareStore,
     } = opts;
     super();
 
@@ -25,9 +25,27 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      collectiblesDetectionNoticeDismissed: false,
+      enableEIP1559V2NoticeDismissed: false,
+      showTestnetMessageInDropdown: true,
+      showPortfolioTooltip: true,
+      trezorModel: null,
       ...initState,
+      qrHardware: {},
+      collectiblesDropdownState: {},
+      usedNetworks: {
+        '0x1': true,
+        '0x2a': true,
+        '0x3': true,
+        '0x4': true,
+        '0x5': true,
+        '0x539': true,
+      },
     });
     this.timer = null;
 
@@ -42,6 +60,10 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
+    });
+
+    qrHardwareStore.subscribe((state) => {
+      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();
@@ -98,6 +120,7 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the default home tab
+   *
    * @param {string} [defaultHomeActiveTabName] - the tab name
    */
   setDefaultHomeActiveTabName(defaultHomeActiveTabName) {
@@ -116,8 +139,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has been shown the recovery phrase reminder
-   * @returns {void}
+   * Record that the user has been shown the recovery phrase reminder.
    */
   setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
@@ -127,8 +149,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Record the timestamp of the last time the user has seen the recovery phrase reminder
-   * @param {number} lastShown - timestamp when user was last shown the reminder
-   * @returns {void}
+   *
+   * @param {number} lastShown - timestamp when user was last shown the reminder.
    */
   setRecoveryPhraseReminderLastShown(lastShown) {
     this.store.updateState({
@@ -137,8 +159,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets the last active time to the current time
-   * @returns {void}
+   * Sets the last active time to the current time.
    */
   setLastActiveTime() {
     this._resetTimer();
@@ -146,9 +167,9 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the inactive timeout for the app
-   * @param {number} timeoutMinutes - the inactive timeout in minutes
-   * @returns {void}
+   *
    * @private
+   * @param {number} timeoutMinutes - The inactive timeout in minutes.
    */
   _setInactiveTimeout(timeoutMinutes) {
     this.store.updateState({
@@ -164,7 +185,6 @@ export default class AppStateController extends EventEmitter {
    * If the {@code timeoutMinutes} state is falsy (i.e., zero) then a new
    * timer will not be created.
    *
-   * @returns {void}
    * @private
    */
   _resetTimer() {
@@ -186,9 +206,124 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the current browser and OS environment
-   * @returns {void}
+   *
+   * @param os
+   * @param browser
    */
   setBrowserEnvironment(os, browser) {
     this.store.updateState({ browserEnvironment: { os, browser } });
+  }
+
+  /**
+   * Adds a pollingToken for a given environmentType
+   *
+   * @param pollingToken
+   * @param pollingTokenType
+   */
+  addPollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
+    this.store.updateState({
+      [pollingTokenType]: [...prevState, pollingToken],
+    });
+  }
+
+  /**
+   * removes a pollingToken for a given environmentType
+   *
+   * @param pollingToken
+   * @param pollingTokenType
+   */
+  removePollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
+    this.store.updateState({
+      [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
+    });
+  }
+
+  /**
+   * clears all pollingTokens
+   */
+  clearPollingTokens() {
+    this.store.updateState({
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
+    });
+  }
+
+  /**
+   * Sets whether the testnet dismissal link should be shown in the network dropdown
+   *
+   * @param showTestnetMessageInDropdown
+   */
+  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
+    this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets whether the portfolio site tooltip should be shown on the home page
+   *
+   * @param showPortfolioTooltip
+   */
+  setShowPortfolioTooltip(showPortfolioTooltip) {
+    this.store.updateState({ showPortfolioTooltip });
+  }
+
+  /**
+   * Sets a property indicating the model of the user's Trezor hardware wallet
+   *
+   * @param trezorModel - The Trezor model.
+   */
+  setTrezorModel(trezorModel) {
+    this.store.updateState({ trezorModel });
+  }
+
+  /**
+   * A setter for the `collectiblesDetectionNoticeDismissed` property
+   *
+   * @param collectiblesDetectionNoticeDismissed
+   */
+  setCollectiblesDetectionNoticeDismissed(
+    collectiblesDetectionNoticeDismissed,
+  ) {
+    this.store.updateState({
+      collectiblesDetectionNoticeDismissed,
+    });
+  }
+
+  /**
+   * A setter for the `enableEIP1559V2NoticeDismissed` property
+   *
+   * @param enableEIP1559V2NoticeDismissed
+   */
+  setEnableEIP1559V2NoticeDismissed(enableEIP1559V2NoticeDismissed) {
+    this.store.updateState({
+      enableEIP1559V2NoticeDismissed,
+    });
+  }
+
+  /**
+   * A setter for the `collectiblesDropdownState` property
+   *
+   * @param collectiblesDropdownState
+   */
+  updateCollectibleDropDownState(collectiblesDropdownState) {
+    this.store.updateState({
+      collectiblesDropdownState,
+    });
+  }
+
+  /**
+   * Updates the array of the first time used networks
+   *
+   * @param chainId
+   * @returns {void}
+   */
+  setFirstTimeUsedNetwork(chainId) {
+    const currentState = this.store.getState();
+    const { usedNetworks } = currentState;
+    usedNetworks[chainId] = true;
+
+    this.store.updateState({ usedNetworks });
   }
 }

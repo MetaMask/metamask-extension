@@ -1,0 +1,56 @@
+.edit-gas-fee-button {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+
+  button {
+    @include H7;
+
+    display: flex;
+    align-items: baseline;
+    color: var(--color-primary-default);
+    background: transparent;
+    border: 0;
+    padding-inline-end: 0;
+    white-space: pre;
+  }
+
+  i {
+    color: var(--color-primary-default);
+    margin-right: 2px;
+  }
+
+  &__icon {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+
+  &__label {
+    font-size: 12px;
+    margin-right: 8px;
+  }
+
+  .info-tooltip {
+    align-self: center;
+    margin-left: 6px;
+  }
+
+  &__tooltip {
+    p {
+      color: var(--color-text-alternative);
+    }
+
+    b {
+      color: var(--color-text-default);
+      display: inline-block;
+      min-width: 60%;
+    }
+  }
+}
+
+
+// Overrides react-tippy
+
+.tippy-tooltip .tippy-tooltip-content .edit-gas-fee-button__tooltip {
+  min-width: 170px;
+}

@@ -27,15 +27,13 @@ export default function ImportToken({
         type="secondary"
         className="page-container__footer-button"
         onClick={onImportTokenCloseClick}
-        rounded
       >
         {t('cancel')}
       </Button>
       <Button
-        type="confirm"
+        type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
-        rounded
       >
         {t('import')}
       </Button>
@@ -49,7 +47,9 @@ export default function ImportToken({
       footer={ImportTokenModalFooter}
     >
       <Box
-        padding={[0, 6, 4, 6]}
+        paddingRight={6}
+        paddingBottom={4}
+        paddingLeft={4}
         alignItems={ALIGN_ITEMS.CENTER}
         display={DISPLAY.FLEX}
         className="import-token"

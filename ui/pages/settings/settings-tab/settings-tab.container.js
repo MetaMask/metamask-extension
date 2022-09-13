@@ -7,35 +7,38 @@ import {
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
+import { getTokenList, getPreferences } from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const {
     appState: { warning },
     metamask,
   } = state;
   const {
     currentCurrency,
-    conversionDate,
     nativeCurrency,
     useBlockie,
     currentLocale,
+    selectedAddress,
   } = metamask;
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-    hideZeroBalanceTokens,
-  } = getPreferences(state);
+  const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
+    getPreferences(state);
+
+  const { lastFetchedConversionDate } = ownProps;
+  const tokenList = getTokenList(state);
 
   return {
     warning,
     currentLocale,
     currentCurrency,
-    conversionDate,
     nativeCurrency,
     useBlockie,
     useNativeCurrencyAsPrimaryCurrency,
     hideZeroBalanceTokens,
+    lastFetchedConversionDate,
+    selectedAddress,
+    tokenList,
   };
 };
 

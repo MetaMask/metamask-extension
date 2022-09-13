@@ -3,10 +3,12 @@ import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getIsNetworkBusy,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
   getUnapprovedTxs,
+  isNotEIP1559Network,
 } from './metamask';
 
 describe('MetaMask Reducers', () => {
@@ -99,6 +101,9 @@ describe('MetaMask Reducers', () => {
             gasPrice: '4a817c800',
           },
         },
+        networkDetails: {
+          EIPS: { 1559: true },
+        },
       },
       {},
     ),
@@ -172,24 +177,6 @@ describe('MetaMask Reducers', () => {
     expect(state.identities).toStrictEqual({
       'test account': { name: 'test label' },
     });
-  });
-
-  it('updates tokens', () => {
-    const newTokens = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_TOKENS,
-        newTokens,
-      },
-    );
-
-    expect(state.tokens).toStrictEqual(newTokens);
   });
 
   it('toggles account menu', () => {
@@ -394,6 +381,64 @@ describe('MetaMask Reducers', () => {
           gasPrice: '4a817c800',
         },
       });
+    });
+  });
+
+  describe('isNotEIP1559Network()', () => {
+    it('should return true if network does not supports EIP-1559', () => {
+      expect(
+        isNotEIP1559Network({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            networkDetails: {
+              EIPS: { 1559: false },
+            },
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+
+    it('should return false if networkDetails.EIPS.1559 is not false', () => {
+      expect(isNotEIP1559Network(mockState)).toStrictEqual(false);
+
+      expect(
+        isNotEIP1559Network({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            networkDetails: {
+              EIPS: { 1559: undefined },
+            },
+          },
+        }),
+      ).toStrictEqual(false);
+    });
+  });
+
+  describe('getIsNetworkBusy', () => {
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.67 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is right at the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.66 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return false if state.metamask.gasFeeEstimates.networkCongestion is not over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
+        }),
+      ).toBe(false);
     });
   });
 });

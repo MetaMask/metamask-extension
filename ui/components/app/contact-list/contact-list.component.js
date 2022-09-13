@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { sortBy } from 'lodash';
 import Button from '../../ui/button';
 import RecipientGroup from './recipient-group/recipient-group.component';
 
@@ -50,34 +51,36 @@ export default class ContactList extends PureComponent {
   }
 
   renderAddressBook() {
-    const contacts = this.props.searchForContacts();
+    const unsortedContactsByLetter = this.props
+      .searchForContacts()
+      .reduce((obj, contact) => {
+        const firstLetter = contact.name[0].toUpperCase();
+        return {
+          ...obj,
+          [firstLetter]: [...(obj[firstLetter] || []), contact],
+        };
+      }, {});
 
-    const contactGroups = contacts.reduce((acc, contact) => {
-      const firstLetter = contact.name.slice(0, 1).toUpperCase();
-      acc[firstLetter] = acc[firstLetter] || [];
-      const bucket = acc[firstLetter];
-      bucket.push(contact);
-      return acc;
-    }, {});
+    const letters = Object.keys(unsortedContactsByLetter).sort();
 
-    return Object.entries(contactGroups)
-      .sort(([letter1], [letter2]) => {
-        if (letter1 > letter2) {
-          return 1;
-        } else if (letter1 === letter2) {
-          return 0;
-        }
-        return -1;
-      })
-      .map(([letter, groupItems]) => (
-        <RecipientGroup
-          key={`${letter}-contract-group`}
-          label={letter}
-          items={groupItems}
-          onSelect={this.props.selectRecipient}
-          selectedAddress={this.props.selectedAddress}
-        />
-      ));
+    const sortedContactGroups = letters.map((letter) => {
+      return [
+        letter,
+        sortBy(unsortedContactsByLetter[letter], (contact) => {
+          return contact.name.toLowerCase();
+        }),
+      ];
+    });
+
+    return sortedContactGroups.map(([letter, groupItems]) => (
+      <RecipientGroup
+        key={`${letter}-contact-group`}
+        label={letter}
+        items={groupItems}
+        onSelect={this.props.selectRecipient}
+        selectedAddress={this.props.selectedAddress}
+      />
+    ));
   }
 
   renderMyAccounts() {
@@ -103,9 +106,9 @@ export default class ContactList extends PureComponent {
     return (
       <div className="send__select-recipient-wrapper__list">
         {children || null}
-        {searchForRecents && this.renderRecents()}
-        {searchForContacts && this.renderAddressBook()}
-        {searchForMyAccounts && this.renderMyAccounts()}
+        {searchForRecents ? this.renderRecents() : null}
+        {searchForContacts ? this.renderAddressBook() : null}
+        {searchForMyAccounts ? this.renderMyAccounts() : null}
       </div>
     );
   }

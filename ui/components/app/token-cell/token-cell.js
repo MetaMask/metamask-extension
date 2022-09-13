@@ -13,7 +13,6 @@ export default function TokenCell({
   balanceError,
   symbol,
   string,
-  image,
   onClick,
   isERC721,
 }) {
@@ -21,7 +20,6 @@ export default function TokenCell({
   const t = useI18nContext();
 
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
-
   const warning = balanceError ? (
     <span>
       {t('troubleTokenBalances')}
@@ -30,7 +28,7 @@ export default function TokenCell({
         rel="noopener noreferrer"
         target="_blank"
         onClick={(event) => event.stopPropagation()}
-        style={{ color: '#F7861C' }}
+        style={{ color: 'var(--color-warning-default)' }}
       >
         {t('here')}
       </a>
@@ -45,7 +43,6 @@ export default function TokenCell({
       iconClassName="token-cell__icon"
       onClick={onClick.bind(null, address)}
       tokenAddress={address}
-      tokenImage={image}
       tokenSymbol={symbol}
       tokenDecimals={decimals}
       warning={warning}
@@ -62,7 +59,6 @@ TokenCell.propTypes = {
   symbol: PropTypes.string,
   decimals: PropTypes.number,
   string: PropTypes.string,
-  image: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   isERC721: PropTypes.bool,
 };

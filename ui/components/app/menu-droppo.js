@@ -25,7 +25,12 @@ export default class MenuDroppoComponent extends Component {
     const innerStyle = this.props.innerStyle || {};
 
     return (
-      <div className="menu-droppo" key="menu-droppo-drawer" style={innerStyle}>
+      <div
+        className="menu-droppo"
+        key="menu-droppo-drawer"
+        data-testid="menu-droppo"
+        style={innerStyle}
+      >
         {this.props.children}
       </div>
     );
@@ -39,10 +44,9 @@ export default class MenuDroppoComponent extends Component {
     if (
       this.props.isOpen &&
       target !== container &&
-      !isDescendant(this.container, event.target) &&
-      this.props.onClickOutside
+      !this.container.contains(event.target)
     ) {
-      this.props.onClickOutside(event);
+      this.props.onClickOutside?.(event);
     }
   };
 
@@ -77,6 +81,7 @@ export default class MenuDroppoComponent extends Component {
       <div
         style={baseStyle}
         className={`menu-droppo-container ${containerClassName}`}
+        data-testid={containerClassName}
       >
         <style>
           {`
@@ -116,16 +121,4 @@ export default class MenuDroppoComponent extends Component {
       </div>
     );
   }
-}
-
-function isDescendant(parent, child) {
-  let node = child.parentNode;
-  while (node !== null) {
-    if (node === parent) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-
-  return false;
 }

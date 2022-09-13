@@ -11,7 +11,8 @@ import {
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import TxStateManager from './tx-state-manager';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import TxStateManager, { ERROR_SUBMITTING } from './tx-state-manager';
 import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -24,7 +25,7 @@ function generateTransactions(
     to,
     from,
     status,
-    type = TRANSACTION_TYPES.SENT_ETHER,
+    type = TRANSACTION_TYPES.SIMPLE_SEND,
     nonce = (i) => `${i}`,
   },
 ) {
@@ -653,7 +654,7 @@ describe('TransactionStateManager', function () {
             ? TRANSACTION_STATUSES.DROPPED
             : TRANSACTION_STATUSES.CONFIRMED,
         type: (i) =>
-          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_STATUSES.SENT_ETHER,
+          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
@@ -679,8 +680,11 @@ describe('TransactionStateManager', function () {
       // transaction
       const txs = generateTransactions(limit + 5, {
         chainId: (i) => {
-          if (i === 0 || i === 1) return MAINNET_CHAIN_ID;
-          else if (i === 4 || i === 5) return RINKEBY_CHAIN_ID;
+          if (i === 0 || i === 1) {
+            return MAINNET_CHAIN_ID;
+          } else if (i === 4 || i === 5) {
+            return RINKEBY_CHAIN_ID;
+          }
           return currentChainId;
         },
         to: VALID_ADDRESS,
@@ -693,7 +697,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({
@@ -726,8 +730,11 @@ describe('TransactionStateManager', function () {
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         nonce: (i) => {
-          if (i === 1) return '0';
-          else if (i === 5) return '4';
+          if (i === 1) {
+            return '0';
+          } else if (i === 5) {
+            return '4';
+          }
           return `${i}`;
         },
         status: (i) =>
@@ -737,7 +744,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({
@@ -845,9 +852,9 @@ describe('TransactionStateManager', function () {
       );
       // modify value and updateTransaction
       updatedTx.txParams.gasPrice = desiredGasPrice;
-      const before = new Date().getTime();
+      const timeBefore = new Date().getTime();
       txStateManager.updateTransaction(updatedTx);
-      const after = new Date().getTime();
+      const timeAfter = new Date().getTime();
       // check updated value
       const result = txStateManager.getTransaction('1');
       assert.equal(
@@ -888,8 +895,8 @@ describe('TransactionStateManager', function () {
         'two history items (initial + diff) value',
       );
       assert.ok(
-        result.history[1][0].timestamp >= before &&
-          result.history[1][0].timestamp <= after,
+        result.history[1][0].timestamp >= timeBefore &&
+          result.history[1][0].timestamp <= timeAfter,
       );
     });
 
@@ -910,6 +917,113 @@ describe('TransactionStateManager', function () {
 
       const { history } = txStateManager.getTransaction('1');
       assert.equal(history.length, 1, 'two history items (initial + diff)');
+    });
+
+    it('should set tx status to failed if updating after error submitting', function () {
+      const txMeta = {
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          from: VALID_ADDRESS_TWO,
+          to: VALID_ADDRESS,
+          gasLimit: '0x5028',
+          maxFeePerGas: '0x2540be400',
+          maxPriorityFeePerGas: '0x3b9aca00',
+        },
+      };
+
+      txStateManager.addTransaction(txMeta);
+      const { history } = txStateManager.getTransaction('1');
+      assert.equal(history.length, 1);
+
+      txMeta.txParams.type = '0x0';
+      txMeta.warning = {
+        message: ERROR_SUBMITTING,
+        error: 'Testing tx status failed with arbitrary error',
+      };
+
+      // should result in additional 2 history entries
+      txStateManager.updateTransaction(txMeta);
+
+      const result = txStateManager.getTransaction('1');
+
+      assert.equal(result.history.length, 3);
+
+      // history[1] should contain 3 entries
+      assert.equal(result.history[1].length, 3);
+      assert.equal(
+        result.history[1][0].note,
+        'transactions:tx-state-manager#fail - add error',
+      );
+      assert.equal(result.history[1][0].op, 'add');
+      assert.equal(result.history[1][0].path, '/txParams/type');
+      assert.equal(result.history[1][0].value, '0x0');
+
+      assert.equal(result.history[1][1].op, 'add');
+      assert.equal(result.history[1][1].path, '/warning');
+      assert.equal(result.history[1][1].value.message, ERROR_SUBMITTING);
+
+      assert.equal(result.history[1][2].op, 'add');
+      assert.equal(result.history[1][2].path, '/err');
+      assert.equal(
+        result.history[1][2].value.message,
+        'Invalid transaction envelope type: specified type "0x0" but including maxFeePerGas and maxPriorityFeePerGas requires type: "0x2"',
+      );
+
+      assert.equal(result.history[2].length, 1);
+      assert.equal(
+        result.history[2][0].note,
+        'txStateManager: setting status to failed',
+      );
+      assert.equal(result.history[2][0].op, 'replace');
+      assert.equal(result.history[2][0].path, '/status');
+      assert.equal(result.history[2][0].value, 'failed');
+    });
+
+    it('should set transaction status to failed', function () {
+      const txMeta = {
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          from: VALID_ADDRESS_TWO,
+          to: VALID_ADDRESS,
+          gasPrice: '0x01',
+        },
+      };
+
+      txStateManager.addTransaction(txMeta);
+      const { history } = txStateManager.getTransaction('1');
+      assert.equal(history.length, 1);
+
+      // should result in additional 2 history entries
+      txStateManager.setTxStatusFailed(
+        txMeta.id,
+        new Error('Testing tx status failed with arbitrary error'),
+      );
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.history.length, 3);
+
+      assert.equal(
+        result.history[1][0].note,
+        'transactions:tx-state-manager#fail - add error',
+      );
+      assert.equal(result.history[1][0].op, 'add');
+      assert.equal(result.history[1][0].path, '/err');
+      assert.equal(
+        result.history[1][0].value.message,
+        'Testing tx status failed with arbitrary error',
+      );
+      assert.equal(result.history[2].length, 1);
+      assert.equal(
+        result.history[2][0].note,
+        'txStateManager: setting status to failed',
+      );
+      assert.equal(result.history[2][0].op, 'replace');
+      assert.equal(result.history[2][0].path, '/status');
+      assert.equal(result.history[2][0].value, 'failed');
     });
   });
 
@@ -1182,7 +1296,7 @@ describe('TransactionStateManager', function () {
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,
-        origin: 'metamask',
+        origin: ORIGIN_METAMASK,
       });
       assert.ok(generatedTransaction);
       assert.strictEqual(generatedTransaction.dappSuggestedGasFees, null);

@@ -6,6 +6,7 @@ export default class SignatureRequestFooter extends PureComponent {
   static propTypes = {
     cancelAction: PropTypes.func.isRequired,
     signAction: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -13,13 +14,22 @@ export default class SignatureRequestFooter extends PureComponent {
   };
 
   render() {
-    const { cancelAction, signAction } = this.props;
+    const { cancelAction, signAction, disabled = false } = this.props;
     return (
       <div className="signature-request-footer">
-        <Button onClick={cancelAction} type="default" large>
+        <Button
+          onClick={cancelAction}
+          type="secondary"
+          data-testid="signature-cancel-button"
+        >
           {this.context.t('cancel')}
         </Button>
-        <Button onClick={signAction} type="primary" large>
+        <Button
+          onClick={signAction}
+          type="primary"
+          data-testid="signature-sign-button"
+          disabled={disabled}
+        >
           {this.context.t('sign')}
         </Button>
       </div>

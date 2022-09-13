@@ -4,7 +4,6 @@ import {
   hideModal,
   createRetryTransaction,
   createSpeedUpTransaction,
-  hideSidebar,
 } from '../../../../store/actions';
 import {
   setCustomGasPrice,
@@ -20,7 +19,6 @@ import {
   updateGasPrice,
   useCustomGas,
   getSendAsset,
-  ASSET_TYPES,
 } from '../../../../ducks/send';
 import {
   conversionRateSelector as getConversionRate,
@@ -55,9 +53,12 @@ import {
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils';
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
-import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../../shared/constants/gas';
-import { updateTransactionGasFees } from '../../../../ducks/metamask/metamask';
+import { updateGasFees } from '../../../../ducks/metamask/metamask';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -137,9 +138,8 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
-  const customNetworkEstimateWasFetched = getIsCustomNetworkGasPriceFetched(
-    state,
-  );
+  const customNetworkEstimateWasFetched =
+    getIsCustomNetworkGasPriceFetched(state);
 
   let customPriceIsSafe = true;
   if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
@@ -208,7 +208,7 @@ const mapDispatchToProps = (dispatch) => {
     hideModal: () => dispatch(hideModal()),
     useCustomGas: () => dispatch(useCustomGas()),
     updateTransactionGasFees: (gasFees) => {
-      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+      dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
     updateCustomGasPrice,
     updateCustomGasLimit: (newLimit) =>
@@ -223,7 +223,6 @@ const mapDispatchToProps = (dispatch) => {
     createSpeedUpTransaction: (txId, customGasSettings) => {
       return dispatch(createSpeedUpTransaction(txId, customGasSettings));
     },
-    hideSidebar: () => dispatch(hideSidebar()),
   };
 };
 
@@ -246,7 +245,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
     createRetryTransaction: dispatchCreateRetryTransaction,
     updateTransactionGasFees: dispatchUpdateTransactionGasFees,
-    hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
     ...otherDispatchProps
@@ -258,7 +256,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
       if (ownProps.onSubmit) {
-        dispatchHideSidebar();
         dispatchCancelAndClose();
         ownProps.onSubmit({ gasLimit, gasPrice });
         return;
@@ -274,11 +271,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchCancelAndClose();
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, { gasPrice, gasLimit });
-        dispatchHideSidebar();
         dispatchCancelAndClose();
       } else if (isRetry) {
         dispatchCreateRetryTransaction(txId, { gasPrice, gasLimit });
-        dispatchHideSidebar();
         dispatchCancelAndClose();
       } else {
         dispatchSetGasData(gasLimit, gasPrice);
@@ -293,9 +288,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     cancelAndClose: () => {
       dispatchCancelAndClose();
-      if (isSpeedUp || isRetry) {
-        dispatchHideSidebar();
-      }
     },
     disableSave:
       insufficientBalance ||

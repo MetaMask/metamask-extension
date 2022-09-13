@@ -3,8 +3,11 @@ import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
-import ReadOnlyInput from '../readonly-input/readonly-input';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import Tooltip from '../tooltip';
+import CopyIcon from '../icon/copy-icon.component';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -23,9 +26,15 @@ function QrCodeView(props) {
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
   }${toChecksumHexAddress(data)}`;
+  const [copied, handleCopy] = useCopyToClipboard();
+  const t = useI18nContext();
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
   qrImage.make();
+
+  const header = message ? (
+    <div className="qr-code__header">{message}</div>
+  ) : null;
 
   return (
     <div className="qr-code">
@@ -38,20 +47,32 @@ function QrCodeView(props) {
           ))}
         </div>
       ) : (
-        message && <div className="qr-code__header">{message}</div>
+        header
       )}
-      {warning && <span className="qr_code__error">{warning}</span>}
+      {warning ? <span className="qr-code__error">{warning}</span> : null}
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
           __html: qrImage.createTableTag(4),
         }}
       />
-      <ReadOnlyInput
-        wrapperClass="ellip-address-wrapper"
-        autoFocus
-        value={toChecksumHexAddress(data)}
-      />
+      <Tooltip
+        wrapperClassName="qr-code__address-container__tooltip-wrapper"
+        position="bottom"
+        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+      >
+        <div
+          className="qr-code__address-container"
+          onClick={() => {
+            handleCopy(toChecksumHexAddress(data));
+          }}
+        >
+          <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
+          <div className="qr-code__copy-icon">
+            <CopyIcon size={11} className="qr-code__copy-icon__svg" color="" />
+          </div>
+        </div>
+      </Tooltip>
     </div>
   );
 }

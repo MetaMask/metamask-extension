@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tolak"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Imbas Kod QR"
+  },
   "about": {
     "message": "Mengenai"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -38,22 +41,10 @@
   "addNetwork": {
     "message": "Tambah Rangkaian"
   },
-  "addRecipient": {
-    "message": "Tambah Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },
-  "addToAddressBook": {
-    "message": "Tambah kepada buku alamat"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "cth. John D."
-  },
   "addToken": {
-    "message": "Tambah Token"
-  },
-  "addTokens": {
     "message": "Tambah Token"
   },
   "advanced": {
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
-  },
-  "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "amount": {
     "message": "Jumlah"
@@ -75,6 +63,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Luluskan"
@@ -137,17 +133,14 @@
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
   "buyWithWyre": {
-    "message": "Beli ETH dengan Wyre"
+    "message": "Beli $1 dengan Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit ETH secara terus ke dalam akaun MetaMask anda."
+    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
   },
   "bytes": {
     "message": "Bait"
@@ -224,9 +217,6 @@
   "copiedExclamation": {
     "message": "Disalin!"
   },
-  "copiedTransactionId": {
-    "message": "ID Transaksi yang Disalin"
-  },
   "copyAddress": {
     "message": "Salin alamat kepada papan klip"
   },
@@ -257,14 +247,14 @@
   "currentLanguage": {
     "message": "Bahasa Semasa"
   },
+  "custom": {
+    "message": "Lanjutan"
+  },
   "customGas": {
     "message": "Suaikan Gas"
   },
   "customGasSubTitle": {
     "message": "Meningkatkan fi mungkin akan mengurangkan masa pemprosesan, tetapi ia tidak dijamin."
-  },
-  "customRPC": {
-    "message": "RPC Tersuai"
   },
   "customToken": {
     "message": "Token Tersuai"
@@ -274,9 +264,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
-  },
-  "defaultNetwork": {
-    "message": "Rangkaian lalai untuk transaksi Ether ialah Net Utama."
   },
   "delete": {
     "message": "Padam"
@@ -292,12 +279,6 @@
   },
   "details": {
     "message": "Butiran"
-  },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
   },
   "done": {
     "message": "Selesai"
@@ -349,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
-  },
-  "enterAnAlias": {
-    "message": "Masukkan alias"
   },
   "enterPassword": {
     "message": "Masukkan kata laluan"
@@ -416,9 +394,6 @@
   },
   "general": {
     "message": "Am"
-  },
-  "generalSettingsDescription": {
-    "message": "Penukaran mata wang, mata wang utama, bahasa, blockies identicon"
   },
   "getEther": {
     "message": "Dapatkan Ether"
@@ -523,13 +498,16 @@
   "learnMore": {
     "message": "Maklumat lanjut"
   },
+  "learnMoreUpperCase": {
+    "message": "Maklumat lanjut"
+  },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
   "links": {
@@ -565,17 +543,11 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Sila masukkan kata laluan anda untuk mengesahkan ini memang anda!"
-  },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
   },
   "myAccounts": {
     "message": "Akaun Saya"
-  },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -586,9 +558,6 @@
   },
   "networkName": {
     "message": "Nama Rangkaian"
-  },
-  "networkSettingsDescription": {
-    "message": "Tambah dan sunting rangkaian RPC tersuai"
   },
   "networks": {
     "message": "Rangkaian"
@@ -611,9 +580,6 @@
   },
   "newContract": {
     "message": "Kontrak Baru"
-  },
-  "newNetwork": {
-    "message": "Rangkaian Baru"
   },
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
@@ -659,12 +625,6 @@
   },
   "on": {
     "message": "Hidupkan"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Sekat URL Explorer (pilihan)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (pilihan)"
   },
   "origin": {
     "message": "Asal"
@@ -776,17 +736,11 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
-  },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
   "revealSeedWordsDescription": {
     "message": "Jika anda pernah menukar pelayar atau berpindah komputer, anda memerlukan ungkapan benih ini untuk mengakses akaun anda. Simpan ungkapan di tempat yang selamat dan rahsia."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Frasa Benih"
   },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
@@ -824,9 +778,6 @@
   "searchTokens": {
     "message": "Cari Token"
   },
-  "secretBackupPhrase": {
-    "message": "Ungkapan Sandaran Rahsia"
-  },
   "secretBackupPhraseDescription": {
     "message": "Ungkapan rahsia sandaran anda memudahkan membuat sandaran dan memulihkan akaun anda."
   },
@@ -836,12 +787,6 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "securitySettingsDescription": {
-    "message": "Tetapan privasi dan ungkapan benih dompet"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Pisahkan setiap perkataan dengan satu ruang"
-  },
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"
   },
@@ -850,9 +795,6 @@
   },
   "selectAnAccount": {
     "message": "Pilih Akaun"
-  },
-  "selectAnAccountHelp": {
-    "message": "Pilih akaun untuk dilihat dalam MetaMask"
   },
   "selectEachPhrase": {
     "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
@@ -874,12 +816,6 @@
   },
   "sendTokens": {
     "message": "Hantar Token"
-  },
-  "sentEther": {
-    "message": "menghantar ether"
-  },
-  "separateEachWord": {
-    "message": "Pisahkan setiap perkataan dengan ruang tunggal"
   },
   "settings": {
     "message": "Tetapan"
@@ -1113,20 +1049,8 @@
   "viewContact": {
     "message": "Lihat Kenalan"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat pada $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
-  },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
-  },
-  "walletSeed": {
-    "message": "Benih Dompet"
   },
   "welcome": {
     "message": "Selamat datang ke MetaMask"

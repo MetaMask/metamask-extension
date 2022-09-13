@@ -59,11 +59,8 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   renderErrorScreenContent = () => {
-    const {
-      showNetworkDropdown,
-      setProviderArgs,
-      setProviderType,
-    } = this.props;
+    const { showNetworkDropdown, setProviderArgs, setProviderType } =
+      this.props;
 
     return (
       <div className="loading-overlay__error-screen">
@@ -71,7 +68,7 @@ export default class LoadingNetworkScreen extends PureComponent {
         <span>{this.context.t('somethingWentWrong')}</span>
         <div className="loading-overlay__error-buttons">
           <Button
-            type="default"
+            type="secondary"
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
               showNetworkDropdown();

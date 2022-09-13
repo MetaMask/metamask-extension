@@ -15,12 +15,45 @@ export default class PageContainerHeader extends Component {
     tabs: PropTypes.node,
     headerCloseText: PropTypes.string,
     className: PropTypes.string,
+    hideClose: PropTypes.bool,
   };
 
   renderTabs() {
     const { tabs } = this.props;
 
-    return tabs && <ul className="page-container__tabs">{tabs}</ul>;
+    return tabs ? <ul className="page-container__tabs">{tabs}</ul> : null;
+  }
+
+  renderCloseAction() {
+    const { hideClose, onClose, headerCloseText } = this.props;
+
+    if (hideClose) {
+      return null;
+    }
+
+    if (headerCloseText) {
+      return (
+        onClose && (
+          <Button
+            type="link"
+            className="page-container__header-close-text"
+            onClick={() => onClose()}
+          >
+            {headerCloseText}
+          </Button>
+        )
+      );
+    }
+
+    return (
+      onClose && (
+        <button
+          className="page-container__header-close"
+          onClick={() => onClose()}
+          aria-label="close"
+        />
+      )
+    );
   }
 
   renderHeaderRow() {
@@ -47,14 +80,7 @@ export default class PageContainerHeader extends Component {
   }
 
   render() {
-    const {
-      title,
-      subtitle,
-      onClose,
-      tabs,
-      headerCloseText,
-      className,
-    } = this.props;
+    const { title, subtitle, tabs, className, hideClose } = this.props;
 
     return (
       <div
@@ -65,26 +91,20 @@ export default class PageContainerHeader extends Component {
       >
         {this.renderHeaderRow()}
 
-        {title && <div className="page-container__title">{title}</div>}
-
-        {subtitle && <div className="page-container__subtitle">{subtitle}</div>}
-
-        {onClose && headerCloseText ? (
-          <Button
-            type="link"
-            className="page-container__header-close-text"
-            onClick={() => onClose()}
+        {title && (
+          <div
+            className={classnames('page-container__title', {
+              'page-container__title--no-margin-right': hideClose,
+            })}
           >
-            {headerCloseText}
-          </Button>
-        ) : (
-          onClose && (
-            <div
-              className="page-container__header-close"
-              onClick={() => onClose()}
-            />
-          )
+            {title}
+          </div>
         )}
+        {subtitle ? (
+          <div className="page-container__subtitle">{subtitle}</div>
+        ) : null}
+
+        {this.renderCloseAction()}
 
         {this.renderTabs()}
       </div>

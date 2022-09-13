@@ -54,8 +54,8 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__title">
             {t('editPermission')}
           </div>
-          <div
-            className="edit-approval-permission__header__close"
+          <i
+            className="fa fa-times fa-lg edit-approval-permission__header__close"
             onClick={() => hideModal()}
           />
         </div>
@@ -87,8 +87,10 @@ export default class EditApprovalPermission extends PureComponent {
             >
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline':
+                    !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected':
+                    selectedOptionIsUnlimited,
                 })}
               />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
@@ -99,15 +101,17 @@ export default class EditApprovalPermission extends PureComponent {
             <div className="edit-approval-permission__edit-section__option-text">
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label':
+                    !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected':
+                    selectedOptionIsUnlimited,
                 })}
               >
-                {new BigNumber(tokenAmount).lessThan(
-                  new BigNumber(tokenBalance),
+                {new BigNumber(tokenAmount).equals(
+                  new BigNumber(MAX_UNSIGNED_256_INT),
                 )
-                  ? t('proposedApprovalLimit')
-                  : t('unlimited')}
+                  ? t('unlimited')
+                  : t('proposedApprovalLimit')}
               </div>
               <div className="edit-approval-permission__edit-section__option-description">
                 {t('spendLimitRequestedBy', [origin])}
@@ -126,8 +130,10 @@ export default class EditApprovalPermission extends PureComponent {
             >
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline':
+                    selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected':
+                    !selectedOptionIsUnlimited,
                 })}
               />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
@@ -138,8 +144,10 @@ export default class EditApprovalPermission extends PureComponent {
             <div className="edit-approval-permission__edit-section__option-text">
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label':
+                    selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected':
+                    !selectedOptionIsUnlimited,
                 })}
               >
                 {t('customSpendLimit')}
@@ -226,7 +234,6 @@ export default class EditApprovalPermission extends PureComponent {
           hideModal();
         }}
         submitText={t('save')}
-        submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
         submitDisabled={disabled}

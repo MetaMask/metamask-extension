@@ -1,12 +1,23 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "رفض"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "مسح كود الاستجابة السريعة QR"
+  },
   "about": {
     "message": "حول"
   },
-  "aboutSettingsDescription": {
-    "message": "نسخة الإصدار ومركز الدعم ومعلومات الاتصال."
-  },
   "acceleratingATransaction": {
     "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
+  },
+  "acceptTermsOfUse": {
+    "message": "لقد قرأت دولار واحد وأوافق عليه",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
@@ -38,32 +49,17 @@
   "addNetwork": {
     "message": "أضف شبكة"
   },
-  "addRecipient": {
-    "message": "إضافة مستلم"
-  },
   "addSuggestedTokens": {
     "message": "أضف العملات الرمزية المقترحة"
   },
-  "addToAddressBook": {
-    "message": "إضافة إلى دفتر العناوين"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلا جون دي"
-  },
   "addToken": {
     "message": "إضافة عملة رمزية"
-  },
-  "addTokens": {
-    "message": "إضافة عملات رمزية"
   },
   "advanced": {
     "message": "إعدادات متقدمة"
   },
   "advancedOptions": {
     "message": "خيارات متقدمة"
-  },
-  "advancedSettingsDescription": {
-    "message": "يتاح لك استخدام ميزات تطوير البرامج وتنزيل سجلات الحالة وإعادة تعيين الحساب وإعداد شبكات الاختبارات وتخصيص استدعاء الإجراء عن بعد (RPC)."
   },
   "amount": {
     "message": "المبلغ"
@@ -75,6 +71,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "موافق"
@@ -137,9 +141,6 @@
     "message": "عرض الحساب في $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استخدم خدمة تكتلات Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
@@ -147,7 +148,7 @@
     "message": "قم بشراء عملة إيثير بواسطة Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع ETH مباشرة في حساب MetaMask الخاص بك."
+    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع 1$ مباشرة في حساب MetaMask الخاص بك."
   },
   "bytes": {
     "message": "بايتات"
@@ -224,9 +225,6 @@
   "copiedExclamation": {
     "message": "تم النسخ."
   },
-  "copiedTransactionId": {
-    "message": "تم نسخ معرف المعاملة"
-  },
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
   },
@@ -257,14 +255,14 @@
   "currentLanguage": {
     "message": "اللغة الحالية"
   },
+  "custom": {
+    "message": "إعدادات متقدمة"
+  },
   "customGas": {
     "message": "تخصيص الغاز"
   },
   "customGasSubTitle": {
     "message": "قد تؤدي زيادة الرسوم إلى تقليل أزمنة المعالجة، ولكن ذلك غير مضمون."
-  },
-  "customRPC": {
-    "message": "آر بي سي مخصص"
   },
   "customToken": {
     "message": "عملة رمزية مخصصة"
@@ -274,9 +272,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
-  },
-  "defaultNetwork": {
-    "message": "الشبكة الافتراضية لمعاملات الأثير هي الشبكة الرئيسية."
   },
   "delete": {
     "message": "حذف"
@@ -290,17 +285,8 @@
   "deleteNetworkDescription": {
     "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
   },
-  "depositEther": {
-    "message": "إيداع عملة إيثير"
-  },
   "details": {
     "message": "التفاصيل"
-  },
-  "directDepositEther": {
-    "message": "إيداع مباشرة لعملة الأثير"
-  },
-  "directDepositEtherExplainer": {
-    "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
   },
   "done": {
     "message": "تم"
@@ -355,9 +341,6 @@
   },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
-  },
-  "enterAnAlias": {
-    "message": "أدخل اسمًا مستعارًا"
   },
   "enterPassword": {
     "message": "أدخل كلمة مرور"
@@ -422,9 +405,6 @@
   },
   "general": {
     "message": "عام"
-  },
-  "generalSettingsDescription": {
-    "message": "تحويل العملات، العملة الأساسية، اللغة ، تكتلات blockies identicon"
   },
   "getEther": {
     "message": "احصل على إيثر"
@@ -533,13 +513,16 @@
   "learnMore": {
     "message": "اكتشف المزيد"
   },
+  "learnMoreUpperCase": {
+    "message": "اكتشف المزيد"
+  },
   "ledgerAccountRestriction": {
     "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
   },
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
   "links": {
@@ -578,17 +561,11 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "mobileSyncText": {
-    "message": "يرجى إدخال كلمة مرورك لتأكيد هويتك!"
-  },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
   },
   "myAccounts": {
     "message": "حساباتي"
-  },
-  "needEtherInWallet": {
-    "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
@@ -599,9 +576,6 @@
   },
   "networkName": {
     "message": "اسم الشبكة"
-  },
-  "networkSettingsDescription": {
-    "message": "إضافة وتعديل شبكات RPC المخصصة"
   },
   "networks": {
     "message": "الشبكات"
@@ -624,9 +598,6 @@
   },
   "newContract": {
     "message": "عقد جديد"
-  },
-  "newNetwork": {
-    "message": "شبكة جديدة"
   },
   "newPassword": {
     "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
@@ -675,12 +646,6 @@
   },
   "on": {
     "message": "تشغيل"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "العنوان الإلكتروني لمستكشف البلوكات (اختياري)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "الرمز (اختياري)"
   },
   "origin": {
     "message": "الأصل"
@@ -792,17 +757,11 @@
   "restore": {
     "message": "استعادة"
   },
-  "restoreAccountWithSeed": {
-    "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
-  },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
   "revealSeedWordsDescription": {
     "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
-  },
-  "revealSeedWordsTitle": {
-    "message": "عبارة الأمان"
   },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
@@ -840,9 +799,6 @@
   "searchTokens": {
     "message": "البحث عن العملات الرمزية"
   },
-  "secretBackupPhrase": {
-    "message": "الجملة الاحتياطية السرية"
-  },
   "secretBackupPhraseDescription": {
     "message": "تجعل عبارة النسخ الاحتياطي السرية الخاصة بك من السهل إجراء نسخ احتياطي واستعادة حسابك."
   },
@@ -852,12 +808,6 @@
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
-  "securitySettingsDescription": {
-    "message": "إعدادات الخصوصية وعبارة أمان المحفظة"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "يرجى فصل كل كلمة بمسافة واحدة"
-  },
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },
@@ -866,9 +816,6 @@
   },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
-  },
-  "selectAnAccountHelp": {
-    "message": "حدد الحساب لعرضه في MetaMask"
   },
   "selectEachPhrase": {
     "message": "يُرجى تحديد كل عبارة للتأكد من صحتها."
@@ -890,12 +837,6 @@
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
-  },
-  "sentEther": {
-    "message": "أرسل عملة إيثير"
-  },
-  "separateEachWord": {
-    "message": "افصل كل كلمة بمسافة واحدة"
   },
   "settings": {
     "message": "الإعدادات"
@@ -1132,20 +1073,8 @@
   "viewContact": {
     "message": "عرض جهة الاتصال"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "عرض في $1"
-  },
-  "viewOnEtherscan": {
-    "message": "عرضه على Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "عرض في متصفح Explorer"
-  },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
-  },
-  "walletSeed": {
-    "message": "بذرة المحفظة"
   },
   "welcome": {
     "message": "مرحباً بك في MetaMask"

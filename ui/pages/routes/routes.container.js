@@ -2,13 +2,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getHasAnyAccountWithNoFundsOnNetwork,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
-  submittedPendingTransactionsSelector,
+  getTheme,
 } from '../../selectors';
 import {
-  hideSidebar,
   lockMetamask,
   setCurrentCurrency,
   setLastActiveTime,
@@ -16,43 +17,40 @@ import {
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
+import { getSendStage } from '../../ducks/send';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { appState } = state;
-  const {
-    sidebar,
-    alertOpen,
-    alertMessage,
-    isLoading,
-    loadingMessage,
-  } = appState;
+  const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
 
   return {
-    sidebar,
     alertOpen,
     alertMessage,
     textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     isNetworkLoading: isNetworkLoading(state),
-    provider: state.metamask.provider,
-    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    browserEnvironment: state.metamask.browserEnvironment,
+    browserEnvironmentOs: state.metamask.browserEnvironment?.os,
+    browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
+    providerId: getNetworkIdentifier(state),
+    providerType: state.metamask.provider?.type,
+    theme: getTheme(state),
+    sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    hasAnAccountWithNoFundsOnNetwork:
+      getHasAnyAccountWithNoFundsOnNetwork(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     lockMetaMask: () => dispatch(lockMetamask(false)),
-    hideSidebar: () => dispatch(hideSidebar()),
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) =>
       dispatch(setMouseUserState(isMouseUser)),

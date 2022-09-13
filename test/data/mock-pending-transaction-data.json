@@ -1,0 +1,234 @@
+{
+  "hasCancelled": false,
+  "hasRetried": false,
+  "initialTransaction": {
+    "id": 6854191329910881,
+    "time": 1631558469046,
+    "status": "approved",
+    "metamaskNetworkId": "42",
+    "chainId": "0x2a",
+    "loadingDefaults": false,
+    "dappSuggestedGasFees": null,
+    "txParams": {
+      "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+      "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+      "value": "0x38d7ea4c68000",
+      "gas": "0x5208",
+      "maxFeePerGas": "0x47868c00",
+      "maxPriorityFeePerGas": "0x47868c00",
+      "type": "0x2"
+    },
+    "origin": "metamask",
+    "type": "simpleSend",
+    "history": [
+      {
+        "id": 6854191329910881,
+        "time": 1631558469046,
+        "status": "unapproved",
+        "metamaskNetworkId": "42",
+        "chainId": "0x2a",
+        "loadingDefaults": true,
+        "dappSuggestedGasFees": null,
+        "txParams": {
+          "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+          "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+          "value": "0x38d7ea4c68000",
+          "gas": "0x5208",
+          "maxFeePerGas": "0x47868c00",
+          "maxPriorityFeePerGas": "0x47868c00",
+          "type": "0x2"
+        },
+        "origin": "metamask",
+        "type": "simpleSend"
+      },
+      [
+        {
+          "op": "replace",
+          "path": "/loadingDefaults",
+          "value": false,
+          "note": "Added new unapproved transaction.",
+          "timestamp": 1631558469059
+        },
+        {
+          "op": "add",
+          "path": "/userFeeLevel",
+          "value": "medium"
+        }
+      ],
+      [
+        {
+          "op": "add",
+          "path": "/estimatedBaseFee",
+          "value": "0",
+          "note": "confTx: user approved transaction",
+          "timestamp": 1631558472917
+        }
+      ],
+      [
+        {
+          "op": "replace",
+          "path": "/status",
+          "value": "approved",
+          "note": "txStateManager: setting status to approved",
+          "timestamp": 1631558472925
+        }
+      ]
+    ],
+    "userFeeLevel": "medium",
+    "estimatedBaseFee": "0"
+  },
+  "primaryTransaction": {
+    "id": 6854191329910881,
+    "time": 1631558469046,
+    "status": "approved",
+    "metamaskNetworkId": "42",
+    "chainId": "0x2a",
+    "loadingDefaults": false,
+    "dappSuggestedGasFees": null,
+    "txParams": {
+      "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+      "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+      "value": "0x38d7ea4c68000",
+      "gas": "0x5208",
+      "maxFeePerGas": "0x47868c00",
+      "maxPriorityFeePerGas": "0x47868c00",
+      "type": "0x2"
+    },
+    "origin": "metamask",
+    "type": "simpleSend",
+    "history": [
+      {
+        "id": 6854191329910881,
+        "time": 1631558469046,
+        "status": "unapproved",
+        "metamaskNetworkId": "42",
+        "chainId": "0x2a",
+        "loadingDefaults": true,
+        "dappSuggestedGasFees": null,
+        "txParams": {
+          "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+          "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+          "value": "0x38d7ea4c68000",
+          "gas": "0x5208",
+          "maxFeePerGas": "0x47868c00",
+          "maxPriorityFeePerGas": "0x47868c00",
+          "type": "0x2"
+        },
+        "origin": "metamask",
+        "type": "simpleSend"
+      },
+      [
+        {
+          "op": "replace",
+          "path": "/loadingDefaults",
+          "value": false,
+          "note": "Added new unapproved transaction.",
+          "timestamp": 1631558469059
+        },
+        {
+          "op": "add",
+          "path": "/userFeeLevel",
+          "value": "medium"
+        }
+      ],
+      [
+        {
+          "op": "add",
+          "path": "/estimatedBaseFee",
+          "value": "0",
+          "note": "confTx: user approved transaction",
+          "timestamp": 1631558472917
+        }
+      ],
+      [
+        {
+          "op": "replace",
+          "path": "/status",
+          "value": "approved",
+          "note": "txStateManager: setting status to approved",
+          "timestamp": 1631558472925
+        }
+      ]
+    ],
+    "userFeeLevel": "medium",
+    "estimatedBaseFee": "0"
+  },
+  "transactions": [
+    {
+      "id": 6854191329910881,
+      "time": 1631558469046,
+      "status": "approved",
+      "metamaskNetworkId": "42",
+      "chainId": "0x2a",
+      "loadingDefaults": false,
+      "dappSuggestedGasFees": null,
+      "txParams": {
+        "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+        "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+        "value": "0x38d7ea4c68000",
+        "gas": "0x5208",
+        "maxFeePerGas": "0x47868c00",
+        "maxPriorityFeePerGas": "0x47868c00",
+        "type": "0x2"
+      },
+      "origin": "metamask",
+      "type": "simpleSend",
+      "history": [
+        {
+          "id": 6854191329910881,
+          "time": 1631558469046,
+          "status": "unapproved",
+          "metamaskNetworkId": "42",
+          "chainId": "0x2a",
+          "loadingDefaults": true,
+          "dappSuggestedGasFees": null,
+          "txParams": {
+            "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
+            "to": "0x8d09d17af2e20f51a9b598cb9edd01489a26ae27",
+            "value": "0x38d7ea4c68000",
+            "gas": "0x5208",
+            "maxFeePerGas": "0x47868c00",
+            "maxPriorityFeePerGas": "0x47868c00",
+            "type": "0x2"
+          },
+          "origin": "metamask",
+          "type": "simpleSend"
+        },
+        [
+          {
+            "op": "replace",
+            "path": "/loadingDefaults",
+            "value": false,
+            "note": "Added new unapproved transaction.",
+            "timestamp": 1631558469059
+          },
+          {
+            "op": "add",
+            "path": "/userFeeLevel",
+            "value": "medium"
+          }
+        ],
+        [
+          {
+            "op": "add",
+            "path": "/estimatedBaseFee",
+            "value": "0",
+            "note": "confTx: user approved transaction",
+            "timestamp": 1631558472917
+          }
+        ],
+        [
+          {
+            "op": "replace",
+            "path": "/status",
+            "value": "approved",
+            "note": "txStateManager: setting status to approved",
+            "timestamp": 1631558472925
+          }
+        ]
+      ],
+      "userFeeLevel": "medium",
+      "estimatedBaseFee": "0"
+    }
+  ]
+}

@@ -2,10 +2,22 @@ import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
+import README from './README.mdx';
 import TransactionDetail from '.';
 
 export default {
-  title: 'Transaction Detail',
+  title: 'Components/App/TransactionDetail',
+  id: __filename,
+  component: TransactionDetail,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    rows: { control: 'array' },
+    onEdit: { action: 'onEdit' },
+  },
 };
 
 const rows = [
@@ -21,7 +33,7 @@ const rows = [
     }
     detailText="0.00896 ETH"
     detailTotal="$15.73"
-    subTitle={<GasTiming text="Very likely in < 15 seconds" />}
+    subTitle={<GasTiming maxPriorityFeePerGas="1" />}
     subText={
       <>
         From <strong>$15.73 - $19.81</strong>
@@ -42,18 +54,12 @@ const rows = [
   />,
 ];
 
-export const basic = () => {
-  return (
-    <div style={{ width: '400px' }}>
-      <TransactionDetail rows={rows} />
-    </div>
-  );
+export const DefaultStory = (args) => {
+  return <TransactionDetail {...args} />;
 };
 
-export const editable = () => {
-  return (
-    <div style={{ width: '400px' }}>
-      <TransactionDetail rows={rows} onEdit={() => console.log('Edit!')} />
-    </div>
-  );
+DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  rows,
 };

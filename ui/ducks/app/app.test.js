@@ -1,4 +1,5 @@
 import * as actionConstants from '../../store/actionConstants';
+import { DEVICE_NAMES } from '../../../shared/constants/hardware-wallets';
 import reduceApp from './app';
 
 const actions = actionConstants;
@@ -36,31 +37,6 @@ describe('App State', () => {
     });
 
     expect(newState.networkDropdownOpen).toStrictEqual(false);
-  });
-
-  it('opens sidebar', () => {
-    const value = {
-      transitionName: 'sidebar-right',
-      type: 'wallet-view',
-      isOpen: true,
-    };
-    const state = reduceApp(metamaskState, {
-      type: actions.SIDEBAR_OPEN,
-      value,
-    });
-
-    expect(state.sidebar).toStrictEqual(value);
-  });
-
-  it('closes sidebar', () => {
-    const openSidebar = { sidebar: { isOpen: true } };
-    const state = { ...metamaskState, ...openSidebar };
-
-    const newState = reduceApp(state, {
-      type: actions.SIDEBAR_CLOSE,
-    });
-
-    expect(newState.sidebar.isOpen).toStrictEqual(false);
   });
 
   it('opens alert', () => {
@@ -280,11 +256,12 @@ describe('App State', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
+      lattice: "m/44'/60'/0'/0",
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
       value: {
-        device: 'ledger',
+        device: DEVICE_NAMES.LEDGER,
         path: "m/44'/60'/0'",
       },
     });
@@ -351,5 +328,13 @@ describe('App State', () => {
     });
 
     expect(state.isMouseUser).toStrictEqual(true);
+  });
+
+  it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.SET_SMART_TRANSACTIONS_ERROR,
+      payload: 'Server Side Error',
+    });
+    expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
 });

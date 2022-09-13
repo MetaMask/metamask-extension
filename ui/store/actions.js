@@ -1,40 +1,56 @@
-import pify from 'pify';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
-import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
+import getBuyUrl from '../../app/scripts/lib/buy-url';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
+} from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { decimalToHex } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getNotifications,
+  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
-import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
-import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
-  getUnconnectedAccountAlertEnabledness,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
-import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
+  computeEstimatedGasLimit,
+  initializeSendState,
+  resetSendState,
+} from '../ducks/send';
+import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+  LEDGER_USB_VENDOR_ID,
+} from '../../shared/constants/hardware-wallets';
+import { EVENT } from '../../shared/constants/metametrics';
+import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+///: END:ONLY_INCLUDE_IN
+import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
-
-let background = null;
-let promisifiedBackground = null;
-export function _setBackgroundConnection(backgroundConnection) {
-  background = backgroundConnection;
-  promisifiedBackground = pify(background);
-}
+import {
+  callBackgroundMethod,
+  submitRequestToBackground,
+} from './action-queue';
 
 export function goHome() {
   return {
@@ -50,7 +66,7 @@ export function tryUnlockMetamask(password) {
     log.debug(`background.submitPassword`);
 
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, (error) => {
+      callBackgroundMethod('submitPassword', [password], (error) => {
         if (error) {
           reject(error);
           return;
@@ -64,19 +80,6 @@ export function tryUnlockMetamask(password) {
         return forceUpdateMetamaskState(dispatch);
       })
       .then(() => {
-        return new Promise((resolve, reject) => {
-          background.verifySeedPhrase((err) => {
-            if (err) {
-              dispatch(displayWarning(err.message));
-              reject(err);
-              return;
-            }
-
-            resolve();
-          });
-        });
-      })
-      .then(() => {
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {
@@ -87,20 +90,39 @@ export function tryUnlockMetamask(password) {
   };
 }
 
-export function createNewVaultAndRestore(password, seed) {
+/**
+ * Adds a new account where all data is encrypted using the given password and
+ * where all addresses are generated from a given seed phrase.
+ *
+ * @param {string} password - The password.
+ * @param {string} seedPhrase - The seed phrase.
+ * @returns {object} The updated state of the keyring controller.
+ */
+export function createNewVaultAndRestore(password, seedPhrase) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
+
+    // Encode the secret recovery phrase as an array of integers so that it is
+    // serialized as JSON properly.
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(seedPhrase, 'utf8').values(),
+    );
+
     let vault;
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        vault = _vault;
-        resolve();
-      });
+      callBackgroundMethod(
+        'createNewVaultAndRestore',
+        [password, encodedSeedPhrase],
+        (err, _vault) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          vault = _vault;
+          resolve();
+        },
+      );
     })
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
@@ -122,8 +144,8 @@ export function createNewVaultAndGetSeedPhrase(password) {
 
     try {
       await createNewVault(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -139,9 +161,9 @@ export function unlockAndGetSeedPhrase(password) {
 
     try {
       await submitPassword(password);
-      const seedWords = await verifySeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       await forceUpdateMetamaskState(dispatch);
-      return seedWords;
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -153,7 +175,7 @@ export function unlockAndGetSeedPhrase(password) {
 
 export function submitPassword(password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, (error) => {
+    callBackgroundMethod('submitPassword', [password], (error) => {
       if (error) {
         reject(error);
         return;
@@ -166,7 +188,7 @@ export function submitPassword(password) {
 
 export function createNewVault(password) {
   return new Promise((resolve, reject) => {
-    background.createNewVaultAndKeychain(password, (error) => {
+    callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
       if (error) {
         reject(error);
         return;
@@ -179,7 +201,7 @@ export function createNewVault(password) {
 
 export function verifyPassword(password) {
   return new Promise((resolve, reject) => {
-    background.verifyPassword(password, (error) => {
+    callBackgroundMethod('verifyPassword', [password], (error) => {
       if (error) {
         reject(error);
         return;
@@ -190,17 +212,9 @@ export function verifyPassword(password) {
   });
 }
 
-export function verifySeedPhrase() {
-  return new Promise((resolve, reject) => {
-    background.verifySeedPhrase((error, seedWords) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(seedWords);
-    });
-  });
+export async function verifySeedPhrase() {
+  const encodedSeedPhrase = await submitRequestToBackground('verifySeedPhrase');
+  return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(password) {
@@ -210,11 +224,11 @@ export function requestRevealSeedWords(password) {
 
     try {
       await verifyPassword(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
-      throw new Error(error.message);
+      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -224,7 +238,7 @@ export function requestRevealSeedWords(password) {
 export function tryReverseResolveAddress(address) {
   return () => {
     return new Promise((resolve) => {
-      background.tryReverseResolveAddress(address, (err) => {
+      callBackgroundMethod('tryReverseResolveAddress', [address], (err) => {
         if (err) {
           log.error(err);
         }
@@ -238,7 +252,7 @@ export function fetchInfoToSync() {
   return (dispatch) => {
     log.debug(`background.fetchInfoToSync`);
     return new Promise((resolve, reject) => {
-      background.fetchInfoToSync((err, result) => {
+      callBackgroundMethod('fetchInfoToSync', [], (err, result) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -255,7 +269,7 @@ export function resetAccount() {
     dispatch(showLoadingIndication());
 
     return new Promise((resolve, reject) => {
-      background.resetAccount((err, account) => {
+      callBackgroundMethod('resetAccount', [], (err, account) => {
         dispatch(hideLoadingIndication());
         if (err) {
           dispatch(displayWarning(err.message));
@@ -277,7 +291,7 @@ export function removeAccount(address) {
 
     try {
       await new Promise((resolve, reject) => {
-        background.removeAccount(address, (error, account) => {
+        callBackgroundMethod('removeAccount', [address], (error, account) => {
           if (error) {
             reject(error);
             return;
@@ -306,9 +320,12 @@ export function importNewAccount(strategy, args) {
     );
     try {
       log.debug(`background.importAccountWithStrategy`);
-      await promisifiedBackground.importAccountWithStrategy(strategy, args);
+      await submitRequestToBackground('importAccountWithStrategy', [
+        strategy,
+        args,
+      ]);
       log.debug(`background.getState`);
-      newState = await promisifiedBackground.getState();
+      newState = await submitRequestToBackground('getState');
     } catch (err) {
       dispatch(displayWarning(err.message));
       throw err;
@@ -335,7 +352,9 @@ export function addNewAccount() {
 
     let newIdentities;
     try {
-      const { identities } = await promisifiedBackground.addNewAccount();
+      const { identities } = await submitRequestToBackground('addNewAccount', [
+        Object.keys(oldIdentities).length,
+      ]);
       newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -359,10 +378,10 @@ export function checkHardwareStatus(deviceName, hdPath) {
 
     let unlocked;
     try {
-      unlocked = await promisifiedBackground.checkHardwareStatus(
+      unlocked = await submitRequestToBackground('checkHardwareStatus', [
         deviceName,
         hdPath,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -381,7 +400,7 @@ export function forgetDevice(deviceName) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     try {
-      await promisifiedBackground.forgetDevice(deviceName);
+      await submitRequestToBackground('forgetDevice', [deviceName]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -394,24 +413,55 @@ export function forgetDevice(deviceName) {
   };
 }
 
-export function connectHardware(deviceName, page, hdPath) {
+export function connectHardware(deviceName, page, hdPath, t) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const { ledgerTransportType } = getState().metamask;
+
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
 
     let accounts;
     try {
-      accounts = await promisifiedBackground.connectHardware(
+      if (deviceName === DEVICE_NAMES.LEDGER) {
+        await submitRequestToBackground('establishLedgerTransportPreference');
+      }
+      if (
+        deviceName === DEVICE_NAMES.LEDGER &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+      ) {
+        const connectedDevices = await window.navigator.hid.requestDevice({
+          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+        });
+        const userApprovedWebHidConnection = connectedDevices.some(
+          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+        );
+        if (!userApprovedWebHidConnection) {
+          throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
+        }
+      }
+
+      accounts = await submitRequestToBackground('connectHardware', [
         deviceName,
         page,
         hdPath,
-      );
+      ]);
     } catch (error) {
       log.error(error);
-      dispatch(displayWarning(error.message));
-      throw error;
+      if (
+        deviceName === DEVICE_NAMES.LEDGER &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        error.message.match('Failed to open the device')
+      ) {
+        dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+        throw new Error(t('ledgerDeviceOpenFailureMessage'));
+      } else {
+        if (deviceName !== DEVICE_NAMES.QR) {
+          dispatch(displayWarning(error.message));
+        }
+        throw error;
+      }
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -439,12 +489,12 @@ export function unlockHardwareWalletAccounts(
 
     for (const index of indexes) {
       try {
-        await promisifiedBackground.unlockHardwareWalletAccount(
+        await submitRequestToBackground('unlockHardwareWalletAccount', [
           index,
           deviceName,
           hdPath,
           hdPathDescription,
-        );
+        ]);
       } catch (e) {
         log.error(e);
         dispatch(displayWarning(e.message));
@@ -473,7 +523,7 @@ export function setCurrentCurrency(currencyCode) {
     dispatch(showLoadingIndication());
     log.debug(`background.setCurrentCurrency`);
     try {
-      await promisifiedBackground.setCurrentCurrency(currencyCode);
+      await submitRequestToBackground('setCurrentCurrency', [currencyCode]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
@@ -492,7 +542,7 @@ export function signMsg(msgData) {
     log.debug(`actions calling background.signMessage`);
     let newState;
     try {
-      newState = await promisifiedBackground.signMessage(msgData);
+      newState = await submitRequestToBackground('signMessage', [msgData]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -516,7 +566,9 @@ export function signPersonalMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.signPersonalMessage(msgData);
+      newState = await submitRequestToBackground('signPersonalMessage', [
+        msgData,
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -539,9 +591,9 @@ export function decryptMsgInline(decryptedMsgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.decryptMessageInline(
+      newState = await submitRequestToBackground('decryptMessageInline', [
         decryptedMsgData,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -561,7 +613,9 @@ export function decryptMsg(decryptedMsgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.decryptMessage(decryptedMsgData);
+      newState = await submitRequestToBackground('decryptMessage', [
+        decryptedMsgData,
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -585,7 +639,9 @@ export function encryptionPublicKeyMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.encryptionPublicKey(msgData);
+      newState = await submitRequestToBackground('encryptionPublicKey', [
+        msgData,
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -609,7 +665,7 @@ export function signTypedMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.signTypedMessage(msgData);
+      newState = await submitRequestToBackground('signTypedMessage', [msgData]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -636,7 +692,7 @@ const updateMetamaskStateFromBackground = () => {
   log.debug(`background.getState`);
 
   return new Promise((resolve, reject) => {
-    background.getState((error, newState) => {
+    callBackgroundMethod('getState', [], (error, newState) => {
       if (error) {
         reject(error);
         return;
@@ -647,12 +703,156 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updatePreviousGasParams(txId, previousGasParams) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updatePreviousGasParams',
+        [txId, previousGasParams],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
+export function updateSwapApprovalTransaction(txId, txSwapApproval) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updateSwapApprovalTransaction',
+        [txId, txSwapApproval],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
+export function updateEditableParams(txId, editableParams) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updateEditableParams',
+        [txId, editableParams],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+    await forceUpdateMetamaskState(dispatch);
+    return updatedTransaction;
+  };
+}
+
+/**
+ * Appends new send flow history to a transaction
+ *
+ * @param {string} txId - the id of the transaction to update
+ * @param {number} currentSendFlowHistoryLength - sendFlowHistory entries currently
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
+ *  transaction
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function updateTransactionSendFlowHistory(
+  txId,
+  currentSendFlowHistoryLength,
+  sendFlowHistory,
+) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updateTransactionSendFlowHistory',
+        [txId, currentSendFlowHistoryLength, sendFlowHistory],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
+export async function backupUserData() {
+  let backedupData;
+  try {
+    backedupData = await submitRequestToBackground('backupUserData');
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return backedupData;
+}
+
+export async function restoreUserData(jsonString) {
+  try {
+    await submitRequestToBackground('restoreUserData', [jsonString]);
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return true;
+}
+
+export function updateTransactionGasFees(txId, txGasFees) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updateTransactionGasFees',
+        [txId, txGasFees],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
+export function updateSwapTransaction(txId, txSwap) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await submitRequestToBackground(
+        'updateSwapTransaction',
+        [txId, txSwap],
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateTransaction(txData, dontShowLoadingIndicator) {
   return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
 
     try {
-      await promisifiedBackground.updateTransaction(txData);
+      await submitRequestToBackground('updateTransaction', [txData]);
     } catch (error) {
       dispatch(updateTransactionParams(txData.id, txData.txParams));
       dispatch(hideLoadingIndication());
@@ -674,27 +874,73 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin) {
-  log.debug('background.addUnapprovedTransaction');
-
-  return () => {
-    return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(txMeta);
-      });
-    });
+/**
+ * Action to create a new transaction in the controller and route to the
+ * confirmation page. Returns the newly created txMeta in case additional logic
+ * should be applied to the transaction after creation.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
+ *  history of the send flow at time of creation.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function addUnapprovedTransactionAndRouteToConfirmationPage(
+  txParams,
+  type,
+  sendFlowHistory,
+) {
+  return async (dispatch) => {
+    const actionId = Date.now() + Math.random();
+    try {
+      log.debug('background.addUnapprovedTransaction');
+      const txMeta = await submitRequestToBackground(
+        'addUnapprovedTransaction',
+        [txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
+        actionId,
+      );
+      dispatch(showConfTxPage());
+      return txMeta;
+    } catch (error) {
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+    }
+    return null;
   };
+}
+
+/**
+ * Wrapper around the promisifedBackground to create a new unapproved
+ * transaction in the background and return the newly created txMeta.
+ * This method does not show errors or route to a confirmation page and is
+ * used primarily for swaps functionality.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export async function addUnapprovedTransaction(txParams, type) {
+  log.debug('background.addUnapprovedTransaction');
+  const actionId = Date.now() + Math.random();
+  const txMeta = await submitRequestToBackground(
+    'addUnapprovedTransaction',
+    [txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    actionId,
+  );
+  return txMeta;
 }
 
 export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.updateAndApproveTransaction(txData, (err) => {
+      callBackgroundMethod('updateAndApproveTransaction', [txData], (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
         dispatch(resetSendState());
 
@@ -725,6 +971,10 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
         return Promise.reject(err);
       });
   };
+}
+
+export async function getTransactions(filters = {}) {
+  return await submitRequestToBackground('getTransactions', [filters]);
 }
 
 export function completedTx(id) {
@@ -774,13 +1024,80 @@ export function txError(err) {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await submitRequestToBackground('disableSnap', [snapId]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await submitRequestToBackground('enableSnap', [snapId]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snapId) {
+  return async (dispatch) => {
+    await submitRequestToBackground('removeSnap', [snapId]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return submitRequestToBackground('removeSnapError', [msgData]);
+}
+
+export function dismissNotifications(ids) {
+  return async (dispatch) => {
+    await submitRequestToBackground('dismissNotifications', [ids]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function deleteExpiredNotifications() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const notifications = getNotifications(state);
+
+    const notificationIdsToDelete = notifications
+      .filter((notification) => {
+        const expirationTime = new Date(
+          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
+        );
+
+        return Boolean(
+          notification.readDate &&
+            new Date(notification.readDate) < expirationTime,
+        );
+      })
+      .map(({ id }) => id);
+    if (notificationIdsToDelete.length) {
+      await submitRequestToBackground('dismissNotifications', [
+        notificationIdsToDelete,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+export function markNotificationsAsRead(ids) {
+  return async (dispatch) => {
+    await submitRequestToBackground('markNotificationsAsRead', [ids]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
 export function cancelMsg(msgData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
     try {
-      newState = await promisifiedBackground.cancelMessage(msgData.id);
+      newState = await submitRequestToBackground('cancelMessage', [msgData.id]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -792,13 +1109,109 @@ export function cancelMsg(msgData) {
   };
 }
 
+/**
+ * Cancels all of the given messages
+ *
+ * @param {Array<object>} msgDataList - a list of msg data objects
+ * @returns {function(*): Promise<void>}
+ */
+export function cancelMsgs(msgDataList) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const msgIds = msgDataList.map((id) => id);
+      const cancellations = msgDataList.map(
+        ({ id, type }) =>
+          new Promise((resolve, reject) => {
+            switch (type) {
+              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+                callBackgroundMethod('cancelTypedMessage', [id], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.PERSONAL_SIGN:
+                callBackgroundMethod('cancelPersonalMessage', [id], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_DECRYPT:
+                callBackgroundMethod('cancelDecryptMessage', [id], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
+                callBackgroundMethod(
+                  'cancelEncryptionPublicKey',
+                  [id],
+                  (err) => {
+                    if (err) {
+                      reject(err);
+                      return;
+                    }
+                    resolve();
+                  },
+                );
+                return;
+              case MESSAGE_TYPE.ETH_SIGN:
+                callBackgroundMethod('cancelMessage', [id], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              default:
+                reject(
+                  new Error(
+                    `MetaMask Message Signature: Unknown message type: ${id}`,
+                  ),
+                );
+            }
+          }),
+      );
+
+      await Promise.all(cancellations);
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+
+      msgIds.forEach((id) => {
+        dispatch(completedTx(id));
+      });
+    } catch (err) {
+      log.error(err);
+    } finally {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        closeNotificationPopup();
+      } else {
+        dispatch(hideLoadingIndication());
+      }
+    }
+  };
+}
+
 export function cancelPersonalMsg(msgData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
     try {
-      newState = await promisifiedBackground.cancelPersonalMessage(msgData.id);
+      newState = await submitRequestToBackground('cancelPersonalMessage', [
+        msgData.id,
+      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -816,7 +1229,9 @@ export function cancelDecryptMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.cancelDecryptMessage(msgData.id);
+      newState = await submitRequestToBackground('cancelDecryptMessage', [
+        msgData.id,
+      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -834,9 +1249,9 @@ export function cancelEncryptionPublicKeyMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.cancelEncryptionPublicKey(
+      newState = await submitRequestToBackground('cancelEncryptionPublicKey', [
         msgData.id,
-      );
+      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -854,7 +1269,9 @@ export function cancelTypedMsg(msgData) {
 
     let newState;
     try {
-      newState = await promisifiedBackground.cancelTypedMessage(msgData.id);
+      newState = await submitRequestToBackground('cancelTypedMessage', [
+        msgData.id,
+      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -870,7 +1287,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, (error) => {
+      callBackgroundMethod('cancelTransaction', [txData.id], (error) => {
         if (error) {
           reject(error);
           return;
@@ -898,6 +1315,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
 
 /**
  * Cancels all of the given transactions
+ *
  * @param {Array<object>} txDataList - a list of tx data objects
  * @returns {function(*): Promise<void>}
  */
@@ -910,7 +1328,7 @@ export function cancelTxs(txDataList) {
       const cancellations = txIds.map(
         (id) =>
           new Promise((resolve, reject) => {
-            background.cancelTransaction(id, (err) => {
+            callBackgroundMethod('cancelTransaction', [id], (err) => {
               if (err) {
                 reject(err);
                 return;
@@ -932,7 +1350,7 @@ export function cancelTxs(txDataList) {
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        global.platform.closeCurrentWindow();
+        closeNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -944,7 +1362,7 @@ export function markPasswordForgotten() {
   return async (dispatch) => {
     try {
       await new Promise((resolve, reject) => {
-        return background.markPasswordForgotten((error) => {
+        callBackgroundMethod('markPasswordForgotten', [], (error) => {
           if (error) {
             reject(error);
             return;
@@ -964,7 +1382,7 @@ export function markPasswordForgotten() {
 export function unMarkPasswordForgotten() {
   return (dispatch) => {
     return new Promise((resolve) => {
-      background.unMarkPasswordForgotten(() => {
+      callBackgroundMethod('unMarkPasswordForgotten', [], () => {
         dispatch(forgotPassword(false));
         resolve();
       });
@@ -1069,26 +1487,30 @@ export function updateMetamaskState(newState) {
         payload: {
           gasFeeEstimates: newState.gasFeeEstimates,
           gasEstimateType: newState.gasEstimateType,
-          isEIP1559Network: isEIP1559Network({ metamask: newState }),
         },
-      });
-    }
-    if (provider.chainId !== newProvider.chainId) {
-      dispatch({
-        type: actionConstants.CHAIN_CHANGED,
-        payload: newProvider.chainId,
       });
     }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
+    if (provider.chainId !== newProvider.chainId) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+      // We dispatch this action to ensure that the send state stays up to date
+      // after the chain changes. This async thunk will fail gracefully in the
+      // event that we are not yet on the send flow with a draftTransaction in
+      // progress.
+      dispatch(initializeSendState({ chainHasChanged: true }));
+    }
   };
 }
 
 const backgroundSetLocked = () => {
   return new Promise((resolve, reject) => {
-    background.setLocked((error) => {
+    callBackgroundMethod('setLocked', [], (error) => {
       if (error) {
         reject(error);
         return;
@@ -1122,10 +1544,9 @@ export function lockMetamask() {
   };
 }
 
-async function _setSelectedAddress(dispatch, address) {
+async function _setSelectedAddress(address) {
   log.debug(`background.setSelectedAddress`);
-  const tokens = await promisifiedBackground.setSelectedAddress(address);
-  dispatch(updateTokens(tokens));
+  await submitRequestToBackground('setSelectedAddress', [address]);
 }
 
 export function setSelectedAddress(address) {
@@ -1133,7 +1554,7 @@ export function setSelectedAddress(address) {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1149,14 +1570,12 @@ export function showAccountDetail(address) {
     log.debug(`background.setSelectedAddress`);
 
     const state = getState();
-    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
-      state,
-    );
+    const unconnectedAccountAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
     const selectedAddress = getSelectedAddress(state);
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
-      state,
-    );
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(selectedAddress);
@@ -1168,7 +1587,7 @@ export function showAccountDetail(address) {
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -1194,13 +1613,17 @@ export function showAccountDetail(address) {
 export function addPermittedAccount(origin, address) {
   return async (dispatch) => {
     await new Promise((resolve, reject) => {
-      background.addPermittedAccount(origin, address, (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
+      callBackgroundMethod(
+        'addPermittedAccount',
+        [origin, address],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
     });
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1209,13 +1632,17 @@ export function addPermittedAccount(origin, address) {
 export function removePermittedAccount(origin, address) {
   return async (dispatch) => {
     await new Promise((resolve, reject) => {
-      background.removePermittedAccount(origin, address, (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
+      callBackgroundMethod(
+        'removePermittedAccount',
+        [origin, address],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
     });
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1241,44 +1668,253 @@ export function addToken(
   image,
   dontShowLoadingIndicator,
 ) {
-  return (dispatch) => {
+  return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add token without address');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
-    return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+    try {
+      await submitRequestToBackground('addToken', [
+        address,
+        symbol,
+        decimals,
+        image,
+      ]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+/**
+ * To add detected tokens to state
+ *
+ * @param newDetectedTokens
+ */
+export function addDetectedTokens(newDetectedTokens) {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('addDetectedTokens', [newDetectedTokens]);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
   };
 }
 
-export function removeToken(address) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication());
-    return new Promise((resolve, reject) => {
-      background.removeToken(address, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+/**
+ * To add the tokens user selected to state
+ *
+ * @param tokensToImport
+ */
+export function addImportedTokens(tokensToImport) {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('addImportedTokens', [tokensToImport]);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
   };
+}
+
+/**
+ * To add ignored token addresses to state
+ *
+ * @param options
+ * @param options.tokensToIgnore
+ * @param options.dontShowLoadingIndicator
+ */
+export function ignoreTokens({
+  tokensToIgnore,
+  dontShowLoadingIndicator = false,
+}) {
+  const _tokensToIgnore = Array.isArray(tokensToIgnore)
+    ? tokensToIgnore
+    : [tokensToIgnore];
+
+  return async (dispatch) => {
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await submitRequestToBackground('ignoreTokens', [_tokensToIgnore]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * To fetch the ERC20 tokens with non-zero balance in a single call
+ *
+ * @param tokens
+ */
+export async function getBalancesInSingleCall(tokens) {
+  return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
+}
+
+export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await submitRequestToBackground('addCollectible', [address, tokenID]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function addCollectibleVerifyOwnership(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await submitRequestToBackground('addCollectibleVerifyOwnership', [
+        address,
+        tokenID,
+      ]);
+    } catch (error) {
+      if (
+        error.message.includes('This collectible is not owned by the user') ||
+        error.message.includes('Unable to verify ownership.')
+      ) {
+        throw error;
+      } else {
+        log.error(error);
+        dispatch(displayWarning(error.message));
+      }
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeAndIgnoreCollectible(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot ignore collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await submitRequestToBackground('removeAndIgnoreCollectible', [
+        address,
+        tokenID,
+      ]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot remove collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await submitRequestToBackground('removeCollectible', [address, tokenID]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
+  await submitRequestToBackground(
+    'checkAndUpdateAllCollectiblesOwnershipStatus',
+  );
+}
+
+export async function isCollectibleOwner(
+  ownerAddress,
+  collectibleAddress,
+  collectibleId,
+) {
+  return await submitRequestToBackground('isCollectibleOwner', [
+    ownerAddress,
+    collectibleAddress,
+    collectibleId,
+  ]);
+}
+
+export async function checkAndUpdateSingleCollectibleOwnershipStatus(
+  collectible,
+) {
+  await submitRequestToBackground(
+    'checkAndUpdateSingleCollectibleOwnershipStatus',
+    [collectible, false],
+  );
+}
+
+export async function getTokenStandardAndDetails(
+  address,
+  userAddress,
+  tokenId,
+) {
+  return await submitRequestToBackground('getTokenStandardAndDetails', [
+    address,
+    userAddress,
+    tokenId,
+  ]);
 }
 
 export function addTokens(tokens) {
@@ -1298,40 +1934,37 @@ export function addTokens(tokens) {
   };
 }
 
-export function removeSuggestedTokens() {
-  return (dispatch) => {
+export function rejectWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve) => {
-      background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-        dispatch(clearPendingTokens());
-        if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-          global.platform.closeCurrentWindow();
-          return;
-        }
-        resolve(suggestedTokens);
-      });
-    })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((suggestedTokens) =>
-        dispatch(updateMetamaskState({ ...suggestedTokens })),
-      );
+    try {
+      await submitRequestToBackground('rejectWatchAsset', [suggestedAssetID]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
   };
 }
 
-export function addKnownMethodData(fourBytePrefix, methodData) {
-  return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData);
-  };
-}
-
-export function updateTokens(newTokens) {
-  return {
-    type: actionConstants.UPDATE_TOKENS,
-    newTokens,
+export function acceptWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('acceptWatchAsset', [suggestedAssetID]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
   };
 }
 
@@ -1341,15 +1974,16 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasSettings) {
+export function createCancelTransaction(txId, customGasSettings, options) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
   return (dispatch) => {
+    const actionId = Date.now() + Math.random();
     return new Promise((resolve, reject) => {
-      background.createCancelTransaction(
-        txId,
-        customGasSettings,
+      callBackgroundMethod(
+        'createCancelTransaction',
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1362,6 +1996,7 @@ export function createCancelTransaction(txId, customGasSettings) {
           newTxId = id;
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1369,15 +2004,16 @@ export function createCancelTransaction(txId, customGasSettings) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasSettings) {
+export function createSpeedUpTransaction(txId, customGasSettings, options) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
   return (dispatch) => {
+    const actionId = Date.now() + Math.random();
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(
-        txId,
-        customGasSettings,
+      callBackgroundMethod(
+        'createSpeedUpTransaction',
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1389,6 +2025,7 @@ export function createSpeedUpTransaction(txId, customGasSettings) {
           newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1401,9 +2038,9 @@ export function createRetryTransaction(txId, customGasSettings) {
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(
-        txId,
-        customGasSettings,
+      callBackgroundMethod(
+        'createSpeedUpTransaction',
+        [txId, customGasSettings],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1431,7 +2068,7 @@ export function setProviderType(type) {
     log.debug(`background.setProviderType`, type);
 
     try {
-      await promisifiedBackground.setProviderType(type);
+      await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -1461,13 +2098,13 @@ export function updateAndSetCustomRpc(
     );
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(
+      await submitRequestToBackground('updateAndSetCustomRpc', [
         newRpc,
         chainId,
         ticker,
         nickname || newRpc,
         rpcPrefs,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -1492,7 +2129,7 @@ export function editRpc(
   return async (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`);
     try {
-      promisifiedBackground.delCustomRpc(oldRpc);
+      submitRequestToBackground('delCustomRpc', [oldRpc]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem removing network!'));
@@ -1500,13 +2137,13 @@ export function editRpc(
     }
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(
+      await submitRequestToBackground('updateAndSetCustomRpc', [
         newRpc,
         chainId,
         ticker,
         nickname || newRpc,
         rpcPrefs,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -1527,12 +2164,12 @@ export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
     );
 
     try {
-      await promisifiedBackground.setCustomRpc(
+      await submitRequestToBackground('setCustomRpc', [
         newRpc,
         chainId,
         ticker,
         nickname || newRpc,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -1543,7 +2180,7 @@ export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
 export function rollbackToPreviousProvider() {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.rollbackToPreviousProvider();
+      await submitRequestToBackground('rollbackToPreviousProvider');
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -1555,7 +2192,7 @@ export function delRpcTarget(oldRpc) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`);
     return new Promise((resolve, reject) => {
-      background.delCustomRpc(oldRpc, (err) => {
+      callBackgroundMethod('delCustomRpc', [oldRpc], (err) => {
         if (err) {
           log.error(err);
           dispatch(displayWarning('Had a problem removing network!'));
@@ -1577,12 +2214,12 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
 
     let set;
     try {
-      set = await promisifiedBackground.setAddressBook(
+      set = await submitRequestToBackground('setAddressBook', [
         toChecksumHexAddress(recipient),
         nickname,
         chainId,
         memo,
-      );
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Address book failed to update'));
@@ -1596,16 +2233,17 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
 
 /**
  * @description Calls the addressBookController to remove an existing address.
+ * @param chainId
  * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook(chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`);
 
   return async () => {
-    await promisifiedBackground.removeFromAddressBook(
+    await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),
-    );
+    ]);
   };
 }
 
@@ -1641,25 +2279,8 @@ export function closeCurrentNotificationWindow() {
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
-      global.platform.closeCurrentWindow();
+      closeNotificationPopup();
     }
-  };
-}
-
-export function showSidebar({ transitionName, type, props }) {
-  return {
-    type: actionConstants.SIDEBAR_OPEN,
-    value: {
-      transitionName,
-      type,
-      props,
-    },
-  };
-}
-
-export function hideSidebar() {
-  return {
-    type: actionConstants.SIDEBAR_CLOSE,
   };
 }
 
@@ -1676,10 +2297,19 @@ export function hideAlert() {
   };
 }
 
+export function updateCollectibleDropDownState(value) {
+  return async (dispatch) => {
+    await submitRequestToBackground('updateCollectibleDropDownState', [value]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 /**
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
  * or null (used to clear the previous value)
+ *
+ * @param qrCodeData
  */
 export function qrCodeDetected(qrCodeData) {
   return async (dispatch) => {
@@ -1734,7 +2364,7 @@ export function exportAccount(password, address) {
 
     log.debug(`background.verifyPassword`);
     return new Promise((resolve, reject) => {
-      background.verifyPassword(password, function (err) {
+      callBackgroundMethod('verifyPassword', [password], function (err) {
         if (err) {
           log.error('Error in verifying password.');
           dispatch(hideLoadingIndication());
@@ -1743,19 +2373,23 @@ export function exportAccount(password, address) {
           return;
         }
         log.debug(`background.exportAccount`);
-        background.exportAccount(address, function (err2, result) {
-          dispatch(hideLoadingIndication());
+        callBackgroundMethod(
+          'exportAccount',
+          [address],
+          function (err2, result) {
+            dispatch(hideLoadingIndication());
 
-          if (err2) {
-            log.error(err2);
-            dispatch(displayWarning('Had a problem exporting the account.'));
-            reject(err2);
-            return;
-          }
+            if (err2) {
+              log.error(err2);
+              dispatch(displayWarning('Had a problem exporting the account.'));
+              reject(err2);
+              return;
+            }
 
-          dispatch(showPrivateKey(result));
-          resolve(result);
-        });
+            dispatch(showPrivateKey(result));
+            resolve(result);
+          },
+        );
       });
     });
   };
@@ -1765,7 +2399,7 @@ export function exportAccounts(password, addresses) {
   return function (dispatch) {
     log.debug(`background.verifyPassword`);
     return new Promise((resolve, reject) => {
-      background.verifyPassword(password, function (err) {
+      callBackgroundMethod('verifyPassword', [password], function (err) {
         if (err) {
           log.error('Error in submitting password.');
           reject(err);
@@ -1775,17 +2409,21 @@ export function exportAccounts(password, addresses) {
         const accountPromises = addresses.map(
           (address) =>
             new Promise((resolve2, reject2) =>
-              background.exportAccount(address, function (err2, result) {
-                if (err2) {
-                  log.error(err2);
-                  dispatch(
-                    displayWarning('Had a problem exporting the account.'),
-                  );
-                  reject2(err2);
-                  return;
-                }
-                resolve2(result);
-              }),
+              callBackgroundMethod(
+                'exportAccount',
+                [address],
+                function (err2, result) {
+                  if (err2) {
+                    log.error(err2);
+                    dispatch(
+                      displayWarning('Had a problem exporting the account.'),
+                    );
+                    reject2(err2);
+                    return;
+                  }
+                  resolve2(result);
+                },
+              ),
             ),
         );
         resolve(Promise.all(accountPromises));
@@ -1807,7 +2445,7 @@ export function setAccountLabel(account, label) {
     log.debug(`background.setAccountLabel`);
 
     return new Promise((resolve, reject) => {
-      background.setAccountLabel(account, label, (err) => {
+      callBackgroundMethod('setAccountLabel', [account, label], (err) => {
         dispatch(hideLoadingIndication());
 
         if (err) {
@@ -1840,11 +2478,13 @@ export function showSendTokenPage() {
 
 export function buyEth(opts) {
   return async (dispatch) => {
-    const url = await getBuyEthUrl(opts);
-    global.platform.openTab({ url });
-    dispatch({
-      type: actionConstants.BUY_ETH,
-    });
+    const url = await getBuyUrl(opts);
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY_ETH,
+      });
+    }
   };
 }
 
@@ -1852,9 +2492,9 @@ export function setFeatureFlag(feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.setFeatureFlag(
-        feature,
-        activated,
+      callBackgroundMethod(
+        'setFeatureFlag',
+        [feature, activated],
         (err, updatedFeatureFlags) => {
           dispatch(hideLoadingIndication());
           if (err) {
@@ -1882,18 +2522,22 @@ export function setPreference(preference, value) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.setPreference(preference, value, (err, updatedPreferences) => {
-        dispatch(hideLoadingIndication());
+      callBackgroundMethod(
+        'setPreference',
+        [preference, value],
+        (err, updatedPreferences) => {
+          dispatch(hideLoadingIndication());
 
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
 
-        dispatch(updatePreferences(updatedPreferences));
-        resolve(updatedPreferences);
-      });
+          dispatch(updatePreferences(updatedPreferences));
+          resolve(updatedPreferences);
+        },
+      );
     });
   };
 }
@@ -1907,7 +2551,7 @@ export function updatePreferences(value) {
 
 export function setDefaultHomeActiveTabName(value) {
   return async (dispatch) => {
-    await promisifiedBackground.setDefaultHomeActiveTabName(value);
+    await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -1924,6 +2568,10 @@ export function setShowFiatConversionOnTestnetsPreference(value) {
   return setPreference('showFiatInTestnets', value);
 }
 
+export function setShowTestNetworks(value) {
+  return setPreference('showTestNetworks', value);
+}
+
 export function setAutoLockTimeLimit(value) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -1933,7 +2581,7 @@ export function setCompletedOnboarding() {
     dispatch(showLoadingIndication());
 
     try {
-      await promisifiedBackground.completeOnboarding();
+      await submitRequestToBackground('completeOnboarding');
       dispatch(completeOnboarding());
     } catch (err) {
       dispatch(displayWarning(err.message));
@@ -1962,7 +2610,7 @@ export async function forceUpdateMetamaskState(dispatch) {
 
   let newState;
   try {
-    newState = await promisifiedBackground.getState();
+    newState = await submitRequestToBackground('getState');
   } catch (error) {
     dispatch(displayWarning(error.message));
     throw error;
@@ -1982,20 +2630,24 @@ export function setParticipateInMetaMetrics(val) {
   return (dispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     return new Promise((resolve, reject) => {
-      background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
-        log.debug(err);
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
+      callBackgroundMethod(
+        'setParticipateInMetaMetrics',
+        [val],
+        (err, metaMetricsId) => {
+          log.debug(err);
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
 
-        dispatch({
-          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
-          value: val,
-        });
-        resolve([val, metaMetricsId]);
-      });
+          dispatch({
+            type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+            value: val,
+          });
+          resolve([val, metaMetricsId]);
+        },
+      );
     });
   };
 }
@@ -2004,7 +2656,7 @@ export function setUseBlockie(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseBlockie`);
-    background.setUseBlockie(val, (err) => {
+    callBackgroundMethod('setUseBlockie', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2018,15 +2670,15 @@ export function setUseBlockie(val) {
 }
 
 export function setUseNonceField(val) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
-    background.setUseNonceField(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    try {
+      await submitRequestToBackground('setUseNonceField', [val]);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+    }
+    dispatch(hideLoadingIndication());
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
@@ -2038,7 +2690,7 @@ export function setUsePhishDetect(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUsePhishDetect`);
-    background.setUsePhishDetect(val, (err) => {
+    callBackgroundMethod('setUsePhishDetect', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2047,16 +2699,89 @@ export function setUsePhishDetect(val) {
   };
 }
 
-export function setUseStaticTokenList(val) {
+export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseStaticTokenList`);
-    background.setUseStaticTokenList(val, (err) => {
+    log.debug(`background.setUseTokenDetection`);
+    callBackgroundMethod('setUseTokenDetection', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
       }
     });
+  };
+}
+
+export function setUseCollectibleDetection(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCollectibleDetection`);
+    callBackgroundMethod('setUseCollectibleDetection', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setOpenSeaEnabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    callBackgroundMethod('setOpenSeaEnabled', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function detectCollectibles() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    await submitRequestToBackground('detectCollectibles');
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setAdvancedGasFee(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setAdvancedGasFee`);
+    callBackgroundMethod('setAdvancedGasFee', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setEIP1559V2Enabled(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setEIP1559V2Enabled`);
+    try {
+      await submitRequestToBackground('setEIP1559V2Enabled', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function setTheme(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setTheme`);
+    try {
+      await submitRequestToBackground('setTheme', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -2064,7 +2789,7 @@ export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setIpfsGateway`);
-    background.setIpfsGateway(val, (err) => {
+    callBackgroundMethod('setIpfsGateway', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2085,7 +2810,10 @@ export function updateCurrentLocale(key) {
     try {
       await loadRelativeTimeFormatLocaleData(key);
       const localeMessages = await fetchLocale(key);
-      const textDirection = await promisifiedBackground.setCurrentLocale(key);
+      const textDirection = await submitRequestToBackground(
+        'setCurrentLocale',
+        [key],
+      );
       await switchDirection(textDirection);
       dispatch(setCurrentLocale(key, localeMessages));
     } catch (error) {
@@ -2108,7 +2836,11 @@ export function setCurrentLocale(locale, messages) {
 }
 
 export function setPendingTokens(pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens;
+  const {
+    customToken = {},
+    selectedTokens = {},
+    tokenAddressList = [],
+  } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
     address && symbol && decimals >= 0 <= 36
@@ -2122,8 +2854,8 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
-      tokenAddress.toLowerCase(),
+    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+      isEqualCaseInsensitive(addr, tokenAddress),
     );
   });
 
@@ -2137,19 +2869,23 @@ export function setPendingTokens(pendingTokens) {
 
 export function setSwapsLiveness(swapsLiveness) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsLiveness(swapsLiveness);
+    await submitRequestToBackground('setSwapsLiveness', [swapsLiveness]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsFeatureFlags(featureFlags) {
+  return async (dispatch) => {
+    await submitRequestToBackground('setSwapsFeatureFlags', [featureFlags]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
-    const [
-      quotes,
-      selectedAggId,
-    ] = await promisifiedBackground.fetchAndSetQuotes(
-      fetchParams,
-      fetchParamsMetaData,
+    const [quotes, selectedAggId] = await submitRequestToBackground(
+      'fetchAndSetQuotes',
+      [fetchParams, fetchParamsMetaData],
     );
     await forceUpdateMetamaskState(dispatch);
     return [quotes, selectedAggId];
@@ -2158,21 +2894,28 @@ export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
 
 export function setSelectedQuoteAggId(aggId) {
   return async (dispatch) => {
-    await promisifiedBackground.setSelectedQuoteAggId(aggId);
+    await submitRequestToBackground('setSelectedQuoteAggId', [aggId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setSwapsTokens(tokens) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsTokens(tokens);
+    await submitRequestToBackground('setSwapsTokens', [tokens]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function clearSwapsQuotes() {
+  return async (dispatch) => {
+    await submitRequestToBackground('clearSwapsQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function resetBackgroundSwapsState() {
   return async (dispatch) => {
-    const id = await promisifiedBackground.resetSwapsState();
+    const id = await submitRequestToBackground('resetSwapsState');
     await forceUpdateMetamaskState(dispatch);
     return id;
   };
@@ -2180,85 +2923,122 @@ export function resetBackgroundSwapsState() {
 
 export function setCustomApproveTxData(data) {
   return async (dispatch) => {
-    await promisifiedBackground.setCustomApproveTxData(data);
+    await submitRequestToBackground('setCustomApproveTxData', [data]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setSwapsTxGasPrice(gasPrice) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
+    await submitRequestToBackground('setSwapsTxGasPrice', [gasPrice]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setSwapsTxGasLimit(gasLimit) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await submitRequestToBackground('setSwapsTxGasLimit', [gasLimit, true]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateCustomSwapsEIP1559GasParams({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}) {
+  return async (dispatch) => {
+    await Promise.all([
+      submitRequestToBackground('setSwapsTxGasLimit', [gasLimit]),
+      submitRequestToBackground('setSwapsTxMaxFeePerGas', [maxFeePerGas]),
+      submitRequestToBackground('setSwapsTxMaxFeePriorityPerGas', [
+        maxPriorityFeePerGas,
+      ]),
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateSwapsUserFeeLevel(swapsCustomUserFeeLevel) {
+  return async (dispatch) => {
+    await submitRequestToBackground('setSwapsUserFeeLevel', [
+      swapsCustomUserFeeLevel,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
+  return async (dispatch) => {
+    await submitRequestToBackground('setSwapsQuotesPollingLimitEnabled', [
+      quotesPollingLimitEnabled,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
-    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await submitRequestToBackground('setSwapsTxGasPrice', [gasPrice]);
+    await submitRequestToBackground('setSwapsTxGasLimit', [gasLimit, true]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setTradeTxId(tradeTxId) {
   return async (dispatch) => {
-    await promisifiedBackground.setTradeTxId(tradeTxId);
+    await submitRequestToBackground('setTradeTxId', [tradeTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setApproveTxId(approveTxId) {
   return async (dispatch) => {
-    await promisifiedBackground.setApproveTxId(approveTxId);
+    await submitRequestToBackground('setApproveTxId', [approveTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function safeRefetchQuotes() {
   return async (dispatch) => {
-    await promisifiedBackground.safeRefetchQuotes();
+    await submitRequestToBackground('safeRefetchQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function stopPollingForQuotes() {
   return async (dispatch) => {
-    await promisifiedBackground.stopPollingForQuotes();
+    await submitRequestToBackground('stopPollingForQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setBackgroundSwapRouteState(routeState) {
   return async (dispatch) => {
-    await promisifiedBackground.setBackgroundSwapRouteState(routeState);
+    await submitRequestToBackground('setBackgroundSwapRouteState', [
+      routeState,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function resetSwapsPostFetchState() {
   return async (dispatch) => {
-    await promisifiedBackground.resetPostFetchState();
+    await submitRequestToBackground('resetPostFetchState');
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setSwapsErrorKey(errorKey) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsErrorKey(errorKey);
+    await submitRequestToBackground('setSwapsErrorKey', [errorKey]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function setInitialGasEstimate(initialAggId) {
   return async (dispatch) => {
-    await promisifiedBackground.setInitialGasEstimate(initialAggId);
+    await submitRequestToBackground('setInitialGasEstimate', [initialAggId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2267,8 +3047,9 @@ export function setInitialGasEstimate(initialAggId) {
 
 export function requestAccountsPermissionWithId(origin) {
   return async (dispatch) => {
-    const id = await promisifiedBackground.requestAccountsPermissionWithId(
-      origin,
+    const id = await submitRequestToBackground(
+      'requestAccountsPermissionWithId',
+      [origin],
     );
     await forceUpdateMetamaskState(dispatch);
     return id;
@@ -2277,12 +3058,12 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
- * @param {Object} request - The permissions request to approve
- * @param {string[]} accounts - The accounts to expose, if any.
+ *
+ * @param {object} request - The permissions request to approve.
  */
-export function approvePermissionsRequest(request, accounts) {
+export function approvePermissionsRequest(request) {
   return (dispatch) => {
-    background.approvePermissionsRequest(request, accounts, (err) => {
+    callBackgroundMethod('approvePermissionsRequest', [request], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2292,12 +3073,13 @@ export function approvePermissionsRequest(request, accounts) {
 
 /**
  * Rejects the permissions request with the given ID.
+ *
  * @param {string} requestId - The id of the request to be rejected
  */
 export function rejectPermissionsRequest(requestId) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rejectPermissionsRequest(requestId, (err) => {
+      callBackgroundMethod('rejectPermissionsRequest', [requestId], (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2311,23 +3093,12 @@ export function rejectPermissionsRequest(requestId) {
 
 /**
  * Clears the given permissions for the given origin.
+ *
+ * @param subjects
  */
-export function removePermissionsFor(domains) {
+export function removePermissionsFor(subjects) {
   return (dispatch) => {
-    background.removePermissionsFor(domains, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
-/**
- * Clears all permissions for all domains.
- */
-export function clearPermissions() {
-  return (dispatch) => {
-    background.clearPermissions((err) => {
+    callBackgroundMethod('removePermissionsFor', [subjects], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2340,12 +3111,13 @@ export function clearPermissions() {
 /**
  * Resolves a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
+ *
  * @param {string} id - The pending approval id
  * @param {any} [value] - The value required to confirm a pending approval
  */
 export function resolvePendingApproval(id, value) {
   return async (dispatch) => {
-    await promisifiedBackground.resolvePendingApproval(id, value);
+    await submitRequestToBackground('resolvePendingApproval', [id, value]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
@@ -2358,12 +3130,13 @@ export function resolvePendingApproval(id, value) {
 /**
  * Rejects a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
+ *
  * @param {string} id - The pending approval id
  * @param {Error} [error] - The error to throw when rejecting the approval
  */
 export function rejectPendingApproval(id, error) {
   return async (dispatch) => {
-    await promisifiedBackground.rejectPendingApproval(id, error);
+    await submitRequestToBackground('rejectPendingApproval', [id, error]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
@@ -2376,7 +3149,7 @@ export function rejectPendingApproval(id, error) {
 export function setFirstTimeFlowType(type) {
   return (dispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
-    background.setFirstTimeFlowType(type, (err) => {
+    callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2395,16 +3168,30 @@ export function setSelectedSettingsRpcUrl(newRpcUrl) {
   };
 }
 
-export function setNetworksTabAddMode(isInAddMode) {
+export function setNewNetworkAdded(newNetworkAdded) {
   return {
-    type: actionConstants.SET_NETWORKS_TAB_ADD_MODE,
-    value: isInAddMode,
+    type: actionConstants.SET_NEW_NETWORK_ADDED,
+    value: newNetworkAdded,
+  };
+}
+
+export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
+  return {
+    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
+    value: newCollectibleAddedMessage,
+  };
+}
+
+export function setNewTokensImported(newTokensImported) {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
+    value: newTokensImported,
   };
 }
 
 export function setLastActiveTime() {
   return (dispatch) => {
-    background.setLastActiveTime((err) => {
+    callBackgroundMethod('setLastActiveTime', [], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2415,14 +3202,14 @@ export function setLastActiveTime() {
 export function setDismissSeedBackUpReminder(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await promisifiedBackground.setDismissSeedBackUpReminder(value);
+    await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
     dispatch(hideLoadingIndication());
   };
 }
 
 export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
-    background.setConnectedStatusPopoverHasBeenShown((err) => {
+    callBackgroundMethod('setConnectedStatusPopoverHasBeenShown', [], (err) => {
       if (err) {
         throw new Error(err.message);
       }
@@ -2432,7 +3219,7 @@ export function setConnectedStatusPopoverHasBeenShown() {
 
 export function setRecoveryPhraseReminderHasBeenShown() {
   return () => {
-    background.setRecoveryPhraseReminderHasBeenShown((err) => {
+    callBackgroundMethod('setRecoveryPhraseReminderHasBeenShown', [], (err) => {
       if (err) {
         throw new Error(err.message);
       }
@@ -2442,11 +3229,15 @@ export function setRecoveryPhraseReminderHasBeenShown() {
 
 export function setRecoveryPhraseReminderLastShown(lastShown) {
   return () => {
-    background.setRecoveryPhraseReminderLastShown(lastShown, (err) => {
-      if (err) {
-        throw new Error(err.message);
-      }
-    });
+    callBackgroundMethod(
+      'setRecoveryPhraseReminderLastShown',
+      [lastShown],
+      (err) => {
+        if (err) {
+          throw new Error(err.message);
+        }
+      },
+    );
   };
 }
 
@@ -2482,11 +3273,15 @@ export function getContractMethodData(data = '') {
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
       dispatch(loadingMethodDataFinished());
-      background.addKnownMethodData(fourBytePrefix, { name, params }, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-      });
+      callBackgroundMethod(
+        'addKnownMethodData',
+        [fourBytePrefix, { name, params }],
+        (err) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+          }
+        },
+      );
       return { name, params };
     });
   };
@@ -2504,42 +3299,22 @@ export function loadingTokenParamsFinished() {
   };
 }
 
-export function getTokenParams(tokenAddress) {
-  return (dispatch, getState) => {
-    const existingTokens = getState().metamask.tokens;
-    const existingToken = existingTokens.find(
-      ({ address }) => tokenAddress === address,
-    );
-
-    if (existingToken) {
-      return Promise.resolve({
-        symbol: existingToken.symbol,
-        decimals: existingToken.decimals,
-      });
-    }
-
-    dispatch(loadingTokenParamsStarted());
-    log.debug(`loadingTokenParams`);
-
-    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
-      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-      dispatch(loadingTokenParamsFinished());
-    });
-  };
-}
-
 export function setSeedPhraseBackedUp(seedPhraseBackupState) {
   return (dispatch) => {
     log.debug(`background.setSeedPhraseBackedUp`);
     return new Promise((resolve, reject) => {
-      background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
-      });
+      callBackgroundMethod(
+        'setSeedPhraseBackedUp',
+        [seedPhraseBackupState],
+        (err) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
+          forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
+        },
+      );
     });
   };
 }
@@ -2547,7 +3322,7 @@ export function setSeedPhraseBackedUp(seedPhraseBackupState) {
 export function initializeThreeBox() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.initializeThreeBox((err) => {
+      callBackgroundMethod('initializeThreeBox', [], (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2562,7 +3337,7 @@ export function initializeThreeBox() {
 export function setShowRestorePromptToFalse() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.setShowRestorePromptToFalse((err) => {
+      callBackgroundMethod('setShowRestorePromptToFalse', [], (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2577,7 +3352,7 @@ export function setShowRestorePromptToFalse() {
 export function turnThreeBoxSyncingOn() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.turnThreeBoxSyncingOn((err) => {
+      callBackgroundMethod('turnThreeBoxSyncingOn', [], (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2592,7 +3367,7 @@ export function turnThreeBoxSyncingOn() {
 export function restoreFromThreeBox(accountAddress) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.restoreFromThreeBox(accountAddress, (err) => {
+      callBackgroundMethod('restoreFromThreeBox', [accountAddress], (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2607,7 +3382,7 @@ export function restoreFromThreeBox(accountAddress) {
 export function getThreeBoxLastUpdated() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.getThreeBoxLastUpdated((err, lastUpdated) => {
+      callBackgroundMethod('getThreeBoxLastUpdated', [], (err, lastUpdated) => {
         if (err) {
           dispatch(displayWarning(err.message));
           reject(err);
@@ -2622,14 +3397,18 @@ export function getThreeBoxLastUpdated() {
 export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
+      callBackgroundMethod(
+        'setThreeBoxSyncingPermission',
+        [threeBoxSyncingAllowed],
+        (err) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
     });
   };
 }
@@ -2650,19 +3429,17 @@ export function setNextNonce(nextNonce) {
 }
 
 export function getNextNonce() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const address = getState().metamask.selectedAddress;
-    return new Promise((resolve, reject) => {
-      background.getNextNonce(address, (err, nextNonce) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(setNextNonce(nextNonce));
-        resolve(nextNonce);
-      });
-    });
+    let nextNonce;
+    try {
+      nextNonce = await submitRequestToBackground('getNextNonce', [address]);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+    dispatch(setNextNonce(nextNonce));
+    return nextNonce;
   };
 }
 
@@ -2675,7 +3452,9 @@ export function setRequestAccountTabIds(requestAccountTabIds) {
 
 export function getRequestAccountTabIds() {
   return async (dispatch) => {
-    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds();
+    const requestAccountTabIds = await submitRequestToBackground(
+      'getRequestAccountTabIds',
+    );
     dispatch(setRequestAccountTabIds(requestAccountTabIds));
   };
 }
@@ -2689,7 +3468,9 @@ export function setOpenMetamaskTabsIDs(openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabsIds() {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds();
+    const openMetaMaskTabIDs = await submitRequestToBackground(
+      'getOpenMetamaskTabsIds',
+    );
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
   };
 }
@@ -2708,12 +3489,16 @@ export function getCurrentWindowTab() {
   };
 }
 
-export function setLedgerLivePreference(value) {
+export function setLedgerTransportPreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerLivePreference(value);
+    await submitRequestToBackground('setLedgerTransportPreference', [value]);
     dispatch(hideLoadingIndication());
   };
+}
+
+export async function attemptLedgerTransportCreation() {
+  return await submitRequestToBackground('attemptLedgerTransportCreation');
 }
 
 export function captureSingleException(error) {
@@ -2738,13 +3523,13 @@ export function captureSingleException(error) {
  */
 
 export function estimateGas(params) {
-  return promisifiedBackground.estimateGas(params);
+  return submitRequestToBackground('estimateGas', [params]);
 }
 
 export async function updateTokenType(tokenAddress) {
   let token = {};
   try {
-    token = await promisifiedBackground.updateTokenType(tokenAddress);
+    token = await submitRequestToBackground('updateTokenType', [tokenAddress]);
   } catch (error) {
     log.error(error);
   }
@@ -2759,7 +3544,7 @@ export async function updateTokenType(tokenAddress) {
  *  continue.
  */
 export function getGasFeeEstimatesAndStartPolling() {
-  return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
+  return submitRequestToBackground('getGasFeeEstimatesAndStartPolling');
 }
 
 /**
@@ -2768,10 +3553,37 @@ export function getGasFeeEstimatesAndStartPolling() {
  *
  * @param {string} pollToken - Poll token received from calling
  *  `getGasFeeEstimatesAndStartPolling`.
- * @returns {void}
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
-  return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
+  return submitRequestToBackground('disconnectGasFeeEstimatePoller', [
+    pollToken,
+  ]);
+}
+
+export async function addPollingTokenToAppState(pollingToken) {
+  return submitRequestToBackground('addPollingTokenToAppState', [
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  ]);
+}
+
+export async function removePollingTokenFromAppState(pollingToken) {
+  return submitRequestToBackground('removePollingTokenFromAppState', [
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  ]);
+}
+
+export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return submitRequestToBackground('getGasFeeTimeEstimate', [
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+  ]);
+}
+
+export async function closeNotificationPopup() {
+  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
+  global.platform.closeCurrentWindow();
 }
 
 // MetaMetrics
@@ -2788,32 +3600,342 @@ export function disconnectGasFeeEstimatePoller(pollToken) {
  * @returns {Promise<void>}
  */
 export function trackMetaMetricsEvent(payload, options) {
-  return promisifiedBackground.trackMetaMetricsEvent(payload, options);
+  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+}
+
+export function createEventFragment(options) {
+  return submitRequestToBackground('createEventFragment', [options]);
+}
+
+export function createTransactionEventFragment(transactionId, event) {
+  return submitRequestToBackground('createTransactionEventFragment', [
+    transactionId,
+    event,
+  ]);
+}
+
+export function updateEventFragment(id, payload) {
+  return submitRequestToBackground('updateEventFragment', [id, payload]);
+}
+
+export function finalizeEventFragment(id, options) {
+  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
- * @returns {void}
  */
 export function trackMetaMetricsPage(payload, options) {
-  return promisifiedBackground.trackMetaMetricsPage(payload, options);
+  return submitRequestToBackground('trackMetaMetricsPage', [payload, options]);
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap) {
-  return promisifiedBackground.updateViewedNotifications(
+  return submitRequestToBackground('updateViewedNotifications', [
     notificationIdViewedStatusMap,
-  );
+  ]);
 }
 
 export async function setAlertEnabledness(alertId, enabledness) {
-  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+  await submitRequestToBackground('setAlertEnabledness', [
+    alertId,
+    enabledness,
+  ]);
 }
 
 export async function setUnconnectedAccountAlertShown(origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
+  await submitRequestToBackground('setUnconnectedAccountAlertShown', [origin]);
 }
 
 export async function setWeb3ShimUsageAlertDismissed(origin) {
-  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+  await submitRequestToBackground('setWeb3ShimUsageAlertDismissed', [origin]);
+}
+
+// Smart Transactions Controller
+export async function setSmartTransactionsOptInStatus(
+  optInState,
+  prevOptInState,
+) {
+  trackMetaMetricsEvent({
+    event: 'STX OptIn',
+    category: EVENT.CATEGORIES.SWAPS,
+    sensitiveProperties: {
+      stx_enabled: true,
+      current_stx_enabled: true,
+      stx_user_opt_in: optInState,
+      stx_prev_user_opt_in: prevOptInState,
+    },
+  });
+  await submitRequestToBackground('setSmartTransactionsOptInStatus', [
+    optInState,
+  ]);
+}
+
+export function clearSmartTransactionFees() {
+  submitRequestToBackground('clearSmartTransactionFees');
+}
+
+export function fetchSmartTransactionFees(
+  unsignedTransaction,
+  approveTxParams,
+) {
+  return async (dispatch) => {
+    if (approveTxParams) {
+      approveTxParams.value = '0x0';
+    }
+    try {
+      const smartTransactionFees = await await submitRequestToBackground(
+        'fetchSmartTransactionFees',
+        [unsignedTransaction, approveTxParams],
+      );
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
+      return smartTransactionFees;
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+const createSignedTransactions = async (
+  unsignedTransaction,
+  fees,
+  areCancelTransactions,
+) => {
+  const unsignedTransactionsWithFees = fees.map((fee) => {
+    const unsignedTransactionWithFees = {
+      ...unsignedTransaction,
+      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+      gas: areCancelTransactions
+        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
+        : unsignedTransaction.gas,
+      value: unsignedTransaction.value,
+    };
+    if (areCancelTransactions) {
+      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
+      unsignedTransactionWithFees.data = '0x';
+    }
+    return unsignedTransactionWithFees;
+  });
+  const signedTransactions = await submitRequestToBackground(
+    'approveTransactionsWithSameNonce',
+    [unsignedTransactionsWithFees],
+  );
+  return signedTransactions;
+};
+
+export function signAndSendSmartTransaction({
+  unsignedTransaction,
+  smartTransactionFees,
+}) {
+  return async (dispatch) => {
+    const signedTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      smartTransactionFees.fees,
+    );
+    const signedCanceledTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      smartTransactionFees.cancelFees,
+      true,
+    );
+    try {
+      const response = await submitRequestToBackground(
+        'submitSignedTransactions',
+        [
+          {
+            signedTransactions,
+            signedCanceledTransactions,
+            txParams: unsignedTransaction,
+          },
+        ],
+      ); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      return response.uuid;
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function updateSmartTransaction(uuid, txData) {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('updateSmartTransaction', [
+        {
+          uuid,
+          ...txData,
+        },
+      ]);
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function setSmartTransactionsRefreshInterval(refreshInterval) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setStatusRefreshInterval', [
+        refreshInterval,
+      ]);
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function cancelSmartTransaction(uuid) {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('cancelSmartTransaction', [uuid]);
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function fetchSmartTransactionsLiveness() {
+  return async () => {
+    try {
+      await submitRequestToBackground('fetchSmartTransactionsLiveness');
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function dismissSmartTransactionsErrorMessage() {
+  return {
+    type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
+  };
+}
+
+// DetectTokenController
+export async function detectNewTokens() {
+  return submitRequestToBackground('detectNewTokens');
+}
+
+// App state
+export function hideTestNetMessage() {
+  return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
+}
+
+export function hidePortfolioTooltip() {
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
+}
+
+export function setCollectiblesDetectionNoticeDismissed() {
+  return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
+    true,
+  ]);
+}
+
+export function setEnableEIP1559V2NoticeDismissed() {
+  return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
+}
+
+export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setCustomNetworkListEnabled', [
+        customNetworkListEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export function setFirstTimeUsedNetwork(chainId) {
+  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
+}
+
+// QR Hardware Wallets
+export async function submitQRHardwareCryptoHDKey(cbor) {
+  await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);
+}
+
+export async function submitQRHardwareCryptoAccount(cbor) {
+  await submitRequestToBackground('submitQRHardwareCryptoAccount', [cbor]);
+}
+
+export function cancelSyncQRHardware() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await submitRequestToBackground('cancelSyncQRHardware');
+  };
+}
+
+export async function submitQRHardwareSignature(requestId, cbor) {
+  await submitRequestToBackground('submitQRHardwareSignature', [
+    requestId,
+    cbor,
+  ]);
+}
+
+export function cancelQRHardwareSignRequest() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await submitRequestToBackground('cancelQRHardwareSignRequest');
+  };
+}
+
+export function addCustomNetwork(customRpc) {
+  return async (dispatch) => {
+    try {
+      dispatch(setNewCustomNetworkAdded(customRpc));
+      await submitRequestToBackground('addCustomNetwork', [customRpc]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('requestAddNetworkApproval', [
+        customRpc,
+        originIsMetaMask,
+      ]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
 }

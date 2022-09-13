@@ -5,8 +5,13 @@ import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
-  INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  INITIALIZE_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+  INITIALIZE_WELCOME_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 
 export default class FirstTimeFlowSwitch extends PureComponent {
@@ -38,7 +43,16 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     }
 
     if (!isInitialized) {
-      return <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />;
+      /* eslint-disable prefer-const */
+      let redirect;
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      redirect = <Redirect to={{ pathname: INITIALIZE_EXPERIMENTAL_AREA }} />;
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+      redirect = <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />;
+      ///: END:ONLY_INCLUDE_IN
+      /* eslint-enable prefer-const */
+      return redirect;
     }
 
     return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />;

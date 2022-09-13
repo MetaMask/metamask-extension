@@ -19,7 +19,7 @@ import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 function mapStateToProps(state) {
   const {
-    metamask: { domainMetadata = {} },
+    metamask: { subjectMetadata = {} },
   } = state;
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
@@ -34,7 +34,7 @@ function mapStateToProps(state) {
 
   return {
     txData,
-    domainMetadata,
+    subjectMetadata,
     fromAccount,
     requester: null,
     requesterAddress: null,

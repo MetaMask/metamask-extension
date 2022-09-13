@@ -2,9 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "aboutSettingsDescription": {
-    "message": "版本，支援中心，以及聯絡資訊。"
-  },
   "acceleratingATransaction": {
     "message": "* 提高交易費 Gas 價格將可加速處理時間，但不保證會有顯著效果"
   },
@@ -41,22 +38,10 @@
   "addNetwork": {
     "message": "新增網路"
   },
-  "addRecipient": {
-    "message": "新增接收人"
-  },
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },
-  "addToAddressBook": {
-    "message": "新增至位址簿中"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如 John D。"
-  },
   "addToken": {
-    "message": "加入代幣"
-  },
-  "addTokens": {
     "message": "加入代幣"
   },
   "advanced": {
@@ -64,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "進階選項"
-  },
-  "advancedSettingsDescription": {
-    "message": "存取開發者功能，下載狀態日誌，重設帳號，設定測試網及自訂 PRC。"
   },
   "amount": {
     "message": "數量"
@@ -78,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "批准"
@@ -143,9 +133,6 @@
     "message": "在 $1 觀看帳號 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用像素風格代表圖案"
-  },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
@@ -153,10 +140,10 @@
     "message": "買"
   },
   "buyWithWyre": {
-    "message": "用 Wyre 購買 ETH"
+    "message": "用 Wyre 購買 $1"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 MetaMask 帳號中直接存入 ETH。"
+    "message": "Wyre 讓你使用信用卡在 MetaMask 帳號中直接存入 $1 。"
   },
   "bytes": {
     "message": "位元組"
@@ -233,9 +220,6 @@
   "copiedExclamation": {
     "message": "已複製！"
   },
-  "copiedTransactionId": {
-    "message": "已複製的交易 ID"
-  },
   "copyAddress": {
     "message": "複製到剪貼簿"
   },
@@ -272,9 +256,6 @@
   "customGasSubTitle": {
     "message": "提升費用可能會加快處理時間，但不保證"
   },
-  "customRPC": {
-    "message": "自訂 RPC"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -283,9 +264,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "小數點後位數至少為0, 最多為36."
-  },
-  "defaultNetwork": {
-    "message": "預設以太幣交易網路為主網路"
   },
   "delete": {
     "message": "刪除"
@@ -299,17 +277,8 @@
   "deleteNetworkDescription": {
     "message": "你確定要刪除網路嗎？"
   },
-  "depositEther": {
-    "message": "存入以太幣"
-  },
   "details": {
     "message": "詳情"
-  },
-  "directDepositEther": {
-    "message": "直接存入以太幣"
-  },
-  "directDepositEtherExplainer": {
-    "message": "如果您已經擁有以太幣，直接存入功能是讓新錢包最快取得以太幣的方式。"
   },
   "done": {
     "message": "完成"
@@ -364,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
-  },
-  "enterAnAlias": {
-    "message": "輸入化名"
   },
   "enterPassword": {
     "message": "請輸入密碼"
@@ -435,9 +401,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "generalSettingsDescription": {
-    "message": "貨幣轉換，主要貨幣，語言，區塊鏈哈希頭像"
   },
   "getEther": {
     "message": "取得以太幣"
@@ -552,7 +515,7 @@
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
   "links": {
@@ -591,17 +554,11 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "mobileSyncText": {
-    "message": "請輸入密碼確認身份！"
-  },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣"
   },
   "myAccounts": {
     "message": "我的帳戶"
-  },
-  "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有以太幣。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入",
@@ -612,9 +569,6 @@
   },
   "networkName": {
     "message": "網路名稱"
-  },
-  "networkSettingsDescription": {
-    "message": "新增並編輯自訂 RPC 網路"
   },
   "networks": {
     "message": "網路"
@@ -637,9 +591,6 @@
   },
   "newContract": {
     "message": "建立新合約"
-  },
-  "newNetwork": {
-    "message": "新增網路"
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
@@ -682,12 +633,6 @@
   },
   "on": {
     "message": "開啟"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (可選)"
   },
   "origin": {
     "message": "來源"
@@ -793,17 +738,11 @@
   "resetAccountDescription": {
     "message": "重置帳戶將清除您的交易紀錄"
   },
-  "restoreAccountWithSeed": {
-    "message": "透過助憶詞還原您的帳戶"
-  },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
   "revealSeedWordsDescription": {
     "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
-  },
-  "revealSeedWordsTitle": {
-    "message": "助憶詞"
   },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
@@ -841,9 +780,6 @@
   "searchTokens": {
     "message": "搜尋代幣"
   },
-  "secretBackupPhrase": {
-    "message": "助憶詞"
-  },
   "secretBackupPhraseDescription": {
     "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
   },
@@ -852,12 +788,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
-  },
-  "securitySettingsDescription": {
-    "message": "隱私設定及錢包助記詞"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "單詞之間請用空白分隔"
   },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"
@@ -885,12 +815,6 @@
   },
   "sendTokens": {
     "message": "發送代幣"
-  },
-  "sentEther": {
-    "message": "發送以太幣"
-  },
-  "separateEachWord": {
-    "message": "單詞之間請以空白間隔"
   },
   "settings": {
     "message": "設定"
@@ -1127,20 +1051,8 @@
   "viewContact": {
     "message": "觀看聯絡資訊"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 瀏覽"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan 上瀏覽"
-  },
-  "viewinExplorer": {
-    "message": "在 Explorer 上瀏覽"
-  },
   "visitWebSite": {
     "message": "造訪我們的網站"
-  },
-  "walletSeed": {
-    "message": "助憶詞"
   },
   "welcome": {
     "message": "歡迎來到 MetaMask"

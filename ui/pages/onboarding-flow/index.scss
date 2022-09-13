@@ -1,0 +1,38 @@
+@import 'recovery-phrase/index';
+@import 'onboarding-app-header/index';
+@import 'secure-your-wallet/index';
+@import 'privacy-settings/index';
+@import 'create-password/index';
+@import 'creation-successful/index';
+@import 'welcome/index';
+@import 'import-srp/index';
+@import 'pin-extension/index';
+@import 'metametrics/index';
+
+.onboarding-flow {
+  background-color: var(--color-background-default);
+  padding: 0 16px;
+  width: 100%;
+
+  &__wrapper {
+    margin: 24px auto;
+    padding: 32px 16px;
+    max-width: 600px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 24px;
+
+    @include screen-sm-min {
+      margin: 64px auto 40px;
+      padding: 32px;
+    }
+  }
+
+  &__twitter-button {
+    margin-bottom: 40px;
+    vertical-align: middle;
+
+    &__icon {
+      margin-left: 4px;
+    }
+  }
+}

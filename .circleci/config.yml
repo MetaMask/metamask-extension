@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: circleci/node:14-browsers
+      - image: circleci/node:16-browsers
   node-browsers-medium-plus:
     docker:
-      - image: circleci/node:14-browsers
+      - image: circleci/node:16-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
+      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
 
 workflows:
   test_and_release:
@@ -25,7 +25,15 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
+      - test-deps-audit:
+          requires:
+            - prep-deps
+      - test-deps-depcheck:
+          requires:
+            - prep-deps
+      - test-yarn-dedupe:
+          requires:
+            - prep-deps
       - validate-lavamoat-config:
           filters:
             branches:
@@ -36,13 +44,28 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
+      - prep-build-beta:
+          requires:
+            - prep-deps
+      - prep-build-flask:
+          requires:
+            - prep-deps
       - prep-build-test:
           requires:
             - prep-deps
-      - prep-build-test-metrics:
+      - prep-build-test-mv3:
+          requires:
+            - prep-deps
+      - prep-build-test-flask:
+          requires:
+            - prep-deps
+      - test-storybook:
           requires:
             - prep-deps
       - prep-build-storybook:
+          requires:
+            - test-storybook
+      - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
       - test-lint:
@@ -61,12 +84,12 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-build-test
-      - test-e2e-chrome-metrics:
+      - test-e2e-chrome-snaps:
           requires:
-            - prep-build-test-metrics
-      - test-e2e-firefox-metrics:
+            - prep-build-test-flask
+      - test-e2e-firefox-snaps:
           requires:
-            - prep-build-test-metrics
+            - prep-build-test-flask
       - test-unit:
           requires:
             - prep-deps
@@ -76,10 +99,24 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
+      - validate-source-maps-beta:
+          requires:
+            - prep-build-beta
+      - validate-source-maps-flask:
+          requires:
+            - prep-build-flask
       - test-mozilla-lint:
           requires:
             - prep-deps
             - prep-build
+      - test-mozilla-lint-beta:
+          requires:
+            - prep-deps
+            - prep-build-beta
+      - test-mozilla-lint-flask:
+          requires:
+            - prep-deps
+            - prep-build-flask
       - all-tests-pass:
           requires:
             - validate-lavamoat-config
@@ -90,20 +127,36 @@ workflows:
             - test-unit
             - test-unit-global
             - validate-source-maps
+            - validate-source-maps-beta
+            - validate-source-maps-flask
             - test-mozilla-lint
+            - test-mozilla-lint-beta
+            - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-chrome-metrics
-            - test-e2e-firefox-metrics
+            - test-e2e-chrome-snaps
+            - test-e2e-firefox-snaps
       - benchmark:
           requires:
             - prep-build-test
+      - user-actions-benchmark:
+          requires:
+            - prep-build-test
+      - stats-module-load-init:
+          requires:
+            - prep-build-test-mv3
       - job-publish-prerelease:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-beta
+            - prep-build-flask
             - prep-build-storybook
+            - prep-build-ts-migration-dashboard
+            - prep-build-test-mv3
             - benchmark
+            - user-actions-benchmark
+            - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -112,6 +165,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -119,6 +173,12 @@ workflows:
               only: develop
           requires:
             - prep-build-storybook
+      - job-publish-ts-migration-dashboard:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-ts-migration-dashboard
 
 jobs:
   create_release_pull_request:
@@ -162,11 +222,11 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-          - node_modules
-          - build-artifacts
+            - node_modules
+            - build-artifacts
 
   validate-lavamoat-config:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -186,9 +246,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -197,6 +273,96 @@ jobs:
           paths:
             - dist
             - builds
+
+  prep-build-beta:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: build:dist
+          command: yarn build --build-type beta dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move beta build to 'dist-beta' to avoid conflict with production build
+          command: mv ./dist ./dist-beta
+      - run:
+          name: Move beta zips to 'builds-beta' to avoid conflict with production build
+          command: mv ./builds ./builds-beta
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-beta
+            - builds-beta
+
+  prep-build-flask:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: build:dist
+          command: yarn build --build-type flask dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move flask build to 'dist-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-flask
+      - run:
+          name: Move flask zips to 'builds-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-flask
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-flask
+            - builds-flask
+
+  prep-build-test-flask:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:flask
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-flask
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-flask
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-flask
+            - builds-test-flask
+
+  prep-build-test-mv3:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension in mv3 for testing
+          command: yarn build:test:mv3
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mv3
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mv3
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mv3
+            - builds-test-mv3
 
   prep-build-test:
     executor: node-browsers-medium-plus
@@ -219,27 +385,6 @@ jobs:
             - dist-test
             - builds-test
 
-  prep-build-test-metrics:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing metrics
-          command: yarn build:test:metrics
-      - run:
-          name: Move test build to 'dist-test-metrics' to avoid conflict with production build
-          command: mv ./dist ./dist-test-metrics
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-metrics
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-metrics
-            - builds-test-metrics
-
   prep-build-storybook:
     executor: node-browsers
     steps:
@@ -253,6 +398,40 @@ jobs:
           root: .
           paths:
             - storybook-build
+
+  prep-build-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build TypeScript migration dashboard
+          command: yarn ts-migration:dashboard:build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - development/ts-migration-dashboard/build
+
+  test-storybook:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test Storybook
+          command: yarn storybook:test
+
+  test-yarn-dedupe:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Detect yarn lock deduplications
+          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
 
   test-lint:
     executor: node-browsers
@@ -301,7 +480,7 @@ jobs:
           steps:
             - run:
                 name: Validate changelog
-                command: yarn auto-changelog validate
+                command: yarn lint:changelog
       - when:
           condition:
             matches:
@@ -310,10 +489,9 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn auto-changelog validate --rc
+                command: yarn lint:changelog:rc
 
-
-  test-deps:
+  test-deps-audit:
     executor: node-browsers
     steps:
       - checkout
@@ -322,6 +500,16 @@ jobs:
       - run:
           name: yarn audit
           command: .circleci/scripts/yarn-audit.sh
+
+  test-deps-depcheck:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: depcheck
+          command: yarn depcheck
 
   test-e2e-chrome:
     executor: node-browsers
@@ -350,7 +538,34 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  test-e2e-chrome-metrics:
+  test-e2e-firefox-snaps:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - run:
+          name: test:e2e:firefox:snaps
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:snaps --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-chrome-snaps:
     executor: node-browsers
     steps:
       - checkout
@@ -361,16 +576,16 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
+          command: mv ./dist-test-flask ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
+          command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:chrome:metrics
+          name: test:e2e:chrome:snaps
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:metrics --retries 2
+              yarn test:e2e:chrome:snaps --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -378,7 +593,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-firefox:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - run:
@@ -398,33 +613,6 @@ jobs:
             if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:firefox --retries 2
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
-  test-e2e-firefox-metrics:
-    executor: node-browsers
-    steps:
-      - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
-      - run:
-          name: test:e2e:firefox:metrics
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:firefox:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -456,6 +644,69 @@ jobs:
           root: .
           paths:
             - test-artifacts
+    
+  user-actions-benchmark:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
+  stats-module-load-init:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Run page load benchmark
+          command: |
+            mkdir -p test-artifacts/chrome/mv3
+            cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
+            cp -R development/charts/table test-artifacts/chrome/mv3/load_time
+      - run:
+          name: Run page load benchmark
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+      - run:
+          name: Record bundle size at commit
+          command: ./.circleci/scripts/bundle-stats-commit.sh
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
 
   job-publish-prerelease:
     executor: node-browsers
@@ -470,8 +721,20 @@ jobs:
           path: dist/sourcemaps
           destination: builds/sourcemaps
       - store_artifacts:
+          path: dist-beta/sourcemaps
+          destination: builds-beta/sourcemaps
+      - store_artifacts:
+          path: dist-flask/sourcemaps
+          destination: builds-flask/sourcemaps
+      - store_artifacts:
           path: builds
           destination: builds
+      - store_artifacts:
+          path: builds-beta
+          destination: builds-beta
+      - store_artifacts:
+          path: builds-flask
+          destination: builds-flask
       - store_artifacts:
           path: coverage
           destination: coverage
@@ -493,6 +756,9 @@ jobs:
       - store_artifacts:
           path: storybook-build
           destination: storybook
+      - store_artifacts:
+          path: development/ts-migration-dashboard/build
+          destination: ts-migration-dashboard
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
@@ -504,8 +770,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: sentry sourcemaps upload
-          command: SENTRY_ORG=metamask SENTRY_PROJECT=metamask yarn sentry:publish
+          name: Publish main release to Sentry
+          command: yarn sentry:publish
+      - run:
+          name: Publish Flask release to Sentry
+          command: yarn sentry:publish --build-type flask
       - run:
           name: Create GitHub release
           command: |
@@ -516,7 +785,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
+            - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
       - checkout
       - attach_workspace:
           at: .
@@ -526,6 +795,23 @@ jobs:
             git remote add storybook git@github.com:MetaMask/metamask-storybook.git
             yarn storybook:deploy
 
+  job-publish-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: ts-migration-dashboard:deploy
+          command: |
+            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+            git config user.name "MetaMask Bot"
+            git config user.email metamaskbot@users.noreply.github.com
+            yarn ts-migration:dashboard:deploy
+
   test-unit:
     executor: node-browsers
     steps:
@@ -533,11 +819,18 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:coverage
-          command: yarn test:coverage
+          name: test:coverage:mocha
+          command: yarn test:coverage:mocha
       - run:
           name: test:coverage:jest
           command: yarn test:coverage:jest
+      - run:
+          name: Validate coverage thresholds
+          command: |
+            if ! git diff --exit-code jest.config.js development/jest.config.js; then
+              echo "Detected changes in coverage thresholds"
+              exit 1
+            fi
       - persist_to_workspace:
           root: .
           paths:
@@ -564,12 +857,76 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
+  validate-source-maps-beta:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
+      - run:
+          name: Move beta zips to builds
+          command: mv ./builds-beta ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-flask:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   test-mozilla-lint:
     executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-beta:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
+      - run:
+          name: Move beta zips to builds
+          command: mv ./builds-beta ./builds
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-flask:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint

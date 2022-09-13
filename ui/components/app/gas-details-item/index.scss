@@ -1,0 +1,11 @@
+.gas-details-item {
+  &__gas-fee-warning {
+    color: var(--color-warning-default);
+  }
+
+  &__currency-container,
+  &__gasfee-label {
+    position: relative;
+    white-space: nowrap;
+  }
+}

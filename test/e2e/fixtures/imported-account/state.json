@@ -1,7 +1,8 @@
 {
   "data": {
     "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+      "mkrMigrationReminderTimestamp": null,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -48,6 +49,21 @@
           "isShown": true
         },
         "6": {
+          "isShown": true
+        },
+        "8": {
+          "isShown": true
+        },
+        "10": {
+          "isShown": true
+        },
+        "11": {
+          "isShown": true
+        },
+        "12": {
+          "isShown": true
+        },
+        "13": {
           "isShown": true
         }
       }
@@ -97,6 +113,7 @@
       },
       "assetImages": {},
       "completedOnboarding": true,
+      "dismissSeedBackUpReminder": true,
       "currentLocale": "en",
       "featureFlags": {
         "showIncomingTransactions": true,
@@ -123,7 +140,8 @@
       "tokens": [],
       "useBlockie": false,
       "useNonceField": false,
-      "usePhishDetect": true
+      "usePhishDetect": true,
+      "useTokenDetection": true
     },
     "config": {},
     "firstTimeInfo": {

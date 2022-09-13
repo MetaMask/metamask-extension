@@ -7,6 +7,7 @@ export default class Tabs extends Component {
     defaultActiveTabName: null,
     onTabClick: null,
     tabsClassName: undefined,
+    subHeader: null,
   };
 
   static propTypes = {
@@ -14,6 +15,7 @@ export default class Tabs extends Component {
     onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
     tabsClassName: PropTypes.string,
+    subHeader: PropTypes.node,
   };
 
   state = {
@@ -42,9 +44,9 @@ export default class Tabs extends Component {
   }
 
   renderTabs() {
-    const numberOfTabs = React.Children.count(this.props.children);
+    const numberOfTabs = React.Children.count(this._getValidChildren());
 
-    return React.Children.map(this.props.children, (child, index) => {
+    return React.Children.map(this._getValidChildren(), (child, index) => {
       const tabName = child?.props.name;
       return (
         child &&
@@ -58,7 +60,7 @@ export default class Tabs extends Component {
   }
 
   renderActiveTabContent() {
-    const { children } = this.props;
+    const children = this._getValidChildren();
     const { activeTabIndex } = this.state;
 
     if (
@@ -74,12 +76,13 @@ export default class Tabs extends Component {
   }
 
   render() {
-    const { tabsClassName } = this.props;
+    const { tabsClassName, subHeader } = this.props;
     return (
       <div className="tabs">
         <ul className={classnames('tabs__list', tabsClassName)}>
           {this.renderTabs()}
         </ul>
+        {subHeader}
         <div className="tabs__content">{this.renderActiveTabContent()}</div>
       </div>
     );
@@ -87,13 +90,18 @@ export default class Tabs extends Component {
 
   /**
    * Returns the index of the child with the given name
+   *
    * @param {string} name - the name to search for
    * @returns {number} the index of the child with the given name
    * @private
    */
   _findChildByName(name) {
-    return React.Children.toArray(this.props.children).findIndex(
-      (c) => c?.props.name === name,
-    );
+    return this._getValidChildren().findIndex((c) => c?.props.name === name);
+  }
+
+  // This ignores any 'null' child elements that are a result of a conditional
+  // based on a feature flag setting.
+  _getValidChildren() {
+    return React.Children.toArray(this.props.children).filter(Boolean);
   }
 }

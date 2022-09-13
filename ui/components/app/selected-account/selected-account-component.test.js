@@ -15,7 +15,7 @@ describe('SelectedAccount Component', () => {
     );
     // Checksummed version of address is displayed
     expect(wrapper.find('.selected-account__address').text()).toStrictEqual(
-      '0x1B82...5C9D',
+      '0x1B8...5C9D',
     );
     expect(wrapper.find('.selected-account__name').text()).toStrictEqual(
       'testName',

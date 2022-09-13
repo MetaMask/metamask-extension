@@ -4,11 +4,13 @@ set -e
 set -u
 set -o pipefail
 
-CHROME_VERSION='79.0.3945.117-1'
+# To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
+CHROME_VERSION='105.0.5195.102-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
-CHROME_BINARY_URL="http://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
+CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
-CHROME_BINARY_SHA512SUM='2d4f76202219a40e560477d79023fa4a847187a086278924a9d916dcd5fbefafdcf7dfd8879fae907b8276b244e71a3b8a1b00a88dee87b18738ce31134a6713'
+# To retrieve this checksum, run the `wget` and `shasum` commands below
+CHROME_BINARY_SHA512SUM='3a1f2267ae009424ee8c623c3f78760d969dc1f3acb490e103e667d11e52cf0d955f201aeb3892dd41f33e68625af77ca5a20244b5be718f794eccb07a4c0413'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 
@@ -23,7 +25,5 @@ fi
 (sudo dpkg -i "${CHROME_BINARY}" || sudo apt-get -fy install)
 
 rm -rf "${CHROME_BINARY}"
-
-sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' "/opt/google/chrome/google-chrome"
 
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"

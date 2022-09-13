@@ -16,8 +16,7 @@ export default class ConnectedSites extends Component {
   static propTypes = {
     accountLabel: PropTypes.string.isRequired,
     closePopover: PropTypes.func.isRequired,
-    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
-    domainHostCount: PropTypes.objectOf(PropTypes.number).isRequired,
+    connectedSubjects: PropTypes.arrayOf(PropTypes.object).isRequired,
     disconnectAllAccounts: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
@@ -37,10 +36,10 @@ export default class ConnectedSites extends Component {
     getOpenMetamaskTabsIds();
   }
 
-  setPendingDisconnect = (domainKey) => {
+  setPendingDisconnect = (subjectKey) => {
     this.setState({
       sitePendingDisconnect: {
-        domainKey,
+        subjectKey,
       },
     });
   };
@@ -55,7 +54,7 @@ export default class ConnectedSites extends Component {
     const { disconnectAccount } = this.props;
     const { sitePendingDisconnect } = this.state;
 
-    disconnectAccount(sitePendingDisconnect.domainKey);
+    disconnectAccount(sitePendingDisconnect.subjectKey);
     this.clearPendingDisconnect();
   };
 
@@ -63,15 +62,14 @@ export default class ConnectedSites extends Component {
     const { disconnectAllAccounts } = this.props;
     const { sitePendingDisconnect } = this.state;
 
-    disconnectAllAccounts(sitePendingDisconnect.domainKey);
+    disconnectAllAccounts(sitePendingDisconnect.subjectKey);
     this.clearPendingDisconnect();
   };
 
   renderConnectedSitesList() {
     return (
       <ConnectedSitesList
-        domainHostCount={this.props.domainHostCount}
-        connectedDomains={this.props.connectedDomains}
+        connectedSubjects={this.props.connectedSubjects}
         onDisconnect={this.setPendingDisconnect}
       />
     );
@@ -81,7 +79,7 @@ export default class ConnectedSites extends Component {
     const {
       accountLabel,
       closePopover,
-      connectedDomains,
+      connectedSubjects,
       tabToConnect,
       requestAccountsPermission,
     } = this.props;
@@ -92,7 +90,7 @@ export default class ConnectedSites extends Component {
         className="connected-sites"
         title={t('connectedSites')}
         subtitle={
-          connectedDomains.length
+          connectedSubjects.length
             ? t('connectedSitesDescription', [accountLabel])
             : t('connectedSitesEmptyDescription', [accountLabel])
         }
@@ -118,15 +116,15 @@ export default class ConnectedSites extends Component {
     const { closePopover, permittedAccountsByOrigin } = this.props;
     const { t } = this.context;
     const {
-      sitePendingDisconnect: { domainKey },
+      sitePendingDisconnect: { subjectKey },
     } = this.state;
 
-    const numPermittedAccounts = permittedAccountsByOrigin[domainKey].length;
+    const numPermittedAccounts = permittedAccountsByOrigin[subjectKey].length;
 
     return (
       <Popover
         className="connected-sites"
-        title={t('disconnectPrompt', [domainKey])}
+        title={t('disconnectPrompt', [subjectKey])}
         subtitle={t('disconnectAllAccountsConfirmationDescription')}
         onClose={closePopover}
         footer={

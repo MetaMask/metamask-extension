@@ -1,0 +1,13 @@
+.advanced-gas-fee-defaults {
+  border-top: 1px solid var(--color-border-muted);
+  padding-top: 16px;
+
+  & &__checkbox {
+    font-size: $font-size-h4;
+    margin: 0 8px;
+  }
+
+  &__label {
+    display: flex;
+  }
+}

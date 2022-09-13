@@ -7,6 +7,7 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
+import IconCaretLeft from '../../../../components/ui/icon/icon-caret-left';
 import Confusable from '../../../../components/ui/confusable';
 
 export default class AddRecipient extends Component {
@@ -21,6 +22,7 @@ export default class AddRecipient extends Component {
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
+    addHistoryEntry: PropTypes.func,
     useMyAccountsForRecipientSearch: PropTypes.func,
     useContactListForRecipientSearch: PropTypes.func,
     isUsingMyAccountsForRecipientSearch: PropTypes.bool,
@@ -30,6 +32,7 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    updateRecipientUserInput: PropTypes.func,
   };
 
   constructor(props) {
@@ -63,8 +66,12 @@ export default class AddRecipient extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  selectRecipient = (address, nickname = '') => {
+  selectRecipient = (address, nickname = '', type = 'user input') => {
+    this.props.addHistoryEntry(
+      `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+    );
     this.props.updateRecipient({ address, nickname });
+    this.props.updateRecipientUserInput(address);
   };
 
   searchForContacts = () => {
@@ -108,11 +115,13 @@ export default class AddRecipient extends Component {
       content = this.renderExplicitAddress(
         recipient.address,
         recipient.nickname,
+        'validated user input',
       );
-    } else if (ensResolution) {
+    } else if (ensResolution && !recipient.error) {
       content = this.renderExplicitAddress(
         ensResolution,
         addressBookEntryName || userInput,
+        'ENS resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -126,12 +135,12 @@ export default class AddRecipient extends Component {
     );
   }
 
-  renderExplicitAddress(address, name) {
+  renderExplicitAddress(address, name, type) {
     return (
       <div
         key={address}
         className="send__select-recipient-wrapper__group-item"
-        onClick={() => this.selectRecipient(address, name)}
+        onClick={() => this.selectRecipient(address, name, type)}
       >
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
@@ -172,13 +181,15 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={useContactListForRecipientSearch}
         >
-          <div className="send__select-recipient-wrapper__list__back-caret" />
+          <IconCaretLeft className="send__select-recipient-wrapper__list__back-caret" />
           {t('backToAll')}
         </Button>
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
-          onSelect={this.selectRecipient}
+          onSelect={(address, name) =>
+            this.selectRecipient(address, name, 'my accounts')
+          }
         />
       </div>
     );
@@ -199,7 +210,13 @@ export default class AddRecipient extends Component {
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}
           searchForRecents={this.searchForRecents.bind(this)}
-          selectRecipient={this.selectRecipient.bind(this)}
+          selectRecipient={(address, name) => {
+            this.selectRecipient(
+              address,
+              name,
+              `${name ? 'contact' : 'recent'} list`,
+            );
+          }}
         >
           {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button

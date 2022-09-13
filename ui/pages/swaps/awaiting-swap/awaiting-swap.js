@@ -1,12 +1,18 @@
 import EventEmitter from 'events';
-import React, { useContext, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useRef, useState, useEffect } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -26,9 +32,13 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
+  getFromTokenInputValue,
+  getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
-import Box from '../../../components/ui/box';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -41,15 +51,20 @@ import {
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  stopPollingForQuotes,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
+import CreateNewSwap from '../create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
-import ViewOnEtherScanLink from './view-on-ether-scan-link';
 
 export default function AwaitingSwap({
   swapComplete,
@@ -57,28 +72,26 @@ export default function AwaitingSwap({
   txHash,
   tokensReceived,
   submittingSwap,
-  inputValue,
-  maxSlippage,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
-  const usedQuote = useSelector(getUsedQuote);
-  const approveTxParams = useSelector(getApproveTxParams);
+  const fromTokenInputValue = useSelector(getFromTokenInputValue);
+  const maxSlippage = useSelector(getMaxSlippage);
+  const usedQuote = useSelector(getUsedQuote, isEqual);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
   const currentCurrency = useSelector(getCurrentCurrency);
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-
-  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
-    false,
-  );
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
+    useState(false);
 
   let feeinUnformattedFiat;
 
@@ -99,6 +112,13 @@ export default function AwaitingSwap({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const sensitiveProperties = {
     token_from: sourceTokenInfo?.symbol,
     token_from_amount: fetchParams?.value,
@@ -109,17 +129,10 @@ export default function AwaitingSwap({
     gas_fees: feeinUnformattedFiat,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
+    stx_enabled: smartTransactionsEnabled,
+    current_stx_enabled: currentSmartTransactionsEnabled,
+    stx_user_opt_in: smartTransactionsOptInStatus,
   };
-  const quotesExpiredEvent = useNewMetricEvent({
-    event: 'Quotes Timed Out',
-    sensitiveProperties,
-    category: 'swaps',
-  });
-  const makeAnotherSwapEvent = useNewMetricEvent({
-    event: 'Make Another Swap',
-    sensitiveProperties,
-    category: 'swaps',
-  });
 
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
@@ -128,11 +141,6 @@ export default function AwaitingSwap({
   const blockExplorerUrl = getBlockExplorerLink(
     { hash: txHash, chainId },
     { blockExplorerUrl: baseNetworkUrl },
-  );
-
-  const isCustomBlockExplorerUrl = Boolean(
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
-      rpcPrefs.blockExplorerUrl,
   );
 
   let headerText;
@@ -152,20 +160,33 @@ export default function AwaitingSwap({
       <a
         className="awaiting-swap__support-link"
         key="awaiting-swap-support-link"
-        href="https://support.metamask.io"
+        href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => {
+          trackEvent(
+            {
+              category: EVENT.CATEGORIES.SWAPS,
+              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              properties: {
+                url: SUPPORT_LINK,
+              },
+            },
+            {
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+            },
+          );
+        }}
       >
-        support.metamask.io
+        {new URL(SUPPORT_LINK).hostname}
       </a>,
     ]);
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
@@ -176,7 +197,11 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      quotesExpiredEvent();
+      trackEvent({
+        event: 'Quotes Timed Out',
+        category: EVENT.CATEGORIES.SWAPS,
+        sensitiveProperties,
+      });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');
@@ -206,10 +231,9 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   } else if (!errorKey && swapComplete) {
@@ -225,29 +249,19 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   }
 
-  const MakeAnotherSwap = () => {
-    return (
-      <Box marginBottom={3}>
-        <a
-          href="#"
-          onClick={() => {
-            makeAnotherSwapEvent();
-            dispatch(navigateBackToBuildQuote(history));
-          }}
-        >
-          {t('makeAnotherSwap')}
-        </a>
-      </Box>
-    );
-  };
+  useEffect(() => {
+    if (errorKey) {
+      // If there was an error, stop polling for quotes.
+      dispatch(stopPollingForQuotes());
+    }
+  }, [dispatch, errorKey]);
 
   return (
     <div className="awaiting-swap">
@@ -261,10 +275,12 @@ export default function AwaitingSwap({
         )}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div className="awaiting-swap__header">{headerText}</div>
-        <div className="awaiting-swap__main-descrption">{descriptionText}</div>
+        <div className="awaiting-swap__main-description">{descriptionText}</div>
         {content}
       </div>
-      {!errorKey && swapComplete && <MakeAnotherSwap />}
+      {!errorKey && swapComplete ? (
+        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
+      ) : null}
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
@@ -275,9 +291,9 @@ export default function AwaitingSwap({
             await dispatch(
               fetchQuotesAndSetQuoteState(
                 history,
-                inputValue,
+                fromTokenInputValue,
                 maxSlippage,
-                metaMetricsEvent,
+                trackEvent,
               ),
             );
           } else if (errorKey) {
@@ -288,7 +304,8 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
@@ -313,6 +330,4 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
-  inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  maxSlippage: PropTypes.number,
 };

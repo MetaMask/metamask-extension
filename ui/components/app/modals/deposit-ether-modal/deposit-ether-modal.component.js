@@ -1,20 +1,37 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TO_NAME_MAP,
+  BUYABLE_CHAINS_MAP,
+} from '../../../../../shared/constants/network';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import Button from '../../../ui/button';
+import LogoMoonPay from '../../../ui/logo/logo-moonpay';
+import LogoWyre from '../../../ui/logo/logo-wyre';
+import LogoTransak from '../../../ui/logo/logo-transak';
+import LogoCoinbasePay from '../../../ui/logo/logo-coinbasepay';
+import LogoDepositEth from '../../../ui/logo/logo-deposit-eth';
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
     chainId: PropTypes.string.isRequired,
     isTestnet: PropTypes.bool.isRequired,
-    isMainnet: PropTypes.bool.isRequired,
+    isBuyableTransakChain: PropTypes.bool.isRequired,
+    isBuyableMoonPayChain: PropTypes.bool.isRequired,
+    isBuyableWyreChain: PropTypes.bool.isRequired,
+    isBuyableCoinbasePayChain: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
     toTransak: PropTypes.func.isRequired,
+    toMoonPay: PropTypes.func.isRequired,
+    toCoinbasePay: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
     toFaucet: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
@@ -89,21 +106,28 @@ export default class DepositEtherModal extends Component {
       chainId,
       toWyre,
       toTransak,
+      toMoonPay,
+      toCoinbasePay,
       address,
       toFaucet,
       isTestnet,
-      isMainnet,
+      isBuyableTransakChain,
+      isBuyableMoonPayChain,
+      isBuyableWyreChain,
+      isBuyableCoinbasePayChain,
     } = this.props;
+    const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
+    const symbol = BUYABLE_CHAINS_MAP[chainId].nativeCurrency;
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
         <div className="page-container__header">
           <div className="page-container__title">
-            {this.context.t('depositEther')}
+            {t('depositCrypto', [symbol])}
           </div>
           <div className="page-container__subtitle">
-            {this.context.t('needEtherInWallet')}
+            {t('needCryptoInWallet', [symbol])}
           </div>
           <div
             className="page-container__header-close"
@@ -116,78 +140,98 @@ export default class DepositEtherModal extends Component {
         <div className="page-container__content">
           <div className="deposit-ether-modal__buy-rows">
             {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/wyre.svg')",
-                    height: '40px',
-                  }}
-                />
-              ),
-              title: this.context.t('buyWithWyre'),
-              text: this.context.t('buyWithWyreDescription'),
-              buttonLabel: this.context.t('continueToWyre'),
+              logo: <LogoCoinbasePay className="deposit-ether-modal__logo" />,
+              title: t('buyCryptoWithCoinbasePay', [symbol]),
+              text: t('buyCryptoWithCoinbasePayDescription', [symbol]),
+              buttonLabel: t('continueToCoinbasePay'),
               onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit Ether',
-                    name: 'Click buy Ether via Wyre',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.COINBASE,
                   },
                 });
-                toWyre(address);
+                toCoinbasePay(address, chainId);
               },
-              hide: !isMainnet,
+              hide: !isBuyableCoinbasePayChain,
+            })}
+            {this.renderRow({
+              logo: <LogoTransak className="deposit-ether-modal__logo" />,
+              title: t('buyCryptoWithTransak', [symbol]),
+              text: t('buyCryptoWithTransakDescription', [symbol]),
+              buttonLabel: t('continueToTransak'),
+              onButtonClick: () => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.TRANSAK,
+                  },
+                });
+                toTransak(address, chainId);
+              },
+              hide: !isBuyableTransakChain,
+            })}
+            {this.renderRow({
+              logo: <LogoMoonPay className="deposit-ether-modal__logo" />,
+              title: t('buyCryptoWithMoonPay', [symbol]),
+              text: t('buyCryptoWithMoonPayDescription', [symbol]),
+              buttonLabel: t('continueToMoonPay'),
+              onButtonClick: () => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.MOONPAY,
+                  },
+                });
+                toMoonPay(address, chainId);
+              },
+              hide: !isBuyableMoonPayChain,
+            })}
+            {this.renderRow({
+              logo: <LogoWyre className="deposit-ether-modal__logo" />,
+              title: t('buyWithWyre', [symbol]),
+              text: t('buyWithWyreDescription', [symbol]),
+              buttonLabel: t('continueToWyre'),
+              onButtonClick: () => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.WYRE,
+                  },
+                });
+                toWyre(address, chainId);
+              },
+              hide: !isBuyableWyreChain,
             })}
             {this.renderRow({
               logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/transak.svg')",
-                    height: '60px',
-                  }}
-                />
+                <LogoDepositEth className="deposit-ether-modal__logo--lg" />
               ),
-              title: this.context.t('buyWithTransak'),
-              text: this.context.t('buyWithTransakDescription'),
-              buttonLabel: this.context.t('continueToTransak'),
+              title: t('directDepositCrypto', [symbol]),
+              text: t('directDepositCryptoExplainer', [symbol]),
+              buttonLabel: t('viewAccount'),
               onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit Ether',
-                    name: 'Click buy Ether via Transak',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type:
+                      EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
                   },
                 });
-                toTransak(address);
+                this.goToAccountDetailsModal();
               },
-              hide: !isMainnet,
-            })}
-            {this.renderRow({
-              logo: (
-                <img
-                  alt=""
-                  className="deposit-ether-modal__logo"
-                  src="./images/deposit-eth.svg"
-                  style={{
-                    height: '75px',
-                    width: '75px',
-                  }}
-                />
-              ),
-              title: this.context.t('directDepositEther'),
-              text: this.context.t('directDepositEtherExplainer'),
-              buttonLabel: this.context.t('viewAccount'),
-              onButtonClick: () => this.goToAccountDetailsModal(),
             })}
             {networkName &&
               this.renderRow({
                 logo: <i className="fa fa-tint fa-2x" />,
-                title: this.context.t('testFaucet'),
-                text: this.context.t('getEtherFromFaucet', [networkName]),
-                buttonLabel: this.context.t('getEther'),
+                title: t('testFaucet'),
+                text: t('getEtherFromFaucet', [networkName]),
+                buttonLabel: t('getEther'),
                 onButtonClick: () => toFaucet(chainId),
                 hide: !isTestnet,
               })}

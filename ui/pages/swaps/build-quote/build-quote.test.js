@@ -12,19 +12,21 @@ import BuildQuote from '.';
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
   return {
-    inputValue: '5',
-    onInputChange: jest.fn(),
-    ethBalance: '6 ETH',
-    setMaxSlippage: jest.fn(),
-    maxSlippage: 15,
+    ethBalance: '0x8',
     selectedAccountAddress: 'selectedAccountAddress',
     isFeatureFlagLoaded: false,
+    shuffledTokensList: [],
     ...customProps,
   };
 };
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  ignoreTokens: jest.fn(),
+  setBackgroundSwapRouteState: jest.fn(),
+  clearSwapsQuotes: jest.fn(),
+  stopPollingForQuotes: jest.fn(),
+  clearSmartTransactionFees: jest.fn(),
 });
 
 describe('BuildQuote', () => {
@@ -35,10 +37,10 @@ describe('BuildQuote', () => {
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(getByText('Swap to')).toBeInTheDocument();
     expect(getByText('ETH')).toBeInTheDocument();
-    expect(getByText('Slippage Tolerance')).toBeInTheDocument();
+    expect(getByText('Slippage tolerance')).toBeInTheDocument();
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('Review Swap')).toBeInTheDocument();
+    expect(getByText('Review swap')).toBeInTheDocument();
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();

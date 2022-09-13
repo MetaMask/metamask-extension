@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs');
 const path = require('path');
+// Fetch is part of node js in future versions, thus triggering no-shadow
+// eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
-const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+const VERSION = require('../package.json').version;
+const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
 
@@ -18,6 +21,8 @@ async function start() {
   console.log('CIRCLE_SHA1', CIRCLE_SHA1);
   const { CIRCLE_BUILD_NUM } = process.env;
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
+  const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
+  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -26,7 +31,7 @@ async function start() {
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
-  const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`;
+  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   // build the github comment content
 
@@ -35,6 +40,18 @@ async function start() {
   const buildLinks = platforms
     .map((platform) => {
       const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const betaBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-beta-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const flaskBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
@@ -76,18 +93,39 @@ async function start() {
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
+  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
+
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
+  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
+  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
 
   const contentRows = [
     `builds: ${buildLinks}`,
+    `builds (beta): ${betaBuildLinks}`,
+    `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
+    `mv3: ${moduleInitStatsBackgroundLink}`,
+    `mv3: ${moduleInitStatsUILink}`,
+    `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${bundleSizeStatsLink}`,
+    `mv2: ${userActionsStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
+    `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
@@ -98,7 +136,7 @@ async function start() {
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
-  const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`;
+  const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
   const benchmarkResults = {};
   for (const platform of platforms) {
@@ -124,7 +162,7 @@ async function start() {
 
   const summaryPlatform = 'chrome';
   const summaryPage = 'home';
-  let commentBody;
+  let commentBody = artifactsBody;
   if (benchmarkResults[summaryPlatform]) {
     try {
       const summaryPageLoad = Math.round(
@@ -196,15 +234,23 @@ async function start() {
         .join('')}</tr></thead>`;
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`;
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
-      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>`;
-      commentBody = `${artifactsBody}${benchmarkBody}`;
+      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
+      commentBody += `${benchmarkBody}`;
     } catch (error) {
       console.error(`Error constructing benchmark results: '${error}'`);
-      commentBody = artifactsBody;
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
-    commentBody = artifactsBody;
+  }
+
+  try {
+    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
+    if (highlights) {
+      const highlightsBody = `### highlights:\n${highlights}\n`;
+      commentBody += highlightsBody;
+    }
+  } catch (error) {
+    console.error(`Error constructing highlight results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
@@ -217,7 +263,7 @@ async function start() {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
+      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
     },
   });
   if (!response.ok) {

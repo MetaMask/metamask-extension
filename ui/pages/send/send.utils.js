@@ -10,13 +10,18 @@ import {
 
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from './send.constants';
+import { ERC20, ERC721 } from '../../../shared/constants/transaction';
+import {
+  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
+  COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
+} from './send.constants';
 
 export {
   addGasBuffer,
   calcGasTotal,
-  generateTokenTransferData,
+  getAssetTransferData,
+  generateERC20TransferData,
+  generateERC721TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
   ellipsify,
@@ -123,7 +128,7 @@ function addGasBuffer(
   return upperGasLimit;
 }
 
-function generateTokenTransferData({
+function generateERC20TransferData({
   toAddress = '0x0',
   amount = '0x0',
   sendToken,
@@ -137,12 +142,52 @@ function generateTokenTransferData({
       .call(
         abi.rawEncode(
           ['address', 'uint256'],
-          [toAddress, addHexPrefix(amount)],
+          [addHexPrefix(toAddress), addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
       .join('')
   );
+}
+
+function generateERC721TransferData({
+  toAddress = '0x0',
+  fromAddress = '0x0',
+  tokenId,
+}) {
+  if (!tokenId) {
+    return undefined;
+  }
+  return (
+    COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE +
+    Array.prototype.map
+      .call(
+        abi.rawEncode(
+          ['address', 'address', 'uint256'],
+          [addHexPrefix(fromAddress), addHexPrefix(toAddress), tokenId],
+        ),
+        (x) => `00${x.toString(16)}`.slice(-2),
+      )
+      .join('')
+  );
+}
+
+function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
+  switch (sendToken.standard) {
+    case ERC721:
+      return generateERC721TransferData({
+        toAddress,
+        fromAddress,
+        tokenId: sendToken.tokenId,
+      });
+    case ERC20:
+    default:
+      return generateERC20TransferData({
+        toAddress,
+        amount,
+        sendToken,
+      });
+  }
 }
 
 function ellipsify(text, first = 6, last = 4) {

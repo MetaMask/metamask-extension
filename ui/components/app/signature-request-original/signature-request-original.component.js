@@ -3,22 +3,22 @@ import PropTypes from 'prop-types';
 import { stripHexPrefix } from 'ethereumjs-util';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
+import LedgerInstructionField from '../ledger-instruction-field';
 
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  MESSAGE_TYPE,
-} from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
+import { getURLHostName } from '../../../helpers/utils/util';
 import Identicon from '../../ui/identicon';
 import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -35,41 +35,17 @@ export default class SignatureRequestOriginal extends Component {
     requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
-    domainMetadata: PropTypes.object,
+    subjectMetadata: PropTypes.object,
+    hardwareWalletRequiresConnection: PropTypes.bool,
+    isLedgerWallet: PropTypes.bool,
+    nativeCurrency: PropTypes.string.isRequired,
+    messagesCount: PropTypes.number,
+    showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
+    cancelAll: PropTypes.func.isRequired,
   };
 
   state = {
     fromAccount: this.props.fromAccount,
-  };
-
-  componentDidMount = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Sign Request',
-        name: 'Cancel Sig Request Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-    cancel(event);
-  };
-
-  _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
   };
 
   renderHeader = () => {
@@ -105,12 +81,12 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
+    const { conversionRate, nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
 
-    const balanceInEther = conversionUtil(balance, {
+    const balanceInBaseAsset = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -124,7 +100,7 @@ export default class SignatureRequestOriginal extends Component {
           {`${this.context.t('balance')}:`}
         </div>
         <div className="request-signature__balance-value">
-          {`${balanceInEther} ETH`}
+          {`${balanceInBaseAsset} ${nativeCurrency}`}
         </div>
       </div>
     );
@@ -151,11 +127,11 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderOriginInfo = () => {
-    const { txData, domainMetadata } = this.props;
+    const { txData, subjectMetadata } = this.props;
     const { t } = this.context;
 
-    const originMetadata = txData.msgParams.origin
-      ? domainMetadata?.[txData.msgParams.origin]
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
     return (
@@ -163,16 +139,21 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__origin-label">
           {`${t('origin')}:`}
         </div>
-        {originMetadata?.icon ? (
+        {targetSubjectMetadata?.iconUrl ? (
           <SiteIcon
-            icon={originMetadata.icon}
-            name={originMetadata.hostname}
+            className="request-signature__origin-icon"
+            icon={targetSubjectMetadata.iconUrl}
+            name={
+              getURLHostName(targetSubjectMetadata.origin) ||
+              targetSubjectMetadata.origin
+            }
             size={24}
           />
         ) : null}
-        <div className="request-signature__origin">
-          {txData.msgParams.origin}
-        </div>
+        <SiteOrigin
+          className="request-signature__origin"
+          siteOrigin={txData.msgParams.origin}
+        />
       </div>
     );
   };
@@ -248,12 +229,11 @@ export default class SignatureRequestOriginal extends Component {
               className="request-signature__help-link"
               onClick={() => {
                 global.platform.openTab({
-                  url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
+                  url: 'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >
-              {this.context.t('learnMore')}
+              {this.context.t('learnMoreUpperCase')}
             </span>
           ) : null}
         </div>
@@ -285,61 +265,105 @@ export default class SignatureRequestOriginal extends Component {
       history,
       mostRecentOverviewPage,
       sign,
+      txData: { type },
+      hardwareWalletRequiresConnection,
     } = this.props;
+    const { trackEvent, t } = this.context;
 
     return (
       <div className="request-signature__footer">
         <Button
-          type="default"
+          type="secondary"
           large
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancel(event);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
+            trackEvent({
+              category: EVENT.CATEGORIES.TRANSACTIONS,
+              event: 'Cancel',
+              properties: {
                 action: 'Sign Request',
-                name: 'Cancel',
+                legacy_event: true,
+                type,
               },
             });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
         >
-          {this.context.t('cancel')}
+          {t('cancel')}
         </Button>
         <Button
           data-testid="request-signature__sign"
-          type="secondary"
+          type="primary"
           large
           className="request-signature__footer__sign-button"
+          disabled={hardwareWalletRequiresConnection}
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await sign(event);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
+            trackEvent({
+              category: EVENT.CATEGORIES.TRANSACTIONS,
+              event: 'Confirm',
+              properties: {
                 action: 'Sign Request',
-                name: 'Confirm',
+                legacy_event: true,
+                type,
               },
             });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
         >
-          {this.context.t('sign')}
+          {t('sign')}
         </Button>
       </div>
     );
   };
 
+  handleCancelAll = () => {
+    const {
+      cancelAll,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      showRejectTransactionsConfirmationModal,
+      messagesCount,
+    } = this.props;
+    const unapprovedTxCount = messagesCount;
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount,
+      onSubmit: async () => {
+        await cancelAll();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
+      },
+    });
+  };
+
   render = () => {
+    const { messagesCount } = this.props;
+    const { t } = this.context;
+    const rejectNText = t('rejectTxsN', [messagesCount]);
     return (
       <div className="request-signature__container">
         {this.renderHeader()}
         {this.renderBody()}
+        {this.props.isLedgerWallet ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <LedgerInstructionField showDataInstruction />
+          </div>
+        ) : null}
         {this.renderFooter()}
+        {messagesCount > 1 ? (
+          <Button
+            type="link"
+            className="request-signature__container__reject"
+            onClick={() => this.handleCancelAll()}
+          >
+            {rejectNText}
+          </Button>
+        ) : null}
       </div>
     );
   };

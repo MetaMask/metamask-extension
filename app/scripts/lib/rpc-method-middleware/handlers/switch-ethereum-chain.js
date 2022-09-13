@@ -15,6 +15,13 @@ import {
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
+  hookNames: {
+    getCurrentChainId: true,
+    findCustomRpcBy: true,
+    setProviderType: true,
+    updateRpcTarget: true,
+    requestUserApproval: true,
+  },
 };
 export default switchEthereumChain;
 

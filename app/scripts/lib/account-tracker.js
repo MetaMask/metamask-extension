@@ -12,13 +12,20 @@ import EthQuery from 'eth-query';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import pify from 'pify';
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+  BSC_CHAIN_ID,
+  OPTIMISM_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  FANTOM_CHAIN_ID,
+  ARBITRUM_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 import {
@@ -26,8 +33,14 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+  SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+  SINGLE_CALL_BALANCES_ADDRESS_BSC,
+  SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
+  SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+  SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
+  SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
+  SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
 } from '../constants/contracts';
-import { bnToHex } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -35,22 +48,21 @@ import { bnToHex } from './util';
  *
  * It also tracks transaction hashes, and checks their inclusion status on each new block.
  *
- * @typedef {Object} AccountTracker
- * @property {Object} store The stored object containing all accounts to track, as well as the current block's gas limit.
- * @property {Object} store.accounts The accounts currently stored in this AccountTracker
+ * @typedef {object} AccountTracker
+ * @property {object} store The stored object containing all accounts to track, as well as the current block's gas limit.
+ * @property {object} store.accounts The accounts currently stored in this AccountTracker
  * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
- * @property {Object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
+ * @property {object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
  * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
- * @property {Object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
- *
+ * @property {object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
  */
 export default class AccountTracker {
   /**
-   * @param {Object} opts - Options for initializing the controller
-   * @param {Object} opts.provider - An EIP-1193 provider instance that uses the current global network
-   * @param {Object} opts.blockTracker - A block tracker, which emits events for each new block
+   * @param {object} opts - Options for initializing the controller
+   * @param {object} opts.provider - An EIP-1193 provider instance that uses the current global network
+   * @param {object} opts.blockTracker - A block tracker, which emits events for each new block
    * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
    */
   constructor(opts = {}) {
@@ -72,7 +84,7 @@ export default class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
 
-    this.web3 = new Web3(this._provider);
+    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
   }
 
   start() {
@@ -96,9 +108,8 @@ export default class AccountTracker {
    * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
    * of these accounts are given an updated balance via EthQuery.
    *
-   * @param {Array} address - The array of hex addresses for accounts with which this AccountTracker's accounts should be
+   * @param {Array} addresses - The array of hex addresses for accounts with which this AccountTracker's accounts should be
    * in sync
-   *
    */
   syncWithAddresses(addresses) {
     const { accounts } = this.store.getState();
@@ -127,7 +138,6 @@ export default class AccountTracker {
    * given a balance as long this._currentBlockNumber is defined.
    *
    * @param {Array} addresses - An array of hex addresses of new accounts to track
-   *
    */
   addAccounts(addresses) {
     const { accounts } = this.store.getState();
@@ -147,8 +157,7 @@ export default class AccountTracker {
   /**
    * Removes accounts from being tracked
    *
-   * @param {Array} an - array of hex addresses to stop tracking
-   *
+   * @param {Array} addresses - An array of hex addresses to stop tracking.
    */
   removeAccount(addresses) {
     const { accounts } = this.store.getState();
@@ -175,7 +184,6 @@ export default class AccountTracker {
    * @private
    * @param {number} blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
-   *
    */
   async _updateForBlock(blockNumber) {
     this._currentBlockNumber = blockNumber;
@@ -200,7 +208,6 @@ export default class AccountTracker {
    * for all other networks, calls this._updateAccount for each account in this.store
    *
    * @returns {Promise} after all account balances updated
-   *
    */
   async _updateAccounts() {
     const { accounts } = this.store.getState();
@@ -236,6 +243,55 @@ export default class AccountTracker {
         );
         break;
 
+      case GOERLI_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+        );
+        break;
+
+      case BSC_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_BSC,
+        );
+        break;
+
+      case OPTIMISM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
+        );
+        break;
+
+      case POLYGON_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+        );
+        break;
+
+      case AVALANCHE_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
+        );
+        break;
+
+      case FANTOM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
+        );
+        break;
+
+      case ARBITRUM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
+        );
+        break;
+
       default:
         await Promise.all(addresses.map(this._updateAccount.bind(this)));
     }
@@ -247,11 +303,19 @@ export default class AccountTracker {
    * @private
    * @param {string} address - A hex address of a the account to be updated
    * @returns {Promise} after the account balance is updated
-   *
    */
   async _updateAccount(address) {
+    let balance = '0x0';
+
     // query balance
-    const balance = await this._query.getBalance(address);
+    try {
+      balance = await this._query.getBalance(address);
+    } catch (error) {
+      if (error.data?.request?.method !== 'eth_getBalance') {
+        throw error;
+      }
+    }
+
     const result = { address, balance };
     // update accounts state
     const { accounts } = this.store.getState();
@@ -265,31 +329,35 @@ export default class AccountTracker {
 
   /**
    * Updates current address balances from balanceChecker deployed contract instance
+   *
    * @param {*} addresses
    * @param {*} deployedContractAddress
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const { accounts } = this.store.getState();
-    this.web3.setProvider(this._provider);
-    const ethContract = this.web3.eth
-      .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(deployedContractAddress);
-    const ethBalance = ['0x0'];
+    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
 
-    ethContract.balances(addresses, ethBalance, (error, result) => {
-      if (error) {
-        log.warn(
-          `MetaMask - Account Tracker single call balance fetch failed`,
-          error,
-        );
-        Promise.all(addresses.map(this._updateAccount.bind(this)));
-        return;
-      }
+    const ethContract = await new ethers.Contract(
+      deployedContractAddress,
+      SINGLE_CALL_BALANCES_ABI,
+      this.ethersProvider,
+    );
+    const ethBalance = ['0x0000000000000000000000000000000000000000'];
+
+    try {
+      const balances = await ethContract.balances(addresses, ethBalance);
+
       addresses.forEach((address, index) => {
-        const balance = result[index] ? bnToHex(result[index]) : '0x0';
+        const balance = balances[index] ? balances[index].toHexString() : '0x0';
         accounts[address] = { address, balance };
       });
       this.store.updateState({ accounts });
-    });
+    } catch (error) {
+      log.warn(
+        `MetaMask - Account Tracker single call balance fetch failed`,
+        error,
+      );
+      Promise.all(addresses.map(this._updateAccount.bind(this)));
+    }
   }
 }

@@ -4,10 +4,10 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  max-height: 196px;
-  min-height: 196px;
   width: 100%;
-  color: $Black-100;
+  color: var(--color-text-default);
+  margin-top: 28px;
+  margin-bottom: 56px;
 
   &__source-row,
   &__destination-row {
@@ -18,7 +18,7 @@
 
     @include H6;
 
-    color: $Grey-500;
+    color: var(--color-text-alternative);
   }
 
   &__source-row {
@@ -53,7 +53,7 @@
 
   &__destination-row-symbol {
     margin-left: 5px;
-    color: $Black-100;
+    color: var(--color-text-default);
   }
 
   &__icon,
@@ -70,6 +70,7 @@
 
   &__down-arrow {
     margin-top: 5px;
+    color: var(--color-icon-muted);
   }
 
   &__details {
@@ -96,7 +97,7 @@
   }
 
   &__quote-large-number {
-    font-size: 60px;
+    font-size: 50px;
     line-height: 48px;
   }
 
@@ -117,6 +118,6 @@
   }
 
   &__exchange-rate-display {
-    color: $Grey-500;
+    color: var(--color-text-alternative);
   }
 }

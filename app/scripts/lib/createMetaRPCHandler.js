@@ -1,7 +1,7 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 
 const createMetaRPCHandler = (api, outStream) => {
-  return (data) => {
+  return async (data) => {
     if (outStream._writableState.ended) {
       return;
     }
@@ -15,24 +15,35 @@ const createMetaRPCHandler = (api, outStream) => {
       });
       return;
     }
-    api[data.method](...data.params, (err, result) => {
-      if (outStream._writableState.ended) {
-        return;
+
+    let result;
+    let error;
+    try {
+      result = await api[data.method](...data.params);
+    } catch (err) {
+      error = err;
+    }
+
+    if (outStream._writableState.ended) {
+      if (error) {
+        console.error(error);
       }
-      if (err) {
-        outStream.write({
-          jsonrpc: '2.0',
-          error: serializeError(err, { shouldIncludeStack: true }),
-          id: data.id,
-        });
-      } else {
-        outStream.write({
-          jsonrpc: '2.0',
-          result,
-          id: data.id,
-        });
-      }
-    });
+      return;
+    }
+
+    if (error) {
+      outStream.write({
+        jsonrpc: '2.0',
+        error: serializeError(error, { shouldIncludeStack: true }),
+        id: data.id,
+      });
+    } else {
+      outStream.write({
+        jsonrpc: '2.0',
+        result,
+        id: data.id,
+      });
+    }
   };
 };
 

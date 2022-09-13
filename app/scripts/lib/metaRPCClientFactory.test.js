@@ -1,23 +1,22 @@
-import { strict as assert } from 'assert';
+/* eslint-disable jest/no-done-callback */
 import { obj as createThoughStream } from 'through2';
 import metaRPCClientFactory from './metaRPCClientFactory';
 
-describe('metaRPCClientFactory', function () {
-  it('should be able to make an rpc request with the method', function (done) {
+describe('metaRPCClientFactory', () => {
+  it('should be able to make an rpc request with the method', () => {
     const streamTest = createThoughStream((chunk) => {
-      assert.strictEqual(chunk.method, 'foo');
-      done();
+      expect(chunk.method).toStrictEqual('foo');
     });
     const metaRPCClient = metaRPCClientFactory(streamTest);
     metaRPCClient.foo();
   });
-  it('should be able to make an rpc request/response with the method and params and node-style callback', function (done) {
+  it('should be able to make an rpc request/response with the method and params and node-style callback', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
     metaRPCClient.foo('bar', (_, result) => {
-      assert.strictEqual(result, 'foobarbaz');
+      expect(result).toStrictEqual('foobarbaz');
       done();
     });
 
@@ -30,14 +29,14 @@ describe('metaRPCClientFactory', function () {
       });
     });
   });
-  it('should be able to make an rpc request/error with the method and params and node-style callback', function (done) {
+  it('should be able to make an rpc request/error with the method and params and node-style callback', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
     metaRPCClient.foo('bar', (err) => {
-      assert.strictEqual(err.message, 'foo-message');
-      assert.strictEqual(err.code, 1);
+      expect(err.message).toStrictEqual('foo-message');
+      expect(err.code).toStrictEqual(1);
       done();
     });
 
@@ -53,16 +52,16 @@ describe('metaRPCClientFactory', function () {
     });
   });
 
-  it('should be able to make an rpc request/response with the method and params and node-style callback with multiple instances of metaRPCClientFactory and the same connectionStream', function (done) {
+  it('should be able to make an rpc request/response with the method and params and node-style callback with multiple instances of metaRPCClientFactory and the same connectionStream', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call, followed by "baz" call on metaRPCClient2
     metaRPCClient.foo('bar', (_, result) => {
-      assert.strictEqual(result, 'foobarbaz');
+      expect(result).toStrictEqual('foobarbaz');
       metaRPCClient2.baz('bar', (err) => {
-        assert.strictEqual(err, null);
+        expect(err).toBeNull();
         done();
       });
     });
@@ -86,12 +85,12 @@ describe('metaRPCClientFactory', function () {
     });
   });
 
-  it('should be able to handle notifications', function (done) {
+  it('should be able to handle notifications', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onNotification((notification) => {
-      assert(notification.method, 'foobarbaz');
+      expect(notification.method).toStrictEqual('foobarbaz');
       done();
     });
 
@@ -103,12 +102,12 @@ describe('metaRPCClientFactory', function () {
     });
   });
 
-  it('should be able to handle errors with no id', function (done) {
+  it('should be able to handle errors with no id', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
-      assert(error.code, 1);
+      expect(error.code).toStrictEqual(1);
       done();
     });
 
@@ -121,12 +120,12 @@ describe('metaRPCClientFactory', function () {
     });
   });
 
-  it('should be able to handle errors with null id', function (done) {
+  it('should be able to handle errors with null id', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
-      assert(error.code, 1);
+      expect(error.code).toStrictEqual(1);
       done();
     });
 
@@ -138,5 +137,35 @@ describe('metaRPCClientFactory', function () {
         message: 'error msg',
       },
     });
+  });
+
+  it('should be able to handle no message within TIMEOUT secs for getState', async () => {
+    jest.useFakeTimers();
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    const errorPromise = new Promise((_resolve, reject) =>
+      metaRPCClient.getState('bad', (error, _) => {
+        reject(error);
+      }),
+    );
+
+    jest.runOnlyPendingTimers();
+    await expect(errorPromise).rejects.toThrow('No response from RPC');
+
+    jest.useRealTimers();
+  });
+
+  it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    metaRPCClient.foo('bar', (err) => {
+      expect(err).toBeInstanceOf(metaRPCClient.DisconnectError);
+      expect(err.message).toStrictEqual('disconnected');
+      done();
+    });
+
+    streamTest.emit('end');
   });
 });

@@ -9,7 +9,7 @@ import {
 
 import {
   calcGasTotal,
-  generateTokenTransferData,
+  generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 } from './send.utils';
@@ -53,10 +53,10 @@ describe('send utils', () => {
     });
   });
 
-  describe('generateTokenTransferData()', () => {
+  describe('generateERC20TransferData()', () => {
     it('should return undefined if not passed a send token', () => {
       expect(
-        generateTokenTransferData({
+        generateERC20TransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: undefined,
@@ -65,7 +65,7 @@ describe('send utils', () => {
     });
 
     it('should call abi.rawEncode with the correct params', () => {
-      generateTokenTransferData({
+      generateERC20TransferData({
         toAddress: 'mockAddress',
         amount: 'ab',
         sendToken: { address: '0x0' },
@@ -73,14 +73,14 @@ describe('send utils', () => {
       expect(rawEncode.mock.calls[0].toString()).toStrictEqual(
         [
           ['address', 'uint256'],
-          ['mockAddress', '0xab'],
+          ['0xmockAddress', '0xab'],
         ].toString(),
       );
     });
 
     it('should return encoded token transfer data', () => {
       expect(
-        generateTokenTransferData({
+        generateERC20TransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: { address: '0x0' },

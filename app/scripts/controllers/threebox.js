@@ -8,7 +8,7 @@ const Box = process.env.IN_TEST
 
 import log from 'loglevel';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import Migrator from '../lib/migrator';
 import migrations from '../migrations';
 import createOriginMiddleware from '../lib/createOriginMiddleware';
@@ -225,9 +225,8 @@ export default class ThreeBoxController {
       PreferencesController: preferences,
       AddressBookController: addressBook,
     };
-    const initialMigrationState = migrator.generateInitialState(
-      formattedStateBackup,
-    );
+    const initialMigrationState =
+      migrator.generateInitialState(formattedStateBackup);
     const migratedState = await migrator.migrateData(initialMigrationState);
     return {
       preferences: migratedState.data.PreferencesController,

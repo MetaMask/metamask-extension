@@ -1,0 +1,250 @@
+diff --git a/node_modules/typescript/lib/typescript.js b/node_modules/typescript/lib/typescript.js
+index 323de6f..367063a 100644
+--- a/node_modules/typescript/lib/typescript.js
++++ b/node_modules/typescript/lib/typescript.js
+@@ -24,11 +24,58 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+     return to.concat(ar || Array.prototype.slice.call(from));
+ };
+ var __assign = (this && this.__assign) || function () {
+-    __assign = Object.assign || function(t) {
++    __assign = function(t) {
+         for (var s, i = 1, n = arguments.length; i < n; i++) {
+             s = arguments[i];
+-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+-                t[p] = s[p];
++            for (var p in s) {
++              if (Object.prototype.hasOwnProperty.call(s, p)) {
++                /**
++                 * In the original version of this package, this was:
++                 *
++                 *     t[p] = s[p]
++                 *
++                 * Unfortunately LavaMoat trips up on this, so we have to change
++                 * it.
++                 *
++                 * Internally LavaMoat uses `lockdown` (part of SES, which is
++                 * part of Endo) to freeze modifications to "intrinsics" — core
++                 * things like `Object.prototype`, `Function.prototype`, etc.
++                 * This will cause code which is responsible for said
++                 * modifications to fail at runtime, because it makes the
++                 * properties of these intrinsics non-writable.
++                 *
++                 * The reason we have to change *this* code is that later on,
++                 * this `__assign` function is used to merge two objects, and
++                 * one of those objects contains a `constructor` property. As we
++                 * know, `constructor` is a special property, as it's a property
++                 * on `Object.prototype` that stores the constructor used to
++                 * create that object. But when used in this context, there is
++                 * nothing inherently special about it – it's just a property on
++                 * an object we're setting. Unfortunately, that's not how it's
++                 * being treated. Because `lockdown` freezes `Object.prototype`,
++                 * `Object.prototype.constructor` is non-writable, and due to a
++                 * "mistake" in the ES5 spec [1], that means `constructor` on
++                 * *any* object is non-writable too. So an error is thrown when
++                 * this code is executed.
++                 *
++                 * There is a way to get around this, which is to configure
++                 * `lockdown` with the option `overrideTaming: 'severe'`.
++                 * The mechanics of this option, as well as more information
++                 * about the "mistake" this option solves, are explained here
++                 * [2]. Unfortunately, we cannot enable this option because
++                 * LavaMoat is the one running `lockdown` here [3]. So to work
++                 * around this, we use `Object.defineProperty` to define the
++                 * property we want. As this does not use property assignment
++                 * (`object[key] = value`) but rather defines the property more
++                 * directly, this bypasses the "override mistake".
++                 *
++                 * [1]: https://web.archive.org/web/20141230041441/http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake
++                 * [2]: https://github.com/endojs/endo/blob/864f086f87e1e7ef78a401a7550ff0aeb664bba0/packages/ses/src/enable-property-overrides.js#L28
++                 * [3]: https://github.com/LavaMoat/LavaMoat/blob/7c15bf8ba34ba1a9ceb3ffe591b1b2bfb084bead/packages/core/src/kernelTemplate.js#L32-L43
++                 */
++                Object.defineProperty(t, p, Object.getOwnPropertyDescriptor(s, p))
++              }
++            }
+         }
+         return t;
+     };
+@@ -9820,87 +9867,94 @@ var ts;
+     }
+     ts.tokenIsIdentifierOrKeywordOrGreaterThan = tokenIsIdentifierOrKeywordOrGreaterThan;
+     /** @internal */
+-    ts.textToKeywordObj = (_a = {
+-            abstract: 126 /* AbstractKeyword */,
+-            any: 129 /* AnyKeyword */,
+-            as: 127 /* AsKeyword */,
+-            asserts: 128 /* AssertsKeyword */,
+-            bigint: 156 /* BigIntKeyword */,
+-            boolean: 132 /* BooleanKeyword */,
+-            break: 81 /* BreakKeyword */,
+-            case: 82 /* CaseKeyword */,
+-            catch: 83 /* CatchKeyword */,
+-            class: 84 /* ClassKeyword */,
+-            continue: 86 /* ContinueKeyword */,
+-            const: 85 /* ConstKeyword */
+-        },
+-        _a["" + "constructor"] = 133 /* ConstructorKeyword */,
+-        _a.debugger = 87 /* DebuggerKeyword */,
+-        _a.declare = 134 /* DeclareKeyword */,
+-        _a.default = 88 /* DefaultKeyword */,
+-        _a.delete = 89 /* DeleteKeyword */,
+-        _a.do = 90 /* DoKeyword */,
+-        _a.else = 91 /* ElseKeyword */,
+-        _a.enum = 92 /* EnumKeyword */,
+-        _a.export = 93 /* ExportKeyword */,
+-        _a.extends = 94 /* ExtendsKeyword */,
+-        _a.false = 95 /* FalseKeyword */,
+-        _a.finally = 96 /* FinallyKeyword */,
+-        _a.for = 97 /* ForKeyword */,
+-        _a.from = 154 /* FromKeyword */,
+-        _a.function = 98 /* FunctionKeyword */,
+-        _a.get = 135 /* GetKeyword */,
+-        _a.if = 99 /* IfKeyword */,
+-        _a.implements = 117 /* ImplementsKeyword */,
+-        _a.import = 100 /* ImportKeyword */,
+-        _a.in = 101 /* InKeyword */,
+-        _a.infer = 136 /* InferKeyword */,
+-        _a.instanceof = 102 /* InstanceOfKeyword */,
+-        _a.interface = 118 /* InterfaceKeyword */,
+-        _a.intrinsic = 137 /* IntrinsicKeyword */,
+-        _a.is = 138 /* IsKeyword */,
+-        _a.keyof = 139 /* KeyOfKeyword */,
+-        _a.let = 119 /* LetKeyword */,
+-        _a.module = 140 /* ModuleKeyword */,
+-        _a.namespace = 141 /* NamespaceKeyword */,
+-        _a.never = 142 /* NeverKeyword */,
+-        _a.new = 103 /* NewKeyword */,
+-        _a.null = 104 /* NullKeyword */,
+-        _a.number = 145 /* NumberKeyword */,
+-        _a.object = 146 /* ObjectKeyword */,
+-        _a.package = 120 /* PackageKeyword */,
+-        _a.private = 121 /* PrivateKeyword */,
+-        _a.protected = 122 /* ProtectedKeyword */,
+-        _a.public = 123 /* PublicKeyword */,
+-        _a.override = 157 /* OverrideKeyword */,
+-        _a.readonly = 143 /* ReadonlyKeyword */,
+-        _a.require = 144 /* RequireKeyword */,
+-        _a.global = 155 /* GlobalKeyword */,
+-        _a.return = 105 /* ReturnKeyword */,
+-        _a.set = 147 /* SetKeyword */,
+-        _a.static = 124 /* StaticKeyword */,
+-        _a.string = 148 /* StringKeyword */,
+-        _a.super = 106 /* SuperKeyword */,
+-        _a.switch = 107 /* SwitchKeyword */,
+-        _a.symbol = 149 /* SymbolKeyword */,
+-        _a.this = 108 /* ThisKeyword */,
+-        _a.throw = 109 /* ThrowKeyword */,
+-        _a.true = 110 /* TrueKeyword */,
+-        _a.try = 111 /* TryKeyword */,
+-        _a.type = 150 /* TypeKeyword */,
+-        _a.typeof = 112 /* TypeOfKeyword */,
+-        _a.undefined = 151 /* UndefinedKeyword */,
+-        _a.unique = 152 /* UniqueKeyword */,
+-        _a.unknown = 153 /* UnknownKeyword */,
+-        _a.var = 113 /* VarKeyword */,
+-        _a.void = 114 /* VoidKeyword */,
+-        _a.while = 115 /* WhileKeyword */,
+-        _a.with = 116 /* WithKeyword */,
+-        _a.yield = 125 /* YieldKeyword */,
+-        _a.async = 130 /* AsyncKeyword */,
+-        _a.await = 131 /* AwaitKeyword */,
+-        _a.of = 158 /* OfKeyword */,
+-        _a);
++    /**
++     * In the original version of this package, this object was built by
++     * initializing one object and then adding more properties to that object.
++     * This ends up throwing an error when this code is executed due to
++     * the same issue as explained at the top of this file: essentially,
++     * the `constructor` property of any object cannot be set due to the
++     * "override mistake". The fix for this is to just build one big object.
++     */
++    ts.textToKeywordObj = {
++        abstract: 126 /* AbstractKeyword */,
++        any: 129 /* AnyKeyword */,
++        as: 127 /* AsKeyword */,
++        asserts: 128 /* AssertsKeyword */,
++        bigint: 156 /* BigIntKeyword */,
++        boolean: 132 /* BooleanKeyword */,
++        break: 81 /* BreakKeyword */,
++        case: 82 /* CaseKeyword */,
++        catch: 83 /* CatchKeyword */,
++        class: 84 /* ClassKeyword */,
++        continue: 86 /* ContinueKeyword */,
++        const: 85 /* ConstKeyword */,
++        ["constructor"]: 133 /* ConstructorKeyword */,
++        debugger: 87 /* DebuggerKeyword */,
++        declare: 134 /* DeclareKeyword */,
++        default: 88 /* DefaultKeyword */,
++        delete: 89 /* DeleteKeyword */,
++        do: 90 /* DoKeyword */,
++        else: 91 /* ElseKeyword */,
++        enum: 92 /* EnumKeyword */,
++        export: 93 /* ExportKeyword */,
++        extends: 94 /* ExtendsKeyword */,
++        false: 95 /* FalseKeyword */,
++        finally: 96 /* FinallyKeyword */,
++        for: 97 /* ForKeyword */,
++        from: 154 /* FromKeyword */,
++        function: 98 /* FunctionKeyword */,
++        get: 135 /* GetKeyword */,
++        if: 99 /* IfKeyword */,
++        implements: 117 /* ImplementsKeyword */,
++        import: 100 /* ImportKeyword */,
++        in: 101 /* InKeyword */,
++        infer: 136 /* InferKeyword */,
++        instanceof: 102 /* InstanceOfKeyword */,
++        interface: 118 /* InterfaceKeyword */,
++        intrinsic: 137 /* IntrinsicKeyword */,
++        is: 138 /* IsKeyword */,
++        keyof: 139 /* KeyOfKeyword */,
++        let: 119 /* LetKeyword */,
++        module: 140 /* ModuleKeyword */,
++        namespace: 141 /* NamespaceKeyword */,
++        never: 142 /* NeverKeyword */,
++        new: 103 /* NewKeyword */,
++        null: 104 /* NullKeyword */,
++        number: 145 /* NumberKeyword */,
++        object: 146 /* ObjectKeyword */,
++        package: 120 /* PackageKeyword */,
++        private: 121 /* PrivateKeyword */,
++        protected: 122 /* ProtectedKeyword */,
++        public: 123 /* PublicKeyword */,
++        override: 157 /* OverrideKeyword */,
++        readonly: 143 /* ReadonlyKeyword */,
++        require: 144 /* RequireKeyword */,
++        global: 155 /* GlobalKeyword */,
++        return: 105 /* ReturnKeyword */,
++        set: 147 /* SetKeyword */,
++        static: 124 /* StaticKeyword */,
++        string: 148 /* StringKeyword */,
++        super: 106 /* SuperKeyword */,
++        switch: 107 /* SwitchKeyword */,
++        symbol: 149 /* SymbolKeyword */,
++        this: 108 /* ThisKeyword */,
++        throw: 109 /* ThrowKeyword */,
++        true: 110 /* TrueKeyword */,
++        try: 111 /* TryKeyword */,
++        type: 150 /* TypeKeyword */,
++        typeof: 112 /* TypeOfKeyword */,
++        undefined: 151 /* UndefinedKeyword */,
++        unique: 152 /* UniqueKeyword */,
++        unknown: 153 /* UnknownKeyword */,
++        var: 113 /* VarKeyword */,
++        void: 114 /* VoidKeyword */,
++        while: 115 /* WhileKeyword */,
++        with: 116 /* WithKeyword */,
++        yield: 125 /* YieldKeyword */,
++        async: 130 /* AsyncKeyword */,
++        await: 131 /* AwaitKeyword */,
++        of: 158 /* OfKeyword */
++    };
+     var textToKeyword = new ts.Map(ts.getEntries(ts.textToKeywordObj));
+     var textToToken = new ts.Map(ts.getEntries(__assign(__assign({}, ts.textToKeywordObj), { "{": 18 /* OpenBraceToken */, "}": 19 /* CloseBraceToken */, "(": 20 /* OpenParenToken */, ")": 21 /* CloseParenToken */, "[": 22 /* OpenBracketToken */, "]": 23 /* CloseBracketToken */, ".": 24 /* DotToken */, "...": 25 /* DotDotDotToken */, ";": 26 /* SemicolonToken */, ",": 27 /* CommaToken */, "<": 29 /* LessThanToken */, ">": 31 /* GreaterThanToken */, "<=": 32 /* LessThanEqualsToken */, ">=": 33 /* GreaterThanEqualsToken */, "==": 34 /* EqualsEqualsToken */, "!=": 35 /* ExclamationEqualsToken */, "===": 36 /* EqualsEqualsEqualsToken */, "!==": 37 /* ExclamationEqualsEqualsToken */, "=>": 38 /* EqualsGreaterThanToken */, "+": 39 /* PlusToken */, "-": 40 /* MinusToken */, "**": 42 /* AsteriskAsteriskToken */, "*": 41 /* AsteriskToken */, "/": 43 /* SlashToken */, "%": 44 /* PercentToken */, "++": 45 /* PlusPlusToken */, "--": 46 /* MinusMinusToken */, "<<": 47 /* LessThanLessThanToken */, "</": 30 /* LessThanSlashToken */, ">>": 48 /* GreaterThanGreaterThanToken */, ">>>": 49 /* GreaterThanGreaterThanGreaterThanToken */, "&": 50 /* AmpersandToken */, "|": 51 /* BarToken */, "^": 52 /* CaretToken */, "!": 53 /* ExclamationToken */, "~": 54 /* TildeToken */, "&&": 55 /* AmpersandAmpersandToken */, "||": 56 /* BarBarToken */, "?": 57 /* QuestionToken */, "??": 60 /* QuestionQuestionToken */, "?.": 28 /* QuestionDotToken */, ":": 58 /* ColonToken */, "=": 63 /* EqualsToken */, "+=": 64 /* PlusEqualsToken */, "-=": 65 /* MinusEqualsToken */, "*=": 66 /* AsteriskEqualsToken */, "**=": 67 /* AsteriskAsteriskEqualsToken */, "/=": 68 /* SlashEqualsToken */, "%=": 69 /* PercentEqualsToken */, "<<=": 70 /* LessThanLessThanEqualsToken */, ">>=": 71 /* GreaterThanGreaterThanEqualsToken */, ">>>=": 72 /* GreaterThanGreaterThanGreaterThanEqualsToken */, "&=": 73 /* AmpersandEqualsToken */, "|=": 74 /* BarEqualsToken */, "^=": 78 /* CaretEqualsToken */, "||=": 75 /* BarBarEqualsToken */, "&&=": 76 /* AmpersandAmpersandEqualsToken */, "??=": 77 /* QuestionQuestionEqualsToken */, "@": 59 /* AtToken */, "#": 62 /* HashToken */, "`": 61 /* BacktickToken */ })));
+     /*
+@@ -159858,6 +159912,7 @@ var ts;
+         delete Object.prototype.__magic__;
+     }
+     catch (error) {
++        throw error;
+         // In IE8, Object.defineProperty only works on DOM objects.
+         // If we hit this code path, assume `window` exists.
+         //@ts-ignore

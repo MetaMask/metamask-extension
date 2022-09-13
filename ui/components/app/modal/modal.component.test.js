@@ -11,7 +11,7 @@ describe('Modal Component', () => {
     expect(wrapper.find('.modal-container')).toHaveLength(1);
     const buttons = wrapper.find(Button);
     expect(buttons).toHaveLength(1);
-    expect(buttons.at(0).props().type).toStrictEqual('secondary');
+    expect(buttons.at(0).props().type).toStrictEqual('primary');
   });
 
   it('should render a modal with a cancel and a submit button', () => {
@@ -31,13 +31,13 @@ describe('Modal Component', () => {
     const cancelButton = buttons.at(0);
     const submitButton = buttons.at(1);
 
-    expect(cancelButton.props().type).toStrictEqual('default');
+    expect(cancelButton.props().type).toStrictEqual('secondary');
     expect(cancelButton.props().children).toStrictEqual('Cancel');
     expect(handleCancel.callCount).toStrictEqual(0);
     cancelButton.simulate('click');
     expect(handleCancel.callCount).toStrictEqual(1);
 
-    expect(submitButton.props().type).toStrictEqual('secondary');
+    expect(submitButton.props().type).toStrictEqual('primary');
     expect(submitButton.props().children).toStrictEqual('Submit');
     expect(handleSubmit.callCount).toStrictEqual(0);
     submitButton.simulate('click');
@@ -49,7 +49,7 @@ describe('Modal Component', () => {
       <Modal
         onCancel={() => undefined}
         cancelText="Cancel"
-        cancelType="secondary"
+        cancelType="default"
         onSubmit={() => undefined}
         submitText="Submit"
         submitType="confirm"
@@ -58,7 +58,7 @@ describe('Modal Component', () => {
 
     const buttons = wrapper.find(Button);
     expect(buttons).toHaveLength(2);
-    expect(buttons.at(0).props().type).toStrictEqual('secondary');
+    expect(buttons.at(0).props().type).toStrictEqual('default');
     expect(buttons.at(1).props().type).toStrictEqual('confirm');
   });
 

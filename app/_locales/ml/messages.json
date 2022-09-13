@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "നിരസിക്കുക"
+  },
   "about": {
     "message": "വിവരം"
   },
@@ -11,6 +14,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "back": {
     "message": "പിന്നോട്ട്"
@@ -35,6 +46,9 @@
   },
   "create": {
     "message": "സൃഷ്‌ടിക്കുക"
+  },
+  "custom": {
+    "message": "നൂതനം"
   },
   "delete": {
     "message": "ഇല്ലാതാക്കുക"

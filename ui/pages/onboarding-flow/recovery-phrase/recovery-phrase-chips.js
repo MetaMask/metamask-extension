@@ -15,18 +15,19 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
-  seedPhrase,
-  seedPhraseRevealed,
+  secretRecoveryPhrase,
+  phraseRevealed,
   confirmPhase,
   setInputValue,
   inputValue,
   indicesToCheck,
+  hiddenPhrase,
 }) {
   const t = useI18nContext();
-  const hideSeedPhrase = seedPhraseRevealed === false;
+  const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
-      borderColor={COLORS.UI2}
+      borderColor={COLORS.BORDER_MUTED}
       borderStyle={BORDER_STYLE.SOLID}
       padding={4}
       borderWidth={1}
@@ -36,11 +37,12 @@ export default function RecoveryPhraseChips({
       className="recovery-phrase__secret"
     >
       <div
+        data-testid="recovery-phrase-chips"
         className={classnames('recovery-phrase__chips', {
           'recovery-phrase__chips--hidden': hideSeedPhrase,
         })}
       >
-        {seedPhrase.map((word, index) => {
+        {secretRecoveryPhrase.map((word, index) => {
           if (
             confirmPhase &&
             indicesToCheck &&
@@ -52,7 +54,8 @@ export default function RecoveryPhraseChips({
                   {`${index + 1}.`}
                 </div>
                 <ChipWithInput
-                  borderColor={COLORS.PRIMARY1}
+                  dataTestId={`recovery-phrase-input-${index}`}
+                  borderColor={COLORS.PRIMARY_DEFAULT}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
                   setInputValue={(value) => {
@@ -67,7 +70,11 @@ export default function RecoveryPhraseChips({
               <div className="recovery-phrase__chip-item__number">
                 {`${index + 1}.`}
               </div>
-              <Chip className="recovery-phrase__chip" borderColor={COLORS.UI3}>
+              <Chip
+                dataTestId={`recovery-phrase-chip-${index}`}
+                className="recovery-phrase__chip"
+                borderColor={COLORS.BORDER_DEFAULT}
+              >
                 {word}
               </Chip>
             </div>
@@ -77,14 +84,18 @@ export default function RecoveryPhraseChips({
 
       {hideSeedPhrase && (
         <div className="recovery-phrase__secret-blocker">
-          <i className="far fa-eye-slash" color="white" />
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.WHITE}
-            className="recovery-phrase__secret-blocker--text"
-          >
-            {t('makeSureNoOneWatching')}
-          </Typography>
+          {!hiddenPhrase && (
+            <>
+              <i className="far fa-eye" color="white" />
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.OVERLAY_INVERSE}
+                className="recovery-phrase__secret-blocker--text"
+              >
+                {t('makeSureNoOneWatching')}
+              </Typography>
+            </>
+          )}
         </div>
       )}
     </Box>
@@ -92,10 +103,11 @@ export default function RecoveryPhraseChips({
 }
 
 RecoveryPhraseChips.propTypes = {
-  seedPhrase: PropTypes.array,
-  seedPhraseRevealed: PropTypes.bool,
+  secretRecoveryPhrase: PropTypes.array,
+  phraseRevealed: PropTypes.bool,
   confirmPhase: PropTypes.bool,
   setInputValue: PropTypes.func,
   inputValue: PropTypes.string,
   indicesToCheck: PropTypes.array,
+  hiddenPhrase: PropTypes.bool,
 };

@@ -11,23 +11,26 @@ import {
 } from '../ducks/metamask/metamask';
 
 import { conversionUtil } from '../../shared/modules/conversion.utils';
+import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
- * @typedef {Object} UseCurrencyOptions
- * @property {string} [displayValue]     - When present is used in lieu of formatting the inputValue
- * @property {string} [prefix]           - String to prepend to the final result
+ *
+ * @typedef {object} UseCurrencyOptions
+ * @property {string} [displayValue] - When present is used in lieu of formatting the inputValue
+ * @property {string} [prefix] - String to prepend to the final result
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
- * @property {string} [denomination]     - Denomination (wei, gwei) to convert to for display
- * @property {string} [currency]         - Currency type to convert to. Will override nativeCurrency
+ * @property {string} [denomination] - Denomination (wei, gwei) to convert to for display
+ * @property {string} [currency] - Currency type to convert to. Will override nativeCurrency
  */
 
 /**
  * Defines the return shape of the second value in the tuple
- * @typedef {Object} CurrencyDisplayParts
- * @property {string} [prefix]  - string to prepend to the value for display
- * @property {string} value     - string representing the value, formatted for display
- * @property {string} [suffix]  - string to append to the value for display
+ *
+ * @typedef {object} CurrencyDisplayParts
+ * @property {string} [prefix] - string to prepend to the value for display
+ * @property {string} value - string representing the value, formatted for display
+ * @property {string} [suffix] - string to append to the value for display
  */
 
 /**
@@ -36,9 +39,10 @@ import { conversionUtil } from '../../shared/modules/conversion.utils';
  * Given a hexadecimal encoded value string and an object of parameters used for formatting the
  * display, produce both a fully formed string and the pieces of that string used for displaying
  * the currency to the user
- * @param {string} inputValue          - The value to format for display
- * @param {UseCurrencyOptions} opts    - An object for options to format the inputValue
- * @return {[string, CurrencyDisplayParts]}
+ *
+ * @param {string} inputValue - The value to format for display
+ * @param {UseCurrencyOptions} opts - An object for options to format the inputValue
+ * @returns {[string, CurrencyDisplayParts]}
  */
 export function useCurrencyDisplay(
   inputValue,
@@ -92,7 +96,15 @@ export function useCurrencyDisplay(
   let suffix;
 
   if (!opts.hideLabel) {
-    suffix = opts.suffix || currency?.toUpperCase();
+    // if the currency we are displaying is the native currency of one of our preloaded test-nets (rinkeby, ropsten etc.)
+    // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
+    const currencyTickerSymbol = Object.values(
+      TEST_NETWORK_TICKER_MAP,
+    ).includes(currency)
+      ? currency
+      : currency?.toUpperCase();
+
+    suffix = opts.suffix || currencyTickerSymbol;
   }
 
   return [

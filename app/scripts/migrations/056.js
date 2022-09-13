@@ -15,14 +15,14 @@ export default {
 
     const { PreferencesController } = versionedData.data;
 
-    if (Array.isArray(PreferencesController.tokens)) {
+    if (Array.isArray(PreferencesController?.tokens)) {
       PreferencesController.tokens = PreferencesController.tokens.filter(
         ({ address }) => address,
       );
     }
 
     if (
-      PreferencesController.accountTokens &&
+      PreferencesController?.accountTokens &&
       typeof PreferencesController.accountTokens === 'object'
     ) {
       Object.keys(PreferencesController.accountTokens).forEach((account) => {
@@ -30,17 +30,16 @@ export default {
           PreferencesController.accountTokens[account],
         );
         chains.forEach((chain) => {
-          PreferencesController.accountTokens[account][
-            chain
-          ] = PreferencesController.accountTokens[account][chain].filter(
-            ({ address }) => address,
-          );
+          PreferencesController.accountTokens[account][chain] =
+            PreferencesController.accountTokens[account][chain].filter(
+              ({ address }) => address,
+            );
         });
       });
     }
 
     if (
-      PreferencesController.assetImages &&
+      PreferencesController?.assetImages &&
       'undefined' in PreferencesController.assetImages
     ) {
       delete PreferencesController.assetImages.undefined;

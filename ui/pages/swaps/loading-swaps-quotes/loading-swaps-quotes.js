@@ -4,59 +4,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
+import isEqual from 'lodash/isEqual';
 import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
-import AggregatorLogo from './aggregator-logo';
-
-// These locations reference where we want the top-left corner of the logo div to appear in relation to the
-// centre point of the fox
-const AGGREGATOR_LOCATIONS = [
-  { x: -125, y: -75 },
-  { x: 30, y: -75 },
-  { x: -145, y: 0 },
-  { x: 50, y: 0 },
-  { x: -135, y: 46 },
-  { x: 40, y: 46 },
-];
-
-function getRandomLocations(numberOfLocations) {
-  const randomLocations = shuffle(AGGREGATOR_LOCATIONS);
-  if (numberOfLocations <= AGGREGATOR_LOCATIONS.length) {
-    return randomLocations.slice(0, numberOfLocations);
-  }
-  const numberOfExtraLocations =
-    numberOfLocations - AGGREGATOR_LOCATIONS.length;
-  return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)];
-}
-
-function getMascotTarget(aggregatorName, centerPoint, aggregatorLocationMap) {
-  const location = aggregatorLocationMap[aggregatorName];
-
-  if (!location || !centerPoint) {
-    return centerPoint ?? {};
-  }
-
-  // The aggregator logos are 94px x 40px. For the fox to look at the center of each logo, the target needs to be
-  // the coordinates for the centre point of the fox + the desired top and left coordinates of the logo + half
-  // the height and width of the logo.
-  return {
-    x: location.x + centerPoint.x + 47,
-    y: location.y + centerPoint.y + 20,
-  };
-}
 
 export default function LoadingSwapsQuotes({
   aggregatorMetadata,
@@ -64,18 +30,25 @@ export default function LoadingSwapsQuotes({
   onDone,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
@@ -86,6 +59,9 @@ export default function LoadingSwapsQuotes({
       response_time: Date.now() - quotesFetchStartTime,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   };
 
@@ -97,20 +73,6 @@ export default function LoadingSwapsQuotes({
   const currentMascotContainer = mascotContainer.current;
 
   const [quoteCount, updateQuoteCount] = useState(0);
-  // is an array of randomized items from AGGREGATOR_LOCATIONS, containing
-  // numberOfQuotes number of items it is randomized so that the order in
-  // which the fox looks at locations is random
-  const [aggregatorLocations] = useState(() =>
-    getRandomLocations(numberOfQuotes),
-  );
-  const _aggregatorLocationMap = aggregatorNames.reduce(
-    (nameLocationMap, name, index) => ({
-      ...nameLocationMap,
-      [name]: aggregatorLocations[index],
-    }),
-    {},
-  );
-  const [aggregatorLocationMap] = useState(_aggregatorLocationMap);
   const [midPointTarget, setMidpointTarget] = useState(null);
 
   useEffect(() => {
@@ -122,7 +84,7 @@ export default function LoadingSwapsQuotes({
 
     if (loadingComplete) {
       // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.2s each
-      timeoutLength = 200;
+      timeoutLength = 20;
     } else {
       // If loading is not complete, we display remaining logos/names/fox looks at random intervals between 0.5s and 2s, to simulate the
       // sort of loading a user would experience in most async scenarios
@@ -143,12 +105,8 @@ export default function LoadingSwapsQuotes({
 
   useEffect(() => {
     if (currentMascotContainer) {
-      const {
-        top,
-        left,
-        width,
-        height,
-      } = currentMascotContainer.getBoundingClientRect();
+      const { top, left, width, height } =
+        currentMascotContainer.getBoundingClientRect();
       const center = { x: left + width / 2, y: top + height / 2 };
       setMidpointTarget(center);
     }
@@ -160,20 +118,14 @@ export default function LoadingSwapsQuotes({
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>
-              {t('swapQuoteNofN', [
+              {t('swapFetchingQuoteNofN', [
                 Math.min(quoteCount + 1, numberOfQuotes),
                 numberOfQuotes,
               ])}
             </span>
           </div>
           <div className="loading-swaps-quotes__quote-name-check">
-            <span>
-              {quoteCount === numberOfQuotes
-                ? t('swapFinalizing')
-                : t('swapCheckingQuote', [
-                    aggregatorMetadata[aggregatorNames[quoteCount]].title,
-                  ])}
-            </span>
+            <span>{t('swapFetchingQuotes')}</span>
           </div>
           <div className="loading-swaps-quotes__loading-bar-container">
             <div
@@ -194,44 +146,15 @@ export default function LoadingSwapsQuotes({
               animationEventEmitter={animationEventEmitter.current}
               width="90"
               height="90"
-              followMouse={false}
-              lookAtTarget={getMascotTarget(
-                aggregatorNames[quoteCount],
-                midPointTarget,
-                aggregatorLocationMap,
-              )}
+              lookAtTarget={midPointTarget}
             />
           </div>
-          {currentMascotContainer &&
-            midPointTarget &&
-            aggregatorNames.map((aggName) => (
-              <div
-                className={classnames('loading-swaps-quotes__logo', {
-                  'loading-swaps-quotes__logo--transition':
-                    aggName === aggregatorNames[quoteCount],
-                })}
-                style={{
-                  opacity: aggName === aggregatorNames[quoteCount] ? 1 : 0,
-                  top:
-                    aggregatorLocationMap[aggName]?.y + midPointTarget?.y ?? 0,
-                  left:
-                    aggregatorLocationMap[aggName]?.x + midPointTarget?.x ?? 0,
-                }}
-                key={`aggregator-logo-${aggName}`}
-              >
-                <AggregatorLogo
-                  aggregatorName={aggName}
-                  icon={aggregatorMetadata[aggName]?.icon}
-                  color={aggregatorMetadata[aggName]?.color}
-                />
-              </div>
-            ))}
         </div>
       </div>
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          metaMetricsEvent(quotesRequestCancelledEventConfig);
+          trackEvent(quotesRequestCancelledEventConfig);
           await dispatch(navigateBackToBuildQuote(history));
         }}
         hideCancel
@@ -245,6 +168,7 @@ LoadingSwapsQuotes.propTypes = {
   onDone: PropTypes.func.isRequired,
   aggregatorMetadata: PropTypes.objectOf(
     PropTypes.shape({
+      title: PropTypes.string,
       color: PropTypes.string,
       icon: PropTypes.string,
     }),

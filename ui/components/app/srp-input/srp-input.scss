@@ -1,0 +1,72 @@
+.import-srp {
+  &__container {
+    display: grid;
+    grid-template-areas:
+      'title dropdown'
+      'paste-tip paste-tip'
+      'input input'
+      'error error'
+      'too-many-words-error too-many-words-error';
+  }
+
+  @include screen-md-max {
+    &__container {
+      grid-template-areas:
+        'title'
+        'dropdown'
+        'paste-tip'
+        'input'
+        'error'
+        'too-many-words-error';
+    }
+  }
+
+  &__srp-label {
+    grid-area: title;
+    text-align: center;
+  }
+
+  &__number-of-words-dropdown {
+    grid-area: dropdown;
+  }
+
+  &__paste-tip {
+    margin: 24px 0;
+    grid-area: paste-tip;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &__srp {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-area: input;
+  }
+
+  @include screen-md-max {
+    &__srp {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__srp-word {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+  }
+
+  &__srp-word-label {
+    width: 2em;
+  }
+
+  &__srp-error {
+    margin-top: 4px;
+    grid-area: error;
+  }
+
+  &__srp-too-many-words-error {
+    margin-top: 4px;
+    grid-area: too-many-words-error;
+  }
+}

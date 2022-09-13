@@ -7,7 +7,6 @@
   flex: 0 0 auto;
 
   &--default {
-    border-bottom: 1px solid $geyser;
     height: 42px;
 
     .sender-to-recipient {
@@ -28,6 +27,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border-bottom: 1px solid var(--color-border-muted);
 
         &--sender {
           padding-right: 30px;
@@ -36,7 +36,7 @@
 
         &--recipient {
           padding-left: 30px;
-          border-left: 1px solid $geyser;
+          border-left: 1px solid var(--color-border-muted);
 
           &-with-address {
             cursor: pointer;
@@ -57,19 +57,23 @@
       }
 
       &__arrow-circle {
-        background: $white;
+        background: var(--color-background-default);
         padding: 5px;
-        border: 1px solid $geyser;
+        border: 1px solid var(--color-border-muted);
         border-radius: 20px;
         height: 32px;
         width: 32px;
         display: flex;
         justify-content: center;
         align-items: center;
+
+        &__icon {
+          color: var(--color-icon-muted);
+        }
       }
 
       &__name {
-        @include H6;
+        @include H7;
 
         padding-left: 14px;
         overflow: hidden;
@@ -103,12 +107,13 @@
         justify-content: center;
         flex: 1;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
         padding: 6px;
-        background: $white;
+        background: var(--color-background-default);
         cursor: pointer;
         min-width: 0;
-        color: $dusty-gray;
+        color: var(--color-text-default);
+        border: 1px solid var(--color-border-default);
       }
 
       &__tooltip-wrapper {
@@ -163,7 +168,8 @@
         padding: 6px;
         cursor: pointer;
         min-width: 0;
-        color: $dusty-gray;
+        color: var(--color-text-default);
+        border: 1px solid var(--color-border-default);
       }
 
       &__tooltip-wrapper {
@@ -178,6 +184,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        margin-inline-start: 8px;
 
         [dir='rtl'] & {
           /*rtl:ignore*/

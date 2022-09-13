@@ -2,14 +2,14 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 
 /**
- * @typedef {Object} InitState
- * @property {Boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
+ * @typedef {object} InitState
+ * @property {boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
+ * @property {boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
  */
 
 /**
- * @typedef {Object} OnboardingOptions
+ * @typedef {object} OnboardingOptions
  * @property {InitState} initState The initial controller state
- * @property {PreferencesController} preferencesController Controller for managing user perferences
  */
 
 /**
@@ -20,7 +20,7 @@ export default class OnboardingController {
   /**
    * Creates a new controller instance
    *
-   * @param {OnboardingOptions} [opts] Controller configuration parameters
+   * @param {OnboardingOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
     const initialTransientState = {
@@ -28,27 +28,38 @@ export default class OnboardingController {
     };
     const initState = {
       seedPhraseBackedUp: null,
+      firstTimeFlowType: null,
+      completedOnboarding: false,
       ...opts.initState,
       ...initialTransientState,
     };
     this.store = new ObservableStore(initState);
-    this.preferencesController = opts.preferencesController;
-    this.completedOnboarding = this.preferencesController.store.getState().completedOnboarding;
-
-    this.preferencesController.store.subscribe(({ completedOnboarding }) => {
-      if (completedOnboarding !== this.completedOnboarding) {
-        this.completedOnboarding = completedOnboarding;
-        if (completedOnboarding) {
-          this.store.updateState(initialTransientState);
-        }
-      }
-    });
   }
 
   setSeedPhraseBackedUp(newSeedPhraseBackUpState) {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
     });
+  }
+
+  // /**
+  //  * Sets the completedOnboarding state to true, indicating that the user has completed the
+  //  * onboarding process.
+  //  */
+  completeOnboarding() {
+    this.store.updateState({
+      completedOnboarding: true,
+    });
+    return Promise.resolve(true);
+  }
+
+  /**
+   * Setter for the `firstTimeFlowType` property
+   *
+   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
+   */
+  setFirstTimeFlowType(type) {
+    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**
@@ -58,7 +69,7 @@ export default class OnboardingController {
    * @param {string} tabId - The id of the tab registering
    */
   registerOnboarding = async (location, tabId) => {
-    if (this.completedOnboarding) {
+    if (this.store.getState().completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }

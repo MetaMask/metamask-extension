@@ -2,7 +2,7 @@
  * Parse a string as a port number. Non-integers or invalid ports will
  * result in an error being thrown.
  *
- * @param {String} portString - The string to parse as a port number
+ * @param {string} portString - The string to parse as a port number
  * @returns {number} The parsed port number
  */
 function parsePort(portString) {

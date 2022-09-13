@@ -1,30 +1,34 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import contractMap from '@metamask/contract-metadata';
+import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { isEqual, shuffle, uniqBy } from 'lodash';
+import { isEqual, uniqBy } from 'lodash';
+import { formatIconUrlWithProxy } from '@metamask/controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
+  getTokenList,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import {
+  ETH_SYMBOL,
+  MATIC_SYMBOL,
+  BNB_SYMBOL,
+  AVALANCHE_SYMBOL,
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
-
-const tokenList = shuffle(
-  Object.entries(contractMap)
-    .map(([address, tokenData]) => ({
-      ...tokenData,
-      address: address.toLowerCase(),
-    }))
-    .filter((tokenData) => Boolean(tokenData.erc20)),
-);
 
 export function getRenderableTokenData(
   token,
@@ -32,39 +36,57 @@ export function getRenderableTokenData(
   conversionRate,
   currentCurrency,
   chainId,
+  tokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
-
+  let contractExchangeRate;
+  if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
+    contractExchangeRate = 1;
+  } else if (string && conversionRate > 0) {
+    // This condition improves performance significantly, because it only gets a contract exchange rate
+    // if a token amount is truthy and conversion rate is higher than 0.
+    contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
+  }
   const formattedFiat =
     getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[address],
+      contractExchangeRate,
       conversionRate,
       currentCurrency,
       string,
       symbol,
       true,
     ) || '';
-  const rawFiat =
-    getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[address],
-      conversionRate,
-      currentCurrency,
-      string,
-      symbol,
-      false,
-    ) || '';
-  const usedIconUrl =
-    iconUrl ||
-    (contractMap[toChecksumHexAddress(address)] &&
-      `images/contract/${contractMap[toChecksumHexAddress(address)].logo}`);
+  const rawFiat = formattedFiat
+    ? getTokenFiatAmount(
+        contractExchangeRate,
+        conversionRate,
+        currentCurrency,
+        string,
+        symbol,
+        false,
+      )
+    : '';
+
+  const chainIdForTokenIcons =
+    chainId === GOERLI_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
+
+  const tokenIconUrl =
+    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === ETH_SYMBOL && chainId === GOERLI_CHAIN_ID) ||
+    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
+    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
+    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+      ? iconUrl
+      : formatIconUrlWithProxy({
+          chainId: chainIdForTokenIcons,
+          tokenAddress: address || '',
+        });
+  const usedIconUrl = tokenIconUrl || token?.image;
+
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name || contractMap[toChecksumHexAddress(address)]?.name,
+    secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -72,17 +94,23 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name: name || contractMap[toChecksumHexAddress(address)]?.name,
+    name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
   };
 }
 
-export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
+export function useTokensToSearch({
+  usersTokens = [],
+  topTokens = {},
+  shuffledTokensList,
+  tokenBucketPriority = TOKEN_BUCKET_PRIORITY.OWNED,
+}) {
   const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
@@ -93,16 +121,17 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
     conversionRate,
     currentCurrency,
     chainId,
+    tokenList,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
-  const swapsTokens = useSelector(getSwapsTokens) || [];
+  const swapsTokens = useSelector(getSwapsTokens, isEqual) || [];
 
   const tokensToSearch = swapsTokens.length
     ? swapsTokens
     : [
         memoizedDefaultToken,
-        ...tokenList.filter(
+        ...shuffledTokensList.filter(
           (token) => token.symbol !== memoizedDefaultToken.symbol,
         ),
       ];
@@ -110,7 +139,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
   return useMemo(() => {
     const usersTokensAddressMap = memoizedUsersToken.reduce(
-      (acc, token) => ({ ...acc, [token.address]: token }),
+      (acc, token) => ({ ...acc, [token.address.toLowerCase()]: token }),
       {},
     );
 
@@ -121,27 +150,41 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
     };
 
     const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
-      [...memoizedTokensToSearch, ...memoizedUsersToken],
-      'address',
+      [memoizedDefaultToken, ...memoizedTokensToSearch, ...memoizedUsersToken],
+      (token) => token.address.toLowerCase(),
     );
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...usersTokensAddressMap[token.address], ...token },
+        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
         chainId,
+        tokenList,
       );
-      if (
+      if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+        if (
+          isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+          usersTokensAddressMap[token.address.toLowerCase()]
+        ) {
+          tokensToSearchBuckets.owned.push(renderableDataToken);
+        } else if (memoizedTopTokens[token.address.toLowerCase()]) {
+          tokensToSearchBuckets.top[
+            memoizedTopTokens[token.address.toLowerCase()].index
+          ] = renderableDataToken;
+        } else {
+          tokensToSearchBuckets.others.push(renderableDataToken);
+        }
+      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
+        tokensToSearchBuckets.top[
+          memoizedTopTokens[token.address.toLowerCase()].index
+        ] = renderableDataToken;
+      } else if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        usersTokensAddressMap[token.address]
+        usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
-      } else if (memoizedTopTokens[token.address]) {
-        tokensToSearchBuckets.top[
-          memoizedTopTokens[token.address].index
-        ] = renderableDataToken;
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
       }
@@ -153,18 +196,28 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       },
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
+    if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+      return [
+        ...tokensToSearchBuckets.owned,
+        ...tokensToSearchBuckets.top,
+        ...tokensToSearchBuckets.others,
+      ];
+    }
     return [
-      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,
+      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.others,
     ];
   }, [
     memoizedTokensToSearch,
     memoizedUsersToken,
+    memoizedTopTokens,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    memoizedTopTokens,
+    memoizedDefaultToken,
     chainId,
+    tokenList,
+    tokenBucketPriority,
   ]);
 }

@@ -1,0 +1,12 @@
+.snap-remove-warning {
+  color: var(--color-text-default);
+
+  &__footer-button {
+    height: 40px;
+    margin-inline-end: 24px;
+
+    &:last-of-type {
+      margin-inline-end: 0;
+    }
+  }
+}

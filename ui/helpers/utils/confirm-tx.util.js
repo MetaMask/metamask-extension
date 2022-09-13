@@ -148,3 +148,42 @@ export function roundExponential(decimalString) {
     ? bigNumberValue.toPrecision(PRECISION)
     : decimalString;
 }
+
+export function areDappSuggestedAndTxParamGasFeesTheSame(txData = {}) {
+  const { txParams, dappSuggestedGasFees } = txData;
+  const {
+    gasPrice: txParamsGasPrice,
+    maxFeePerGas: txParamsMaxFeePerGas,
+    maxPriorityFeePerGas: txParamsMaxPriorityFeePerGas,
+  } = txParams || {};
+  const {
+    gasPrice: dappGasPrice,
+    maxFeePerGas: dappMaxFeePerGas,
+    maxPriorityFeePerGas: dappMaxPriorityFeePerGas,
+  } = dappSuggestedGasFees || {};
+
+  const txParamsDoesNotHaveFeeProperties =
+    !txParamsGasPrice && !txParamsMaxFeePerGas && !txParamsMaxPriorityFeePerGas;
+  const dappDidNotSuggestFeeProperties =
+    !dappGasPrice && !dappMaxFeePerGas && !dappMaxPriorityFeePerGas;
+  if (txParamsDoesNotHaveFeeProperties || dappDidNotSuggestFeeProperties) {
+    return false;
+  }
+
+  const txParamsGasPriceMatchesDappSuggestedGasPrice =
+    txParamsGasPrice && txParamsGasPrice === dappGasPrice;
+  const txParamsEIP1559FeesMatchDappSuggestedGasPrice = [
+    txParamsMaxFeePerGas,
+    txParamsMaxPriorityFeePerGas,
+  ].every((fee) => fee === dappGasPrice);
+  const txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees =
+    txParamsMaxFeePerGas &&
+    txParamsMaxFeePerGas === dappMaxFeePerGas &&
+    txParamsMaxPriorityFeePerGas === dappMaxPriorityFeePerGas;
+
+  return (
+    txParamsGasPriceMatchesDappSuggestedGasPrice ||
+    txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
+    txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees
+  );
+}

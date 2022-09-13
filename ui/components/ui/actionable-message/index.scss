@@ -1,6 +1,7 @@
 .actionable-message {
-  background: $Blue-000;
-  border: 1px solid $Blue-200;
+  color: var(--color-text-default);
+  background-color: var(--color-background-default);
+  border: 1px solid var(--color-info-default);
   border-radius: 8px;
   padding: 16px;
   margin-top: 18px;
@@ -9,12 +10,38 @@
   align-items: center;
   position: relative;
 
+  /**
+  * Need the z-index and pseudo element for the time being while we update our muted colors to not use alpha levels
+  * Otherwise ActionableMessages on top of content will transparent and it may effect
+  * readability.
+  */
+
+  * {
+    z-index: 1;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    border-radius: 8px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--color-info-muted);
+  }
+
+
   &--with-icon {
     padding-inline-start: 32px;
   }
 
   &--with-icon.actionable-message--warning {
     justify-content: normal;
+  }
+
+  &--with-icon.actionable-message--with-right-button {
+    padding-left: 32px;
   }
 
   svg {
@@ -27,21 +54,40 @@
   @include H7;
 
   &__message {
-    color: $Blue-600;
+    color: var(--color-text-default);
     text-align: center;
+    width: 100%;
   }
 
   &__actions {
     display: flex;
     width: 80%;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
-    color: $Blue-600;
+    color: var(--color-primary-default);
+
+    &--single {
+      width: 100%;
+    }
   }
 
   &__action {
     font-weight: bold;
+
+    &--rounded {
+      border-radius: 8px;
+    }
+  }
+
+  &__action-v2 {
+    color: var(--color-primary-default);
+    background: none;
+    border: none;
+    font-size: 12px;
+    align-self: baseline;
+    padding: 0;
+    margin-top: 12px;
   }
 
   &__info-tooltip-wrapper {
@@ -51,33 +97,51 @@
   }
 
   &--warning {
-    background: $Yellow-100;
-    border: 1px solid $Yellow-500;
+    border: 1px solid var(--color-warning-default);
     justify-content: center;
 
-    .actionable-message__message,
-    .actionable-message__action {
-      color: $Black-100;
+    &::before {
+      background: var(--color-warning-muted);
     }
 
     .actionable-message__action--secondary {
       text-decoration: underline;
     }
+
+    .actionable-message__actions button {
+      background: var(--color-warning-default);
+      color: var(--color-warning-inverse);
+    }
   }
 
   &--danger {
-    background: $Red-000;
-    border: 1px solid $Red-300;
+    border: 1px solid var(--color-error-default);
     justify-content: flex-start;
 
+    &::before {
+      background: var(--color-error-muted);
+    }
+
     .actionable-message__message {
-      color: $Black-100;
       text-align: left;
     }
 
-    button {
-      background: $Red-500;
-      color: #fff;
+    .actionable-message__actions button {
+      background: var(--color-error-default);
+      color: var(--color-error-inverse);
+    }
+  }
+
+  &--success {
+    border: 1px solid var(--color-success-default);
+
+    &::before {
+      background: var(--color-success-muted);
+    }
+
+    .actionable-message__actions button {
+      background: var(--color-success-default);
+      color: var(--color-success-inverse);
     }
   }
 
@@ -118,6 +182,8 @@
 
 .actionable-message--warning.actionable-message--with-right-button {
   .actionable-message__action {
-    background: $Yellow-500;
+    &::before {
+      background: var(--color-warning-muted);
+    }
   }
 }

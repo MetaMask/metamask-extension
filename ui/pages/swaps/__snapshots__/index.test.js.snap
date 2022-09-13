@@ -12,6 +12,9 @@ exports[`Swap renders the component with initial props 1`] = `
         class="swaps__header"
       >
         <div
+          class="swaps__header-edit"
+        />
+        <div
           class="swaps__title"
         >
           Swap

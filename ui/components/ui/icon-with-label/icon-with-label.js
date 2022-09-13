@@ -6,7 +6,7 @@ export default function IconWithLabel({ icon, label, className }) {
   return (
     <div className={classnames('icon-with-label', className)}>
       {icon}
-      {label && <span className="icon-with-label__label">{label}</span>}
+      {label ? <span className="icon-with-label__label">{label}</span> : null}
     </div>
   );
 }

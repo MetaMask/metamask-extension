@@ -8,10 +8,12 @@ import {
 import { getCurrentChainId } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
+import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 const PAGE_INCREMENT = 10;
 
@@ -28,7 +30,7 @@ const getTransactionGroupRecipientAddressFilter = (
 ) => {
   return ({ initialTransaction: { txParams } }) => {
     return (
-      txParams?.to === recipientAddress ||
+      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
         txParams.data.match(recipientAddress.slice(2)))
     );
@@ -113,38 +115,55 @@ export default function TransactionList({
     [],
   );
 
-  const pendingLength = pendingTransactions.length;
-
   return (
     <div className="transaction-list">
       <div className="transaction-list__transactions">
-        {pendingLength > 0 && (
+        {pendingTransactions.length > 0 && (
           <div className="transaction-list__pending-transactions">
             <div className="transaction-list__header">
               {`${t('queue')} (${pendingTransactions.length})`}
             </div>
-            {pendingTransactions.map((transactionGroup, index) => (
-              <TransactionListItem
-                isEarliestNonce={index === 0}
-                transactionGroup={transactionGroup}
-                key={`${transactionGroup.nonce}:${index}`}
-              />
-            ))}
+            {pendingTransactions.map((transactionGroup, index) =>
+              transactionGroup.initialTransaction.transactionType ===
+              TRANSACTION_TYPES.SMART ? (
+                <SmartTransactionListItem
+                  isEarliestNonce={index === 0}
+                  smartTransaction={transactionGroup.initialTransaction}
+                  transactionGroup={transactionGroup}
+                  key={`${transactionGroup.nonce}:${index}`}
+                />
+              ) : (
+                <TransactionListItem
+                  isEarliestNonce={index === 0}
+                  transactionGroup={transactionGroup}
+                  key={`${transactionGroup.nonce}:${index}`}
+                />
+              ),
+            )}
           </div>
         )}
         <div className="transaction-list__completed-transactions">
-          {pendingLength > 0 ? (
+          {pendingTransactions.length > 0 ? (
             <div className="transaction-list__header">{t('history')}</div>
           ) : null}
           {completedTransactions.length > 0 ? (
             completedTransactions
               .slice(0, limit)
-              .map((transactionGroup, index) => (
-                <TransactionListItem
-                  transactionGroup={transactionGroup}
-                  key={`${transactionGroup.nonce}:${limit + index - 10}`}
-                />
-              ))
+              .map((transactionGroup, index) =>
+                transactionGroup.initialTransaction?.transactionType ===
+                'smart' ? (
+                  <SmartTransactionListItem
+                    transactionGroup={transactionGroup}
+                    smartTransaction={transactionGroup.initialTransaction}
+                    key={`${transactionGroup.nonce}:${index}`}
+                  />
+                ) : (
+                  <TransactionListItem
+                    transactionGroup={transactionGroup}
+                    key={`${transactionGroup.nonce}:${limit + index - 10}`}
+                  />
+                ),
+              )
           ) : (
             <div className="transaction-list__empty">
               <div className="transaction-list__empty-text">
@@ -156,7 +175,6 @@ export default function TransactionList({
             <Button
               className="transaction-list__view-more"
               type="secondary"
-              rounded
               onClick={viewMore}
             >
               {t('viewMore')}

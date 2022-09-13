@@ -13,10 +13,10 @@ export default function ConfirmationFooter({
     <div className="confirmation-footer">
       {alerts}
       <div className="confirmation-footer__actions">
-        <Button rounded type="secondary" onClick={onCancel}>
+        <Button type="secondary" onClick={onCancel}>
           {cancelText}
         </Button>
-        <Button rounded type="primary" onClick={onApprove}>
+        <Button type="primary" onClick={onApprove}>
           {approveText}
         </Button>
       </div>

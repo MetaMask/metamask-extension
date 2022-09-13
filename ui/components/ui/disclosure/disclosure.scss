@@ -1,0 +1,32 @@
+.disclosure {
+  margin: 12px 0;
+  cursor: pointer;
+  font-size: 14px;
+
+  &__summary {
+    position: relative;
+    padding-left: 24px;
+    padding-bottom: 10px;
+    font-weight: bold;
+
+    i {
+      margin-inline-start: -20px;
+      margin-inline-end: 10px;
+    }
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: '';
+    }
+  }
+
+  &__content {
+    margin-left: 12px;
+    font-size: 14px;
+
+    &.small {
+      font-size: 12px;
+    }
+  }
+}

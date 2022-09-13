@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
-import { addressSummary } from '../../../../helpers/utils/util';
+import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
+import { EVENT } from '../../../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -53,7 +55,6 @@ export default class ConfirmRemoveAccount extends Component {
         </div>
         <div className="confirm-remove-account__account__link">
           <a
-            className=""
             onClick={() => {
               const accountLink = getAccountLink(
                 identity.address,
@@ -61,14 +62,12 @@ export default class ConfirmRemoveAccount extends Component {
                 rpcPrefs,
               );
               this.context.trackEvent({
-                category: 'Accounts',
+                category: EVENT.CATEGORIES.ACCOUNTS,
                 event: 'Clicked Block Explorer Link',
                 properties: {
                   link_type: 'Account Tracker',
                   action: 'Remove Account',
-                  block_explorer_domain: accountLink
-                    ? new URL(accountLink)?.hostname
-                    : '',
+                  block_explorer_domain: getURLHostName(accountLink),
                 },
               });
               global.platform.openTab({
@@ -79,7 +78,11 @@ export default class ConfirmRemoveAccount extends Component {
             rel="noopener noreferrer"
             title={t('etherscanView')}
           >
-            <img src="images/popout.svg" alt={t('etherscanView')} />
+            <i
+              className="fa fa-share-square"
+              style={{ color: 'var(--color-icon-muted)' }}
+              title={t('etherscanView')}
+            />
           </a>
         </div>
       </div>
@@ -97,7 +100,6 @@ export default class ConfirmRemoveAccount extends Component {
         onCancel={this.handleCancel}
         submitText={t('remove')}
         cancelText={t('nevermind')}
-        submitType="secondary"
       >
         <div>
           {this.renderSelectedAccount()}
@@ -107,7 +109,7 @@ export default class ConfirmRemoveAccount extends Component {
               className="confirm-remove-account__link"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+              href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
             >
               {t('learnMore')}
             </a>

@@ -1,12 +1,23 @@
 import nock from 'nock';
 
-import { MOCKS } from '../../../test/jest';
-import { setSwapsLiveness } from '../../store/actions';
+import { MOCKS, createSwapsMockStore } from '../../../test/jest';
+import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
+import {
+  MAINNET_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+} from '../../../shared/constants/network';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({
   setSwapsLiveness: jest.fn(),
+  setSwapsFeatureFlags: jest.fn(),
+  fetchSmartTransactionsLiveness: jest.fn(),
+  getTransactions: jest.fn(() => {
+    return [];
+  }),
 }));
 
 const providerState = {
@@ -23,10 +34,10 @@ describe('Ducks - Swaps', () => {
     nock.cleanAll();
   });
 
-  describe('fetchSwapsLiveness', () => {
+  describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
-        'cachedFetch:https://api2.metaswap.codefi.network/featureFlags',
+        'cachedFetch:https://swap.metaswap.codefi.network/featureFlags',
         null,
       );
     };
@@ -39,7 +50,7 @@ describe('Ducks - Swaps', () => {
       featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://api2.metaswap.codefi.network').get(
+      const apiNock = nock('https://swap.metaswap.codefi.network').get(
         '/featureFlags',
       );
       if (replyWithError) {
@@ -53,7 +64,10 @@ describe('Ducks - Swaps', () => {
 
     const createGetState = () => {
       return () => ({
-        metamask: { provider: { ...providerState } },
+        metamask: {
+          provider: { ...providerState },
+          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        },
       });
     };
 
@@ -61,19 +75,19 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -81,20 +95,20 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -102,7 +116,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
@@ -110,13 +123,14 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -124,17 +138,16 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         replyWithError: true,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -143,25 +156,178 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      await swaps.fetchSwapsLiveness()(mockDispatch, createGetState());
+      await swaps.fetchSwapsLivenessAndFeatureFlags()(
+        mockDispatch,
+        createGetState(),
+      );
       expect(featureFlagApiNock.isDone()).toBe(true);
       const featureFlagApiNock2 = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(8);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
+    });
+  });
+
+  describe('getCustomSwapsGas', () => {
+    it('returns "customMaxGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxGas = '29000';
+      state.metamask.swapsState.customMaxGas = customMaxGas;
+      expect(swaps.getCustomSwapsGas(state)).toBe(customMaxGas);
+    });
+  });
+
+  describe('getCustomMaxFeePerGas', () => {
+    it('returns "customMaxFeePerGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxFeePerGas = '20';
+      state.metamask.swapsState.customMaxFeePerGas = customMaxFeePerGas;
+      expect(swaps.getCustomMaxFeePerGas(state)).toBe(customMaxFeePerGas);
+    });
+  });
+
+  describe('getCustomMaxPriorityFeePerGas', () => {
+    it('returns "customMaxPriorityFeePerGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxPriorityFeePerGas = '3';
+      state.metamask.swapsState.customMaxPriorityFeePerGas =
+        customMaxPriorityFeePerGas;
+      expect(swaps.getCustomMaxPriorityFeePerGas(state)).toBe(
+        customMaxPriorityFeePerGas,
+      );
+    });
+  });
+
+  describe('getSwapsFeatureIsLive', () => {
+    it('returns true for "swapsFeatureIsLive"', () => {
+      const state = createSwapsMockStore();
+      const swapsFeatureIsLive = true;
+      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
+    });
+
+    it('returns false for "swapsFeatureIsLive"', () => {
+      const state = createSwapsMockStore();
+      const swapsFeatureIsLive = false;
+      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
+    });
+  });
+
+  describe('getUsedQuote', () => {
+    it('returns selected quote', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getUsedQuote(state)).toMatchObject(
+        state.metamask.swapsState.quotes.TEST_AGG_2,
+      );
+    });
+
+    it('returns best quote', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.selectedAggId = null;
+      expect(swaps.getUsedQuote(state)).toMatchObject(
+        state.metamask.swapsState.quotes.TEST_AGG_BEST,
+      );
+    });
+  });
+
+  describe('getSmartTransactionsEnabled', () => {
+    it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
+    });
+
+    it('returns false if feature flag is disabled, not a HW and is Ethereum network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.smartTransactionsState.liveness = false;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.keyrings[0].type = 'Trezor Hardware';
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.provider.chainId = POLYGON_CHAIN_ID;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.provider.chainId = BSC_CHAIN_ID;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.provider.chainId = GOERLI_CHAIN_ID;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
+    });
+
+    it('returns false if feature flag is missing', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.swapsFeatureFlags = {};
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('getSmartTransactionsOptInStatus', () => {
+    it('returns STX opt in status', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getSmartTransactionsOptInStatus(state)).toBe(true);
+    });
+  });
+
+  describe('getCurrentSmartTransactions', () => {
+    it('returns current smart transactions', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getCurrentSmartTransactions(state)).toMatchObject(
+        state.metamask.smartTransactionsState.smartTransactions[
+          MAINNET_CHAIN_ID
+        ],
+      );
+    });
+  });
+
+  describe('getPendingSmartTransactions', () => {
+    it('returns pending smart transactions', () => {
+      const state = createSwapsMockStore();
+      const pendingSmartTransactions = swaps.getPendingSmartTransactions(state);
+      expect(pendingSmartTransactions).toHaveLength(1);
+      expect(pendingSmartTransactions[0].uuid).toBe('uuid2');
+      expect(pendingSmartTransactions[0].status).toBe('pending');
+    });
+  });
+
+  describe('getSmartTransactionFees', () => {
+    it('returns unsigned transactions and estimates', () => {
+      const state = createSwapsMockStore();
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject(
+        state.metamask.smartTransactionsState.fees,
+      );
     });
   });
 });

@@ -1,5 +1,5 @@
 node_modules/**
-lavamoat/*/policy.json
+lavamoat/**/policy.json
 dist/**
 builds/**
 test-*/**
@@ -10,3 +10,5 @@ app/vendor/**
 .vscode/**
 test/e2e/send-eth-with-private-key-test/**
 *.scss
+development/chromereload.js
+development/ts-migration-dashboard/filesToConvert.json

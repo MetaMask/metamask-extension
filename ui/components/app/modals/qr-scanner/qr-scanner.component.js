@@ -7,6 +7,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app
 import { SECOND } from '../../../../../shared/constants/time';
 import Spinner from '../../../ui/spinner';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+import { getURL } from '../../../../helpers/utils/util';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 
 const READY_STATE = {
@@ -68,8 +69,8 @@ export default class QrScanner extends Component {
         !environmentReady &&
         getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
       ) {
-        const currentUrl = new URL(window.location.href);
-        const currentHash = currentUrl.hash;
+        const currentUrl = getURL(window.location.href);
+        const currentHash = currentUrl?.hash;
         const currentRoute = currentHash ? currentHash.substring(1) : null;
         global.platform.openExtensionInBrowser(currentRoute);
       }
@@ -220,7 +221,6 @@ export default class QrScanner extends Component {
           onSubmit={this.tryAgain}
           cancelText={t('cancel')}
           submitText={t('tryAgain')}
-          submitButtonType="confirm"
         />
       </>
     );
@@ -250,7 +250,9 @@ export default class QrScanner extends Component {
                 display: ready === READY_STATE.READY ? 'block' : 'none',
               }}
             />
-            {ready === READY_STATE.READY ? null : <Spinner color="#F7C06C" />}
+            {ready === READY_STATE.READY ? null : (
+              <Spinner color="var(--color-warning-default)" />
+            )}
           </div>
         </div>
         <div className="qr-scanner__status">{message}</div>

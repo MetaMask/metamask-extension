@@ -34,8 +34,7 @@ describe('LoadingSwapsQuotes', () => {
       <LoadingSwapsQuotes {...createProps()} />,
       store,
     );
-    expect(getByText('Quote 1 of 2')).toBeInTheDocument();
-    expect(getByText('Checking agg', { exact: false })).toBeInTheDocument();
+    expect(getByText('Fetching quote 1 of 2')).toBeInTheDocument();
     expect(getByText('Back')).toBeInTheDocument();
   });
 });

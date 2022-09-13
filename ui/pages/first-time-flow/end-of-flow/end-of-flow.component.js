@@ -3,18 +3,24 @@ import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import Snackbar from '../../../components/ui/snackbar';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { returnToOnboardingInitiator } from '../onboarding-initiator-util';
+import { returnToOnboardingInitiatorTab } from '../onboarding-initiator-util';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
     history: PropTypes.object,
-    completionMetaMetricsName: PropTypes.string,
     setCompletedOnboarding: PropTypes.func,
     onboardingInitiator: PropTypes.exact({
       location: PropTypes.string,
@@ -31,15 +37,8 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   async _onOnboardingComplete() {
-    const { setCompletedOnboarding, completionMetaMetricsName } = this.props;
+    const { setCompletedOnboarding } = this.props;
     await setCompletedOnboarding();
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
-        action: 'Onboarding Complete',
-        name: completionMetaMetricsName,
-      },
-    });
   }
 
   onComplete = async () => {
@@ -48,7 +47,7 @@ export default class EndOfFlowScreen extends PureComponent {
     this._removeBeforeUnload();
     await this._onOnboardingComplete();
     if (onboardingInitiator) {
-      await returnToOnboardingInitiator(onboardingInitiator);
+      await returnToOnboardingInitiatorTab(onboardingInitiator);
     }
     history.push(DEFAULT_ROUTE);
   };
@@ -66,7 +65,7 @@ export default class EndOfFlowScreen extends PureComponent {
     const { onboardingInitiator } = this.props;
 
     return (
-      <div className="end-of-flow">
+      <div className="end-of-flow" data-testid="end-of-flow">
         <MetaFoxLogo />
         <div className="end-of-flow__emoji">🎉</div>
         <div className="first-time-flow__header">{t('congratulations')}</div>
@@ -95,7 +94,21 @@ export default class EndOfFlowScreen extends PureComponent {
               target="_blank"
               key="metamaskSupportLink"
               rel="noopener noreferrer"
-              href="https://metamask.zendesk.com/hc/en-us/requests/new"
+              href={SUPPORT_REQUEST_LINK}
+              onClick={() => {
+                this.context.trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.ONBOARDING,
+                    event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                    properties: {
+                      url: SUPPORT_REQUEST_LINK,
+                    },
+                  },
+                  {
+                    contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  },
+                );
+              }}
             >
               <span className="first-time-flow__link-text">
                 {this.context.t('here')}
@@ -106,7 +119,7 @@ export default class EndOfFlowScreen extends PureComponent {
         <div className="first-time-flow__text-block end-of-flow__text-4">
           {`*${t('endOfFlowMessage8')}`}&nbsp;
           <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/360015489591-Basic-Safety-Tips"
+            href={ZENDESK_URLS.BASIC_SAFETY}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -119,6 +132,7 @@ export default class EndOfFlowScreen extends PureComponent {
           type="primary"
           className="first-time-flow__button"
           onClick={this.onComplete}
+          data-testid="EOF-complete-button"
         >
           {t('endOfFlowMessage10')}
         </Button>

@@ -2,19 +2,18 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
-import CheckBox from '../../../ui/check-box';
+import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
-    domainMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
+    subjectMetadata: PropTypes.shape({
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+      iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
-    onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
   };
@@ -29,51 +28,13 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const { selectedPermissions, onPermissionToggle } = this.props;
-    const { t } = this.context;
-
-    const items = Object.keys(selectedPermissions).map((permissionName) => {
-      const description = t(permissionName);
-      // don't allow deselecting eth_accounts
-      const isDisabled = permissionName === 'eth_accounts';
-      const isChecked = Boolean(selectedPermissions[permissionName]);
-      const title = isChecked
-        ? t('permissionCheckedIconDescription')
-        : t('permissionUncheckedIconDescription');
-
-      return (
-        <div
-          className="permission-approval-container__content__permission"
-          key={permissionName}
-          onClick={() => {
-            if (!isDisabled) {
-              onPermissionToggle(permissionName);
-            }
-          }}
-        >
-          <CheckBox
-            disabled={isDisabled}
-            id={permissionName}
-            className="permission-approval-container__checkbox"
-            checked={isChecked}
-            title={title}
-          />
-          <label htmlFor={permissionName}>{description}</label>
-        </div>
-      );
-    });
+    const { selectedPermissions } = this.props;
 
     return (
       <div className="permission-approval-container__content__requested">
-        {items}
+        <PermissionsConnectPermissionList permissions={selectedPermissions} />
       </div>
     );
-  }
-
-  getAccountDescriptor(identity) {
-    return `${identity.label} (...${identity.address.slice(
-      identity.address.length - 4,
-    )})`;
   }
 
   renderAccountTooltip(textContent) {
@@ -90,7 +51,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             {selectedIdentities.slice(0, 6).map((identity, index) => {
               return (
                 <div key={`tooltip-identity-${index}`}>
-                  {this.getAccountDescriptor(identity)}
+                  {identity.addressLabel}
                 </div>
               );
             })}
@@ -107,14 +68,17 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   getTitle() {
     const {
-      domainMetadata,
+      subjectMetadata,
       selectedIdentities,
       allIdentitiesSelected,
+      selectedPermissions,
     } = this.props;
     const { t } = this.context;
 
-    if (domainMetadata.extensionId) {
-      return t('externalExtension', [domainMetadata.extensionId]);
+    if (subjectMetadata.extensionId) {
+      return t('externalExtension', [subjectMetadata.extensionId]);
+    } else if (!selectedPermissions.eth_accounts) {
+      return t('permissionRequestCapitalized');
     } else if (allIdentitiesSelected) {
       return t('connectToAll', [
         this.renderAccountTooltip(t('connectToAllAccounts')),
@@ -126,11 +90,11 @@ export default class PermissionPageContainerContent extends PureComponent {
         ),
       ]);
     }
-    return t('connectTo', [this.getAccountDescriptor(selectedIdentities[0])]);
+    return t('connectTo', [selectedIdentities[0]?.addressLabel]);
   }
 
   render() {
-    const { domainMetadata } = this.props;
+    const { subjectMetadata } = this.props;
     const { t } = this.context;
 
     const title = this.getTitle();
@@ -139,15 +103,15 @@ export default class PermissionPageContainerContent extends PureComponent {
       <div className="permission-approval-container__content">
         <div className="permission-approval-container__content-container">
           <PermissionsConnectHeader
-            icon={domainMetadata.icon}
-            iconName={domainMetadata.name}
+            iconUrl={subjectMetadata.iconUrl}
+            iconName={subjectMetadata.name}
             headerTitle={title}
             headerText={
-              domainMetadata.extensionId
-                ? t('allowExternalExtensionTo', [domainMetadata.extensionId])
+              subjectMetadata.extensionId
+                ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])
                 : t('allowThisSiteTo')
             }
-            siteOrigin={domainMetadata.origin}
+            siteOrigin={subjectMetadata.origin}
           />
           <section className="permission-approval-container__permissions-container">
             {this.renderRequestedPermissions()}

@@ -1,0 +1,58 @@
+.experimental-area {
+  color: var(--flask-purple);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .logo {
+    padding: 16px 8px 0;
+    line-height: 0.625em;
+    font-family: monospace;
+    font-size: $font-size-h8;
+    margin-bottom: 32px;
+  }
+
+  .experimental-text {
+    padding: 16px 8px 0;
+    font-family: monospace;
+    font-size: $font-size-h5;
+    margin: auto;
+    line-height: 0.875em;
+    margin-bottom: 32px;
+  }
+
+  .text {
+    @include H5;
+
+    padding: 16px;
+    max-width: 670px;
+
+    b {
+      font-weight: bold;
+    }
+  }
+
+  ul {
+    padding: 16px 0;
+  }
+
+  li {
+    list-style-type: disc;
+    padding-left: 8px;
+    list-style-position: inside;
+    margin-bottom: 8px;
+
+    &:nth-last-child(1) {
+      margin-bottom: 0;
+    }
+  }
+
+  button {
+    background-color: var(--flask-purple) !important;
+    border: 0 !important;
+    color: var(--color-primary-inverse); //@TODO: We don't have a generic inverse color, using this one for now
+    width: 200px;
+  }
+}

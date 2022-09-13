@@ -1,0 +1,63 @@
+.privacy-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include screen-sm-max {
+    margin-bottom: 24px;
+  }
+
+  @include screen-sm-min {
+    margin-bottom: 40px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    max-width: 500px;
+    margin: 24px;
+  }
+
+  &__settings {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    max-width: 620px;
+    margin-bottom: 20px;
+
+    @include screen-sm-min {
+      margin-inline-start: 48px;
+      margin-inline-end: 48px;
+    }
+
+    a {
+      color: var(--color-primary-default);
+
+      &:hover {
+        cursor: pointer;
+        color: var(--color-primary-default);
+      }
+    }
+  }
+
+  &__setting {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    max-width: 430px;
+
+    &__toggle {
+      margin-left: 42px;
+    }
+  }
+
+  & button {
+    max-width: 50%;
+    padding: 15px;
+  }
+}

@@ -15,7 +15,7 @@ import {
   getSelectedAddress,
   getSelectedIdentity,
 } from '../../../../selectors';
-import { isExtensionUrl } from '../../../../helpers/utils/util';
+import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 import Checkbox from '../../../ui/check-box';
@@ -76,7 +76,6 @@ const UnconnectedAccountAlert = () => {
           disabled={alertState === LOADING}
           onClick={onClose}
           type="primary"
-          rounded
           className="unconnected-account-alert__dismiss-button"
         >
           {t('dismiss')}
@@ -88,7 +87,7 @@ const UnconnectedAccountAlert = () => {
   return (
     <Popover
       title={
-        isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host
+        isExtensionUrl(origin) ? t('currentExtension') : getURLHost(origin)
       }
       subtitle={t('currentAccountNotConnected')}
       onClose={onClose}

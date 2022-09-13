@@ -1,38 +1,31 @@
-import React, { useState } from 'react';
-import extension from 'extensionizer';
+import React, { useState, useContext } from 'react';
+import browser from 'webextension-polyfill';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { getOriginOfCurrentTab } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
   const t = useI18nContext();
-  const openAccountOptionsEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Home',
-      name: 'Opened Account Options',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const [
-    accountOptionsButtonElement,
-    setAccountOptionsButtonElement,
-  ] = useState(null);
+  const [accountOptionsButtonElement, setAccountOptionsButtonElement] =
+    useState(null);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const origin = useSelector(getOriginOfCurrentTab);
 
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
-    origin !== extension.runtime.id;
+    origin !== browser.runtime.id;
 
   return (
     <div className="menu-bar">
@@ -50,7 +43,13 @@ export default function MenuBar() {
         ref={setAccountOptionsButtonElement}
         title={t('accountOptions')}
         onClick={() => {
-          openAccountOptionsEvent();
+          trackEvent({
+            event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
+            category: EVENT.CATEGORIES.NAVIGATION,
+            properties: {
+              location: 'Home',
+            },
+          });
           setAccountOptionsMenuOpen(true);
         }}
       />

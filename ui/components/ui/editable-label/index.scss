@@ -14,12 +14,14 @@
   &__input {
     @include H6;
 
+    color: var(--color-text-default);
+    background-color: var(--color-background-default);
     width: 250px;
     text-align: center;
-    border: 1px solid $alto;
+    border: 1px solid var(--color-border-default);
 
     &--error {
-      border: 1px solid $monzo;
+      border: 1px solid var(--color-error-default);
     }
   }
 
@@ -32,6 +34,17 @@
 
   &__icon {
     cursor: pointer;
-    color: $dusty-gray;
+    color: var(--color-icon-default);
+  }
+
+  &__error {
+    @include H7;
+
+    left: 8px;
+    color: var(--color-error-default);
+  }
+
+  &__error-amount {
+    margin-top: 5px;
   }
 }

@@ -5,16 +5,17 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
+import { SLIPPAGE } from '../../../../shared/constants/swaps';
 import AwaitingSwap from '.';
 
 const createProps = (customProps = {}) => {
   return {
     swapComplete: false,
     txHash: 'txHash',
-    tokensReceived: 'tokensReceived',
+    tokensReceived: 'tokens received:',
     submittingSwap: true,
     inputValue: 5,
-    maxSlippage: 3,
+    maxSlippage: SLIPPAGE.DEFAULT,
     ...customProps,
   };
 };
@@ -30,8 +31,20 @@ describe('AwaitingSwap', () => {
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('View in activity')).toBeInTheDocument();
     expect(
-      document.querySelector('.awaiting-swap__main-descrption'),
+      document.querySelector('.awaiting-swap__main-description'),
     ).toMatchSnapshot();
     expect(getByText('View in activity')).toBeInTheDocument();
+  });
+
+  it('renders the component with for completed swap', () => {
+    const store = configureMockStore()(createSwapsMockStore());
+    const { getByText } = renderWithProvider(
+      <AwaitingSwap {...createProps({ swapComplete: true })} />,
+      store,
+    );
+    expect(getByText('Transaction complete')).toBeInTheDocument();
+    expect(getByText('tokens received: ETH')).toBeInTheDocument();
+    expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
+    expect(getByText('Create a new swap')).toBeInTheDocument();
   });
 });

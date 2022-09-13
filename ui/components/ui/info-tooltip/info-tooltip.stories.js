@@ -1,47 +1,53 @@
 import React from 'react';
-import { text } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import InfoTooltip from './info-tooltip';
 
 export default {
-  title: 'InfoTooltip',
+  title: 'Components/UI/InfoTooltip',
+  id: __filename,
+  component: InfoTooltip,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    contentText: { control: 'text' },
+    position: {
+      control: 'select',
+      options: ['top', 'left', 'bottom', 'right'],
+    },
+    containerClassName: { control: 'text' },
+    wrapperClassName: { control: 'text' },
+    iconFillColor: { control: 'text' },
+  },
 };
 
-export const Top = () => (
-  <InfoTooltip
-    position="top"
-    contentText={text(
-      'top',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
-    )}
-  />
-);
+export const DefaultStory = (args) => <InfoTooltip {...args} />;
+DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  position: 'top',
+  contentText:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
+};
 
-export const Bottom = () => (
-  <InfoTooltip
-    position="bottom"
-    contentText={text(
-      'bottom',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
-    )}
-  />
-);
+export const Bottom = (args) => <InfoTooltip {...args} />;
+Bottom.args = {
+  position: 'bottom',
+  contentText:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
+};
 
-export const Left = () => (
-  <InfoTooltip
-    position="left"
-    contentText={text(
-      'left',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
-    )}
-  />
-);
+export const Left = (args) => <InfoTooltip {...args} />;
+Left.args = {
+  position: 'left',
+  contentText:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
+};
 
-export const Right = () => (
-  <InfoTooltip
-    position="right"
-    contentText={text(
-      'right',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
-    )}
-  />
-);
+export const Right = (args) => <InfoTooltip {...args} />;
+Right.args = {
+  position: 'right',
+  contentText:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut gravida dictum diam et sagittis. Sed lorem arcu, consectetur consectetur et, lacinia hendrerit sapien.',
+};

@@ -1,0 +1,28 @@
+.permissions-connect-permission-list {
+  width: 100%;
+
+  .permission {
+    @include H6;
+
+    width: 100%;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-default);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--color-text-default);
+
+    i {
+      display: block;
+      margin: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      color: var(--color-icon-alternative);
+      font-size: 1rem;
+    }
+  }
+
+  .permission-label-item {
+    font-weight: bold;
+  }
+}

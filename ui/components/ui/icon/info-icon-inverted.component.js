@@ -25,5 +25,8 @@ export default function InfoIconInverted({ severity }) {
 }
 
 InfoIconInverted.propTypes = {
+  /**
+   * Severity can be 1 of 4 states:'danger', 'warning', 'info' or 'success'
+   */
   severity: PropTypes.oneOf(Object.values(SEVERITIES)),
 };

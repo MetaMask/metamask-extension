@@ -1,0 +1,21 @@
+.onboarding-pin-extension {
+  .control-dots .dot {
+    background: var(--color-icon-muted);
+    box-shadow: none;
+
+    &.selected {
+      background: var(--color-icon-default);
+    }
+  }
+
+  &__diagram {
+    margin: 24px auto;
+    max-width: 799px;
+    height: 320px;
+  }
+
+  &__buttons {
+    max-width: 50%;
+    margin: 40px auto 0 auto;
+  }
+}

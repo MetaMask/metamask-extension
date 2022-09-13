@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afvis"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-kode"
+  },
   "about": {
     "message": "Om"
-  },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
@@ -38,32 +41,17 @@
   "addNetwork": {
     "message": "Tilføj netværk"
   },
-  "addRecipient": {
-    "message": "Tilføj modtager"
-  },
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },
-  "addToAddressBook": {
-    "message": "Føj til adressebogen"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "f.eks. John D."
-  },
   "addToken": {
     "message": "Tilføj Polet"
-  },
-  "addTokens": {
-    "message": "Tilføj tokens"
   },
   "advanced": {
     "message": "Avanceret"
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "amount": {
     "message": "Beløb"
@@ -75,6 +63,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkend"
@@ -137,17 +133,14 @@
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Brug Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Din browser er ikke understøttet..."
   },
   "buyWithWyre": {
-    "message": "Køb ETH med Wyre"
+    "message": "Køb $1 med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lader dig bruge et kreditkort til at indbetale ETH på din MetaMask-konto."
+    "message": "Wyre lader dig bruge et kreditkort til at indbetale $1 på din MetaMask-konto."
   },
   "bytes": {
     "message": "Byte"
@@ -224,9 +217,6 @@
   "copiedExclamation": {
     "message": "Kopieret!"
   },
-  "copiedTransactionId": {
-    "message": "Kopieret transaktions-id"
-  },
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
   },
@@ -257,14 +247,14 @@
   "currentLanguage": {
     "message": "Nuværende sprog"
   },
+  "custom": {
+    "message": "Avanceret"
+  },
   "customGas": {
     "message": "Tilpas brændstof"
   },
   "customGasSubTitle": {
     "message": "Forøgelse af gebyr kan mindske bearbejdningstiden, men det er ikke en garanti."
-  },
-  "customRPC": {
-    "message": "Tilpasset RPC"
   },
   "customToken": {
     "message": "Brugerdefineret Token"
@@ -274,9 +264,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Main Net."
   },
   "delete": {
     "message": "Slet"
@@ -290,17 +277,8 @@
   "deleteNetworkDescription": {
     "message": "Er du sikker på, at du vil slette dette netværk?"
   },
-  "depositEther": {
-    "message": "Indbetal Ether"
-  },
   "details": {
     "message": "Detaljer"
-  },
-  "directDepositEther": {
-    "message": "Indskyd Ether direkte"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
   },
   "done": {
     "message": "Færdig"
@@ -355,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Fejl i ENS-navneregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Indtast et alias"
   },
   "enterPassword": {
     "message": "Indtast kodeord"
@@ -422,9 +397,6 @@
   },
   "general": {
     "message": "Generelt"
-  },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primær valuta, sprog, blockies-identicon"
   },
   "getEther": {
     "message": "Hent Ether"
@@ -530,13 +502,16 @@
   "learnMore": {
     "message": "Lær mere"
   },
+  "learnMoreUpperCase": {
+    "message": "Lær mere"
+  },
   "ledgerAccountRestriction": {
     "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
   },
   "letsGoSetUp": {
     "message": "Ja, lad os komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
   "loadMore": {
@@ -569,17 +544,11 @@
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
   },
-  "mobileSyncText": {
-    "message": "Indtast din adgangskode for at bekræfte, at det er dig!"
-  },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
   },
   "myAccounts": {
     "message": "Mine Konti"
-  },
-  "needEtherInWallet": {
-    "message": "Du skal have Ether i din tegnebog for at interagere med decentraliserede applikationer, der bruger MetaMask."
   },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
@@ -590,9 +559,6 @@
   },
   "networkName": {
     "message": "Netværksnavn"
-  },
-  "networkSettingsDescription": {
-    "message": "Tilføj og redigér brugerdefinerede RPC-netværk"
   },
   "networks": {
     "message": "Netværk"
@@ -615,9 +581,6 @@
   },
   "newContract": {
     "message": "Ny Kontrakt"
-  },
-  "newNetwork": {
-    "message": "Nyt Netværk"
   },
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
@@ -666,12 +629,6 @@
   },
   "on": {
     "message": "Til"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfrit)"
   },
   "parameters": {
     "message": "Parametre"
@@ -780,17 +737,11 @@
   "restore": {
     "message": "Gendan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gendan din konto med Seed-sætning"
-  },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
   "revealSeedWordsDescription": {
     "message": "Hvis du nogensinde skifter browsere eller flytter computere, har du brug for denne backupsætning for at få adgang til dine konti. Gem den et sted sikkert og hemmeligt."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Backupsætning"
   },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
@@ -828,9 +779,6 @@
   "searchTokens": {
     "message": "Søg efter tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Hemmelig backup-sætning"
-  },
   "secretBackupPhraseDescription": {
     "message": "Din hemmelige backup-sætning gør det nemt at lave backup og gendanne din konto."
   },
@@ -840,12 +788,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
-  "securitySettingsDescription": {
-    "message": "Indstillinger for beskyttelse af personlige oplysninger og backupsætning til tegnebog"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Adskil hvert ord med et enkelt mellemrum"
-  },
   "seedPhraseReq": {
     "message": "Backupsætninger er 12 ord lange"
   },
@@ -854,9 +796,6 @@
   },
   "selectAnAccount": {
     "message": "Vælg en Konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
@@ -875,12 +814,6 @@
   },
   "sendTokens": {
     "message": "Send tokens"
-  },
-  "sentEther": {
-    "message": "sendte ether"
-  },
-  "separateEachWord": {
-    "message": "Separer hvert ord med et enkelt mellemrum"
   },
   "settings": {
     "message": "Indstillinger "
@@ -1108,20 +1041,8 @@
   "viewContact": {
     "message": "Vis kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Se på $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Se på Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vis i stifinder"
-  },
   "visitWebSite": {
     "message": "Besøg vores webside"
-  },
-  "walletSeed": {
-    "message": "Tegnebogs-seed"
   },
   "welcome": {
     "message": "Velkommen til MetaMask"

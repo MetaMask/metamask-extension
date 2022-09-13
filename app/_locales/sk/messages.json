@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skenovať QR kód"
+  },
   "about": {
     "message": "Informácie"
-  },
-  "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -38,32 +41,17 @@
   "addNetwork": {
     "message": "Pridať sieť"
   },
-  "addRecipient": {
-    "message": "Pridať príjemcu"
-  },
   "addSuggestedTokens": {
     "message": "Pridať navrhované tokeny"
   },
-  "addToAddressBook": {
-    "message": "Pridať do adresára"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "napr. Ján D."
-  },
   "addToken": {
     "message": "Přidat token"
-  },
-  "addTokens": {
-    "message": "Přidat tokeny"
   },
   "advanced": {
     "message": "Rozšírené"
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
-  },
-  "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "amount": {
     "message": "Částka"
@@ -75,6 +63,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Schválit"
@@ -131,17 +127,14 @@
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
   "buyWithWyre": {
-    "message": "Kúpte ETH s Wyre"
+    "message": "Kúpte $1 s Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu ETH priamo na váš účet MetaMask."
+    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
   },
   "bytes": {
     "message": "Bajty"
@@ -218,9 +211,6 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copiedTransactionId": {
-    "message": "Kopírované ID transakcie"
-  },
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },
@@ -251,14 +241,14 @@
   "currentLanguage": {
     "message": "Aktuálny jazyk"
   },
+  "custom": {
+    "message": "Rozšírené"
+  },
   "customGas": {
     "message": "Nastavit palivo"
   },
   "customGasSubTitle": {
     "message": "Zvýšenie poplatku môže skrátiť dobu spracovania, nie je to však zaručené."
-  },
-  "customRPC": {
-    "message": "Vlastní RPC"
   },
   "customToken": {
     "message": "Vlastní token"
@@ -268,9 +258,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
   },
   "delete": {
     "message": "Odstrániť"
@@ -284,17 +271,8 @@
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
   },
-  "depositEther": {
-    "message": "Vložit Ether"
-  },
   "details": {
     "message": "Podrobnosti"
-  },
-  "directDepositEther": {
-    "message": "Vložit Ether přímo"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
   },
   "done": {
     "message": "Hotovo"
@@ -349,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
-  },
-  "enterAnAlias": {
-    "message": "Zadať alias"
   },
   "enterPassword": {
     "message": "Zadejte heslo"
@@ -420,9 +395,6 @@
   },
   "general": {
     "message": "Všeobecne"
-  },
-  "generalSettingsDescription": {
-    "message": "Prevod mien, primárna mena, jazyk, identifikácia blokov"
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -521,13 +493,16 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
   },
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -557,17 +532,11 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Zadajte svoje heslo a potvrďte, že ste to vy!"
-  },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },
   "myAccounts": {
     "message": "Moje účty"
-  },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -578,9 +547,6 @@
   },
   "networkName": {
     "message": "Názov siete"
-  },
-  "networkSettingsDescription": {
-    "message": "Pridať a upraviť vlastné siete RPC"
   },
   "networks": {
     "message": "Sítě"
@@ -603,9 +569,6 @@
   },
   "newContract": {
     "message": "Nový kontrakt"
-  },
-  "newNetwork": {
-    "message": "Nová sieť"
   },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
@@ -651,12 +614,6 @@
   },
   "on": {
     "message": "Zapnuté"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (voliteľné)"
   },
   "origin": {
     "message": "Pôvod"
@@ -768,17 +725,11 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnoviť účet pomocou seed frázy"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
   "revealSeedWordsDescription": {
     "message": "Ak niekedy zmeníte prehliadač alebo presuniete počítače, budete potrebovať túto seed frázu na prístup k svojim účtom. Uložte ich niekde v bezpečí a v tajnosti."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Seed fráza"
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
@@ -810,9 +761,6 @@
   "searchTokens": {
     "message": "Hledat tokeny"
   },
-  "secretBackupPhrase": {
-    "message": "Tajná backup fráza"
-  },
   "secretBackupPhraseDescription": {
     "message": "Vaša tajná backup fráza uľahčuje zálohovanie a obnovenie vášho účtu."
   },
@@ -822,12 +770,6 @@
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
-  "securitySettingsDescription": {
-    "message": "Nastavenia súkromia a seed fráza peňaženky"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Každé slovo oddeľte jednou medzerou"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
@@ -836,9 +778,6 @@
   },
   "selectAnAccount": {
     "message": "Vybrať účet"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."
@@ -860,12 +799,6 @@
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
-  },
-  "sentEther": {
-    "message": "poslaný ether"
-  },
-  "separateEachWord": {
-    "message": "Každé slovo oddeľte jednou medzerou"
   },
   "settings": {
     "message": "Nastavení"
@@ -1096,20 +1029,8 @@
   "viewContact": {
     "message": "Zobraziť kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Zobraziť na $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Zobraziť na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Zobraziť v Exploreri"
-  },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
   },
   "welcome": {
     "message": "Vitajte v MetaMask"

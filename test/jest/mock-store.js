@@ -1,5 +1,106 @@
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 
+const createGetSmartTransactionFeesApiResponse = () => {
+  return {
+    tradeTxFees: {
+      // Approval tx.
+      cancelFees: [
+        { maxFeePerGas: 2100001000, maxPriorityFeePerGas: 466503987 },
+        { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+        { maxFeePerGas: 2541005830, maxPriorityFeePerGas: 564470851 },
+        { maxFeePerGas: 2795108954, maxPriorityFeePerGas: 620918500 },
+        { maxFeePerGas: 3074622644, maxPriorityFeePerGas: 683010971 },
+        { maxFeePerGas: 3382087983, maxPriorityFeePerGas: 751312751 },
+        { maxFeePerGas: 3720300164, maxPriorityFeePerGas: 826444778 },
+        { maxFeePerGas: 4092333900, maxPriorityFeePerGas: 909090082 },
+        { maxFeePerGas: 4501571383, maxPriorityFeePerGas: 1000000000 },
+        { maxFeePerGas: 4951733023, maxPriorityFeePerGas: 1100001000 },
+        { maxFeePerGas: 5446911277, maxPriorityFeePerGas: 1210002200 },
+        { maxFeePerGas: 5991607851, maxPriorityFeePerGas: 1331003630 },
+        { maxFeePerGas: 6590774628, maxPriorityFeePerGas: 1464105324 },
+        { maxFeePerGas: 7249858682, maxPriorityFeePerGas: 1610517320 },
+        { maxFeePerGas: 7974851800, maxPriorityFeePerGas: 1771570663 },
+        { maxFeePerGas: 8772344955, maxPriorityFeePerGas: 1948729500 },
+        { maxFeePerGas: 9649588222, maxPriorityFeePerGas: 2143604399 },
+        { maxFeePerGas: 10614556694, maxPriorityFeePerGas: 2357966983 },
+        { maxFeePerGas: 11676022978, maxPriorityFeePerGas: 2593766039 },
+      ],
+      feeEstimate: 42000000000000,
+      fees: [
+        { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+        { maxFeePerGas: 2541005830, maxPriorityFeePerGas: 564470850 },
+        { maxFeePerGas: 2795108954, maxPriorityFeePerGas: 620918500 },
+        { maxFeePerGas: 3074622644, maxPriorityFeePerGas: 683010970 },
+        { maxFeePerGas: 3382087983, maxPriorityFeePerGas: 751312751 },
+        { maxFeePerGas: 3720300163, maxPriorityFeePerGas: 826444777 },
+        { maxFeePerGas: 4092333900, maxPriorityFeePerGas: 909090082 },
+        { maxFeePerGas: 4501571382, maxPriorityFeePerGas: 999999999 },
+        { maxFeePerGas: 4951733022, maxPriorityFeePerGas: 1100001000 },
+        { maxFeePerGas: 5446911277, maxPriorityFeePerGas: 1210002200 },
+        { maxFeePerGas: 5991607851, maxPriorityFeePerGas: 1331003630 },
+        { maxFeePerGas: 6590774627, maxPriorityFeePerGas: 1464105324 },
+        { maxFeePerGas: 7249858681, maxPriorityFeePerGas: 1610517320 },
+        { maxFeePerGas: 7974851800, maxPriorityFeePerGas: 1771570662 },
+        { maxFeePerGas: 8772344954, maxPriorityFeePerGas: 1948729500 },
+        { maxFeePerGas: 9649588222, maxPriorityFeePerGas: 2143604398 },
+        { maxFeePerGas: 10614556693, maxPriorityFeePerGas: 2357966982 },
+        { maxFeePerGas: 11676022977, maxPriorityFeePerGas: 2593766039 },
+        { maxFeePerGas: 12843636951, maxPriorityFeePerGas: 2853145236 },
+      ],
+      gasLimit: 21000,
+      gasUsed: 21000,
+    },
+    approvalTxFees: {
+      // Trade tx.
+      cancelFees: [
+        { maxFeePerGas: 2100001000, maxPriorityFeePerGas: 466503987 },
+        { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+        { maxFeePerGas: 2541005830, maxPriorityFeePerGas: 564470851 },
+        { maxFeePerGas: 2795108954, maxPriorityFeePerGas: 620918500 },
+        { maxFeePerGas: 3074622644, maxPriorityFeePerGas: 683010971 },
+        { maxFeePerGas: 3382087983, maxPriorityFeePerGas: 751312751 },
+        { maxFeePerGas: 3720300164, maxPriorityFeePerGas: 826444778 },
+        { maxFeePerGas: 4092333900, maxPriorityFeePerGas: 909090082 },
+        { maxFeePerGas: 4501571383, maxPriorityFeePerGas: 1000000000 },
+        { maxFeePerGas: 4951733023, maxPriorityFeePerGas: 1100001000 },
+        { maxFeePerGas: 5446911277, maxPriorityFeePerGas: 1210002200 },
+        { maxFeePerGas: 5991607851, maxPriorityFeePerGas: 1331003630 },
+        { maxFeePerGas: 6590774628, maxPriorityFeePerGas: 1464105324 },
+        { maxFeePerGas: 7249858682, maxPriorityFeePerGas: 1610517320 },
+        { maxFeePerGas: 7974851800, maxPriorityFeePerGas: 1771570663 },
+        { maxFeePerGas: 8772344955, maxPriorityFeePerGas: 1948729500 },
+        { maxFeePerGas: 9649588222, maxPriorityFeePerGas: 2143604399 },
+        { maxFeePerGas: 10614556694, maxPriorityFeePerGas: 2357966983 },
+        { maxFeePerGas: 11676022978, maxPriorityFeePerGas: 2593766039 },
+      ],
+      feeEstimate: 42000000000000,
+      fees: [
+        { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+        { maxFeePerGas: 2541005830, maxPriorityFeePerGas: 564470850 },
+        { maxFeePerGas: 2795108954, maxPriorityFeePerGas: 620918500 },
+        { maxFeePerGas: 3074622644, maxPriorityFeePerGas: 683010970 },
+        { maxFeePerGas: 3382087983, maxPriorityFeePerGas: 751312751 },
+        { maxFeePerGas: 3720300163, maxPriorityFeePerGas: 826444777 },
+        { maxFeePerGas: 4092333900, maxPriorityFeePerGas: 909090082 },
+        { maxFeePerGas: 4501571382, maxPriorityFeePerGas: 999999999 },
+        { maxFeePerGas: 4951733022, maxPriorityFeePerGas: 1100001000 },
+        { maxFeePerGas: 5446911277, maxPriorityFeePerGas: 1210002200 },
+        { maxFeePerGas: 5991607851, maxPriorityFeePerGas: 1331003630 },
+        { maxFeePerGas: 6590774627, maxPriorityFeePerGas: 1464105324 },
+        { maxFeePerGas: 7249858681, maxPriorityFeePerGas: 1610517320 },
+        { maxFeePerGas: 7974851800, maxPriorityFeePerGas: 1771570662 },
+        { maxFeePerGas: 8772344954, maxPriorityFeePerGas: 1948729500 },
+        { maxFeePerGas: 9649588222, maxPriorityFeePerGas: 2143604398 },
+        { maxFeePerGas: 10614556693, maxPriorityFeePerGas: 2357966982 },
+        { maxFeePerGas: 11676022977, maxPriorityFeePerGas: 2593766039 },
+        { maxFeePerGas: 12843636951, maxPriorityFeePerGas: 2853145236 },
+      ],
+      gasLimit: 21000,
+      gasUsed: 21000,
+    },
+  };
+};
+
 export const createSwapsMockStore = () => {
   return {
     swaps: {
@@ -21,6 +122,11 @@ export const createSwapsMockStore = () => {
       fromToken: 'ETH',
     },
     metamask: {
+      networkDetails: {
+        EIPS: {
+          1559: false,
+        },
+      },
       provider: {
         chainId: MAINNET_CHAIN_ID,
       },
@@ -96,6 +202,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       swapsState: {
+        swapsFeatureFlags: {
+          smartTransactions: {
+            mobileActive: true,
+            extensionActive: true,
+          },
+        },
         quotes: {
           TEST_AGG_1: {
             trade: {
@@ -183,6 +295,7 @@ export const createSwapsMockStore = () => {
             fetchTime: 1354,
             aggregator: 'TEST_AGG_2',
             aggType: 'AGG',
+            isBestQuote: true,
             slippage: 2,
             sourceTokenInfo: {
               address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -212,15 +325,116 @@ export const createSwapsMockStore = () => {
         approveTxId: null,
         quotesLastFetched: 1519211809934,
         swapsQuoteRefreshTime: 60000,
+        swapsQuotePrefetchingRefreshTime: 60000,
         customMaxGas: '',
         customGasPrice: null,
         selectedAggId: 'TEST_AGG_2',
         customApproveTxData: '',
         errorKey: '',
-        topAggId: null,
+        topAggId: 'TEST_AGG_BEST',
         routeState: '',
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
+      },
+      useTokenDetection: true,
+      tokenList: {
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          symbol: 'UNI',
+          decimals: 18,
+          name: 'Uniswap',
+          iconUrl: '',
+          aggregators: [
+            'airswapLight',
+            'bancor',
+            'cmc',
+            'coinGecko',
+            'kleros',
+            'oneInch',
+            'paraswap',
+            'pmm',
+            'totle',
+            'zapper',
+            'zerion',
+            'zeroEx',
+          ],
+          occurrences: 12,
+        },
+        '0x514910771af9ca656af840dff83e8264ecf986ca': {
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+          name: 'Chainlink',
+          iconUrl: '',
+          aggregators: [
+            'airswapLight',
+            'bancor',
+            'cmc',
+            'coinGecko',
+            'kleros',
+            'oneInch',
+            'paraswap',
+            'pmm',
+            'totle',
+            'zapper',
+            'zerion',
+            'zeroEx',
+          ],
+          occurrences: 12,
+        },
+        '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
+          address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+          symbol: 'SUSHI',
+          decimals: 18,
+          name: 'SushiSwap',
+          iconUrl: '',
+          aggregators: [
+            'bancor',
+            'cmc',
+            'coinGecko',
+            'kleros',
+            'oneInch',
+            'paraswap',
+            'pmm',
+            'totle',
+            'zapper',
+            'zerion',
+            'zeroEx',
+          ],
+          occurrences: 11,
+        },
+      },
+      smartTransactionsState: {
+        userOptIn: true,
+        liveness: true,
+        fees: createGetSmartTransactionFeesApiResponse(),
+        smartTransactions: {
+          [MAINNET_CHAIN_ID]: [
+            {
+              uuid: 'uuid2',
+              status: 'success',
+              statusMetadata: {
+                cancellationFeeWei: 36777567771000,
+                cancellationReason: 'not_cancelled',
+                deadlineRatio: 0.6400288486480713,
+                minedHash:
+                  '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
+                minedTx: 'success',
+              },
+            },
+            {
+              uuid: 'uuid2',
+              status: 'pending',
+              statusMetadata: {
+                cancellationFeeWei: 36777567771000,
+                cancellationReason: 'not_cancelled',
+                deadlineRatio: 0.6400288486480713,
+                minedHash:
+                  '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
+                minedTx: 'success',
+              },
+            },
+          ],
+        },
       },
     },
     appState: {
@@ -234,6 +448,7 @@ export const createSwapsMockStore = () => {
           },
         },
       },
+      gasLoadingAnimationIsShowing: false,
     },
   };
 };

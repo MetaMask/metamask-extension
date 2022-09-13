@@ -1,3 +1,8 @@
+import {
+  draftTransactionInitialState,
+  initialState,
+} from '../../ui/ducks/send';
+
 export const TOP_ASSETS_GET_RESPONSE = [
   {
     symbol: 'LINK',
@@ -79,3 +84,66 @@ export const createFeatureFlagsResponse = () => {
     },
   };
 };
+
+export const createGasFeeEstimatesForFeeMarket = () => {
+  return {
+    low: {
+      minWaitTimeEstimate: 180000,
+      maxWaitTimeEstimate: 300000,
+      suggestedMaxPriorityFeePerGas: '3',
+      suggestedMaxFeePerGas: '53',
+    },
+    medium: {
+      minWaitTimeEstimate: 15000,
+      maxWaitTimeEstimate: 60000,
+      suggestedMaxPriorityFeePerGas: '7',
+      suggestedMaxFeePerGas: '70',
+    },
+    high: {
+      minWaitTimeEstimate: 0,
+      maxWaitTimeEstimate: 15000,
+      suggestedMaxPriorityFeePerGas: '10',
+      suggestedMaxFeePerGas: '100',
+    },
+    estimatedBaseFee: '50',
+  };
+};
+
+export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
+  ...initialState,
+  currentTransactionUUID: 'test-uuid',
+  draftTransactions: {
+    'test-uuid': {
+      ...draftTransactionInitialState,
+    },
+  },
+};
+
+export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
+  ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  draftTransactions: {
+    'test-uuid': {
+      ...draftTransactionInitialState,
+      ...draftTxState,
+      amount: {
+        ...draftTransactionInitialState.amount,
+        ...draftTxState.amount,
+      },
+      asset: {
+        ...draftTransactionInitialState.asset,
+        ...draftTxState.asset,
+      },
+      gas: {
+        ...draftTransactionInitialState.gas,
+        ...draftTxState.gas,
+      },
+      recipient: {
+        ...draftTransactionInitialState.recipient,
+        ...draftTxState.recipient,
+      },
+      history: draftTxState.history ?? [],
+      // Use this key if you want to console.log inside the send.js file.
+      test: draftTxState.test ?? 'yo',
+    },
+  },
+});

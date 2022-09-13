@@ -3,24 +3,15 @@
     margin-bottom: 20px;
   }
 
-  &__row-heading {
-    display: flex;
-  }
-
   .info-tooltip {
     display: inline-block;
   }
 
-  &__row-heading-detail {
-    flex-grow: 1;
-    align-self: center;
-  }
-
   .form-field__row--error .form-field__heading-title h6 {
-    color: $error-1;
+    color: var(--color-error-default);
 
     & path {
-      fill: $error-1;
+      fill: var(--color-error-default);
     }
   }
 
@@ -30,6 +21,6 @@
   }
 
   path {
-    fill: #dadada;
+    fill: var(--color-icon-alternative);
   }
 }

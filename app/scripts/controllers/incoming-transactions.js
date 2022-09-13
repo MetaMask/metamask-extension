@@ -18,9 +18,8 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * @typedef {import('../../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -31,7 +30,7 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  *
  * Note that this is not an exhaustive type definiton; only the properties we use are defined
  *
- * @typedef {Object} EtherscanTransaction
+ * @typedef {object} EtherscanTransaction
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
  * @property {string} gas - The gas limit, in decimal GWEI
@@ -157,10 +156,10 @@ export default class IncomingTransactionsController {
    * from, fetches the transactions and then saves them and the next block
    * number to begin fetching from in state. Block numbers and transactions are
    * stored per chainId.
+   *
    * @private
    * @param {string} address - address to lookup transactions for
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
-   * @returns {void}
    */
   async _update(address, newBlockNumberDec) {
     const chainId = this.getCurrentChainId();
@@ -259,6 +258,7 @@ export default class IncomingTransactionsController {
 
   /**
    * Transmutes a EtherscanTransaction into a TransactionMeta
+   *
    * @param {EtherscanTransaction} etherscanTransaction - the transaction to normalize
    * @param {string} chainId - The chainId of the current network
    * @returns {TransactionMeta}
@@ -307,13 +307,12 @@ export default class IncomingTransactionsController {
  * is called with and invokes the comparator with both the cached, previous,
  * value and the current value. If specified, the initialValue will be passed
  * in as the previous value on the first invocation of the returned method.
- * @template A
- * @params {A=} type of compared value
- * @param {(prevValue: A, nextValue: A) => void} comparator - method to compare
- *  previous and next values.
- * @param {A} [initialValue] - initial value to supply to prevValue
- *  on first call of the method.
- * @returns {void}
+ *
+ * @template A - The type of the compared value.
+ * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
+ * the previous and next values.
+ * @param {A} [initialValue] - The initial value to supply to prevValue
+ * on first call of the method.
  */
 function previousValueComparator(comparator, initialValue) {
   let first = true;

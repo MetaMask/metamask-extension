@@ -2,10 +2,11 @@ import React from 'react';
 import TransactionTotalBanner from '.';
 
 export default {
-  title: 'Transaction Total Banner',
+  title: 'Components/App/TransactionTotalBanner',
+  id: __filename,
 };
 
-export const basic = () => {
+export const DefaultStory = () => {
   return (
     <TransactionTotalBanner
       total="~18.73"
@@ -18,3 +19,5 @@ export const basic = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

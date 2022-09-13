@@ -13,7 +13,7 @@ exports[`DropdownSearchList renders the component with initial props 1`] = `
         class="dropdown-search-list__selector-closed"
       >
         <img
-          alt=""
+          alt="symbol"
           class="url-icon dropdown-search-list__selector-closed-icon"
           src="iconUrl"
         />

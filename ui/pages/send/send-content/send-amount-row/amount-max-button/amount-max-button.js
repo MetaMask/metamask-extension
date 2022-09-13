@@ -1,37 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBasicGasEstimateLoadingStatus } from '../../../../../selectors';
 import {
   getSendMaxModeState,
   isSendFormInvalid,
   toggleSendMaxMode,
 } from '../../../../../ducks/send';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useMetricEvent } from '../../../../../hooks/useMetricEvent';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { EVENT } from '../../../../../../shared/constants/metametrics';
 
 export default function AmountMaxButton() {
-  const buttonDataLoading = useSelector(getBasicGasEstimateLoadingStatus);
   const isDraftTransactionInvalid = useSelector(isSendFormInvalid);
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
-  const trackClickedMax = useMetricEvent({
-    eventOpts: {
-      category: 'Transactions',
-      action: 'Edit Screen',
-      name: 'Clicked "Amount Max"',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
   const onMaxClick = () => {
-    trackClickedMax();
+    trackEvent({
+      event: 'Clicked "Amount Max"',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      properties: {
+        action: 'Edit Screen',
+        legacy_event: true,
+      },
+    });
     dispatch(toggleSendMaxMode());
   };
 
-  const disabled = process.env.SHOW_EIP_1559_UI
-    ? isDraftTransactionInvalid
-    : buttonDataLoading || isDraftTransactionInvalid;
+  const disabled = isDraftTransactionInvalid;
 
   return (
     <button

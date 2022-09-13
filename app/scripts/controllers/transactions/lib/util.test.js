@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
+import { GAS_RECOMMENDATIONS } from '../../../../../shared/constants/gas';
 import * as txUtils from './util';
 
 describe('txUtils', function () {
@@ -283,6 +284,33 @@ describe('txUtils', function () {
         assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
       });
     });
+
+    describe('when validating EIP-1559 transactions', function () {
+      it('should error when network does not support EIP-1559', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '0x1',
+          maxFeePerGas: '0x1',
+          to: BURN_ADDRESS,
+        };
+        assert.throws(
+          () => {
+            txUtils.validateTxParams(txParams, false);
+          },
+          {
+            message:
+              'Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559',
+          },
+        );
+      });
+      it('should validate when network does support EIP-1559', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '0x1',
+          maxFeePerGas: '0x1',
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams, true));
+      });
+    });
   });
 
   describe('#normalizeTxParams', function () {
@@ -296,6 +324,8 @@ describe('txUtils', function () {
         gasPrice: '1',
         maxFeePerGas: '1',
         maxPriorityFeePerGas: '1',
+        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
         type: '1',
       };
 
@@ -349,6 +379,17 @@ describe('txUtils', function () {
         normalizedTxParams.type,
         '0x1',
         'type should be hex-prefixed',
+      );
+
+      assert.equal(
+        normalizedTxParams.estimateSuggested,
+        GAS_RECOMMENDATIONS.MEDIUM,
+        'estimateSuggested should be the string originally provided',
+      );
+      assert.equal(
+        normalizedTxParams.estimateUsed,
+        GAS_RECOMMENDATIONS.HIGH,
+        'estimateSuggested should be the string originally provided',
       );
     });
   });

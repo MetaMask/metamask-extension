@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Incremental Security', function () {
@@ -8,12 +8,12 @@ describe('Incremental Security', function () {
       {
         secretKey:
           '0x250F458997A364988956409A164BA4E16F0F99F916ACDD73ADCD3A1DE30CF8D1',
-        balance: 0,
+        balance: convertToHexValue(0),
       },
       {
         secretKey:
           '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -38,11 +38,11 @@ describe('Incremental Security', function () {
           tag: 'button',
         });
 
-        // clicks the "Create New Wallet" option
-        await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
-
         // clicks the "No thanks" option on the metametrics opt-in screen
-        await driver.clickElement('.btn-default');
+        await driver.clickElement('.btn-secondary');
+
+        // clicks the "Create New Wallet" option
+        await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
 
         // accepts a secure password
         await driver.fill(
@@ -65,13 +65,6 @@ describe('Incremental Security', function () {
           tag: 'button',
         });
 
-        // closes the what's new popup
-        const popover = await driver.findElement('.popover-container');
-
-        await driver.clickElement('[data-testid="popover-close"]');
-
-        await popover.waitForElementState('hidden');
-
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -80,8 +73,8 @@ describe('Incremental Security', function () {
         );
 
         // gets the current accounts address
-        const addressInput = await driver.findElement('.readonly-input__input');
-        const publicAddress = await addressInput.getAttribute('value');
+        const address = await driver.findElement('.qr-code__address');
+        const publicAddress = await address.getText();
 
         // wait for account modal to be visible
         const accountModal = await driver.findVisibleElement('span .modal');
@@ -163,7 +156,7 @@ describe('Incremental Security', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // can click through the success screen
-        await driver.clickElement({ text: 'All Done', tag: 'button' });
+        await driver.clickElement({ text: 'All done', tag: 'button' });
 
         // should have the correct amount of eth
         currencyDisplay = await driver.waitForSelector({

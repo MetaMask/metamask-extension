@@ -13,10 +13,12 @@ import {
   addEth,
 } from '../../helpers/utils/confirm-tx.util';
 
-import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
+import { sumHexes } from '../../helpers/utils/transactions.util';
 
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;
@@ -90,11 +92,8 @@ export default function reducer(state = initState, action = {}) {
       };
     }
     case UPDATE_TRANSACTION_FEES: {
-      const {
-        fiatTransactionFee,
-        ethTransactionFee,
-        hexTransactionFee,
-      } = action.payload;
+      const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } =
+        action.payload;
       return {
         ...state,
         fiatTransactionFee: fiatTransactionFee || state.fiatTransactionFee,
@@ -103,11 +102,8 @@ export default function reducer(state = initState, action = {}) {
       };
     }
     case UPDATE_TRANSACTION_TOTALS: {
-      const {
-        fiatTransactionTotal,
-        ethTransactionTotal,
-        hexTransactionTotal,
-      } = action.payload;
+      const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } =
+        action.payload;
       return {
         ...state,
         fiatTransactionTotal:
@@ -264,9 +260,8 @@ export function updateTxDataAndCalculate(txData) {
 export function setTransactionToConfirm(transactionId) {
   return (dispatch, getState) => {
     const state = getState();
-    const unconfirmedTransactionsHash = unconfirmedTransactionsHashSelector(
-      state,
-    );
+    const unconfirmedTransactionsHash =
+      unconfirmedTransactionsHashSelector(state);
     const transaction = unconfirmedTransactionsHash[transactionId];
 
     if (!transaction) {
@@ -281,10 +276,10 @@ export function setTransactionToConfirm(transactionId) {
       if (txParams.data) {
         const { to: tokenAddress, data } = txParams;
 
-        const tokenData = getTokenData(data);
+        const tokenData = parseStandardTokenTransactionData(data);
         const tokens = getTokens(state);
-        const currentToken = tokens?.find(
-          ({ address }) => tokenAddress === address,
+        const currentToken = tokens?.find(({ address }) =>
+          isEqualCaseInsensitive(tokenAddress, address),
         );
 
         dispatch(

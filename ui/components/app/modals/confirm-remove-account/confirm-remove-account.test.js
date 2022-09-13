@@ -10,7 +10,11 @@ describe('Confirm Remove Account', () => {
   let wrapper;
 
   const state = {
-    metamask: {},
+    metamask: {
+      provider: {
+        chainId: '0x0',
+      },
+    },
   };
 
   const props = {
@@ -51,14 +55,14 @@ describe('Confirm Remove Account', () => {
   });
 
   it('nevermind', () => {
-    const nevermind = wrapper.find({ type: 'default' });
+    const nevermind = wrapper.find({ type: 'secondary' });
     nevermind.simulate('click');
 
     expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
   it('remove', async () => {
-    const remove = wrapper.find({ type: 'secondary' });
+    const remove = wrapper.find({ type: 'primary' });
     remove.simulate('click');
 
     expect(await props.removeAccount.calledOnce).toStrictEqual(true);

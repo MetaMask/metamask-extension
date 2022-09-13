@@ -6,15 +6,20 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
+  setShowTestNetworks,
   setAutoLockTimeLimit,
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
-  setLedgerLivePreference,
+  setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setUseTokenDetection,
+  backupUserData,
+  restoreUserData,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
+import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -28,28 +33,40 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
+    useTokenDetection,
   } = metamask;
-  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    showTestNetworks,
+    autoLockTimeLimit = 0,
+  } = getPreferences(state);
+
+  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
+    showTestNetworks,
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
+    userHasALedgerAccount,
+    useTokenDetection,
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return {
+    backupUserData: () => backupUserData(),
+    restoreUserData: (jsonString) => restoreUserData(jsonString),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
     displayWarning: (warning) => dispatch(displayWarning(warning)),
@@ -60,6 +77,9 @@ export const mapDispatchToProps = (dispatch) => {
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
+    },
+    setShowTestNetworks: (value) => {
+      return dispatch(setShowTestNetworks(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
@@ -74,11 +94,14 @@ export const mapDispatchToProps = (dispatch) => {
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
     },
-    setLedgerLivePreference: (value) => {
-      return dispatch(setLedgerLivePreference(value));
+    setLedgerTransportPreference: (value) => {
+      return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setUseTokenDetection: (value) => {
+      return dispatch(setUseTokenDetection(value));
     },
   };
 };

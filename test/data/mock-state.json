@@ -1,5 +1,6 @@
 {
   "appState": {
+    "isLoading": false,
     "gasIsLoading": false,
     "currentView": {
       "name": "accountDetail",
@@ -7,7 +8,44 @@
       "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
     }
   },
+  "history": {
+    "mostRecentOverviewPage": "/"
+  },
   "metamask": {
+    "gasFeeEstimates": {
+      "low": {
+        "suggestedMaxPriorityFeePerGas": "1.233864249",
+        "suggestedMaxFeePerGas": "19.308202033",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 30000
+      },
+      "medium": {
+        "suggestedMaxPriorityFeePerGas": "1.5",
+        "suggestedMaxFeePerGas": "25.900356008",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 45000
+      },
+      "high": {
+        "suggestedMaxPriorityFeePerGas": "2",
+        "suggestedMaxFeePerGas": "32.726374232",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 60000
+      },
+      "estimatedBaseFee": "18.074337783",
+      "historicalBaseFeeRange": ["10.621659703", "19.673392581"],
+      "baseFeeTrend": "up",
+      "latestPriorityFeeRange": ["1.5", "17.536644176"],
+      "historicalPriorityFeeRange": ["0.110624865", "718.303816711"],
+      "priorityFeeTrend": "up",
+      "networkCongestion": 0.87115
+    },
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": true,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "ensResolutionsByAddress": {},
     "featureFlags": {
       "showIncomingTransactions": true
     },
@@ -29,6 +67,29 @@
       "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
         "name": "Test Account 2"
+      }
+    },
+    "networkDetails": {
+      "EIPS": {
+        "1559": true
+      }
+    },
+    "frequentRpcListDetail": [],
+    "subjectMetadata": {},
+    "notifications": {
+      "test": {
+        "id": "test",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": null,
+        "message": "Hello, http://localhost:8086!"
+      },
+      "test2": {
+        "id": "test2",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": 1652967897732,
+        "message": "Hello, http://localhost:8086!"
       }
     },
     "cachedBalances": {},
@@ -153,6 +214,57 @@
       "maxModeOn": false,
       "editingTransactionId": null,
       "toNickname": ""
+    },
+    "useTokenDetection": true,
+    "advancedGasFee": {
+      "maxBaseFee": "75",
+      "priorityFee": "2"
+    },
+    "tokenList": {
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "symbol": "WBTC",
+        "decimals": 8,
+        "name": "Wrapped Bitcoin",
+        "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
+        "aggregators": [
+          "airswapLight",
+          "bancor",
+          "cmc",
+          "coinGecko",
+          "kleros",
+          "oneInch",
+          "paraswap",
+          "pmm",
+          "totle",
+          "zapper",
+          "zerion",
+          "zeroEx"
+        ],
+        "occurrences": 12
+      },
+      "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
+        "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+        "symbol": "YFI",
+        "decimals": 18,
+        "name": "yearn.finance",
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+        "aggregators": [
+          "airswapLight",
+          "bancor",
+          "cmc",
+          "coinGecko",
+          "kleros",
+          "oneInch",
+          "paraswap",
+          "pmm",
+          "totle",
+          "zapper",
+          "zerion",
+          "zeroEx"
+        ],
+        "occurrences": 12
+      }
     },
     "currentNetworkTxList": [
       {

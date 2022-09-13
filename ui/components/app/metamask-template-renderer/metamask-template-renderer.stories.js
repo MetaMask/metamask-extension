@@ -4,7 +4,8 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import MetaMaskTemplateRenderer from '.';
 
 export default {
-  title: 'MetaMask Template Renderer',
+  title: 'Components/App/MetamaskTemplateRenderer',
+  id: __filename,
 };
 
 const SECTIONS = {
@@ -12,7 +13,7 @@ const SECTIONS = {
   props: {
     margin: 4,
     padding: 8,
-    borderColor: COLORS.PRIMARY1,
+    borderColor: COLORS.PRIMARY_DEFAULT,
     borderWidth: 2,
   },
   children: [
@@ -21,7 +22,7 @@ const SECTIONS = {
       key: 'A Test String',
       children: 'A Test String',
       props: {
-        color: COLORS.UI3,
+        color: COLORS.TEXT_MUTED,
         variant: TYPOGRAPHY.H2,
       },
     },
@@ -30,7 +31,7 @@ const SECTIONS = {
       key: 'Some more text',
       children: 'Some more text as a paragraph',
       props: {
-        color: COLORS.UI4,
+        color: COLORS.TEXT_ALTERNATIVE,
         variant: TYPOGRAPHY.Paragraph,
       },
     },
@@ -39,8 +40,7 @@ const SECTIONS = {
       key: 'TDL',
       props: {
         dictionary: {
-          term:
-            'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
+          term: 'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
           definition:
             'a statement of the exact meaning of a word, especially in a dictionary.',
           dl: 'HTML tag denoting a definition list',
@@ -60,7 +60,6 @@ const SECTIONS = {
           children: 'Cancel',
           key: 'cancel-button',
           props: {
-            rounded: true,
             type: 'outlined',
             style: {
               width: '45%',
@@ -72,7 +71,6 @@ const SECTIONS = {
           children: 'OK',
           key: 'ok-button',
           props: {
-            rounded: true,
             type: 'primary',
             style: {
               width: '45%',
@@ -84,11 +82,14 @@ const SECTIONS = {
     },
   ],
 };
-export const metaMaskTemplateRenderer = () => (
+
+export const DefaultStory = () => (
   <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
 );
 
-export const withInvalidElement = () => (
+DefaultStory.storyName = 'Default';
+
+export const WithInvalidElement = () => (
   <MetaMaskTemplateRenderer
     sections={object('sections', [
       {

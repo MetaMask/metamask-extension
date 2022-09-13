@@ -15,7 +15,7 @@
 
   &__time-estimate {
     margin-top: 5.5px;
-    color: $silver-chalice;
+    color: var(--color-text-alternative);
     height: 15.4px;
   }
 
@@ -34,9 +34,9 @@
     display: flex;
     padding-top: 17px;
     border-radius: 4px;
-    border-color: $spindle;
-    background: $white;
-    color: $scorpion;
+    border-color: var(--color-primary-muted);
+    background: var(--color-background-default);
+    color: var(--color-text-alternative);
 
     div {
       display: flex;
@@ -52,13 +52,13 @@
   }
 
   .button-group__button--active {
-    border-color: $primary-blue;
-    color: $scorpion;
+    border-color: var(--color-primary-default);
+    color: var(--color-text-alternative);
 
     i {
       &:last-child {
         display: flex;
-        color: $primary-blue;
+        color: var(--color-primary-default);
         margin-top: 8px;
       }
     }
@@ -70,7 +70,7 @@
   justify-content: stretch;
   min-height: 54px;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     max-width: 260px;
   }
 
@@ -93,7 +93,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: 575px) {
+    @include screen-sm-max {
       @include H8;
     }
   }
@@ -103,7 +103,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: 575px) {
+    @include screen-sm-max {
       @include H8;
     }
   }
@@ -114,8 +114,8 @@
 
   .button-group__button,
   .button-group__button--active {
-    background: white;
-    color: $scorpion;
+    background: var(--color-background-default);
+    color: var(--color-text-alternative);
     padding: 4px;
 
     div {
@@ -133,13 +133,13 @@
   }
 
   .button-group__button--active {
-    color: $white;
-    background: $dodger-blue;
+    color: var(--color-background-default);
+    background: var(--color-primary-muted);
 
     i {
       &:last-child {
         display: flex;
-        color: $primary-blue;
+        color: var(--color-primary-default);
         margin-top: 10px;
       }
     }
@@ -185,17 +185,17 @@
 
     font-weight: 500;
     margin-top: 4px;
-    color: $black;
+    color: var(--color-text-default);
   }
 
   .button-group__button,
   .button-group__button--active {
     height: 78px;
-    background: white;
-    color: #2a4055;
+    background: var(--color-background-default);
+    color: var(--color-text-default);
     width: 108px;
     height: 97px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border-radius: 6px;
     border: none;
 
@@ -221,11 +221,11 @@
   }
 
   .button-group__button--active {
-    background: #f7fcff;
-    border-color: #2c8bdc;
+    background: var(--color-background-alternative);
+    border-color: var(--color-primary-default);
 
     &:first-child {
-      border-color: #2c8bdc;
+      border-color: var(--color-primary-default);
     }
 
     .button-check-wrapper {
@@ -235,7 +235,7 @@
       position: absolute;
       top: -11px;
       right: -10px;
-      background: #d5ecfa;
+      background: var(--color-background-alternative);
       display: flex;
       flex-flow: row;
       justify-content: center;
@@ -244,7 +244,7 @@
 
     i {
       display: flex;
-      color: $primary-blue;
+      color: var(--color-primary-default);
       font-weight: 900;
     }
   }

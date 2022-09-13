@@ -12,7 +12,7 @@ export default class ModalContent extends PureComponent {
 
     return (
       <div className="modal-content">
-        {title && <div className="modal-content__title">{title}</div>}
+        {title ? <div className="modal-content__title">{title}</div> : null}
         {description && (
           <div className="modal-content__description">{description}</div>
         )}

@@ -1,9 +1,19 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
+import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
+import Jazzicon from '../../../components/ui/jazzicon';
+import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
+import Typography from '../../../components/ui/typography';
+
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -37,24 +47,49 @@ export default class SettingsTab extends PureComponent {
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     currentCurrency: PropTypes.string,
-    conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
+    lastFetchedConversionDate: PropTypes.number,
+    selectedAddress: PropTypes.string,
+    tokenList: PropTypes.object,
   };
+
+  settingsRefs = Array(
+    getNumberOfSettingsInSection(this.context.t, this.context.t('general')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('general'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('general'), this.settingsRefs);
+  }
 
   renderCurrentConversion() {
     const { t } = this.context;
-    const { currentCurrency, conversionDate, setCurrentCurrency } = this.props;
+    const { currentCurrency, setCurrentCurrency, lastFetchedConversionDate } =
+      this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyConversion')}</span>
           <span className="settings-page__content-description">
-            {t('updatedWithDate', [Date(conversionDate)])}
+            {lastFetchedConversionDate
+              ? t('updatedWithDate', [
+                  new Date(lastFetchedConversionDate * 1000).toString(),
+                ])
+              : t('noConversionDateAvailable')}
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -80,7 +115,7 @@ export default class SettingsTab extends PureComponent {
     const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : '';
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span className="settings-page__content-label">
             {t('currentLanguage')}
@@ -108,7 +143,11 @@ export default class SettingsTab extends PureComponent {
     const { hideZeroBalanceTokens, setHideZeroBalanceTokens } = this.props;
 
     return (
-      <div className="settings-page__content-row" id="toggle-zero-balance">
+      <div
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        id="toggle-zero-balance"
+      >
         <div className="settings-page__content-item">
           <span>{t('hideZeroBalanceTokens')}</span>
         </div>
@@ -128,21 +167,95 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const { useBlockie, setUseBlockie } = this.props;
+    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+      this.props;
+
+    const getIconStyles = () => ({
+      display: 'block',
+      borderRadius: '16px',
+      width: '32px',
+      height: '32px',
+    });
 
     return (
-      <div className="settings-page__content-row" id="blockie-optin">
+      <div
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        id="blockie-optin"
+      >
         <div className="settings-page__content-item">
-          <span>{this.context.t('blockiesIdenticon')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useBlockie}
-              onToggle={(value) => setUseBlockie(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+          <Typography variant={TYPOGRAPHY.H5} color={COLORS.TEXT_DEFAULT}>
+            {t('accountIdenticon')}
+          </Typography>
+          <span className="settings-page__content-item__description">
+            {t('jazzAndBlockies')}
+          </span>
+          <div className="settings-page__content-item__identicon">
+            <button
+              data-test-id="jazz_icon"
+              onClick={() => setUseBlockie(false)}
+              className="settings-page__content-item__identicon__item"
+            >
+              <div
+                className={classnames(
+                  'settings-page__content-item__identicon__item__icon',
+                  {
+                    'settings-page__content-item__identicon__item__icon--active':
+                      !useBlockie,
+                  },
+                )}
+              >
+                <Jazzicon
+                  id="jazzicon"
+                  address={selectedAddress}
+                  diameter={32}
+                  tokenList={tokenList}
+                  style={getIconStyles()}
+                />
+              </div>
+              <Typography
+                color={COLORS.TEXT_DEFAULT}
+                variant={TYPOGRAPHY.H7}
+                marginTop={0}
+                marginRight={12}
+                marginBottom={0}
+                marginLeft={3}
+              >
+                {t('jazzicons')}
+              </Typography>
+            </button>
+            <button
+              data-test-id="blockie_icon"
+              onClick={() => setUseBlockie(true)}
+              className="settings-page__content-item__identicon__item"
+            >
+              <div
+                className={classnames(
+                  'settings-page__content-item__identicon__item__icon',
+                  {
+                    'settings-page__content-item__identicon__item__icon--active':
+                      useBlockie,
+                  },
+                )}
+              >
+                <BlockieIdenticon
+                  id="blockies"
+                  address={selectedAddress}
+                  diameter={32}
+                  borderRadius="50%"
+                />
+              </div>
+              <Typography
+                color={COLORS.TEXT_DEFAULT}
+                variant={TYPOGRAPHY.H7}
+                marginTop={3}
+                marginRight={0}
+                marginBottom={3}
+                marginLeft={3}
+              >
+                {t('blockies')}
+              </Typography>
+            </button>
           </div>
         </div>
       </div>
@@ -158,7 +271,7 @@ export default class SettingsTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('primaryCurrencySetting')}</span>
           <div className="settings-page__content-description">
@@ -212,7 +325,7 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {warning && <div className="settings-tab__error">{warning}</div>}
+        {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderCurrentConversion()}
         {this.renderUsePrimaryCurrencyOptions()}
         {this.renderCurrentLocale()}

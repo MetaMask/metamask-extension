@@ -1,0 +1,54 @@
+.onboarding-metametrics {
+  @include screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  ul {
+    margin: 24px 0 0 0;
+
+    li {
+      padding-bottom: 20px;
+      display: flex;
+    }
+  }
+
+  .fa {
+    width: 16px;
+  }
+
+  .fa-check {
+    margin-inline-end: 12px;
+    color: var(--color-success-default);
+  }
+
+  .fa-times {
+    margin-inline-end: 12px;
+    color: var(--color-error-default);
+  }
+
+  &__terms a {
+    color: var(--color-primary-default);
+  }
+
+  &__buttons {
+    margin-top: 24px;
+    width: 100%;
+
+    @include screen-sm-min {
+      margin-top: 40px;
+      justify-content: space-between;
+      display: flex;
+    }
+
+    button {
+      margin-bottom: 24px;
+
+      @include screen-sm-min {
+        width: 200px;
+      }
+    }
+  }
+}

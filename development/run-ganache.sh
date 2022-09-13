@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-ganache_cli="$(yarn bin)/ganache-cli"
+ganache_cli="$(yarn bin)/ganache"
 seed_phrase="${GANACHE_SEED_PHRASE:-phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent}"
 
 _term () {
@@ -23,7 +23,7 @@ trap _term SIGTERM
 trap _int SIGINT
 
 # shellcheck disable=SC2086
-$ganache_cli --noVMErrorsOnRPCResponse --networkId 1337 --mnemonic "$seed_phrase" ${GANACHE_ARGS:-} &
+$ganache_cli --chain.vmErrorsOnRPCResponse false --networkId 1337 --mnemonic "$seed_phrase" ${GANACHE_ARGS:-} &
 
 child=$!
 wait "$child"

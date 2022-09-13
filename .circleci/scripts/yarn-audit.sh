@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
+set -e
 set -u
+set -x
 set -o pipefail
 
-yarn audit --level moderate --groups dependencies
-audit_status="$?"
+# use `improved-yarn-audit` since that allows for exclude
+# exclusions are in .iyarc now
+yarn run improved-yarn-audit \
+    --ignore-dev-deps \
+    --min-severity moderate \
+    --fail-on-missing-exclusions
 
-# Use a bitmask to ignore INFO and LOW severity audit results
-# See here: https://yarnpkg.com/lang/en/docs/cli/audit/
-audit_status="$(( audit_status & 11100 ))"
+audit_status="$?"
 
 if [[ "$audit_status" != 0 ]]
 then

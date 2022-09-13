@@ -1,0 +1,18 @@
+.currency-input {
+  &__conversion-component {
+    @include H7;
+
+    padding-left: 1px;
+  }
+
+  &__swap-component {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-default);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+}

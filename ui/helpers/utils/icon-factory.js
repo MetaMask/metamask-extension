@@ -1,8 +1,4 @@
-import contractMap from '@metamask/contract-metadata';
-import {
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 let iconFactory;
 
@@ -18,11 +14,13 @@ function IconFactory(jazzicon) {
   this.cache = {};
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter) {
-  const addr = toChecksumHexAddress(address);
-
-  if (iconExistsFor(addr)) {
-    return imageElFor(addr);
+IconFactory.prototype.iconForAddress = function (
+  address,
+  diameter,
+  tokenMetadata,
+) {
+  if (iconExistsFor(address, tokenMetadata)) {
+    return imageElFor(tokenMetadata);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -49,20 +47,17 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
-function iconExistsFor(address) {
+function iconExistsFor(address, tokenMetadata) {
   return (
-    contractMap[address] &&
     isValidHexAddress(address, { allowNonPrefixed: false }) &&
-    contractMap[address].logo
+    tokenMetadata &&
+    tokenMetadata.iconUrl
   );
 }
 
-function imageElFor(address) {
-  const contract = contractMap[address];
-  const fileName = contract.logo;
-  const path = `images/contract/${fileName}`;
+function imageElFor(tokenMetadata = {}) {
   const img = document.createElement('img');
-  img.src = path;
+  img.src = tokenMetadata?.iconUrl;
   img.style.width = '100%';
   return img;
 }

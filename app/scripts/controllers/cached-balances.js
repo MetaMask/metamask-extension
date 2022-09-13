@@ -1,10 +1,10 @@
 import { ObservableStore } from '@metamask/obs-store';
 
 /**
- * @typedef {Object} CachedBalancesOptions
- * @property {Object} accountTracker An {@code AccountTracker} reference
+ * @typedef {object} CachedBalancesOptions
+ * @property {object} accountTracker An {@code AccountTracker} reference
  * @property {Function} getCurrentChainId A function to get the current chain id
- * @property {Object} initState The initial controller state
+ * @property {object} initState The initial controller state
  */
 
 /**
@@ -33,7 +33,8 @@ export default class CachedBalancesController {
    * Updates the cachedBalances property for the current chain. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {Object} obj - The the recently updated accounts object for the current chain
+   * @param {object} obj - The the recently updated accounts object for the current chain
+   * @param obj.accounts
    * @returns {Promise<void>}
    */
   async updateCachedBalances({ accounts }) {
@@ -80,7 +81,6 @@ export default class CachedBalancesController {
    * selections.
    *
    * @private
-   *
    */
   _registerUpdates() {
     const update = this.updateCachedBalances.bind(this);

@@ -1,20 +1,24 @@
+import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const watchAsset = {
   methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
   implementation: watchAssetHandler,
+  hookNames: {
+    handleWatchAssetRequest: true,
+  },
 };
 export default watchAsset;
 
 /**
- * @typedef {Object} WatchAssetOptions
+ * @typedef {object} WatchAssetOptions
  * @property {Function} handleWatchAssetRequest - The wallet_watchAsset method implementation.
  */
 
 /**
- * @typedef {Object} WatchAssetParam
+ * @typedef {object} WatchAssetParam
  * @property {string} type - The type of the asset to watch.
- * @property {Object} options - Watch options for the asset.
+ * @property {object} options - Watch options for the asset.
  */
 
 /**
@@ -32,9 +36,15 @@ async function watchAssetHandler(
   { handleWatchAssetRequest },
 ) {
   try {
-    res.result = await handleWatchAssetRequest(req);
+    const { options: asset, type } = req.params;
+    const handleWatchAssetResult = await handleWatchAssetRequest(asset, type);
+    await handleWatchAssetResult.result;
+    res.result = true;
     return end();
   } catch (error) {
+    if (error.message === 'User rejected to watch the asset.') {
+      return end(ethErrors.provider.userRejectedRequest());
+    }
     return end(error);
   }
 }

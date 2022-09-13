@@ -60,7 +60,9 @@ jest.mock('../../../../ducks/gas/gas.duck', () => ({
 }));
 
 jest.mock('../../../../ducks/send', () => {
-  const { ASSET_TYPES } = jest.requireActual('../../../../ducks/send');
+  const { ASSET_TYPES } = jest.requireActual(
+    '../../../../../shared/constants/transaction',
+  );
   return {
     useCustomGas: jest.fn(),
     updateGasLimit: jest.fn(),
@@ -166,7 +168,6 @@ describe('gas-modal-page-container container', () => {
         updateTransactionGasFees: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
         createSpeedUpTransaction: sinon.spy(),
-        hideSidebar: sinon.spy(),
         hideModal: sinon.spy(),
         cancelAndClose: sinon.spy(),
       };
@@ -268,7 +269,6 @@ describe('gas-modal-page-container container', () => {
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
       expect(dispatchProps.createSpeedUpTransaction.callCount).toStrictEqual(1);
-      expect(dispatchProps.hideSidebar.callCount).toStrictEqual(1);
     });
   });
 });

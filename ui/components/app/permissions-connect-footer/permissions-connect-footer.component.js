@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class PermissionsConnectFooter extends Component {
   static contextTypes = {
@@ -16,12 +17,11 @@ export default class PermissionsConnectFooter extends Component {
             className="permissions-connect-footer__text--link"
             onClick={() => {
               global.platform.openTab({
-                url:
-                  'https://medium.com/metamask/privacy-mode-is-now-enabled-by-default-1c1c957f4d57',
+                url: ZENDESK_URLS.USER_GUIDE_DAPPS,
               });
             }}
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </div>
         </div>
       </div>

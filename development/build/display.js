@@ -44,7 +44,7 @@ function displayChart(data) {
   const colors = randomColor({ count: data.length });
 
   // some heading before the bars
-  console.log(`\nbuild completed. task timeline:`);
+  console.log(`\nBuild completed. Task timeline:`);
 
   // build bars for bounds
   data.forEach((entry, index) => {

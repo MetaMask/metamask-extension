@@ -1,16 +1,13 @@
 import { connect } from 'react-redux';
-import { addToAddressBook } from '../../../store/actions';
-import {
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  getDefaultActiveButtonIndex,
-} from '../../../selectors';
+import { addToAddressBook, cancelTx } from '../../../store/actions';
 import {
   resetSendState,
-  getGasPrice,
+  getSendStage,
   getSendTo,
   getSendErrors,
   isSendFormInvalid,
   signTransaction,
+  getDraftTransactionID,
 } from '../../../ducks/send';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
@@ -28,23 +25,13 @@ function addressIsNew(toAccounts, newAddress) {
 }
 
 function mapStateToProps(state) {
-  const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state);
-  const gasPrice = getGasPrice(state);
-  const activeButtonIndex = getDefaultActiveButtonIndex(
-    gasButtonInfo,
-    gasPrice,
-  );
-  const gasEstimateType =
-    activeButtonIndex >= 0
-      ? gasButtonInfo[activeButtonIndex].gasEstimateType
-      : 'custom';
-
   return {
     disabled: isSendFormInvalid(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
+    sendStage: getSendStage(state),
     sendErrors: getSendErrors(state),
-    gasEstimateType,
+    draftTransactionID: getDraftTransactionID(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   };
 }
@@ -52,6 +39,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     resetSendState: () => dispatch(resetSendState()),
+    cancelTx: (t) => dispatch(cancelTx(t)),
     sign: () => dispatch(signTransaction()),
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = addHexPrefix(newAddress);

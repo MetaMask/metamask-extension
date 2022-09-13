@@ -49,9 +49,8 @@ describe('AdvancedTabContent Component', () => {
     });
 
     it('should call renderDataSummary with the expected params', () => {
-      const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(
-        0,
-      ).args;
+      const renderDataSummaryArgs =
+        AdvancedTabContent.prototype.renderDataSummary.getCall(0).args;
       expect(renderDataSummaryArgs).toStrictEqual(['$0.25']);
     });
   });
