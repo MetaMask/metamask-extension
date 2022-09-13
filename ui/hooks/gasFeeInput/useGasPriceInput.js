@@ -20,7 +20,7 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
 }
 
 /**
- * @typedef {Object} GasPriceInputsReturnType
+ * @typedef {object} GasPriceInputsReturnType
  * @property {DecGweiString} [gasPrice] - the gasPrice input value.
  * @property {(DecGweiString) => void} setGasPrice - state setter method to update the gasPrice.
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet

@@ -38,9 +38,8 @@ function transformState(state) {
       permissionActivityLog: permissionsLog,
       permissionHistory: permissionsHistory,
     },
-    SubjectMetadataController: getSubjectMetadataControllerState(
-      domainMetadata,
-    ),
+    SubjectMetadataController:
+      getSubjectMetadataControllerState(domainMetadata),
   };
 }
 

@@ -1,0 +1,125 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Foundations / Breakpoints" />
+
+# Breakpoints
+
+Breakpoints are used for responsive layout
+
+## Screen Sizes
+
+There are 4 screen sizes that make up the breakpoints for the MetaMask extension
+
+- base: `0px`
+- sm: `576px`
+- md: `768px`
+- lg: `1280px`
+
+### SCSS
+
+There are Sass variables and mixins available for use for both min and max screens sizes
+
+### Variables
+
+```css
+$screen-sm-max /* 575px */
+$screen-md-max /* 767px */
+$screen-lg-max /* 1279px */
+
+$screen-sm-min /* 576px */
+$screen-md-min /* 768px */
+$screen-lg-min /* 1280px */
+```
+
+### Mixins
+
+```css
+/* Max screen size */
+@include screen-sm-max {
+  /* equivalent css @media screen and (max-width: 575px) */
+}
+@include screen-md-max {
+  /* equivalent css @media screen and (max-width: 767px) */
+}
+@include screen-lg-max {
+  /* equivalent css @media screen and (max-width: 1279px) */
+}
+
+/* Min screen size */
+@include screen-sm-min {
+  /* equivalent css @media screen and (min-width: 576px) */
+}
+@include screen-md-min {
+  /* equivalent css @media screen and (min-width: 768px) */
+}
+@include screen-lg-min {
+  /* equivalent css @media screen and (min-width: 1280px) */
+}
+```
+
+Migrating from the old sass variables to the new mixins looks like this
+
+```css
+/* Max width */
+/* Instead of the media query and sass variable */
+@media screen and (max-width: $break-small) {
+  right: 16px;
+}
+
+/* Use the sass mixin */
+@include screen-sm-max {
+  right: 16px;
+}
+
+/* Min width */
+/* Instead of the media query and sass variable */
+@media screen and (min-width: $break-large) {
+  left: 16px;
+}
+
+/* Use the sass mixin */
+@include screen-sm-min {
+  left: 16px;
+}
+```
+
+## Takeaways
+
+- Try to avoid using static media queries in your code.
+- Try to use the provided SCSS mixins
+
+### ❌ Don't do this
+
+Don't use static media queries in your code.
+
+```css
+/**
+* Don't do this
+* Static media queries create inconsistency and could break the UI if we want to update them in future
+**/
+.account-menu {
+  @media screen and (min-width: 769px) {
+    right: calc((100vw - 80vw) / 2);
+  }
+
+  @media screen and (min-width: 1281px) {
+    right: calc((100vw - 65vw) / 2);
+  }
+}
+```
+
+### ✅ Do this
+
+Do use the provided Sass mixins
+
+```css
+.account-menu {
+  @include screen-md-min {
+    right: calc((100vw - 80vw) / 2);
+  }
+
+  @include screen-lg-min {
+    right: calc((100vw - 65vw) / 2);
+  }
+}
+```

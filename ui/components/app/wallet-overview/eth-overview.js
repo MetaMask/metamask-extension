@@ -31,8 +31,10 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
+import { startNewDraftTransaction } from '../../../ducks/send';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -52,6 +54,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
+      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -106,11 +109,11 @@ const EthOverview = ({ className }) => {
             label={t('buy')}
             onClick={() => {
               trackEvent({
-                event: 'Clicked Deposit',
+                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
                 category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
-                  action: 'Home',
-                  legacy_event: true,
+                  location: 'Home',
+                  text: 'Buy',
                 },
               });
               dispatch(showModal({ name: 'DEPOSIT_ETHER' }));
@@ -123,14 +126,19 @@ const EthOverview = ({ className }) => {
             label={t('send')}
             onClick={() => {
               trackEvent({
-                event: 'Clicked Send: Eth',
+                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
                 category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
-                  action: 'Home',
-                  legacy_event: true,
+                  token_symbol: 'ETH',
+                  location: 'Home',
+                  text: 'Send',
                 },
               });
-              history.push(SEND_ROUTE);
+              dispatch(
+                startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }),
+              ).then(() => {
+                history.push(SEND_ROUTE);
+              });
             }}
           />
           <IconButton
@@ -140,11 +148,12 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: 'Swaps Opened',
+                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
                   category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: EVENT.SOURCE.SWAPS.MAIN_VIEW,
-                    active_currency: 'ETH',
+                    token_symbol: 'ETH',
+                    location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
+                    text: 'Swap',
                   },
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -156,15 +165,18 @@ const EthOverview = ({ className }) => {
               }
             }}
             label={t('swap')}
-            tooltipRender={(contents) => (
-              <Tooltip
-                title={t('currentlyUnavailable')}
-                position="bottom"
-                disabled={isSwapsChain}
-              >
-                {contents}
-              </Tooltip>
-            )}
+            tooltipRender={
+              isSwapsChain
+                ? null
+                : (contents) => (
+                    <Tooltip
+                      title={t('currentlyUnavailable')}
+                      position="bottom"
+                    >
+                      {contents}
+                    </Tooltip>
+                  )
+            }
           />
         </>
       }

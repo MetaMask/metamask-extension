@@ -1,4 +1,5 @@
 {
+  "content_security_policy": "frame-ancestors 'none'",
   "externally_connectable": {
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]

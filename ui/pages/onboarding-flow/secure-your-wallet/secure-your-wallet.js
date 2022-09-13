@@ -24,9 +24,8 @@ export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
-  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] = useState(
-    false,
-  );
+  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
+    useState(false);
 
   const handleClickRecommended = () => {
     history.push(ONBOARDING_REVIEW_SRP_ROUTE);
@@ -56,7 +55,7 @@ export default function SecureYourWallet() {
 
   const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';
   return (
-    <div className="secure-your-wallet">
+    <div className="secure-your-wallet" data-testid="secure-your-wallet">
       {showSkipSRPBackupPopover && (
         <SkipSRPBackup handleClose={() => setShowSkipSRPBackupPopover(false)} />
       )}
@@ -128,20 +127,20 @@ export default function SecureYourWallet() {
       <Box className="secure-your-wallet__desc">
         <Box marginBottom={4}>
           <Typography
-            tag="p"
+            as="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleOne')}
           </Typography>
-          <Typography tag="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyOne')}
           </Typography>
         </Box>
         <Box marginBottom={4}>
           <Typography
-            tag="p"
+            as="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
@@ -156,19 +155,19 @@ export default function SecureYourWallet() {
         </Box>
         <Box marginBottom={6}>
           <Typography
-            tag="p"
+            as="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleThree')}
           </Typography>
-          <Typography tag="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyTwo')}
           </Typography>
         </Box>
         <Box className="secure-your-wallet__highlighted" marginBottom={2}>
-          <Typography tag="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyThree')}
           </Typography>
         </Box>

@@ -169,11 +169,15 @@ export default class ConfirmPageContainer extends Component {
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
+    const isSetApproveForAll =
+      currentTransaction.type ===
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
     const { t } = this.context;
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container">
+        <div className="page-container" data-testid="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
             positionOfCurrentTx={positionOfCurrentTx}
@@ -302,12 +306,37 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
+          {isSetApproveForAll && (
+            <Dialog type="error" className="confirm-page-container__dialog">
+              {/*
+                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
+                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
+              */}
+              {t('confirmPageDialogSetApprovalForAll', [
+                <b
+                  key="confirm-page-container__dialog-placeholder-1"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
+                </b>,
+                <b
+                  key="confirm-page-container__dialog-placeholder-2"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
+                </b>,
+              ])}
+            </Dialog>
+          )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
               onSubmit={onSubmit}
               submitText={t('confirm')}
+              submitButtonType={
+                isSetApproveForAll ? 'danger-primary' : 'primary'
+              }
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (

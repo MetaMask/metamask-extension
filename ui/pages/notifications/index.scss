@@ -12,7 +12,7 @@
     padding: 65px 24px 15px 24px;
     border-bottom: 1px solid var(--color-border-muted);
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding: 10px 20px;
     }
 
@@ -27,7 +27,7 @@
 
         margin-left: 26px;
 
-        @media screen and (max-width: $break-small) {
+        @include screen-sm-max {
           @include H6;
 
           margin-left: 16px;
@@ -39,7 +39,7 @@
     &_button {
       width: auto;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         font-size: 0.75rem;
         padding: 3.5px 1rem;
       }
@@ -52,7 +52,7 @@
     flex-direction: column;
     flex: 1 1 auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: 100%;
     }
 
@@ -62,7 +62,7 @@
       color: var(--color-text-muted);
       text-align: center;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         @include H6;
       }
     }

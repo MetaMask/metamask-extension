@@ -153,19 +153,19 @@ describe('selectors', () => {
           chainId: KOVAN_CHAIN_ID,
         },
         accounts: {
-          0x7250739de134d33ec7ab1ee592711e15098c9d2d: {
+          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
           },
-          0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5: {
+          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
             address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
           },
-          0xb3958fb96c8201486ae20be1d5c9f58083df343a: {
+          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
             address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
           },
-          0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           },
-          0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4: {
+          '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': {
             address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
           },
         },
@@ -267,29 +267,34 @@ describe('selectors', () => {
       expect(getOrderedConnectedAccountsForActiveTab(mockState)).toStrictEqual([
         {
           address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          balance: undefined,
           name: 'Account 2',
           lastActive: 1586359844192,
           lastSelected: 1586359844193,
         },
         {
           address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+          balance: undefined,
           name: 'Account 1',
           lastActive: 1586359844192,
           lastSelected: 1586359844192,
         },
         {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          balance: undefined,
           name: 'Account 3',
           lastActive: 1586359844192,
           lastSelected: 1586359844192,
         },
         {
           address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          balance: undefined,
           name: 'Really Long Name That Should Be Truncated',
           lastActive: 1586359844192,
         },
         {
           address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+          balance: undefined,
           name: 'Account 4',
           lastActive: 1586359844192,
         },

@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -41,14 +42,18 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
@@ -76,7 +81,7 @@ import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
  * This will be used for all cases where this state key is accessed only for that
  * purpose.
  *
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function isNetworkLoading(state) {
   return state.metamask.network === 'loading';
@@ -199,7 +204,7 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 /**
  * Checks if the current wallet is a hardware wallet.
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {boolean}
  */
 export function isHardwareWallet(state) {
@@ -210,7 +215,7 @@ export function isHardwareWallet(state) {
 /**
  * Get a HW wallet type, e.g. "Ledger Hardware"
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {string | undefined}
  */
 export function getHardwareWalletType(state) {
@@ -242,7 +247,7 @@ export function getAccountType(state) {
  * metadata that predates the switch to using chainId.
  *
  * @deprecated - use getCurrentChainId instead
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
@@ -639,7 +644,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 }
 
 /**
- * @typedef {Object} SwapsEthToken
+ * @typedef {object} SwapsEthToken
  * @property {string} symbol - The symbol for ETH, namely "ETH"
  * @property {string} name - The name of the ETH currency, "Ether"
  * @property {string} address - A substitute address for the metaswap-api to
@@ -725,7 +730,7 @@ export function getIsBuyableCoinbasePayChain(state) {
 }
 
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }
 
@@ -756,7 +761,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
 });
 
 /**
- * @typedef {Object} Notification
+ * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
  * @property {string} origin - A string identifing the snap origin
  * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
@@ -771,7 +776,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
  *
  * The returned notifications are sorted by date.
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {Notification[]} An array of notifications that can be shown to the user
  */
 
@@ -803,8 +808,8 @@ export const getUnreadNotificationsCount = createSelector(
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
- * @param {Object} state
- * @returns {Object}
+ * @param {object} state
+ * @returns {object}
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
@@ -822,15 +827,16 @@ function getAllowedAnnouncementIds(state) {
     6: false,
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    9: getIsMainnet(state),
-    10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    12: true,
+    9: false,
+    10: true,
+    11: true,
+    12: false,
+    13: true,
   };
 }
 
 /**
- * @typedef {Object} Announcement
+ * @typedef {object} Announcement
  * @property {number} id - A unique identifier for the announcement
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
  */
@@ -843,7 +849,7 @@ function getAllowedAnnouncementIds(state) {
  *
  * The returned announcements are sorted by date.
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {Announcement[]} An array of announcements that can be shown to the user
  */
 
@@ -870,6 +876,10 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowPortfolioTooltip(state) {
+  return state.metamask.showPortfolioTooltip;
 }
 
 /**
@@ -913,13 +923,19 @@ export function getTheme(state) {
 }
 
 /**
- * To retrieve the tokenList produced by TokenListcontroller
+ * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
+ * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
- * @returns {Object}
+ * @returns {object}
  */
 export function getTokenList(state) {
-  return state.metamask.tokenList;
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : state.metamask.tokenList;
+  return caseInSensitiveTokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
@@ -1008,6 +1024,8 @@ export function getIsAdvancedGasFeeDefault(state) {
 }
 
 /**
+ * To get the name of the network that support token detection based in chainId.
+ *
  * @param state
  * @returns string e.g. ethereum, bsc or polygon
  */
@@ -1027,13 +1045,13 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check for the chainId that supports token detection ,
+ * To check if teh chainId supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getIsTokenDetectionSupported(state) {
+export function getIsDynamicTokenListAvailable(state) {
   const chainId = getCurrentChainId(state);
   return [
     MAINNET_CHAIN_ID,
@@ -1061,4 +1079,113 @@ export function getDetectedTokensInCurrentNetwork(state) {
  */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
+}
+
+/**
+ * To check if the token detection is OFF and the network is Mainnet
+ * so that the user can skip third party token api fetch
+ * and use the static tokenlist from contract-metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionInactiveOnMainnet(state) {
+  const isMainnet = getIsMainnet(state);
+  const useTokenDetection = getUseTokenDetection(state);
+
+  return !useTokenDetection && isMainnet;
+}
+
+/**
+ * To check for the chainId that supports token detection ,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionSupported(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return useTokenDetection && isDynamicTokenListAvailable;
+}
+
+/**
+ * To check if the token detection is OFF for the token detection supported networks
+ * and the network is not Mainnet
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isMainnet = getIsMainnet(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
+}
+
+/**
+ * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsCustomNetworkListEnabled(state) {
+  return state.metamask.customNetworkListEnabled;
+}
+
+export function getIsCustomNetwork(state) {
+  const chainId = getCurrentChainId(state);
+
+  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+}
+
+export function getBlockExplorerLinkText(
+  state,
+  accountDetailsModalComponent = false,
+) {
+  const isCustomNetwork = getIsCustomNetwork(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+
+  let blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
+
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? {
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
+      : {
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  } else if (isCustomNetwork === false) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? { firstPart: 'etherscanViewOn', secondPart: '' }
+      : {
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  }
+
+  return blockExplorerLinkText;
+}
+
+export function getIsNetworkUsed(state) {
+  const chainId = getCurrentChainId(state);
+  const { usedNetworks } = state.metamask;
+
+  return Boolean(usedNetworks[chainId]);
+}
+
+export function getHasAnyAccountWithNoFundsOnNetwork(state) {
+  const balances = getMetaMaskCachedBalances(state) ?? {};
+  const hasAnAccountWithNoFundsOnNetwork =
+    Object.values(balances).indexOf('0x0');
+
+  return hasAnAccountWithNoFundsOnNetwork !== -1;
 }

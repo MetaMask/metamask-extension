@@ -33,7 +33,12 @@ export default class ConnectedSitesList extends Component {
             className="connected-sites-list__content-row"
           >
             <div className="connected-sites-list__subject-info">
-              <SiteIcon icon={subject.iconUrl} name={subject.name} size={32} />
+              <SiteIcon
+                icon={subject.iconUrl}
+                name={subject.name}
+                size={32}
+                className="connected-sites-list__subject-icon"
+              />
               <SiteOrigin
                 className="connected-sites-list__subject-name"
                 title={subject.extensionId || subject.origin}

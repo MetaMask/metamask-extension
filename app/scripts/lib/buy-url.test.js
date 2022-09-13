@@ -116,9 +116,8 @@ describe('buy-url', () => {
   });
 
   it('returns a MoonPay url with a prefilled wallet address for the Ethereum network', async () => {
-    const {
-      moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
-    } = BUYABLE_CHAINS_MAP[MAINNET.chainId];
+    const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+      BUYABLE_CHAINS_MAP[MAINNET.chainId];
     const moonPayQueryParams = new URLSearchParams({
       apiKey: MOONPAY_API_KEY,
       walletAddress: MAINNET.address,

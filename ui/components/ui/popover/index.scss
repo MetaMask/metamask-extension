@@ -15,7 +15,7 @@
     position: absolute;
     width: 328px;
     max-height: 94vh;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
     border-radius: 10px;
     background: var(--color-background-default);
   }
@@ -104,6 +104,6 @@
     background: var(--color-background-default);
     position: absolute;
     transform: rotate(45deg);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   }
 }

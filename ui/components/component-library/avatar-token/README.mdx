@@ -1,0 +1,67 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarToken } from './avatar-token';
+
+# AvatarToken
+
+The `AvatarToken` is a component responsible for display of the image of a given token
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `AvatarToken` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={AvatarToken} />
+
+### Size
+
+Use the `size` prop to set the size of the `AvatarToken`.
+
+Possible sizes include:
+
+- `xs` 16px
+- `sm` 24px
+- `md` 32px
+- `lg` 40px
+- `xl` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--size" />
+</Canvas>
+
+### Token Name
+
+Use the `tokenName` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `tokenImageUrl` prop.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-name" />
+</Canvas>
+
+### Token Image Url
+
+Use the `tokenImageUrl` prop to set the image to be rendered of the `AvatarToken`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-image-url" />
+</Canvas>
+
+### Show Halo
+
+If we want to display the component with halo effect. Only works if an image url is supplied to `tokenImageUrl`
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--show-halo" />
+</Canvas>
+
+### Color, Background Color And Border Color
+
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--color-background-color-and-border-color" />
+</Canvas>

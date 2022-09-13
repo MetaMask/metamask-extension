@@ -1,0 +1,46 @@
+lazy precompute for faster module initialization
+diff --git a/node_modules/eth-sig-util/node_modules/ethereumjs-util/dist/secp256k1-adapter.js b/node_modules/eth-sig-util/node_modules/ethereumjs-util/dist/secp256k1-adapter.js
+index e4d053a..3098939 100644
+--- a/node_modules/eth-sig-util/node_modules/ethereumjs-util/dist/secp256k1-adapter.js
++++ b/node_modules/eth-sig-util/node_modules/ethereumjs-util/dist/secp256k1-adapter.js
+@@ -2,7 +2,7 @@
+ 
+ var secp256k1 = require('ethereum-cryptography/secp256k1');
+ 
+-var secp256k1v3 = require('./secp256k1-lib/index');
++function getSecp256k1 () { return require('./secp256k1-lib/index'); }
+ var der = require('./secp256k1-lib/der');
+ 
+ /**
+@@ -28,6 +28,7 @@ var privateKeyVerify = function privateKeyVerify(privateKey) {
+  * @return {boolean}
+  */
+ var privateKeyExport = function privateKeyExport(privateKey, compressed) {
++  var secp256k1v3 = getSecp256k1();
+   // privateKeyExport method is not part of secp256k1 v4 package
+   // this implementation is based on v3
+   if (privateKey.length !== 32) {
+@@ -74,6 +75,7 @@ var privateKeyNegate = function privateKeyNegate(privateKey) {
+  * @return {Buffer}
+  */
+ var privateKeyModInverse = function privateKeyModInverse(privateKey) {
++  var secp256k1v3 = getSecp256k1();
+   if (privateKey.length !== 32) {
+     throw new Error('private key length is invalid');
+   }
+@@ -217,6 +219,7 @@ var signatureImport = function signatureImport(signature) {
+  * @return {Buffer}
+  */
+ var signatureImportLax = function signatureImportLax(signature) {
++  var secp256k1v3 = getSecp256k1();
+   // signatureImportLax method is not part of secp256k1 v4 package
+   // this implementation is based on v3
+   // ensure that signature is greater than 0
+@@ -340,6 +343,7 @@ var ecdh = function ecdh(publicKey, privateKey) {
+  * @return {Buffer}
+  */
+ var ecdhUnsafe = function ecdhUnsafe(publicKey, privateKey, compressed) {
++  var secp256k1v3 = getSecp256k1();
+   // ecdhUnsafe method is not part of secp256k1 v4 package
+   // this implementation is based on v3
+   // ensure valid publicKey length

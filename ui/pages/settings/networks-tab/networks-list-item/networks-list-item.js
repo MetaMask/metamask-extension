@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   NETWORK_TYPE_RPC,
@@ -10,7 +9,7 @@ import {
 } from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
 import IconCheck from '../../../../components/ui/icon/icon-check';
-import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
@@ -28,7 +27,6 @@ const NetworksListItem = ({
   setSearchedNetworks,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -68,7 +66,7 @@ const NetworksListItem = ({
         setSearchedNetworks([]);
         dispatch(setSelectedSettingsRpcUrl(rpcUrl));
         if (!isFullScreen) {
-          history.push(NETWORKS_FORM_ROUTE);
+          global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
         }
       }}
     >
@@ -114,7 +112,8 @@ const NetworksListItem = ({
       )}
       <div
         className={classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+          'networks-tab__networks-list-name--selected':
+            displayNetworkListItemAsSelected,
           'networks-tab__networks-list-name--disabled':
             currentProviderType !== NETWORK_TYPE_RPC &&
             !displayNetworkListItemAsSelected,

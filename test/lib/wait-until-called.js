@@ -13,7 +13,7 @@ const DEFAULT_TIMEOUT = 10000;
  * @param {import('sinon').stub} stub - A sinon stub of a function
  * @param {unknown} [wrappedThis] - The object the stubbed function was called
  *   on, if any (i.e. the `this` value)
- * @param {Object} [options] - Optional configuration
+ * @param {object} [options] - Optional configuration
  * @param {number} [options.callCount] - The number of calls to wait for.
  * @param {number|null} [options.timeout] - The timeout, in milliseconds. Pass
  *   in `null` to disable the timeout.
