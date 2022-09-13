@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Tabs, Tab } from '../../../ui/tabs';
+import { Tabs, Tab, DropdownTab } from '../../../ui/tabs';
 import Button from '../../../ui/button';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
@@ -23,6 +23,7 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    insightComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     hideSubtitle: PropTypes.bool,
@@ -57,17 +58,45 @@ export default class ConfirmPageContainerContent extends Component {
   };
 
   renderContent() {
-    const { detailsComponent, dataComponent } = this.props;
+    const { detailsComponent, dataComponent, insightComponent } = this.props;
 
-    if (detailsComponent && dataComponent) {
+    if (detailsComponent && (dataComponent || insightComponent)) {
       return this.renderTabs();
     }
-    return detailsComponent || dataComponent;
+    return detailsComponent || dataComponent || insightComponent;
   }
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const {
+      detailsComponent,
+      dataComponent,
+      dataHexComponent,
+      insightComponent,
+    } = this.props;
+
+    const insightSnaps = [
+      {
+        id: 'test snap',
+        manifest: {
+          proposedName: 'test snap',
+        },
+      },
+      {
+        id: 'Tenderly Insight',
+        manifest: {
+          proposedName: 'Tenderly Insight',
+        },
+      },
+    ];
+
+    const dropdownOptions = insightSnaps.reduce(
+      (prev, acc) => [
+        ...prev,
+        { value: acc.id, name: acc.manifest.proposedName },
+      ],
+      [],
+    );
 
     return (
       <Tabs>
@@ -87,6 +116,14 @@ export default class ConfirmPageContainerContent extends Component {
           >
             {dataHexComponent}
           </Tab>
+        )}
+        {insightComponent && (
+          <DropdownTab
+            className="confirm-page-container-content__tab"
+            options={dropdownOptions}
+          >
+            {insightComponent}
+          </DropdownTab>
         )}
       </Tabs>
     );

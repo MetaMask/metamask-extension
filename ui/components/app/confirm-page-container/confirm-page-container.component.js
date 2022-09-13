@@ -64,6 +64,7 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    insightComponent: PropTypes.node,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
@@ -153,6 +154,7 @@ export default class ConfirmPageContainer extends Component {
       showBuyModal,
       isBuyableChain,
       networkIdentifier,
+      insightComponent,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -240,6 +242,7 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               dataHexComponent={dataHexComponent}
+              insightComponent={insightComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
               tokenAddress={tokenAddress}

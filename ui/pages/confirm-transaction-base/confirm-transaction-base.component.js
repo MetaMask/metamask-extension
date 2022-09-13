@@ -63,6 +63,7 @@ import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
 import TransactionAlerts from './transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
@@ -151,6 +152,7 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    insightSnaps: PropTypes.arrayOf(PropTypes.object),
   };
 
   state = {
@@ -160,6 +162,7 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    selectedInsightSnap: this.props.insightSnaps[0]?.id,
   };
 
   componentDidUpdate(prevProps) {
@@ -301,6 +304,10 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCloseEditGas() {
     this.setState({ editingGas: false });
+  }
+
+  handleSnapSelected(snapId) {
+    this.setState({ selectedInsightSnap: snapId });
   }
 
   setUserAcknowledgedGasMissing() {
@@ -730,6 +737,17 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  renderInsight() {
+    const { txData } = this.props;
+    const { selectedInsightSnap } = this.state;
+
+    if (txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+      return null;
+    }
+
+    return <SnapInsight transaction={txData} snapId={selectedInsightSnap} />;
+  }
+
   handleEdit() {
     const {
       txData,
@@ -1111,6 +1129,7 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
+          insightComponent={this.renderInsight()}
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}

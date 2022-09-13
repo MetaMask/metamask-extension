@@ -3235,6 +3235,12 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsInsightLoading": {
+    "message": "Loading transaction insight..."
+  },
+  "snapsNoInsight": {
+    "message": "The snap didn't return any Insight"
+  },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
   },
