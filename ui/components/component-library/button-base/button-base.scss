@@ -1,0 +1,78 @@
+.mm-button {
+  position: relative;
+  display: inline-block;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-default);
+  background-color: #dcdcdc;
+  vertical-align: middle;
+  user-select: none;
+
+
+
+  &:active,
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &--content {
+    height: 100%;
+  }
+
+  &-size--xs {
+    height: 1.375rem;
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  &-size--sm {
+    height: 2rem;
+  }
+
+  &-size--md {
+    height: 2.5rem;
+  }
+
+  &-size--lg {
+    height: 3rem;
+  }
+
+
+  &--block {
+    display: block;
+    width: 100%;
+  }
+
+  &--loading {
+    user-select: none;
+  }
+
+  &--loading .mm-button--content {
+    color: transparent;
+  }
+}
+
+
+.spinner::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: spinner 1.2s linear infinite;
+}
+
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+

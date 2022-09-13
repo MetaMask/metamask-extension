@@ -3,10 +3,10 @@ import {
   BUTTON_SIZES,
   ALIGN_ITEMS,
   DISPLAY,
-} from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box/box';
+} from '../../../helpers/constants/design-system';
+import Box from '../../ui/box/box';
 
-import { BaseButton } from './base-button';
+import { ButtonBase } from './button-base';
 import README from './README.mdx';
 
 const marginSizeControlOptions = [
@@ -28,9 +28,9 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/Button/BaseButton',
+  title: 'Components/ComponentLibrary/ButtonBase',
   id: __filename,
-  component: BaseButton,
+  component: ButtonBase,
   parameters: {
     docs: {
       page: README,
@@ -46,6 +46,10 @@ export default {
     },
     isBlock: {
       control: 'boolean',
+    },
+    as: {
+      control: 'select',
+      options: ['button', 'a'],
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -69,14 +73,13 @@ export default {
     },
   },
   args: {
-    size: BUTTON_SIZES.MD,
     children: 'Click Me',
   },
 };
 
 export const DefaultStory = (args) => (
   <>
-    <BaseButton {...args} />
+    <ButtonBase {...args} />
   </>
 );
 
@@ -84,9 +87,9 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <BaseButton {...args} size={BUTTON_SIZES.XS} />
-    <BaseButton {...args} size={BUTTON_SIZES.SM} />
-    <BaseButton {...args} size={BUTTON_SIZES.MD} />
-    <BaseButton {...args} size={BUTTON_SIZES.LG} />
+    <ButtonBase {...args} size={BUTTON_SIZES.XS} />
+    <ButtonBase {...args} size={BUTTON_SIZES.SM} />
+    <ButtonBase {...args} size={BUTTON_SIZES.MD} />
+    <ButtonBase {...args} size={BUTTON_SIZES.LG} />
   </Box>
 );

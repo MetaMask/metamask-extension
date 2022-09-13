@@ -1,4 +1,4 @@
-.base-button-primary {
+.mm-button-primary {
   color: var(--color-primary-inverse);
   background-color: var(--color-primary-default);
   position: relative;
@@ -34,30 +34,4 @@
     opacity: 0.3;
     cursor: not-allowed;
   }
-
-  &--loading .base-button--content {
-    color: transparent;
-  }
-}
-
-
-.spinner::before {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin-top: -10px;
-  margin-left: -10px;
-  border-radius: 999px;
-  border: 2px solid var(--color-primary-inverse);
-  border-top-color: transparent;
-  animation: spinner 1.2s linear infinite;
-}
-
-
-@keyframes spinner {
-  to { transform: rotate(360deg); }
 }

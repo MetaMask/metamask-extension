@@ -188,6 +188,17 @@ export const BUTTON_SIZES = {
   LG: 'lg',
 };
 
+export const PRIMARY_SECONDARY_BUTTON_SIZES = {
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+};
+
+export const BUTTON_TYPES = {
+  BASE: 'base',
+  PRIMARY: 'primary',
+};
+
 export const BORDER_STYLE = {
   DASHED: 'dashed',
   SOLID: 'solid',

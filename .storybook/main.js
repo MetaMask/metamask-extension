@@ -15,7 +15,6 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
-    'storybook-addon-performance/register',
   ],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
