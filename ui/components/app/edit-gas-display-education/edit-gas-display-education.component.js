@@ -15,7 +15,7 @@ export default function EditGasDisplayEducation() {
   return (
     <div className="edit-gas-display-education">
       <Typography
-        tag="p"
+        as="p"
         color={COLORS.TEXT_ALTERNATIVE}
         variant={TYPOGRAPHY.H6}
       >
@@ -29,7 +29,7 @@ export default function EditGasDisplayEducation() {
         {t('editGasHigh')}
       </Typography>
       <Typography
-        tag="p"
+        as="p"
         color={COLORS.TEXT_ALTERNATIVE}
         variant={TYPOGRAPHY.H6}
       >
@@ -43,7 +43,7 @@ export default function EditGasDisplayEducation() {
         {t('editGasMedium')}
       </Typography>
       <Typography
-        tag="p"
+        as="p"
         color={COLORS.TEXT_ALTERNATIVE}
         variant={TYPOGRAPHY.H6}
       >
@@ -57,7 +57,7 @@ export default function EditGasDisplayEducation() {
         {t('editGasLow')}
       </Typography>
       <Typography
-        tag="p"
+        as="p"
         color={COLORS.TEXT_ALTERNATIVE}
         variant={TYPOGRAPHY.H6}
       >

@@ -7,10 +7,11 @@ import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
-  getCurrentAccountWithSendEtherInfo,
+  getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
+  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -24,7 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
@@ -33,12 +34,12 @@ const AssetList = ({ onClickAsset }) => {
 
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
-  const selectedAccountBalance = useSelector(
-    (state) => getCurrentAccountWithSendEtherInfo(state).balance,
-  );
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);
+  const balance = useSelector(getSelectedAccountCachedBalance);
+  const balanceIsLoading = !balance;
 
   const {
     currency: primaryCurrency,
@@ -57,16 +58,17 @@ const AssetList = ({ onClickAsset }) => {
     },
   );
 
-  const [
-    secondaryCurrencyDisplay,
-    secondaryCurrencyProperties,
-  ] = useCurrencyDisplay(selectedAccountBalance, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-  });
+  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
+      numberOfDecimals: secondaryNumberOfDecimals,
+      currency: secondaryCurrency,
+    });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
+  const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
+    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  );
 
   return (
     <>
@@ -78,27 +80,26 @@ const AssetList = ({ onClickAsset }) => {
         }
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={primaryTokenImage}
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
         identiconBorder
       />
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
-            event: 'Clicked Token',
+            event: EVENT_NAMES.TOKEN_SCREEN_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Token Menu',
-              legacy_event: true,
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
             },
           });
         }}
       />
-      {process.env.TOKEN_DETECTION_V2
-        ? detectedTokens.length > 0 && (
-            <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
-          )
-        : null}
+      {detectedTokens.length > 0 &&
+        !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
+          <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
+        )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography

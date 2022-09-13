@@ -22,7 +22,7 @@ describe('SwapsFooter', () => {
     );
     expect(getByText(props.submitText)).toBeInTheDocument();
     expect(getByText('Back')).toBeInTheDocument();
-    expect(getByText('Terms of Service')).toBeInTheDocument();
+    expect(getByText('Terms of service')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

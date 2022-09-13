@@ -3,7 +3,7 @@ import { getTargetSubjectMetadata } from '../selectors';
 import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
- * @typedef {Object} OriginMetadata
+ * @typedef {object} OriginMetadata
  * @property {string} hostname - The hostname of the origin (host + port)
  * @property {string} origin - The original origin string itself
  * @property {string} [iconUrl] - The origin's site icon URL, if available

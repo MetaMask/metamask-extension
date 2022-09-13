@@ -77,6 +77,8 @@ import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
+import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -104,6 +106,8 @@ export default class Routes extends Component {
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
     sendStage: PropTypes.string,
+    isNetworkUsed: PropTypes.bool,
+    hasAnAccountWithNoFundsOnNetwork: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -358,11 +362,19 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      isNetworkUsed,
+      hasAnAccountWithNoFundsOnNetwork,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
+
+    const shouldShowNetworkInfo =
+      isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
+
+    const windowType = getEnvironmentType();
+
     return (
       <div
         className={classnames('app', {
@@ -378,6 +390,10 @@ export default class Routes extends Component {
           }
         }}
       >
+        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
+          <DeprecatedTestNetworks />
+        )}
+        {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

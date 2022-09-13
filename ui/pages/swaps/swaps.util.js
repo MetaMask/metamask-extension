@@ -8,7 +8,7 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
-  RINKEBY,
+  GOERLI,
   AVALANCHE,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
@@ -26,7 +26,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   ETH_SYMBOL,
   AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
@@ -82,7 +82,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const TEST_CHAIN_IDS = [RINKEBY_CHAIN_ID, LOCALHOST_CHAIN_ID];
+const TEST_CHAIN_IDS = [GOERLI_CHAIN_ID, LOCALHOST_CHAIN_ID];
 
 export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   // eslint-disable-next-line no-param-reassign
@@ -252,14 +252,14 @@ const SWAP_GAS_PRICE_VALIDATOR = [
   },
 ];
 
-function validateData(validators, object, urlUsed) {
+function validateData(validators, object, urlUsed, logError = true) {
   return validators.every(({ property, type, validator }) => {
     const types = type.split('|');
 
     const valid =
       types.some((_type) => typeof object[property] === _type) &&
       (!validator || validator(object[property]));
-    if (!valid) {
+    if (!valid && logError) {
       log.error(
         `response to GET ${urlUsed} invalid for property ${property}; value was:`,
         object[property],
@@ -381,11 +381,12 @@ export async function fetchTokens(chainId) {
     { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
+  const logError = false;
   const filteredTokens = [
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
     ...tokens.filter((token) => {
       return (
-        validateData(TOKEN_VALIDATORS, token, tokensUrl) &&
+        validateData(TOKEN_VALIDATORS, token, tokensUrl, logError) &&
         !(
           isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
           isSwapsDefaultTokenAddress(token.address, chainId)
@@ -645,22 +646,18 @@ export function quotesToRenderableData(
     let rawNetworkFees = null;
     let rawEthFee = null;
 
-    ({
-      feeInFiat,
-      feeInEth,
-      rawNetworkFees,
-      rawEthFee,
-    } = getRenderableNetworkFeesForQuote({
-      tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
-      approveGas,
-      gasPrice,
-      currentCurrency,
-      conversionRate,
-      tradeValue: trade.value,
-      sourceSymbol: sourceTokenInfo.symbol,
-      sourceAmount,
-      chainId,
-    }));
+    ({ feeInFiat, feeInEth, rawNetworkFees, rawEthFee } =
+      getRenderableNetworkFeesForQuote({
+        tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+        approveGas,
+        gasPrice,
+        currentCurrency,
+        conversionRate,
+        tradeValue: trade.value,
+        sourceSymbol: sourceTokenInfo.symbol,
+        sourceAmount,
+        chainId,
+      }));
 
     if (smartTransactionEstimatedGas) {
       ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
@@ -756,6 +753,12 @@ export function getSwapsTokensReceivedFromTxMeta(
       !txMeta.preTxBalance
     ) {
       return null;
+    }
+
+    if (txMeta.swapMetaData && txMeta.preTxBalance === txMeta.postTxBalance) {
+      // If preTxBalance and postTxBalance are equal, postTxBalance hasn't been updated on time
+      // because of the RPC provider delay, so we return an estimated receiving amount instead.
+      return txMeta.swapMetaData.token_to_amount;
     }
 
     let approvalTxGasCost = '0x0';
@@ -871,8 +874,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return BSC;
     case POLYGON_CHAIN_ID:
       return POLYGON;
-    case RINKEBY_CHAIN_ID:
-      return RINKEBY;
+    case GOERLI_CHAIN_ID:
+      return GOERLI;
     case AVALANCHE_CHAIN_ID:
       return AVALANCHE;
     default:
@@ -889,8 +892,8 @@ export const getNetworkNameByChainId = (chainId) => {
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
-  // Use old APIs for testnet and Rinkeby.
-  if ([LOCALHOST_CHAIN_ID, RINKEBY_CHAIN_ID].includes(chainId)) {
+  // Use old APIs for testnet and Goerli.
+  if ([LOCALHOST_CHAIN_ID, GOERLI_CHAIN_ID].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
     };

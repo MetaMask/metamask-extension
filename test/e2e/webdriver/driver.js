@@ -7,9 +7,9 @@ const cssToXPath = require('css-to-xpath');
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
- * @param {Object} element - Selenium Element
+ * @param {object} element - Selenium Element
  * @param driver
- * @returns {Object} modified Selenium Element
+ * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -270,21 +270,21 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} element - The element locator.
+   * @param {string} rawLocator - The element locator.
    * @param {string} contentToPaste - The content to paste.
    */
-  async pasteIntoField(element, contentToPaste) {
+  async pasteIntoField(rawLocator, contentToPaste) {
     // Throw if double-quote is present in content to paste
     // so that we don't have to worry about escaping double-quotes
     if (contentToPaste.includes('"')) {
       throw new Error('Cannot paste content with double-quote');
     }
     // Click to focus the field
-    await this.clickElement(element);
+    await this.clickElement(rawLocator);
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
-    await this.fill(element, Key.chord(this.Key.MODIFIER, 'v'));
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
@@ -386,6 +386,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',
@@ -399,6 +403,20 @@ class Driver {
       `${filepathBase}-state.json`,
       JSON.stringify(uiState, null, 2),
     );
+  }
+
+  async checkBrowserForLavamoatLogs() {
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    return browserLogs;
   }
 
   async checkBrowserForConsoleErrors() {

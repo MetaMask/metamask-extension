@@ -15,7 +15,8 @@
     },
     "AppStateController": {
       "mkrMigrationReminderTimestamp": null,
-      "swapsWelcomeMessageHasBeenShown": true
+      "swapsWelcomeMessageHasBeenShown": true,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -67,7 +68,16 @@
         "8": {
           "isShown": true
         },
+        "10": {
+          "isShown": true
+        },
+        "11": {
+          "isShown": true
+        },
         "12": {
+          "isShown": true
+        },
+        "13": {
           "isShown": true
         }
       }

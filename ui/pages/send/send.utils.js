@@ -10,7 +10,7 @@ import {
 
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { ERC20, ERC721 } from '../../helpers/constants/common';
+import { ERC20, ERC721 } from '../../../shared/constants/transaction';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -142,7 +142,7 @@ function generateERC20TransferData({
       .call(
         abi.rawEncode(
           ['address', 'uint256'],
-          [toAddress, addHexPrefix(amount)],
+          [addHexPrefix(toAddress), addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -164,7 +164,7 @@ function generateERC721TransferData({
       .call(
         abi.rawEncode(
           ['address', 'address', 'uint256'],
-          [fromAddress, toAddress, tokenId],
+          [addHexPrefix(fromAddress), addHexPrefix(toAddress), tokenId],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )

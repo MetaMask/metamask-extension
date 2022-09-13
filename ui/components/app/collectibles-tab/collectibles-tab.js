@@ -25,6 +25,7 @@ import {
   detectCollectibles,
 } from '../../../store/actions';
 import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const useCollectibleDetection = useSelector(getUseCollectibleDetection);
@@ -36,11 +37,8 @@ export default function CollectiblesTab({ onAddNFT }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const {
-    collectiblesLoading,
-    collections,
-    previouslyOwnedCollection,
-  } = useCollectiblesCollections();
+  const { collectiblesLoading, collections, previouslyOwnedCollection } =
+    useCollectiblesCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
@@ -95,7 +93,7 @@ export default function CollectiblesTab({ onAddNFT }) {
                 type="link"
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet"
+                href={ZENDESK_URLS.NFT_TOKENS}
               >
                 {t('learnMoreUpperCase')}
               </Button>

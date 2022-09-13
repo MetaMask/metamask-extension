@@ -28,7 +28,7 @@ const getMaxFeePerGasFromTransaction = (transaction, gasFeeEstimates) => {
 };
 
 /**
- * @typedef {Object} MaxFeePerGasInputReturnType
+ * @typedef {object} MaxFeePerGasInputReturnType
  * @property {(DecGweiString) => void} setMaxFeePerGas - state setter method to
  *  update the maxFeePerGas.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
@@ -59,10 +59,8 @@ export function useMaxFeePerGasInput({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 

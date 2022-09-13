@@ -35,10 +35,15 @@ export default function SeedPhraseIntro() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
+    de: 'German',
+    el: 'Greek',
+    fr: 'French',
+    tr: 'Turkish',
+    zh: 'Chinese - China',
   };
 
   return (
-    <div className="seed-phrase-intro">
+    <div className="seed-phrase-intro" data-testid="seed-phrase-intro">
       <div className="seed-phrase-intro__sections">
         <div className="seed-phrase-intro__left">
           <Typography
@@ -92,7 +97,7 @@ export default function SeedPhraseIntro() {
           >
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
@@ -103,7 +108,7 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
@@ -119,7 +124,7 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}

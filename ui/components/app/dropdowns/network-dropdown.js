@@ -17,9 +17,10 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import IconCheck from '../../ui/icon/icon-check';
@@ -49,6 +50,7 @@ function mapStateToProps(state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
+    addPopularNetworkFeatureToggledOn: state.metamask.customNetworkListEnabled,
   };
 }
 
@@ -101,6 +103,7 @@ class NetworkDropdown extends Component {
     showTestnetMessageInDropdown: PropTypes.bool.isRequired,
     hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
+    addPopularNetworkFeatureToggledOn: PropTypes.bool,
   };
 
   handleClick(newProviderType) {
@@ -112,12 +115,10 @@ class NetworkDropdown extends Component {
 
     trackEvent({
       category: EVENT.CATEGORIES.NAVIGATION,
-      event: 'Switched Networks',
+      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
       properties: {
-        action: 'Home',
-        legacy_event: true,
-        fromNetwork: providerType,
-        toNetwork: newProviderType,
+        from_network: providerType,
+        to_network: newProviderType,
       },
     });
     setProviderType(newProviderType);
@@ -129,10 +130,12 @@ class NetworkDropdown extends Component {
         <Button
           type="secondary"
           onClick={() => {
-            if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-              global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+            if (this.props.addPopularNetworkFeatureToggledOn) {
+              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             } else {
-              this.props.history.push(ADD_NETWORK_ROUTE);
+              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+                : this.props.history.push(ADD_NETWORK_ROUTE);
             }
             this.props.hideNetworkDropdown();
           }}
@@ -174,12 +177,13 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.TEXT_MUTED}
+            color={opts.isLocalHost ? 'localhost' : COLORS.ICON_MUTED}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
           />
           <span
             className="network-name-item"
+            data-testid={`${nickname}-network-item`}
             style={{
               color: isCurrentRpcTarget
                 ? 'var(--color-text-default)'
@@ -253,6 +257,7 @@ class NetworkDropdown extends Component {
         />
         <span
           className="network-name-item"
+          data-testid={`${network}-network-item`}
           style={{
             color:
               providerType === network
@@ -290,9 +295,8 @@ class NetworkDropdown extends Component {
         onClickOutside={(event) => {
           const { classList } = event.target;
           const isInClassList = (className) => classList.contains(className);
-          const notToggleElementIndex = notToggleElementClassnames.findIndex(
-            isInClassList,
-          );
+          const notToggleElementIndex =
+            notToggleElementClassnames.findIndex(isInClassList);
 
           if (notToggleElementIndex === -1) {
             event.stopPropagation();

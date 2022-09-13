@@ -6,7 +6,7 @@
  * currency. It should return a single value.
  *
  * @param {(number | string | BN)} value - The value to convert.
- * @param {Object} [options] - Options to specify details of the conversion
+ * @param {object} [options] - Options to specify details of the conversion
  * @param {string} [options.fromCurrency = 'ETH' | 'USD'] - The currency of the passed value
  * @param {string} [options.toCurrency = 'ETH' | 'USD'] - The desired currency of the result
  * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] - The numeric basic of the passed value.
@@ -73,7 +73,7 @@ const isValidBase = (base) => {
 /**
  * Utility method to convert a value between denominations, formats and currencies.
  *
- * @param {Object} input
+ * @param {object} input
  * @param {string | BigNumber} input.value
  * @param {NumericBase} input.fromNumericBase
  * @param {EthDenomination} [input.fromDenomination]

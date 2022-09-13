@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-require('./transaction-activity-log.container.js');
+require('./transaction-activity-log.container');
 
 describe('TransactionActivityLog container', () => {
   describe('mapStateToProps()', () => {

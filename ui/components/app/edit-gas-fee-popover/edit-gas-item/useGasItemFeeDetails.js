@@ -29,9 +29,8 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     transaction,
   } = useGasFeeContext();
-  const [estimateGreaterThanGasUse, setEstimateGreaterThanGasUse] = useState(
-    false,
-  );
+  const [estimateGreaterThanGasUse, setEstimateGreaterThanGasUse] =
+    useState(false);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
   let maxFeePerGas;

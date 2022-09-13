@@ -80,13 +80,8 @@ export default class UnitInput extends PureComponent {
   }
 
   render() {
-    const {
-      error,
-      placeholder,
-      suffix,
-      actionComponent,
-      children,
-    } = this.props;
+    const { error, placeholder, suffix, actionComponent, children } =
+      this.props;
     const { value } = this.state;
 
     return (

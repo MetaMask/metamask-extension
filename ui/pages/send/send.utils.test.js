@@ -73,7 +73,7 @@ describe('send utils', () => {
       expect(rawEncode.mock.calls[0].toString()).toStrictEqual(
         [
           ['address', 'uint256'],
-          ['mockAddress', '0xab'],
+          ['0xmockAddress', '0xab'],
         ].toString(),
       );
     });

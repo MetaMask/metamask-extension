@@ -1,108 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { memoize } from 'lodash';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
   BORDER_STYLE,
-  COLORS,
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
+  TEXT_COLORS,
+  ICON_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
+  BREAKPOINTS,
 } from '../../../helpers/constants/design-system';
 
-const ValidSize = PropTypes.oneOf([
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-]);
+const BASE_CLASS_NAME = 'box';
+const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export const ValidBackgroundColors = [
-  COLORS.BACKGROUND_DEFAULT,
-  COLORS.BACKGROUND_ALTERNATIVE,
-  COLORS.OVERLAY_DEFAULT,
-  COLORS.PRIMARY_DEFAULT,
-  COLORS.PRIMARY_ALTERNATIVE,
-  COLORS.PRIMARY_MUTED,
-  COLORS.PRIMARY_DISABLED,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_ALTERNATIVE,
-  COLORS.SECONDARY_MUTED,
-  COLORS.SECONDARY_DISABLED,
-  COLORS.ERROR_DEFAULT,
-  COLORS.ERROR_ALTERNATIVE,
-  COLORS.ERROR_MUTED,
-  COLORS.ERROR_DISABLED,
-  COLORS.WARNING_DEFAULT,
-  COLORS.WARNING_ALTERNATIVE,
-  COLORS.WARNING_MUTED,
-  COLORS.WARNING_DISABLED,
-  COLORS.SUCCESS_DEFAULT,
-  COLORS.SUCCESS_ALTERNATIVE,
-  COLORS.SUCCESS_MUTED,
-  COLORS.SUCCESS_DISABLED,
-  COLORS.INFO_DEFAULT,
-  COLORS.INFO_ALTERNATIVE,
-  COLORS.INFO_MUTED,
-  COLORS.INFO_DISABLED,
-  COLORS.MAINNET,
-  COLORS.ROPSTEN,
-  COLORS.KOVAN,
-  COLORS.RINKEBY,
-  COLORS.GOERLI,
-  COLORS.TRANSPARENT,
-  COLORS.LOCALHOST,
-];
-
-export const ValidBorderColors = [
-  COLORS.BORDER_DEFAULT,
-  COLORS.BORDER_MUTED,
-  COLORS.PRIMARY_DEFAULT,
-  COLORS.PRIMARY_ALTERNATIVE,
-  COLORS.PRIMARY_MUTED,
-  COLORS.PRIMARY_DISABLED,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_ALTERNATIVE,
-  COLORS.SECONDARY_MUTED,
-  COLORS.SECONDARY_DISABLED,
-  COLORS.ERROR_DEFAULT,
-  COLORS.ERROR_ALTERNATIVE,
-  COLORS.ERROR_MUTED,
-  COLORS.ERROR_DISABLED,
-  COLORS.WARNING_DEFAULT,
-  COLORS.WARNING_ALTERNATIVE,
-  COLORS.WARNING_MUTED,
-  COLORS.WARNING_DISABLED,
-  COLORS.SUCCESS_DEFAULT,
-  COLORS.SUCCESS_ALTERNATIVE,
-  COLORS.SUCCESS_MUTED,
-  COLORS.SUCCESS_DISABLED,
-  COLORS.INFO_DEFAULT,
-  COLORS.INFO_ALTERNATIVE,
-  COLORS.INFO_MUTED,
-  COLORS.INFO_DISABLED,
-  COLORS.MAINNET,
-  COLORS.ROPSTEN,
-  COLORS.KOVAN,
-  COLORS.RINKEBY,
-  COLORS.GOERLI,
-  COLORS.TRANSPARENT,
-  COLORS.LOCALHOST,
-];
+const ValidSize = PropTypes.oneOf(Sizes);
+const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
+export const ValidBackgroundColors = PropTypes.oneOf(
+  Object.values(BACKGROUND_COLORS),
+);
+export const ValidBorderColors = PropTypes.oneOf(Object.values(BORDER_COLORS));
+export const ValidTextColors = PropTypes.oneOf(Object.values(TEXT_COLORS));
+export const ValidIconColors = PropTypes.oneOf(Object.values(ICON_COLORS));
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
@@ -110,49 +37,131 @@ export const MultipleSizes = PropTypes.oneOfType([
   ArrayOfValidSizes,
 ]);
 
-function isValidValue(type, value) {
-  // for now only margin type can have 'auto'
-  return typeof value === 'number' || (type === 'margin' && value === 'auto');
+const ArrayOfValidSizesAndAuto = PropTypes.arrayOf(ValidSizeAndAuto);
+export const MultipleSizesAndAuto = PropTypes.oneOfType([
+  ValidSizeAndAuto,
+  ArrayOfValidSizesAndAuto,
+]);
+
+const ArrayOfValidBorderColors = PropTypes.arrayOf(ValidBorderColors);
+export const MultipleBorderColors = PropTypes.oneOfType([
+  ValidBorderColors,
+  ArrayOfValidBorderColors,
+]);
+
+const ArrayOfValidBackgroundColors = PropTypes.arrayOf(ValidBackgroundColors);
+export const MultipleBackgroundColors = PropTypes.oneOfType([
+  ValidBackgroundColors,
+  ArrayOfValidBackgroundColors,
+]);
+
+const ArrayOfValidTextColors = PropTypes.arrayOf(ValidTextColors);
+const ArrayOfValidIconColors = PropTypes.arrayOf(ValidIconColors);
+export const MultipleTextColors = PropTypes.oneOfType([
+  ValidTextColors,
+  ArrayOfValidTextColors,
+  ValidIconColors,
+  ArrayOfValidIconColors,
+]);
+
+function isValidSize(type, value) {
+  // Only margin types allow 'auto'
+  return (
+    typeof value === 'number' ||
+    ((type === 'margin' ||
+      type === 'margin-top' ||
+      type === 'margin-right' ||
+      type === 'margin-bottom' ||
+      type === 'margin-left') &&
+      value === 'auto')
+  );
 }
 
-function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
-  const arr = Array.isArray(main) ? main : [];
-  const singleDigit = Array.isArray(main) ? undefined : main;
-  if (Array.isArray(main) && ![2, 3, 4].includes(main.length)) {
-    throw new Error(
-      `Expected prop ${type} to have length between 2 and 4, received ${main.length}`,
-    );
-  }
-
-  const isHorizontalAndVertical = arr.length === 2;
-  const isTopHorizontalAndBottom = arr.length === 3;
-  const isAllFour = arr.length === 4;
-  const hasAtLeastTwo = arr.length >= 2;
-  const hasAtLeastThree = arr.length >= 3;
-
-  return {
-    [`${baseClass}--${type}-${singleDigit}`]: isValidValue(type, singleDigit),
-    [`${baseClass}--${type}-top-${top}`]: isValidValue(type, top),
-    [`${baseClass}--${type}-right-${right}`]: isValidValue(type, right),
-    [`${baseClass}--${type}-bottom-${bottom}`]: isValidValue(type, bottom),
-    [`${baseClass}--${type}-left-${left}`]: isValidValue(type, left),
-    // As long as an array of length >= 2 has been provided, the first number
-    // will always be for the top value.
-    [`${baseClass}--${type}-top-${arr?.[0]}`]: hasAtLeastTwo,
-    // As long as an array of length >= 2 has been provided, the second number
-    // will always be for the right value.
-    [`${baseClass}--${type}-right-${arr?.[1]}`]: hasAtLeastTwo,
-    // If an array has 2 values, the first number is the bottom value. If
-    // instead if has 3 or more values, the third number will be the bottom.
-    [`${baseClass}--${type}-bottom-${arr?.[2]}`]: hasAtLeastThree,
-    [`${baseClass}--${type}-bottom-${arr?.[0]}`]: isHorizontalAndVertical,
-    // If an array has 2 or 3 values, the second number will be the left value
-    [`${baseClass}--${type}-left-${arr?.[1]}`]:
-      isHorizontalAndVertical || isTopHorizontalAndBottom,
-    // If an array has 4 values, the fourth number is the left value
-    [`${baseClass}--${type}-left-${arr?.[3]}`]: isAllFour,
-  };
+function isValidString(type, value) {
+  return typeof type === 'string' && typeof value === 'string';
 }
+
+/**
+ * Generate classnames
+ * Generates classnames for different utility styles
+ * Also accepts responsive props in the form of an array
+ * Maps responsive props to mobile first breakpoints
+ *
+ * @param {string} type - The style declaration type "margin", "margin-top", "padding", "display" etc
+ * @param {array || number || string} value - prop value being passed in array props are responsive props
+ * @param {*} validatorFn - The validation function for each type of value
+ * @returns
+ */
+
+const generateClassNames = memoize(
+  (type, value, validatorFn) => {
+    // if value does not exist return null
+    if (!value) {
+      return null;
+    }
+    const classesObject = {};
+    // if value is an array with single item e.g. marginTop={[1]}
+    const singleArrayItemProp =
+      Array.isArray(value) && value.length === 1 ? value[0] : undefined;
+    // if value single value e.g. marginTop={1}
+    const singleValueProp =
+      (!Array.isArray(value) && typeof value === 'string') ||
+      typeof value === 'number'
+        ? value
+        : undefined;
+    // single digit equals single value or single array item
+    const singleValue = singleValueProp || singleArrayItemProp;
+    // 0 is an acceptable value but is falsy in js
+    if (singleValue || singleValue === 0) {
+      // add base style without any breakpoint prefixes to classObject
+      classesObject[`${BASE_CLASS_NAME}--${type}-${singleValue}`] = validatorFn(
+        type,
+        singleValue,
+      );
+    } else {
+      // If array with more than one item
+      switch (value.length) {
+        case 4:
+          // add base/sm/md/lg
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+          ] = value[2] && validatorFn(type, value[2]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[3]}:${type}-${value[3]}`
+          ] = value[3] && validatorFn(type, value[3]);
+          break;
+        case 3:
+          // add base/sm/md
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+          ] = value[2] && validatorFn(type, value[2]);
+          break;
+        case 2:
+          // add base/sm
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          break;
+        default:
+          console.log(`Invalid array prop length: ${value.length}`);
+      }
+    }
+    return classesObject;
+  },
+  (type, value) => [type, value],
+);
 
 export default function Box({
   padding,
@@ -181,89 +190,142 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  color,
+  as = 'div',
+  ...props
 }) {
-  const boxClassName = classnames('box', className, {
-    // ---Borders---
-    // if borderWidth or borderColor is supplied w/o style, default to solid
-    'box--border-style-solid':
-      !borderStyle && (Boolean(borderWidth) || Boolean(borderColor)),
-    // if borderColor supplied w/o width, default to 1
-    'box--border-size-1': !borderWidth && Boolean(borderColor),
-    [`box--border-color-${borderColor}`]: Boolean(borderColor),
-    [`box--rounded-${borderRadius}`]: Boolean(borderRadius),
-    [`box--border-style-${borderStyle}`]: Boolean(borderStyle),
-    [`box--border-size-${borderWidth}`]: Boolean(borderWidth),
+  const boxClassName = classnames(
+    BASE_CLASS_NAME,
+    className,
     // Margin
-    ...generateSizeClasses(
-      'box',
-      'margin',
-      margin,
-      marginTop,
-      marginRight,
-      marginBottom,
-      marginLeft,
-    ),
+    margin && generateClassNames('margin', margin, isValidSize),
+    marginTop && generateClassNames('margin-top', marginTop, isValidSize),
+    marginRight && generateClassNames('margin-right', marginRight, isValidSize),
+    marginBottom &&
+      generateClassNames('margin-bottom', marginBottom, isValidSize),
+    marginLeft && generateClassNames('margin-left', marginLeft, isValidSize),
     // Padding
-    ...generateSizeClasses(
-      'box',
-      'padding',
-      padding,
-      paddingTop,
-      paddingRight,
-      paddingBottom,
-      paddingLeft,
-    ),
-    // ---Flex/Grid alignment---
-    // if justifyContent or alignItems supplied w/o display, default to flex
-    'box--display-flex':
-      !display && (Boolean(justifyContent) || Boolean(alignItems)),
-    [`box--justify-content-${justifyContent}`]: Boolean(justifyContent),
-    [`box--align-items-${alignItems}`]: Boolean(alignItems),
-    [`box--flex-direction-${flexDirection}`]: Boolean(flexDirection),
-    [`box--flex-wrap-${flexWrap}`]: Boolean(flexWrap),
-    // text align
-    [`box--text-align-${textAlign}`]: Boolean(textAlign),
-    // display
-    [`box--display-${display}`]: Boolean(display),
-    // width & height
-    [`box--width-${width}`]: Boolean(width),
-    [`box--height-${height}`]: Boolean(height),
-    // background
-    [`box--background-color-${backgroundColor}`]: Boolean(backgroundColor),
-    ...generateSizeClasses('box', 'gap', gap),
-  });
+    padding && generateClassNames('padding', padding, isValidSize),
+    paddingTop && generateClassNames('padding-top', paddingTop, isValidSize),
+    paddingRight &&
+      generateClassNames('padding-right', paddingRight, isValidSize),
+    paddingBottom &&
+      generateClassNames('padding-bottom', paddingBottom, isValidSize),
+    paddingLeft && generateClassNames('padding-left', paddingLeft, isValidSize),
+    display && generateClassNames('display', display, isValidString),
+    gap && generateClassNames('gap', gap, isValidSize),
+    flexDirection &&
+      generateClassNames('flex-direction', flexDirection, isValidString),
+    flexWrap && generateClassNames('flex-wrap', flexWrap, isValidString),
+    justifyContent &&
+      generateClassNames('justify-content', justifyContent, isValidString),
+    alignItems && generateClassNames('align-items', alignItems, isValidString),
+    textAlign && generateClassNames('text-align', textAlign, isValidString),
+    width && generateClassNames('width', width, isValidString),
+    height && generateClassNames('height', height, isValidString),
+    color && generateClassNames('color', color, isValidString),
+    backgroundColor &&
+      generateClassNames('background-color', backgroundColor, isValidString),
+    borderRadius && generateClassNames('rounded', borderRadius, isValidString),
+    borderStyle &&
+      generateClassNames('border-style', borderStyle, isValidString),
+    borderColor &&
+      generateClassNames('border-color', borderColor, isValidString),
+    borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
+    {
+      // Auto applied classes
+      // ---Borders---
+      // if borderWidth or borderColor is supplied w/o style, default to solid
+      'box--border-style-solid':
+        !borderStyle && (Boolean(borderWidth) || Boolean(borderColor)),
+      // if borderColor supplied w/o width, default to 1
+      'box--border-width-1': !borderWidth && Boolean(borderColor),
+      // ---Flex/Grid alignment---
+      // if justifyContent or alignItems supplied w/o display, default to flex
+      'box--display-flex':
+        !display && (Boolean(justifyContent) || Boolean(alignItems)),
+    },
+  );
   // Apply Box styles to any other component using function pattern
   if (typeof children === 'function') {
     return children(boxClassName);
   }
-  return <div className={boxClassName}>{children}</div>;
+  const Component = as;
+  return (
+    <Component className={boxClassName} {...props}>
+      {children}
+    </Component>
+  );
 }
 
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  flexDirection: PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
-  flexWrap: PropTypes.oneOf(Object.values(FLEX_WRAP)),
-  gap: ValidSize,
-  margin: MultipleSizes,
-  marginTop: ValidSize,
-  marginBottom: ValidSize,
-  marginRight: ValidSize,
-  marginLeft: ValidSize,
+  flexDirection: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_DIRECTION))),
+  ]),
+  flexWrap: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(FLEX_WRAP)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_WRAP))),
+  ]),
+  gap: MultipleSizes,
+  margin: MultipleSizesAndAuto,
+  marginTop: MultipleSizesAndAuto,
+  marginBottom: MultipleSizesAndAuto,
+  marginRight: MultipleSizesAndAuto,
+  marginLeft: MultipleSizesAndAuto,
   padding: MultipleSizes,
-  paddingTop: ValidSize,
-  paddingBottom: ValidSize,
-  paddingRight: ValidSize,
-  paddingLeft: ValidSize,
-  borderColor: PropTypes.oneOf(Object.values(ValidBorderColors)),
-  borderWidth: PropTypes.number,
-  borderRadius: PropTypes.oneOf(Object.values(SIZES)),
-  borderStyle: PropTypes.oneOf(Object.values(BORDER_STYLE)),
-  alignItems: PropTypes.oneOf(Object.values(ALIGN_ITEMS)),
-  justifyContent: PropTypes.oneOf(Object.values(JUSTIFY_CONTENT)),
-  textAlign: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
-  display: PropTypes.oneOf(Object.values(DISPLAY)),
-  width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-  height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-  backgroundColor: PropTypes.oneOf(Object.values(ValidBackgroundColors)),
+  paddingTop: MultipleSizes,
+  paddingBottom: MultipleSizes,
+  paddingRight: MultipleSizes,
+  paddingLeft: MultipleSizes,
+  borderColor: MultipleBorderColors,
+  borderWidth: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+  ]),
+  borderRadius: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(SIZES)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(SIZES))),
+  ]),
+  borderStyle: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(BORDER_STYLE)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BORDER_STYLE))),
+  ]),
+  alignItems: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(ALIGN_ITEMS)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(ALIGN_ITEMS))),
+  ]),
+  justifyContent: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(JUSTIFY_CONTENT)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(JUSTIFY_CONTENT))),
+  ]),
+  textAlign: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TEXT_ALIGN))),
+  ]),
+  display: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(DISPLAY)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(DISPLAY))),
+  ]),
+  width: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(BLOCK_SIZES)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.oneOf(Object.values(BLOCK_SIZES)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
+  ]),
+  backgroundColor: MultipleBackgroundColors,
   className: PropTypes.string,
+  /**
+   * The polymorphic `as` prop allows you to change the root HTML element of the Box component
+   * Defaults to 'div'
+   */
+  as: PropTypes.string,
+  /**
+   * The color of the Typography component Should use the COLOR object from
+   * ./ui/helpers/constants/design-system.js
+   */
+  color: MultipleTextColors,
 };
