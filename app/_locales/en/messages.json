@@ -451,6 +451,9 @@
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
   },
+  "betaPortfolioSite": {
+    "message": "beta portfolio site"
+  },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
@@ -1779,6 +1782,9 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keepTapsOnTokens": {
+    "message": "to keep tabs on your tokens and NFTs across accounts and networks."
+  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2165,6 +2171,9 @@
   "nevermind": {
     "message": "Nevermind"
   },
+  "new": {
+    "message": "New!"
+  },
   "newAccount": {
     "message": "New account"
   },
@@ -2302,7 +2311,7 @@
     "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
   },
   "notifications10DescriptionThree": {
-    "message": "Token detection feature is ON by default. But you can disable it from Settings."
+    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
   },
   "notifications10DescriptionTwo": {
     "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
@@ -2659,6 +2668,9 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
+  },
+  "portfolioSite": {
+    "message": "Portfolio site"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -4078,6 +4090,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryOur": {
+    "message": "Try our"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

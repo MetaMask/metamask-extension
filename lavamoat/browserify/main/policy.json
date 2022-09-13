@@ -2641,6 +2641,7 @@
         "@metamask/controllers>isomorphic-fetch": true,
         "@metamask/controllers>multiformats": true,
         "@metamask/controllers>nanoid": true,
+        "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>buffer": true,
@@ -2661,8 +2662,7 @@
         "jsonschema": true,
         "punycode": true,
         "single-call-balance-checker-abi": true,
-        "uuid": true,
-        "web3": true
+        "uuid": true
       }
     },
     "@metamask/controllers>abort-controller": {
@@ -2805,6 +2805,22 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "Web3": "write",
+        "XMLHttpRequest": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers>web3>bignumber.js": true,
+        "@metamask/controllers>web3>crypto-js": true,
+        "@metamask/controllers>web3>utf8": true,
+        "@metamask/controllers>web3>xhr2-cookies": true,
+        "browserify>buffer": true
+      }
+    },
     "@metamask/controllers>web3-provider-engine": {
       "globals": {
         "WebSocket": true,
@@ -2941,6 +2957,38 @@
       },
       "packages": {
         "browserify>process": true
+      }
+    },
+    "@metamask/controllers>web3>bignumber.js": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>crypto-browserify": true
+      }
+    },
+    "@metamask/controllers>web3>crypto-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/controllers>web3>utf8": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/controllers>web3>xhr2-cookies": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>https-browserify": true,
+        "browserify>os-browserify": true,
+        "browserify>process": true,
+        "browserify>stream-http": true,
+        "browserify>url": true,
+        "pubnub>superagent>cookiejar": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -5754,6 +5802,11 @@
         "browserify>buffer": true
       }
     },
+    "pubnub>superagent>cookiejar": {
+      "globals": {
+        "console.warn": true
+      }
+    },
     "pump": {
       "packages": {
         "browserify>browser-resolve": true,
@@ -6308,18 +6361,7 @@
     },
     "web3": {
       "globals": {
-        "Web3": "write",
-        "XMLHttpRequest": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "web3>bignumber.js": true,
-        "web3>crypto-js": true,
-        "web3>utf8": true,
-        "web3>xhr2-cookies": true
+        "XMLHttpRequest": true
       }
     },
     "web3-stream-provider": {
@@ -6336,43 +6378,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "web3>bignumber.js": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>crypto-browserify": true
-      }
-    },
-    "web3>crypto-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "web3>utf8": {
-      "globals": {
-        "define": true
-      }
-    },
-    "web3>xhr2-cookies": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>https-browserify": true,
-        "browserify>os-browserify": true,
-        "browserify>process": true,
-        "browserify>stream-http": true,
-        "browserify>url": true,
-        "web3>xhr2-cookies>cookiejar": true
-      }
-    },
-    "web3>xhr2-cookies>cookiejar": {
-      "globals": {
-        "console.warn": true
       }
     },
     "webextension-polyfill": {
