@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
@@ -27,6 +27,7 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
+import IconChart from '../../components/ui/icon/icon-chart';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -50,6 +51,7 @@ import {
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import Tooltip from '../../components/ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
@@ -115,6 +117,10 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
+    showPortfolioTooltip: PropTypes.bool.isRequired,
+    hidePortfolioTooltip: PropTypes.func.isRequired,
+    portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
+    setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
@@ -213,7 +219,12 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
+    const { setPortfolioTooltipWasShownInThisSession, showPortfolioTooltip } =
+      this.props;
     this.checkStatusAndNavigate();
+    if (showPortfolioTooltip) {
+      setPortfolioTooltipWasShownInThisSession();
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -594,6 +605,9 @@ export default class Home extends PureComponent {
       announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
+      showPortfolioTooltip,
+      hidePortfolioTooltip,
+      portfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
@@ -610,8 +624,9 @@ export default class Home extends PureComponent {
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
       announcementsToShow &&
-      showWhatsNewPopup;
-
+      showWhatsNewPopup &&
+      !showPortfolioTooltip &&
+      !portfolioTooltipWasShownInThisSession;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -640,6 +655,67 @@ export default class Home extends PureComponent {
               defaultActiveTabName={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
+              subHeader={
+                <Tooltip
+                  position="bottom"
+                  open={!process.env.IN_TEST && showPortfolioTooltip}
+                  interactive
+                  theme="home__subheader-link--tooltip"
+                  html={
+                    <div>
+                      <div className="home__subheader-link--tooltip-content-header">
+                        <div className="home__subheader-link--tooltip-content-header-text">
+                          {t('new')}
+                        </div>
+                        <button
+                          className="home__subheader-link--tooltip-content-header-button"
+                          onClick={() => {
+                            hidePortfolioTooltip();
+                          }}
+                        >
+                          <i className="fa fa-times" />
+                        </button>
+                      </div>
+                      <div>
+                        {t('tryOur')}&nbsp;
+                        <span className="home__subheader-link--tooltip-content-text-bold">
+                          {t('betaPortfolioSite')}
+                        </span>
+                        &nbsp;{t('keepTapsOnTokens')}
+                      </div>
+                    </div>
+                  }
+                >
+                  <div
+                    className="home__subheader-link"
+                    onClick={async () => {
+                      const portfolioUrl = process.env.PORTFOLIO_URL;
+                      global.platform.openTab({
+                        url: `${portfolioUrl}?metamaskEntry=ext`,
+                      });
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                          properties: {
+                            url: portfolioUrl,
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    <IconChart />
+                    <div className="home__subheader-link--text">
+                      {t('portfolioSite')}
+                    </div>
+                  </div>
+                </Tooltip>
+              }
             >
               <Tab
                 activeClassName="home__tab--active"
