@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { handleSnapRequest } from '../store/actions';
-import { getPermissionSubjects } from 'ui/selectors';
+import { handleSnapRequest } from '../../store/actions';
+import { getPermissionSubjects } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:tx-insight';
 
