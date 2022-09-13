@@ -48,7 +48,7 @@ export const UI_NOTIFICATIONS = {
   },
   10: {
     id: 10,
-    date: '2022-04-18',
+    date: '2022-09-15',
     image: {
       src: 'images/token-detection.svg',
       width: '100%',
@@ -56,7 +56,7 @@ export const UI_NOTIFICATIONS = {
   },
   11: {
     id: 11,
-    date: '2022-04-18',
+    date: '2022-09-15',
   },
   12: {
     id: 12,
@@ -68,7 +68,7 @@ export const UI_NOTIFICATIONS = {
   },
   13: {
     id: 13,
-    date: '2022-07-12',
+    date: '2022-09-15',
   },
 };
 
