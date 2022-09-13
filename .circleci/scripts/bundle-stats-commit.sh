@@ -40,19 +40,9 @@ git config --global user.name "MetaMask Bot"
 
 git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
-if [[ -f "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json" ]]
-then
-    printf 'Bundle size of the commit is already recorded'
-    cd ..
-    rm -rf temp
-    exit 0
-fi
-
-cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
-
 {
     echo " '${CIRCLE_SHA1}': ";
-    cat temp/stats/bundle_size_stats.json;
+    cat test-artifacts/chrome/mv3/bundle_size_stats.json;
     echo ", ";
 } >> temp/stats/bundle_size_data.temp.js
 
