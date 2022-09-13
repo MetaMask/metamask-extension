@@ -16,11 +16,11 @@ then
     exit 1
 fi
 
-# if [[ "${CIRCLE_BRANCH}" != "develop" ]]
-# then
-#     printf 'This is not develop branch'
-#     exit 0
-# fi
+if [[ "${CIRCLE_BRANCH}" != "develop" ]]
+then
+    printf 'This is not develop branch'
+    exit 0
+fi
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]
 then
