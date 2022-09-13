@@ -314,9 +314,11 @@ export default class ConfirmTransactionBase extends Component {
     this.setState({ editingGas: false });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   handleSnapSelected(snapId) {
     this.setState({ selectedInsightSnap: snapId });
   }
+  ///: END:ONLY_INCLUDE_IN
 
   setUserAcknowledgedGasMissing() {
     this.setState({ userAcknowledgedGasMissing: true });
