@@ -29,3 +29,13 @@ Show form fields with error state
 <Canvas>
   <Story id="ui-components-ui-form-field-form-field-stories-js--form-field-with-error" />
 </Canvas>
+
+### Custom Components
+
+Use the custom component props `TitleTextCustomComponent`, `TitleUnitCustomComponent` and `TooltipCustomComponent` to replace the default components.
+If these props exists they will replace their respective text props. The FormField is wrapped in a Box component that renders as a `<label />` element.
+To change the element type, use the `wrappingLabelProps` and polymorphic `as` prop. e.g `wrappingLabelProps={{ as: 'div' }}`. Make sure to provide your own `<label />` element combined with the `id` prop and `htmlFor` to ensure accessibility
+
+<Canvas>
+  <Story id="ui-components-ui-form-field-form-field-stories-js--custom-components" />
+</Canvas>

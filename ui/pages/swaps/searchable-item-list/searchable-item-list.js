@@ -19,6 +19,8 @@ export default function SearchableItemList({
   hideItemIf,
   listContainerClassName,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const itemListRef = useRef();
 
@@ -27,10 +29,12 @@ export default function SearchableItemList({
   }, [defaultToAll, itemsToSearch]);
   const [results, setResults] = useState(initialResultsState);
   useEffect(() => {
-    setResults(initialResultsState);
+    if (!searchQuery) {
+      // Only if there is no searchQuery we want to show all tokens.
+      setResults(initialResultsState);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialResultsState.length]);
-  const [searchQuery, setSearchQuery] = useState('');
+  }, [initialResultsState.length, searchQuery]);
 
   return (
     <div className={className}>
@@ -48,6 +52,8 @@ export default function SearchableItemList({
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
         shouldSearchForImports={shouldSearchForImports}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <ItemList
         searchQuery={searchQuery}
@@ -87,4 +93,6 @@ SearchableItemList.propTypes = {
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.func,
+  setSearchQuery: PropTypes.func,
 };

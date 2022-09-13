@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
@@ -25,9 +25,10 @@ export default function ListItemSearch({
   searchPlaceholderText,
   defaultToAll,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const fuseRef = useRef();
-  const [searchQuery, setSearchQuery] = useState('');
   const chainId = useSelector(getCurrentChainId);
 
   /**
@@ -127,4 +128,6 @@ ListItemSearch.propTypes = {
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.func,
+  setSearchQuery: PropTypes.func,
 };

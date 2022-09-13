@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // This script lists all dependencies that have package install scripts
 const path = require('path');
 const readInstalled = require('read-installed');

@@ -2001,9 +2001,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -2307,10 +2304,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "$1 token baru ditemukan di akun ini",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "dari"
@@ -3293,9 +3286,6 @@
   "swap": {
     "message": "Pertukaran"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut “slippage”. Swap akan otomatis dibatalkan jika slippage melebihi pengaturan “slippage maks”."
-  },
   "swapAggregator": {
     "message": "Agregator"
   },
@@ -3459,9 +3449,6 @@
   "swapQuoteDetails": {
     "message": "Detail kuotasi"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut \"slippage\". Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
-  },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"
   },
@@ -3491,9 +3478,6 @@
   },
   "swapReviewSwap": {
     "message": "Tinjau Swap"
-  },
-  "swapSearchForAToken": {
-    "message": "Cari token"
   },
   "swapSelect": {
     "message": "Pilih"

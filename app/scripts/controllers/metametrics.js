@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -190,7 +190,7 @@ export default class MetaMetricsController {
     }
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
@@ -329,19 +329,21 @@ export default class MetaMetricsController {
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
   updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
-    // TODO: Change it to the right URL once it's available.
-
     const query = {};
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
-      query.id = metaMetricsId;
+      query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.environment;
       query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
-    this.extension.runtime.setUninstallURL(
-      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-    );
+
+    // this.extension not currently defined in tests
+    if (this.extension && this.extension.runtime) {
+      this.extension.runtime.setUninstallURL(
+        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+      );
+    }
   }
 
   /**
@@ -364,8 +366,8 @@ export default class MetaMetricsController {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
-    // TODO: Uncomment the line below once we have a "Sorry to see you go" page ready.
-    // this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 

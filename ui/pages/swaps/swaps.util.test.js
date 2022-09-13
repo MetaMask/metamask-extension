@@ -5,7 +5,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
   ETH_SYMBOL,
@@ -19,7 +19,7 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
-  RINKEBY,
+  GOERLI,
   AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
@@ -273,11 +273,11 @@ describe('Swaps Util', () => {
       ).toBe(true);
     });
 
-    it('returns true if "to" is Rinkeby contract address on Rinkeby network', () => {
+    it('returns true if "to" is Goerli contract address on Goerli network', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[RINKEBY_CHAIN_ID];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[GOERLI_CHAIN_ID];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, RINKEBY_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, GOERLI_CHAIN_ID),
       ).toBe(true);
     });
 
@@ -317,8 +317,8 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
     });
 
-    it('returns "rinkeby" for Rinkeby chain ID', () => {
-      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+    it('returns "goerli" for Goerli chain ID', () => {
+      expect(getNetworkNameByChainId(GOERLI_CHAIN_ID)).toBe(GOERLI);
     });
 
     it('returns "avalanche" for Avalanche chain ID', () => {
@@ -343,14 +343,14 @@ describe('Swaps Util', () => {
       ).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('returns info that Swaps are enabled and cannot use API v2 for Rinkeby chain ID', () => {
+    it('returns info that Swaps are enabled and cannot use API v2 for Goerli chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
       };
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          RINKEBY_CHAIN_ID,
+          GOERLI_CHAIN_ID,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });

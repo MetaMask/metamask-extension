@@ -11,6 +11,7 @@ import {
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -20,7 +21,6 @@ export default class EndOfFlowScreen extends PureComponent {
 
   static propTypes = {
     history: PropTypes.object,
-    completionMetaMetricsName: PropTypes.string,
     setCompletedOnboarding: PropTypes.func,
     onboardingInitiator: PropTypes.exact({
       location: PropTypes.string,
@@ -37,16 +37,8 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   async _onOnboardingComplete() {
-    const { setCompletedOnboarding, completionMetaMetricsName } = this.props;
+    const { setCompletedOnboarding } = this.props;
     await setCompletedOnboarding();
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: completionMetaMetricsName,
-      properties: {
-        action: 'Onboarding Complete',
-        legacy_event: true,
-      },
-    });
   }
 
   onComplete = async () => {
@@ -127,7 +119,7 @@ export default class EndOfFlowScreen extends PureComponent {
         <div className="first-time-flow__text-block end-of-flow__text-4">
           {`*${t('endOfFlowMessage8')}`}&nbsp;
           <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/360015489591-Basic-Safety-Tips"
+            href={ZENDESK_URLS.BASIC_SAFETY}
             target="_blank"
             rel="noopener noreferrer"
           >

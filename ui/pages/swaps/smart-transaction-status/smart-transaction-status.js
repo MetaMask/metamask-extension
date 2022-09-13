@@ -133,7 +133,6 @@ export default function SmartTransactionStatus() {
     custom_slippage: fetchParams?.slippage === 2,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_uuid: latestSmartTransactionUuid,
     stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,

@@ -126,3 +126,18 @@ chrome.runtime.onMessage.addListener(() => {
   importAllScripts();
   return false;
 });
+
+/*
+ * This content script is injected programmatically because
+ * MAIN world injection does not work properly via manifest
+ * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
+ */
+chrome.scripting.registerContentScripts([
+  {
+    id: 'inpage',
+    matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+    js: ['inpage.js'],
+    runAt: 'document_start',
+    world: 'MAIN',
+  },
+]);

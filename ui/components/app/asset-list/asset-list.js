@@ -25,7 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
@@ -87,11 +87,11 @@ const AssetList = ({ onClickAsset }) => {
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
-            event: 'Clicked Token',
+            event: EVENT_NAMES.TOKEN_SCREEN_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Token Menu',
-              legacy_event: true,
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
             },
           });
         }}

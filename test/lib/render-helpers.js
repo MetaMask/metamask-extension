@@ -93,9 +93,11 @@ export function renderWithProvider(component, store, pathname = '/') {
         </Router>
       </Provider>
     ) : (
-      <LegacyI18nProvider>
-        <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-      </LegacyI18nProvider>
+      <Router history={history}>
+        <LegacyI18nProvider>
+          <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+        </LegacyI18nProvider>
+      </Router>
     );
 
   Wrapper.propTypes = {
