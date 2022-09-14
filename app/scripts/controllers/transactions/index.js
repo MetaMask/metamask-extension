@@ -772,7 +772,7 @@ export default class TransactionController extends EventEmitter {
       );
     }
 
-    // In transaction is found for same action id, do not create a new transaction.
+    // If a transaction is found with the same actionId, do not create a new speed-up transaction.
     if (actionId) {
       let existingTxMeta =
         this.txStateManager.getTransactionWithActionId(actionId);
@@ -1228,13 +1228,23 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @param options
    * @param options.estimatedBaseFee
+   * @param options.actionId
    * @returns {txMeta}
    */
   async createSpeedUpTransaction(
     originalTxId,
     customGasSettings,
-    { estimatedBaseFee } = {},
+    { estimatedBaseFee, actionId } = {},
   ) {
+    // If transaction is found for same action id, do not create a new speed-up transaction.
+    if (actionId) {
+      const existingTxMeta =
+        this.txStateManager.getTransactionWithActionId(actionId);
+      if (existingTxMeta) {
+        return existingTxMeta;
+      }
+    }
+
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
 
@@ -1253,6 +1263,7 @@ export default class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
       originalType: originalTxMeta.type,
+      actionId,
     });
 
     if (estimatedBaseFee) {
