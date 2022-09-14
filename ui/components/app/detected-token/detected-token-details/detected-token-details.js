@@ -35,7 +35,9 @@ const DetectedTokenDetails = ({
           tokensListDetected={tokensListDetected}
         />
         <DetectedTokenAddress tokenAddress={token.address} />
-        <DetectedTokenAggregators aggregators={token.aggregators} />
+        {token.aggregators.length && (
+          <DetectedTokenAggregators aggregators={token.aggregators} />
+        )}
       </Box>
     </Box>
   );

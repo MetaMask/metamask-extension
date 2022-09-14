@@ -172,6 +172,7 @@ export default function ConfirmApprove({
           customTokenAmount={String(customPermissionAmount)}
           dappProposedTokenAmount={tokenAmount}
           currentTokenBalance={tokenBalance}
+          setApproveForAllArg={setApproveForAllArg}
           contentComponent={
             <TransactionModalContextProvider>
               <ConfirmApproveContent
