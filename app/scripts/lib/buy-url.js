@@ -2,12 +2,8 @@ import log from 'loglevel';
 
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
+  CHAIN_IDS,
 } from '../../../shared/constants/network';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
@@ -183,15 +179,15 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
 
 function getDefaultServiceForChain(chainId) {
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return 'wyre';
-    case ROPSTEN_CHAIN_ID:
+    case CHAIN_IDS.ROPSTEN:
       return 'metamask-faucet';
-    case RINKEBY_CHAIN_ID:
+    case CHAIN_IDS.RINKEBY:
       return 'rinkeby-faucet';
-    case KOVAN_CHAIN_ID:
+    case CHAIN_IDS.KOVAN:
       return 'kovan-faucet';
-    case GOERLI_CHAIN_ID:
+    case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
     default:
       throw new Error(

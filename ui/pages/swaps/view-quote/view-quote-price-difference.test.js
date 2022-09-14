@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
@@ -12,7 +12,7 @@ describe('View Price Quote Difference', () => {
   const state = {
     metamask: {
       tokens: [],
-      provider: { type: NETWORK_TYPE_RPC, nickname: '', rpcUrl: '' },
+      provider: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
       conversionRate: 600.0,
