@@ -25,6 +25,8 @@ import { exportAsFile } from '../../../../shared/modules/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
+const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
+
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -72,6 +74,7 @@ export default class AdvancedTab extends PureComponent {
     showLedgerTransportWarning: false,
     showResultMessage: false,
     restoreSuccessful: true,
+    restoreMessage: null,
   };
 
   settingsRefs = Array(
@@ -155,16 +158,35 @@ export default class AdvancedTab extends PureComponent {
      *
      */
     event.target.value = '';
-    const result = await this.props.restoreUserData(jsonString);
-    this.setState({
-      showResultMessage: true,
-      restoreSuccessful: result,
-    });
+    try {
+      const result = await this.props.restoreUserData(jsonString);
+      this.setState({
+        showResultMessage: true,
+        restoreSuccessful: result,
+        restoreMessage: null,
+      });
+    } catch (e) {
+      if (e.message.match(/Unexpected.+JSON/u)) {
+        this.setState({
+          showResultMessage: true,
+          restoreSuccessful: false,
+          restoreMessage: CORRUPT_JSON_FILE,
+        });
+      }
+    }
   }
 
   renderRestoreUserData() {
     const { t } = this.context;
-    const { showResultMessage, restoreSuccessful } = this.state;
+    const { showResultMessage, restoreSuccessful, restoreMessage } = this.state;
+
+    const defaultRestoreMessage = restoreSuccessful
+      ? t('restoreSuccessful')
+      : t('restoreFailed');
+    const restoreMessageToRender =
+      restoreMessage === CORRUPT_JSON_FILE
+        ? t('dataBackupSeemsCorrupt')
+        : defaultRestoreMessage;
 
     return (
       <div
@@ -197,9 +219,17 @@ export default class AdvancedTab extends PureComponent {
           {showResultMessage && (
             <ActionableMessage
               type={restoreSuccessful ? 'success' : 'danger'}
-              message={
-                restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')
-              }
+              message={restoreMessageToRender}
+              primaryActionV2={{
+                label: t('dismiss'),
+                onClick: () => {
+                  this.setState({
+                    showResultMessage: false,
+                    restoreSuccessful: true,
+                    restoreMessage: null,
+                  });
+                },
+              }}
             />
           )}
         </div>
