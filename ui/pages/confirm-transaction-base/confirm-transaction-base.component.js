@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { stripHexPrefix } from 'ethereumjs-util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
@@ -61,7 +62,10 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_ID_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../shared/constants/network';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
@@ -751,8 +755,11 @@ export default class ConfirmTransactionBase extends Component {
   renderInsight() {
     const { txData, insightSnaps } = this.props;
     const { selectedInsightSnap } = this.state;
+    const { txParams, chainId } = txData;
+    // const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
 
-    const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
+    const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+    const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
 
     if (
       txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
@@ -775,7 +782,11 @@ export default class ConfirmTransactionBase extends Component {
         options={dropdownOptions}
         selectedOption={selectedInsightSnap}
       >
-        <SnapInsight transaction={txData} snapId={selectedInsightSnap} />
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          snapId={selectedInsightSnap}
+        />
       </DropdownTab>
     );
   }

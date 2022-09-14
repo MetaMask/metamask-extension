@@ -13,33 +13,34 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 
-export const SnapInsight = ({ transaction, snapId }) => {
-  const transactionInsight = useTransactionInsightSnap(transaction, snapId);
+export const SnapInsight = ({ transaction, chainId, snapId }) => {
+  const response = useTransactionInsightSnap({
+    transaction,
+    chainId,
+    snapId,
+  });
 
-  const insights = transactionInsight?.insights;
-
-  console.log(snapId);
-  console.log(response);
+  const data = response?.insights;
 
   const t = useI18nContext();
 
-  if (response && Object.keys(response).length !== 0) {
+  if (data && Object.keys(data).length !== 0) {
     return (
       <Box
         paddingLeft={6}
         paddingRight={6}
         paddingBottom={3}
-        style={{ overflowY: 'auto', height: '170px' }}
+        style={{ overflowY: 'auto', height: '170px', wordWrap: 'break-word' }}
       >
-        {Object.keys(response).map((key, i) => (
+        {Object.keys(data).map((key, i) => (
           <Box key={i} paddingTop={3}>
             <Typography fontWeight="bold">{key}</Typography>
-            <p>{response[key]}</p>
+            <p>{data[key]}</p>
           </Box>
         ))}
       </Box>
     );
-  } else if (response && Object.keys(response).length === 0) {
+  } else if (data && Object.keys(data).length === 0) {
     return (
       <Box
         flexDirection={FLEX_DIRECTION.COLUMN}
@@ -70,5 +71,6 @@ export const SnapInsight = ({ transaction, snapId }) => {
 
 SnapInsight.propTypes = {
   transaction: PropTypes.object,
+  chainId: PropTypes.string,
   snapId: PropTypes.string,
 };
