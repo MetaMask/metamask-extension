@@ -1,6 +1,4 @@
 import React from 'react';
-import Jazzicon from '../../ui/jazzicon/jazzicon.component';
-import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
 import { SIZES } from '../../../helpers/constants/design-system';
 import { diameters, AvatarAccount } from './avatar-account';
 
@@ -33,9 +31,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <AvatarAccount {...args}/>
-);
+export const DefaultStory = (args) => <AvatarAccount {...args} />;
 
 DefaultStory.storyName = 'Default';
-

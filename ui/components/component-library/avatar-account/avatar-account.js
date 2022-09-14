@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
 
 import { SIZES } from '../../../helpers/constants/design-system';
@@ -15,7 +15,7 @@ export const diameters = {
   xl: '48',
 };
 
-export const avatarAccountTypes = ["Jazzicon", "BlockieIdenticon"]
+export const avatarAccountTypes = ['Jazzicon', 'BlockieIdenticon'];
 
 const getStyles = (diameter) => ({
   height: diameter,

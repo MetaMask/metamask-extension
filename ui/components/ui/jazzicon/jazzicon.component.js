@@ -13,7 +13,7 @@ const iconFactory = iconFactoryGenerator(jazzicon);
 function Jazzicon({
   address,
   className,
-  diameter = 48,
+  diameter = 46,
   style,
   tokenList = {},
 }) {
