@@ -903,6 +903,9 @@
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
+  "dataBackupSeemsCorrupt": {
+    "message": "Can not restore your data. The file appears to be corrupt."
+  },
   "dataHex": {
     "message": "Hex"
   },
