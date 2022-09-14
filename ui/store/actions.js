@@ -3262,9 +3262,9 @@ export function getContractMethodData(data = '') {
     }
     const { knownMethodData } = getState().metamask;
     if (
-      (knownMethodData &&
-        knownMethodData[fourBytePrefix] &&
-        Object.keys(knownMethodData[fourBytePrefix]).length !== 0)
+      knownMethodData &&
+      knownMethodData[fourBytePrefix] &&
+      Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
       return Promise.resolve(knownMethodData[fourBytePrefix]);
     }
