@@ -4,11 +4,7 @@ import sinon from 'sinon';
 import { ethers } from 'ethers';
 import { mapValues } from 'lodash';
 import BigNumber from 'bignumber.js';
-import {
-  ROPSTEN_NETWORK_ID,
-  MAINNET_NETWORK_ID,
-  MAINNET_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -82,7 +78,7 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
-  chainId: MAINNET_CHAIN_ID,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
@@ -104,7 +100,7 @@ function getMockNetworkController() {
     store: {
       getState: () => {
         return {
-          network: ROPSTEN_NETWORK_ID,
+          network: NETWORK_IDS.ROPSTEN,
         };
       },
     },
@@ -149,7 +145,7 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
+getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -225,7 +221,7 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(MAINNET_NETWORK_ID);
+      onNetworkDidChange(NETWORK_IDS.MAINNET);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -273,7 +269,7 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(ROPSTEN_NETWORK_ID);
+      onNetworkDidChange(NETWORK_IDS.ROPSTEN);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -726,7 +722,7 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
-            MAINNET_CHAIN_ID,
+            CHAIN_IDS.MAINNET,
           ),
           true,
         );
