@@ -1123,6 +1123,21 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
+ * To check if the token detection is ON and either a dynamic list is available
+ * or the user is on mainnet
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getDisplayDetectedTokensLink(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isMainnet = getIsMainnet(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return (isDynamicTokenListAvailable || isMainnet) && useTokenDetection;
+}
+
+/**
  * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
  *
  * @param {*} state
