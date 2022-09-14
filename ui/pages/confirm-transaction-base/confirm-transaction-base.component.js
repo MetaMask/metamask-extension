@@ -63,7 +63,9 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CHAIN_ID_TO_NETWORK_ID_MAP,
+  ///: END:ONLY_INCLUDE_IN
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 
@@ -173,7 +175,7 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    selectedInsightSnap: this.props.insightSnaps[0]?.id,
+    selectedInsightSnapId: this.props.insightSnaps[0]?.id,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -320,7 +322,7 @@ export default class ConfirmTransactionBase extends Component {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   handleSnapSelected(snapId) {
-    this.setState({ selectedInsightSnap: snapId });
+    this.setState({ selectedInsightSnapId: snapId });
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -754,10 +756,12 @@ export default class ConfirmTransactionBase extends Component {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   renderInsight() {
     const { txData, insightSnaps } = this.props;
-    const { selectedInsightSnap } = this.state;
+    const { selectedInsightSnapId } = this.state;
     const { txParams, chainId } = txData;
 
-    const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
+    const selectedSnap = insightSnaps.find(
+      ({ id }) => id === selectedInsightSnapId,
+    );
 
     const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
@@ -781,23 +785,24 @@ export default class ConfirmTransactionBase extends Component {
       <DropdownTab
         className="confirm-page-container-content__tab"
         options={dropdownOptions}
-        selectedOption={selectedInsightSnap}
+        selectedOption={selectedInsightSnapId}
+        onChange={(snapId) => this.handleSnapSelected(snapId)}
       >
         <SnapInsight
           transaction={txParams}
           chainId={caip2ChainId}
-          snapId={selectedInsightSnap}
+          selectedSnap={selectedSnap}
         />
       </DropdownTab>
     ) : (
       <Tab
         className="confirm-page-container-content__tab"
-        name={snap.manifest.proposedName}
+        name={selectedSnap.manifest.proposedName}
       >
         <SnapInsight
           transaction={txParams}
           chainId={caip2ChainId}
-          snapId={selectedInsightSnap}
+          selectedSnap={selectedSnap}
         />
       </Tab>
     );

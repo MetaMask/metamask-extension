@@ -1,9 +1,7 @@
 .snap-insight {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  height: 170px;
+  height: 100%;
   word-wrap: break-word;
   
 
@@ -12,23 +10,23 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    height: 170px;
   }
 
   &__container {
-    padding: 0px 24px 12px 24px;
+    display: flex;
     height: 100%;
-    overflow-y: auto;
+    flex-direction: column;
+    
 
     &__data {
-      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      padding: 0px 4px 12px 24px;
 
       .typography {
         font-size: 14px;
       }
-    }
-
-    &__title {
-      font-weight: bold;
     }
   }
 }

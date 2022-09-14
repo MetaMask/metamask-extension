@@ -4,22 +4,21 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import Box from '../../../ui/box/box';
 import Typography from '../../../ui/typography/typography';
 import { COLORS } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
+import SnapContentFooter from '../../flask/snap-content-footer/snap-content-footer';
 
-export const SnapInsight = ({ transaction, chainId, snapId }) => {
+export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
+  const t = useI18nContext();
   const response = useTransactionInsightSnap({
     transaction,
     chainId,
-    snapId,
+    snapId: selectedSnap.id,
   });
 
   const data = response?.insights;
-
-  const t = useI18nContext();
 
   return (
     <div
@@ -28,22 +27,30 @@ export const SnapInsight = ({ transaction, chainId, snapId }) => {
       })}
     >
       {data ? (
-        <>
+        <div className="snap-insight__container">
           {Object.keys(data).length ? (
-            <div className="snap-insight__container">
-              {Object.keys(data).map((key, i) => (
-                <div className="snap-insight__container__data" key={i}>
-                  <Typography fontWeight="bold">{key}</Typography>
-                  <Typography>{data[key]}</Typography>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="snap-insight__container__data">
+                {Object.keys(data).map((key, i) => (
+                  <div key={i}>
+                    <Typography fontWeight="bold" marginTop={3}>
+                      {key}
+                    </Typography>
+                    <Typography>{data[key]}</Typography>
+                  </div>
+                ))}
+              </div>
+              <SnapContentFooter
+                snapName={selectedSnap.manifest.proposedName}
+                snapId={selectedSnap.id}
+              />
+            </>
           ) : (
             <Typography color={COLORS.TEXT_ALTERNATIVE}>
               {t('snapsNoInsight')}
             </Typography>
           )}
-        </>
+        </div>
       ) : (
         <>
           <Preloader size={40} />
@@ -59,5 +66,5 @@ export const SnapInsight = ({ transaction, chainId, snapId }) => {
 SnapInsight.propTypes = {
   transaction: PropTypes.object,
   chainId: PropTypes.string,
-  snapId: PropTypes.string,
+  selectedSnap: PropTypes.object,
 };
