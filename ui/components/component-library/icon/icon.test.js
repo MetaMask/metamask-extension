@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { SIZES, COLORS } from '../../../helpers/constants/design-system';
 import { Icon } from './icon';
-import { ICON_NAMES } from './iconNames';
+import { ICON_NAMES } from './icon.constants';
 
 describe('Icon', () => {
   it('should render correctly', () => {

@@ -6,18 +6,30 @@ import Box from '../../ui/box/box';
 
 import { SIZES, ICON_COLORS } from '../../../helpers/constants/design-system';
 
-import { ICON_NAMES } from './iconNames';
+import { ICON_NAMES } from './icon.constants';
 
-export const Icon = ({ name, size = SIZES.MD, color, className, ...props }) => {
+export const Icon = ({
+  name,
+  size = SIZES.MD,
+  color,
+  className,
+  style,
+  ...props
+}) => {
   return (
     <Box
       color={color}
-      className={classnames(
-        className,
-        'icon',
-        `icon--size-${size}`,
-        `icon--${name}`,
-      )}
+      className={classnames(className, 'icon', `icon--size-${size}`)}
+      style={{
+        /**
+         * To reduce the possibility of injection attacks
+         * the icon component uses mask-image instead of rendering
+         * the svg directly.
+         */
+        maskImage: `url('/images/icons/icon-${name}.svg`,
+        WebkitMaskImage: `url('/images/icons/icon-${name}.svg`,
+        ...style,
+      }}
       {...props}
     />
   );

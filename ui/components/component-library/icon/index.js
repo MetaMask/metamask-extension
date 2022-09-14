@@ -1,2 +1,2 @@
 export { Icon } from './icon';
-export { ICON_NAMES } from './iconNames';
+export { ICON_NAMES } from './icon.constants';

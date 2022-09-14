@@ -2,6 +2,8 @@ const path = require('path');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const { generateIconNames } = require('../development/generate-icon-names');
+
 module.exports = {
   stories: [
     '../ui/**/*.stories.js',
@@ -19,6 +21,16 @@ module.exports = {
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
+  env: async (config) => {
+    console.log(
+      'ICON_NAMES: await generateIconNames()',
+      await generateIconNames(),
+    );
+    return {
+      ...config,
+      ICON_NAMES: await generateIconNames(),
+    };
+  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {

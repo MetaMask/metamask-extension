@@ -13,7 +13,7 @@ import Box from '../../ui/box/box';
 import { Text } from '../text';
 
 import { Icon } from './icon';
-import { ICON_NAMES } from './iconNames';
+import { ICON_NAMES } from './icon.constants';
 
 import README from './README.mdx';
 
@@ -88,7 +88,10 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <Icon {...args} />;
+export const DefaultStory = (args) => {
+  console.log('ICON_NAMES', ICON_NAMES);
+  return <Icon {...args} />;
+};
 
 DefaultStory.storyName = 'Default';
 

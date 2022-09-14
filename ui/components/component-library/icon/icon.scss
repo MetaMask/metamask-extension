@@ -8,7 +8,6 @@
   flex: 0 0 1em;
   display: inline-block;
   background-color: currentColor; // inherits parent text color
-  -webkit-mask-size: cover;
   mask-size: cover;
   mask-repeat: no-repeat;
   mask-position: center;

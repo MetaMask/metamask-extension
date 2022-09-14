@@ -93,9 +93,9 @@ import { Icon, ICON_NAMES } from '../ui/component-library';
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.INFO_INVERSE} />
 ```
 
-### Adding a new icon component
+### Adding a new icon
 
-To add a new icon component the only thing you need to do is add a new svg file to `app/images/icons` and run `yarn build:icons`. There are a few steps to ensure that the icon is added correctly.
+To add a new icon the only thing you need to do is add the icon svg file to `app/images/icons`. To ensure that the icon is added correctly follow these steps:
 
 #### Step 1.
 
@@ -117,6 +117,6 @@ Add your optimized svg file to to `app/images/icons` and ensure the icon name st
 
 #### Step 3.
 
-Run `yarn build:icons` to generate the icon component. This will add the icon name to `./IconNames.js` and generate the correct styles that will be added to `icon.scss`
+Run `yarn start` to generate the `ICON_NAMES` with your added icon.
 
 If you have any questions please reach out to the design system team in the [#metamask-design-system](https://consensys.slack.com/archives/C0354T27M5M) channel on slack.
