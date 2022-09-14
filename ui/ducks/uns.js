@@ -226,22 +226,13 @@ async function determineChainType(asset) {
 }
 
 export function getUnsResolution(state) {
-  if (state.name) {
     return state[name].resolution;
-  }
-  return null;
 }
 
 export function getUnsError(state) {
-  if (state.name) {
     return state[name].error;
-  }
-  return null;
 }
 
 export function getUnsWarning(state) {
-  if (state.name) {
     return state[name].warning;
-  }
-  return null;
 }
