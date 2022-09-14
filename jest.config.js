@@ -51,6 +51,7 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
+    '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/constants/error-utils.test.js',
   ],
