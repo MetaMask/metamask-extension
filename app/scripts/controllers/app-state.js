@@ -33,6 +33,7 @@ export default class AppStateController extends EventEmitter {
       collectiblesDetectionNoticeDismissed: false,
       enableEIP1559V2NoticeDismissed: false,
       showTestnetMessageInDropdown: true,
+      showPortfolioTooltip: true,
       trezorModel: null,
       ...initState,
       qrHardware: {},
@@ -257,6 +258,15 @@ export default class AppStateController extends EventEmitter {
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
     this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets whether the portfolio site tooltip should be shown on the home page
+   *
+   * @param showPortfolioTooltip
+   */
+  setShowPortfolioTooltip(showPortfolioTooltip) {
+    this.store.updateState({ showPortfolioTooltip });
   }
 
   /**

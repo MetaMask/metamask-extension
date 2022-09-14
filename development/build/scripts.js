@@ -1023,6 +1023,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
+    PORTFOLIO_URL: ENVIRONMENT.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,

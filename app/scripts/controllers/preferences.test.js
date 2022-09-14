@@ -4,7 +4,7 @@ import {
   ControllerMessenger,
   TokenListController,
 } from '@metamask/controllers';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
 
@@ -18,7 +18,7 @@ describe('preferences controller', function () {
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
-    currentChainId = MAINNET_CHAIN_ID;
+    currentChainId = CHAIN_IDS.MAINNET;
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
