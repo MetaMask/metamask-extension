@@ -2,12 +2,13 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  getHasAnyAccountWithNoFundsOnNetwork,
+  getAllAccountsOnNetworkAreEmpty,
   getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
   getTheme,
+  getIsTestnet,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -43,8 +44,8 @@ function mapStateToProps(state) {
     theme: getTheme(state),
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
-    hasAnAccountWithNoFundsOnNetwork:
-      getHasAnyAccountWithNoFundsOnNetwork(state),
+    allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
+    isTestnet: getIsTestnet(state),
   };
 }
 

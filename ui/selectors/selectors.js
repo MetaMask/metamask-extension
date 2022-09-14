@@ -1194,10 +1194,12 @@ export function getIsNetworkUsed(state) {
   return Boolean(usedNetworks[chainId]);
 }
 
-export function getHasAnyAccountWithNoFundsOnNetwork(state) {
+export function getAllAccountsOnNetworkAreEmpty(state) {
   const balances = getMetaMaskCachedBalances(state) ?? {};
-  const hasAnAccountWithNoFundsOnNetwork =
-    Object.values(balances).indexOf('0x0');
+  const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
+    (balance) => balance === '0x0' || balance === '0x00',
+  );
+  const hasNoTokens = getNumberOfTokens(state) === 0;
 
-  return hasAnAccountWithNoFundsOnNetwork !== -1;
+  return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
