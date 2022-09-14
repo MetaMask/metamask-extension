@@ -39,7 +39,7 @@ describe('Sentry errors', function () {
         // Trigger error
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), ENS, or UNS"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('input[placeholder="0"]', `-01`);
