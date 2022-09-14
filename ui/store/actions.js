@@ -3257,13 +3257,14 @@ export function getContractMethodData(data = '') {
   return (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
+    if (fourBytePrefix.length < 10) {
+      return Promise.resolve({});
+    }
     const { knownMethodData } = getState().metamask;
-
     if (
-      (knownMethodData &&
-        knownMethodData[fourBytePrefix] &&
-        Object.keys(knownMethodData[fourBytePrefix]).length !== 0) ||
-      fourBytePrefix === '0x'
+      knownMethodData &&
+      knownMethodData[fourBytePrefix] &&
+      Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
       return Promise.resolve(knownMethodData[fourBytePrefix]);
     }

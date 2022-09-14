@@ -17,17 +17,7 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
-import {
-  ETH_SYMBOL,
-  MATIC_SYMBOL,
-  BNB_SYMBOL,
-  AVALANCHE_SYMBOL,
-  MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-} from '../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -68,14 +58,14 @@ export function getRenderableTokenData(
     : '';
 
   const chainIdForTokenIcons =
-    chainId === GOERLI_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
+    chainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : chainId;
 
   const tokenIconUrl =
-    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
-    (symbol === ETH_SYMBOL && chainId === GOERLI_CHAIN_ID) ||
-    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
-    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
-    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.MAINNET) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
+    (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
+    (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
+    (symbol === CURRENCY_SYMBOLS.AVALANCHE && chainId === CHAIN_IDS.AVALANCHE)
       ? iconUrl
       : formatIconUrlWithProxy({
           chainId: chainIdForTokenIcons,

@@ -4,12 +4,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
-import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  KOVAN_NETWORK_ID,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_IDS } from '../../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TxStateManager, { ERROR_SUBMITTING } from './tx-state-manager';
@@ -49,8 +44,8 @@ function generateTransactions(
 }
 describe('TransactionStateManager', function () {
   let txStateManager;
-  const currentNetworkId = KOVAN_NETWORK_ID;
-  const currentChainId = KOVAN_CHAIN_ID;
+  const currentNetworkId = NETWORK_IDS.KOVAN;
+  const currentChainId = CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
 
   beforeEach(function () {
@@ -681,9 +676,9 @@ describe('TransactionStateManager', function () {
       const txs = generateTransactions(limit + 5, {
         chainId: (i) => {
           if (i === 0 || i === 1) {
-            return MAINNET_CHAIN_ID;
+            return CHAIN_IDS.MAINNET;
           } else if (i === 4 || i === 5) {
-            return RINKEBY_CHAIN_ID;
+            return CHAIN_IDS.RINKEBY;
           }
           return currentChainId;
         },
@@ -713,7 +708,7 @@ describe('TransactionStateManager', function () {
       assert.equal(
         result.some(
           (tx) =>
-            tx.chainId === MAINNET_CHAIN_ID && tx.txParams.nonce === '0x0',
+            tx.chainId === CHAIN_IDS.MAINNET && tx.txParams.nonce === '0x0',
         ),
         false,
         'the mainnet transactions with nonce 0x0 should not be present in the result',
