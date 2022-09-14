@@ -21,11 +21,7 @@ import {
   getDomainWarning,
 } from '../../../../ducks/domains';
 import AddRecipient from './add-recipient.component';
-import { 
-  getUnsError, 
-  getUnsResolution,
-  getUnsWarning, 
-} from '../../../../ducks/uns';
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 

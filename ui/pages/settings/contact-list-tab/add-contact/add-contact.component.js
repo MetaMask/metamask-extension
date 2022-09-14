@@ -4,10 +4,9 @@ import { debounce } from 'lodash';
 import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { 
-  getUdTlds,
+import {
   isValidENSDomainName,
-  isValidUnstoppableDomainName 
+  isValidUnstoppableDomainName,
 } from '../../../../helpers/utils/util';
 import DomainInput from '../../../send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';

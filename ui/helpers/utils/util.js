@@ -1,4 +1,3 @@
-import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
@@ -29,8 +28,6 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { toBigNumber } from '../../../shared/modules/conversion.utils';
-import { includes } from 'lodash';
-import { ALL } from 'dns';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -97,70 +94,71 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-      checked.length - lastSegLength,
-    )}`
+        checked.length - lastSegLength,
+      )}`
     : '...';
 }
 
 export function isValidENSDomainName(address) {
   let result = false;
-  let tlds = [".test", ".eth"]
-  tlds.forEach((tld, i) => {
+  const tlds = ['.test', '.eth'];
+  tlds.forEach((tld) => {
     if (address.toLowerCase().endsWith(tld)) {
       result = true;
     }
-  })
- return result; 
+  });
+  return result;
 }
 
-export async function isValidUnstoppableDomainName(address, tlds) {
-  if (!tlds) {
+export async function isValidUnstoppableDomainName(address, inputTlds) {
+  let tlds;
+  if (inputTlds) {
+    tlds = inputTlds;
+  } else {
     tlds = await getUdTlds();
   }
-  let result = false; 
-    tlds.forEach((tld, i) => {
-      if (address.toLowerCase().endsWith("."+tld)) {
-        result = true;
-      }
-    })
-    return result;
+  let result = false;
+  tlds.forEach((tld) => {
+    if (address.toLowerCase().endsWith(`.${tld}`)) {
+      result = true;
+    }
+  });
+  return result;
 }
 export async function getUdTlds() {
   let result = [];
   const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
-  let response = await fetch(url);
-  let data = await response.json();
-  result = data.tlds
+  const response = await fetch(url);
+  const data = await response.json();
+  result = data.tlds;
   return result;
 }
 
 export async function getAndParseUdCurrencies() {
-  let resultObject = {
-    "singleChain": [
-    ],
-    "multiChain": [
-    ]
+  const resultObject = {
+    singleChain: [],
+    multiChain: [],
   };
   const url = 'https://unstoppabledomains.com/api/uns-resolver-keys';
-  let response = await fetch(url);
-  let data = await response.text();
-  let currencyArray = parseKeysArray(JSON.parse(data).keys);
+  const response = await fetch(url);
+  const data = await response.text();
+  const currencyArray = parseKeysArray(JSON.parse(data).keys);
   currencyArray.forEach(function (crypto) {
-    if (crypto.includes(".version.")) {
-      resultObject.multiChain.push(crypto.split(".")[1]);
+    if (crypto.includes('.version.')) {
+      resultObject.multiChain.push(crypto.split('.')[1]);
     } else {
-      resultObject.singleChain.push(crypto.split(".")[1]);
+      resultObject.singleChain.push(crypto.split('.')[1]);
     }
-  })
+  });
   return resultObject;
 }
 
 export function parseKeysArray(json) {
-  var result = [];
-  var keys = Object.keys(json);
+  const result = [];
+  const keys = Object.keys(json);
   keys.forEach(function (key) {
-    if (key.startsWith("crypto")) {
-      result.push(key)
+    if (key.startsWith('crypto')) {
+      result.push(key);
     }
   });
   return result;

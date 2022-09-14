@@ -1718,11 +1718,11 @@ export default class MetamaskController extends EventEmitter {
         ),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
-      
-        // EnsController
+
+      // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
-      
+
       // KeyringController
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),

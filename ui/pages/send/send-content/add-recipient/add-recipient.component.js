@@ -123,11 +123,11 @@ export default class AddRecipient extends Component {
         addressBookEntryName || userInput,
         'ENS resolution',
       );
-    } else if (unsResolution && !recipient.error){
+    } else if (unsResolution && !recipient.error) {
       content = this.renderExplicitAddress(
         unsResolution,
         addressBookEntryName || userInput,
-        'UNS resolution'
+        'UNS resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -239,7 +239,7 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { domainError, recipient, domainWarning } = this.props;
+    const { ensError, recipient, ensWarning, unsError, unsWarning } = this.props;
     const { t } = this.context;
 
     if (domainError || (recipient.error && recipient.error !== 'required')) {
