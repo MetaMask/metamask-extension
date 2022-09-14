@@ -1,0 +1,10 @@
+.snap-content-footer {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 16px;
+
+  i {
+    color: var(--color-icon-muted);
+    padding-right: 4px;
+  }
+}
