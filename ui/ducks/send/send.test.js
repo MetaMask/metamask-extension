@@ -646,6 +646,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -671,6 +672,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -695,6 +697,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -727,6 +730,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -751,6 +755,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -776,6 +781,7 @@ describe('Send Slice', () => {
             tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
             useTokenDetection: true,
             tokenAddressList: [],
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -802,6 +808,7 @@ describe('Send Slice', () => {
             useTokenDetection: true,
             tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
             isProbablyAnAssetContract: true,
+            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
           },
         };
 
@@ -1748,6 +1755,9 @@ describe('Send Slice', () => {
           provider: {
             chainId: '',
           },
+          UNS: {
+            tlds: [],
+          },
           tokens: [],
           useTokenDetection: true,
           tokenList: {
@@ -2043,6 +2053,7 @@ describe('Send Slice', () => {
             provider: {
               chainId: '',
             },
+            UNS: {},
             tokens: [],
             useTokenDetection: true,
             tokenList: {
@@ -2079,7 +2090,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(11);
+        expect(actionResult).toHaveLength(12);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2108,7 +2119,8 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/rejected',
         );
         expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[10].type).toStrictEqual(
+        expect(actionResult[10].type).toStrictEqual('UNS/resetUnsResolution');
+        expect(actionResult[11].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });

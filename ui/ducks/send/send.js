@@ -1361,13 +1361,19 @@ const slice = createSlice({
             isProbablyAnAssetContract,
             udTlds,
           } = action.payload;
+          let validUDDomain = false;
+          udTlds.forEach((tld) => {
+            if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
+              validUDDomain = true;
+            }
+          })
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
               !isValidENSDomainName(state.recipientInput) &&
-              !isValidUnstoppableDomainName(state.recipientInput, udTlds))
+              !validUDDomain)
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
@@ -1394,6 +1400,7 @@ const slice = createSlice({
               KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
             draftTransaction.recipient.warning = null;
+            console.log('PING PING')
           }
         }
       }
@@ -1914,9 +1921,8 @@ export function updateRecipientUserInput(userInput) {
         }
       }
     }
-
     return new Promise((resolve) => {
-      if (state.UNS.tlds) {
+      try {
         debouncedValidateRecipientUserInput(
           dispatch,
           {
@@ -1926,11 +1932,11 @@ export function updateRecipientUserInput(userInput) {
             useTokenDetection,
             tokenAddressList,
             isProbablyAnAssetContract,
-            udTlds: state.UNS.tlds.payload,
+            udTlds: state.UNS.tlds,
           },
           resolve,
         );
-      } else {
+      } catch(error) {
         debouncedValidateRecipientUserInput(
           dispatch,
           {

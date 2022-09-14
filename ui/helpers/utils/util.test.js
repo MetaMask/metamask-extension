@@ -49,19 +49,15 @@ describe('util', () => {
 
   describe('isValidENSDomainName', () => {
     it('should return true when given a valid domain name', () => {
-      expect(util.isValidENSDomainName('foo.bar')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('foo.eth')).toStrictEqual(true);
     });
 
     it('should return true when given a valid subdomain', () => {
-      expect(util.isValidENSDomainName('foo.foo.bar')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('foo.foo.eth')).toStrictEqual(true);
     });
 
     it('should return true when given a single-character domain', () => {
-      expect(util.isValidENSDomainName('f.bar')).toStrictEqual(true);
-    });
-
-    it('should return true when given a unicode TLD', () => {
-      expect(util.isValidENSDomainName('台灣.中国')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('f.eth')).toStrictEqual(true);
     });
 
     it('should return false when given a domain with unacceptable ASCII characters', () => {

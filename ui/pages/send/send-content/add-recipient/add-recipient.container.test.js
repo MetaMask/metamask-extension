@@ -17,7 +17,11 @@ jest.mock('../../../../selectors', () => ({
     { name: `account2:mockState` },
   ],
 }));
-
+jest.mock('../../../../ducks/uns', () => ({
+  getUnsResolution: (s) => `mockSendUnsResolution:${s}`,
+  getUnsError: (s) => `mockSendUnsResolutionError:${s}`,
+  getUnsWarning: (s) => `mockSendUnsResolutionWarning:${s}`,
+}));
 jest.mock('../../../../ducks/ens', () => ({
   getEnsResolution: (s) => `mockSendEnsResolution:${s}`,
   getEnsError: (s) => `mockSendEnsResolutionError:${s}`,
@@ -49,6 +53,9 @@ describe('add-recipient container', () => {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         addressBookEntryName: undefined,
         contacts: [{ name: 'mockAddressBook:mockState' }],
+        unsResolution: 'mockSendUnsResolution:mockState',
+        unsError: 'mockSendUnsResolutionError:mockState',
+        unsWarning: 'mockSendUnsResolutionWarning:mockState',
         ensResolution: 'mockSendEnsResolution:mockState',
         ensError: 'mockSendEnsResolutionError:mockState',
         ensWarning: 'mockSendEnsResolutionWarning:mockState',
