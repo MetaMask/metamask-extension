@@ -21,15 +21,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
-import {
-  MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-  ETH_SYMBOL,
-  AVALANCHE_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
   calcTokenValue,
@@ -82,11 +74,11 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const TEST_CHAIN_IDS = [GOERLI_CHAIN_ID, LOCALHOST_CHAIN_ID];
+const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
-export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
+export const getBaseApi = function (type, chainId = CHAIN_IDS.MAINNET) {
   // eslint-disable-next-line no-param-reassign
-  chainId = TEST_CHAIN_IDS.includes(chainId) ? MAINNET_CHAIN_ID : chainId;
+  chainId = TEST_CHAIN_IDS.includes(chainId) ? CHAIN_IDS.MAINNET : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
@@ -509,7 +501,7 @@ export const getFeeForSmartTransaction = ({
   const feeInWeiHex = decimalToHex(feeInWeiDec);
   const ethFee = getValueFromWeiHex({
     value: feeInWeiHex,
-    toDenomination: ETH_SYMBOL,
+    toDenomination: CURRENCY_SYMBOLS.ETH,
     numberOfDecimals: 5,
   });
   const rawNetworkFees = getValueFromWeiHex({
@@ -849,7 +841,7 @@ export function formatSwapsValueForDisplay(destinationAmount) {
  */
 export const isContractAddressValid = (
   contractAddress,
-  chainId = MAINNET_CHAIN_ID,
+  chainId = CHAIN_IDS.MAINNET,
 ) => {
   if (!contractAddress || !ALLOWED_CONTRACT_ADDRESSES[chainId]) {
     return false;
@@ -868,15 +860,15 @@ export const isContractAddressValid = (
  */
 export const getNetworkNameByChainId = (chainId) => {
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return ETHEREUM;
-    case BSC_CHAIN_ID:
+    case CHAIN_IDS.BSC:
       return BSC;
-    case POLYGON_CHAIN_ID:
+    case CHAIN_IDS.POLYGON:
       return POLYGON;
-    case GOERLI_CHAIN_ID:
+    case CHAIN_IDS.GOERLI:
       return GOERLI;
-    case AVALANCHE_CHAIN_ID:
+    case CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
     default:
       return '';
@@ -892,8 +884,8 @@ export const getNetworkNameByChainId = (chainId) => {
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
-  // Use old APIs for testnet and Goerli.
-  if ([LOCALHOST_CHAIN_ID, GOERLI_CHAIN_ID].includes(chainId)) {
+  // Use old APIs for testnet and Rinkeby.
+  if ([CHAIN_IDS.LOCALHOST, CHAIN_IDS.GOERLI].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
     };

@@ -903,6 +903,9 @@
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
+  "dataBackupSeemsCorrupt": {
+    "message": "Can not restore your data. The file appears to be corrupt."
+  },
   "dataHex": {
     "message": "Hex"
   },
@@ -2343,6 +2346,16 @@
   },
   "notifications13Title": {
     "message": "Add Popular Networks"
+  },
+  "notifications14ActionText": {
+    "message": "Show backup settings"
+  },
+  "notifications14Description": {
+    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
+  },
+  "notifications14Title": {
+    "message": "3Box Deprecation"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",

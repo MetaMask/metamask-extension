@@ -11,7 +11,7 @@ import {
 import createInfuraMiddleware from 'eth-json-rpc-infura';
 import { PollingBlockTracker } from 'eth-block-tracker';
 
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../../shared/constants/network';
+import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 
 export default function createInfuraClient({ network, projectId }) {
   const infuraMiddleware = createInfuraMiddleware({
@@ -36,11 +36,11 @@ export default function createInfuraClient({ network, projectId }) {
 }
 
 function createNetworkAndChainIdMiddleware({ network }) {
-  if (!NETWORK_TYPE_TO_ID_MAP[network]) {
+  if (!BUILT_IN_NETWORKS[network]) {
     throw new Error(`createInfuraClient - unknown network "${network}"`);
   }
 
-  const { chainId, networkId } = NETWORK_TYPE_TO_ID_MAP[network];
+  const { chainId, networkId } = BUILT_IN_NETWORKS[network];
 
   return createScaffoldMiddleware({
     eth_chainId: chainId,

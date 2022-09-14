@@ -10,15 +10,12 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import {
-  RINKEBY,
-  MAINNET,
   INFURA_PROVIDER_TYPES,
-  NETWORK_TYPE_RPC,
-  NETWORK_TYPE_TO_ID_MAP,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  BUILT_IN_NETWORKS,
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
+  CHAIN_IDS,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -35,19 +32,22 @@ const fetchWithTimeout = getFetchWithTimeout();
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST) {
   defaultProviderConfigOpts = {
-    type: NETWORK_TYPE_RPC,
+    type: NETWORK_TYPES.RPC,
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
     nickname: 'Localhost 8545',
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigOpts = {
-    type: RINKEBY,
-    chainId: RINKEBY_CHAIN_ID,
+    type: NETWORK_TYPES.RINKEBY,
+    chainId: CHAIN_IDS.RINKEBY,
     ticker: TEST_NETWORK_TICKER_MAP.rinkeby,
   };
 } else {
-  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: NETWORK_TYPES.MAINNET,
+    chainId: CHAIN_IDS.MAINNET,
+  };
 }
 
 const defaultProviderConfig = {
@@ -268,7 +268,7 @@ export default class NetworkController extends EventEmitter {
 
   getCurrentChainId() {
     const { type, chainId: configChainId } = this.getProviderConfig();
-    return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId;
+    return BUILT_IN_NETWORKS[type]?.chainId || configChainId;
   }
 
   getCurrentRpcUrl() {
@@ -286,7 +286,7 @@ export default class NetworkController extends EventEmitter {
       `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
     );
     this.setProviderConfig({
-      type: NETWORK_TYPE_RPC,
+      type: NETWORK_TYPES.RPC,
       rpcUrl,
       chainId,
       ticker,
@@ -298,14 +298,14 @@ export default class NetworkController extends EventEmitter {
   async setProviderType(type) {
     assert.notStrictEqual(
       type,
-      NETWORK_TYPE_RPC,
-      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPE_RPC}". Use "setRpcTarget"`,
+      NETWORK_TYPES.RPC,
+      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setRpcTarget"`,
     );
     assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),
       `Unknown Infura provider type "${type}".`,
     );
-    const { chainId, ticker } = NETWORK_TYPE_TO_ID_MAP[type];
+    const { chainId, ticker } = BUILT_IN_NETWORKS[type];
     this.setProviderConfig({
       type,
       rpcUrl: '',
@@ -342,7 +342,9 @@ export default class NetworkController extends EventEmitter {
 
   getNetworkIdentifier() {
     const provider = this.providerStore.getState();
-    return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type;
+    return provider.type === NETWORK_TYPES.RPC
+      ? provider.rpcUrl
+      : provider.type;
   }
 
   //
@@ -407,7 +409,7 @@ export default class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
-    } else if (type === NETWORK_TYPE_RPC) {
+    } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
     } else {
       throw new Error(
