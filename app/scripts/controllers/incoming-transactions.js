@@ -17,6 +17,7 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 const fetchWithTimeout = getFetchWithTimeout();
@@ -58,6 +59,7 @@ const etherscanSupportedNetworks = [
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
 ];
 
 export default class IncomingTransactionsController {
@@ -86,6 +88,7 @@ export default class IncomingTransactionsController {
         [MAINNET_CHAIN_ID]: null,
         [RINKEBY_CHAIN_ID]: null,
         [ROPSTEN_CHAIN_ID]: null,
+        [SEPOLIA_CHAIN_ID]: null,
       },
       ...opts.initState,
     };

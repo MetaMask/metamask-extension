@@ -12,6 +12,7 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
   ROPSTEN_NETWORK_ID,
   ROPSTEN,
 } from '../../../shared/constants/network';
@@ -39,6 +40,7 @@ const PREPOPULATED_BLOCKS_BY_NETWORK = {
   [MAINNET_CHAIN_ID]: 3,
   [RINKEBY_CHAIN_ID]: 5,
   [ROPSTEN_CHAIN_ID]: 4,
+  [SEPOLIA_CHAIN_ID]: 6,
 };
 const EMPTY_BLOCKS_BY_NETWORK = {
   [GOERLI_CHAIN_ID]: null,
@@ -46,6 +48,7 @@ const EMPTY_BLOCKS_BY_NETWORK = {
   [MAINNET_CHAIN_ID]: null,
   [RINKEBY_CHAIN_ID]: null,
   [ROPSTEN_CHAIN_ID]: null,
+  [SEPOLIA_CHAIN_ID]: null,
 };
 
 function getEmptyInitState() {
@@ -153,6 +156,7 @@ function nockEtherscanApiForAllChains(mockResponse) {
     MAINNET_CHAIN_ID,
     RINKEBY_CHAIN_ID,
     ROPSTEN_CHAIN_ID,
+    SEPOLIA_CHAIN_ID,
     'undefined',
   ]) {
     nock(

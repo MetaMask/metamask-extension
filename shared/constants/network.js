@@ -8,12 +8,14 @@ export const GOERLI = 'goerli';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
 export const HOMESTEAD = 'homestead';
+export const SEPOLIA = 'sepolia';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
 export const RINKEBY_NETWORK_ID = '4';
 export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
+export const SEPOLIA_NETWORK_ID = '6';
 export const LOCALHOST_NETWORK_ID = '1337';
 
 export const MAINNET_CHAIN_ID = '0x1';
@@ -21,6 +23,7 @@ export const ROPSTEN_CHAIN_ID = '0x3';
 export const RINKEBY_CHAIN_ID = '0x4';
 export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
+export const SEPOLIA_CHAIN_ID = '0xaa36a7';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
 export const OPTIMISM_CHAIN_ID = '0xa';
@@ -44,6 +47,7 @@ export const RINKEBY_DISPLAY_NAME = 'Rinkeby';
 export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
+export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
@@ -65,6 +69,7 @@ export const RINKEBY_RPC_URL = getRpcUrl({ network: RINKEBY });
 export const KOVAN_RPC_URL = getRpcUrl({ network: KOVAN });
 export const MAINNET_RPC_URL = getRpcUrl({ network: MAINNET });
 export const GOERLI_RPC_URL = getRpcUrl({ network: GOERLI });
+export const SEPOLIA_RPC_URL = getRpcUrl({ network: SEPOLIA });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 export const ETH_SYMBOL = 'ETH';
@@ -98,6 +103,7 @@ export const TEST_CHAINS = [
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
 ];
 
 export const TEST_NETWORK_TICKER_MAP = {
@@ -105,6 +111,7 @@ export const TEST_NETWORK_TICKER_MAP = {
   [RINKEBY]: `${capitalize(RINKEBY)}${ETH_SYMBOL}`,
   [KOVAN]: `${capitalize(KOVAN)}${ETH_SYMBOL}`,
   [GOERLI]: `${capitalize(GOERLI)}${ETH_SYMBOL}`,
+  [SEPOLIA]: `${capitalize(SEPOLIA)}${ETH_SYMBOL}`,
 };
 
 /**
@@ -131,6 +138,11 @@ export const NETWORK_TYPE_TO_ID_MAP = {
     chainId: GOERLI_CHAIN_ID,
     ticker: TEST_NETWORK_TICKER_MAP[GOERLI],
   },
+  [SEPOLIA]: {
+    networkId: SEPOLIA_NETWORK_ID,
+    chainId: SEPOLIA_CHAIN_ID,
+    ticker: TEST_NETWORK_TICKER_MAP[SEPOLIA],
+  },
   [MAINNET]: {
     networkId: MAINNET_NETWORK_ID,
     chainId: MAINNET_CHAIN_ID,
@@ -147,12 +159,14 @@ export const NETWORK_TO_NAME_MAP = {
   [KOVAN]: KOVAN_DISPLAY_NAME,
   [MAINNET]: MAINNET_DISPLAY_NAME,
   [GOERLI]: GOERLI_DISPLAY_NAME,
+  [SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [ROPSTEN_NETWORK_ID]: ROPSTEN_DISPLAY_NAME,
   [RINKEBY_NETWORK_ID]: RINKEBY_DISPLAY_NAME,
   [KOVAN_NETWORK_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_NETWORK_ID]: GOERLI_DISPLAY_NAME,
+  [SEPOLIA_NETWORK_ID]: SEPOLIA_DISPLAY_NAME,
   [MAINNET_NETWORK_ID]: MAINNET_DISPLAY_NAME,
   [LOCALHOST_NETWORK_ID]: LOCALHOST_DISPLAY_NAME,
 
@@ -160,6 +174,7 @@ export const NETWORK_TO_NAME_MAP = {
   [RINKEBY_CHAIN_ID]: RINKEBY_DISPLAY_NAME,
   [KOVAN_CHAIN_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_CHAIN_ID]: GOERLI_DISPLAY_NAME,
+  [SEPOLIA_CHAIN_ID]: SEPOLIA_DISPLAY_NAME,
   [MAINNET_CHAIN_ID]: MAINNET_DISPLAY_NAME,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_DISPLAY_NAME,
 };
@@ -176,6 +191,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [RINKEBY_CHAIN_ID]: RINKEBY_RPC_URL,
   [KOVAN_CHAIN_ID]: KOVAN_RPC_URL,
   [GOERLI_CHAIN_ID]: GOERLI_RPC_URL,
+  [SEPOLIA_CHAIN_ID]: SEPOLIA_RPC_URL,
   [MAINNET_CHAIN_ID]: MAINNET_RPC_URL,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_RPC_URL,
 };
@@ -197,6 +213,7 @@ export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [ROPSTEN_NETWORK_ID]: ROPSTEN,
   [RINKEBY_NETWORK_ID]: RINKEBY,
   [GOERLI_NETWORK_ID]: GOERLI,
+  [SEPOLIA_NETWORK_ID]: SEPOLIA,
   [MAINNET_NETWORK_ID]: HOMESTEAD,
 };
 
@@ -284,6 +301,10 @@ export const BUYABLE_CHAINS_MAP = {
   },
   [GOERLI_CHAIN_ID]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[GOERLI],
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [SEPOLIA_CHAIN_ID]: {
+    nativeCurrency: TEST_NETWORK_TICKER_MAP[SEPOLIA],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [KOVAN_CHAIN_ID]: {
