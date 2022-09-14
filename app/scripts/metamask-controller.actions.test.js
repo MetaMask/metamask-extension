@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
+// import * as ControllerMethods from '@metamask/controllers';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -236,6 +237,23 @@ describe('MetaMaskController', function () {
         ),
       ]);
       assert.deepEqual(transaction1, transaction2);
+    });
+  });
+
+  describe('#removePermissionsFor', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      sandbox.stub(ControllerMethods, 'revokePermissions').throws(error);
+      assert.not.throws(() => {
+        metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      }, error);
+    });
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      sandbox.stub(ControllerMethods, 'revokePermissions').throws(error);
+      assert.throws(() => {
+        metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      }, error);
     });
   });
 });
