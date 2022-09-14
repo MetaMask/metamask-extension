@@ -107,7 +107,8 @@ export default class Routes extends Component {
     theme: PropTypes.string,
     sendStage: PropTypes.string,
     isNetworkUsed: PropTypes.bool,
-    hasAnAccountWithNoFundsOnNetwork: PropTypes.bool,
+    allAccountsOnNetworkAreEmpty: PropTypes.bool,
+    isTestNet: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -363,7 +364,8 @@ export default class Routes extends Component {
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
-      hasAnAccountWithNoFundsOnNetwork,
+      allAccountsOnNetworkAreEmpty,
+      isTestNet,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -371,7 +373,10 @@ export default class Routes extends Component {
         : null;
 
     const shouldShowNetworkInfo =
-      isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
+      isUnlocked &&
+      !isTestNet &&
+      !isNetworkUsed &&
+      allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
 
