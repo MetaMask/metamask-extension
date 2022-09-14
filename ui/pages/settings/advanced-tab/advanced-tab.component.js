@@ -166,7 +166,7 @@ export default class AdvancedTab extends PureComponent {
         restoreMessage: null,
       });
     } catch (e) {
-      if (e.message.match(/Unexpected.+JSON/u)) {
+      if (e.message.match(/Unexpected.+JSON/iu)) {
         this.setState({
           showResultMessage: true,
           restoreSuccessful: false,
