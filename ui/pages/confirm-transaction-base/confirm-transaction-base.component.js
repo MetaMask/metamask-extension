@@ -69,7 +69,7 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
-import { DropdownTab } from '../../components/ui/tabs';
+import { DropdownTab, Tab } from '../../components/ui/tabs';
 ///: END:ONLY_INCLUDE_IN
 
 import TransactionAlerts from './transaction-alerts';
@@ -756,7 +756,8 @@ export default class ConfirmTransactionBase extends Component {
     const { txData, insightSnaps } = this.props;
     const { selectedInsightSnap } = this.state;
     const { txParams, chainId } = txData;
-    // const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
+
+    const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
 
     const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
@@ -776,7 +777,7 @@ export default class ConfirmTransactionBase extends Component {
       [],
     );
 
-    return (
+    return insightSnaps.length > 1 ? (
       <DropdownTab
         className="confirm-page-container-content__tab"
         options={dropdownOptions}
@@ -788,6 +789,17 @@ export default class ConfirmTransactionBase extends Component {
           snapId={selectedInsightSnap}
         />
       </DropdownTab>
+    ) : (
+      <Tab
+        className="confirm-page-container-content__tab"
+        name={snap.manifest.proposedName}
+      >
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          snapId={selectedInsightSnap}
+        />
+      </Tab>
     );
   }
   ///: END:ONLY_INCLUDE_IN

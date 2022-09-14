@@ -1,0 +1,15 @@
+.snap-insight {
+  font-size: 14px;
+  overflow-y: auto;
+  height: 170px;
+  word-wrap: break-word;
+  padding: 12px 24px;
+
+  &--no-data {
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 40px;
+  }
+}
