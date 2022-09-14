@@ -460,6 +460,8 @@ export default class Routes extends Component {
         return this.context.t('connectingToRinkeby');
       case 'goerli':
         return this.context.t('connectingToGoerli');
+      case 'sepolia':
+        return this.context.t('connectingToSepolia');
       default:
         return this.context.t('connectingTo', [providerId]);
     }

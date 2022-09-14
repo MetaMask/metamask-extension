@@ -22,6 +22,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
   SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+  SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
   SINGLE_CALL_BALANCES_ADDRESS_BSC,
   SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
   SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
@@ -235,6 +236,13 @@ export default class AccountTracker {
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+        );
+        break;
+
+      case CHAIN_IDS.SEPOLIA:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
         );
         break;
 
