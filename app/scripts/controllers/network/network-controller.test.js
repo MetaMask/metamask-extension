@@ -177,6 +177,10 @@ describe('NetworkController', () => {
           input: 'goerli',
           expected: 'Goerli',
         },
+        {
+          input: 'sepolia',
+          expected: 'Sepolia',
+        },
       ];
 
       tests.forEach(({ input, expected }) =>

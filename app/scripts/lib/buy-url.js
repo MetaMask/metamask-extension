@@ -170,6 +170,8 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
       return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
+    case 'sepolia-faucet':
+      return 'https://faucet.sepolia.dev/';
     default:
       throw new Error(
         `Unknown cryptocurrency exchange or faucet: "${service}"`,
@@ -189,6 +191,8 @@ function getDefaultServiceForChain(chainId) {
       return 'kovan-faucet';
     case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
+    case CHAIN_IDS.SEPOLIA:
+      return 'sepolia-faucet';
     default:
       throw new Error(
         `No default cryptocurrency exchange or faucet for chainId: "${chainId}"`,
