@@ -22,7 +22,6 @@ import {
 } from '../../../../ducks/domains';
 import AddRecipient from './add-recipient.component';
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
 function mapStateToProps(state) {
