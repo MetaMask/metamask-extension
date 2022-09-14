@@ -1,6 +1,6 @@
 import React from 'react';
 import { SIZES } from '../../../helpers/constants/design-system';
-import { diameters, AvatarAccount } from './avatar-account';
+import { AvatarAccount } from './avatar-account';
 
 import README from './README.mdx';
 
