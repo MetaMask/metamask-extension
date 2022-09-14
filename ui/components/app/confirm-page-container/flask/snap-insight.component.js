@@ -14,14 +14,14 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 
 export const SnapInsight = ({ transaction, snapId }) => {
-  const { insights } = useTransactionInsightSnap(transaction, snapId);
+  const response = useTransactionInsightSnap(transaction, snapId);
 
   console.log(snapId);
-  console.log(insights);
+  console.log(response);
 
   const t = useI18nContext();
 
-  if (insights && Object.keys(insights).length !== 0) {
+  if (response && Object.keys(response).length !== 0) {
     return (
       <Box
         paddingLeft={6}
@@ -29,15 +29,15 @@ export const SnapInsight = ({ transaction, snapId }) => {
         paddingBottom={3}
         style={{ overflowY: 'auto', height: '170px' }}
       >
-        {Object.keys(insights).map((key, i) => (
+        {Object.keys(response).map((key, i) => (
           <Box key={i} paddingTop={3}>
             <Typography fontWeight="bold">{key}</Typography>
-            <p>{insights[key]}</p>
+            <p>{response[key]}</p>
           </Box>
         ))}
       </Box>
     );
-  } else if (insights && Object.keys(insights).length === 0) {
+  } else if (response && Object.keys(response).length === 0) {
     return (
       <Box
         flexDirection={FLEX_DIRECTION.COLUMN}
