@@ -11,12 +11,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 
 export const SnapInsight = ({ transaction, chainId, snapId }) => {
-  const response = undefined;
-  //  useTransactionInsightSnap({
-  //   transaction,
-  //   chainId,
-  //   snapId,
-  // });
+  const response = useTransactionInsightSnap({
+    transaction,
+    chainId,
+    snapId,
+  });
 
   const data = response?.insights;
 
@@ -31,12 +30,14 @@ export const SnapInsight = ({ transaction, chainId, snapId }) => {
       {data ? (
         <>
           {Object.keys(data).length ? (
-            Object.keys(data).map((key, i) => (
-              <Box key={i} paddingTop={3}>
-                <Typography fontWeight="bold">{key}</Typography>
-                <p>{data[key]}</p>
-              </Box>
-            ))
+            <div className="snap-insight__container">
+              {Object.keys(data).map((key, i) => (
+                <div className="snap-insight__container__data" key={i}>
+                  <Typography fontWeight="bold">{key}</Typography>
+                  <Typography>{data[key]}</Typography>
+                </div>
+              ))}
+            </div>
           ) : (
             <Typography color={COLORS.TEXT_ALTERNATIVE}>
               {t('snapsNoInsight')}
