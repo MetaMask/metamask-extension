@@ -3264,8 +3264,7 @@ export function getContractMethodData(data = '') {
     if (
       (knownMethodData &&
         knownMethodData[fourBytePrefix] &&
-        Object.keys(knownMethodData[fourBytePrefix]).length !== 0) ||
-      fourBytePrefix === '0x'
+        Object.keys(knownMethodData[fourBytePrefix]).length !== 0)
     ) {
       return Promise.resolve(knownMethodData[fourBytePrefix]);
     }
