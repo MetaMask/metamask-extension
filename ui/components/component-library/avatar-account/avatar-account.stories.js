@@ -21,29 +21,21 @@ export default {
       options: Object.values(SIZES),
     },
     address: { control: 'text' },
+    avatarAccountType: {
+      control: 'select',
+      options: ['Jazzicon', 'BlockieIdenticon'],
+    },
   },
   args: {
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
     size: SIZES.MD,
+    avatarAccountType: 'Jazzicon',
   },
 };
 
 export const DefaultStory = (args) => (
-  <AvatarAccount {...args}>
-    <Jazzicon address={args.address} />
-  </AvatarAccount>
+  <AvatarAccount {...args}/>
 );
 
 DefaultStory.storyName = 'Default';
 
-export const BlockieStory = (args) => (
-  <AvatarAccount {...args}>
-    <BlockieIdenticon
-      address={args.address}
-      diameter={diameters[args.size]}
-      borderRadius="50%"
-    />
-  </AvatarAccount>
-);
-
-BlockieStory.storyName = 'Blockie';

@@ -1,5 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
+import Jazzicon from '../../ui/jazzicon/jazzicon.component';
+import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
 
@@ -13,14 +15,36 @@ export const diameters = {
   xl: '48',
 };
 
-export const AvatarAccount = ({ children, size, className, ...props }) => {
+export const avatarAccountTypes = ["Jazzicon", "BlockieIdenticon"]
+
+const getStyles = (diameter) => ({
+  height: diameter,
+  width: diameter,
+  borderRadius: diameter / 2,
+});
+
+export const AvatarAccount = ({
+  size,
+  address,
+  className,
+  avatarAccountType,
+  ...props
+}) => {
   return (
     <BaseAvatar
       size={size}
       className={classnames('avatar-account', className)}
       {...props}
     >
-      {children}
+      {avatarAccountType === 'Jazzicon' ? (
+        <Jazzicon address={address} style={getStyles(diameters[size])} />
+      ) : (
+        <BlockieIdenticon
+          address={address}
+          diameter={diameters[size]}
+          borderRadius="50%"
+        />
+      )}
     </BaseAvatar>
   );
 };
@@ -33,9 +57,9 @@ AvatarAccount.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
   /**
-   * The children to be rendered inside the AvatarAccount
+   * The type of the avatar to be rendered, it can render either a Jazzicon or a BlockIdenticon
    */
-  children: PropTypes.node,
+  avatarAccountType: PropTypes.oneOf(['Jazzicon', 'BlockieIdenticon']),
   /**
    * Address used for generating random image
    */
