@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
@@ -22,20 +23,22 @@ export default class SendAmountRow extends Component {
     this.props.updateSendAmount(newAmount);
   };
 
+  debouncedHandleChange = debounce(this.handleChange, 500);
+
   renderInput() {
     const { amount, inError, asset } = this.props;
 
     return asset.type === ASSET_TYPES.TOKEN ? (
       <UserPreferencedTokenInput
         error={inError}
-        onChange={this.handleChange}
+        onChange={this.debouncedHandleChange}
         token={asset.details}
         value={amount}
       />
     ) : (
       <UserPreferencedCurrencyInput
         error={inError}
-        onChange={this.handleChange}
+        onChange={this.debouncedHandleChange}
         hexValue={amount}
       />
     );
