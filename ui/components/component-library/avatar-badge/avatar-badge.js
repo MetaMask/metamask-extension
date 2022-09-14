@@ -12,9 +12,8 @@ export const AvatarWithBadge = ({
 }) => {
   return (
     <Box className="avatar-badge" {...props}>
-      {/* Jazzicon , Avatar Account */}
+      {/* Generally the AvatarAccount */}
       {children}
-
       <Box
         className={
           badgePosition === 'top'
@@ -22,6 +21,7 @@ export const AvatarWithBadge = ({
             : 'avatar-badge-token-position-bottom'
         }
       >
+        {/* Generally the AvatarNetwork at SIZES.XS */}
         {badge}
       </Box>
     </Box>
@@ -42,14 +42,6 @@ AvatarWithBadge.propTypes = {
    * The badge to be rendered inside the AvatarWithBadge
    */
   badge: PropTypes.object,
-  /**
-   * The required props to be passed to the badge
-   */
-  badgeProps: PropTypes.object,
-  /**
-   * Address used for generating random image
-   */
-  address: PropTypes.string,
   /**
    * Add custom css class
    */
