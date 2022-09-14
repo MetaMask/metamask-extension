@@ -19,11 +19,8 @@ import {
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
-
 } from '../pages/send/send.constants';
-import { 
-  isValidENSDomainName,
-} from '../helpers/utils/util';
+import { isValidENSDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,

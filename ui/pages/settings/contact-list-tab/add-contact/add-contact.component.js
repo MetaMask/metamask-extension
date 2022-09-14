@@ -4,10 +4,9 @@ import { debounce } from 'lodash';
 import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { 
-  getUdTlds,
+import {
   isValidENSDomainName,
-  isValidUnstoppableDomainName 
+  isValidUnstoppableDomainName,
 } from '../../../../helpers/utils/util';
 import DomainInput from '../../../send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
@@ -56,7 +55,8 @@ export default class AddContact extends PureComponent {
         const { unsResolution } = this.props;
         const scannedAddress =
           nextProps.qrCodeData.values.address.toLowerCase();
-        const currentAddress = ensResolution || unsResolution || this.state.ethAddress;
+        const currentAddress =
+          ensResolution || unsResolution || this.state.ethAddress;
         if (currentAddress.toLowerCase() !== scannedAddress) {
           this.setState({ input: scannedAddress });
           this.validate(scannedAddress);
@@ -109,9 +109,16 @@ export default class AddContact extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook, ensError, ensResolution, unsError, unsResolution } = this.props;
+    const {
+      history,
+      addToAddressBook,
+      ensError,
+      ensResolution,
+      unsError,
+      unsResolution,
+    } = this.props;
 
-    const errorToRender = ensError || unsError ||this.state.error;
+    const errorToRender = ensError || unsError || this.state.error;
 
     return (
       <div className="settings-page__content-row address-book__add-contact">

@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
+import Resolution from '@unstoppabledomains/resolution';
 import { isConfusing } from 'unicode-confusables';
 import { getCurrentChainId } from '../selectors';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { getAndParseUdCurrencies } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
-import Resolution from "@unstoppabledomains/resolution";
 import {
   UNS_COMMON_ERROR,
   UNS_CONFUSING_ERROR,
@@ -51,7 +51,10 @@ const slice = createSlice({
       if (error) {
         if (error === 'UnregisteredDomain') {
           state.error = UNS_COMMON_ERROR;
-        } else if (error === 'UnspecifiedCurrency' || error === 'RecordNotFound') {
+        } else if (
+          error === 'UnspecifiedCurrency' ||
+          error === 'RecordNotFound'
+        ) {
           state.error = UNS_CURRENCY_SPEC_ERROR;
         } else if (error === 'UnsupportedCurrency') {
           state.error = UNS_CURRENCY_ERROR;
@@ -87,7 +90,7 @@ const slice = createSlice({
     },
     updateUdTlds: (state, tlds) => {
       state.tlds = tlds;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
@@ -101,17 +104,13 @@ const slice = createSlice({
 const { reducer, actions } = slice;
 export default reducer;
 
-const {
-  unsLookup,
-  enableUnsLookup,
-  resetUnsResolution,
-  updateUdTlds,
-} = actions;
+const { unsLookup, enableUnsLookup, resetUnsResolution, updateUdTlds } =
+  actions;
 const SINGLE_CHAIN = 'SINGLE_CHAIN';
 const MULTI_CHAIN = 'MULTI_CHAIN';
 const NATIVE = 'NATIVE';
 
-export { resetUnsResolution, unsLookup, updateUdTlds }
+export { resetUnsResolution, unsLookup, updateUdTlds };
 
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
@@ -124,18 +123,21 @@ export function initializeUnsSlice() {
 
 export function prepareResolutionCall(unsName) {
   return async (dispatch, getState) => {
-    let state = getState();
+    const state = getState();
     let result;
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeUnsSlice());
     }
-    if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === NATIVE) {
+    if (
+      state.send.draftTransactions[state.send.currentTransactionUUID].asset
+        .type === NATIVE
+    ) {
       result = await determineChainType(state.metamask.nativeCurrency);
     } else {
       result = MULTI_CHAIN;
     }
     if (result === SINGLE_CHAIN) {
-      let object = await resolveUNS(unsName, state.metamask.nativeCurrency);
+      const object = await resolveUNS(unsName, state.metamask.nativeCurrency);
       await dispatch(
         unsLookup({
           unsName: object.unsName,
@@ -145,10 +147,23 @@ export function prepareResolutionCall(unsName) {
       );
     } else if (result === MULTI_CHAIN) {
       let object = {};
-      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === NATIVE) {
-        object = await resolveMultiChainUNS(unsName, state.metamask.nativeCurrency, state.metamask.nativeCurrency);
+      if (
+        state.send.draftTransactions[state.send.currentTransactionUUID].asset
+          .type === NATIVE
+      ) {
+        object = await resolveMultiChainUNS(
+          unsName,
+          state.metamask.nativeCurrency,
+          state.metamask.nativeCurrency,
+        );
       } else {
-        object = await resolveMultiChainUNS(unsName, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.symbol, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.standard);
+        object = await resolveMultiChainUNS(
+          unsName,
+          state.send.draftTransactions[state.send.currentTransactionUUID].asset
+            .details.symbol,
+          state.send.draftTransactions[state.send.currentTransactionUUID].asset
+            .details.standard,
+        );
       }
       await dispatch(
         unsLookup({
@@ -158,50 +173,52 @@ export function prepareResolutionCall(unsName) {
         }),
       );
     }
-  }
+  };
 }
 
 export async function swapToken(unsName, asset) {
-  let object = {}
+  let object = {};
   object.asset = asset;
-    object.chainType = await determineChainType(asset);
-    if (object.chainType === SINGLE_CHAIN) {
-      object = await resolveUNS(unsName, asset);
-    } else if (object.chainType === MULTI_CHAIN) {
-      object = await resolveMultiChainUNS(unsName, asset.details.symbol, asset.details.standard);
-    }
+  object.chainType = await determineChainType(asset);
+  if (object.chainType === SINGLE_CHAIN) {
+    object = await resolveUNS(unsName, asset);
+  } else if (object.chainType === MULTI_CHAIN) {
+    object = await resolveMultiChainUNS(
+      unsName,
+      asset.details.symbol,
+      asset.details.standard,
+    );
+  }
   return object;
 }
 
 async function resolveUNS(unsName, currency) {
-  let object = {}
+  const object = {};
   const resolution = new Resolution();
   object.unsName = unsName;
   object.currency = currency;
-  object.address = await resolution
-    .addr(unsName, currency)
-    .catch((err) => {
-      object.error = err.code
-    });
-  return object
-};
+  object.address = await resolution.addr(unsName, currency).catch((err) => {
+    object.error = err.code;
+  });
+  return object;
+}
 
 async function resolveMultiChainUNS(unsName, symbol, version) {
   const resolution = new Resolution();
-  let object = {}
+  const object = {};
   object.unsName = unsName;
   object.currency = symbol;
-  object.version = version;
+  object.verysion = version;
   object.address = await resolution
     .multiChainAddr(unsName, symbol, version)
     .catch((err) => {
-      object.error = err.code
+      object.error = err.code;
     });
   return object;
 }
 
 async function determineChainType(asset) {
-  if (typeof(asset) === 'object') {
+  if (typeof asset === 'object') {
     return MULTI_CHAIN;
   }
   const currencies = await getAndParseUdCurrencies();

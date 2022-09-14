@@ -122,7 +122,7 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress} = this.props;
+    const { recipientAddress, tryReverseResolveAddress } = this.props;
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);

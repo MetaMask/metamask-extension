@@ -127,11 +127,11 @@ export default class AddRecipient extends Component {
         addressBookEntryName || userInput,
         'ENS resolution',
       );
-    } else if (unsResolution && !recipient.error){
+    } else if (unsResolution && !recipient.error) {
       content = this.renderExplicitAddress(
         unsResolution,
         addressBookEntryName || userInput,
-        'UNS resolution'
+        'UNS resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -243,21 +243,25 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { ensError, recipient, ensWarning, unsError, unsWarning } = this.props;
+    const { ensError, recipient, ensWarning, unsError, unsWarning } =
+      this.props;
     const { t } = this.context;
     if (unsError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send_error-dialog">
-        {t(unsError ?? recipient.error)}
+          {t(unsError ?? recipient.error)}
         </Dialog>
       );
     } else if (unsWarning || recipient.warning) {
       return (
         <Dialog type="warning" className="send_error-dialog">
-        {t(unsWarning ?? recipient.warning)}
+          {t(unsWarning ?? recipient.warning)}
         </Dialog>
       );
-    } else if (ensError || (recipient.error && recipient.error !== 'required')) {
+    } else if (
+      ensError ||
+      (recipient.error && recipient.error !== 'required')
+    ) {
       return (
         <Dialog type="error" className="send__error-dialog">
           {t(ensError ?? recipient.error)}

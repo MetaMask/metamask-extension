@@ -19,10 +19,10 @@ export default class DomainInput extends Component {
     metricsEvent: PropTypes.func,
   };
 
-   udRequirements = {
+  udRequirements = {
     tlds: [],
     currencies: [],
-  }
+  };
 
   static propTypes = {
     className: PropTypes.string,
@@ -81,7 +81,7 @@ export default class DomainInput extends Component {
     if (internalSearch) {
       return null;
     }
-    if (this.udRequirements.tlds.length === 0){
+    if (this.udRequirements.tlds.length === 0) {
       this.udRequirements.tlds = await getUdTlds();
       updateUdTlds(this.udRequirements.tlds);
     }
@@ -104,8 +104,6 @@ export default class DomainInput extends Component {
     }
 
     return null;
-
-
   };
 
   render() {

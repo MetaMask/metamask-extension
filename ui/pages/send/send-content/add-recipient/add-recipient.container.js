@@ -20,12 +20,13 @@ import {
   getEnsError,
   getEnsWarning,
 } from '../../../../ducks/ens';
-import AddRecipient from './add-recipient.component';
-import { 
-  getUnsError, 
+import {
+  getUnsError,
   getUnsResolution,
-  getUnsWarning, 
+  getUnsWarning,
 } from '../../../../ducks/uns';
+import AddRecipient from './add-recipient.component';
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
