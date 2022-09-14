@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   word-wrap: break-word;
-  
+
 
   &--no-data {
     flex-direction: column;
@@ -17,12 +17,12 @@
     display: flex;
     height: 100%;
     flex-direction: column;
-    
+
 
     &__data {
       display: flex;
       flex-direction: column;
-      padding: 0px 4px 12px 24px;
+      padding: 0 4px 12px 24px;
 
       .typography {
         font-size: 14px;
