@@ -16,8 +16,10 @@ export function useTransactionInsightSnap(transaction, snapId) {
 
   useEffect(() => {
     async function fetchInsight() {
-      const d = await handleSnapRequest(snapId, undefined, 'onTransaction', {
-        params: [transaction],
+      const d = await handleSnapRequest({
+        snapId, origin: undefined, handler: 'onTransaction', request: {
+          params: [transaction],
+        }
       });
       setData(d);
     }

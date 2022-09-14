@@ -14,7 +14,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 
 export const SnapInsight = ({ transaction, snapId }) => {
-  const response = useTransactionInsightSnap(transaction, snapId);
+  const transactionInsight = useTransactionInsightSnap(transaction, snapId);
+
+  const insights = transactionInsight?.insights;
 
   console.log(snapId);
   console.log(response);
