@@ -41,6 +41,7 @@ import {
   PermissionController,
   SubjectMetadataController,
   PermissionsRequestNotFoundError,
+  ApprovalRequestNotFoundError,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
   NotificationController,
