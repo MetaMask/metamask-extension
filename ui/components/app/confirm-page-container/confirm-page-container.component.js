@@ -97,6 +97,7 @@ export default class ConfirmPageContainer extends Component {
     nativeCurrency: PropTypes.string,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    setApproveForAllArg: PropTypes.bool,
   };
 
   render() {
@@ -153,6 +154,7 @@ export default class ConfirmPageContainer extends Component {
       showBuyModal,
       isBuyableChain,
       networkIdentifier,
+      setApproveForAllArg,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -306,7 +308,7 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && (
+          {isSetApproveForAll && !setApproveForAllArg && (
             <Dialog type="error" className="confirm-page-container__dialog">
               {/*
                 TODO: https://github.com/MetaMask/metamask-extension/issues/15745

@@ -50,6 +50,7 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
+  SEPOLIA: 'sepolia',
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
@@ -78,6 +79,7 @@ export const BACKGROUND_COLORS = pick(COLORS, [
   'KOVAN',
   'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);
@@ -105,6 +107,7 @@ export const BORDER_COLORS = pick(COLORS, [
   'KOVAN',
   'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);

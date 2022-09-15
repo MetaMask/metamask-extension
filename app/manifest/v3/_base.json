@@ -47,7 +47,12 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
-  "host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
+  "host_permissions": [
+    "http://localhost:8545/",
+    "file://*/*",
+    "http://*/*",
+    "https://*/*"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -61,18 +66,13 @@
   "manifest_version": 3,
   "name": "__MSG_appName__",
   "permissions": [
-    "storage",
-    "scripting",
-    "unlimitedStorage",
-    "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
     "activeTab",
-    "webRequest",
-    "*://*.eth/",
-    "notifications"
+    "clipboardWrite",
+    "notifications",
+    "scripting",
+    "storage",
+    "unlimitedStorage",
+    "webRequest"
   ],
   "short_name": "__MSG_appName__"
 }

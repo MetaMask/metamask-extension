@@ -23,6 +23,7 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 
 import {
@@ -30,6 +31,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
+  hidePortfolioTooltip,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
@@ -49,6 +51,8 @@ import {
   setThreeBoxLastUpdated,
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
+  getPortfolioTooltipWasShownInThisSession,
+  setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -149,6 +153,9 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showPortfolioTooltip: getShowPortfolioTooltip(state),
+    portfolioTooltipWasShownInThisSession:
+      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
@@ -185,6 +192,7 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -204,6 +212,8 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
+  setPortfolioTooltipWasShownInThisSession: () =>
+    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

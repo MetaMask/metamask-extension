@@ -11,7 +11,7 @@ import {
   getShouldShowFiat,
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
-  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getDisplayDetectedTokensLink,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -66,9 +66,7 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
-    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  );
+  const displayDetectedTokensLink = useSelector(getDisplayDetectedTokensLink);
 
   return (
     <>
@@ -96,10 +94,9 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {detectedTokens.length > 0 &&
-        !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
-        )}
+      {detectedTokens.length > 0 && displayDetectedTokensLink && (
+        <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
+      )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography

@@ -551,8 +551,7 @@ describe('Transaction Controller', function () {
       await txController.createCancelTransaction(
         txMeta.id,
         {},
-        12345,
-        undefined,
+        { actionId: 12345 },
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;

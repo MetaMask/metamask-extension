@@ -87,7 +87,7 @@ describe('DetectedTokenDetails', () => {
     fireEvent.click(screen.getByText('+ 10 more'));
     expect(
       screen.getByText(
-        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1Inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
+        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
   });
