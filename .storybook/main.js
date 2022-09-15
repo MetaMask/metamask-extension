@@ -22,10 +22,6 @@ module.exports = {
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
   env: async (config) => {
-    console.log(
-      'ICON_NAMES: await generateIconNames()',
-      await generateIconNames(),
-    );
     return {
       ...config,
       ICON_NAMES: await generateIconNames(),

@@ -39,7 +39,7 @@ Icon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  name: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  name: PropTypes.string.isRequired,
   /**
    * The size of the Icon.
    * Possible values could be 'SIZES.XXS', 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL',
