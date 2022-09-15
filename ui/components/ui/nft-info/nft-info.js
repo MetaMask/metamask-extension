@@ -8,10 +8,9 @@ import {
   DISPLAY,
   FONT_WEIGHT,
   TYPOGRAPHY,
-  TEXT_ALIGN,
-  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
+import Button from '../button';
 
 export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
@@ -22,11 +21,7 @@ export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
       className="nft-info"
       backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
     >
-      <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-        className="nft-info__content"
-      >
+      <Box display={DISPLAY.FLEX} className="nft-info__content">
         <Box margin={4}>
           <Identicon address={tokenAddress} diameter={24} />
         </Box>
@@ -35,29 +30,28 @@ export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
             fontWeight={FONT_WEIGHT.BOLD}
             variant={TYPOGRAPHY.H6}
             marginTop={4}
-            boxProps={{ display: DISPLAY.INLINE_BLOCK }}
           >
             {tokenName}
           </Typography>
           <Typography
             variant={TYPOGRAPHY.H7}
-            display={DISPLAY.FLEX}
             marginBottom={4}
             color={COLORS.TEXT_ALTERNATIVE}
           >
             {t('tokenId')} #{tokenId}
           </Typography>
         </Box>
-        <Box
-          textAlign={TEXT_ALIGN.END}
-          marginTop={4}
-          marginRight={4}
-          className="nft-info__content__view"
-        >
-          <button className="nft-info__content__view__button" type="link">
+      </Box>
+      <Box marginTop={4} marginRight={4}>
+        <Button className="nft-info__button" type="link">
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            marginTop={0}
+            color={COLORS.PRIMARY_DEFAULT}
+          >
             {t('view')}
-          </button>
-        </Box>
+          </Typography>
+        </Button>
       </Box>
     </Box>
   );

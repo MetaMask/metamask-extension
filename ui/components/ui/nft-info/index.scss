@@ -1,14 +1,9 @@
 .nft-info {
   &__content {
     width: 100%;
+  }
 
-    &__view {
-      flex-grow: 1;
-
-      &__button {
-        background: none;
-        color: var(--color-primary-default);
-      }
-    }
+  &__button {
+    padding: 0;
   }
 }
