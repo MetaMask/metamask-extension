@@ -24,6 +24,7 @@ export const ValidColors = [
   COLORS.ERROR_INVERSE,
   COLORS.SUCCESS_DEFAULT,
   COLORS.SUCCESS_INVERSE,
+  COLORS.WARNING_DEFAULT,
   COLORS.WARNING_INVERSE,
   COLORS.INFO_DEFAULT,
   COLORS.INFO_INVERSE,
@@ -45,6 +46,7 @@ export const ValidTags = [
   'span',
   'strong',
   'ul',
+  'label',
 ];
 
 export default function Typography({

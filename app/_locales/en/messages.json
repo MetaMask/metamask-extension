@@ -328,7 +328,7 @@
     "message": "Approve spend limit"
   },
   "approveAllTokensTitle": {
-    "message": "Give permission to access all of your $1?",
+    "message": "Allow access to and transfer of all your $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
@@ -368,6 +368,9 @@
   },
   "assets": {
     "message": "Assets"
+  },
+  "attemptSendingAssets": {
+    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
   "attemptToCancel": {
     "message": "Attempt to cancel?"
@@ -429,6 +432,9 @@
   "basic": {
     "message": "Basic"
   },
+  "beCareful": {
+    "message": "Be careful"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
@@ -444,6 +450,9 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
+  },
+  "betaPortfolioSite": {
+    "message": "beta portfolio site"
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -580,6 +589,9 @@
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
+  "clickToManuallyAdd": {
+    "message": "Click here to manually add the tokens."
+  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -597,7 +609,14 @@
     "message": "Confirm"
   },
   "confirmPageDialogSetApprovalForAll": {
-    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder1": {
+    "message": "all the NFTs on this contract"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder2": {
+    "message": "Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -704,6 +723,9 @@
   "connectingToRopsten": {
     "message": "Connecting to Ropsten test network"
   },
+  "connectingToSepolia": {
+    "message": "Connecting to Sepolia test network"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -737,8 +759,20 @@
   "contractDeployment": {
     "message": "Contract deployment"
   },
+  "contractDescription": {
+    "message": "To protect yourself against scammers, take a moment to verify contract details."
+  },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractRequestingSpendingCap": {
+    "message": "Contract requesting spending cap"
+  },
+  "contractTitle": {
+    "message": "Contract details"
+  },
+  "contractToken": {
+    "message": "Token contract"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -831,6 +865,9 @@
   "customSpendLimit": {
     "message": "Custom spend limit"
   },
+  "customSpendingCap": {
+    "message": "Custom spending cap"
+  },
   "customToken": {
     "message": "Custom token"
   },
@@ -838,7 +875,7 @@
     "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetwork": {
-    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
     "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
@@ -868,6 +905,9 @@
   },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
+  },
+  "dataBackupSeemsCorrupt": {
+    "message": "Can not restore your data. The file appears to be corrupt."
   },
   "dataHex": {
     "message": "Hex"
@@ -913,6 +953,12 @@
   "depositCrypto": {
     "message": "Deposit $1",
     "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "deprecatedTestNetworksLink": {
+    "message": "Learn more"
+  },
+  "deprecatedTestNetworksMsg": {
+    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
   },
   "description": {
     "message": "Description"
@@ -1742,6 +1788,9 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keepTapsOnTokens": {
+    "message": "to keep tabs on your tokens and NFTs across accounts and networks."
+  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2035,6 +2084,10 @@
   "name": {
     "message": "Name"
   },
+  "nativeToken": {
+    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "description": "$1 represents the name of the native token on the current network"
+  },
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -2086,11 +2139,11 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNameGoerli": {
+    "message": "Goerli"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2123,6 +2176,9 @@
   },
   "nevermind": {
     "message": "Nevermind"
+  },
+  "new": {
+    "message": "New!"
   },
   "newAccount": {
     "message": "New account"
@@ -2261,7 +2317,7 @@
     "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
   },
   "notifications10DescriptionThree": {
-    "message": "Token detection feature is ON by default. But you can disable it from Settings."
+    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
   },
   "notifications10DescriptionTwo": {
     "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
@@ -2293,6 +2349,16 @@
   },
   "notifications13Title": {
     "message": "Add Popular Networks"
+  },
+  "notifications14ActionText": {
+    "message": "Show backup settings"
+  },
+  "notifications14Description": {
+    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
+  },
+  "notifications14Title": {
+    "message": "3Box Deprecation"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
@@ -2396,9 +2462,12 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
-  "numberOfNewTokensDetected": {
+  "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
+  },
+  "numberOfNewTokensDetectedSingular": {
+    "message": "1 new token found in this account"
   },
   "ofTextNofM": {
     "message": "of"
@@ -2478,6 +2547,9 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openInBlockExplorer": {
+    "message": "Open in block explorer"
   },
   "optional": {
     "message": "Optional"
@@ -2577,6 +2649,10 @@
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
   },
+  "permission_manageBip32Keys": {
+    "message": "Control your accounts and assets under $1 ($2).",
+    "description": "The description for the `snap_getBip32Entropy_*` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+  },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2608,6 +2684,9 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
+  },
+  "portfolioSite": {
+    "message": "Portfolio site"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -2834,6 +2913,9 @@
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
+  "revokeSpendingCapTooltipText": {
+    "message": "This contract will be unable to spend any more of your current or future tokens."
+  },
   "rinkeby": {
     "message": "Rinkeby test network"
   },
@@ -3013,6 +3095,9 @@
   "sendingToTokenContractWarning": {
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sepolia": {
+    "message": "Sepolia test network"
   },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"
@@ -3416,9 +3501,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3582,9 +3664,6 @@
   "swapQuoteDetails": {
     "message": "Quote details"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
-  },
   "swapQuoteSource": {
     "message": "Quote source"
   },
@@ -3615,8 +3694,8 @@
   "swapReviewSwap": {
     "message": "Review swap"
   },
-  "swapSearchForAToken": {
-    "message": "Search for a token"
+  "swapSearchNameOrAddress": {
+    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"
@@ -3636,6 +3715,9 @@
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageTooltip": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSource": {
     "message": "Liquidity source"
@@ -3746,6 +3828,9 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
+  "switchedTo": {
+    "message": "You have switched to"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -3812,6 +3897,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thingsToKeep": {
+    "message": "Things to keep in mind:"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3862,6 +3950,9 @@
   "tokenDetectionDescription": {
     "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
+  "tokenFoundTitle": {
+    "message": "1 new token found"
+  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -3870,6 +3961,9 @@
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
+  },
+  "tokenShowUp": {
+    "message": "Your tokens may not automatically show up in your wallet."
   },
   "tokenSymbol": {
     "message": "Token symbol"
@@ -4011,6 +4105,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryOur": {
+    "message": "Try our"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
@@ -4188,6 +4285,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningTooltipText": {
+    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"

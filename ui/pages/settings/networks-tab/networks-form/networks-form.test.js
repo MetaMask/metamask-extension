@@ -4,7 +4,10 @@ import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
-import { MAINNET, getRpcUrl } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TYPES,
+  getRpcUrl,
+} from '../../../../../shared/constants/network';
 import NetworksForm from '.';
 
 const renderComponent = (props) => {
@@ -169,7 +172,10 @@ describe('NetworkForm Component', () => {
 
     await fireEvent.change(rpcUrlField, {
       target: {
-        value: getRpcUrl({ network: MAINNET, excludeProjectId: true }),
+        value: getRpcUrl({
+          network: NETWORK_TYPES.MAINNET,
+          excludeProjectId: true,
+        }),
       },
     });
 

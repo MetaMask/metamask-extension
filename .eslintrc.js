@@ -1,8 +1,11 @@
 const path = require('path');
+
 const { version: reactVersion } = require('react/package.json');
 
 module.exports = {
   root: true,
+  // Suggested addition from the storybook 6.5 update
+  extends: ['plugin:storybook/recommended'],
   // Ignore files which are also in .prettierignore
   ignorePatterns: [
     'app/vendor/**',
@@ -22,7 +25,6 @@ module.exports = {
      * because we do not allow a file to use two different styles for specifying
      * imports and exports (however theoretically possible it may be).
      */
-
     {
       /**
        * Modules (CommonJS module syntax)
@@ -128,11 +130,9 @@ module.exports = {
         'import/namespace': 'off',
         'import/default': 'off',
         'import/no-named-as-default-member': 'off',
-
         // Disabled due to incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
         '@typescript-eslint/consistent-type-definitions': 'off',
-
         // Modified to include the 'ignoreRestSiblings' option.
         // TODO: Migrate this rule change back into `@metamask/eslint-config`
         '@typescript-eslint/no-unused-vars': [
@@ -165,7 +165,6 @@ module.exports = {
         sourceType: 'script',
       },
     },
-
     /**
      * == Everything else ==
      *
@@ -198,7 +197,10 @@ module.exports = {
         'react/jsx-boolean-value': 'error',
         'react/jsx-curly-brace-presence': [
           'error',
-          { props: 'never', children: 'never' },
+          {
+            props: 'never',
+            children: 'never',
+          },
         ],
         'react/no-deprecated': 'error',
         'react/default-props-match-prop-types': 'error',
@@ -276,15 +278,20 @@ module.exports = {
         'import/named': 'off',
         'jest/no-large-snapshots': [
           'error',
-          { maxSize: 50, inlineMaxSize: 50 },
+          {
+            maxSize: 50,
+            inlineMaxSize: 50,
+          },
         ],
         'jest/no-restricted-matchers': 'off',
+
         /**
          * jest/prefer-to-be is a new rule that was disabled to reduce churn
          * when upgrading eslint. It should be considered for use and enabled
          * in a future PR if agreeable.
          */
         'jest/prefer-to-be': 'off',
+
         /**
          * jest/lowercase-name was renamed to jest/prefer-lowercase-title this
          * change was made to essentially retain the same state as the original
@@ -292,7 +299,12 @@ module.exports = {
          * two lines can be deleted.
          */
         'jest/lowercase-name': 'off',
-        'jest/prefer-lowercase-title': ['error', { ignore: ['describe'] }],
+        'jest/prefer-lowercase-title': [
+          'error',
+          {
+            ignore: ['describe'],
+          },
+        ],
       },
     },
     /**
@@ -301,7 +313,12 @@ module.exports = {
     {
       files: ['app/scripts/migrations/*.js', '**/*.stories.js'],
       rules: {
-        'import/no-anonymous-default-export': ['error', { allowObject: true }],
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowObject: true,
+          },
+        ],
       },
     },
     /**
@@ -347,7 +364,13 @@ module.exports = {
     {
       files: ['ui/pages/settings/*.js'],
       rules: {
-        'sort-keys': ['error', 'asc', { natural: true }],
+        'sort-keys': [
+          'error',
+          'asc',
+          {
+            natural: true,
+          },
+        ],
       },
     },
   ],

@@ -71,6 +71,17 @@ const state = {
       viewOnly: true,
     },
     {
+      blockExplorerUrl: 'https://sepolia.etherscan.io',
+      chainId: '0xaa36a7',
+      iconColor: 'var(--sepolia)',
+      isATestNetwork: true,
+      labelKey: 'sepolia',
+      providerType: 'sepolia',
+      rpcUrl: 'https://sepolia.infura.io/v3/',
+      ticker: 'ETH',
+      viewOnly: true,
+    },
+    {
       blockExplorerUrl: '',
       chainId: '0x539',
       iconColor: 'var(--localhost)',
@@ -1310,6 +1321,7 @@ const state = {
       rinkeby: null,
       kovan: null,
       goerli: null,
+      sepolia: null,
       mainnet: 10902989,
     },
     subjects: {
