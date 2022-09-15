@@ -1364,11 +1364,14 @@ const slice = createSlice({
             udTlds,
           } = action.payload;
           let validUDDomain = false;
-          udTlds.forEach((tld) => {
-            if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
-              validUDDomain = true;
-            }
-          })
+          try {
+            udTlds.payload.forEach((tld) => {
+              if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
+                validUDDomain = true;
+              }
+            })
+          } catch {
+          }
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1402,7 +1405,6 @@ const slice = createSlice({
               KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
             draftTransaction.recipient.warning = null;
-            console.log('PING PING')
           }
         }
       }
