@@ -16,6 +16,7 @@ export default function NftInfoSetApprovalForAll({
   assetName,
   tokenAddress,
   total,
+  isERC721,
 }) {
   const t = useContext(I18nContext);
 
@@ -34,12 +35,10 @@ export default function NftInfoSetApprovalForAll({
           {t('nftCollectionName')}:
         </Typography>
         <Box display={DISPLAY.FLEX}>
-          <Box marginBottom={4}>
-            <NftCollectionImage
-              assetName={assetName}
-              tokenAddress={tokenAddress}
-            />
-          </Box>
+          <NftCollectionImage
+            assetName={assetName}
+            tokenAddress={tokenAddress}
+          />
           <Typography
             variant={TYPOGRAPHY.H5}
             display={DISPLAY.FLEX}
@@ -50,45 +49,50 @@ export default function NftInfoSetApprovalForAll({
             {assetName ?? t('unknownCollection')}
           </Typography>
         </Box>
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
-          marginTop={0}
-        >
-          {t('numberOfNfts')}:
-        </Typography>
-        <Box display={DISPLAY.FLEX}>
-          <Tooltip
-            position="top"
-            html={
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.TEXT_ALTERNATIVE}
-                className="nft-info-setApproveForAll__tooltip"
+        {isERC721 && (
+          <Box marginTop={4}>
+            <Typography
+              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TYPOGRAPHY.H6}
+              marginTop={0}
+            >
+              {t('numberOfNfts')}:
+            </Typography>
+            <Box display={DISPLAY.FLEX}>
+              <Tooltip
+                position="top"
+                html={
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    color={COLORS.TEXT_ALTERNATIVE}
+                    className="nft-info-setApproveForAll__tooltip"
+                  >
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontWeight={FONT_WEIGHT.BOLD}
+                      color={COLORS.ERROR_DEFAULT}
+                    >
+                      <i className="fa fa-exclamation-triangle" />{' '}
+                      {t('beCareful')}
+                    </Typography>
+                    {t('nftInfoTooltipText')}
+                  </Typography>
+                }
               >
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  color={COLORS.ERROR_DEFAULT}
-                >
-                  <i className="fa fa-exclamation-triangle" /> {t('beCareful')}
-                </Typography>
-                {t('nftInfoTooltipText')}
+                <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__tooltip__icon" />
+              </Tooltip>
+              <Typography
+                variant={TYPOGRAPHY.H5}
+                display={DISPLAY.FLEX}
+                color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+                marginLeft={2}
+              >
+                {t('numberOfNFTsFromCollection', [total])}
               </Typography>
-            }
-          >
-            <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__tooltip__icon" />
-          </Tooltip>
-          <Typography
-            variant={TYPOGRAPHY.H5}
-            display={DISPLAY.FLEX}
-            color={COLORS.TEXT_ALTERNATIVE}
-            marginTop={0}
-            marginLeft={2}
-          >
-            {t('numberOfNFTsFromCollection', [total])}
-          </Typography>
-        </Box>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );
@@ -98,4 +102,5 @@ NftInfoSetApprovalForAll.propTypes = {
   assetName: PropTypes.string,
   tokenAddress: PropTypes.string,
   total: PropTypes.number,
+  isERC721: PropTypes.bool,
 };

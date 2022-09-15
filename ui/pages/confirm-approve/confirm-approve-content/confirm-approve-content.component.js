@@ -505,8 +505,9 @@ export default class ConfirmApproveContent extends Component {
   }
 
   async componentDidMount() {
-    const { tokenAddress, userAddress, isSetApproveForAll } = this.props;
-    if (isSetApproveForAll) {
+    const { tokenAddress, userAddress, isSetApproveForAll, assetStandard } =
+      this.props;
+    if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
       const tokenBalance = await fetchTokenBalance(tokenAddress, userAddress);
       this.setState({
         collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
@@ -608,6 +609,7 @@ export default class ConfirmApproveContent extends Component {
               assetName={assetName}
               tokenAddress={tokenAddress}
               total={this.state.collectionBalance}
+              isERC721={assetStandard === TokenStandard.ERC721}
             />
           </Box>
         ) : null}

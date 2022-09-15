@@ -14,11 +14,15 @@ export default {
     total: {
       control: { type: 'number' },
     },
+    isERC721: {
+      control: { type: 'boolean' }
+    }
   },
   args: {
     assetName: 'Bored Ape Yatch Club',
     tokenAddress: '0xa3aee8bce55beea1951ef834b99f3ac60d1abeeb',
     total: 4,
+    isERC721: true,
   },
 };
 
