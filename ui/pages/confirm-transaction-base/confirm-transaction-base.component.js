@@ -70,7 +70,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
-
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
 import { DropdownTab, Tab } from '../../components/ui/tabs';
