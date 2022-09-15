@@ -2344,6 +2344,13 @@
   "notifications14Title": {
     "message": "3Box Deprecation"
   },
+  "notifications15Description": {
+    "message": "There's no action required from you, so keep using your wallet as usual. Be aware of potential scams around the Merge.",
+    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
+  },
+  "notifications15Title": {
+    "message": "The Ethereum Merge is here!"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
