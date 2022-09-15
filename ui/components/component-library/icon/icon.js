@@ -54,6 +54,11 @@ Icon.propTypes = {
    */
   className: PropTypes.string,
   /**
+   * Addition style properties to apply to the icon.
+   * The Icon component uses inline styles to apply the icon's mask-image so be wary of overriding
+   */
+  style: PropTypes.style,
+  /**
    * Icon accepts all the props from Box
    */
   ...Box.propTypes,
