@@ -23,27 +23,25 @@ describe('DetectedToken', () => {
     expect(screen.getByText('0xc00...6888')).toBeInTheDocument();
     expect(screen.getByText('0xfff...26DB')).toBeInTheDocument();
     expect(screen.getAllByText('From token lists:')).toHaveLength(3);
-    expect(screen.getByText('coinGecko, oneInch')).toBeInTheDocument();
-    expect(screen.getByText('+ 3 more')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('+ 3 more'));
+    expect(screen.getByText('Aave, Bancor')).toBeInTheDocument();
+    expect(screen.getByText('+ 9 more')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('+ 9 more'));
     expect(
-      screen.getByText('coinGecko, oneInch, paraswap, zapper, zerion.'),
+      screen.getByText(
+        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Zapper, Zerion, 0x.',
+      ),
     ).toBeInTheDocument();
-    expect(screen.getByText('bancor, cmc')).toBeInTheDocument();
+    expect(screen.getByText('Bancor, CMC')).toBeInTheDocument();
     expect(screen.getByText('+ 8 more')).toBeInTheDocument();
     fireEvent.click(screen.getByText('+ 8 more'));
     expect(
       screen.getByText(
-        'bancor, cmc, cryptocom, coinGecko, oneInch, paraswap, pmm, zapper, zerion, zeroEx.',
+        'Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('aave, cmc')).toBeInTheDocument();
-    expect(screen.getByText('+ 5 more')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('+ 5 more'));
-    expect(
-      screen.getByText(
-        'aave, cmc, coinGecko, oneInch, paraswap, zapper, zerion.',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText('CoinGecko, 1inch')).toBeInTheDocument();
+    expect(screen.getByText('+ 1 more')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('+ 1 more'));
+    expect(screen.getByText('CoinGecko, 1inch, Lifi.')).toBeInTheDocument();
   });
 });
