@@ -37,7 +37,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Icon',
-  // id: __filename, not sure why this breaks the story?
+  id: __filename,
   component: Icon,
   parameters: {
     docs: {
