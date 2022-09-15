@@ -2,25 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { PRIMARY_SECONDARY_BUTTON_SIZES } from '../../../helpers/constants/design-system';
+import {
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+} from '../../../helpers/constants/design-system';
 
 import { ButtonBase } from '../button-base';
 
 export const ButtonPrimary = ({
+  type = BUTTON_TYPES.NORMAL,
   className,
   children,
   leftIcon,
   rightIcon,
-  isDanger,
-  isDisabled,
   ...props
 }) => {
   return (
     <ButtonBase
-      className={classnames(className, 'mm-button-primary', {
-        [`mm-button-primary--danger`]: Boolean(isDanger),
-        [`mm-button-primary--disabled`]: Boolean(isDisabled),
-      })}
+      className={classnames(
+        className,
+        'mm-button-primary',
+        `mm-button-primary--${type}`,
+      )}
       {...props}
     >
       {leftIcon}
@@ -32,11 +35,16 @@ export const ButtonPrimary = ({
 
 ButtonPrimary.propTypes = {
   /**
-   * The size of the ButtonBase.
-   * Possible values could be 'BUTTON_SIZES.SM', 'BUTTON_SIZES.MD', 'BUTTON_SIZES.LG', 'BUTTON_SIZES.XL',
+   * The size of the ButtonPrimary.
+   * Possible values could be 'BUTTON_SIZES.SM', 'BUTTON_SIZES.MD', 'BUTTON_SIZES.LG',
    * Default value is 'BUTTON_SIZES.MD'.
    */
-  size: PropTypes.oneOf(Object.values(PRIMARY_SECONDARY_BUTTON_SIZES)),
+  size: PropTypes.oneOf(Object.values(BUTTON_SIZES)),
+  /**
+   * Possible values could be 'BUTTON_TYPES.NORMAL', 'BUTTON_TYPES.DANGER'
+   * Default value is 'BUTTON_TYPES.NORMAL'.
+   */
+  type: PropTypes.oneOf(Object.values(BUTTON_TYPES)),
   /**
    * An additional className to apply to the button
    */
@@ -46,21 +54,13 @@ ButtonPrimary.propTypes = {
    */
   children: PropTypes.node,
   /**
-   * Boolean to change button color to danger(red)
-   */
-  isDanger: PropTypes.bool,
-  /**
    * Add icon to left side of button text
    */
   leftIcon: PropTypes.node,
   /**
    * Add icon to right side of button text
    */
-  right: PropTypes.node,
-  /**
-   * Boolean to disable button
-   */
-  isDisabled: PropTypes.bool,
+  rightIcon: PropTypes.node,
   /**
    * ButtonPrimary accepts all the props from ButtonBase
    */

@@ -3,6 +3,7 @@ import {
   BUTTON_SIZES,
   ALIGN_ITEMS,
   DISPLAY,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
@@ -41,15 +42,26 @@ export default {
       control: 'select',
       options: Object.values(BUTTON_SIZES),
     },
-    className: {
-      control: 'text',
-    },
-    isBlock: {
-      control: 'boolean',
-    },
     as: {
       control: 'select',
       options: ['button', 'a'],
+    },
+    disabled: {
+      control: 'boolean',
+    },
+    loading: {
+      control: 'boolean',
+    },
+    children: {
+      control: 'text',
+    },
+    className: {
+      control: 'text',
+    },
+    display: {
+      options: Object.values(DISPLAY),
+      control: 'select',
+      table: { category: 'box props' },
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -80,6 +92,8 @@ export default {
 export const DefaultStory = (args) => (
   <>
     <ButtonBase {...args} />
+    <ButtonBase as="a" href="#" {...args} />
+    <ButtonBase display={DISPLAY.BLOCK} {...args} />
   </>
 );
 
@@ -87,9 +101,22 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonBase {...args} size={BUTTON_SIZES.XS} />
+    <ButtonBase {...args} size={BUTTON_SIZES.ZERO_PADDING} />
     <ButtonBase {...args} size={BUTTON_SIZES.SM} />
     <ButtonBase {...args} size={BUTTON_SIZES.MD} />
     <ButtonBase {...args} size={BUTTON_SIZES.LG} />
   </Box>
 );
+
+export const FullWidth = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <ButtonBase {...args} size={BUTTON_SIZES.ZERO_PADDING} />
+    <ButtonBase {...args} size={BUTTON_SIZES.SM} />
+    <ButtonBase {...args} size={BUTTON_SIZES.MD} />
+    <ButtonBase {...args} size={BUTTON_SIZES.LG} />
+  </Box>
+);
+
+FullWidth.args = {
+  display: DISPLAY.BLOCK,
+};

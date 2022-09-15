@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-  PRIMARY_SECONDARY_BUTTON_SIZES,
+  BUTTON_SIZES,
+  BUTTON_TYPES,
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
@@ -29,7 +30,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/Button/ButtonPrimary',
+  title: 'Components/ComponentLibrary/ButtonPrimary',
   id: __filename,
   component: ButtonPrimary,
   parameters: {
@@ -40,22 +41,25 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(PRIMARY_SECONDARY_BUTTON_SIZES),
+      options: Object.values(BUTTON_SIZES),
+    },
+    type: {
+      control: 'select',
+      options: Object.values(BUTTON_TYPES),
     },
     className: {
       control: 'text',
     },
-    isBlock: {
+    disabled: {
       control: 'boolean',
     },
-    isDanger: {
+    loading: {
       control: 'boolean',
     },
-    isDisabled: {
-      control: 'boolean',
-    },
-    isLoading: {
-      control: 'boolean',
+    display: {
+      options: Object.values(DISPLAY),
+      control: 'select',
+      table: { category: 'box props' },
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -105,7 +109,7 @@ export const DefaultStory = (args) => (
       }
     />
 
-    <ButtonPrimary {...args} display={DISPLAY.BLOCK} />
+    <ButtonPrimary {...args} />
   </>
 );
 
@@ -113,9 +117,9 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonPrimary {...args} size={PRIMARY_SECONDARY_BUTTON_SIZES.SM} />
-    <ButtonPrimary {...args} size={PRIMARY_SECONDARY_BUTTON_SIZES.MD} />
-    <ButtonPrimary {...args} size={PRIMARY_SECONDARY_BUTTON_SIZES.LG} />
+    <ButtonPrimary {...args} size={BUTTON_SIZES.SM} />
+    <ButtonPrimary {...args} size={BUTTON_SIZES.MD} />
+    <ButtonPrimary {...args} size={BUTTON_SIZES.LG} />
   </Box>
 );
 

@@ -10,8 +10,6 @@
   vertical-align: middle;
   user-select: none;
 
-
-
   &:active,
   &:hover {
     color: var(--color-text-default);
@@ -21,7 +19,7 @@
     height: 100%;
   }
 
-  &-size--xs {
+  &-size--zero-padding {
     height: 1.375rem;
     background-color: transparent;
     border-radius: 0;
@@ -39,18 +37,18 @@
     height: 3rem;
   }
 
-
-  &--block {
-    display: block;
-    width: 100%;
-  }
-
   &--loading {
-    user-select: none;
+    cursor: not-allowed;
   }
 
   &--loading .mm-button--content {
     color: transparent;
+  }
+
+  &--disabled,
+  :disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 }
 
@@ -76,3 +74,8 @@
   to { transform: rotate(360deg); }
 }
 
+
+
+.mm-button.box--display-block {
+  width: 100%;
+}

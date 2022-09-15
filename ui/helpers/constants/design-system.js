@@ -182,21 +182,15 @@ export const SIZES = {
 };
 
 export const BUTTON_SIZES = {
-  XS: 'xs',
-  SM: 'sm',
-  MD: 'md',
-  LG: 'lg',
-};
-
-export const PRIMARY_SECONDARY_BUTTON_SIZES = {
+  ZERO_PADDING: 'zero-padding',
   SM: 'sm',
   MD: 'md',
   LG: 'lg',
 };
 
 export const BUTTON_TYPES = {
-  BASE: 'base',
-  PRIMARY: 'primary',
+  NORMAL: 'normal',
+  DANGER: 'danger',
 };
 
 export const BORDER_STYLE = {

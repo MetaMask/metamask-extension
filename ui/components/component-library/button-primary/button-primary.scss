@@ -28,10 +28,4 @@
       background-color: var(--color-error-alternative);
     }
   }
-
-  &--disabled,
-  :disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
 }

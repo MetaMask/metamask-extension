@@ -17,18 +17,18 @@ export const ButtonBase = ({
   size = BUTTON_SIZES.MD,
   as = 'button',
   children,
-  isBlock,
-  isLoading,
+  loading,
+  disabled,
   ...props
 }) => {
   return (
     <Box
       as={as}
-      paddingLeft={size === BUTTON_SIZES.XS ? 0 : 4}
-      paddingRight={size === BUTTON_SIZES.XS ? 0 : 4}
+      paddingLeft={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
+      paddingRight={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
       className={classnames(className, 'mm-button', `mm-button-size--${size}`, {
-        [`mm-button--block`]: Boolean(isBlock),
-        [`mm-button--loading`]: Boolean(isLoading),
+        [`mm-button--loading`]: Boolean(loading),
+        [`mm-button--disabled`]: Boolean(disabled),
       })}
       {...props}
     >
@@ -42,7 +42,7 @@ export const ButtonBase = ({
       >
         {children}
       </Text>
-      {isLoading && <div className="spinner"></div>}
+      {loading && <div className="spinner"></div>}
     </Box>
   );
 };
@@ -58,13 +58,13 @@ ButtonBase.propTypes = {
    */
   as: PropTypes.string,
   /**
-   * isBlock is boolean prop that will set button to full width when true
-   */
-  isBlock: PropTypes.bool,
-  /**
    * Boolean to show loading wheel in button
    */
-  isLoading: PropTypes.bool,
+  loading: PropTypes.bool,
+  /**
+   * Boolean to disable button
+   */
+  disabled: PropTypes.bool,
   /**
    * An additional className to apply to the icon.
    */

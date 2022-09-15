@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { ButtonPrimary } from './primary-button';
+import { ButtonPrimary } from './button-primary';
 
 describe('ButtonPrimary', () => {
   it('should render correctly', () => {
