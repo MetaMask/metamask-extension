@@ -667,10 +667,14 @@ export const initializeSendState = createAsyncThunk(
       gasLimit =
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
 <<<<<<< HEAD
+<<<<<<< HEAD
           draftTransaction.asset.type === ASSET_TYPES.NFT
 =======
           draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
 >>>>>>> 463f2a07a (Removed try-catch in send.js)
+=======
+        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+>>>>>>> d8d0951b4 (Replaces try catch in send.js)
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -1368,11 +1372,14 @@ const slice = createSlice({
             udTlds,
           } = action.payload;
           let validUDDomain = false;
-          udTlds.payload.forEach((tld) => {
-            if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
-              validUDDomain = true;
-            }
-          })
+          try {
+            udTlds.payload.forEach((tld) => {
+              if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
+                validUDDomain = true;
+              }
+            })
+          } catch {
+          }
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1474,7 +1481,7 @@ const slice = createSlice({
             draftTransaction &&
             draftTransaction.fromAccount &&
             draftTransaction.fromAccount.address ===
-            action.payload.account.address
+              action.payload.account.address
           ) {
             draftTransaction.fromAccount.balance =
               action.payload.account.balance;
@@ -1800,10 +1807,10 @@ export function editExistingTransaction(assetType, transactionId) {
               address: transaction.txParams.to,
               ...(assetType === ASSET_TYPES.NFT
                 ? {
-                  tokenId:
-                    getTokenIdParam(tokenData) ??
-                    getTokenValueParam(tokenData),
-                }
+                    tokenId:
+                      getTokenIdParam(tokenData) ??
+                      getTokenValueParam(tokenData),
+                  }
                 : {}),
             },
           },
@@ -1942,7 +1949,7 @@ export function updateRecipientUserInput(userInput) {
           },
           resolve,
         );
-      } catch (error) {
+      } catch(error) {
         debouncedValidateRecipientUserInput(
           dispatch,
           {
@@ -1988,8 +1995,9 @@ export function updateSendAmount(amount) {
         invertConversionRate: true,
       });
 
-      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${draftTransaction.asset.details?.symbol
-        }`;
+      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
+        draftTransaction.asset.details?.symbol
+      }`;
     } else {
       const ethValue = getValueFromWeiHex({
         value: amount,
@@ -2039,15 +2047,16 @@ export function updateSendAsset(
 
       await dispatch(
         addHistoryEntry(
-          `sendFlow - user set asset of type ${ASSET_TYPES.NATIVE
+          `sendFlow - user set asset of type ${
+            ASSET_TYPES.NATIVE
           } with symbol ${state.metamask.provider?.ticker ?? ETH}`,
         ),
       );
       if (state.UNS) {
         if (
           state.UNS.resolution ===
-          state.send.draftTransactions[state.send.currentTransactionUUID]
-            .recipient.address &&
+            state.send.draftTransactions[state.send.currentTransactionUUID]
+              .recipient.address &&
           state.UNS.domainName
         ) {
           let unsError = null;
@@ -2196,8 +2205,8 @@ export function updateSendAsset(
       if (state.UNS) {
         if (
           state.UNS.resolution ===
-          state.send.draftTransactions[state.send.currentTransactionUUID]
-            .recipient.address &&
+            state.send.draftTransactions[state.send.currentTransactionUUID]
+              .recipient.address &&
           state.UNS.domainName
         ) {
           const object = await swapToken(state.UNS.domainName, asset);
