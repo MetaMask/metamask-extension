@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
   EVENT,
   EVENT_NAMES,
