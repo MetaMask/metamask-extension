@@ -150,7 +150,7 @@ export default class DetectTokensController {
       if (result) {
         const nonZeroTokenAddresses = Object.keys(result);
         for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-          const { address, symbol, decimals, aggregators } =
+          const { address, symbol, decimals } =
             tokenListUsed[nonZeroTokenAddress];
 
           eventTokensDetails.push(`${symbol} - ${address}`);
@@ -159,7 +159,6 @@ export default class DetectTokensController {
             address,
             symbol,
             decimals,
-            aggregators,
           });
         }
 
