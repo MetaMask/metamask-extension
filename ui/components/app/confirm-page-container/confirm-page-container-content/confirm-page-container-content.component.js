@@ -60,30 +60,26 @@ export default class ConfirmPageContainerContent extends Component {
   };
 
   renderContent() {
-    const {
-      detailsComponent,
-      dataComponent,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      insightComponent,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.props;
+    const { detailsComponent, dataComponent } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    const { insightComponent } = this.props;
+
+    if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     if (detailsComponent && dataComponent) {
       return this.renderTabs();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    if ((detailsComponent || dataComponent) && insightComponent) {
-      return this.renderTabs();
-    }
-    ///: END:ONLY_INCLUDE_IN
-
     return (
       detailsComponent ||
-      dataComponent ||
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      insightComponent
+      insightComponent ||
       ///: END:ONLY_INCLUDE_IN
+      dataComponent
     );
   }
 

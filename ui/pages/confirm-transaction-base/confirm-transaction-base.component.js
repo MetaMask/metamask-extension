@@ -49,7 +49,7 @@ import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
-
+import Typography from '../../components/ui/typography/typography';
 import {
   COLORS,
   FONT_STYLE,
@@ -62,19 +62,19 @@ import {
   removePollingTokenFromAppState,
 } from '../../store/actions';
 
-import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
+import { DropdownTab, Tab } from '../../components/ui/tabs';
+///: END:ONLY_INCLUDE_IN
+
 import {
   NETWORK_TO_NAME_MAP,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CHAIN_ID_TO_NETWORK_ID_MAP,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/network';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
-import { DropdownTab, Tab } from '../../components/ui/tabs';
-///: END:ONLY_INCLUDE_IN
-
 import TransactionAlerts from './transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
