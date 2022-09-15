@@ -40,6 +40,8 @@ const generateIconNames = async () => {
   );
 
   return iconNames;
+
+  console.log('ICON_NAMES env var successfully generated!');
 };
 
 module.exports = { generateIconNames };

@@ -39,7 +39,7 @@ Icon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
    * The size of the Icon.
    * Possible values could be 'SIZES.XXS', 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL',
