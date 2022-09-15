@@ -646,7 +646,18 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -672,7 +683,18 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -697,7 +719,18 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -730,7 +763,18 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -755,7 +799,18 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -781,7 +836,18 @@ describe('Send Slice', () => {
             tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
             useTokenDetection: true,
             tokenAddressList: [],
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
@@ -808,7 +874,18 @@ describe('Send Slice', () => {
             useTokenDetection: true,
             tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
             isProbablyAnAssetContract: true,
-            udTlds: ['coin', 'wallet', 'crypto', 'nft', 'dao', '888', 'bitcoin', 'blockchain', 'zil', 'x'],
+            udTlds: [
+              'coin',
+              'wallet',
+              'crypto',
+              'nft',
+              'dao',
+              '888',
+              'bitcoin',
+              'blockchain',
+              'zil',
+              'x',
+            ],
           },
         };
 
