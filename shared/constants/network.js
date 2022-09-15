@@ -15,7 +15,7 @@ export const ROPSTEN_NETWORK_ID = '3';
 export const RINKEBY_NETWORK_ID = '4';
 export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
-export const SEPOLIA_NETWORK_ID = '6';
+export const SEPOLIA_NETWORK_ID = '11155111';
 export const LOCALHOST_NETWORK_ID = '1337';
 
 export const MAINNET_CHAIN_ID = '0x1';
