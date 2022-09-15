@@ -78,7 +78,6 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidENSDomainName,
-  isValidUnstoppableDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -1377,8 +1376,9 @@ const slice = createSlice({
               if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
                 validUDDomain = true;
               }
-            })
+            });
           } catch {
+            validUDDomain = false;
           }
           if (
             isBurnAddress(state.recipientInput) ||
@@ -1949,7 +1949,7 @@ export function updateRecipientUserInput(userInput) {
           },
           resolve,
         );
-      } catch(error) {
+      } catch (error) {
         debouncedValidateRecipientUserInput(
           dispatch,
           {
