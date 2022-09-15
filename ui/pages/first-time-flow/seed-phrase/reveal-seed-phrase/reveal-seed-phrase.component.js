@@ -15,7 +15,7 @@ import {
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
 import { returnToOnboardingInitiatorTab } from '../../onboarding-initiator-util';
-import { exportAsFile } from '../../../../../shared/modules/export-utils';
+import { exportAsFile } from '../../../../helpers/utils/export-utils';
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
