@@ -8,5 +8,5 @@ export {
   ConfirmPageContainerSummary,
 } from './confirm-page-container-content';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export { SnapInsight } from './flask/snap-insight.component';
+export { SnapInsight } from './flask/snap-insight';
 ///: END:ONLY_INCLUDE_IN
