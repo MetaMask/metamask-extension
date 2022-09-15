@@ -256,8 +256,14 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={() => {
-                this.props.backupUserData();
+              onClick={async () => {
+                const { fileName, data } = await this.props.backupUserData();
+                exportAsFile(fileName, data);
+
+                this._trackMetaMetricsEvent({
+                  event: 'User Data Exported',
+                  category: 'Backup',
+                });
               }}
             >
               {t('backup')}
