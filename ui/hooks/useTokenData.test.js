@@ -55,7 +55,7 @@ describe('useTokenData', () => {
         expect(result.current.args[0].toLowerCase()).toStrictEqual(
           tokenData.args[0],
         );
-        expect(tokenData.args[1]).toStrictEqual(result.current.args[1]);
+        expect(tokenData.args[1]).toMatchObject(result.current.args[1]);
       } else {
         expect(result.current).toStrictEqual(tokenData);
       }
