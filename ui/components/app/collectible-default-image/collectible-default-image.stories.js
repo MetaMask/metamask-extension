@@ -30,13 +30,13 @@ export const DefaultStory = (args) => (
 
 DefaultStory.storyName = 'Default';
 
-export const handleImageClick = (args) => (
+export const HandleImageClick = (args) => (
   <div style={{ width: 200, height: 200 }}>
     <CollectibleDefaultImage {...args} />
   </div>
 );
 
-handleImageClick.args = {
+HandleImageClick.args = {
   // eslint-disable-next-line no-alert
   handleImageClick: () => window.alert('CollectibleDefaultImage clicked!'),
 };

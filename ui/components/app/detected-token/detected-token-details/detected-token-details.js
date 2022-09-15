@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import Box from '../../../ui/box';
 import Identicon from '../../../ui/identicon';
@@ -7,12 +8,16 @@ import DetectedTokenValues from '../detected-token-values/detected-token-values'
 import DetectedTokenAddress from '../detected-token-address/detected-token-address';
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
 import { DISPLAY } from '../../../../helpers/constants/design-system';
+import { getTokenList } from '../../../../selectors';
 
 const DetectedTokenDetails = ({
   token,
   handleTokenSelection,
   tokensListDetected,
 }) => {
+  const tokenList = useSelector(getTokenList);
+  const tokenData = tokenList[token.address?.toLowerCase()];
+
   return (
     <Box
       display={DISPLAY.FLEX}
@@ -35,7 +40,9 @@ const DetectedTokenDetails = ({
           tokensListDetected={tokensListDetected}
         />
         <DetectedTokenAddress tokenAddress={token.address} />
-        <DetectedTokenAggregators aggregators={token.aggregators} />
+        {tokenData?.aggregators.length > 0 && (
+          <DetectedTokenAggregators aggregators={tokenData?.aggregators} />
+        )}
       </Box>
     </Box>
   );

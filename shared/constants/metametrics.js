@@ -323,6 +323,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
   SIGNATURE_APPROVED: 'Signature Approved',

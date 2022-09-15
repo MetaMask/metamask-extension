@@ -1,17 +1,5 @@
 import { cloneDeep } from 'lodash';
-import {
-  GOERLI,
-  GOERLI_CHAIN_ID,
-  KOVAN,
-  KOVAN_CHAIN_ID,
-  MAINNET,
-  MAINNET_CHAIN_ID,
-  NETWORK_TYPE_RPC,
-  RINKEBY,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 
 const version = 52;
 
@@ -43,33 +31,33 @@ function transformState(state = {}) {
     if (accountTokens && Object.keys(accountTokens).length > 0) {
       for (const address of Object.keys(accountTokens)) {
         newAccountTokens[address] = {};
-        if (accountTokens[address][NETWORK_TYPE_RPC]) {
+        if (accountTokens[address][NETWORK_TYPES.RPC]) {
           frequentRpcListDetail.forEach((detail) => {
             newAccountTokens[address][detail.chainId] =
-              accountTokens[address][NETWORK_TYPE_RPC];
+              accountTokens[address][NETWORK_TYPES.RPC];
           });
         }
         for (const providerType of Object.keys(accountTokens[address])) {
           switch (providerType) {
-            case MAINNET:
-              newAccountTokens[address][MAINNET_CHAIN_ID] =
-                accountTokens[address][MAINNET];
+            case NETWORK_TYPES.MAINNET:
+              newAccountTokens[address][CHAIN_IDS.MAINNET] =
+                accountTokens[address][NETWORK_TYPES.MAINNET];
               break;
-            case ROPSTEN:
-              newAccountTokens[address][ROPSTEN_CHAIN_ID] =
-                accountTokens[address][ROPSTEN];
+            case NETWORK_TYPES.ROPSTEN:
+              newAccountTokens[address][CHAIN_IDS.ROPSTEN] =
+                accountTokens[address][NETWORK_TYPES.ROPSTEN];
               break;
-            case RINKEBY:
-              newAccountTokens[address][RINKEBY_CHAIN_ID] =
-                accountTokens[address][RINKEBY];
+            case NETWORK_TYPES.RINKEBY:
+              newAccountTokens[address][CHAIN_IDS.RINKEBY] =
+                accountTokens[address][NETWORK_TYPES.RINKEBY];
               break;
-            case GOERLI:
-              newAccountTokens[address][GOERLI_CHAIN_ID] =
-                accountTokens[address][GOERLI];
+            case NETWORK_TYPES.GOERLI:
+              newAccountTokens[address][CHAIN_IDS.GOERLI] =
+                accountTokens[address][NETWORK_TYPES.GOERLI];
               break;
-            case KOVAN:
-              newAccountTokens[address][KOVAN_CHAIN_ID] =
-                accountTokens[address][KOVAN];
+            case NETWORK_TYPES.KOVAN:
+              newAccountTokens[address][CHAIN_IDS.KOVAN] =
+                accountTokens[address][NETWORK_TYPES.KOVAN];
               break;
             default:
               break;
@@ -82,33 +70,33 @@ function transformState(state = {}) {
     if (accountHiddenTokens && Object.keys(accountHiddenTokens).length > 0) {
       for (const address of Object.keys(accountHiddenTokens)) {
         newAccountHiddenTokens[address] = {};
-        if (accountHiddenTokens[address][NETWORK_TYPE_RPC]) {
+        if (accountHiddenTokens[address][NETWORK_TYPES.RPC]) {
           frequentRpcListDetail.forEach((detail) => {
             newAccountHiddenTokens[address][detail.chainId] =
-              accountHiddenTokens[address][NETWORK_TYPE_RPC];
+              accountHiddenTokens[address][NETWORK_TYPES.RPC];
           });
         }
         for (const providerType of Object.keys(accountHiddenTokens[address])) {
           switch (providerType) {
-            case MAINNET:
-              newAccountHiddenTokens[address][MAINNET_CHAIN_ID] =
-                accountHiddenTokens[address][MAINNET];
+            case NETWORK_TYPES.MAINNET:
+              newAccountHiddenTokens[address][CHAIN_IDS.MAINNET] =
+                accountHiddenTokens[address][NETWORK_TYPES.MAINNET];
               break;
-            case ROPSTEN:
-              newAccountHiddenTokens[address][ROPSTEN_CHAIN_ID] =
-                accountHiddenTokens[address][ROPSTEN];
+            case NETWORK_TYPES.ROPSTEN:
+              newAccountHiddenTokens[address][CHAIN_IDS.ROPSTEN] =
+                accountHiddenTokens[address][NETWORK_TYPES.ROPSTEN];
               break;
-            case RINKEBY:
-              newAccountHiddenTokens[address][RINKEBY_CHAIN_ID] =
-                accountHiddenTokens[address][RINKEBY];
+            case NETWORK_TYPES.RINKEBY:
+              newAccountHiddenTokens[address][CHAIN_IDS.RINKEBY] =
+                accountHiddenTokens[address][NETWORK_TYPES.RINKEBY];
               break;
-            case GOERLI:
-              newAccountHiddenTokens[address][GOERLI_CHAIN_ID] =
-                accountHiddenTokens[address][GOERLI];
+            case NETWORK_TYPES.GOERLI:
+              newAccountHiddenTokens[address][CHAIN_IDS.GOERLI] =
+                accountHiddenTokens[address][NETWORK_TYPES.GOERLI];
               break;
-            case KOVAN:
-              newAccountHiddenTokens[address][KOVAN_CHAIN_ID] =
-                accountHiddenTokens[address][KOVAN];
+            case NETWORK_TYPES.KOVAN:
+              newAccountHiddenTokens[address][CHAIN_IDS.KOVAN] =
+                accountHiddenTokens[address][NETWORK_TYPES.KOVAN];
               break;
             default:
               break;

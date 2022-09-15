@@ -1,13 +1,8 @@
 import nock from 'nock';
 import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  ETH_SYMBOL,
   BUYABLE_CHAINS_MAP,
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
 } from '../../../shared/constants/network';
 import { TRANSAK_API_KEY, MOONPAY_API_KEY } from '../constants/on-ramp';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
@@ -16,26 +11,26 @@ import getBuyUrl from './buy-url';
 const WYRE_ACCOUNT_ID = 'AC-7AG3W4XH4N2';
 const ETH_ADDRESS = '0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc';
 const MAINNET = {
-  chainId: MAINNET_CHAIN_ID,
+  chainId: CHAIN_IDS.MAINNET,
   amount: 5,
   address: ETH_ADDRESS,
 };
 const ROPSTEN = {
-  chainId: ROPSTEN_CHAIN_ID,
+  chainId: CHAIN_IDS.ROPSTEN,
 };
 const RINKEBY = {
-  chainId: RINKEBY_CHAIN_ID,
+  chainId: CHAIN_IDS.RINKEBY,
 };
 const KOVAN = {
-  chainId: KOVAN_CHAIN_ID,
+  chainId: CHAIN_IDS.KOVAN,
 };
 const BSC = {
-  chainId: BSC_CHAIN_ID,
+  chainId: CHAIN_IDS.BSC,
   amount: 5,
   address: ETH_ADDRESS,
 };
 const POLYGON = {
-  chainId: POLYGON_CHAIN_ID,
+  chainId: CHAIN_IDS.POLYGON,
   amount: 5,
   address: ETH_ADDRESS,
 };
@@ -47,11 +42,11 @@ describe('buy-url', () => {
         `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
       )
       .reply(200, {
-        url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${ETH_SYMBOL}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
+        url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${CURRENCY_SYMBOLS.ETH}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
       });
     const wyreUrl = await getBuyUrl(MAINNET);
     expect(wyreUrl).toStrictEqual(
-      `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${ETH_SYMBOL}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
+      `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${CURRENCY_SYMBOLS.ETH}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
     );
     nock.cleanAll();
   });
@@ -60,7 +55,7 @@ describe('buy-url', () => {
     const wyreUrl = await getBuyUrl(MAINNET);
 
     expect(wyreUrl).toStrictEqual(
-      `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=${ETH_SYMBOL}&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card`,
+      `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=${CURRENCY_SYMBOLS.ETH}&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card`,
     );
   });
 

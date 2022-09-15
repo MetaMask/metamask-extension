@@ -5,7 +5,7 @@ import {
   GAS_ESTIMATE_TYPES,
   NETWORK_CONGESTION_THRESHOLDS,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -65,7 +65,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: NETWORK_TYPE_RPC,
+          type: NETWORK_TYPES.RPC,
           rpcUrl: action.value,
         },
       };

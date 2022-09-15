@@ -61,6 +61,7 @@ export default {
 const Template = (args) => {
   return <AvatarNetwork {...args} />;
 };
+
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
@@ -74,15 +75,15 @@ export const Size = (args) => (
   </Box>
 );
 
-export const networkName = Template.bind({});
-networkName.args = {
+export const NetworkName = Template.bind({});
+NetworkName.args = {
   networkImageUrl: '',
 };
 
-export const networkImageUrl = Template.bind({});
+export const NetworkImageUrl = Template.bind({});
 
-export const showHalo = Template.bind({});
-showHalo.args = {
+export const ShowHalo = Template.bind({});
+ShowHalo.args = {
   showHalo: true,
 };
 
@@ -106,6 +107,13 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
+      networkName="G"
+      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+    />
+    <AvatarNetwork
+      {...args}
+      backgroundColor={COLORS.SEPOLIA}
+      borderColor={COLORS.SEPOLIA}
       networkName="G"
       color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
     />

@@ -227,6 +227,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('sepolia'),
+    descriptionMessage: (t) => t('sepolia'),
+    route: `${NETWORKS_ROUTE}#networks-sepolia`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('kovan'),
     descriptionMessage: (t) => t('kovan'),
     route: `${NETWORKS_ROUTE}#networks-kovan`,

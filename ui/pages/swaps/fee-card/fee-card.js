@@ -2,14 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import {
-  MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import Typography from '../../../components/ui/typography';
@@ -40,17 +33,17 @@ export default function FeeCard({
 
   const getTranslatedNetworkName = () => {
     switch (chainId) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         return t('networkNameEthereum');
-      case BSC_CHAIN_ID:
+      case CHAIN_IDS.BSC:
         return t('networkNameBSC');
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         return t('networkNamePolygon');
-      case LOCALHOST_CHAIN_ID:
+      case CHAIN_IDS.LOCALHOST:
         return t('networkNameTestnet');
-      case RINKEBY_CHAIN_ID:
-        return t('networkNameRinkeby');
-      case AVALANCHE_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
+        return t('networkNameGoerli');
+      case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       default:
         throw new Error('This network is not supported for token swaps');

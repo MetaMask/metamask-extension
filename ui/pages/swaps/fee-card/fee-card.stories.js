@@ -1,5 +1,5 @@
 import React from 'react';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
 
 const containerStyle = {
@@ -95,7 +95,7 @@ export default {
     tokenApprovalSourceTokenSymbol: 'ABC',
     metaMaskFee: '0.875',
     numberOfQuotes: 6,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     isBestQuote: true,
   },
 };

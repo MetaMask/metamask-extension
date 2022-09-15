@@ -5,7 +5,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import Box from '../box';
 import {
   ALIGN_ITEMS,
@@ -26,6 +25,7 @@ import {
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -92,7 +92,7 @@ const NewNetworkInfo = () => {
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         maxContent={false}
         label={
-          currentProvider.type === NETWORK_TYPE_RPC
+          currentProvider.type === NETWORK_TYPES.RPC
             ? currentProvider.nickname ?? t('privateNetwork')
             : t(currentProvider.type)
         }

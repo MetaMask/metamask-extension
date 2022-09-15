@@ -1,5 +1,5 @@
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import migration64 from './064';
 
 const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TRANSACTION_TYPES.SIMPLE_SEND
@@ -84,7 +84,7 @@ describe('migration #64', () => {
       1462177651588364: {
         type: TRANSACTION_TYPES.CANCEL,
         id: 0,
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x0',
         },
@@ -100,7 +100,7 @@ describe('migration #64', () => {
       1: {
         type: SENT_ETHER,
         id: 1,
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x1',
         },
@@ -263,7 +263,7 @@ describe('migration #64', () => {
       1462177651588364: {
         type: TRANSACTION_TYPES.CANCEL,
         id: 0,
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x0',
         },
@@ -279,7 +279,7 @@ describe('migration #64', () => {
       1: {
         type: TRANSACTION_TYPES.SIMPLE_SEND,
         id: 1,
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x1',
         },

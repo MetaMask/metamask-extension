@@ -71,6 +71,17 @@ const state = {
       viewOnly: true,
     },
     {
+      blockExplorerUrl: 'https://sepolia.etherscan.io',
+      chainId: '0xaa36a7',
+      iconColor: 'var(--sepolia)',
+      isATestNetwork: true,
+      labelKey: 'sepolia',
+      providerType: 'sepolia',
+      rpcUrl: 'https://sepolia.infura.io/v3/',
+      ticker: 'ETH',
+      viewOnly: true,
+    },
+    {
       blockExplorerUrl: '',
       chainId: '0x539',
       iconColor: 'var(--localhost)',
@@ -163,8 +174,8 @@ const state = {
         name: 'Falconswap',
         iconUrl:
           'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: ['CoinGecko', '1inch', 'Paraswap', 'Zapper', 'Zerion'],
-        occurrences: 12,
+        aggregators: ['CoinGecko', '1inch', 'Lifi'],
+        occurrences:3,
         unlisted: false,
       },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
@@ -1310,6 +1321,7 @@ const state = {
       rinkeby: null,
       kovan: null,
       goerli: null,
+      sepolia: null,
       mainnet: 10902989,
     },
     subjects: {
