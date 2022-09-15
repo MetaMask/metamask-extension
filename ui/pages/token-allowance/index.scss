@@ -1,0 +1,29 @@
+.token-allowance-container {
+    width: inherit;
+
+    &__icon-display-content {
+        height: 40px;
+        margin-top: 24px;
+        margin-inline-start: 65px;
+        margin-bottom: 32px;
+        margin-inline-end: 65px;
+        padding: 8px 16px 8px 8px;
+        border: 1px solid var(--color-border-muted);
+        box-sizing: border-box;
+        border-radius: 100px;
+        align-items: center;
+        position: relative;
+
+        &__siteimage-identicon {
+            width: 24px;
+            height: 24px;
+            margin-top: 4px;
+            box-shadow: none;
+            background: none;
+        }
+    }
+
+    a.token-allowance-container__verify-link {
+        padding: 0;
+    }
+}

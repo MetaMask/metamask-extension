@@ -38,6 +38,7 @@ import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
+import TokenAllowance from '../token-allowance/token-allowance';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
@@ -160,7 +161,12 @@ export default function ConfirmApprove({
   return tokenSymbol === undefined && assetName === undefined ? (
     <Loading />
   ) : (
-    !process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && (
+    process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20 ? (
+      <TokenAllowance
+      origin={formattedOrigin}
+      siteImage={siteImage}
+      />
+    ) : (
       <GasFeeContextProvider transaction={transaction}>
         <ConfirmTransactionBase
           toAddress={toAddress}
