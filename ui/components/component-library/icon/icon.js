@@ -9,7 +9,7 @@ import { SIZES, ICON_COLORS } from '../../../helpers/constants/design-system';
 export const Icon = ({
   name,
   size = SIZES.MD,
-  color,
+  color = COLORS.INHERIT,
   className,
   style,
   ...props
