@@ -82,12 +82,19 @@
 
     color: var(--color-text-alternative);
     text-transform: uppercase;
-    margin: 0 8px;
 
     & button {
       font-size: unset;
       color: var(--color-text-alternative);
       text-transform: uppercase;
+    }
+
+    & .dropdown__select {
+      color: var(--color-text-alternative);
+    }
+
+    & .dropdown__icon-caret-down {
+      top: 40%;
     }
   }
 

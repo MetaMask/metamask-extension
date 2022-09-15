@@ -1,7 +1,12 @@
 .snap-content-footer {
   display: flex;
   justify-content: center;
-  padding: 24px 0 16px;
+  align-items: center;
+  padding: 16px 0;
+
+  .typography {
+    font-size: 12px;
+  }
 
   i {
     color: var(--color-icon-muted);

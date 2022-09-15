@@ -3,28 +3,35 @@ import { useSelector } from 'react-redux';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjects } from '../../selectors';
 
-const INSIGHT_PERMISSION = 'endowment:tx-insight';
+const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
-export function useTransactionInsightSnap(transaction, snapId) {
+export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
   const subjects = useSelector(getPermissionSubjects);
   if (!subjects[snapId]?.permissions[INSIGHT_PERMISSION]) {
     throw new Error(
       'This snap does not have the transaction insight endowment.',
     );
   }
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(undefined);
 
   useEffect(() => {
     async function fetchInsight() {
-      const d = await handleSnapRequest(snapId, undefined, 'onTransaction', {
-        params: [transaction],
+      const d = await handleSnapRequest({
+        snapId,
+        origin: 'test',
+        handler: 'onTransaction',
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: { transaction, chainId },
+        },
       });
       setData(d);
     }
     if (transaction) {
       fetchInsight();
     }
-  }, [snapId, transaction]);
+  }, [snapId, transaction, chainId]);
 
   return data;
 }

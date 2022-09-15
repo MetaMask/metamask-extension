@@ -1,0 +1,32 @@
+.snap-insight {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  word-wrap: break-word;
+
+
+  &--no-data {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 170px;
+  }
+
+  &__container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+
+
+    &__data {
+      display: flex;
+      flex-direction: column;
+      padding: 0 4px 12px 24px;
+
+      .typography {
+        font-size: 14px;
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+.tab {
+  .dropdown__select {
+    border: none;
+    font-size: unset;
+    width: 100%;
+    background-color: unset;
+    padding-left: 8px;
+    padding-right: 20px;
+    line-height: unset;
+    text-transform: uppercase;
+
+    option {
+      background-color: var(--color-background-default);
+      text-transform: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  .dropdown__icon-caret-down {
+    right: 0;
+  }
+}
