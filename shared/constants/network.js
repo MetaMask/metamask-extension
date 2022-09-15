@@ -95,13 +95,21 @@ export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 
-export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
+export const INFURA_PROVIDER_TYPES = [
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  GOERLI,
+  SEPOLIA,
+];
 
 export const TEST_CHAINS = [
   ROPSTEN_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  SEPOLIA_RPC_URL,
   LOCALHOST_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
 ];
