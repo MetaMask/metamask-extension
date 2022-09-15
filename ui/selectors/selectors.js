@@ -829,6 +829,7 @@ function getAllowedAnnouncementIds(state) {
     12: false,
     13: true,
     14: threeBoxSyncingAllowed,
+    15: true,
   };
 }
 
