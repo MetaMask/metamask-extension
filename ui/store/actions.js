@@ -903,6 +903,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
         [txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
         actionId,
       );
+      dispatch(rejectPermissionsRequest('123'));
       dispatch(showConfTxPage());
       return txMeta;
     } catch (error) {
