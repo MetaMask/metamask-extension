@@ -1,10 +1,6 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
-import {
-  GOERLI_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-} from '../constants/network';
+import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -20,7 +16,7 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import fetchWithCache from './fetch-with-cache';
 import { decimalToHex } from './transactions-controller-utils';
 
-const TEST_CHAIN_IDS = [GOERLI_CHAIN_ID, LOCALHOST_CHAIN_ID];
+const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
@@ -146,9 +142,9 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
+export const getBaseApi = function (type, chainId = CHAIN_IDS.MAINNET) {
   // eslint-disable-next-line no-param-reassign
-  chainId = TEST_CHAIN_IDS.includes(chainId) ? MAINNET_CHAIN_ID : chainId;
+  chainId = TEST_CHAIN_IDS.includes(chainId) ? CHAIN_IDS.MAINNET : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
