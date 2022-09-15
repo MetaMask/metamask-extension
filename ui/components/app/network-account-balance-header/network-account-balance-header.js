@@ -106,7 +106,7 @@ export default function NetworkAccountBalanceHeader({
 NetworkAccountBalanceHeader.propTypes = {
   networkName: PropTypes.string,
   accountName: PropTypes.string,
-  accountBalance: PropTypes.number,
+  accountBalance: PropTypes.string,
   tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
 };
