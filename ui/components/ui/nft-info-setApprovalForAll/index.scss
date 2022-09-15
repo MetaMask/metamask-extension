@@ -1,0 +1,18 @@
+.nft-info {
+  &__content {
+    width: 100%;
+
+    &__tooltip {
+      max-width: 180px;
+
+      &__icon {
+        color: var(--color-error-default);
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__button {
+    padding: 0;
+  }
+}

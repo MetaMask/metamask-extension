@@ -2234,6 +2234,12 @@
   "nftOptions": {
     "message": "NFT Options"
   },
+  "nftCollectionName": {
+    "message": "Name of collection"
+  },
+  "nftInfoTooltipText": {
+    "message": "You should have a good reason for doing an approval for all NFTs. It should not be your default."
+  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
@@ -2480,12 +2486,19 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
+  "numberOfNFTsFromCollection": {
+    "message": "All ($1) + Future NFTs",
+    "description": "$1 is the number of NFTs from collection that are owned by the user"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "1 new token found in this account"
+  },
+  "numberOfNfts": {
+    "message": "No. of NFTs"
   },
   "ofTextNofM": {
     "message": "of"
