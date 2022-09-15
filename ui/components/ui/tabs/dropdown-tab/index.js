@@ -1,3 +1,3 @@
-import { DropdownTab } from './dropdown-tab.component';
+import { DropdownTab } from './dropdown-tab';
 
 export default DropdownTab;

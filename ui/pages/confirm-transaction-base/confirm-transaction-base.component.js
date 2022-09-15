@@ -65,7 +65,7 @@ import {
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
 import { DropdownTab, Tab } from '../../components/ui/tabs';
 ///: END:ONLY_INCLUDE_IN
 
