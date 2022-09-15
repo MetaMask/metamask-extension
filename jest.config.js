@@ -28,8 +28,6 @@ module.exports = {
       statements: 100,
     },
   },
-  // TODO: enable resetMocks
-  // resetMocks: true,
   reporters: [
     'default',
     [
@@ -40,6 +38,8 @@ module.exports = {
       },
     ],
   ],
+  // TODO: enable resetMocks
+  // resetMocks: true,
   restoreMocks: true,
   setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
