@@ -65,10 +65,10 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import {
+  NETWORK_TO_NAME_MAP,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CHAIN_ID_TO_NETWORK_ID_MAP,
   ///: END:ONLY_INCLUDE_IN
-  NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
