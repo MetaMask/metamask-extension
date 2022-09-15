@@ -1,5 +1,5 @@
 /* eslint-disable jest/no-conditional-expect */
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { renderHook } from '@testing-library/react-hooks';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import { useTokenData } from './useTokenData';
@@ -11,7 +11,7 @@ const tests = [
       name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
-        ethers.BigNumber.from(15000),
+        BigNumber.from(15000),
       ],
     },
   },
@@ -21,7 +21,7 @@ const tests = [
       name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
-        ethers.BigNumber.from(25000),
+        BigNumber.from(25000),
       ],
     },
   },
@@ -31,7 +31,7 @@ const tests = [
       name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
-        ethers.BigNumber.from(10000),
+        BigNumber.from(10000),
       ],
     },
   },

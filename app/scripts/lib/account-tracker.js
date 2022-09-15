@@ -12,7 +12,8 @@ import EthQuery from 'eth-query';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import pify from 'pify';
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
@@ -73,7 +74,7 @@ export default class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
 
-    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
+    this.ethersProvider = new Web3Provider(this._provider);
   }
 
   start() {
@@ -331,9 +332,9 @@ export default class AccountTracker {
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const { accounts } = this.store.getState();
-    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
+    this.ethersProvider = new Web3Provider(this._provider);
 
-    const ethContract = await new ethers.Contract(
+    const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,
       this.ethersProvider,

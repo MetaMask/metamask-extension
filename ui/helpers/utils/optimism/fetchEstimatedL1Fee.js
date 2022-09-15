@@ -1,4 +1,4 @@
-import * as ethers from 'ethers';
+import { FormatTypes } from '@ethersproject/abi';
 import { getContractFactory } from '@eth-optimism/contracts/dist/contract-defs';
 import { predeploys } from '@eth-optimism/contracts/dist/predeploys';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
@@ -9,9 +9,7 @@ function buildOVMGasPriceOracleContract(eth) {
   const OVMGasPriceOracle = getContractFactory('OVM_GasPriceOracle').attach(
     predeploys.OVM_GasPriceOracle,
   );
-  const abi = JSON.parse(
-    OVMGasPriceOracle.interface.format(ethers.utils.FormatTypes.json),
-  );
+  const abi = JSON.parse(OVMGasPriceOracle.interface.format(FormatTypes.json));
   return eth.contract(abi).at(OVMGasPriceOracle.address);
 }
 

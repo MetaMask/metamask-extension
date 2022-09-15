@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   ASSET_TYPES,
@@ -69,7 +69,7 @@ describe('Send Slice Helpers', () => {
             details: {
               address: '0xToken',
               standard: TOKEN_STANDARDS.ERC721,
-              tokenId: ethers.BigNumber.from(15000).toString(),
+              tokenId: BigNumber.from(15000).toString(),
             },
           },
           recipient: {
@@ -82,7 +82,7 @@ describe('Send Slice Helpers', () => {
         data: generateERC721TransferData({
           toAddress: BURN_ADDRESS,
           fromAddress: '0x00',
-          tokenId: ethers.BigNumber.from(15000).toString(),
+          tokenId: BigNumber.from(15000).toString(),
         }),
         to: '0xToken',
         type: '0x0',

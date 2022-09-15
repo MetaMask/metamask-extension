@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
 import log from 'loglevel';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
@@ -74,7 +74,7 @@ export default class PreferencesController {
     };
 
     this.network = opts.network;
-    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
+    this.ethersProvider = new Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;

@@ -3,7 +3,7 @@ import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -142,7 +142,7 @@ export function initializeEnsSlice() {
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
-      provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
+      provider = new Web3Provider(global.ethereumProvider, {
         chainId: parseInt(network, 10),
         name: networkName,
         ensAddress,
