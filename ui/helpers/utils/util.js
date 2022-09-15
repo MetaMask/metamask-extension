@@ -114,11 +114,15 @@ export async function isValidUnstoppableDomainName(address, inputTlds) {
 }
 export async function getUdTlds() {
   let result = [];
-  const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
-  const response = await fetch(url);
-  const data = await response.json();
-  result = data.tlds;
-  return result;
+  try {
+    const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
+    const response = await fetch(url);
+    const data = await response.json();
+    result = data.tlds;
+    return result;
+  } catch {
+    return result;
+  }
 }
 
 export async function getAndParseUdCurrencies() {
@@ -126,18 +130,22 @@ export async function getAndParseUdCurrencies() {
     singleChain: [],
     multiChain: [],
   };
-  const url = 'https://unstoppabledomains.com/api/uns-resolver-keys';
-  const response = await fetch(url);
-  const data = await response.text();
-  const currencyArray = parseKeysArray(JSON.parse(data).keys);
-  currencyArray.forEach(function (crypto) {
-    if (crypto.includes('.version.')) {
-      resultObject.multiChain.push(crypto.split('.')[1]);
-    } else {
-      resultObject.singleChain.push(crypto.split('.')[1]);
-    }
-  });
-  return resultObject;
+  try {
+    const url = 'https://unstoppabledomains.com/api/uns-resolver-keys';
+    const response = await fetch(url);
+    const data = await response.text();
+    const currencyArray = parseKeysArray(JSON.parse(data).keys);
+    currencyArray.forEach(function (crypto) {
+      if (crypto.includes('.version.')) {
+        resultObject.multiChain.push(crypto.split('.')[1]);
+      } else {
+        resultObject.singleChain.push(crypto.split('.')[1]);
+      }
+    });
+    return resultObject;
+  } catch {
+    return resultObject;
+  }
 }
 
 export function parseKeysArray(json) {
