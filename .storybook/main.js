@@ -21,6 +21,7 @@ module.exports = {
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
+  // Creates the icon names environment variable for the component-library/icon/icon.js component
   env: async (config) => {
     return {
       ...config,
