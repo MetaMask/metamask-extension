@@ -4,7 +4,11 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box/box';
 
-import { SIZES, ICON_COLORS } from '../../../helpers/constants/design-system';
+import {
+  SIZES,
+  COLORS,
+  ICON_COLORS,
+} from '../../../helpers/constants/design-system';
 
 export const Icon = ({
   name,
