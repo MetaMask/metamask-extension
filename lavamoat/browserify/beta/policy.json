@@ -2835,7 +2835,7 @@
     "@metamask/controllers>web3": {
       "globals": {
         "Web3": "write",
-        "XMLHttpRequest": "write",
+        "XMLHttpRequest": true,
         "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
