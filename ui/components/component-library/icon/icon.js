@@ -6,8 +6,6 @@ import Box from '../../ui/box/box';
 
 import { SIZES, ICON_COLORS } from '../../../helpers/constants/design-system';
 
-import { ICON_NAMES } from './icon.constants';
-
 export const Icon = ({
   name,
   size = SIZES.MD,
