@@ -928,7 +928,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  */
 export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
-  const actionId = generateActionId();();
+  const actionId = generateActionId();
   const txMeta = await submitRequestToBackground(
     'addUnapprovedTransaction',
     [txParams, ORIGIN_METAMASK, type, undefined, actionId],
@@ -941,7 +941,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      const actionId = generateActionId();();
+      const actionId = generateActionId();
       callBackgroundMethod(
         'updateAndApproveTransaction',
         [txData, actionId],
@@ -3618,7 +3618,7 @@ export function trackMetaMetricsEvent(payload, options) {
 }
 
 export function createEventFragment(options) {
-  const actionId =generateActionId();
+  const actionId = generateActionId();
   return submitRequestToBackground('createEventFragment', [
     { ...options, actionId },
   ]);
