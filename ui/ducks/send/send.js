@@ -1372,7 +1372,7 @@ const slice = createSlice({
           } = action.payload;
           // adds UD checks for Error Handling
           let validUDDomain = false;
-          if (udTlds.payload !== undefined || null) {
+          if (udTlds !== undefined && udTlds !== null) {
             udTlds.payload.forEach((tld) => {
               if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
                 validUDDomain = true;
