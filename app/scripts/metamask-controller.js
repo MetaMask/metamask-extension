@@ -1835,7 +1835,7 @@ export default class MetamaskController extends EventEmitter {
 
       // permissions
       removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.approvePermissionsRequest,
+      approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
