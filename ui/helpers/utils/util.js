@@ -3,17 +3,10 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { util } from '@metamask/controllers';
+import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
@@ -52,12 +45,13 @@ export function formatDateWithYearContext(
 export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
-    chainId === MAINNET_CHAIN_ID ||
-    chainId === ROPSTEN_CHAIN_ID ||
-    chainId === RINKEBY_CHAIN_ID ||
-    chainId === KOVAN_CHAIN_ID ||
-    chainId === GOERLI_CHAIN_ID ||
-    chainId === LOCALHOST_CHAIN_ID
+    chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.ROPSTEN ||
+    chainId === CHAIN_IDS.RINKEBY ||
+    chainId === CHAIN_IDS.KOVAN ||
+    chainId === CHAIN_IDS.GOERLI ||
+    chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
   }
@@ -191,24 +185,6 @@ export function getRandomFileName() {
   }
 
   return fileName;
-}
-
-export function exportAsFile(filename, data, type = 'text/csv') {
-  // eslint-disable-next-line no-param-reassign
-  filename = filename || getRandomFileName();
-  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new window.Blob([data], { type });
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(blob, filename);
-  } else {
-    const elem = window.document.createElement('a');
-    elem.target = '_blank';
-    elem.href = window.URL.createObjectURL(blob);
-    elem.download = filename;
-    document.body.appendChild(elem);
-    elem.click();
-    document.body.removeChild(elem);
-  }
 }
 
 /**
@@ -356,7 +332,7 @@ export function addHexPrefixToObjectValues(obj) {
  * @param {string} options.from - A hex address of the tx sender address
  * @param {string} options.gas - A hex representation of the gas value for the transaction
  * @param {string} options.gasPrice - A hex representation of the gas price for the transaction
- * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
+ * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
  */
 export function constructTxParams({
   sendToken,
@@ -557,7 +533,7 @@ export function getAssetImageURL(image, ipfsGateway) {
   }
 
   if (image.startsWith('ipfs://')) {
-    return util.getFormattedIpfsUrl(ipfsGateway, image, true);
+    return getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;
 }

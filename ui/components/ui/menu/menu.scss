@@ -3,7 +3,7 @@
     @include H6;
 
     background: var(--color-background-default);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.214);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border-radius: 8px;
     width: 225px;
     color: var(--color-text-default);

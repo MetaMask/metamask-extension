@@ -20,10 +20,6 @@
     justify-content: center;
   }
 
-  a {
-    color: var(--color-primary-default);
-  }
-
   &__status-image {
     margin-top: 12px;
     margin-bottom: 16px;
@@ -64,7 +60,6 @@
     font-weight: bold;
   }
 
-  &__view-on-etherscan,
   &__support-link {
     color: var(--color-primary-default);
     margin-top: 24px;
@@ -73,20 +68,6 @@
 
   &__support-link {
     @include H6;
-  }
-
-  &__view-on-etherscan {
-    @include H7;
-
-    transition: opacity 1s ease-in-out;
-  }
-
-  &__view-on-etherscan--invisible {
-    opacity: 0;
-  }
-
-  &__view-on-etherscan--visible {
-    opacity: 1;
   }
 
   &__amount-and-symbol {

@@ -24,7 +24,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const t = useI18nContext();
 
   return (
-    <div className="import-srp">
+    <div className="import-srp" data-testid="import-srp">
       <TwoStepProgressBar
         stage={twoStepStages.RECOVERY_PHRASE_CONFIRM}
         marginBottom={4}

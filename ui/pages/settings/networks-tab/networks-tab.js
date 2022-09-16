@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import classnames from 'classnames';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../store/actions';
@@ -13,11 +15,12 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
   getFrequentRpcListDetail,
+  getIsCustomNetworkListEnabled,
   getNetworksTabSelectedRpcUrl,
   getProvider,
 } from '../../../selectors';
 import {
-  NETWORK_TYPE_RPC,
+  NETWORK_TYPES,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
@@ -35,21 +38,27 @@ const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  const history = useHistory();
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+    isFullScreen ||
+    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
+    window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
   const networksTabSelectedRpcUrl = useSelector(getNetworksTabSelectedRpcUrl);
+  const addPopularNetworkFeatureToggledOn = useSelector(
+    getIsCustomNetworkListEnabled,
+  );
 
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
       iconColor: 'var(--color-icon-alternative)',
-      providerType: NETWORK_TYPE_RPC,
+      providerType: NETWORK_TYPES.RPC,
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
@@ -74,7 +83,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       networksToRender.find((network) => {
         return (
           network.rpcUrl === provider.rpcUrl ||
-          (network.providerType !== NETWORK_TYPE_RPC &&
+          (network.providerType !== NETWORK_TYPES.RPC &&
             network.providerType === provider.type)
         );
       }) || {};
@@ -92,7 +101,12 @@ const NetworksTab = ({ addNewNetwork }) => {
       {isFullScreen ? (
         <NetworksFormSubheader addNewNetwork={addNewNetwork} />
       ) : null}
-      <div className="networks-tab__content">
+      <div
+        className={classnames('networks-tab__content', {
+          'networks-tab__content--with-networks-list-popup-footer':
+            !isFullScreen && !shouldRenderNetworkForm,
+        })}
+      >
         {addNewNetwork ? (
           <NetworksForm
             networksToRender={networksToRender}
@@ -112,9 +126,16 @@ const NetworksTab = ({ addNewNetwork }) => {
               <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+                  onClick={() => {
+                    if (addPopularNetworkFeatureToggledOn) {
+                      history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                    } else {
+                      isFullScreen
+                        ? history.push(ADD_NETWORK_ROUTE)
+                        : global.platform.openExtensionInBrowser(
+                            ADD_NETWORK_ROUTE,
+                          );
+                    }
                   }}
                 >
                   {t('addNetwork')}

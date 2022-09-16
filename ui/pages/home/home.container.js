@@ -5,6 +5,9 @@ import {
   activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getFirstSnapUpdateRequest,
+  ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -20,6 +23,7 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 
 import {
@@ -27,6 +31,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
+  hidePortfolioTooltip,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
@@ -37,11 +42,18 @@ import {
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
   setNewTokensImported,
+  setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
+import {
+  setThreeBoxLastUpdated,
+  hideWhatsNewPopup,
+  setNewCustomNetworkAdded,
+  getPortfolioTooltipWasShownInThisSession,
+  setPortfolioTooltipWasShownInThisSession,
+} from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -81,9 +93,18 @@ const mapStateToProps = (state) => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const firstPermissionsRequest = getFirstPermissionRequest(state);
-  const firstPermissionsRequestId =
-    firstPermissionsRequest?.metadata.id || null;
+  let firstPermissionsRequest, firstPermissionsRequestId;
+  firstPermissionsRequest = getFirstPermissionRequest(state);
+  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+
+  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (!firstPermissionsRequest) {
+    firstPermissionsRequest = getFirstSnapUpdateRequest(state);
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -132,12 +153,16 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showPortfolioTooltip: getShowPortfolioTooltip(state),
+    portfolioTooltipWasShownInThisSession:
+      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
+    newCustomNetworkAdded: appState.newCustomNetworkAdded,
   };
 };
 
@@ -167,6 +192,7 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -180,6 +206,14 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
+  clearNewCustomNetworkAdded: () => {
+    dispatch(setNewCustomNetworkAdded({}));
+  },
+  setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
+    dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
+  },
+  setPortfolioTooltipWasShownInThisSession: () =>
+    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

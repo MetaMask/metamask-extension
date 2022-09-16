@@ -33,6 +33,8 @@ jest-coverage/
 dist
 builds/
 builds.zip
+development/ts-migration-dashboard/build
+development/ts-migration-dashboard/intermediate
 
 test-artifacts
 test-builds
@@ -45,7 +47,9 @@ notes.txt
 
 .nyc_output
 
+# MetaMask configuration
 .metamaskrc
+.metamaskprodrc
 
 # TypeScript
 tsout/

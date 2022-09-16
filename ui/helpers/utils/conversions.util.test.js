@@ -39,4 +39,16 @@ describe('conversion utils', () => {
       expect(weiValue).toStrictEqual('1000000000000000000');
     });
   });
+
+  describe('decWEIToDecETH', () => {
+    it('converts 10000000000000 WEI to ETH', () => {
+      const ethDec = utils.decWEIToDecETH('10000000000000');
+      expect('0.00001').toStrictEqual(ethDec);
+    });
+
+    it('converts 9358749494527040 WEI to ETH', () => {
+      const ethDec = utils.decWEIToDecETH('9358749494527040');
+      expect('0.009358749').toStrictEqual(ethDec);
+    });
+  });
 });

@@ -18,6 +18,7 @@ function getLocalePath(code) {
   );
 }
 
+// eslint-disable-next-line consistent-return
 async function getLocale(code) {
   try {
     const localeFilePath = getLocalePath(code);

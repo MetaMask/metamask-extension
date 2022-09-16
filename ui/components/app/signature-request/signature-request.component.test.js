@@ -66,7 +66,7 @@ describe('Signature Request Component', () => {
       };
       const wrapper = shallowWithContext(
         <SignatureRequest
-          hardwareWalletRequiresConnection={() => false}
+          hardwareWalletRequiresConnection={false}
           clearConfirmTransaction={() => undefined}
           cancel={() => undefined}
           sign={() => undefined}
@@ -105,7 +105,7 @@ describe('Signature Request Component', () => {
       };
       const wrapper = shallowWithContext(
         <SignatureRequest
-          hardwareWalletRequiresConnection={() => false}
+          hardwareWalletRequiresConnection={false}
           clearConfirmTransaction={() => undefined}
           cancel={() => undefined}
           sign={() => undefined}

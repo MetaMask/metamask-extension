@@ -13,4 +13,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest',
     '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
   },
+  testEnvironment: 'jsdom',
 };

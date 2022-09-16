@@ -11,7 +11,7 @@ import TransactionListItem from '.';
  */
 
 /**
- * @param {Object} args
+ * @param {object} args
  * @returns {TransactionGroup}
  */
 const getMockTransactionGroup = (args) => {

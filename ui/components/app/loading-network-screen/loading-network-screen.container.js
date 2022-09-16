@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import * as actions from '../../../store/actions';
 import { getNetworkIdentifier, isNetworkLoading } from '../../../selectors';
 import LoadingNetworkScreen from './loading-network-screen.component';
@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
   const { rpcUrl, chainId, ticker, nickname, type } = provider;
 
   const setProviderArgs =
-    type === NETWORK_TYPE_RPC
+    type === NETWORK_TYPES.RPC
       ? [rpcUrl, chainId, ticker, nickname]
       : [provider.type];
 

@@ -48,7 +48,7 @@ export const UI_NOTIFICATIONS = {
   },
   10: {
     id: 10,
-    date: '2022-04-18',
+    date: '2022-09-15',
     image: {
       src: 'images/token-detection.svg',
       width: '100%',
@@ -56,7 +56,7 @@ export const UI_NOTIFICATIONS = {
   },
   11: {
     id: 11,
-    date: '2022-04-18',
+    date: '2022-09-15',
   },
   12: {
     id: 12,
@@ -66,9 +66,21 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  13: {
+    id: 13,
+    date: '2022-09-15',
+  },
+  14: {
+    id: 14,
+    date: '2022-09-15',
+  },
+  15: {
+    id: 15,
+    date: '2022-09-15',
+  },
 };
 
-export const getTranslatedUINoficiations = (t, locale) => {
+export const getTranslatedUINotifications = (t, locale) => {
   const formattedLocale = locale.replace('_', '-');
   return {
     1: {
@@ -181,6 +193,36 @@ export const getTranslatedUINoficiations = (t, locale) => {
       date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[12].date),
       ),
+    },
+    13: {
+      ...UI_NOTIFICATIONS[13],
+      title: t('notifications13Title'),
+      description: t('notifications13Description'),
+      actionText: t('notifications13ActionText'),
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[13].date),
+      ),
+    },
+    14: {
+      ...UI_NOTIFICATIONS[14],
+      title: t('notifications14Title'),
+      description: t('notifications14Description'),
+      actionText: t('notifications14ActionText'),
+      date: UI_NOTIFICATIONS[14].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[14].date),
+          )
+        : '',
+    },
+    15: {
+      ...UI_NOTIFICATIONS[15],
+      title: t('notifications15Title'),
+      description: t('notifications15Description'),
+      date: UI_NOTIFICATIONS[15].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[15].date),
+          )
+        : '',
     },
   };
 };

@@ -13,9 +13,11 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+} from '../../../shared/constants/transaction';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;

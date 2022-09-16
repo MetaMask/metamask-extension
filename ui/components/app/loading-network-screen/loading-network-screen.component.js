@@ -51,6 +51,8 @@ export default class LoadingNetworkScreen extends PureComponent {
       name = this.context.t('connectingToRinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('connectingToGoerli');
+    } else if (providerName === 'sepolia') {
+      name = this.context.t('connectingToSepolia');
     } else {
       name = this.context.t('connectingTo', [providerId]);
     }
@@ -59,11 +61,8 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   renderErrorScreenContent = () => {
-    const {
-      showNetworkDropdown,
-      setProviderArgs,
-      setProviderType,
-    } = this.props;
+    const { showNetworkDropdown, setProviderArgs, setProviderType } =
+      this.props;
 
     return (
       <div className="loading-overlay__error-screen">

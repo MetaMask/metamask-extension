@@ -9,6 +9,7 @@ import {
   getCurrentChainId,
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
+  getIsCustomNetwork,
 } from '../../../selectors/selectors';
 import {
   DEFAULT_ROUTE,
@@ -38,6 +39,8 @@ export default function TokenAsset({ token }) {
   );
   const trackEvent = useContext(MetaMetricsContext);
 
+  const isCustomNetwork = useSelector(getIsCustomNetwork);
+
   return (
     <>
       <AssetNavigation
@@ -51,7 +54,7 @@ export default function TokenAsset({ token }) {
                 showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
               )
             }
-            isEthNetwork={!rpcPrefs.blockExplorerUrl}
+            isCustomNetwork={isCustomNetwork}
             onClickBlockExplorer={() => {
               trackEvent({
                 event: 'Clicked Block Explorer Link',

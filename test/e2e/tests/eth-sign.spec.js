@@ -42,7 +42,7 @@ describe('Eth sign', function () {
           '.request-signature__header__text',
         );
         const origin = await driver.findElement('.request-signature__origin');
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         const personalMessageRow = await driver.findElement(

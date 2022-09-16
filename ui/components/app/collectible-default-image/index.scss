@@ -1,0 +1,22 @@
+.collectible-default {
+  background-color: var(--color-background-alternative);
+  padding-top: 100%; // retains 1:1 aspect ratio
+  position: relative;
+  width: 100%;
+
+  &__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    position: absolute;
+    white-space: nowrap;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 32px);
+  }
+
+  &--clickable {
+    cursor: pointer;
+  }
+}

@@ -18,7 +18,7 @@
   }
 
   &--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18); /* TODO! */
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border: 1px solid var(--color-border-default);
   }
 
@@ -91,7 +91,7 @@
   }
 
   &__search-list--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     border: 1px solid var(--color-border-muted);
   }
 

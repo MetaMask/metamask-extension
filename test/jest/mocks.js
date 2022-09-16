@@ -1,3 +1,8 @@
+import {
+  draftTransactionInitialState,
+  initialState,
+} from '../../ui/ducks/send';
+
 export const TOP_ASSETS_GET_RESPONSE = [
   {
     symbol: 'LINK',
@@ -103,3 +108,42 @@ export const createGasFeeEstimatesForFeeMarket = () => {
     estimatedBaseFee: '50',
   };
 };
+
+export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
+  ...initialState,
+  currentTransactionUUID: 'test-uuid',
+  draftTransactions: {
+    'test-uuid': {
+      ...draftTransactionInitialState,
+    },
+  },
+};
+
+export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
+  ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  draftTransactions: {
+    'test-uuid': {
+      ...draftTransactionInitialState,
+      ...draftTxState,
+      amount: {
+        ...draftTransactionInitialState.amount,
+        ...draftTxState.amount,
+      },
+      asset: {
+        ...draftTransactionInitialState.asset,
+        ...draftTxState.asset,
+      },
+      gas: {
+        ...draftTransactionInitialState.gas,
+        ...draftTxState.gas,
+      },
+      recipient: {
+        ...draftTransactionInitialState.recipient,
+        ...draftTxState.recipient,
+      },
+      history: draftTxState.history ?? [],
+      // Use this key if you want to console.log inside the send.js file.
+      test: draftTxState.test ?? 'yo',
+    },
+  },
+});

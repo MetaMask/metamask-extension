@@ -32,7 +32,7 @@ const getMaxPriorityFeePerGasFromTransaction = (
 };
 
 /**
- * @typedef {Object} MaxPriorityFeePerGasInputReturnType
+ * @typedef {object} MaxPriorityFeePerGasInputReturnType
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
  *  input value.
  * @property {string} [maxPriorityFeePerGasFiat] - the maxPriorityFeePerGas
@@ -63,10 +63,8 @@ export function useMaxPriorityFeePerGasInput({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 

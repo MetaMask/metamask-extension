@@ -2,14 +2,9 @@ import log from 'loglevel';
 
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
+  CHAIN_IDS,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
   TRANSAK_API_KEY,
@@ -17,7 +12,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * Create a Wyre purchase URL.
@@ -83,9 +78,8 @@ const createTransakUrl = (walletAddress, chainId) => {
  * @returns String
  */
 const createMoonPayUrl = async (walletAddress, chainId) => {
-  const {
-    moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
-  } = BUYABLE_CHAINS_MAP[chainId];
+  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+    BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,
@@ -141,7 +135,7 @@ const createCoinbasePayUrl = (walletAddress, chainId) => {
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
- * @param {Object} opts - Options required to determine the correct url
+ * @param {object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
  * @param opts.service
@@ -172,6 +166,8 @@ export default async function getBuyUrl({ chainId, address, service }) {
       return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
+    case 'sepolia-faucet':
+      return 'https://faucet.sepolia.dev/';
     default:
       throw new Error(
         `Unknown cryptocurrency exchange or faucet: "${service}"`,
@@ -181,16 +177,18 @@ export default async function getBuyUrl({ chainId, address, service }) {
 
 function getDefaultServiceForChain(chainId) {
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return 'wyre';
-    case ROPSTEN_CHAIN_ID:
+    case CHAIN_IDS.ROPSTEN:
       return 'metamask-faucet';
-    case RINKEBY_CHAIN_ID:
+    case CHAIN_IDS.RINKEBY:
       return 'rinkeby-faucet';
-    case KOVAN_CHAIN_ID:
+    case CHAIN_IDS.KOVAN:
       return 'kovan-faucet';
-    case GOERLI_CHAIN_ID:
+    case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
+    case CHAIN_IDS.SEPOLIA:
+      return 'sepolia-faucet';
     default:
       throw new Error(
         `No default cryptocurrency exchange or faucet for chainId: "${chainId}"`,

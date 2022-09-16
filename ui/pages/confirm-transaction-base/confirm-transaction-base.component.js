@@ -116,6 +116,9 @@ export default class ConfirmTransactionBase extends Component {
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
+    customTokenAmount: PropTypes.string,
+    dappProposedTokenAmount: PropTypes.string,
+    currentTokenBalance: PropTypes.string,
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
@@ -148,6 +151,7 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    setApproveForAllArg: PropTypes.bool,
   };
 
   state = {
@@ -338,6 +342,7 @@ export default class ConfirmTransactionBase extends Component {
     };
 
     const hasSimulationError = Boolean(txData.simulationFails);
+
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
@@ -417,7 +422,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="custom-nonce-input">
             <TextField
               type="number"
-              min="0"
+              min={0}
               placeholder={
                 typeof nextNonce === 'number' ? nextNonce.toString() : null
               }
@@ -546,10 +551,10 @@ export default class ConfirmTransactionBase extends Component {
                   maxPriorityFeePerGas={hexWEIToDecGWEI(
                     maxPriorityFeePerGas ||
                       txData.txParams.maxPriorityFeePerGas,
-                  )}
+                  ).toString()}
                   maxFeePerGas={hexWEIToDecGWEI(
                     maxFeePerGas || txData.txParams.maxFeePerGas,
-                  )}
+                  ).toString()}
                 />
               )}
             </>
@@ -803,10 +808,15 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       updateCustomNonce,
       maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
       maxPriorityFeePerGas,
       baseFeePerGas,
+      methodData,
     } = this.props;
     const { submitting } = this.state;
+    const { name } = methodData;
 
     if (submitting) {
       return;
@@ -814,6 +824,26 @@ export default class ConfirmTransactionBase extends Component {
 
     if (baseFeePerGas) {
       txData.estimatedBaseFee = baseFeePerGas;
+    }
+
+    if (name) {
+      txData.contractMethodName = name;
+    }
+
+    if (dappProposedTokenAmount) {
+      txData.dappProposedTokenAmount = dappProposedTokenAmount;
+      txData.originalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (customTokenAmount) {
+      txData.customTokenAmount = customTokenAmount;
+      txData.finalApprovalAmount = customTokenAmount;
+    } else if (dappProposedTokenAmount !== undefined) {
+      txData.finalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (currentTokenBalance) {
+      txData.currentTokenBalance = currentTokenBalance;
     }
 
     if (maxFeePerGas) {
@@ -863,12 +893,15 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   renderTitleComponent() {
-    const { title, hexTransactionAmount } = this.props;
+    const { title, hexTransactionAmount, txData } = this.props;
 
     // Title string passed in by props takes priority
     if (title) {
       return null;
     }
+
+    const isContractInteraction =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
 
     return (
       <UserPreferencedCurrencyDisplay
@@ -876,7 +909,8 @@ export default class ConfirmTransactionBase extends Component {
         type={PRIMARY}
         showEthLogo
         ethLogoHeight={24}
-        hideLabel
+        hideLabel={!isContractInteraction}
+        showCurrencySuffix={isContractInteraction}
       />
     );
   }
@@ -1015,6 +1049,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       hardwareWalletRequiresConnection,
       image,
+      setApproveForAllArg,
     } = this.props;
     const {
       submitting,
@@ -1043,7 +1078,10 @@ export default class ConfirmTransactionBase extends Component {
     } = this.getNavigateTxData();
 
     let functionType;
-    if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    if (
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      txData.origin !== 'metamask'
+    ) {
       functionType = getMethodName(name);
     }
 
@@ -1112,6 +1150,7 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
+          setApproveForAllArg={setApproveForAllArg}
         />
       </TransactionModalContextProvider>
     );
