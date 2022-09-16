@@ -10,6 +10,7 @@ import {
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
+import { THEME_TYPE } from '../../../ui/pages/settings/experimental-tab/experimental-tab.constant';
 
 export default class PreferencesController {
   /**
@@ -69,9 +70,9 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
-      theme: 'light',
       improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
+      theme: THEME_TYPE.OS,
       ...opts.initState,
     };
 
