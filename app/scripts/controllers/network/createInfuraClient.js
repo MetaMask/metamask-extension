@@ -8,7 +8,7 @@ import {
   providerFromMiddleware,
 } from 'eth-json-rpc-middleware';
 
-import createInfuraMiddleware from 'eth-json-rpc-infura';
+import { createInfuraMiddleware } from '@metamask/eth-json-rpc-infura';
 import { PollingBlockTracker } from 'eth-block-tracker';
 
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
