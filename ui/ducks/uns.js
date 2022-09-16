@@ -31,7 +31,17 @@ const initialState = {
 export const unsInitialState = initialState;
 
 const name = 'UNS';
-
+/**
+ * Creates a Slice of Unstoppable Domains State.
+ *
+ * @param {string} error - conatins errors from resolution calls
+ * @param {string} stage - tells whether or not a UD call has initialized
+ * @param {string} resolution - holds the resolved crypto address (08x....)
+ * @param {string} warning - contains warnings from resolution calls
+ * @param {string} network - chain network
+ * @param {string} domainName - contains the Unstoppable Domain name (blah.crypto)
+ * @param {Array} tlds - contains the supported TLDs for Unstoppable Domains
+ */
 const slice = createSlice({
   name,
   initialState,
@@ -76,6 +86,7 @@ const slice = createSlice({
         state.error = UNS_COMMON_ERROR;
       }
     },
+    // lookup Uns State
     enableUnsLookup: (state, action) => {
       state.stage = 'INITIALIZED';
       state.error = null;
@@ -83,11 +94,13 @@ const slice = createSlice({
       state.warning = null;
       state.network = action.payload;
     },
+    // reset Uns State
     resetUnsResolution: (state) => {
       state.resolution = null;
       state.warning = null;
       state.error = null;
     },
+    // update Uns Tlds
     updateUdTlds: (state, tlds) => {
       state.tlds = tlds;
     },
@@ -111,7 +124,7 @@ const MULTI_CHAIN = 'MULTI_CHAIN';
 const NATIVE = 'NATIVE';
 
 export { resetUnsResolution, unsLookup, updateUdTlds };
-
+// initialize slice of state
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
     const state = getState();
@@ -120,7 +133,15 @@ export function initializeUnsSlice() {
     dispatch(enableUnsLookup(network));
   };
 }
-
+/**
+ * Prepares and Executes an Unstoppable Domain Resolution Call
+ * takes an Unstoppable Domain
+ * determines transaction chaintype
+ * calls appropriate Uns Resolution
+ * dispatches state changes
+ *
+ * @param {string} unsName - inputted Unstoppable Domain Name
+ */
 export function prepareResolutionCall(unsName) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -137,27 +158,30 @@ export function prepareResolutionCall(unsName) {
       result = MULTI_CHAIN;
     }
     if (result === SINGLE_CHAIN) {
-      const object = await resolveUNS(unsName, state.metamask.nativeCurrency);
+      const resolution = await resolveSingleChainUns(
+        unsName,
+        state.metamask.nativeCurrency,
+      );
       await dispatch(
         unsLookup({
-          unsName: object.unsName,
-          address: object.address,
-          error: object.error,
+          unsName: resolution.unsName,
+          address: resolution.address,
+          error: resolution.error,
         }),
       );
     } else if (result === MULTI_CHAIN) {
-      let object = {};
+      let resolution = {};
       if (
         state.send.draftTransactions[state.send.currentTransactionUUID].asset
           .type === NATIVE
       ) {
-        object = await resolveMultiChainUNS(
+        resolution = await resolveMultiChainUNS(
           unsName,
           state.metamask.nativeCurrency,
           state.metamask.nativeCurrency,
         );
       } else {
-        object = await resolveMultiChainUNS(
+        resolution = await resolveMultiChainUNS(
           unsName,
           state.send.draftTransactions[state.send.currentTransactionUUID].asset
             .details.symbol,
@@ -167,56 +191,89 @@ export function prepareResolutionCall(unsName) {
       }
       await dispatch(
         unsLookup({
-          unsName: object.unsName,
-          address: object.address,
-          error: object.error,
+          unsName: resolution.unsName,
+          address: resolution.address,
+          error: resolution.error,
         }),
       );
     }
   };
 }
-
-export async function swapToken(unsName, asset) {
-  let object = {};
-  object.asset = asset;
-  object.chainType = await determineChainType(asset);
-  if (object.chainType === SINGLE_CHAIN) {
-    object = await resolveUNS(unsName, asset);
-  } else if (object.chainType === MULTI_CHAIN) {
-    object = await resolveMultiChainUNS(
+/**
+ * When a token is swapped on the send asset screen, re resolve to the corresponding Uns Crypto Address
+ * takes an Unstoppable Domain and a token
+ * determines transaction chaintype
+ * calls appropriate Uns Resolution
+ * returns the resolved addresses
+ *
+ * @param {string} unsName - inputted Unstoppable Domain Name
+ * @param {string} asset - swapped to token
+ */
+export async function swapUdOnTokenChange(unsName, asset) {
+  let resolution = {};
+  resolution.asset = asset;
+  resolution.chainType = await determineChainType(asset);
+  if (resolution.chainType === SINGLE_CHAIN) {
+    resolution = await resolveSingleChainUns(unsName, asset);
+  } else if (resolution.chainType === MULTI_CHAIN) {
+    resolution = await resolveMultiChainUNS(
       unsName,
       asset.details.symbol,
       asset.details.standard,
     );
   }
-  return object;
+  return resolution;
 }
-
-async function resolveUNS(unsName, currency) {
-  const object = {};
-  const resolution = new Resolution();
-  object.unsName = unsName;
-  object.currency = currency;
-  object.address = await resolution.addr(unsName, currency).catch((err) => {
-    object.error = err.code;
-  });
-  return object;
+/**
+ * Resolves Unstoppable Domains into Single Chain currency addresses
+ * takes an Unstoppable Domain and a currency/token
+ * calls the Uns Resolution
+ * returns the resolved addresses
+ *
+ * @param {string} unsName - inputted Unstoppable Domain Name
+ * @param {string} symbol - inputted token symbol
+ */
+async function resolveSingleChainUns(unsName, symbol) {
+  const resolution = {};
+  const udResolutionInstance = new Resolution();
+  resolution.unsName = unsName;
+  resolution.currency = symbol;
+  resolution.address = await udResolutionInstance
+    .addr(unsName, symbol)
+    .catch((err) => {
+      resolution.error = err.code;
+    });
+  return resolution;
 }
-
+/**
+ * Resolves Unstoppable Domains into Multi Chain currency addresses
+ * takes an Unstoppable Domain, a token symbol (MATIC), and a token version (ERC...)
+ * calls the Uns Resolution
+ * returns the resolved addresses
+ *
+ * @param {string} unsName - inputted Unstoppable Domain Name
+ * @param {string} symbol - inputted token symbol
+ * @param {string} version - inputted token version
+ */
 async function resolveMultiChainUNS(unsName, symbol, version) {
-  const resolution = new Resolution();
-  const object = {};
-  object.unsName = unsName;
-  object.currency = symbol;
-  object.verysion = version;
-  object.address = await resolution
+  const udResolutionInstance = new Resolution();
+  const resolution = {};
+  resolution.unsName = unsName;
+  resolution.currency = symbol;
+  resolution.version = version;
+  resolution.address = await udResolutionInstance
     .multiChainAddr(unsName, symbol, version)
     .catch((err) => {
-      object.error = err.code;
+      resolution.error = err.code;
     });
-  return object;
+  return resolution;
 }
-
+/**
+ * determines the chaintype of a given asset/token
+ * returns Multi or SingleChain
+ *
+ * @param {object || string} asset - token/currency
+ */
 async function determineChainType(asset) {
   if (typeof asset === 'object') {
     return MULTI_CHAIN;
@@ -224,7 +281,7 @@ async function determineChainType(asset) {
   const currencies = await getAndParseUdCurrencies();
   return currencies.singleChain.includes(asset) ? SINGLE_CHAIN : MULTI_CHAIN;
 }
-
+// state getter methods
 export function getUnsResolution(state) {
   return state[name].resolution;
 }

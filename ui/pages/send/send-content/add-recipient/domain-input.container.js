@@ -12,7 +12,7 @@ import {
   updateUdTlds,
 } from '../../../../ducks/uns';
 import DomainInput from './domain-input.component';
-
+// adding Uns functions to dispatch
 function mapDispatchToProps(dispatch) {
   return {
     lookupEnsName: debounce(

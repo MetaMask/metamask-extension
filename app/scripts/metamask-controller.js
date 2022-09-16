@@ -1718,7 +1718,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
-
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),

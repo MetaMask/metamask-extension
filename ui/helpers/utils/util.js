@@ -109,8 +109,17 @@ export function isValidENSDomainName(address) {
   });
   return result;
 }
-
-export async function isValidUnstoppableDomainName(address, inputTlds) {
+/**
+ * Determines whether or not user input is an Unstoppable Domain Name
+ * Checks for already given Tld Array
+ * If no array, grab the Tlds from the API
+ * compare the ending of the inputted string to the Tld array
+ * returns true or false
+ *
+ * @param {string} domainInput - inputted Unstoppable Domain Name
+ * @param {Array} inputTlds - optional Tld Array
+ */
+export async function isValidUnstoppableDomainName(domainInput, inputTlds) {
   let tlds;
   if (inputTlds) {
     tlds = inputTlds;
@@ -119,27 +128,36 @@ export async function isValidUnstoppableDomainName(address, inputTlds) {
   }
   let result = false;
   tlds.forEach((tld) => {
-    if (address.toLowerCase().endsWith(`.${tld}`)) {
+    if (domainInput.toLowerCase().endsWith(`.${tld}`)) {
       result = true;
     }
   });
   return result;
 }
+// hits UD API and returns with supported Unstoppable Tlds
+
 export async function getUdTlds() {
-  let result = [];
+  let supportedTlds = [];
   try {
     const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
     const response = await fetch(url);
     const data = await response.json();
-    result = data.tlds;
-    return result;
+    supportedTlds = data.tlds;
+    return supportedTlds;
   } catch {
-    return result;
+    return supportedTlds;
   }
 }
-
+/**
+ * Hits UD API, sorts, and then returns with supported Unstoppable Currencies
+ * hit the api
+ * parse the returned keys
+ * loop through each currency
+ * Sort depending on chaintype
+ * return sorted currencies
+ */
 export async function getAndParseUdCurrencies() {
-  const resultObject = {
+  const supportedCurrencies = {
     singleChain: [],
     multiChain: [],
   };
@@ -150,17 +168,23 @@ export async function getAndParseUdCurrencies() {
     const currencyArray = parseKeysArray(JSON.parse(data).keys);
     currencyArray.forEach(function (crypto) {
       if (crypto.includes('.version.')) {
-        resultObject.multiChain.push(crypto.split('.')[1]);
+        supportedCurrencies.multiChain.push(crypto.split('.')[1]);
       } else {
-        resultObject.singleChain.push(crypto.split('.')[1]);
+        supportedCurrencies.singleChain.push(crypto.split('.')[1]);
       }
     });
-    return resultObject;
+    return supportedCurrencies;
   } catch {
-    return resultObject;
+    return supportedCurrencies;
   }
 }
-
+/**
+ * Takes API results filters out all non crypto currencies
+ * grabs just the keys
+ * returns only the keys that start with crypto
+ *
+ * @param {object} json - API results containing supported currencies
+ */
 export function parseKeysArray(json) {
   const result = [];
   const keys = Object.keys(json);
