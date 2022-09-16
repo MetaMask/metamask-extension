@@ -2974,6 +2974,17 @@
     ethereumjs-util "^7.0.9"
     ethereumjs-wallet "^1.0.1"
 
+"@metamask/eth-json-rpc-infura@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-json-rpc-infura/-/eth-json-rpc-infura-7.0.0.tgz#67bf7655539cd4234d85b1aa31b15e02be4671df"
+  integrity sha512-V8iDCw3H0QCD1XyjtNNAz5jYsJWS0jGCUxLWsePSJydAdJnBEObcUuzWzwS2/7c7BIINPJbQ/toQ62syDOyYWg==
+  dependencies:
+    "@metamask/utils" "^3.0.1"
+    eth-json-rpc-middleware "^8.1.0"
+    eth-rpc-errors "^4.0.3"
+    json-rpc-engine "^6.1.0"
+    node-fetch "^2.6.7"
+
 "@metamask/eth-ledger-bridge-keyring@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.13.0.tgz#586b705d92339d08650f9eef42ab2388c4dd2675"
@@ -3244,6 +3255,16 @@
   integrity sha512-4PHdo5B1ifpw6GbsdlDpp8oqA++rddSmt2pWBHtIGGL2tQMvmfHdaDDSns4JP9iC+AbMogVcUpv5Vt8ow1zsRA==
   dependencies:
     fast-deep-equal "^3.1.3"
+
+"@metamask/utils@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-3.0.1.tgz#53ed2b9cbbd12b18c1db6929728446633d6a74c4"
+  integrity sha512-FDWQ+MeeWQh0b/w2D50+oVPrRqUIvawDlPia+EH9NCOFN0Ty3KkzkQXfO6FgHKMyR4aWuS4SBOrhWFRW8km6lQ==
+  dependencies:
+    "@types/debug" "^4.1.7"
+    debug "^4.3.4"
+    fast-deep-equal "^3.1.3"
+    superstruct "^0.16.0"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -4814,6 +4835,13 @@
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.12.tgz#6b2c510a7ad7039e98e7b8d3d6598f4359e5c080"
   integrity sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==
 
+"@types/debug@^4.1.7":
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.7.tgz#7cc0ea761509124709b8b2d1090d8f6c17aadb82"
+  integrity sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==
+  dependencies:
+    "@types/ms" "*"
+
 "@types/end-of-stream@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/end-of-stream/-/end-of-stream-1.4.1.tgz#9a401b642bcb0e4a8f0b70326725fbbb0216eb10"
@@ -5051,6 +5079,11 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
+
+"@types/ms@*":
+  version "0.7.31"
+  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
+  integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
 "@types/node-fetch@^2.5.7":
   version "2.5.12"
@@ -11731,14 +11764,15 @@ eth-json-rpc-middleware@^6.0.0:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^8.0.0:
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.0.2.tgz#7ce0b44443b8733c271ad64843a39d1782350fcb"
-  integrity sha512-aUx+Nf43pFAHnSQq1MqDETc6Bq0fIKpIen9oC3y4DLle4rsrSInx1Gxdde2/VZ1tlNcmN4M82ucbSMxR8bMqsg==
+eth-json-rpc-middleware@^8.0.0, eth-json-rpc-middleware@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.1.0.tgz#d2bf980768b43dcbcb7830ed1fcc34a16f63074d"
+  integrity sha512-0ZZDr6KoddqN4N100a7YWzLTYrVN0P49DJ3Su1vsRavPpieq92rgZymnQcr0tLFBQDEJg1MVqLex46fA0GEkDA==
   dependencies:
     "@metamask/safe-event-emitter" "^2.0.0"
     btoa "^1.2.1"
     clone "^2.1.1"
+    eth-block-tracker "^5.0.1"
     eth-rpc-errors "^4.0.3"
     eth-sig-util "^1.4.2"
     json-rpc-engine "^6.1.0"
@@ -26345,6 +26379,11 @@ superagent@^7.1.3:
     qs "^6.10.3"
     readable-stream "^3.6.0"
     semver "^7.3.7"
+
+superstruct@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.16.0.tgz#9af5e059acd08e774789ad8880962427ef68dace"
+  integrity sha512-IDQtwnnlaan1NhuHqyD/U11lROYvCQ79JyfwlFU9xEVHzqV/Ys/RrwmHPCG0CVH/1g0BuodEjH1msxK2UHxehA==
 
 superstruct@^0.6.0, superstruct@~0.6.0, superstruct@~0.6.1:
   version "0.6.1"

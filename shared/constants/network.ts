@@ -195,7 +195,7 @@ export const NETWORK_IDS = {
   GOERLI: '5',
   KOVAN: '42',
   LOCALHOST: '1337',
-  SEPOLIA: '6',
+  SEPOLIA: '11155111',
 } as const;
 
 /**

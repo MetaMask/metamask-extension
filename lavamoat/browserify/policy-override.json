@@ -58,6 +58,11 @@
         "XMLHttpRequest": true
       }
     },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
     "react-dom": {
       "globals": {
         "HTMLIFrameElement": true
