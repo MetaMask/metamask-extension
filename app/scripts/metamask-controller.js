@@ -9,11 +9,7 @@ import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
-import {
-  errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+import { errorCodes as rpcErrorCodes, ethErrors } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
@@ -46,7 +42,6 @@ import {
   NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
-import * as TEST from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
@@ -1492,7 +1487,6 @@ export default class MetamaskController extends EventEmitter {
     const {
       addressBookController,
       alertController,
-      approvalController,
       appStateController,
       collectiblesController,
       collectibleDetectionController,
