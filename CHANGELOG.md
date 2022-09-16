@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.19.0]
 ### Added
 - Add ENS wildcard and secure offchain resolution (ENSIP-10 & EIP3668) ([#14675](https://github.com/MetaMask/metamask-extension/pull/14675))
-- Add "What's New" notification for Add Popular Networks ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add "What's New" notification about the Merge ([#15846](https://github.com/MetaMask/metamask-extension/pull/15846))
+- Add "What's New" notification about 3box deprecation ([#15763](https://github.com/MetaMask/metamask-extension/pull/15763))
+- Add "What's New" notification for Add Popular Networks feature ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add "What's New" notification for Token Detection feature ([#15807](https://github.com/MetaMask/metamask-extension/pull/15807))
+- Add Warning for Rinkeby, Ropsten and Kovan test networks deprecation ([#15725](https://github.com/MetaMask/metamask-extension/pull/15725))
 - Add Network Info popup when changing selected Network ([#13319](https://github.com/MetaMask/metamask-extension/pull/13319))
 - Add Goerli, BSC, Optimism, Polygon, Avalance, Fantom and Arbitrum networks to query balances using BalanceChecker ([#13846]
 - Add Token detection V2 ([#15138](https://github.com/MetaMask/metamask-extension/pull/15138))
@@ -17,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add a Warning on the Confirmation screen, when user is performing a SetApprovalForAll transaction ([#15512](https://github.com/MetaMask/metamask-extension/pull/15512))
 - Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
 - Add Italian translation for "Forgot password" message ([#15477](https://github.com/MetaMask/metamask-extension/pull/15477))
+- Add link to Metalabs dapp into MetaMask home page ([#15407](https://github.com/MetaMask/metamask-extension/pull/15407))
+- Add Sepolia as a default test network ([#15787](https://github.com/MetaMask/metamask-extension/pull/15787))
 - Swaps: on the STX status page ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
   - Add a link to the Swap tx
   - Add a link for "Create a new swap"
@@ -59,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Connected site popup styling, by aligning the rows, shrinking the site icon with long URLs and preventing size change on Disconnect button hover ([#15409](https://github.com/MetaMask/metamask-extension/pull/15409))
 - Fix Blockies icon on Recipient Details, by ensuring it is used when the option is enabled ([#15662](https://github.com/MetaMask/metamask-extension/pull/15662))
 - Fix casing in Import Token for Spanish locale ([#15687](https://github.com/MetaMask/metamask-extension/pull/15687))
+- Fix approval warning condition for `setApprovalForAll` so it is not shown when revoking ([#15806](https://github.com/MetaMask/metamask-extension/pull/15806))
+- Fix disabled Sign button on the Sign Message screen unless scrolled to the bottom ([#15788](https://github.com/MetaMask/metamask-extension/pull/15788))
 - Swaps: fix displaying "No tokens available matching" when there are tokens available, by updating the `results` state if `initialResultsState` array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
 - Swaps: fix redirect button to the Activity tab, after performing a Swap and clicking "View in Activity" [(#15620)](https://github.com/MetaMask/metamask-extension/pull/15620))
 - [FLASK] Fix missing snap hook for `getAppKey`, the `getUnlockPromise` hook was missing, breaking some snap examples ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
