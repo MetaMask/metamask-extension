@@ -48,6 +48,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 import {
+  generateActionId,
   callBackgroundMethod,
   submitRequestToBackground,
 } from './action-queue';
@@ -894,7 +895,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   sendFlowHistory,
 ) {
   return async (dispatch) => {
-    const actionId = Date.now() + Math.random();
+    const actionId = generateActionId();
     try {
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground(
@@ -927,7 +928,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  */
 export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
-  const actionId = Date.now() + Math.random();
+  const actionId = generateActionId();();
   const txMeta = await submitRequestToBackground(
     'addUnapprovedTransaction',
     [txParams, ORIGIN_METAMASK, type, undefined, actionId],
@@ -940,7 +941,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      const actionId = Date.now() + Math.random();
+      const actionId = generateActionId();();
       callBackgroundMethod(
         'updateAndApproveTransaction',
         [txData, actionId],
@@ -1292,7 +1293,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      const actionId = Date.now() + Math.random();
+      const actionId = generateActionId();
       callBackgroundMethod(
         'cancelTransaction',
         [txData.id, actionId],
@@ -1338,7 +1339,7 @@ export function cancelTxs(txDataList) {
       const cancellations = txIds.map(
         (id) =>
           new Promise((resolve, reject) => {
-            const actionId = Date.now() + Math.random();
+            const actionId = generateActionId();
             callBackgroundMethod('cancelTransaction', [id, actionId], (err) => {
               if (err) {
                 reject(err);
@@ -1990,7 +1991,7 @@ export function createCancelTransaction(txId, customGasSettings, options) {
   let newTxId;
 
   return (dispatch) => {
-    const actionId = Date.now() + Math.random();
+    const actionId = generateActionId();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createCancelTransaction',
@@ -2020,7 +2021,7 @@ export function createSpeedUpTransaction(txId, customGasSettings, options) {
   let newTx;
 
   return (dispatch) => {
-    const actionId = Date.now() + Math.random();
+    const actionId = generateActionId();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createSpeedUpTransaction',
@@ -2049,7 +2050,7 @@ export function createRetryTransaction(txId, customGasSettings) {
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      const actionId = Date.now() + Math.random();
+      const actionId = generateActionId();
       callBackgroundMethod(
         'createSpeedUpTransaction',
         [txId, customGasSettings, { actionId }],
@@ -3617,14 +3618,14 @@ export function trackMetaMetricsEvent(payload, options) {
 }
 
 export function createEventFragment(options) {
-  const actionId = Date.now() + Math.random();
+  const actionId =generateActionId();
   return submitRequestToBackground('createEventFragment', [
     { ...options, actionId },
   ]);
 }
 
 export function createTransactionEventFragment(transactionId, event) {
-  const actionId = Date.now() + Math.random();
+  const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
     transactionId,
     event,
