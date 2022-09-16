@@ -2052,7 +2052,7 @@ export function createRetryTransaction(txId, customGasSettings) {
       const actionId = Date.now() + Math.random();
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings, actionId],
+        [txId, customGasSettings, { actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));

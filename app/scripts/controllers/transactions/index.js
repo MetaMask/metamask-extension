@@ -1621,6 +1621,7 @@ export default class TransactionController extends EventEmitter {
       this._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.FINALIZED,
+        undefined,
         metricsParams,
       );
 
@@ -1681,6 +1682,7 @@ export default class TransactionController extends EventEmitter {
       this._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.FINALIZED,
+        undefined,
         metricsParams,
       );
 
@@ -1710,7 +1712,6 @@ export default class TransactionController extends EventEmitter {
   async cancelTransaction(txId, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
-    // TBD
     this._trackTransactionMetricsEvent(
       txMeta,
       TRANSACTION_EVENTS.REJECTED,
