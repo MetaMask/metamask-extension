@@ -2561,8 +2561,13 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
-      dropped: true,
-    });
+    this._trackTransactionMetricsEvent(
+      txMeta,
+      TRANSACTION_EVENTS.FINALIZED,
+      undefined,
+      {
+        dropped: true,
+      },
+    );
   }
 }
