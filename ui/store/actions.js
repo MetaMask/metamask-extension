@@ -2004,19 +2004,16 @@ export function createCancelTransaction(txId, customGasSettings, options) {
   };
 }
 
-export function createSpeedUpTransaction(
-  txId,
-  customGasSettings,
-  newTxMetaProps,
-) {
+export function createSpeedUpTransaction(txId, customGasSettings, options) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
   return (dispatch) => {
+    const actionId = Date.now() + Math.random();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings, newTxMetaProps],
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2028,6 +2025,7 @@ export function createSpeedUpTransaction(
           newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -3259,13 +3257,14 @@ export function getContractMethodData(data = '') {
   return (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
+    if (fourBytePrefix.length < 10) {
+      return Promise.resolve({});
+    }
     const { knownMethodData } = getState().metamask;
-
     if (
-      (knownMethodData &&
-        knownMethodData[fourBytePrefix] &&
-        Object.keys(knownMethodData[fourBytePrefix]).length !== 0) ||
-      fourBytePrefix === '0x'
+      knownMethodData &&
+      knownMethodData[fourBytePrefix] &&
+      Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
       return Promise.resolve(knownMethodData[fourBytePrefix]);
     }
@@ -3854,6 +3853,10 @@ export async function detectNewTokens() {
 // App state
 export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
+}
+
+export function hidePortfolioTooltip() {
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
 export function setCollectiblesDetectionNoticeDismissed() {

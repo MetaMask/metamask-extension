@@ -14,7 +14,7 @@ import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
@@ -192,7 +192,7 @@ describe('useTransactionDisplayData', () => {
       } else if (selector === getCurrentCurrency) {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
-        return MAINNET_CHAIN_ID;
+        return CHAIN_IDS.MAINNET;
       }
       return null;
     });

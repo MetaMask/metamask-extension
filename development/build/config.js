@@ -25,6 +25,7 @@ async function getConfig() {
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
     ONBOARDING_V2: process.env.ONBOARDING_V2,
     PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
+    PORTFOLIO_URL: process.env.PORTFOLIO_URL,
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY,
     SEGMENT_HOST: process.env.SEGMENT_HOST,

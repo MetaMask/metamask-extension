@@ -114,6 +114,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   };
 
+  updateBackgroundConnection(backgroundConnection);
+
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
@@ -160,8 +162,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       }),
     );
   }
-
-  updateBackgroundConnection(backgroundConnection);
 
   // global metamask api - used by tooling
   global.metamask = {

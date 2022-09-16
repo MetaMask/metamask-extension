@@ -105,6 +105,8 @@ const t = (key) => {
       return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
+    case 'sepolia':
+      return 'Sepolia test network';
     case 'kovan':
       return 'Kovan test network';
     case 'localhost':
@@ -185,7 +187,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(7);
     });
 
     it('should get good experimental section number', () => {

@@ -9,7 +9,7 @@ import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
@@ -175,7 +175,7 @@ export default function TokenDetailsPage() {
           marginTop={0}
           color={COLORS.TEXT_DEFAULT}
         >
-          {networkType === NETWORK_TYPE_RPC
+          {networkType === NETWORK_TYPES.RPC
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
