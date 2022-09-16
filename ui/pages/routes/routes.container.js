@@ -9,6 +9,7 @@ import {
   isNetworkLoading,
   getTheme,
   getIsTestnet,
+  getCurrentChainId,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -46,6 +47,7 @@ function mapStateToProps(state) {
     isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestnet: getIsTestnet(state),
+    currrentChainId: getCurrentChainId(state),
   };
 }
 
