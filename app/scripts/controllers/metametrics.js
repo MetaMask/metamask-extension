@@ -188,6 +188,15 @@ export default class MetaMetricsController {
         }`,
       );
     }
+
+    const existingFragment = this.getExistingEventFragment(
+      options.actionId,
+      options.uniqueIdentifier,
+    );
+    if (existingFragment) {
+      return existingFragment;
+    }
+
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
@@ -234,6 +243,26 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
+  }
+
+  /**
+   * Returns the fragment stored in memory with provided id or undefined if it
+   * does not exist.
+   *
+   * @param {string} actionId - actionId passed from UI
+   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
+   * @returns {[MetaMetricsEventFragment]}
+   */
+  getExistingEventFragment(actionId, uniqueIdentifier) {
+    const { fragments } = this.store.getState();
+
+    const existingFragment = Object.values(fragments).find(
+      (fragment) =>
+        fragment.actionId === actionId &&
+        fragment.uniqueIdentifier === uniqueIdentifier,
+    );
+
+    return existingFragment;
   }
 
   /**
