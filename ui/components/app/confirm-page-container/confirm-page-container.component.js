@@ -308,7 +308,7 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && !setApproveForAllArg && (
+          {isSetApproveForAll && setApproveForAllArg && (
             <Dialog type="error" className="confirm-page-container__dialog">
               {t('confirmPageDialogSetApprovalForAll')}
             </Dialog>
