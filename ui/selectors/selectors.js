@@ -1216,3 +1216,13 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
+
+export function getShouldShowSeedPhraseReminder(state) {
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } = state;
+  const accountBalance = getCurrentEthBalance(state);
+  return (
+    seedPhraseBackedUp === false &&
+    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+    dismissSeedBackUpReminder === false
+  );
+}
