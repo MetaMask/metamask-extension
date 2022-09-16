@@ -1,14 +1,14 @@
-import { SUPPORT_LINK } from '../constants/common';
+import { fetchLocale } from '../../ui/helpers/utils/i18n-helper';
+import { SUPPORT_LINK } from './ui-utils';
 import { getErrorHtml } from './error-utils';
-import { fetchLocale } from './i18n-helper';
 
-jest.mock('./i18n-helper', () => ({
+jest.mock('../../ui/helpers/utils/i18n-helper', () => ({
   fetchLocale: jest.fn(),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
 
-describe('Error utils Tests', () => {
-  it('should get error html', async () => {
+describe('Error utils Tests', function () {
+  it('should get error html', async function () {
     const mockStore = {
       localeMessages: {
         current: {
