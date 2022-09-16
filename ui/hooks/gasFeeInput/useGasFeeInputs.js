@@ -13,11 +13,11 @@ import {
   getAdvancedInlineGasShown,
   getEIP1559V2Enabled,
 } from '../../selectors';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';

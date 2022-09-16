@@ -11,20 +11,6 @@ export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
 
-export function hexToDecimal(hexValue) {
-  return conversionUtil(hexValue, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-  });
-}
-
-export function decimalToHex(decimal) {
-  return conversionUtil(decimal, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'hex',
-  });
-}
-
 export function getEthConversionFromWeiHex({
   value,
   fromCurrency = ETH,
@@ -132,15 +118,6 @@ export function decGWEIToHexWEI(decGWEI) {
     toNumericBase: 'hex',
     fromDenomination: 'GWEI',
     toDenomination: 'WEI',
-  });
-}
-
-export function hexWEIToDecGWEI(decGWEI) {
-  return conversionUtil(decGWEI, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    toDenomination: 'GWEI',
   });
 }
 

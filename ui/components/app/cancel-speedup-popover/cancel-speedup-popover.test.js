@@ -11,12 +11,9 @@ import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
-import {
-  hexWEIToDecETH,
-  decGWEIToHexWEI,
-} from '../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 import InfoTooltip from '../../ui/info-tooltip';
-
+import { hexWEIToDecETH } from '../../../../shared/lib/transactions-controller-utils';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
