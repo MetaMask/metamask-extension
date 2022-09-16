@@ -49,6 +49,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-cog',
   },
   {
+    tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${GENERAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('stateLogs'),
     descriptionMessage: (t) => t('stateLogsDescription'),
@@ -311,13 +318,6 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('enableEIP1559V2'),
     descriptionMessage: (t) => t('enableEIP1559V2Description'),
     route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('theme'),
-    descriptionMessage: (t) => t('themeDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#theme`,
     icon: 'fa fa-flask',
   },
   {
