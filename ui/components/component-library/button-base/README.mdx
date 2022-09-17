@@ -1,12 +1,11 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
-
 import { ButtonBase } from './button-base';
 
 ### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
 
 # ButtonBase
 
-The `ButtonBase` is the base component for all icons. It is used in conjunction with a script to create all icons it should not be used directly.
+The `ButtonBase` is the base component for buttons.
 
 <Canvas>
   <Story id="ui-components-component-library-button-base-button-base-stories-js--default-story" />
@@ -20,14 +19,16 @@ The `ButtonBase` accepts all props below as well as all [Box](/docs/ui-component
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonBase`. Defaults to `SIZES.SM`
+Use the `size` prop and the `BUTTON_SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonBase`. Defaults to `BUTTON_SIZES.MD`
+
+You can use the `SIZES` object from `./ui/helpers/constants/design-system.js` as well, but it will not include the `ZERO_PADDING` option used for `ButtonTertiary`.
 
 Possible sizes include:
 
-- `SIZES.XS` 22px
-- `SIZES.SM` 32px
-- `SIZES.MD` 40px
-- `SIZES.LG` 48px
+- `BUTTON_SIZES.ZERO_PADDING` 22px
+- `BUTTON_SIZES.SM` 32px
+- `BUTTON_SIZES.MD` 40px
+- `BUTTON_SIZES.LG` 48px
 
 <Canvas>
   <Story id="ui-components-component-library-button-base-button-base-stories-js--size" />
@@ -37,8 +38,81 @@ Possible sizes include:
 import { BUTTON_SIZES } from '../../../helpers/constants/design-system';
 import { ButtonBase } from '../ui/component-library';
 
-<ButtonBase size={SIZES.XS} />
-<ButtonBase size={SIZES.SM} />
-<ButtonBase size={SIZES.MD} />
-<ButtonBase size={SIZES.LG} />
+<ButtonBase size={BUTTON_SIZES.ZERO_PADDING} />
+<ButtonBase size={BUTTON_SIZES.SM} />
+<ButtonBase size={BUTTON_SIZES.MD} />
+<ButtonBase size={BUTTON_SIZES.LG} />
+```
+
+### Block Button
+
+Use boolean `block` prop to quickly enable a full width block button
+
+or
+
+Use the `display` prop and the `DISPLAY.BLOCK` object from `./ui/helpers/constants/design-system.js` to make `ButtonBase` a full width block.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--block" />
+</Canvas>
+
+```jsx
+import { DISPLAY } from '../../../helpers/constants/design-system';
+import { ButtonBase } from '../ui/component-library';
+
+<ButtonBase>Default Button</ButtonBase>
+<ButtonBase block>Block Button</ButtonBase>
+<ButtonBase display={DISPLAY.BLOCK}>Block Button</ButtonBase>
+```
+
+### As
+
+Use the `as` box prop to change the element of `ButtonBase`. Defaults to `button`.
+
+Button `as` options:
+
+- `button`
+- `a`
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--as" />
+</Canvas>
+
+```jsx
+import { BUTTON_SIZES } from '../../../helpers/constants/design-system';
+import { ButtonBase } from '../ui/component-library';
+
+
+<ButtonBase as="button">Button Element</ButtonBase>
+<ButtonBase as="a" href="#">
+  Anchor Element
+</ButtonBase>
+```
+
+### Disabled
+
+Use the boolean `disabled` prop to disable button
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--disabled" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../ui/component-library';
+
+<ButtonBase disabled>Disabled Button</ButtonBase>;
+```
+
+### Loading
+
+Use the boolean `loading` prop to set loading spinner
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--loading" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../ui/component-library';
+
+<ButtonBase loading>Loading Button</ButtonBase>;
 ```

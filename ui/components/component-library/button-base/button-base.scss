@@ -1,6 +1,5 @@
 .mm-button {
   position: relative;
-  display: inline-block;
   height: 2.5rem;
   padding: 0;
   border-radius: 999px;
@@ -52,7 +51,12 @@
   }
 }
 
+.mm-button.box--display-block {
+  width: 100%;
+}
 
+
+// Temporary loading icon
 .spinner::before {
   content: '';
   box-sizing: border-box;
@@ -74,8 +78,3 @@
   to { transform: rotate(360deg); }
 }
 
-
-
-.mm-button.box--display-block {
-  width: 100%;
-}

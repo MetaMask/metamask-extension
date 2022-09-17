@@ -10,12 +10,14 @@ import {
   BUTTON_SIZES,
   JUSTIFY_CONTENT,
   TEXT_COLORS,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 
 export const ButtonBase = ({
   className,
   size = BUTTON_SIZES.MD,
   as = 'button',
+  block,
   children,
   loading,
   disabled,
@@ -26,6 +28,7 @@ export const ButtonBase = ({
       as={as}
       paddingLeft={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
       paddingRight={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
+      display={block ? DISPLAY.BLOCK : DISPLAY.INLINE_BLOCK}
       className={classnames(className, 'mm-button', `mm-button-size--${size}`, {
         [`mm-button--loading`]: Boolean(loading),
         [`mm-button--disabled`]: Boolean(disabled),
@@ -54,11 +57,15 @@ ButtonBase.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(BUTTON_SIZES)),
   /**
-   * The polymorphic `as` prop allows you to change the root HTML element of the Button component
+   * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    */
   as: PropTypes.string,
   /**
-   * Boolean to show loading wheel in button
+   * Boolean prop to quickly activate box prop display block
+   */
+  block: PropTypes.bool,
+  /**
+   * Boolean to show loading spinner in button
    */
   loading: PropTypes.bool,
   /**

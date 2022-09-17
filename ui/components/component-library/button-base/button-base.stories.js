@@ -46,6 +46,9 @@ export default {
       control: 'select',
       options: ['button', 'a'],
     },
+    block: {
+      control: 'boolean',
+    },
     disabled: {
       control: 'boolean',
     },
@@ -85,17 +88,11 @@ export default {
     },
   },
   args: {
-    children: 'Click Me',
+    children: 'Base Button',
   },
 };
 
-export const DefaultStory = (args) => (
-  <>
-    <ButtonBase {...args} />
-    <ButtonBase as="a" href="#" {...args} />
-    <ButtonBase display={DISPLAY.BLOCK} {...args} />
-  </>
-);
+export const DefaultStory = (args) => <ButtonBase {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -108,15 +105,41 @@ export const Size = (args) => (
   </Box>
 );
 
-export const FullWidth = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <ButtonBase {...args} size={BUTTON_SIZES.ZERO_PADDING} />
-    <ButtonBase {...args} size={BUTTON_SIZES.SM} />
-    <ButtonBase {...args} size={BUTTON_SIZES.MD} />
-    <ButtonBase {...args} size={BUTTON_SIZES.LG} />
+export const Block = (args) => (
+  <>
+    <ButtonBase {...args} marginBottom={2}>
+      Default Button
+    </ButtonBase>
+    <ButtonBase {...args} block marginBottom={2}>
+      Block Button
+    </ButtonBase>
+    <ButtonBase {...args} display={DISPLAY.BLOCK}>
+      Block Button
+    </ButtonBase>
+  </>
+);
+
+export const As = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
+    <ButtonBase {...args}>Button Element</ButtonBase>
+    <ButtonBase as="a" href="#" {...args}>
+      Anchor Element
+    </ButtonBase>
   </Box>
 );
 
-FullWidth.args = {
-  display: DISPLAY.BLOCK,
+export const Disabled = (args) => (
+  <ButtonBase {...args}>Disabled Button</ButtonBase>
+);
+
+Disabled.args = {
+  disabled: true,
+};
+
+export const Loading = (args) => (
+  <ButtonBase {...args}>Loading Button</ButtonBase>
+);
+
+Loading.args = {
+  loading: true,
 };

@@ -1,64 +1,67 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { BUTTON_SIZES } from '../../../helpers/constants/design-system';
 import { ButtonBase } from './button-base';
 
 describe('ButtonBase', () => {
-  it('should render correctly', () => {
+  it('should render button element correctly', () => {
     const { getByTestId, container } = render(
       <ButtonBase data-testid="button-base" />,
     );
     expect(getByTestId('button-base')).toBeDefined();
-    expect(container.querySelector('svg')).toBeDefined();
+    expect(container.querySelector('button')).toBeDefined();
+    expect(getByTestId('button-base')).toHaveClass('mm-button');
   });
+
+  it('should render anchor element correctly', () => {
+    const { getByTestId, container } = render(
+      <ButtonBase as="a" data-testid="button-base" />,
+    );
+    expect(getByTestId('button-base')).toBeDefined();
+    expect(container.querySelector('button')).toBeDefined();
+    expect(getByTestId('button-base')).toHaveClass('mm-button');
+  });
+
+  it('should render button as block', () => {
+    const { getByTestId } = render(<ButtonBase block data-testid="block" />);
+    expect(getByTestId('block')).toHaveClass(`box--display-block`);
+  });
+
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonBase size={SIZES.XXS} data-testid="button-base-xxs" />
-        <ButtonBase size={SIZES.XS} data-testid="button-base-xs" />
-        <ButtonBase size={SIZES.SM} data-testid="button-base-sm" />
-        <ButtonBase size={SIZES.MD} data-testid="button-base-md" />
-        <ButtonBase size={SIZES.LG} data-testid="button-base-lg" />
-        <ButtonBase size={SIZES.XL} data-testid="button-base-xl" />
+        <ButtonBase
+          size={BUTTON_SIZES.ZERO_PADDING}
+          data-testid={BUTTON_SIZES.ZERO_PADDING}
+        />
+        <ButtonBase size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM} />
+        <ButtonBase size={BUTTON_SIZES.MD} data-testid={BUTTON_SIZES.MD} />
+        <ButtonBase size={BUTTON_SIZES.LG} data-testid={BUTTON_SIZES.LG} />
       </>,
     );
-    expect(getByTestId('button-base-xxs')).toHaveClass('button-base--size-xxs');
-    expect(getByTestId('button-base-xs')).toHaveClass('button-base--size-xs');
-    expect(getByTestId('button-base-sm')).toHaveClass('button-base--size-sm');
-    expect(getByTestId('button-base-md')).toHaveClass('button-base--size-md');
-    expect(getByTestId('button-base-lg')).toHaveClass('button-base--size-lg');
-    expect(getByTestId('button-base-xl')).toHaveClass('button-base--size-xl');
+    expect(getByTestId(BUTTON_SIZES.ZERO_PADDING)).toHaveClass(
+      `mm-button-size--${BUTTON_SIZES.ZERO_PADDING}`,
+    );
+    expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
+      `mm-button-size--${BUTTON_SIZES.SM}`,
+    );
+    expect(getByTestId(BUTTON_SIZES.MD)).toHaveClass(
+      `mm-button-size--${BUTTON_SIZES.MD}`,
+    );
+    expect(getByTestId(BUTTON_SIZES.LG)).toHaveClass(
+      `mm-button-size--${BUTTON_SIZES.LG}`,
+    );
   });
-  it('should render with icon colors', () => {
+
+  it('should render with different button states', () => {
     const { getByTestId } = render(
       <>
-        <ButtonBase data-testid="button-base-color-inherit" />
-        <ButtonBase
-          color={COLORS.ICON_DEFAULT}
-          data-testid="button-base-color-default"
-        />
-        <ButtonBase
-          color={COLORS.ICON_ALTERNATIVE}
-          data-testid="button-base-color-alternative"
-        />
-        <ButtonBase
-          color={COLORS.ICON_MUTED}
-          data-testid="button-base-color-muted"
-        />
+        <ButtonBase loading data-testid="loading" />
+        <ButtonBase disabled data-testid="disabled" />
       </>,
     );
-    expect(getByTestId('button-base-color-inherit')).toHaveClass(
-      'box--color-inherit',
-    );
-    expect(getByTestId('button-base-color-default')).toHaveClass(
-      'box--color-icon-default',
-    );
-    expect(getByTestId('button-base-color-alternative')).toHaveClass(
-      'box--color-icon-alternative',
-    );
-    expect(getByTestId('button-base-color-muted')).toHaveClass(
-      'box--color-icon-muted',
-    );
+    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
+    expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
   });
 });
