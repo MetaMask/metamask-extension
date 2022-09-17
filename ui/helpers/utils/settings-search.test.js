@@ -165,7 +165,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingsInSection', () => {
     it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(5);
+      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
     });
 
     it('should get good advanced section number', () => {
