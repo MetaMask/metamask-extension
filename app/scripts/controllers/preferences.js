@@ -9,8 +9,8 @@ import {
 } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
-import { NETWORK_EVENTS } from './network';
 import { THEME_TYPE } from '../../../ui/pages/settings/experimental-tab/experimental-tab.constant';
+import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
   /**
