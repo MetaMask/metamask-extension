@@ -155,15 +155,17 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}
         />
       )}
-      <DetectedTokenSelectionPopover
-        detectedTokens={detectedTokens}
-        tokensListDetected={tokensListDetected}
-        handleTokenSelection={handleTokenSelection}
-        onImport={onImport}
-        onIgnoreAll={onIgnoreAll}
-        setShowDetectedTokens={setShowDetectedTokens}
-        sortingBasedOnTokenSelection={sortingBasedOnTokenSelection}
-      />
+      {detectedTokens.length && (
+        <DetectedTokenSelectionPopover
+          detectedTokens={detectedTokens}
+          tokensListDetected={tokensListDetected}
+          handleTokenSelection={handleTokenSelection}
+          onImport={onImport}
+          onIgnoreAll={onIgnoreAll}
+          setShowDetectedTokens={setShowDetectedTokens}
+          sortingBasedOnTokenSelection={sortingBasedOnTokenSelection}
+        />
+      )}
     </>
   );
 };
