@@ -46,7 +46,7 @@ function mapStateToProps(state) {
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
-    isTestnet: getIsTestnet(state),
+    isTestNet: getIsTestnet(state),
     currentChainId: getCurrentChainId(state),
   };
 }
