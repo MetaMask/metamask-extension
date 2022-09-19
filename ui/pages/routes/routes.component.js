@@ -381,10 +381,14 @@ export default class Routes extends Component {
       currentChainId &&
       !isTestNet &&
       !isNetworkUsed &&
-      !shouldShowSeedPhraseReminder &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder;
 
     return (
       <div
@@ -401,9 +405,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
-          <DeprecatedTestNetworks />
-        )}
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />

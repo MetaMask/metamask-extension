@@ -1218,7 +1218,8 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 }
 
 export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } = state;
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+    state.metamask;
   const accountBalance = getCurrentEthBalance(state) ?? 0;
   return (
     seedPhraseBackedUp === false &&
