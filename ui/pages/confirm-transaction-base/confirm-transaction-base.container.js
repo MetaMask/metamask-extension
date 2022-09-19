@@ -14,7 +14,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
+import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -57,6 +57,7 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
+import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';

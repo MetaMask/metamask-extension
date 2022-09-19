@@ -25,9 +25,9 @@ import {
   GAS_ESTIMATE_TYPES,
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionController from '.';
 
 const noop = () => true;

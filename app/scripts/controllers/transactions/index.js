@@ -17,13 +17,6 @@ import {
   addHexPrefix,
   getChainType,
 } from '../../lib/util';
-import { calcGasTotal } from '../../../../ui/pages/send/send.utils';
-import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
-import {
-  hexWEIToDecGWEI,
-  decimalToHex,
-  hexWEIToDecETH,
-} from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -32,7 +25,6 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
@@ -56,6 +48,14 @@ import {
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  calcGasTotal,
+  decimalToHex,
+  getSwapsTokensReceivedFromTxMeta,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+  TRANSACTION_ENVELOPE_TYPE_NAMES,
+} from '../../../../shared/lib/transactions-controller-utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
