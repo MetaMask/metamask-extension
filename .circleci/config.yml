@@ -837,6 +837,8 @@ jobs:
             - .nyc_output
             - coverage
             - jest-coverage
+      - store_test_results:
+          path: test/test-results/junit.xml
   test-unit-global:
     executor: node-browsers
     steps:
