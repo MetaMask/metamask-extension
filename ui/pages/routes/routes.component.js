@@ -367,7 +367,7 @@ export default class Routes extends Component {
       isNetworkUsed,
       allAccountsOnNetworkAreEmpty,
       isTestNet,
-      currrentChainId,
+      currentChainId,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
