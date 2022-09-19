@@ -206,31 +206,39 @@ const setupPageStreams = () => {
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
-
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  extensionMux = new ObjectMultiplex();
-  extensionMux.setMaxListeners(25);
-  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
-
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-    notifyInpageOfStreamFailure();
-  });
-
-  // forward communication across inpage-background for these channels only
-  extensionChannel = extensionMux.createStream(PROVIDER);
-  pump(pageChannel, extensionChannel, pageChannel, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
-      error,
-    ),
-  );
-
-  // connect "phishing" channel to warning system
-  extensionPhishingStream = extensionMux.createStream('phishing');
-  extensionPhishingStream.once('data', redirectToPhishingWarning);
+  extensionPort.onMessage.addListener(initExtensionStreams);
 };
+
+function initExtensionStreams(message) {
+  if (message.data.method === 'METAMASK_EXTENSION_READY') {
+    // create and connect channel muxers
+    // so we can handle the channels individually
+    extensionMux = new ObjectMultiplex();
+    extensionMux.setMaxListeners(25);
+    extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+
+    pump(extensionMux, extensionStream, extensionMux, (err) => {
+      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+      notifyInpageOfStreamFailure();
+    });
+
+    // forward communication across inpage-background for these channels only
+    extensionChannel = extensionMux.createStream(PROVIDER);
+    pump(pageChannel, extensionChannel, pageChannel, (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
+        error,
+      ),
+    );
+
+    // connect "phishing" channel to warning system
+    extensionPhishingStream = extensionMux.createStream('phishing');
+    extensionPhishingStream.once('data', redirectToPhishingWarning);
+
+    notifyInpageOfExtensionStreamConnect();
+    extensionPort.onMessage.removeListener(initExtensionStreams);
+  }
+}
 
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
@@ -333,6 +341,7 @@ const destroyLegacyExtensionStreams = () => {
  * and creates a new event listener to the reestablished extension port.
  */
 const resetStreamAndListeners = () => {
+  notifyInpageOfExtensionStreamDisconnect();
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   destroyExtensionStreams();
@@ -384,6 +393,40 @@ function logStreamDisconnectWarning(remoteLabel, error) {
   console.debug(
     `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
+  );
+}
+
+function notifyInpageOfExtensionStreamConnect() {
+  window.postMessage(
+    {
+      target: INPAGE, // the post-message-stream "target"
+      data: {
+        // this object gets passed to obj-multiplex
+        name: PROVIDER, // the obj-multiplex channel name
+        data: {
+          jsonrpc: '2.0',
+          method: 'METAMASK_EXTENSION_STREAM_CONNECT',
+        },
+      },
+    },
+    window.location.origin,
+  );
+}
+
+function notifyInpageOfExtensionStreamDisconnect() {
+  window.postMessage(
+    {
+      target: INPAGE, // the post-message-stream "target"
+      data: {
+        // this object gets passed to obj-multiplex
+        name: PROVIDER, // the obj-multiplex channel name
+        data: {
+          jsonrpc: '2.0',
+          method: 'METAMASK_EXTENSION_STREAM_DISCONNECT',
+        },
+      },
+    },
+    window.location.origin,
   );
 }
 

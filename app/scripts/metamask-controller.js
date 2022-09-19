@@ -3571,6 +3571,10 @@ export default class MetamaskController extends EventEmitter {
 
     const connectionId = this.addConnection(origin, { engine });
 
+    this.notifyConnections(origin, {
+      method: 'METAMASK_EXTENSION_READY',
+    });
+
     pump(outStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
