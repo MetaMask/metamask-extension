@@ -6,7 +6,6 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util';
 import { formatETHFee } from '../helpers/utils/formatters';
-import { calcGasTotal } from '../pages/send/send.utils';
 
 import { getGasLimit, getGasPrice } from '../ducks/send';
 import {
@@ -19,6 +18,7 @@ import {
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
+import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { getCurrentCurrency, getIsMainnet, getShouldShowFiat } from '.';
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5;

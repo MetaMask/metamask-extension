@@ -187,6 +187,7 @@
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
     "immer": "^9.0.6",
+    "jest-junit": "^14.0.1",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",

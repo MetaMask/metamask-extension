@@ -2,7 +2,6 @@
 import React from 'react';
 import log from 'loglevel';
 import * as Sentry from '@sentry/browser';
-
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 const fetchWithTimeout = getFetchWithTimeout();

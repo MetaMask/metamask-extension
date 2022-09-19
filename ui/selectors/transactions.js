@@ -3,7 +3,6 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
-import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   TRANSACTION_STATUSES,
@@ -11,6 +10,7 @@ import {
   SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
