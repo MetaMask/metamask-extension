@@ -111,6 +111,7 @@ export default class Routes extends Component {
     isTestNet: PropTypes.bool,
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -370,6 +371,7 @@ export default class Routes extends Component {
       isTestNet,
       currentChainId,
       shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -388,7 +390,8 @@ export default class Routes extends Component {
     const shouldShowNetworkDeprecationWarning =
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       isUnlocked &&
-      !shouldShowSeedPhraseReminder;
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
 
     return (
       <div
