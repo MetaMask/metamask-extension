@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Typography from '../typography';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
-import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   getNativeCurrencyImage,
   getProvider,

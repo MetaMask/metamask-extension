@@ -174,8 +174,8 @@ const state = {
         name: 'Falconswap',
         iconUrl:
           'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: ['CoinGecko', '1inch', 'Paraswap', 'Zapper', 'Zerion'],
-        occurrences: 12,
+        aggregators: ['CoinGecko', '1inch', 'Lifi'],
+        occurrences:3,
         unlisted: false,
       },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
