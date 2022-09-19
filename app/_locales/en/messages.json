@@ -1235,6 +1235,15 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "enhancedTokenDetection": {
+    "message": "Enhanced token detection"
+  },
+  "enhancedTokenDetectionAlertMessage": {
+    "message": "Enhanced token detection is currently available on $1. $2"
+  },
+  "enhancedTokenDetectionDescription": {
+    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -3947,15 +3956,6 @@
   },
   "tokenDetails": {
     "message": "Token details"
-  },
-  "tokenDetection": {
-    "message": "Token detection"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Token detection is currently available on $1. $2"
-  },
-  "tokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
   "tokenFoundTitle": {
     "message": "1 new token found"

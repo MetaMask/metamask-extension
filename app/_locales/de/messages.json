@@ -3658,12 +3658,6 @@
   "tokenDetails": {
     "message": "Token-Details"
   },
-  "tokenDetection": {
-    "message": "Token-Erkennung"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Die Token-Erkennung ist derzeit für $1 verfügbar. $2"
-  },
   "tokenId": {
     "message": "Token-ID"
   },
