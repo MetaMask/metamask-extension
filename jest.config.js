@@ -28,6 +28,16 @@ module.exports = {
       statements: 100,
     },
   },
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'test/test-results/',
+        outputName: 'junit.xml',
+      },
+    ],
+  ],
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
