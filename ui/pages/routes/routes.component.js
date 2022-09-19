@@ -109,7 +109,7 @@ export default class Routes extends Component {
     isNetworkUsed: PropTypes.bool,
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
-    currrentChainId: PropTypes.string,
+    currentChainId: PropTypes.string,
   };
 
   static contextTypes = {
@@ -376,7 +376,7 @@ export default class Routes extends Component {
 
     const shouldShowNetworkInfo =
       isUnlocked &&
-      currrentChainId &&
+      currentChainId &&
       !isTestNet &&
       !isNetworkUsed &&
       allAccountsOnNetworkAreEmpty;
