@@ -14,14 +14,12 @@ import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
 } from '../../selectors';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * @typedef {object} GasEstimatesReturnType

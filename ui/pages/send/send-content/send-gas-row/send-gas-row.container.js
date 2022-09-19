@@ -24,7 +24,7 @@ import {
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
 import { showModal } from '../../../../store/actions';
-import { hexToDecimal } from '../../../../helpers/utils/conversions.util';
+import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
 import SendGasRow from './send-gas-row.component';
 
 export default connect(

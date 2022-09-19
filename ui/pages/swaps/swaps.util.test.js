@@ -1,6 +1,7 @@
 import nock from 'nock';
 import { MOCKS } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -14,6 +15,10 @@ import {
   AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
+  fetchTradesInfo,
+  shouldEnableDirectWrapping,
+} from '../../../shared/lib/swaps-utils';
+import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
   MOCK_TRADE_RESPONSE_2,
@@ -21,7 +26,6 @@ import {
   TOP_ASSETS,
 } from './swaps-util-test-constants';
 import {
-  fetchTradesInfo,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
@@ -29,12 +33,10 @@ import {
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
   countDecimals,
-  shouldEnableDirectWrapping,
   showRemainingTimeInMinAndSec,
-  getSwapsTokensReceivedFromTxMeta,
 } from './swaps.util';
 
-jest.mock('../../helpers/utils/storage-helpers.js', () => ({
+jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));

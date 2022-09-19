@@ -1,4 +1,6 @@
 import { BN } from 'ethereumjs-util';
+import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
+import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
 
 describe('util', () => {
@@ -279,9 +281,7 @@ describe('util', () => {
 
     testData.forEach(({ args, result }) => {
       it(`should return ${result} when passed number ${args[0]} and precision ${args[1]}`, () => {
-        expect(util.toPrecisionWithoutTrailingZeros(...args)).toStrictEqual(
-          result,
-        );
+        expect(toPrecisionWithoutTrailingZeros(...args)).toStrictEqual(result);
       });
     });
   });
@@ -289,7 +289,7 @@ describe('util', () => {
   describe('addHexPrefixToObjectValues()', () => {
     it('should return a new object with the same properties with a 0x prefix', () => {
       expect(
-        util.addHexPrefixToObjectValues({
+        addHexPrefixToObjectValues({
           prop1: '0x123',
           prop2: '456',
           prop3: 'x',

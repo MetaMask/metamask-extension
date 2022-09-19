@@ -10,7 +10,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from './fetch-with-cache';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
 /**
  * @typedef EthersContractCall

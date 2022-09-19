@@ -3714,12 +3714,6 @@
   "tokenDetails": {
     "message": "Chi tiết token"
   },
-  "tokenDetection": {
-    "message": "Phát hiện token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Tính năng phát hiện token hiện có sẵn trên $1. $2"
-  },
   "tokenId": {
     "message": "ID Token"
   },

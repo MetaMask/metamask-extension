@@ -1,6 +1,26 @@
-import getFirstPreferredLangCode from '../../../app/scripts/lib/get-first-preferred-lang-code';
-import { setupLocale } from '../..';
+import { memoize } from 'lodash';
+import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../../ui/helpers/utils/i18n-helper';
 import switchDirection from './switch-direction';
+
+const _setupLocale = async (currentLocale) => {
+  const currentLocaleMessages = currentLocale
+    ? await fetchLocale(currentLocale)
+    : {};
+  const enLocaleMessages = await fetchLocale('en');
+
+  await loadRelativeTimeFormatLocaleData('en');
+  if (currentLocale) {
+    await loadRelativeTimeFormatLocaleData(currentLocale);
+  }
+
+  return { currentLocaleMessages, enLocaleMessages };
+};
+
+export const setupLocale = memoize(_setupLocale);
 
 const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   return (key) => {
