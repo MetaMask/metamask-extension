@@ -322,8 +322,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('tokenDetection'),
-    descriptionMessage: (t) => t('tokenDetectionDescription'),
+    sectionMessage: (t) => t('enhancedTokenDetection'),
+    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
     route: `${ADVANCED_ROUTE}#token-description`,
     icon: 'fas fa-sliders-h',
   },
