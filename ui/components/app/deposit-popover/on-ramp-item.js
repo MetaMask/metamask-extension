@@ -11,7 +11,7 @@ const OnRampItem = ({
   text,
   buttonLabel,
   onButtonClick,
-  hide,
+  hide = false,
 }) => {
   if (hide) {
     return null;
