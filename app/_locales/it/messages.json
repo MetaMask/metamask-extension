@@ -565,6 +565,9 @@
 	"confirmPageDialogSetApprovalForAllPlaceholder1": {
 		"message": "tutti gli NFT in questo contratto"
 	},
+	"confirmPageDialogSetApprovalForAllPlaceholder2": {
+		"message": "Procedi con cautela."
+	},
 	"confirmPassword": {
 		"message": "Conferma Password"
 	},
@@ -573,6 +576,15 @@
 	},
 	"confirmed": {
 		"message": "Confermata"
+	},
+	"confusableUnicode": {
+		"message": "'$1' è simile a '$2'."
+	},
+	"confusableZeroWidthUnicode": {
+		"message": "Trovato carattere a larghezza zero."
+	},
+	"confusingEnsDomain": {
+		"message": "Abbiamo rilevato un carattere confondibile nel nome ENS. Controlla il nome ENS per evitare una potenziale truffa."
 	},
 	"congratulations": {
 		"message": "Congratulazioni"
@@ -633,6 +645,10 @@
 		"message": "$1 non è connesso ad alcun sito.",
 		"description": "$1 is the account name"
 	},
+	"connectedSnapSites": {
+		"message": "$1 snap è collegato a questi siti. Hanno accesso alle autorizzazioni sopra elencate.",
+		"description": "$1 represents the name of the snap"
+	},
 	"connecting": {
 		"message": "Connessione..."
 	},
@@ -654,6 +670,9 @@
 	"connectingToRopsten": {
 		"message": "Connessione alla Rete di test Ropsten"
 	},
+	"connectingToSepolia": {
+		"message": "Connessione alla Rete di test Sepolia"
+	},
 	"contactUs": {
 		"message": "Contattaci!"
 	},
@@ -663,14 +682,50 @@
 	"continue": {
 		"message": "Continua"
 	},
+	"continueToCoinbasePay": {
+		"message": "Continua su Coinbase Pay"
+	},
+	"continueToMoonPay": {
+		"message": "Continua su MoonPay"
+	},
+	"continueToTransak": {
+		"message": "Continua su Transak"
+	},
 	"continueToWyre": {
 		"message": "Continua su Wyre"
+	},
+	"contract": {
+		"message": "Contratto"
+	},
+	"contractAddress": {
+		"message": "Indirizzo contratto"
+	},
+	"contractAddressError": {
+		"message": "Stai inviando i token all'indirizzo del contratto del token. Ciò potrebbe comportare la perdita di questi token."
 	},
 	"contractDeployment": {
 		"message": "Distribuzione Contratto"
 	},
+	"contractDescription": {
+		"message": "Per proteggerti dai truffatori, prenditi un momento per verificare i dettagli del contratto."
+	},
 	"contractInteraction": {
 		"message": "Interazione Contratto"
+	},
+	"contractRequestingSpendingCap": {
+		"message": "Il contratto richiede un limite di spesa"
+	},
+	"contractTitle": {
+		"message": "Dettagli contratto"
+	},
+	"contractToken": {
+		"message": "Token contratto"
+	},
+	"convertTokenToNFTDescription": {
+		"message": "Abbiamo rilevato che questa risorsa è un NFT. MetaMask ora ha il supporto nativo completo per NFT. Vuoi rimuoverlo dal tuo elenco di token e aggiungerlo come NFT?"
+	},
+	"convertTokenToNFTExistDescription": {
+		"message": "Abbiamo rilevato che questa risorsa è stata aggiunta come NFT. Vuoi rimuoverlo dal tuo elenco di token?"
 	},
 	"copiedExclamation": {
 		"message": "Copiato!"
@@ -680,6 +735,9 @@
 	},
 	"copyPrivateKey": {
 		"message": "Questa è la tua chiave privata (clicca per copiare)"
+	},
+	"copyRawTransactionData": {
+		"message": "Copia i dati grezzi della transazione"
 	},
 	"copyToClipboard": {
 		"message": "Copia negli appunti"
@@ -696,11 +754,20 @@
 	"createAccount": {
 		"message": "Crea Account"
 	},
+	"createNewWallet": {
+		"message": "Crea un nuovo wallet"
+	},
 	"createPassword": {
 		"message": "Crea Password"
 	},
 	"currencyConversion": {
 		"message": "Conversione Moneta"
+	},
+	"currencySymbol": {
+		"message": "Simbolo moneta"
+	},
+	"currencySymbolDefinition": {
+		"message": "Il simbolo del ticker visualizzato per la valuta di questa rete."
 	},
 	"currentAccountNotConnected": {
 		"message": "Il tuo account corrente non è connesso"
@@ -710,6 +777,21 @@
 	},
 	"currentLanguage": {
 		"message": "Lingua Corrente"
+	},
+	"currentTitle": {
+		"message": "Corrente:"
+	},
+	"currentlyUnavailable": {
+		"message": "Non disponibile su questa Rete"
+	},
+	"curveHighGasEstimate": {
+		"message": "Grafico di stima del gas aggressivo"
+	},
+	"curveLowGasEstimate": {
+		"message": "Grafico della stima del gas basso"
+	},
+	"curveMediumGasEstimate": {
+		"message": "Grafico della stima del gas di mercato"
 	},
 	"custom": {
 		"message": "Avanzate"
