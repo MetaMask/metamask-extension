@@ -3726,12 +3726,6 @@
   "tokenDetails": {
     "message": "Mga detalye ng token"
   },
-  "tokenDetection": {
-    "message": "Pagtuklas sa token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Ang pagtukoy ng token ay kasalukuyang magagamit sa $1. $2"
-  },
   "tokenId": {
     "message": "Token ID"
   },

@@ -3726,12 +3726,6 @@
   "tokenDetails": {
     "message": "Detalles del token"
   },
-  "tokenDetection": {
-    "message": "Detección del token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "La detección de tókens está actualmente disponible en $1. $2"
-  },
   "tokenId": {
     "message": "Identificador de Token"
   },

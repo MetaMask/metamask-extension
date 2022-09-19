@@ -3726,12 +3726,6 @@
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
-  "tokenDetection": {
-    "message": "टोकन डिटेक्शन"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "फिलहाल टोकन डिटेक्शन $1 पर उपलब्ध है। $2"
-  },
   "tokenId": {
     "message": "टोकन आइडी"
   },

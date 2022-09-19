@@ -3726,12 +3726,6 @@
   "tokenDetails": {
     "message": "Λεπτομέρειες token"
   },
-  "tokenDetection": {
-    "message": "Εντοπισμός token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Ο εντοπισμός token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
   "tokenId": {
     "message": "Αναγνωριστικό token"
   },

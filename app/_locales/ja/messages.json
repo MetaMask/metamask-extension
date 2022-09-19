@@ -3726,12 +3726,6 @@
   "tokenDetails": {
     "message": "トークンの詳細"
   },
-  "tokenDetection": {
-    "message": "トークン検出"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "トークン検出は現在 $1 で利用可能です。$2"
-  },
   "tokenId": {
     "message": "トークン ID"
   },
