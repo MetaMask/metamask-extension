@@ -10,6 +10,8 @@ import {
   getTheme,
   getIsTestnet,
   getCurrentChainId,
+  getShouldShowSeedPhraseReminder,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -48,6 +50,8 @@ function mapStateToProps(state) {
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     currentChainId: getCurrentChainId(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
   };
 }
 

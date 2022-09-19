@@ -110,6 +110,8 @@ export default class Routes extends Component {
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
     currentChainId: PropTypes.string,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -368,6 +370,8 @@ export default class Routes extends Component {
       allAccountsOnNetworkAreEmpty,
       isTestNet,
       currentChainId,
+      shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -382,6 +386,12 @@ export default class Routes extends Component {
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
 
     return (
       <div
@@ -398,9 +408,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
-          <DeprecatedTestNetworks />
-        )}
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
