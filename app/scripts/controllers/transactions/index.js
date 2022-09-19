@@ -256,7 +256,7 @@ export default class TransactionController extends EventEmitter {
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    if (type !== NETWORK_TYPES.RPC) {
+    if (type !== NETWORK_TYPES.RPC && type !== NETWORK_TYPES.SEPOLIA) {
       return new Common({
         chain: type,
         hardfork,
