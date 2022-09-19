@@ -2489,13 +2489,13 @@ export function showSendTokenPage() {
   };
 }
 
-export function buyEth(opts) {
+export function buy(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
     if (url) {
       global.platform.openTab({ url });
       dispatch({
-        type: actionConstants.BUY_ETH,
+        type: actionConstants.BUY,
       });
     }
   };

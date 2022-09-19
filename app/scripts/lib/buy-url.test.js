@@ -62,36 +62,27 @@ describe('buy-url', () => {
   it('returns Transak url with an ETH address for Ethereum mainnet', async () => {
     const transakUrl = await getBuyUrl({ ...MAINNET, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[MAINNET.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
   it('returns Transak url with an BNB address for Binance Smart Chain', async () => {
     const transakUrl = await getBuyUrl({ ...BSC, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[BSC.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
   it('returns Transak url with an MATIC address for Polygon', async () => {
     const transakUrl = await getBuyUrl({ ...POLYGON, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[POLYGON.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
