@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   activeTabHasPermissions,
-  getCurrentEthBalance,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getFirstSnapUpdateRequest,
@@ -24,6 +23,7 @@ import {
   getNewCollectibleAddedMessage,
   getNewTokensImported,
   getShowPortfolioTooltip,
+  getShouldShowSeedPhraseReminder,
 } from '../../selectors';
 
 import {
@@ -72,18 +72,15 @@ const mapStateToProps = (state) => {
   const {
     suggestedAssets,
     seedPhraseBackedUp,
-    tokens,
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-    dismissSeedBackUpReminder,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
@@ -123,10 +120,7 @@ const mapStateToProps = (state) => {
     suggestedAssets,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
-    shouldShowSeedPhraseReminder:
-      seedPhraseBackedUp === false &&
-      (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-      dismissSeedBackUpReminder === false,
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
     threeBoxSynced,
