@@ -155,7 +155,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}
         />
       )}
-      {detectedTokens.length && (
+      {detectedTokens.length > 0 && (
         <DetectedTokenSelectionPopover
           detectedTokens={detectedTokens}
           tokensListDetected={tokensListDetected}
