@@ -36,6 +36,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${GENERAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
+    tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
@@ -47,13 +54,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     icon: 'fa fa-cog',
-  },
-  {
-    tabMessage: (t) => t('general'),
-    sectionMessage: (t) => t('theme'),
-    descriptionMessage: (t) => t('themeDescription'),
-    route: `${GENERAL_ROUTE}#theme`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),
