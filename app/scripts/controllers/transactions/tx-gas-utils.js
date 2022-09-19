@@ -50,7 +50,11 @@ export default class TxGasUtil {
       };
     }
 
-    return { blockGasLimit: block.gasLimit, estimatedGasHex, simulationFails };
+    return {
+      blockGasLimit: block.gasLimit,
+      estimatedGasHex,
+      simulationFails,
+    };
   }
 
   /**
@@ -104,7 +108,6 @@ export default class TxGasUtil {
   async getBufferedGasLimit(txMeta, multiplier) {
     const { blockGasLimit, estimatedGasHex, simulationFails } =
       await this.analyzeGasUsage(txMeta);
-
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.addGasBuffer(
       addHexPrefix(estimatedGasHex),

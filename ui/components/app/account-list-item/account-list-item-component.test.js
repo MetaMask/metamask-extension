@@ -6,6 +6,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import AccountListItem from './account-list-item';
 
 jest.mock('../../../../shared/modules/hexstring-utils', () => ({
+  ...jest.requireActual('../../../../shared/modules/hexstring-utils'),
   toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
 }));
 

@@ -1,7 +1,8 @@
 import { omit } from 'lodash';
-import { BN, stripHexPrefix } from 'ethereumjs-util';
+import { BN } from 'ethereumjs-util';
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 
 function buildTxParams(txMeta) {
   return {
