@@ -47,6 +47,7 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
   MAINNET,
+  SEPOLIA,
   NETWORK_TYPE_RPC,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
@@ -257,7 +258,7 @@ export default class TransactionController extends EventEmitter {
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    if (type !== NETWORK_TYPE_RPC) {
+    if (type !== NETWORK_TYPE_RPC && type !== SEPOLIA) {
       return new Common({
         chain: type,
         hardfork,
