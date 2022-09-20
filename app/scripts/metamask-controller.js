@@ -101,6 +101,7 @@ import {
   getTokenValueParam,
   hexToDecimal,
 } from '../../shared/lib/metamask-controller-utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -1087,13 +1088,26 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    const password = process.env.CONF?.PASSWORD;
-    if (
-      password &&
-      !this.isUnlocked() &&
-      this.onboardingController.store.getState().completedOnboarding
-    ) {
-      this.submitPassword(password);
+    // Automatic login via config password or loginToken
+    if (!this.isUnlocked()) {
+      const password = process.env.CONF?.PASSWORD;
+      if (
+        password &&
+        this.onboardingController.store.getState().completedOnboarding
+      ) {
+        this.submitPassword(password);
+      }
+      // MV3TODO: Try to log in based on storage values
+      else if (isManifestV3) {
+        console.log('Is MV3, going to try to autologin with loginToken');
+        chrome.storage.session.get(['loginToken'], ({ loginToken }) => {
+          console.log('Was the login token found? ', loginToken);
+          if (loginToken) {
+            console.log(`Attempting to login using loginToken: ${loginToken}`);
+            this.keyringController.submitEncryptedKey(loginToken);
+          }
+        });
+      }
     }
 
     // Lazily update the store with the current extension environment
@@ -2302,7 +2316,14 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<object>} The keyringController update.
    */
   async submitPassword(password) {
-    await this.keyringController.submitPassword(password);
+    console.log('Attempting to submit password: ', password);
+
+    const loginToken = await this.keyringController.submitPassword(password);
+
+    if (isManifestV3) {
+      console.log(`Trying to set loginToken: ${loginToken}`);
+      await chrome.storage.session.set({ loginToken });
+    }
 
     try {
       await this.blockTracker.checkForLatestBlock();
@@ -4295,6 +4316,10 @@ export default class MetamaskController extends EventEmitter {
       KEYRING_TYPES.LEDGER,
     );
     ledgerKeyring?.destroy?.();
+
+    if (isManifestV3) {
+      chrome.storage.session.clear();
+    }
 
     return this.keyringController.setLocked();
   }
