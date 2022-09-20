@@ -1,6 +1,5 @@
 import 'ses/lockdown';
 import '../../app/scripts/lockdown-run';
-import '../../app/scripts/lockdown-more';
 import {
   getGlobalProperties,
   testIntrinsic,

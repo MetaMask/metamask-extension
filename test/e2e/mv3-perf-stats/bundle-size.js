@@ -18,7 +18,6 @@ const { exitWithError } = require('../../../development/lib/exit-with-error');
 
 const backgroundFiles = [
   'runtime-lavamoat.js',
-  'lockdown-more.js',
   'globalthis.js',
   'sentry-install.js',
   'policy-load.js',
@@ -28,7 +27,6 @@ const uiFiles = [
   'globalthis.js',
   'sentry-install.js',
   'runtime-lavamoat.js',
-  'lockdown-more.js',
   'policy-load.js',
 ];
 
