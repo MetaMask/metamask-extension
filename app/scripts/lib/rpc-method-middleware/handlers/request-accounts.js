@@ -62,7 +62,11 @@ async function requestEthereumAccountsHandler(
   },
 ) {
   if (locks.has(origin)) {
-    await openPopup();
+    res.error = ethErrors.rpc.resourceUnavailable(
+      `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
+    );
+    openPopup();
+    return end();
   }
 
   if (hasPermission(MESSAGE_TYPE.ETH_ACCOUNTS)) {
@@ -88,7 +92,9 @@ async function requestEthereumAccountsHandler(
     await getUnlockPromise(true);
     await requestAccountsPermission();
   } catch (err) {
+    console.log('error');
     res.error = err;
+    locks.delete(origin);
     return end();
   } finally {
     locks.delete(origin);
