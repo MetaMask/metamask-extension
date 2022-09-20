@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
 
@@ -7,18 +8,19 @@ export const badgePositions = ['top', 'bottom'];
 export const AvatarWithBadge = ({
   children,
   badgePosition,
+  className,
   badge,
   ...props
 }) => {
   return (
-    <Box className="avatar-badge" {...props}>
+    <Box className={classnames('avatar-with-badge', className)} {...props}>
       {/* Generally the AvatarAccount */}
       {children}
       <Box
         className={
           badgePosition === 'top'
-            ? 'avatar-badge-token-position-top'
-            : 'avatar-badge-token-position-bottom'
+            ? 'avatar-with-badge__token--position-top'
+            : 'avatar-with-badge__token--position-bottom'
         }
       >
         {/* Generally the AvatarNetwork at SIZES.XS */}
