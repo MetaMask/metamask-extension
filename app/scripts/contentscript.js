@@ -469,7 +469,9 @@ function redirectToPhishingWarning(data = {}) {
 
 const initKeepWorkerAlive = () => {
   setInterval(() => {
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+    if (browser.runtime.id) {
+      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+    }
   }, WORKER_KEEP_ALIVE_INTERVAL);
 };
 
