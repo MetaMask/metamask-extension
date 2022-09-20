@@ -773,12 +773,11 @@ export default class ConfirmTransactionBase extends Component {
       return null;
     }
 
-    const dropdownOptions = insightSnaps.reduce(
-      (prev, acc) => [
-        ...prev,
-        { value: acc.id, name: acc.manifest.proposedName },
-      ],
-      [],
+    const dropdownOptions = insightSnaps.map(
+      ({ id, manifest: { proposedName } }) => ({
+        value: id,
+        name: proposedName,
+      }),
     );
 
     return insightSnaps.length > 1 ? (
