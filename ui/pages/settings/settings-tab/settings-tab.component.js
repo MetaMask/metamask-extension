@@ -149,7 +149,7 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         id="toggle-zero-balance"
       >
@@ -184,7 +184,7 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         id="blockie-optin"
       >
@@ -356,7 +356,7 @@ export default class SettingsTab extends PureComponent {
     };
 
     return (
-      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
