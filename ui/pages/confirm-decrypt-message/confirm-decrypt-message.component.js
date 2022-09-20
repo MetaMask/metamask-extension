@@ -35,6 +35,7 @@ export default class ConfirmDecryptMessage extends Component {
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
+    nativeCurrency: PropTypes.string.isRequired,
   };
 
   state = {
@@ -91,13 +92,13 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
+    const { conversionRate, nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
     const { t } = this.context;
 
-    const balanceInEther = conversionUtil(balance, {
+    const nativeCurrencyBalance = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -111,7 +112,7 @@ export default class ConfirmDecryptMessage extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-decrypt-message__balance-value">
-          {`${balanceInEther} ETH`}
+          {`${nativeCurrencyBalance} ${nativeCurrency}`}
         </div>
       </div>
     );
