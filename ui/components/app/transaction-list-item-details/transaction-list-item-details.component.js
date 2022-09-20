@@ -41,6 +41,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onClose: PropTypes.func.isRequired,
     recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
+    recipientName: PropTypes.string,
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -139,6 +140,7 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       recipientEns,
       recipientAddress,
+      recipientName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
@@ -238,6 +240,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
                 recipientNickname={recipientNickname}
+                recipientName={recipientName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 onRecipientClick={() => {

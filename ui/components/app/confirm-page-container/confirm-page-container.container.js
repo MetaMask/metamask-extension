@@ -5,6 +5,7 @@ import {
   getIsBuyableChain,
   getNetworkIdentifier,
   getSwapsDefaultToken,
+  getAccountName,
 } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
@@ -16,11 +17,12 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
+  const toName = getAccountName(state, to);
 
   return {
     isBuyableChain,
     contact,
-    toName: contact?.name || ownProps.toName,
+    toName,
     isOwnedAccount: getAccountsWithLabels(state)
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
