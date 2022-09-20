@@ -91,6 +91,11 @@
 
     & .dropdown__select {
       color: var(--color-text-alternative);
+      text-transform: uppercase;
+
+      option {
+        text-transform: none;
+      }
     }
 
     & .dropdown__icon-caret-down {

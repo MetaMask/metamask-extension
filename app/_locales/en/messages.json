@@ -3241,7 +3241,7 @@
   },
   "snapContent": {
     "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows tx insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
@@ -3277,7 +3277,7 @@
     "message": "Loading transaction insight..."
   },
   "snapsNoInsight": {
-    "message": "The snap didn't return any Insight"
+    "message": "The snap didn't return any insight"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"

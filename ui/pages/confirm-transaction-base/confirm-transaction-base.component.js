@@ -768,7 +768,7 @@ export default class ConfirmTransactionBase extends Component {
 
     if (
       txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-      !insightSnaps
+      !insightSnaps.length
     ) {
       return null;
     }
