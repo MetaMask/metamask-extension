@@ -107,7 +107,11 @@ export default class Routes extends Component {
     theme: PropTypes.string,
     sendStage: PropTypes.string,
     isNetworkUsed: PropTypes.bool,
-    hasAnAccountWithNoFundsOnNetwork: PropTypes.bool,
+    allAccountsOnNetworkAreEmpty: PropTypes.bool,
+    isTestNet: PropTypes.bool,
+    currentChainId: PropTypes.string,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -363,7 +367,11 @@ export default class Routes extends Component {
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
-      hasAnAccountWithNoFundsOnNetwork,
+      allAccountsOnNetworkAreEmpty,
+      isTestNet,
+      currentChainId,
+      shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -371,9 +379,19 @@ export default class Routes extends Component {
         : null;
 
     const shouldShowNetworkInfo =
-      isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
+      isUnlocked &&
+      currentChainId &&
+      !isTestNet &&
+      !isNetworkUsed &&
+      allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
 
     return (
       <div
@@ -390,9 +408,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
-          <DeprecatedTestNetworks />
-        )}
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
@@ -455,6 +471,8 @@ export default class Routes extends Component {
         return this.context.t('connectingToRinkeby');
       case 'goerli':
         return this.context.t('connectingToGoerli');
+      case 'sepolia':
+        return this.context.t('connectingToSepolia');
       default:
         return this.context.t('connectingTo', [providerId]);
     }

@@ -1,7 +1,4 @@
-import {
-  MAINNET_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration54 from './054';
 
 describe('migration #54', () => {
@@ -150,7 +147,7 @@ describe('migration #54', () => {
         PreferencesController: {
           accountTokens: {
             '0x1111': {
-              [MAINNET_CHAIN_ID]: [
+              [CHAIN_IDS.MAINNET]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -174,7 +171,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [ROPSTEN_CHAIN_ID]: [
+              [CHAIN_IDS.ROPSTEN]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -208,7 +205,7 @@ describe('migration #54', () => {
       PreferencesController: {
         accountTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [
+            [CHAIN_IDS.MAINNET]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -232,7 +229,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [
+            [CHAIN_IDS.ROPSTEN]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -268,7 +265,7 @@ describe('migration #54', () => {
         PreferencesController: {
           accountTokens: {
             '0x1111': {
-              [MAINNET_CHAIN_ID]: [
+              [CHAIN_IDS.MAINNET]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: 0,
@@ -292,7 +289,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [ROPSTEN_CHAIN_ID]: [
+              [CHAIN_IDS.ROPSTEN]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: 0,
@@ -326,7 +323,7 @@ describe('migration #54', () => {
       PreferencesController: {
         accountTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [
+            [CHAIN_IDS.MAINNET]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -350,7 +347,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [
+            [CHAIN_IDS.ROPSTEN]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -386,7 +383,7 @@ describe('migration #54', () => {
         PreferencesController: {
           accountTokens: {
             '0x1111': {
-              [MAINNET_CHAIN_ID]: [
+              [CHAIN_IDS.MAINNET]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -410,7 +407,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [ROPSTEN_CHAIN_ID]: [
+              [CHAIN_IDS.ROPSTEN]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -465,7 +462,7 @@ describe('migration #54', () => {
       PreferencesController: {
         accountTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [
+            [CHAIN_IDS.MAINNET]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -489,7 +486,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [
+            [CHAIN_IDS.ROPSTEN]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -546,7 +543,7 @@ describe('migration #54', () => {
         PreferencesController: {
           accountTokens: {
             '0x1111': {
-              [MAINNET_CHAIN_ID]: [
+              [CHAIN_IDS.MAINNET]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '',
@@ -570,7 +567,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [ROPSTEN_CHAIN_ID]: [
+              [CHAIN_IDS.ROPSTEN]: [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -625,7 +622,7 @@ describe('migration #54', () => {
       PreferencesController: {
         accountTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [
+            [CHAIN_IDS.MAINNET]: [
               {
                 address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
                 decimals: 18,
@@ -644,7 +641,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [
+            [CHAIN_IDS.ROPSTEN]: [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,

@@ -1,7 +1,4 @@
-import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-} from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
@@ -33,7 +30,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: CHAIN_IDS.KOVAN,
           },
         },
       };
@@ -63,7 +60,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: CHAIN_IDS.KOVAN,
           },
         },
       };
@@ -94,7 +91,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: CHAIN_IDS.KOVAN,
           },
         },
       };
@@ -112,7 +109,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           provider: {
             nickname: 'mainnet',
-            chainId: MAINNET_CHAIN_ID,
+            chainId: CHAIN_IDS.MAINNET,
           },
           featureFlags: {
             showIncomingTransactions: false,
@@ -176,7 +173,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           provider: {
             nickname: 'mainnet',
-            chainId: MAINNET_CHAIN_ID,
+            chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
           featureFlags: {
@@ -260,7 +257,7 @@ describe('Transaction Selectors', () => {
       metamask: {
         provider: {
           nickname: 'mainnet',
-          chainId: MAINNET_CHAIN_ID,
+          chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
         featureFlags: {

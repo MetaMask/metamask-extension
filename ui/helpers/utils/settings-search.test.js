@@ -105,16 +105,18 @@ const t = (key) => {
       return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
+    case 'sepolia':
+      return 'Sepolia test network';
     case 'kovan':
       return 'Kovan test network';
     case 'localhost':
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    case 'tokenDetection':
-      return 'Token detection';
-    case 'tokenDetectionDescription':
-      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list.";
+    case 'enhancedTokenDetection':
+      return 'Enhanced token detection';
+    case 'enhancedTokenDetectionDescription':
+      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet.";
     case 'enableEIP1559V2':
       return 'Enable enhanced gas fee UI';
     case 'enableEIP1559V2Description':
@@ -185,7 +187,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(7);
     });
 
     it('should get good experimental section number', () => {

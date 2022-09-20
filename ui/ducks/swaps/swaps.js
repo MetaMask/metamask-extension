@@ -51,16 +51,12 @@ import {
   parseSmartTransactionsError,
   stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
-import { calcGasTotal } from '../../pages/send/send.utils';
 import {
-  decimalToHex,
   getValueFromWeiHex,
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
   addHexes,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../../shared/modules/conversion.utils';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -89,6 +85,12 @@ import {
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  decimalToHex,
+  hexWEIToDecGWEI,
+} from '../../../shared/lib/transactions-controller-utils';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',

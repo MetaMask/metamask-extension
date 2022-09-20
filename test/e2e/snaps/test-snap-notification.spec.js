@@ -72,6 +72,7 @@ describe('Test Snap Notification', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.delay(1000);
         await driver.clickElement('#sendInAppNotification');
 
         // try to go to the MM pages

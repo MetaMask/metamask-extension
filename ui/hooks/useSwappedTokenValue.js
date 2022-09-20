@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
+import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../shared/modules/swaps.utils';
-import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { getCurrentChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 

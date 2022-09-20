@@ -3714,12 +3714,6 @@
   "tokenDetails": {
     "message": "토큰 상세 정보"
   },
-  "tokenDetection": {
-    "message": "토큰 감지"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "토큰 감지 기능은 현재 $1. $2에서 사용할 수 있습니다."
-  },
   "tokenId": {
     "message": "토큰 ID"
   },

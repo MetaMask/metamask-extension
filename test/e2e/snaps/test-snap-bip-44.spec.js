@@ -79,6 +79,7 @@ describe('Test Snap bip-44', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.delay(1000);
         await driver.clickElement('#sendBip44');
 
         // check the results of the public key test

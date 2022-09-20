@@ -451,6 +451,9 @@
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
   },
+  "betaPortfolioSite": {
+    "message": "beta portfolio site"
+  },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
@@ -720,6 +723,9 @@
   "connectingToRopsten": {
     "message": "Connecting to Ropsten test network"
   },
+  "connectingToSepolia": {
+    "message": "Connecting to Sepolia test network"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -899,6 +905,9 @@
   },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
+  },
+  "dataBackupSeemsCorrupt": {
+    "message": "Can not restore your data. The file appears to be corrupt."
   },
   "dataHex": {
     "message": "Hex"
@@ -1226,6 +1235,15 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "enhancedTokenDetection": {
+    "message": "Enhanced token detection"
+  },
+  "enhancedTokenDetectionAlertMessage": {
+    "message": "Enhanced token detection is currently available on $1. $2"
+  },
+  "enhancedTokenDetectionDescription": {
+    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -1517,7 +1535,7 @@
     "message": "Get Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
+    "message": "Get Ether from a faucet for the $1 network.",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1684,6 +1702,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "install": {
+    "message": "Install"
+  },
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
@@ -1778,6 +1799,9 @@
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
+  },
+  "keepTapsOnTokens": {
+    "message": "to keep tabs on your tokens and NFTs across accounts and networks."
   },
   "keystone": {
     "message": "Keystone"
@@ -2165,6 +2189,9 @@
   "nevermind": {
     "message": "Nevermind"
   },
+  "new": {
+    "message": "New!"
+  },
   "newAccount": {
     "message": "New account"
   },
@@ -2302,7 +2329,7 @@
     "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
   },
   "notifications10DescriptionThree": {
-    "message": "Token detection feature is ON by default. But you can disable it from Settings."
+    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
   },
   "notifications10DescriptionTwo": {
     "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
@@ -2334,6 +2361,23 @@
   },
   "notifications13Title": {
     "message": "Add Popular Networks"
+  },
+  "notifications14ActionText": {
+    "message": "Show backup settings"
+  },
+  "notifications14Description": {
+    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
+  },
+  "notifications14Title": {
+    "message": "3Box Deprecation"
+  },
+  "notifications15Description": {
+    "message": "There's no action required from you, so keep using your wallet as usual. Be aware of potential scams around the Merge.",
+    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
+  },
+  "notifications15Title": {
+    "message": "The Ethereum Merge is here!"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
@@ -2659,6 +2703,9 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
+  },
+  "portfolioSite": {
+    "message": "Portfolio site"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -3067,6 +3114,9 @@
   "sendingToTokenContractWarning": {
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sepolia": {
+    "message": "Sepolia test network"
   },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"
@@ -3910,15 +3960,6 @@
   "tokenDetails": {
     "message": "Token details"
   },
-  "tokenDetection": {
-    "message": "Token detection"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Token detection is currently available on $1. $2"
-  },
-  "tokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
-  },
   "tokenFoundTitle": {
     "message": "1 new token found"
   },
@@ -4074,6 +4115,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryOur": {
+    "message": "Try our"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

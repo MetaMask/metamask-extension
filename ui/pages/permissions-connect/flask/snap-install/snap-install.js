@@ -35,9 +35,12 @@ export default function SnapInstall({
   );
 
   const onSubmit = useCallback(
-    () => approveSnapInstall(request),
+    () => approveSnapInstall(request.metadata.id),
     [request, approveSnapInstall],
   );
+
+  const hasPermissions =
+    request?.permissions && Object.keys(request.permissions).length > 0;
 
   const bip44LegacyEntropyPermissions =
     request.permissions &&
@@ -88,18 +91,22 @@ export default function SnapInstall({
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
-        <Typography
-          boxProps={{
-            padding: [4, 4, 0, 4],
-          }}
-          variant={TYPOGRAPHY.H7}
-          as="span"
-        >
-          {t('snapRequestsPermission')}
-        </Typography>
-        <PermissionsConnectPermissionList
-          permissions={request.permissions || {}}
-        />
+        {hasPermissions && (
+          <>
+            <Typography
+              boxProps={{
+                padding: [4, 4, 0, 4],
+              }}
+              variant={TYPOGRAPHY.H7}
+              as="span"
+            >
+              {t('snapRequestsPermission')}
+            </Typography>
+            <PermissionsConnectPermissionList
+              permissions={request.permissions || {}}
+            />
+          </>
+        )}
       </Box>
       <Box
         className="footers"
@@ -116,7 +123,7 @@ export default function SnapInstall({
           onSubmit={
             shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
           }
-          submitText={t('approveAndInstall')}
+          submitText={t(hasPermissions ? 'approveAndInstall' : 'install')}
         />
       </Box>
       {isShowingWarning && (

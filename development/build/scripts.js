@@ -1030,6 +1030,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     ONBOARDING_V2: config.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
+    PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
     PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: config.SEGMENT_HOST,
