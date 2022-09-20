@@ -15,7 +15,7 @@ export const diameters = {
   xl: '48',
 };
 
-export const avatarAccountTypes = ['Jazzicon', 'BlockieIdenticon'];
+export const types = ['Jazzicon', 'Blockie'];
 
 const getStyles = (diameter) => ({
   height: diameter,
@@ -23,20 +23,14 @@ const getStyles = (diameter) => ({
   borderRadius: diameter / 2,
 });
 
-export const AvatarAccount = ({
-  size,
-  address,
-  className,
-  avatarAccountType,
-  ...props
-}) => {
+export const AvatarAccount = ({ size, address, className, type, ...props }) => {
   return (
     <BaseAvatar
       size={size}
       className={classnames('avatar-account', className)}
       {...props}
     >
-      {avatarAccountType === 'Jazzicon' ? (
+      {type === 'Jazzicon' ? (
         <Jazzicon address={address} style={getStyles(diameters[size])} />
       ) : (
         <BlockieIdenticon
@@ -57,9 +51,9 @@ AvatarAccount.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
   /**
-   * The type of the avatar to be rendered, it can render either a Jazzicon or a BlockIdenticon
+   * The type of the avatar to be rendered, it can render either a Jazzicon or a Blockie
    */
-  avatarAccountType: PropTypes.oneOf(['Jazzicon', 'BlockieIdenticon']),
+  type: PropTypes.oneOf(['Jazzicon', 'Blockie']),
   /**
    * Address used for generating random image
    */

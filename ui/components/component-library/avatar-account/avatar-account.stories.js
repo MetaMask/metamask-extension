@@ -19,15 +19,15 @@ export default {
       options: Object.values(SIZES),
     },
     address: { control: 'text' },
-    avatarAccountType: {
+    type: {
       control: 'select',
-      options: ['Jazzicon', 'BlockieIdenticon'],
+      options: ['Jazzicon', 'Blockie'],
     },
   },
   args: {
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
     size: SIZES.MD,
-    avatarAccountType: 'Jazzicon',
+    type: 'Jazzicon',
   },
 };
 
