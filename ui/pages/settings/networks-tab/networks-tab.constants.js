@@ -9,6 +9,8 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA,
+  SEPOLIA_CHAIN_ID,
   getRpcUrl,
   ETH_SYMBOL,
   TEST_NETWORK_TICKER_MAP,
@@ -50,6 +52,18 @@ const defaultNetworksData = [
     chainId: GOERLI_CHAIN_ID,
     ticker: TEST_NETWORK_TICKER_MAP[GOERLI],
     blockExplorerUrl: 'https://goerli.etherscan.io',
+  },
+  {
+    labelKey: SEPOLIA,
+    iconColor: '#CFB5F0',
+    providerType: SEPOLIA,
+    rpcUrl: getRpcUrl({
+      network: SEPOLIA,
+      excludeProjectId: true,
+    }),
+    chainId: SEPOLIA_CHAIN_ID,
+    ticker: TEST_NETWORK_TICKER_MAP[SEPOLIA],
+    blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
   {
     labelKey: KOVAN,

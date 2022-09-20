@@ -14,10 +14,13 @@ describe('Swap Eth for another Token', function () {
   it('Completes a Swap between Eth and Matic', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: 'special-settings',
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
+        driverOptions: {
+          timeOut: 20000,
+        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -37,7 +40,6 @@ describe('Swap Eth for another Token', function () {
           '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
         );
         await driver.clickElement('[placeholder="Search for a token"]');
-        await driver.clickElement('[placeholder="Search for a token"]');
         await driver.fill('[placeholder="Search for a token"]', 'DAI');
         await driver.waitForSelector(
           '[class="searchable-item-list__primary-label"]',
@@ -45,7 +47,7 @@ describe('Swap Eth for another Token', function () {
         await driver.clickElement(
           '[class="searchable-item-list__primary-label"]',
         );
-        await driver.clickElement({ text: 'Review Swap', tag: 'button' });
+        await driver.clickElement({ text: 'Review swap', tag: 'button' });
         await driver.waitForSelector('[class*="box--align-items-center"]');
         const estimatedEth = await driver.waitForSelector({
           css: '[class*="box--align-items-center"]',

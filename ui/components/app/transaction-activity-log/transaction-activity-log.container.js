@@ -12,8 +12,10 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
 } from './transaction-activity-log.constants';
 
-const matchesEventKey = (matchEventKey) => ({ eventKey }) =>
-  eventKey === matchEventKey;
+const matchesEventKey =
+  (matchEventKey) =>
+  ({ eventKey }) =>
+    eventKey === matchEventKey;
 
 const mapStateToProps = (state) => {
   return {

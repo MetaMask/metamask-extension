@@ -227,6 +227,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('sepolia'),
+    descriptionMessage: (t) => t('sepolia'),
+    route: `${NETWORKS_ROUTE}#networks-sepolia`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('kovan'),
     descriptionMessage: (t) => t('kovan'),
     route: `${NETWORKS_ROUTE}#networks-kovan`,
@@ -314,21 +321,11 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
-    // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('tokenDetection'),
-    descriptionMessage: (t) => t('tokenDetectionToggleDescription'),
+    sectionMessage: (t) => t('enhancedTokenDetection'),
+    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
     route: `${ADVANCED_ROUTE}#token-description`,
     icon: 'fas fa-sliders-h',
-    featureFlag: 'TOKEN_DETECTION_V2',
-  },
-  {
-    // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useTokenDetection'),
-    descriptionMessage: (t) => t('useTokenDetectionDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#token-description`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('experimental'),
@@ -352,5 +349,19 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('showCustomNetworkListDescription'),
     route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
     icon: 'fa fa-flask',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('backupUserData'),
+    descriptionMessage: (t) => t('backupUserDataDescription'),
+    route: `${ADVANCED_ROUTE}#backup-userdata`,
+    icon: 'fas fa-download',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('restoreUserData'),
+    descriptionMessage: (t) => t('restoreUserDataDescription'),
+    route: `${ADVANCED_ROUTE}#restore-userdata`,
+    icon: 'fas fa-upload',
   },
 ];

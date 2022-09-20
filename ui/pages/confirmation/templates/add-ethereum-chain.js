@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
   TYPOGRAPHY,
@@ -7,8 +8,13 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
   COLORS,
+  FLEX_DIRECTION,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -37,8 +43,7 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             element: 'a',
             key: 'mismatchedChainLink',
             props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+              href: ZENDESK_URLS.VERIFY_CUSTOM_NETWORK,
               target: '__blank',
               tabIndex: 0,
             },
@@ -141,7 +146,7 @@ async function getAlerts(pendingApproval) {
   return alerts;
 }
 
-function getValues(pendingApproval, t, actions) {
+function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
 
   return {
@@ -227,7 +232,7 @@ function getValues(pendingApproval, t, actions) {
                       {t('someNetworksMayPoseSecurity')}{' '}
                       <a
                         key="zendesk_page_link"
-                        href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: 'var(--color-primary-default)' }}
@@ -264,8 +269,7 @@ function getValues(pendingApproval, t, actions) {
                   children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
                   key: 'addEthereumChainConfirmationRisksLearnMoreLink',
                   props: {
-                    href:
-                      'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
                     target: '__blank',
                   },
                 },
@@ -275,9 +279,11 @@ function getValues(pendingApproval, t, actions) {
         ],
         props: {
           variant: TYPOGRAPHY.H7,
-          align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
+            display: DISPLAY.FLEX,
+            flexDirection: FLEX_DIRECTION.COLUMN,
+            alignItems: ALIGN_ITEMS.CENTER,
           },
         },
       },
@@ -295,11 +301,18 @@ function getValues(pendingApproval, t, actions) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
+              `/v3/${infuraProjectId}`,
+            )
+              ? pendingApproval.requestData.rpcUrl.replace(
+                  `/v3/${infuraProjectId}`,
+                  '',
+                )
+              : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]: pendingApproval.requestData
-              .blockExplorerUrl,
+            [t('blockExplorerUrl')]:
+              pendingApproval.requestData.blockExplorerUrl,
           },
           prefaceKeys: [
             t('networkName'),
@@ -312,12 +325,16 @@ function getValues(pendingApproval, t, actions) {
     ],
     approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
-    onApprove: () =>
-      actions.resolvePendingApproval(
+    onApprove: async () => {
+      await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
-      ),
-
+      );
+      if (originIsMetaMask) {
+        actions.addCustomNetwork(pendingApproval.requestData);
+        history.push(DEFAULT_ROUTE);
+      }
+    },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,

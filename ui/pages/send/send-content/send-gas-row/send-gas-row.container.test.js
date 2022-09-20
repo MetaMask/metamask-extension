@@ -48,7 +48,7 @@ jest.mock('../../../../ducks/gas/gas.duck', () => ({
   setCustomGasLimit: jest.fn(),
 }));
 
-require('./send-gas-row.container.js');
+require('./send-gas-row.container');
 
 describe('send-gas-row container', () => {
   describe('mapDispatchToProps()', () => {

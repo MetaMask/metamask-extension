@@ -6,12 +6,8 @@ import CancelTransaction from './cancel-transaction.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state;
-  const {
-    transactionId,
-    originalGasPrice,
-    newGasFee,
-    customGasSettings,
-  } = ownProps;
+  const { transactionId, originalGasPrice, newGasFee, customGasSettings } =
+    ownProps;
   const { currentNetworkTxList } = metamask;
   const transaction = currentNetworkTxList.find(
     ({ id }) => id === transactionId,

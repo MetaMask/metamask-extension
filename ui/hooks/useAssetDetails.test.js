@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
-import { ERC1155, ERC20, ERC721 } from '../helpers/constants/common';
 import * as Actions from '../store/actions';
+import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
 import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({

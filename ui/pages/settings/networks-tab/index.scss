@@ -14,7 +14,7 @@
       isolation: isolate;
     }
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-inline-end: 16px;
       margin-bottom: 24px;
     }
@@ -58,7 +58,7 @@
   &__subheader {
     display: none;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       @include H4;
 
       padding: 16px 4px;
@@ -80,7 +80,7 @@
   &__network-form {
     padding: 16px 24px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       padding: 16px;
     }
 
@@ -99,7 +99,7 @@
     gap: 16px;
     padding: 16px 24px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       padding: 16px;
       min-width: 160px; // Allow network form to take priority in the grid on resize
       border-right: 1px solid var(--color-border-muted);
@@ -108,7 +108,7 @@
     &__custom-search-network {
       @include H6;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         @include Paragraph;
       }
     }
@@ -125,7 +125,7 @@
     width: 100%;
     background: var(--color-background-default);
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       display: none;
     }
   }
@@ -138,13 +138,13 @@
       padding: 10px;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       display: none;
     }
   }
 
   &__networks-list--selection {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       display: none;
     }
   }
@@ -175,7 +175,7 @@
       padding-top: 3px;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       color: var(--color-text-default);
     }
   }
@@ -184,7 +184,7 @@
     font-weight: bold;
     color: var(--color-text-default);
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       font-weight: normal;
       color: var(--color-text-default);
     }
@@ -193,7 +193,7 @@
   &__networks-list-name--disabled {
     color: var(--color-text-muted);
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       color: var(--color-text-default);
     }
   }
@@ -224,7 +224,7 @@
     padding: 16px 24px;
     grid-column: span 2; // spread both columns of grid layout
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-width: 400px; // but only expand to 400px
       padding: 16px;
     }

@@ -355,9 +355,8 @@ export function getEstimatedGasFeeTimeBounds(state) {
 }
 
 export function getIsGasEstimatesLoading(state) {
-  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const networkAndAccountSupports1559 =
+    checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
 
   // We consider the gas estimate to be loading if the gasEstimateType is
@@ -402,7 +401,7 @@ export function getSeedPhraseBackedUp(state) {
  *
  * @param {object} state - the redux state object
  * @param {string} address - the address to search for among the keyring addresses
- * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
 export function findKeyringForAddress(state, address) {
   const keyring = state.metamask.keyrings.find((kr) => {

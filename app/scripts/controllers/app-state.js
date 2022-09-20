@@ -33,10 +33,19 @@ export default class AppStateController extends EventEmitter {
       collectiblesDetectionNoticeDismissed: false,
       enableEIP1559V2NoticeDismissed: false,
       showTestnetMessageInDropdown: true,
+      showPortfolioTooltip: true,
       trezorModel: null,
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
+      usedNetworks: {
+        '0x1': true,
+        '0x2a': true,
+        '0x3': true,
+        '0x4': true,
+        '0x5': true,
+        '0x539': true,
+      },
     });
     this.timer = null;
 
@@ -252,6 +261,15 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the portfolio site tooltip should be shown on the home page
+   *
+   * @param showPortfolioTooltip
+   */
+  setShowPortfolioTooltip(showPortfolioTooltip) {
+    this.store.updateState({ showPortfolioTooltip });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -293,5 +311,19 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       collectiblesDropdownState,
     });
+  }
+
+  /**
+   * Updates the array of the first time used networks
+   *
+   * @param chainId
+   * @returns {void}
+   */
+  setFirstTimeUsedNetwork(chainId) {
+    const currentState = this.store.getState();
+    const { usedNetworks } = currentState;
+    usedNetworks[chainId] = true;
+
+    this.store.updateState({ usedNetworks });
   }
 }

@@ -53,7 +53,7 @@ import {
 } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
@@ -442,7 +442,7 @@ export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
 }
 
 export function getCurrentEthBalance(state) {
-  return getCurrentAccountWithSendEtherInfo(state).balance;
+  return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
 
 export function getGasIsLoading(state) {
@@ -817,6 +817,7 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
+  const { threeBoxSyncingAllowed } = state.metamask;
 
   return {
     1: false,
@@ -827,10 +828,13 @@ function getAllowedAnnouncementIds(state) {
     6: false,
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    9: getIsMainnet(state),
-    10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    12: true,
+    9: false,
+    10: true,
+    11: true,
+    12: false,
+    13: true,
+    14: threeBoxSyncingAllowed,
+    15: true,
   };
 }
 
@@ -877,6 +881,10 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
+export function getShowPortfolioTooltip(state) {
+  return state.metamask.showPortfolioTooltip;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -918,13 +926,19 @@ export function getTheme(state) {
 }
 
 /**
- * To retrieve the tokenList produced by TokenListcontroller
+ * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
+ * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
  * @returns {object}
  */
 export function getTokenList(state) {
-  return state.metamask.tokenList;
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : state.metamask.tokenList;
+  return caseInSensitiveTokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
@@ -1013,6 +1027,8 @@ export function getIsAdvancedGasFeeDefault(state) {
 }
 
 /**
+ * To get the name of the network that support token detection based in chainId.
+ *
  * @param state
  * @returns string e.g. ethereum, bsc or polygon
  */
@@ -1032,13 +1048,13 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check for the chainId that supports token detection ,
+ * To check if teh chainId supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getIsTokenDetectionSupported(state) {
+export function getIsDynamicTokenListAvailable(state) {
   const chainId = getCurrentChainId(state);
   return [
     MAINNET_CHAIN_ID,
@@ -1066,6 +1082,50 @@ export function getDetectedTokensInCurrentNetwork(state) {
  */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
+}
+
+/**
+ * To check if the token detection is OFF and the network is Mainnet
+ * so that the user can skip third party token api fetch
+ * and use the static tokenlist from contract-metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionInactiveOnMainnet(state) {
+  const isMainnet = getIsMainnet(state);
+  const useTokenDetection = getUseTokenDetection(state);
+
+  return !useTokenDetection && isMainnet;
+}
+
+/**
+ * To check for the chainId that supports token detection ,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionSupported(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return useTokenDetection && isDynamicTokenListAvailable;
+}
+
+/**
+ * To check if the token detection is OFF for the token detection supported networks
+ * and the network is not Mainnet
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isMainnet = getIsMainnet(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
 }
 
 /**
@@ -1116,4 +1176,32 @@ export function getBlockExplorerLinkText(
   }
 
   return blockExplorerLinkText;
+}
+
+export function getIsNetworkUsed(state) {
+  const chainId = getCurrentChainId(state);
+  const { usedNetworks } = state.metamask;
+
+  return Boolean(usedNetworks[chainId]);
+}
+
+export function getAllAccountsOnNetworkAreEmpty(state) {
+  const balances = getMetaMaskCachedBalances(state) ?? {};
+  const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
+    (balance) => balance === '0x0' || balance === '0x00',
+  );
+  const hasNoTokens = getNumberOfTokens(state) === 0;
+
+  return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
+}
+
+export function getShouldShowSeedPhraseReminder(state) {
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+    state.metamask;
+  const accountBalance = getCurrentEthBalance(state) ?? 0;
+  return (
+    seedPhraseBackedUp === false &&
+    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+    dismissSeedBackUpReminder === false
+  );
 }

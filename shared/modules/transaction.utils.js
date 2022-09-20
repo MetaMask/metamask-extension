@@ -2,8 +2,11 @@ import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
-import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+  TRANSACTION_TYPES,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -129,6 +132,19 @@ export function parseStandardTokenTransactionData(data) {
 }
 
 /**
+ * Determines the contractCode of the transaction by analyzing the txParams.
+ *
+ * @param {object} txParams - Parameters for the transaction
+ * @param {EthQuery} query - EthQuery instance
+ * @returns {InferTransactionTypeResult}
+ */
+export async function determineTransactionContractCode(txParams, query) {
+  const { to } = txParams;
+  const { contractCode } = await readAddressAsContract(query, to);
+  return contractCode;
+}
+
+/**
  * Determines the type of the transaction by analyzing the txParams.
  * This method will return one of the types defined in shared/constants/transactions
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
@@ -154,10 +170,8 @@ export async function determineTransactionType(txParams, query) {
   if (data && !to) {
     result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
   } else {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
 

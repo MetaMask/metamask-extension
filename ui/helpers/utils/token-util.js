@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC20 } from '../constants/common';
+import { ERC20 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -44,13 +44,7 @@ async function getDecimalsFromContract(tokenAddress) {
 }
 
 export function getTokenMetadata(tokenAddress, tokenList) {
-  const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
-    return {
-      ...acc,
-      [base.toLowerCase()]: tokenList[base],
-    };
-  }, {});
-  return tokenAddress && casedTokenList[tokenAddress.toLowerCase()];
+  return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
 async function getSymbol(tokenAddress, tokenList) {

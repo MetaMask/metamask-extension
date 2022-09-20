@@ -36,14 +36,13 @@ function transformState(state) {
   const cachedBalances = state.CachedBalancesController?.cachedBalances || {};
 
   const userIsCurrentlyOnATestNet = TEST_CHAINS.includes(provider?.chainId);
-  const userHasMadeATestNetTransaction = Object.values(
-    transactions,
-  ).some(({ chainId }) => TEST_CHAINS.includes(chainId));
+  const userHasMadeATestNetTransaction = Object.values(transactions).some(
+    ({ chainId }) => TEST_CHAINS.includes(chainId),
+  );
   const userHasACachedBalanceOnATestnet = TEST_CHAINS.some((chainId) => {
     const cachedBalancesForChain = Object.values(cachedBalances[chainId] || {});
-    const userHasABalanceGreaterThanZeroOnThisChain = cachedBalancesForChain.some(
-      hexNumberIsGreaterThanZero,
-    );
+    const userHasABalanceGreaterThanZeroOnThisChain =
+      cachedBalancesForChain.some(hexNumberIsGreaterThanZero);
     return userHasABalanceGreaterThanZeroOnThisChain;
   });
   const userHasUsedATestnet =

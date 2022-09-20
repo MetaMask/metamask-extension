@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -18,6 +18,8 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -52,6 +54,9 @@ const exceptionsToFilter = {
  *  whether or not events are tracked
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
+ * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
+ *  a user opts into metrics.
+ * @property {object} [traits] - Traits that are not derived from other state keys.
  */
 
 export default class MetaMetricsController {
@@ -69,6 +74,7 @@ export default class MetaMetricsController {
    *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
+   * @param {string} options.extension - webextension-polyfill
    * @param {MetaMetricsControllerState} options.initState - State to initialized with
    * @param options.captureException
    */
@@ -81,6 +87,7 @@ export default class MetaMetricsController {
     version,
     environment,
     initState,
+    extension,
     captureException = defaultCaptureException,
   }) {
     this._captureException = (err) => {
@@ -96,12 +103,16 @@ export default class MetaMetricsController {
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
+    this.extension = extension;
+    this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      eventsBeforeMetricsOptIn: [],
+      traits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -179,7 +190,7 @@ export default class MetaMetricsController {
     }
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
@@ -315,6 +326,26 @@ export default class MetaMetricsController {
     this._identify(allValidTraits);
   }
 
+  // It sets an uninstall URL ("Sorry to see you go!" page),
+  // which is opened if a user uninstalls the extension.
+  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
+    const query = {};
+    if (participateInMetaMetrics) {
+      // We only want to track these things if a user opted into metrics.
+      query.mmi = Buffer.from(metaMetricsId).toString('base64');
+      query.env = this.environment;
+      query.av = this.version;
+    }
+    const queryString = new URLSearchParams(query);
+
+    // this.extension not currently defined in tests
+    if (this.extension && this.extension.runtime) {
+      this.extension.runtime.setUninstallURL(
+        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+      );
+    }
+  }
+
   /**
    * Setter for the `participateInMetaMetrics` property
    *
@@ -331,6 +362,12 @@ export default class MetaMetricsController {
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    if (participateInMetaMetrics) {
+      this.trackEventsAfterMetricsOptIn();
+      this.clearEventsAfterMetricsOptIn();
+    }
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 
@@ -472,6 +509,37 @@ export default class MetaMetricsController {
     }
   }
 
+  // Track all queued events after a user opted into metrics.
+  trackEventsAfterMetricsOptIn() {
+    const { eventsBeforeMetricsOptIn } = this.store.getState();
+    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
+      this.trackEvent(eventBeforeMetricsOptIn);
+    });
+  }
+
+  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
+  clearEventsAfterMetricsOptIn() {
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [],
+    });
+  }
+
+  // It adds an event into a queue, which is only tracked if a user opts into metrics.
+  addEventBeforeMetricsOptIn(event) {
+    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [...prevState, event],
+    });
+  }
+
+  // Add or update traits for tracking.
+  updateTraits(newTraits) {
+    const { traits } = this.store.getState();
+    this.store.updateState({
+      traits: { ...traits, ...newTraits },
+    });
+  }
+
   /** PRIVATE METHODS */
 
   /**
@@ -549,24 +617,27 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    const { traits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
+      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]: metamaskState.frequentRpcListDetail.reduce(
-        (networkList, currentNetwork) => {
-          if (!currentNetwork.ticker) {
-            networkList.push(currentNetwork.chainId);
-          }
-          return networkList;
-        },
-        [],
-      ),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]:
+        metamaskState.frequentRpcListDetail.reduce(
+          (networkList, currentNetwork) => {
+            if (!currentNetwork.ticker) {
+              networkList.push(currentNetwork.chainId);
+            }
+            return networkList;
+          },
+          [],
+        ),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,

@@ -137,8 +137,8 @@ const COLLECTIBLES_CONTRACTS = [
 ];
 
 const collectiblesDropdownState = {
-  0x495f947276749ce646f68ac8c248420045cb7b5e: true,
-  0xdc7382eb0bc9c352a4cba23c909bda01e0206414: true,
+  '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
+  '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
 };
 
 const ACCOUNT_1 = '0x123';
@@ -182,10 +182,12 @@ describe('Collectible Items', () => {
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
   const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
+    setCollectiblesDetectionNoticeDismissed:
+      setCollectiblesDetectionNoticeDismissedStub,
     detectCollectibles: detectCollectiblesStub,
     getState: getStateStub,
-    checkAndUpdateAllCollectiblesOwnershipStatus: checkAndUpdateAllCollectiblesOwnershipStatusStub,
+    checkAndUpdateAllCollectiblesOwnershipStatus:
+      checkAndUpdateAllCollectiblesOwnershipStatusStub,
     updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
   });
   const historyPushMock = jest.fn();
@@ -214,14 +216,16 @@ describe('Collectible Items', () => {
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in setings when user clicks "Turn on NFT detection in Settings"', () => {
+    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
         selectedAddress: ACCOUNT_2,
         collectibles: COLLECTIBLES,
       });
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(
+        `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+      );
     });
     it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles but use collectible autodetection preference is set to true', () => {
       render({
@@ -309,13 +313,13 @@ describe('Collectible Items', () => {
       ).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable Autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
       });
       expect(historyPushMock).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Enable Autodetect'));
+      fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });

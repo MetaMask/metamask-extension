@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -29,7 +30,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getPreferences,
   doesAddressRequireLedgerHidConnection,
-  getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
   getEIP1559V2Enabled,
@@ -119,21 +119,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const tokenList = getTokenList(state);
-  const useTokenDetection = getUseTokenDetection(state);
-  let casedTokenList = tokenList;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    casedTokenList = useTokenDetection
-      ? tokenList
-      : Object.keys(tokenList).reduce((acc, base) => {
-          return {
-            ...acc,
-            [base.toLowerCase()]: tokenList[base],
-          };
-        }, {});
-  }
+
   const toName =
     identities[toAddress]?.name ||
-    casedTokenList[toAddress]?.name ||
+    tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
@@ -202,10 +191,8 @@ const mapStateToProps = (state, ownProps) => {
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
 
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    fromAddress,
-  );
+  const hardwareWalletRequiresConnection =
+    doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const eip1559V2Enabled = getEIP1559V2Enabled(state);

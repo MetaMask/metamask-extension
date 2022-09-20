@@ -5,6 +5,9 @@ import {
   getLastConnectedInfo,
   getPermissionsRequests,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getSnapUpdateRequests,
+  ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -22,6 +25,7 @@ import {
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
+  CONNECT_SNAP_UPDATE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import { SUBJECT_TYPES } from '../../../shared/constants/app';
@@ -34,7 +38,13 @@ const mapStateToProps = (state, ownProps) => {
     },
     location: { pathname },
   } = ownProps;
-  const permissionsRequests = getPermissionsRequests(state);
+  let permissionsRequests = getPermissionsRequests(state);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  permissionsRequests = [
+    ...permissionsRequests,
+    ...getSnapUpdateRequests(state),
+  ];
+  ///: END:ONLY_INCLUDE_IN
   const currentAddress = getSelectedAddress(state);
 
   const permissionsRequest = permissionsRequests.find(
@@ -42,7 +52,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions.eth_accounts,
+    permissionsRequest?.permissions?.eth_accounts,
   );
 
   const { metadata = {} } = permissionsRequest || {};
@@ -77,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   ///: END:ONLY_INCLUDE_IN
 
   let totalPages = 1 + isRequestingAccounts;
@@ -91,7 +102,7 @@ const mapStateToProps = (state, ownProps) => {
   } else if (pathname === confirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  } else if (pathname === snapInstallPath) {
+  } else if (pathname === snapInstallPath || pathname === snapUpdatePath) {
     page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {
@@ -103,6 +114,7 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     isSnap,
     snapInstallPath,
+    snapUpdatePath,
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,

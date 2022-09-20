@@ -7,9 +7,9 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
   TRANSAK_API_KEY,
@@ -17,7 +17,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * Create a Wyre purchase URL.
@@ -83,9 +83,8 @@ const createTransakUrl = (walletAddress, chainId) => {
  * @returns String
  */
 const createMoonPayUrl = async (walletAddress, chainId) => {
-  const {
-    moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
-  } = BUYABLE_CHAINS_MAP[chainId];
+  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+    BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,
@@ -172,6 +171,8 @@ export default async function getBuyUrl({ chainId, address, service }) {
       return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
+    case 'sepolia-faucet':
+      return 'https://faucet.sepolia.dev/';
     default:
       throw new Error(
         `Unknown cryptocurrency exchange or faucet: "${service}"`,
@@ -191,6 +192,8 @@ function getDefaultServiceForChain(chainId) {
       return 'kovan-faucet';
     case GOERLI_CHAIN_ID:
       return 'goerli-faucet';
+    case SEPOLIA_CHAIN_ID:
+      return 'sepolia-faucet';
     default:
       throw new Error(
         `No default cryptocurrency exchange or faucet for chainId: "${chainId}"`,

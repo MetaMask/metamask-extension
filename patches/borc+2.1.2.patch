@@ -1,0 +1,13 @@
+diff --git a/node_modules/borc/src/decoder.asm.js b/node_modules/borc/src/decoder.asm.js
+index d77a3c2..dc70f6b 100644
+--- a/node_modules/borc/src/decoder.asm.js
++++ b/node_modules/borc/src/decoder.asm.js
+@@ -1,7 +1,7 @@
+ /* eslint-disable */
+ 
+ module.exports = function decodeAsm (stdlib, foreign, buffer) {
+-  'use asm'
++  // 'use asm' //causes v8 to not cache bytecode
+ 
+   // -- Imports
+ 

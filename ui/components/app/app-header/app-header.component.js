@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../ui/identicon';
 import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
 
 export default class AppHeader extends PureComponent {
@@ -50,11 +50,8 @@ export default class AppHeader extends PureComponent {
     if (networkDropdownOpen === false) {
       this.context.trackEvent({
         category: EVENT.CATEGORIES.NAVIGATION,
-        event: 'Opened Network Menu',
-        properties: {
-          action: 'Home',
-          legacy_event: true,
-        },
+        event: EVENT_NAMES.NAV_NETWORK_MENU_OPENED,
+        properties: {},
       });
       showNetworkDropdown();
     } else {
@@ -85,11 +82,8 @@ export default class AppHeader extends PureComponent {
               !isAccountMenuOpen &&
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Opened Main Menu',
-                  properties: {
-                    action: 'Home',
-                    legacy_event: true,
-                  },
+                  event: EVENT_NAMES.NAV_MAIN_MENU_OPENED,
+                  properties: {},
                 });
               toggleAccountMenu();
             }

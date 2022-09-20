@@ -1,7 +1,8 @@
 {
   "data": {
     "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+      "mkrMigrationReminderTimestamp": null,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -20,6 +21,7 @@
         "goerli": null,
         "kovan": null,
         "mainnet": null,
+        "sepolia": null,
         "rinkeby": 5570536
       }
     },
@@ -54,6 +56,15 @@
           "isShown": true
         },
         "12": {
+          "isShown": true
+        },
+        "13": {
+          "isShown": true
+        },
+        "14": {
+          "isShown": true
+        },
+        "15": {
           "isShown": true
         }
       }
@@ -132,7 +143,7 @@
       "useBlockie": false,
       "useNonceField": false,
       "usePhishDetect": true,
-      "useTokenDetection": true
+      "useTokenDetection": false
     },
     "config": {},
     "firstTimeInfo": {

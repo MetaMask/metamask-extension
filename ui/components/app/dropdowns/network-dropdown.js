@@ -17,7 +17,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -115,12 +115,10 @@ class NetworkDropdown extends Component {
 
     trackEvent({
       category: EVENT.CATEGORIES.NAVIGATION,
-      event: 'Switched Networks',
+      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
       properties: {
-        action: 'Home',
-        legacy_event: true,
-        fromNetwork: providerType,
-        toNetwork: newProviderType,
+        from_network: providerType,
+        to_network: newProviderType,
       },
     });
     setProviderType(newProviderType);
@@ -185,6 +183,7 @@ class NetworkDropdown extends Component {
           />
           <span
             className="network-name-item"
+            data-testid={`${nickname}-network-item`}
             style={{
               color: isCurrentRpcTarget
                 ? 'var(--color-text-default)'
@@ -226,6 +225,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'sepolia') {
+      name = this.context.t('sepolia');
     } else if (providerName === 'localhost') {
       name = this.context.t('localhost');
     } else {
@@ -258,6 +259,7 @@ class NetworkDropdown extends Component {
         />
         <span
           className="network-name-item"
+          data-testid={`${network}-network-item`}
           style={{
             color:
               providerType === network
@@ -295,9 +297,8 @@ class NetworkDropdown extends Component {
         onClickOutside={(event) => {
           const { classList } = event.target;
           const isInClassList = (className) => classList.contains(className);
-          const notToggleElementIndex = notToggleElementClassnames.findIndex(
-            isInClassList,
-          );
+          const notToggleElementIndex =
+            notToggleElementClassnames.findIndex(isInClassList);
 
           if (notToggleElementIndex === -1) {
             event.stopPropagation();
@@ -359,6 +360,7 @@ class NetworkDropdown extends Component {
               {this.renderNetworkEntry('kovan')}
               {this.renderNetworkEntry('rinkeby')}
               {this.renderNetworkEntry('goerli')}
+              {this.renderNetworkEntry('sepolia')}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

@@ -17,6 +17,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
   ASSET_TYPES,
+  TOKEN_STANDARDS,
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
@@ -26,7 +27,6 @@ import {
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';
 
@@ -334,11 +334,14 @@ describe('Transaction Controller', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d';
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
-    let getSelectedAddress, getPermittedAccounts;
+    let getSelectedAddress, getPermittedAccounts, getDefaultGasFees;
     beforeEach(function () {
       getSelectedAddress = sinon
         .stub(txController, 'getSelectedAddress')
         .returns(selectedAddress);
+      getDefaultGasFees = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .returns({});
       getPermittedAccounts = sinon
         .stub(txController, 'getPermittedAccounts')
         .returns([selectedAddress]);
@@ -347,6 +350,7 @@ describe('Transaction Controller', function () {
     afterEach(function () {
       getSelectedAddress.restore();
       getPermittedAccounts.restore();
+      getDefaultGasFees.restore();
     });
 
     it('should add an unapproved transaction and return a valid txMeta', async function () {
@@ -370,6 +374,62 @@ describe('Transaction Controller', function () {
 
       const memTxMeta = txController.txStateManager.getTransaction(txMeta.id);
       assert.deepEqual(txMeta, memTxMeta);
+    });
+
+    it('should add only 1 unapproved transaction when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1, transactionCount2);
+    });
+
+    it('should add multiple transactions when called with different actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '00000',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1 + 1, transactionCount2);
     });
 
     it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
@@ -1471,17 +1531,20 @@ describe('Transaction Controller', function () {
             network: '42',
             referrer: ORIGIN_METAMASK,
             source: EVENT.SOURCE.TRANSACTION.USER,
-            type: TRANSACTION_TYPES.SIMPLE_SEND,
+            transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
             default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
+            transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1550,17 +1613,20 @@ describe('Transaction Controller', function () {
             network: '42',
             referrer: ORIGIN_METAMASK,
             source: EVENT.SOURCE.TRANSACTION.USER,
-            type: TRANSACTION_TYPES.SIMPLE_SEND,
+            transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
             default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
+            transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1639,17 +1705,20 @@ describe('Transaction Controller', function () {
             network: '42',
             referrer: 'other',
             source: EVENT.SOURCE.TRANSACTION.DAPP,
-            type: TRANSACTION_TYPES.SIMPLE_SEND,
+            transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
             default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
+            transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1720,17 +1789,20 @@ describe('Transaction Controller', function () {
             network: '42',
             referrer: 'other',
             source: EVENT.SOURCE.TRANSACTION.DAPP,
-            type: TRANSACTION_TYPES.SIMPLE_SEND,
+            transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
             default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
+            transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1801,15 +1873,18 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
-          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
           account_type: 'MetaMask',
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
@@ -1860,7 +1935,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
-          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
@@ -1869,12 +1944,15 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,
           foo: 'bar',
           gas_price: '2',
           gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
@@ -1937,11 +2015,12 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
-          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
           account_type: 'MetaMask',
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1949,6 +2028,8 @@ describe('Transaction Controller', function () {
           max_fee_per_gas: '2',
           max_priority_fee_per_gas: '2',
           gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
@@ -2277,8 +2358,7 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_getCode = '0xab';
       // test update gasFees
       await txController.updateEditableParams('1', {
-        data:
-          '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        data: '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
       });
       const result = txStateManager.getTransaction('1');
       assert.equal(
@@ -2302,8 +2382,7 @@ describe('Transaction Controller', function () {
           // maxFeePerGas: '0x004',
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
-          data:
-            '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+          data: '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
         },
         estimateUsed: '0x005',
         estimatedBaseFee: '0x006',

@@ -1,5 +1,5 @@
 .creation-successful {
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     display: flex;
     flex-direction: column;
     align-items: center;

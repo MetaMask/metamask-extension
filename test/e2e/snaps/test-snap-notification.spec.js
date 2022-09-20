@@ -19,9 +19,6 @@ describe('Test Snap Notification', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        driverOptions: {
-          type: 'flask',
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -67,7 +64,7 @@ describe('Test Snap Notification', function () {
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Approve & Install',
+          text: 'Approve & install',
           tag: 'button',
         });
 

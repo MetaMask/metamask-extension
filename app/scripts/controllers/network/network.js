@@ -20,7 +20,6 @@ import {
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../../shared/constants/network';
-import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -31,7 +30,7 @@ import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST) {

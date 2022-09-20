@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Tambahkan memo"
   },
+  "addMoreNetworks": {
+    "message": "tambahkan jaringan secara manual"
+  },
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "Peringatan"
   },
+  "allOfYour": {
+    "message": "Seluruh $1 Anda",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Izinkan ekstensi eksternal ini untuk:"
   },
@@ -263,6 +270,10 @@
   "approve": {
     "message": "Setujui batas penggunaan"
   },
+  "approveAllTokensTitle": {
+    "message": "Berikan izin untuk mengakses seluruh $1 Anda?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approveAndInstall": {
     "message": "Setujui & Instal"
   },
@@ -281,9 +292,6 @@
   },
   "approvedAsset": {
     "message": "Aset yang disetujui"
-  },
-  "areYouDeveloper": {
-    "message": "Anda seorang pengembang?"
   },
   "areYouSure": {
     "message": "Anda yakin?"
@@ -438,7 +446,7 @@
     "message": "Beli $1 dengan Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre memungkinkan Anda menggunakan kartu debit untuk menyetorkan ETH langsung di akun MetaMask Anda."
+    "message": "Orientasi mudah untuk pembelian hingga $ 1000. Verifikasi pembelian limit tinggi interaktif yang cepat. Mendukung Kartu Debit/Kredit, Apple Pay, Transfer Bank. Tersedia di 100+ negara. Token disetor ke Akun MetaMask Anda"
   },
   "bytes": {
     "message": "Byte"
@@ -465,6 +473,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Untuk $1 suatu transaksi, biaya gas harus dinaikkan minimal 10% agar dapat dikenali oleh jaringan.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "Batalkan swap untuk ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Batalkan swap gratis"
   },
   "cancellationGasFee": {
     "message": "Biaya Pembatalan Gas"
@@ -650,7 +665,7 @@
     "message": "Interaksi Kontrak"
   },
   "convertTokenToNFTDescription": {
-    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Anda ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
+    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Kami mendeteksi bahwa aset ini telah ditambahkan sebagai NFT. Anda ingin menghapusnya dari daftar token?"
@@ -732,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menyesuaikan harga gas. Anda akan bingung jika tidak terbiasa. Berinteraksi dengan risiko Anda sendiri.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak ada jaminan."
@@ -818,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Deposit $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Deskripsi"
@@ -1196,9 +1211,6 @@
   "failureMessage": {
     "message": "Ada yang salah, dan kami tidak dapat menyelesaikan tindakan"
   },
-  "fakeTokenWarning": {
-    "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari selengkapnya seputar $1"
-  },
   "fast": {
     "message": "Cepat"
   },
@@ -1276,6 +1288,9 @@
   },
   "functionApprove": {
     "message": "Fungsi: Setujui"
+  },
+  "functionSetApprovalForAll": {
+    "message": "Fungsi: SetApprovalForAll"
   },
   "functionType": {
     "message": "Jenis Fungsi"
@@ -1463,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menutupi lonjakan lalu lintas jaringan karena hal-hal seperti penurunan NFT populer.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "tinggi"
@@ -1617,6 +1632,9 @@
   "invalidSeedPhrase": {
     "message": "Frasa Pemulihan Rahasia Tidak Valid"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Masukan tidak valid! Frasa Pemulihan Rahasia peka terhadap huruf besar/kecil."
+  },
   "ipfsGateway": {
     "message": "Gateway IPFS"
   },
@@ -1766,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menunggu harga yang lebih murah. Estimasi waktu kurang akurat karena harga sedang tidak dapat diprediksi.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "rendah"
@@ -1810,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk pemrosesan cepat dengan harga pasar saat ini.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "memo"
@@ -1892,6 +1910,19 @@
     "message": "memverifikasi detail jaringan",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "Kami menyarankan agar Anda $1 sebelum melanjutkan.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "Menurut catatan kami, nama jaringan mungkin tidak sepenuhnya sesuai dengan ID rantai ini."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "Simbol mata uang yang dikirimkan tidak sesuai dengan yang kami harapkan untuk ID rantai ini."
+  },
+  "mismatchedRpcUrl": {
+    "message": "Menurut catatan kami, nilai URL RPC yang dikirimkan tidak sesuai dengan penyedia yang dikenal untuk ID rantai ini."
+  },
   "missingNFT": {
     "message": "Tidak melihat NFT Anda?"
   },
@@ -1942,6 +1973,9 @@
   },
   "network": {
     "message": "Jaringan:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "Jaringan berhasil ditambahkan!"
   },
   "networkDetails": {
     "message": "Detail Jaringan"
@@ -2059,6 +2093,9 @@
     "message": "Nonce lebih tinggi dari nonce $1 yang disarankan",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Masukkan ID koleksi"
   },
@@ -2130,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Lihat di pengaturan",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Deteksi token yang ditingkatkan saat ini tersedia di jaringan Ethereum Mainnet, Polygon, BSC, dan Avalanche. Nantikan selengkapnya!"
@@ -2154,10 +2191,20 @@
     "message": "Aktifkan mode gelap"
   },
   "notifications12Description": {
-    "message": "Mode Gelap akan diaktifkan untuk pengguna baru tergantung preferensi sistem mereka. Untuk pengguna lama, aktifkan Mode Gelap secara manual di bawah Pengaturan -> Eksperimental."
+    "message": "Mode gelap pada Ekstensi akhirnya hadir! Untuk menyalakannya, buka Pengaturan -> Eksperimental dan pilih salah satu opsi tampilan: Terang, Gelap, Sistem."
   },
   "notifications12Title": {
     "message": "Kapan mode gelap? Ini saatnya mode gelap! ️🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Tampilkan daftar jaringan khusus"
+  },
+  "notifications13Description": {
+    "message": "Kini Anda dapat menambahkan jaringan khusus populer berikut dengan mudah: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm, dan Polygon! Untuk mengaktifkan fitur ini, buka Pengaturan -> Eksperimental dan aktifkan \"Tampilkan daftar jaringan khusus\"!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Tambahkan Jaringan Populer"
   },
   "notifications1Description": {
     "message": "Pengguna MetaMask Mobile kini bisa menukar token di dalam dompet seluler mereka. Pindai kode QR untuk mendapatkan aplikasi seluler dan mulai menukar.",
@@ -2225,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Buka Pengaturan Lanjutan",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Pada MetaMask v10.4.0, Anda tidak lagi memerlukan Ledger Live untuk menghubungkan perangkat Ledger Anda ke MetaMask.",
@@ -2260,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "$1 token baru ditemukan di akun ini",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "dari"
@@ -2343,9 +2386,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Buka MetaMask dalam layar penuh untuk menghubungkan ledger Anda melalui WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Periksa kode sumbernya"
   },
   "optional": {
     "message": "Opsional"
@@ -2473,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Jenis Koneksi Ledger Pilihan",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
@@ -2676,6 +2716,14 @@
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"
   },
+  "revokeAllTokensTitle": {
+    "message": "Cabut izin untuk mengakses seluruh $1 Anda?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "Dengan mencabut izin, $1 berikut tidak lagi dapat mengakses $2 Anda",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Jaringan Uji Rinkeby"
   },
@@ -2852,11 +2900,22 @@
     "message": "Mengirim $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Peringatan: Anda akan mengirim kontrak token yang berpotensi mengakibatkan hilangnya dana. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Atur pengaturan privasi lanjutan"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
+  },
+  "setApprovalForAll": {
+    "message": "Atur Persetujuan untuk Semua"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Setujui $1 tanpa batas penggunaan",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Pengaturan"
@@ -2876,6 +2935,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Pilih ini untuk menampilkan biaya gas dan kontrol batas secara langsung di layar kirim dan konfirmasi."
+  },
+  "showCustomNetworkList": {
+    "message": "Tampilkan Daftar Jaringan Khusus"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Pilih ini untuk menampilkan daftar jaringan dengan detail yang telah diisi saat menambahkan jaringan baru."
   },
   "showFiatConversionInTestnets": {
     "message": "Tampilkan Konversi di Testnet"
@@ -2967,10 +3032,6 @@
   "snapInstallWarningCheck": {
     "message": "Untuk mengonfirmasikan Anda sudah paham, centang semua."
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "Anda memberikan akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "Snap ini meminta izin berikut:"
   },
@@ -2985,6 +3046,9 @@
   },
   "snapsToggle": {
     "message": "Snap hanya akan beroperasi jika diaktifkan"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan & menggunakan jaringan."
   },
   "somethingWentWrong": {
     "message": "Ups! Ada yang salah."
@@ -3548,6 +3612,10 @@
   "switchNetworks": {
     "message": "Beralih Jaringan"
   },
+  "switchToNetwork": {
+    "message": "Beralih ke $1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"
   },
@@ -3635,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 jaringan pengujian",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3657,18 +3725,6 @@
   },
   "tokenDetails": {
     "message": "Detail token"
-  },
-  "tokenDetection": {
-    "message": "Deteksi token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Saat ini deteksi token tersedia di $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Baru! Deteksi token yang ditingkatkan tersedia di Ethereum Mainnet sebagai fitur eksperimental. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "API token ConsenSys mengumpulkan daftar token dari berbagai daftar token pihak ketiga. Menonaktifkannya akan menghentikan deteksi token baru yang ditambahkan ke dompet Anda, tetapi Anda akan tetap memiliki opsi untuk mencari token yang akan diimpor."
   },
   "tokenId": {
     "message": "ID token"
@@ -3851,6 +3907,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ups! Ada yang salah..."
   },
+  "unknownCollection": {
+    "message": "Koleksi tanpa nama"
+  },
   "unknownNetwork": {
     "message": "Jaringan Privat Tidak Dikenal"
   },
@@ -3900,12 +3959,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Menampilkan peringatan untuk domain pengelabuan yang menargetkan pengguna Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Gunakan Deteksi Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan token baru yang dikirim ke dompet Anda. Matikan jika Anda tidak ingin MetaMask memakai data dari layanan tersebut."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
@@ -3987,6 +4040,9 @@
   "walletCreationSuccessTitle": {
     "message": "Dompet berhasil dibuat"
   },
+  "wantToAddThisNetwork": {
+    "message": "Ingin menambahkan jaringan ini?"
+  },
   "warning": {
     "message": "Peringatan"
   },
@@ -4048,6 +4104,10 @@
   },
   "yesLetsTry": {
     "message": "Ya, mari kita coba"
+  },
+  "youHaveAddedAll": {
+    "message": "Anda telah menambahkan semua jaringan populer. Anda dapat menemukan lebih banyak jaringan $1 atau dapat $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda harus mengizinkan akses kamera untuk menggunakan fitur ini."

@@ -118,9 +118,8 @@ export default function CollectiblesItems({
       [key]: !isExpanded,
     };
 
-    collectiblesDropdownState[selectedAddress][
-      chainId
-    ] = newCurrentAccountState;
+    collectiblesDropdownState[selectedAddress][chainId] =
+      newCurrentAccountState;
 
     dispatch(updateCollectibleDropDownState(collectiblesDropdownState));
   };
@@ -165,7 +164,8 @@ export default function CollectiblesItems({
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
-                margin={[0, 0, 0, 2]}
+                marginTop={0}
+                marginBottom={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
@@ -185,13 +185,8 @@ export default function CollectiblesItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
-              const {
-                image,
-                address,
-                tokenId,
-                backgroundColor,
-                name,
-              } = collectible;
+              const { image, address, tokenId, backgroundColor, name } =
+                collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
@@ -239,14 +234,17 @@ export default function CollectiblesItems({
 
   return (
     <div className="collectibles-items">
-      <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
+      <Box
+        paddingTop={6}
+        paddingBottom={6}
+        paddingLeft={4}
+        paddingRight={4}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         <>
           {collectionsKeys.map((key) => {
-            const {
-              collectibles,
-              collectionName,
-              collectionImage,
-            } = collections[key];
+            const { collectibles, collectionName, collectionImage } =
+              collections[key];
 
             return renderCollection({
               collectibles,

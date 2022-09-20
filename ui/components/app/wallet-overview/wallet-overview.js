@@ -19,7 +19,7 @@ WalletOverview.propTypes = {
   buttons: PropTypes.element.isRequired,
   className: PropTypes.string,
   icon: PropTypes.element.isRequired,
-  loading: PropTypes.boolean,
+  loading: PropTypes.bool,
 };
 
 WalletOverview.defaultProps = {

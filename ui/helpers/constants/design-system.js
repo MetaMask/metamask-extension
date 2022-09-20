@@ -4,6 +4,9 @@
  * should match the property. When detailing a collection of things, it should
  * match the plural form of the thing. e.g. COLORS, TYPOGRAPHY
  */
+
+import { pick } from 'lodash';
+
 export const COLORS = {
   BACKGROUND_DEFAULT: 'background-default',
   BACKGROUND_ALTERNATIVE: 'background-alternative',
@@ -11,7 +14,7 @@ export const COLORS = {
   TEXT_ALTERNATIVE: 'text-alternative',
   TEXT_MUTED: 'text-muted',
   ICON_DEFAULT: 'icon-default',
-  ICON_ALTERNATIVE: 'text-alternative',
+  ICON_ALTERNATIVE: 'icon-alternative',
   ICON_MUTED: 'icon-muted',
   BORDER_DEFAULT: 'border-default',
   BORDER_MUTED: 'border-muted',
@@ -22,11 +25,6 @@ export const COLORS = {
   PRIMARY_MUTED: 'primary-muted',
   PRIMARY_INVERSE: 'primary-inverse',
   PRIMARY_DISABLED: 'primary-disabled',
-  SECONDARY_DEFAULT: 'secondary-default',
-  SECONDARY_ALTERNATIVE: 'secondary-alternative',
-  SECONDARY_MUTED: 'secondary-muted',
-  SECONDARY_INVERSE: 'secondary-inverse',
-  SECONDARY_DISABLED: 'secondary-disabled',
   ERROR_DEFAULT: 'error-default',
   ERROR_ALTERNATIVE: 'error-alternative',
   ERROR_MUTED: 'error-muted',
@@ -52,9 +50,103 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
-  TRANSPARENT: 'transparent',
+  SEPOLIA: 'sepolia',
   LOCALHOST: 'localhost',
+  TRANSPARENT: 'transparent',
+  INHERIT: 'inherit',
 };
+export const BACKGROUND_COLORS = pick(COLORS, [
+  'BACKGROUND_DEFAULT',
+  'BACKGROUND_ALTERNATIVE',
+  'OVERLAY_DEFAULT',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'ROPSTEN',
+  'KOVAN',
+  'RINKEBY',
+  'GOERLI',
+  'SEPOLIA',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
+
+export const BORDER_COLORS = pick(COLORS, [
+  'BORDER_DEFAULT',
+  'BORDER_MUTED',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'ROPSTEN',
+  'KOVAN',
+  'RINKEBY',
+  'GOERLI',
+  'SEPOLIA',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
+
+export const TEXT_COLORS = pick(COLORS, [
+  'TEXT_DEFAULT',
+  'TEXT_ALTERNATIVE',
+  'TEXT_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
+
+export const ICON_COLORS = pick(COLORS, [
+  'ICON_DEFAULT',
+  'ICON_ALTERNATIVE',
+  'ICON_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
 
 export const TYPOGRAPHY = {
   H1: 'h1',
@@ -69,9 +161,21 @@ export const TYPOGRAPHY = {
   Paragraph: 'p',
 };
 
+export const TEXT = {
+  DISPLAY_MD: 'display-md',
+  HEADING_LG: 'heading-lg',
+  HEADING_MD: 'heading-md',
+  HEADING_SM: 'heading-sm',
+  BODY_LG: 'body-lg-medium',
+  BODY_MD: 'body-md',
+  BODY_SM: 'body-sm',
+  BODY_XS: 'body-xs',
+};
+
 const NONE = 'none';
 
 export const SIZES = {
+  XXS: 'xxs',
   XS: 'xs',
   SM: 'sm',
   MD: 'md',
@@ -127,9 +231,11 @@ export const DISPLAY = {
   FLEX: 'flex',
   GRID: 'grid',
   INLINE_BLOCK: 'inline-block',
+  INLINE: 'inline',
   INLINE_FLEX: 'inline-flex',
   INLINE_GRID: 'inline-grid',
   LIST_ITEM: 'list-item',
+  NONE: 'none',
 };
 
 export const FRACTIONS = {
@@ -177,8 +283,15 @@ export const TEXT_ALIGN = {
   END: 'end',
 };
 
+export const TEXT_TRANSFORM = {
+  UPPERCASE: 'uppercase',
+  LOWERCASE: 'lowercase',
+  CAPITALIZE: 'capitalize',
+};
+
 export const FONT_WEIGHT = {
   BOLD: 'bold',
+  MEDIUM: 'medium',
   NORMAL: 'normal',
 };
 
@@ -207,3 +320,5 @@ export const RESIZE = {
   INITIAL: 'initial',
   INHERIT: 'inherit',
 };
+
+export const BREAKPOINTS = ['base', 'sm', 'md', 'lg'];

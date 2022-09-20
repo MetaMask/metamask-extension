@@ -12,7 +12,8 @@
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "recoveryPhraseReminderHasBeenShown": true,
-      "recoveryPhraseReminderLastShown": "__FIXTURE_SUBSTITUTION__currentDateInMilliseconds"
+      "recoveryPhraseReminderLastShown": "__FIXTURE_SUBSTITUTION__currentDateInMilliseconds",
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -71,7 +72,22 @@
         "8": {
           "isShown": true
         },
+        "10": {
+          "isShown": true
+        },
+        "11": {
+          "isShown": true
+        },
         "12": {
+          "isShown": true
+        },
+        "13": {
+          "isShown": true
+        },
+        "14": {
+          "isShown": true
+        },
+        "15": {
           "isShown": true
         }
       }

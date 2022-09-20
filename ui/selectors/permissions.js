@@ -280,6 +280,19 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSnapUpdateRequests(state) {
+  return Object.values(state.metamask.pendingApprovals)
+    .filter(({ type }) => type === 'wallet_updateSnap')
+    .map(({ requestData }) => requestData);
+}
+
+export function getFirstSnapUpdateRequest(state) {
+  const requests = getSnapUpdateRequests(state);
+  return requests && requests[0] ? requests[0] : null;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getPermissionsRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(({ type }) => type === 'wallet_requestPermissions')
@@ -289,4 +302,8 @@ export function getPermissionsRequests(state) {
 export function getFirstPermissionRequest(state) {
   const requests = getPermissionsRequests(state);
   return requests && requests[0] ? requests[0] : null;
+}
+
+export function getPermissions(state, origin) {
+  return getPermissionSubjects(state)[origin].permissions;
 }
