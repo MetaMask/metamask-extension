@@ -2585,16 +2585,8 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/common": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx>@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/common>crc-32": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
         "ethereumjs-util": true
       }
     },
