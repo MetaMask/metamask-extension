@@ -281,14 +281,17 @@ export function getLastConnectedInfo(state) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export function getSnapUpdateRequests(state) {
+export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === 'wallet_updateSnap')
+    .filter(
+      ({ type }) =>
+        type === 'wallet_installSnap' || type === 'wallet_updateSnap',
+    )
     .map(({ requestData }) => requestData);
 }
 
-export function getFirstSnapUpdateRequest(state) {
-  const requests = getSnapUpdateRequests(state);
+export function getFirstSnapInstallOrUpdateRequest(state) {
+  const requests = getSnapInstallOrUpdateRequests(state);
   return requests && requests[0] ? requests[0] : null;
 }
 ///: END:ONLY_INCLUDE_IN
