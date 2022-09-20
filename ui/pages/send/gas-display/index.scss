@@ -12,9 +12,20 @@
     }
   }
 
+  &__warning-message {
+    height: 120px;
+  }
+
   &__confirm-approve-content {
     &__warning {
       padding: 0 16px 16px 16px;
+
+      @media screen and (max-width: $break-small) {
+        padding: 0 32px 16px 16px;
+        position: fixed;
+        bottom: 80px;
+        z-index: 1;
+      }
     }
   }
 

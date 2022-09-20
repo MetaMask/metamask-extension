@@ -14,6 +14,7 @@ import LedgerInstructionField from '../../../components/app/ledger-instruction-f
 import TextField from '../../../components/ui/text-field';
 import Typography from '../../../components/ui/typography/typography';
 import Button from '../../../components/ui/button';
+import Box from '../../../components/ui/box';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -281,55 +282,57 @@ export default function GasDisplay({
         ) : null}
       </div>
       {!supportsEIP1559V2 && gasError && (
-        <div className="gas-display__confirm-approve-content__warning">
-          <ActionableMessage
-            message={
-              isBuyableChain ? (
-                <Typography variant={TYPOGRAPHY.H7} align="left">
-                  {t('insufficientCurrencyBuyOrReceive', [
-                    nativeCurrency,
-                    networkName,
-                    <Button
-                      type="inline"
-                      className="confirm-page-container-content__link"
-                      onClick={showBuyModal}
-                      key={`${nativeCurrency}-buy-button`}
-                    >
-                      {t('buyAsset', [nativeCurrency])}
-                    </Button>,
-                    <Button
-                      type="inline"
-                      className="gas-display__link"
-                      onClick={showAccountDetails}
-                      key="receive-button"
-                    >
-                      {t('deposit')}
-                    </Button>,
-                  ])}
-                </Typography>
-              ) : (
-                <Typography variant={TYPOGRAPHY.H7} align="left">
-                  {t('insufficientCurrencyBuyOrReceive', [
-                    nativeCurrency,
-                    networkName,
-                    '',
-                    <Button
-                      type="inline"
-                      className="gas-display__link"
-                      onClick={showAccountDetails}
-                      key="receive-button"
-                    >
-                      {t('deposit')}
-                    </Button>,
-                  ])}
-                </Typography>
-              )
-            }
-            useIcon
-            iconFillColor="var(--color-error-default)"
-            type="danger"
-          />
-        </div>
+        <Box className="gas-display__warning-message">
+          <div className="gas-display__confirm-approve-content__warning">
+            <ActionableMessage
+              message={
+                isBuyableChain ? (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyBuyOrReceive', [
+                      nativeCurrency,
+                      networkName,
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={showBuyModal}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                      <Button
+                        type="inline"
+                        className="gas-display__link"
+                        onClick={showAccountDetails}
+                        key="receive-button"
+                      >
+                        {t('deposit')}
+                      </Button>,
+                    ])}
+                  </Typography>
+                ) : (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyBuyOrReceive', [
+                      nativeCurrency,
+                      networkName,
+                      '',
+                      <Button
+                        type="inline"
+                        className="gas-display__link"
+                        onClick={showAccountDetails}
+                        key="receive-button"
+                      >
+                        {t('deposit')}
+                      </Button>,
+                    ])}
+                  </Typography>
+                )
+              }
+              useIcon
+              iconFillColor="var(--color-error-default)"
+              type="danger"
+            />
+          </div>
+        </Box>
       )}
     </>
   );
