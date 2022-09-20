@@ -2,9 +2,6 @@
   "about": {
     "message": "Honi buruz"
   },
-  "aboutSettingsDescription": {
-    "message": "Bertsioa, zerbitzu teknikoko zentroa eta harremanetarako informazioa"
-  },
   "acceleratingATransaction": {
     "message": "* transakzio bat bizkortzeko gas-prezio altuagoa erabiltzeak sarean azkarrago prozesatzeko aukerak areagotzen ditu, baina hori ez da beti bermatzen."
   },
@@ -82,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Gehitu iradokitako tokenak"
   },
-  "addToAddressBook": {
-    "message": "Helbide-liburuxkari gehitu"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "adib., John D."
-  },
   "addToken": {
     "message": "Gehitu tokena"
   },
@@ -97,14 +88,8 @@
   "advancedOptions": {
     "message": "Aukera aurreratuak"
   },
-  "advancedSettingsDescription": {
-    "message": "Garatzaileentzako baliabideak eskuratzea, egoera-erregistroak deskargatzea, kontua berrezartzea, proba-sareak konfiguratzea eta RPC pertsonalizatua."
-  },
   "affirmAgree": {
     "message": "Onartzen dut"
-  },
-  "aggregatorFeeCost": {
-    "message": "Agregatzaile-sarearen kuota"
   },
   "alertDisableTooltip": {
     "message": "Hau hemen aldatu daiteke \"Konfigurazioa > Alertak\""
@@ -123,9 +108,6 @@
   },
   "alerts": {
     "message": "Alertak"
-  },
-  "alertsSettingsDescription": {
-    "message": "Alerta bakoitza gaitu edo desgaitu"
   },
   "allowExternalExtensionTo": {
     "message": "Kanpoko luzapen horrek honako hau egin dezan ahalbidetzea:"
@@ -147,12 +129,6 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Agregatzaile-sarearen kuota eta onarpena"
-  },
-  "approvalTxGasCost": {
-    "message": "Gas kostua onespen-transakzio bakoitzeko"
   },
   "approve": {
     "message": "Gastuen muga onartzea"
@@ -233,9 +209,6 @@
   "blockExplorerView": {
     "message": "Ikusi kontua $1-n",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Erabili Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Esploratzailea ez da bateragarria..."
@@ -392,9 +365,6 @@
   "contacts": {
     "message": "Kontaktuak"
   },
-  "contactsSettingsDescription": {
-    "message": "Agregar, editar, quitar y administrar sus contactos"
-  },
   "continue": {
     "message": "Jarraitu"
   },
@@ -415,9 +385,6 @@
   },
   "copiedExclamation": {
     "message": "Kopiatuta!"
-  },
-  "copiedTransactionId": {
-    "message": "Transakzioaren id-a kopiatuta"
   },
   "copyAddress": {
     "message": "Kopiatu helbidea arbean"
@@ -502,10 +469,6 @@
   "decryptRequest": {
     "message": "Eskaera deszifratu"
   },
-  "defaultNetwork": {
-    "message": "ether-en transakzioetarako sare lehenetsia sare nagusia da.",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "Ezabatu"
   },
@@ -518,17 +481,8 @@
   "deleteNetworkDescription": {
     "message": "Ziur zaude sare hau ezabatu nahi duzula?"
   },
-  "depositEther": {
-    "message": "Ether-ak sartu"
-  },
   "details": {
     "message": "Xehetasunak"
-  },
-  "directDepositEther": {
-    "message": "Ether-rak zuzenean sartu"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ether batzuk badauzka, zorro berrian edukitzeko modurik azkarrena zuzenean sartzea da."
   },
   "disconnect": {
     "message": "Deskonektatu"
@@ -638,9 +592,6 @@
   "ensRegistrationError": {
     "message": "Errorea ENS izenaren erregistroan"
   },
-  "enterAnAlias": {
-    "message": "Ezizen bat idaztzi"
-  },
   "enterMaxSpendLimit": {
     "message": "Idatzi gastuen gehieneko muga"
   },
@@ -688,10 +639,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Babes-gasaren prezioa erakusten da, gas nagusiaren prezioa kalkulatzeko zerbitzua ez baitago erabilgarri une honetan."
   },
-  "eth_accounts": {
-    "message": "Ikusi baimendutako kontuen helbideak (beharrezkoa)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Ethereumeko helbide publikoa"
   },
@@ -709,10 +656,6 @@
   },
   "externalExtension": {
     "message": "Kanpoko hedapena"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 gas onartzeagatik",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Erroreekin"
@@ -804,9 +747,6 @@
   "general": {
     "message": "Orokorra"
   },
-  "generalSettingsDescription": {
-    "message": "Moneta bihurtu, moneta nagusia, hizkuntza, Blockies Identicon"
-  },
   "getEther": {
     "message": "etherrak lortu"
   },
@@ -872,18 +812,11 @@
   "importAccount": {
     "message": "Inportatu ckontua"
   },
-  "importAccountLinkText": {
-    "message": "Inportatu berreskuratzeko esaldi sekretuarekin"
-  },
   "importAccountMsg": {
     "message": " Inportatutako kontuak ez dira MetaMasken jatorrizko kontua berreskuratzeko esaldi sekretuarekin lotuko. Inportatutako kontuei buruzko informazio gehiago "
   },
   "importAccountSeedPhrase": {
     "message": "Inportatu kontu bat berreskuratzeko esaldi sekretuarekin"
-  },
-  "importAccountText": {
-    "message": "edo $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importTokenQuestion": {
     "message": "Inportatu nahi duzu token-a?"
@@ -1095,10 +1028,6 @@
   "metametricsOptInDescription": {
     "message": "MetaMaskek erabilera-datuak bildu nahiko lituzke erabiltzaileek hedapenarekin nola elkarreragiten duten hobeto ulertzeko. Datu horiek gure produktuaren eta Ethereumeko ekosistemaren erabilgarritasuna eta erabiltzaile-esperientzia etengabe hobetzeko erabiliko dira."
   },
-  "mismatchedChain": {
-    "message": "Kate-identifikatzaile horren sarearen xehetasunak ez datoz bat gure erregistroekin. Jarraitu aurretik, honako hau gomendatzen dizugu: $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "Egiaztatu sarearen xehetasunak",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1111,9 +1040,6 @@
   },
   "name": {
     "message": "Izena"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask bidez deszentralizatutako aplikazioekin elkarreragiteko, ether-ak beharko dituzu zorroan."
   },
   "needHelp": {
     "message": "Laguntza behar duzu? Komunika zaitez honekin: $1",
@@ -1149,9 +1075,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Katearen id. erabiltzen da transakzioak sinatzeko. Sarea itzultzen duen katearen identitatearekin bat etorri behar du. Zenbaki hamartar bat edo zenbaki hexadezimal bat idatz dezake \"0X\" aurrizkiarekin, baina zenbakia hamartarrez agertuko da."
-  },
-  "networkSettingsDescription": {
-    "message": "RPC sare pertsonalizatuak gehitu eta editatu"
   },
   "networkURL": {
     "message": "Sare horretara sartzeko erabili zen URL helbidea."
@@ -1347,12 +1270,6 @@
   "pending": {
     "message": "Egiteke"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Baimen hori onartu duzu"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Baimen hori ez duzu onartu"
-  },
   "permissions": {
     "message": "Baimenak"
   },
@@ -1481,9 +1398,6 @@
   "restore": {
     "message": "Berrezarri"
   },
-  "restoreAccountWithSeed": {
-    "message": "Kontua Berrezarri berreskuratzeko esaldi sekretuarekin"
-  },
   "restoreWalletPreferences": {
     "message": "$1-ko datuen segurtasun-kopia bat aurkitu da. Zorroko lehentasunak leheneratu nahi dituzu?",
     "description": "$1 is the date at which the data was backed up"
@@ -1554,9 +1468,6 @@
   "securityAndPrivacy": {
     "message": "Segurtasuna eta pribatutasuna"
   },
-  "securitySettingsDescription": {
-    "message": "Pribatutasuna konfiguratzea eta zorroa berreskuratzeko esaldi sekretua"
-  },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Idatzi eta gorde leku sekretu batzuetan."
   },
@@ -1592,12 +1503,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Hasteko, begiratu bideo labur hau, berreskuratzeko esaldiari buruz eta diru-zorroa seguru mantentzeko moduari buruz ikasteko."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Bereizi hitz bakoitza espazio bakar batekin"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Errekuperazio-esaldi sekretua itsatsi arbean"
   },
   "seedPhraseReq": {
     "message": "Berreskuratzeko esaldi sekretuek 12, 15, 18, 21 edo 24 hitz dituzte"
@@ -1645,9 +1550,6 @@
   "sendTokens": {
     "message": "Bidali tokenak"
   },
-  "separateEachWord": {
-    "message": "Bereizi hitz bakoitza espazio bakar batekin"
-  },
   "settings": {
     "message": "Konfigurazioa"
   },
@@ -1680,9 +1582,6 @@
   },
   "showPrivateKeys": {
     "message": "Erakutsi gako pribatuak"
-  },
-  "showSeedPhrase": {
-    "message": "Erakutsi berreskuratzeko esaldi sekretua"
   },
   "sigRequest": {
     "message": "Sinadura-eskaera"
@@ -1793,9 +1692,6 @@
   "swap": {
     "message": "Trukatu"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Prezioa aldatzen bada eskaera egiten den unetik baieztatzen den arte, \"Desfasea\" esaten zaio. Trukea automatikoki ezeztatuko da desfaseak \"Max slippage\" konfigurazioan ezarritakoa gainditzen badu (gehieneko desfasea)."
-  },
   "swapAggregator": {
     "message": "Agregatzailea"
   },
@@ -1816,9 +1712,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "$1 gehiago behar duzu trukaketa $2 osatzeko",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBetterQuoteAvailable": {
-    "message": "Kotizazio hobeago dago"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Ez dago $1 tokenak erabilgarririk",
@@ -1845,13 +1738,6 @@
   "swapEnableDescription": {
     "message": "Ekintza hau nahitaezkoa da, eta baimena ematen dio MetaMaski bere $1 trukatzeko.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Kalkulatutako sare-kuota"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” izatea espero dugun benetako kuota da. Kopuru zehatza sarearen baldintzen araberakoa da.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Kalkulatutako sare-kuotak"
@@ -1888,13 +1774,6 @@
   "swapLowSlippageError": {
     "message": "Baliteke transakzioak akatsak izatea, gehieneko desfasea txikiegia da."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” gastatuko duen gehienekoa da. Sarea bolatila denean, handia izan daiteke.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Sarearen gehieneko kuota"
-  },
   "swapMaxSlippage": {
     "message": "Gehieneko desfasea"
   },
@@ -1904,13 +1783,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Preziorik onena bilatzen dugu likidazio iturri garrantzitsuenetan, denbora guztian. Kotizazio horri automatikoki % 1eko $1 gehitzen zaio.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 kotizazioak",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "Sare-kuotak trukearen prozesamendu-kostua eta $1 sareko biltegiratzea estaltzen ditu. MetaMaskek ez du etekinik ateratzen kuota horretatik."
   },
   "swapNewQuoteIn": {
     "message": "Kotizazio berriak $1",
@@ -1943,22 +1815,8 @@
   "swapQuoteDetails": {
     "message": "Kotizazio-xehetasunak"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Prezioa aldatzen bada eskaera egiten den unetik baieztatzen den arte,\"desfasea\" esaten zaio. Trukea automatikoki ezeztatuko da desfaseak\"desfasearen tolerantzia\" konfigurazioan ezarritakoa gainditzen badu."
-  },
-  "swapQuoteIncludesRate": {
-    "message": "Kotizazioak %1eko MetaMask kuota barne hartzen du",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapQuoteNofN": {
-    "message": "Kotizazioa $1-tik $2-ra",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
   "swapQuoteSource": {
     "message": "Kotizazio iturria"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Kotizazioak maiz eguneratzen dira merkatuaren egungo baldintzak islatzeko."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Eska itzazu kotizazio berriak, kosturik berrienak izateko."
@@ -1986,9 +1844,6 @@
   },
   "swapReviewSwap": {
     "message": "Berrikusi trukea"
-  },
-  "swapSearchForAToken": {
-    "message": "Bilatu tokena"
   },
   "swapSelect": {
     "message": "Aukeratu"
@@ -2019,9 +1874,6 @@
   },
   "swapSwapTo": {
     "message": "Trukatu nora"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Honek S1 trukea ahalbidetuko du."
   },
   "swapToConfirmWithHwWallet": {
     "message": "Baieztatu hardware-zorroarekin"
@@ -2060,9 +1912,6 @@
   },
   "swapUnknown": {
     "message": "Ezezaguna"
-  },
-  "swapUsingBestQuote": {
-    "message": "Kotizazio onenaren erabilera"
   },
   "swapVerifyTokenExplanation": {
     "message": "Hainbat tokenek izen eta sinbolo bera erabil dezakete. Begiratu $1 bilatzen duzun tokena hau dela egiaztatzeko.",
@@ -2288,10 +2137,6 @@
     "message": "Sare hori ez da pertsonalizatua. Jarraitu aurretik, $1 gomendatzen dizugu.",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedChainLinkText": {
-    "message": "Egiaztatu sarearen xehetasunak",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
-  },
   "updatedWithDate": {
     "message": "$1 eguneratua"
   },
@@ -2354,9 +2199,6 @@
   },
   "walletConnectionGuide": {
     "message": "Hardware zorroa konektatzeko gure gida"
-  },
-  "walletSeedRestore": {
-    "message": "Zorroa berreskuratzeko esaldia sekretua"
   },
   "web3ShimUsageNotification": {
     "message": "Dirudienez, gaur egungo webguneak ezabatu zen window.web3-ko APIa erabiltzen saiatu da. Guneak funtzionatzen ez badu, egin klik $1 telefonoan informazio gehiago lortzeko.",
