@@ -135,7 +135,7 @@
     "message": "Dadurch kann dieses Netzwerk innerhalb MetaMask verwendet werden."
   },
   "addEthereumChainConfirmationRisks": {
-    "message": "MetaMaske überprüft keine benutzerdefinierten Netzwerke."
+    "message": "MetaMask überprüft keine benutzerdefinierten Netzwerke."
   },
   "addEthereumChainConfirmationRisksLearnMore": {
     "message": "Erfahren Sie mehr über $1.",
@@ -412,7 +412,7 @@
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyCryptoWithCoinbasePay": {
-    "message": "1 $ mit Coinbase Pay kaufen",
+    "message": "$1 mit Coinbase Pay kaufen",
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyCryptoWithCoinbasePayDescription": {
@@ -467,7 +467,7 @@
     "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelSwapForFee": {
-    "message": "Tausch für 1 $ abbrechen",
+    "message": "Tausch für $1 abbrechen",
     "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
   },
   "cancelSwapForFree": {
@@ -1151,7 +1151,7 @@
     "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
-    "message": "MetaMaske hat einen Fehler festgestellt",
+    "message": "MetaMask hat einen Fehler festgestellt",
     "description": "Title of generic error page"
   },
   "errorStack": {
@@ -1659,7 +1659,7 @@
     "message": "Zuletzt verbunden"
   },
   "learmMoreAboutGas": {
-    "message": "Wollen Sie 1 $ über Gas?"
+    "message": "Wollen Sie $1 über Gas?"
   },
   "learnCancelSpeeedup": {
     "message": "Erfahren Sie, wie Sie $1",
@@ -1860,21 +1860,21 @@
     "message": "Erfassen Sie niemals Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen"
   },
   "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 Erfassen Sie Ihre vollständige IP-Adresse",
+    "message": "$1 Ihre vollständige IP-Adresse erfassen",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$ erfassen Sie Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen",
+    "message": "$1 Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen erfassen",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverIP": {
-    "message": "Erfassen Sie nie Ihre vollständige IP-Adresse"
+    "message": "Nie Ihre vollständige IP-Adresse erfassen"
   },
   "metametricsCommitmentsNeverSell": {
-    "message": "Verkaufen Sie niemals Daten mit Gewinnabsicht. Niemals!"
+    "message": "Nie Daten mit Gewinnabsicht verkaufen. Niemals!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "1 $ Daten für Gewinn verkaufen. Immer!",
+    "message": "$1 Daten für Gewinn verkaufen. Niemals!",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsSendAnonymizedEvents": {
@@ -1978,7 +1978,7 @@
     "message": "Testnet"
   },
   "networkSettingsChainIdDescription": {
-    "message": "Die Ketten-ID wird zur Unterzeichnung von Transaktionen verwendet. Sie muss mit der vom Netzwerk zurückgegebenen Ketten-ID übereinstimmen. Sie können eine Dezimalzahl oder '0x'-prefix Hexadezimalzahl eingeben, aber wir werden die Zahl dezimal anzeigen."
+    "message": "Die Chain-ID wird zur Unterzeichnung von Transaktionen verwendet. Sie muss mit der vom Netzwerk zurückgegebenen Ketten-ID übereinstimmen. Sie können eine Dezimalzahl oder '0x'-prefix Hexadezimalzahl eingeben, aber wir werden die Zahl dezimal anzeigen."
   },
   "networkStatus": {
     "message": "Netzwerkstatus"
@@ -2179,7 +2179,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
   },
   "notifications3Description": {
-    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen MetaMasken-Supports.",
+    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen MetaMask-Supports.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
   },
   "notifications3Title": {
@@ -3545,7 +3545,7 @@
     "message": "Netzwerk wechseln"
   },
   "switchToNetwork": {
-    "message": "Zu 1 $ wechseln",
+    "message": "Zu $1 wechseln",
     "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
@@ -4002,7 +4002,7 @@
     "message": "Erkunden dezentraler Apps"
   },
   "welcomeLoginDescription": {
-    "message": "Verwenden Sie Ihre MetaMaske, um sich bei dezentralen Apps anzumelden - keine Anmeldung erforderlich."
+    "message": "Verwenden Sie MetaMask, um sich bei dezentralen Apps anzumelden - keine Anmeldung erforderlich."
   },
   "welcomeLoginTitle": {
     "message": "Sagen Sie Hallo zu Ihrer Wallet"
@@ -4038,7 +4038,7 @@
     "message": "Ja, versuchen wir es"
   },
   "youHaveAddedAll": {
-    "message": "Sie haben alle beliebten Netzwerke hinzugefügt. Sie können weitere Netzwerke entdecken 1 $ oder Sie können 2 $",
+    "message": "Sie haben alle beliebten Netzwerke hinzugefügt. Sie können weitere Netzwerke entdecken $1 oder Sie können $2",
     "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
