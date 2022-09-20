@@ -28,6 +28,16 @@ module.exports = {
       statements: 100,
     },
   },
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'test/test-results/',
+        outputName: 'junit.xml',
+      },
+    ],
+  ],
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
@@ -42,6 +52,7 @@ module.exports = {
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
+    '<rootDir>/app/scripts/constants/error-utils.test.js',
   ],
   testTimeout: 2500,
   // We have to specify the environment we are running in, which is jsdom. The

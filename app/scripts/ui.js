@@ -17,8 +17,8 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { SUPPORT_LINK } from '../../ui/helpers/constants/common';
-import { getErrorHtml } from '../../ui/helpers/utils/error-utils';
+import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
+import { getErrorHtml } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
