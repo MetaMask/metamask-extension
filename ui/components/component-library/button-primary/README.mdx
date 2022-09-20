@@ -22,7 +22,6 @@ Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-s
 
 Possible sizes include:
 
-- `SIZES.XS` 22px
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -35,8 +34,39 @@ Possible sizes include:
 import { BUTTON_SIZES } from '../../../helpers/constants/design-system';
 import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
 
-<ButtonPrimary size={SIZES.XS} />
 <ButtonPrimary size={SIZES.SM} />
 <ButtonPrimary size={SIZES.MD} />
 <ButtonPrimary size={SIZES.LG} />
+```
+
+### Type
+
+Use the `type` prop and the `BUTTON_TYPES` object from `./ui/helpers/constants/design-system.js` to change the context of `ButtonPrimary`.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--type" />
+</Canvas>
+
+```jsx
+import { BUTTON_TYPES } from '../../../helpers/constants/design-system';
+import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+
+<ButtonPrimary type={BUTTON_TYPES.NORMAL} />
+<ButtonPrimary type={BUTTON_TYPES.DANGER} />
+```
+
+### With Icon
+
+Use the `leftIcon` or `rightIcon` props to pass an `Icon` component that will position an icon to the side of the text
+
+<Canvas>
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--with-icon" />
+</Canvas>
+
+```jsx
+import { BUTTON_TYPES } from '../../../helpers/constants/design-system';
+import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+
+<ButtonPrimary leftIcon={<DemoIcon />} />
+<ButtonPrimary as="a" href="#" rightIcon={<DemoIcon />} />
 ```

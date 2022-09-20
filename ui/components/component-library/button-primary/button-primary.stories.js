@@ -140,7 +140,7 @@ export const Size = (args) => (
 );
 
 export const Type = (args) => (
-  <>
+  <Box display={DISPLAY.FLEX} gap={1}>
     <ButtonPrimary {...args} type={BUTTON_TYPES.NORMAL}>
       Normal
     </ButtonPrimary>
@@ -148,13 +148,13 @@ export const Type = (args) => (
     <ButtonPrimary as="a" {...args} href="#" type={BUTTON_TYPES.DANGER}>
       Danger
     </ButtonPrimary>
-  </>
+  </Box>
 );
 
 export const WithIcon = (args) => (
-  <>
-    <ButtonPrimary {...args} leftIcon={<DemoIcon />} />
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <ButtonPrimary leftIcon={<DemoIcon />} {...args} />
     {/* Test Anchor tag to match exactly as button */}
-    <ButtonPrimary as="a" {...args} href="#" rightIcon={<DemoIcon />} />
-  </>
+    <ButtonPrimary as="a" href="#" rightIcon={<DemoIcon />} {...args} />
+  </Box>
 );
