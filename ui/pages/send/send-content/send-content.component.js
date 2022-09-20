@@ -53,7 +53,6 @@ export default class SendContent extends Component {
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     chainId: PropTypes.string,
-    showBuyModal: PropTypes.func,
     showAccountDetails: PropTypes.func,
     useNonceField: PropTypes.bool,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
@@ -82,7 +81,6 @@ export default class SendContent extends Component {
       useNativeCurrencyAsPrimaryCurrency,
       isBuyableChain,
       chainId,
-      showBuyModal,
       showAccountDetails,
     } = this.props;
 
@@ -140,7 +138,6 @@ export default class SendContent extends Component {
             isBuyableChain={isBuyableChain}
             nativeCurrency={nativeCurrency}
             chainId={chainId}
-            showBuyModal={showBuyModal}
             showAccountDetails={showAccountDetails}
             gasError={gasError}
           />

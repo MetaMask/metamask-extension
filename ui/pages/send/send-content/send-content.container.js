@@ -101,7 +101,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
     showAccountDetails: () => dispatch(showModal({ name: 'ACCOUNT_DETAILS' })),
     acknowledgeRecipientWarning: () => dispatch(acknowledgeRecipientWarning()),
   };

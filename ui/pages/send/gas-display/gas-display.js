@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -19,6 +19,7 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import DepositPopover from '../../../components/app/deposit-popover/deposit-popover';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -38,7 +39,6 @@ export default function GasDisplay({
   maxPriorityFeePerGas,
   isMainnet,
   showLedgerSteps,
-  showBuyModal,
   isBuyableChain,
   hexMinimumTransactionFee,
   hexMaximumTransactionFee,
@@ -49,6 +49,7 @@ export default function GasDisplay({
 }) {
   const t = useContext(I18nContext);
   const { estimateUsed, supportsEIP1559V2 } = useGasFeeContext();
+  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const nonceField = useNonceField ? (
     <div>
@@ -241,6 +242,9 @@ export default function GasDisplay({
   };
   return (
     <>
+      {showDepositPopover && (
+        <DepositPopover onClose={() => setShowDepositPopover(false)} />
+      )}
       <div className="gas-display">
         <TransactionDetail
           userAcknowledgedGasMissing={false}
@@ -292,7 +296,9 @@ export default function GasDisplay({
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={showBuyModal}
+                        onClick={() => {
+                          setShowDepositPopover(true);
+                        }}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -351,7 +357,6 @@ GasDisplay.propTypes = {
   maxPriorityFeePerGas: PropTypes.string,
   isMainnet: PropTypes.bool,
   showLedgerSteps: PropTypes.bool,
-  showBuyModal: PropTypes.func,
   isBuyableChain: PropTypes.bool,
   hexMinimumTransactionFee: PropTypes.string,
   hexMaximumTransactionFee: PropTypes.string,
