@@ -33,7 +33,7 @@ export default function SnapUpdate({
   );
 
   const onSubmit = useCallback(
-    () => approveSnapUpdate(request),
+    () => approveSnapUpdate(request.metadata.id),
     [request, approveSnapUpdate],
   );
 
@@ -47,6 +47,15 @@ export default function SnapUpdate({
       ),
     [request.permissions],
   );
+
+  const approvedPermissions = request.approvedPermissions ?? {};
+  const revokedPermissions = request.unusedPermissions ?? {};
+  const newPermissions = request.newPermissions ?? {};
+  const hasPermissions =
+    Object.keys(approvedPermissions).length +
+      Object.keys(revokedPermissions).length +
+      Object.keys(newPermissions).length >
+    0;
 
   return (
     <Box
@@ -80,20 +89,24 @@ export default function SnapUpdate({
         >
           {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
         </Typography>
-        <Typography
-          boxProps={{
-            padding: [2, 4, 0, 4],
-          }}
-          variant={TYPOGRAPHY.H7}
-          as="span"
-        >
-          {t('snapRequestsPermission')}
-        </Typography>
-        <UpdateSnapPermissionList
-          approvedPermissions={request.approvedPermissions || {}}
-          revokedPermissions={request.unusedPermissions || {}}
-          newPermissions={request.newPermissions || {}}
-        />
+        {hasPermissions && (
+          <>
+            <Typography
+              boxProps={{
+                padding: [2, 4, 0, 4],
+              }}
+              variant={TYPOGRAPHY.H7}
+              as="span"
+            >
+              {t('snapRequestsPermission')}
+            </Typography>
+            <UpdateSnapPermissionList
+              approvedPermissions={approvedPermissions}
+              revokedPermissions={revokedPermissions}
+              newPermissions={newPermissions}
+            />
+          </>
+        )}
       </Box>
       <Box
         className="footers"

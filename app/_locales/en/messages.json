@@ -1695,6 +1695,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "install": {
+    "message": "Install"
+  },
   "insufficientBalance": {
     "message": "Insufficient balance."
   },

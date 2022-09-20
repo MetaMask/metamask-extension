@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
@@ -38,6 +41,8 @@ export default class PermissionConnect extends Component {
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
     isSnap: PropTypes.bool.isRequired,
+    approvePendingApproval: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IN
     totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
@@ -235,6 +240,8 @@ export default class PermissionConnect extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
       snapUpdatePath,
+      approvePendingApproval,
+      rejectPendingApproval,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
@@ -305,13 +312,17 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapInstall
                   request={permissionsRequest || {}}
-                  approveSnapInstall={(...args) => {
-                    approvePermissionsRequest(...args);
+                  approveSnapInstall={(requestId) => {
+                    approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
-                  rejectSnapInstall={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
+                  rejectSnapInstall={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(ethErrors.provider.userRejectedRequest()),
+                    );
+                    this.redirect(false);
+                  }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
@@ -328,13 +339,17 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapUpdate
                   request={permissionsRequest || {}}
-                  approveSnapUpdate={(...args) => {
-                    approvePermissionsRequest(...args);
+                  approveSnapUpdate={(requestId) => {
+                    approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
-                  rejectSnapUpdate={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
+                  rejectSnapUpdate={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(ethErrors.provider.userRejectedRequest()),
+                    );
+                    this.redirect(false);
+                  }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
