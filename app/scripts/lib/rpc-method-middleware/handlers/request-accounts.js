@@ -92,7 +92,6 @@ async function requestEthereumAccountsHandler(
     await getUnlockPromise(true);
     await requestAccountsPermission();
   } catch (err) {
-    console.log('error');
     res.error = err;
     locks.delete(origin);
     return end();
