@@ -146,12 +146,12 @@ const setupPhishingExtStreams = () => {
 
 /** Destroys all of the phishing extension streams */
 const destroyPhishingExtStreams = () => {
-  phishingPageChannel.removeAllListeners();
+  phishingPageChannel?.removeAllListeners();
 
-  phishingExtMux.removeAllListeners();
+  phishingExtMux?.removeAllListeners();
   phishingExtMux.destroy();
 
-  phishingExtChannel.removeAllListeners();
+  phishingExtChannel?.removeAllListeners();
   phishingExtChannel.destroy();
 };
 
@@ -242,13 +242,13 @@ function initExtensionStreams(message) {
 
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
-  pageChannel.removeAllListeners();
+  pageChannel?.removeAllListeners();
 
-  extensionMux.removeAllListeners();
-  extensionMux.destroy();
+  extensionMux?.removeAllListeners();
+  extensionMux?.destroy();
 
-  extensionChannel.removeAllListeners();
-  extensionChannel.destroy();
+  extensionChannel?.removeAllListeners();
+  extensionChannel?.destroy();
 };
 
 /**
@@ -323,16 +323,16 @@ const setupLegacyExtensionStreams = () => {
  * TODO:LegacyProvider: Delete
  */
 const destroyLegacyExtensionStreams = () => {
-  legacyPageMuxLegacyProviderChannel.removeAllListeners();
-  legacyPagePublicConfigChannel.removeAllListeners();
+  legacyPageMuxLegacyProviderChannel?.removeAllListeners();
+  legacyPagePublicConfigChannel?.removeAllListeners();
 
-  legacyExtMux.removeAllListeners();
+  legacyExtMux?.removeAllListeners();
   legacyExtMux.destroy();
 
-  legacyExtChannel.removeAllListeners();
+  legacyExtChannel?.removeAllListeners();
   legacyExtChannel.destroy();
 
-  legacyExtPublicConfigChannel.removeAllListeners();
+  legacyExtPublicConfigChannel?.removeAllListeners();
   legacyExtPublicConfigChannel.destroy();
 };
 
