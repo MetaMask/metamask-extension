@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import {
-  addHexes,
-  hexWEIToDecGWEI,
-} from '../../../helpers/utils/conversions.util';
+import { addHexes } from '../../../helpers/utils/conversions.util';
+import { hexWEIToDecGWEI } from '../../../../shared/lib/transactions-controller-utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
