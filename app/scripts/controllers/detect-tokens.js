@@ -187,6 +187,7 @@ export default class DetectTokensController {
    * in case of address change or user session initialization.
    *
    */
+  /* eslint-disable no-undef */
   restartTokenDetection() {
     if (!(this.isActive && this.selectedAddress)) {
       return;
