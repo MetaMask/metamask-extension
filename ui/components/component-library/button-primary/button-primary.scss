@@ -1,7 +1,6 @@
 .mm-button-primary {
   color: var(--color-primary-inverse);
   background-color: var(--color-primary-default);
-  position: relative;
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
   &:hover {

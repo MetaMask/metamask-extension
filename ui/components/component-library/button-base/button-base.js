@@ -29,10 +29,15 @@ export const ButtonBase = ({
       paddingLeft={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
       paddingRight={size === BUTTON_SIZES.ZERO_PADDING ? 0 : 4}
       display={block ? DISPLAY.BLOCK : DISPLAY.INLINE_BLOCK}
-      className={classnames(className, 'mm-button', `mm-button-size--${size}`, {
-        [`mm-button--loading`]: Boolean(loading),
-        [`mm-button--disabled`]: Boolean(disabled),
-      })}
+      className={classnames(
+        'mm-button',
+        `mm-button-size--${size}`,
+        {
+          [`mm-button--loading`]: Boolean(loading),
+          [`mm-button--disabled`]: Boolean(disabled),
+        },
+        className,
+      )}
       {...props}
     >
       <Text
