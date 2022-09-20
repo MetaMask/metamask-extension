@@ -5541,11 +5541,20 @@
         "setTimeout": true
       },
       "packages": {
-        "ethers>@ethersproject/base64": true,
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "ethers>@ethersproject/strings": true
+        "ethers>@ethersproject/strings": true,
+        "ethers>@ethersproject/web>@ethersproject/base64": true
+      }
+    },
+    "ethers>@ethersproject/web>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "ethers>@ethersproject/bytes": true
       }
     },
     "ethers>@ethersproject/wordlists": {

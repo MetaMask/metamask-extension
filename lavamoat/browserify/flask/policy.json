@@ -3480,15 +3480,386 @@
       }
     },
     "@metamask/rpc-methods": {
-      "globals": {
-        "console.warn": true
-      },
       "packages": {
-        "@metamask/controllers": true,
+        "@metamask/rpc-methods>@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/snap-utils": true,
         "@metamask/snap-utils>@metamask/utils": true,
         "eth-rpc-errors": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers": {
+      "globals": {
+        "Headers": true,
+        "URL": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>web3": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/contracts": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": true,
+        "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": true,
+        "@metamask/rpc-methods>@metamask/controllers>nanoid": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "eth-keyring-controller": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber>bn.js": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256>js-sha3": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256>js-sha3": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/contracts": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/basex": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/networks": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/random": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/sha2": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/web": true,
+        "ethers>@ethersproject/providers>bech32": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64>@ethersproject/bytes": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64>@ethersproject/bytes": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64>@ethersproject/bytes>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64>@ethersproject/bytes>@ethersproject/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/basex": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/networks": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/random": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/sha2": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "ethers>@ethersproject/sha2>hash.js": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions>@ethersproject/signing-key": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions>@ethersproject/signing-key": {
+      "packages": {
+        "3box>ethers>elliptic": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/web": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true,
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-unit": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "ethjs-query>babel-runtime": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "ethjs-query>babel-runtime": true,
+        "ethjs-query>ethjs-format": true,
+        "ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>js-sha3": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet>uuid": true,
+        "@truffle/codec>utf8": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethers>@ethersproject/json-wallets>scrypt-js": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
@@ -3587,10 +3958,10 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controllers": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
+        "@metamask/snap-controllers>@metamask/controllers": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
@@ -3617,6 +3988,361 @@
       },
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers": {
+      "globals": {
+        "Headers": true,
+        "URL": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>web3": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/contracts": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry": true,
+        "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet": true,
+        "@metamask/snap-controllers>nanoid": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "eth-keyring-controller": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber>bn.js": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256>js-sha3": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256>js-sha3": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/contracts": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/hash": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/basex": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/networks": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/random": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/sha2": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/web": true,
+        "ethers>@ethersproject/providers>bech32": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-provider": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/abstract-signer": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/basex": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/networks": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/random": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/sha2": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "ethers>@ethersproject/sha2>hash.js": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/address": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bignumber": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/constants": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/keccak256": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions>@ethersproject/signing-key": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/transactions>@ethersproject/signing-key": {
+      "packages": {
+        "3box>ethers>elliptic": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>@ethersproject/providers>@ethersproject/web": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/logger": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/properties": true,
+        "@metamask/snap-controllers>@metamask/controllers>@ethersproject/abi>@ethersproject/strings": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-unit": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "ethjs-query>babel-runtime": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "ethjs-query>babel-runtime": true,
+        "ethjs-query>ethjs-format": true,
+        "ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>js-sha3": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet>uuid": true,
+        "@truffle/codec>utf8": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethers>@ethersproject/json-wallets>scrypt-js": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "@metamask/snap-controllers>@metamask/post-message-stream": {
@@ -6068,11 +6794,20 @@
         "setTimeout": true
       },
       "packages": {
-        "ethers>@ethersproject/base64": true,
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "ethers>@ethersproject/strings": true
+        "ethers>@ethersproject/strings": true,
+        "ethers>@ethersproject/web>@ethersproject/base64": true
+      }
+    },
+    "ethers>@ethersproject/web>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "ethers>@ethersproject/bytes": true
       }
     },
     "ethers>@ethersproject/wordlists": {
