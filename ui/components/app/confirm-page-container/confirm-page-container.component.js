@@ -64,6 +64,9 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
@@ -155,6 +158,9 @@ export default class ConfirmPageContainer extends Component {
       isBuyableChain,
       networkIdentifier,
       setApproveForAllArg,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     const showAddToAddressDialog =
@@ -179,7 +185,7 @@ export default class ConfirmPageContainer extends Component {
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container">
+        <div className="page-container" data-testid="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
             positionOfCurrentTx={positionOfCurrentTx}
@@ -242,6 +248,9 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               dataHexComponent={dataHexComponent}
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              insightComponent={insightComponent}
+              ///: END:ONLY_INCLUDE_IN
               errorMessage={errorMessage}
               errorKey={errorKey}
               tokenAddress={tokenAddress}
@@ -310,7 +319,24 @@ export default class ConfirmPageContainer extends Component {
           )}
           {isSetApproveForAll && setApproveForAllArg && (
             <Dialog type="error" className="confirm-page-container__dialog">
-              {t('confirmPageDialogSetApprovalForAll')}
+              {/*
+                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
+                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
+              */}
+              {t('confirmPageDialogSetApprovalForAll', [
+                <b
+                  key="confirm-page-container__dialog-placeholder-1"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
+                </b>,
+                <b
+                  key="confirm-page-container__dialog-placeholder-2"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
+                </b>,
+              ])}
             </Dialog>
           )}
           {contentComponent && (

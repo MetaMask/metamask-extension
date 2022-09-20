@@ -609,7 +609,14 @@
     "message": "Confirm"
   },
   "confirmPageDialogSetApprovalForAll": {
-    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder1": {
+    "message": "all the NFTs on this contract"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder2": {
+    "message": "Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -1528,7 +1535,7 @@
     "message": "Get Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
+    "message": "Get Ether from a faucet for the $1 network.",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1694,6 +1701,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "install": {
+    "message": "Install"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -2141,11 +2151,11 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNameGoerli": {
+    "message": "Goerli"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2673,6 +2683,10 @@
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
+  },
+  "permission_transactionInsight": {
+    "message": "Fetch and display transaction insights.",
+    "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -3229,6 +3243,10 @@
     "message": "Added on $1 from $2",
     "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
+  "snapContent": {
+    "message": "This content is coming from $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
     "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
@@ -3258,6 +3276,12 @@
   },
   "snaps": {
     "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "Loading transaction insight..."
+  },
+  "snapsNoInsight": {
+    "message": "The snap didn't return any insight"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
@@ -3510,9 +3534,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3676,9 +3697,6 @@
   "swapQuoteDetails": {
     "message": "Quote details"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
-  },
   "swapQuoteSource": {
     "message": "Quote source"
   },
@@ -3709,8 +3727,8 @@
   "swapReviewSwap": {
     "message": "Review swap"
   },
-  "swapSearchForAToken": {
-    "message": "Search for a token"
+  "swapSearchNameOrAddress": {
+    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"
@@ -3730,6 +3748,9 @@
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageTooltip": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSource": {
     "message": "Liquidity source"

@@ -2001,9 +2001,6 @@
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -3289,9 +3286,6 @@
   "swap": {
     "message": "स्वैप करें"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे “स्लिपेज” कहा जाता है। यदि आपका स्लिपेज आपकी “अधिकतम स्लिपेज” सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
@@ -3455,9 +3449,6 @@
   "swapQuoteDetails": {
     "message": "उद्धरण का विवरण"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
   },
@@ -3487,9 +3478,6 @@
   },
   "swapReviewSwap": {
     "message": "स्वैप की समीक्षा करें"
-  },
-  "swapSearchForAToken": {
-    "message": "एक टोकन की खोज करें"
   },
   "swapSelect": {
     "message": "चयन करें"

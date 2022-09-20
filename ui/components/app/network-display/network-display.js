@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
-  NETWORK_TYPE_RPC,
-  NETWORK_TYPE_TO_ID_MAP,
+  NETWORK_TYPES,
+  BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
 
 import LoadingIndicator from '../../ui/loading-indicator';
@@ -48,12 +48,14 @@ export default function NetworkDisplay({
         >
           <ColorIndicator
             color={
-              networkType === NETWORK_TYPE_RPC ? COLORS.ICON_MUTED : networkType
+              networkType === NETWORK_TYPES.RPC
+                ? COLORS.ICON_MUTED
+                : networkType
             }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
-              networkType === NETWORK_TYPE_RPC && indicatorSize !== SIZES.XS
+              networkType === NETWORK_TYPES.RPC && indicatorSize !== SIZES.XS
                 ? 'fa fa-question'
                 : undefined
             }
@@ -66,7 +68,7 @@ export default function NetworkDisplay({
         ) : null
       }
       label={
-        networkType === NETWORK_TYPE_RPC
+        networkType === NETWORK_TYPES.RPC
           ? networkNickname ?? t('privateNetwork')
           : t(networkType)
       }
@@ -95,8 +97,8 @@ NetworkDisplay.propTypes = {
    */
   targetNetwork: PropTypes.shape({
     type: PropTypes.oneOf([
-      ...Object.keys(NETWORK_TYPE_TO_ID_MAP),
-      NETWORK_TYPE_RPC,
+      ...Object.keys(BUILT_IN_NETWORKS),
+      NETWORK_TYPES.RPC,
     ]),
     nickname: PropTypes.string,
   }),

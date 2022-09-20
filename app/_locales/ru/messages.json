@@ -2001,9 +2001,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Тестовая сеть"
   },
@@ -3289,9 +3286,6 @@
   "swap": {
     "message": "Обмен"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Ваш обмен будет автоматически отменен, если проскальзывание превысит вашу настройку «максимального проскальзывания»."
-  },
   "swapAggregator": {
     "message": "Агрегатор"
   },
@@ -3455,9 +3449,6 @@
   "swapQuoteDetails": {
     "message": "Свдения о котировке"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Обмен будет автоматически отменен, если фактическое проскальзывание превысит установленный «допуск проскальзывания»."
-  },
   "swapQuoteSource": {
     "message": "Источник котировки"
   },
@@ -3487,9 +3478,6 @@
   },
   "swapReviewSwap": {
     "message": "Проверить обмен"
-  },
-  "swapSearchForAToken": {
-    "message": "Поиск токена"
   },
   "swapSelect": {
     "message": "Выбрать"

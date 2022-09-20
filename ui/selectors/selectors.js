@@ -4,21 +4,16 @@ import { memoize } from 'lodash';
 ///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  MAINNET_CHAIN_ID,
   TEST_CHAINS,
-  NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  OPTIMISM_CHAIN_ID,
-  OPTIMISM_TESTNET_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -47,10 +42,7 @@ import {
   getAccountByAddress,
   getURLHostName,
 } from '../helpers/utils/util';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../helpers/utils/conversions.util';
+import { getValueFromWeiHex } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -70,8 +62,10 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -99,7 +93,7 @@ export function getNetworkIdentifier(state) {
 
 export function getMetricsNetworkIdentifier(state) {
   const { provider } = state.metamask;
-  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type;
+  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
 }
 
 export function getCurrentChainId(state) {
@@ -525,7 +519,7 @@ export function getSuggestedAssets(state) {
 
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
-  return chainId === MAINNET_CHAIN_ID;
+  return chainId === CHAIN_IDS.MAINNET;
 }
 
 export function getIsTestnet(state) {
@@ -715,6 +709,13 @@ export function getIsBuyableTransakChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
 }
 
+export function getIsBuyableTransakToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
+  );
+}
+
 export function getIsBuyableMoonPayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
@@ -727,6 +728,13 @@ export function getIsBuyableWyreChain(state) {
 export function getIsBuyableCoinbasePayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
+export function getIsBuyableCoinbasePayToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
+  );
 }
 
 export function getNativeCurrencyImage(state) {
@@ -745,6 +753,17 @@ export function getShowWhatsNewPopup(state) {
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
+}
+
+export function getInsightSnaps(state) {
+  const snaps = Object.values(state.metamask.snaps);
+  const subjects = getPermissionSubjects(state);
+
+  const insightSnaps = snaps.filter(
+    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+  );
+
+  return insightSnaps;
 }
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
@@ -987,8 +1006,8 @@ export function getFrequentRpcListDetail(state) {
 
 export function getIsOptimism(state) {
   return (
-    getCurrentChainId(state) === OPTIMISM_CHAIN_ID ||
-    getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
 }
 
@@ -1035,13 +1054,13 @@ export function getIsAdvancedGasFeeDefault(state) {
 export const getTokenDetectionSupportNetworkByChainId = (state) => {
   const chainId = getCurrentChainId(state);
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return MAINNET_DISPLAY_NAME;
-    case BSC_CHAIN_ID:
+    case CHAIN_IDS.BSC:
       return BSC_DISPLAY_NAME;
-    case POLYGON_CHAIN_ID:
+    case CHAIN_IDS.POLYGON:
       return POLYGON_DISPLAY_NAME;
-    case AVALANCHE_CHAIN_ID:
+    case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
     default:
       return '';
@@ -1057,10 +1076,10 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
 export function getIsDynamicTokenListAvailable(state) {
   const chainId = getCurrentChainId(state);
   return [
-    MAINNET_CHAIN_ID,
-    BSC_CHAIN_ID,
-    POLYGON_CHAIN_ID,
-    AVALANCHE_CHAIN_ID,
+    CHAIN_IDS.MAINNET,
+    CHAIN_IDS.BSC,
+    CHAIN_IDS.POLYGON,
+    CHAIN_IDS.AVALANCHE,
   ].includes(chainId);
 }
 

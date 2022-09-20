@@ -1703,9 +1703,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Red de prueba"
   },
@@ -2615,9 +2612,6 @@
   "swap": {
     "message": "Canjear"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina “desfase”. El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración “max slippage” (desfase máximo)."
-  },
   "swapAggregator": {
     "message": "Agregador"
   },
@@ -2773,9 +2767,6 @@
   "swapQuoteDetails": {
     "message": "Detalles de cotización"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración de la \"tolerancia de desfase\"."
-  },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
   },
@@ -2805,9 +2796,6 @@
   },
   "swapReviewSwap": {
     "message": "Revisar canje"
-  },
-  "swapSearchForAToken": {
-    "message": "Buscar un token"
   },
   "swapSelect": {
     "message": "Seleccionar"

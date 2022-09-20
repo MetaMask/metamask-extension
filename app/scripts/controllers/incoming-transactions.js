@@ -10,14 +10,9 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 const fetchWithTimeout = getFetchWithTimeout();
@@ -54,12 +49,12 @@ const fetchWithTimeout = getFetchWithTimeout();
  * attempt to retrieve incoming transactions on any custom RPC endpoints.
  */
 const etherscanSupportedNetworks = [
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
+  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.KOVAN,
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.RINKEBY,
+  CHAIN_IDS.ROPSTEN,
+  CHAIN_IDS.SEPOLIA,
 ];
 
 export default class IncomingTransactionsController {
@@ -83,12 +78,12 @@ export default class IncomingTransactionsController {
     const initState = {
       incomingTransactions: {},
       incomingTxLastFetchedBlockByChainId: {
-        [GOERLI_CHAIN_ID]: null,
-        [KOVAN_CHAIN_ID]: null,
-        [MAINNET_CHAIN_ID]: null,
-        [RINKEBY_CHAIN_ID]: null,
-        [ROPSTEN_CHAIN_ID]: null,
-        [SEPOLIA_CHAIN_ID]: null,
+        [CHAIN_IDS.GOERLI]: null,
+        [CHAIN_IDS.KOVAN]: null,
+        [CHAIN_IDS.MAINNET]: null,
+        [CHAIN_IDS.RINKEBY]: null,
+        [CHAIN_IDS.ROPSTEN]: null,
+        [CHAIN_IDS.SEPOLIA]: null,
       },
       ...opts.initState,
     };
@@ -228,7 +223,7 @@ export default class IncomingTransactionsController {
    */
   async _getNewIncomingTransactions(address, fromBlock, chainId) {
     const etherscanSubdomain =
-      chainId === MAINNET_CHAIN_ID
+      chainId === CHAIN_IDS.MAINNET
         ? 'api'
         : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
 

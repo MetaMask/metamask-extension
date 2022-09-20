@@ -75,15 +75,15 @@ export const Size = (args) => (
   </Box>
 );
 
-export const tokenName = Template.bind({});
-tokenName.args = {
+export const TokenName = Template.bind({});
+TokenName.args = {
   tokenImageUrl: '',
 };
 
-export const tokenImageUrl = Template.bind({});
+export const TokenImageUrl = Template.bind({});
 
-export const showHalo = Template.bind({});
-showHalo.args = {
+export const ShowHalo = Template.bind({});
+ShowHalo.args = {
   showHalo: true,
 };
 

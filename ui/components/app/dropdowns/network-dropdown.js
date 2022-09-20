@@ -7,8 +7,8 @@ import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import {
-  NETWORK_TYPE_RPC,
   LOCALHOST_RPC_URL,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
@@ -152,7 +152,7 @@ class NetworkDropdown extends Component {
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
       const isCurrentRpcTarget =
-        provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl;
+        provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
 
       return (
         <DropdownMenuItem

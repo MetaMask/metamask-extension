@@ -764,7 +764,7 @@
         "3box>ipfs>ipld-raw>multihashing-async": true,
         "3box>ipfs>multicodec": true,
         "3box>ipfs>protons": true,
-        "@storybook/client-api>stable": true,
+        "@storybook/react>@storybook/store>stable": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
@@ -2228,7 +2228,7 @@
       },
       "packages": {
         "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
@@ -2236,22 +2236,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -2259,34 +2245,10 @@
         "console.error": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "browserify>buffer": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "TextDecoder": true,
-        "define": true
-      },
-      "packages": {
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -2818,12 +2780,14 @@
         "@metamask/contract-metadata": true,
         "@metamask/controllers>abort-controller": true,
         "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
         "@metamask/controllers>eth-method-registry": true,
         "@metamask/controllers>eth-phishing-detect": true,
         "@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/controllers>isomorphic-fetch": true,
         "@metamask/controllers>multiformats": true,
         "@metamask/controllers>nanoid": true,
+        "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>buffer": true,
@@ -2831,7 +2795,6 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
-        "eth-json-rpc-infura": true,
         "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
@@ -2844,8 +2807,7 @@
         "jsonschema": true,
         "punycode": true,
         "single-call-balance-checker-abi": true,
-        "uuid": true,
-        "web3": true
+        "uuid": true
       }
     },
     "@metamask/controllers>abort-controller": {
@@ -2864,6 +2826,33 @@
     "@metamask/controllers>async-mutex>tslib": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/controllers>eth-json-rpc-infura": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers>eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": true,
+        "@metamask/controllers>eth-json-rpc-infura>json-rpc-engine": true,
+        "node-fetch": true
+      }
+    },
+    "@metamask/controllers>eth-json-rpc-infura>eth-json-rpc-middleware": {
+      "packages": {
+        "safe-event-emitter": true
+      }
+    },
+    "@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": {
+      "packages": {
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/controllers>eth-json-rpc-infura>json-rpc-engine": {
+      "packages": {
+        "@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": true,
+        "safe-event-emitter": true
       }
     },
     "@metamask/controllers>eth-method-registry": {
@@ -2988,6 +2977,22 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "Web3": "write",
+        "XMLHttpRequest": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers>web3>bignumber.js": true,
+        "@metamask/controllers>web3>crypto-js": true,
+        "@metamask/controllers>web3>utf8": true,
+        "@metamask/controllers>web3>xhr2-cookies": true,
+        "browserify>buffer": true
+      }
+    },
     "@metamask/controllers>web3-provider-engine": {
       "globals": {
         "WebSocket": true,
@@ -2996,6 +3001,7 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
         "@metamask/controllers>web3-provider-engine>backoff": true,
         "@metamask/controllers>web3-provider-engine>eth-block-tracker": true,
         "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware": true,
@@ -3007,7 +3013,6 @@
         "browserify>events": true,
         "browserify>util": true,
         "eth-json-rpc-filters": true,
-        "eth-json-rpc-infura": true,
         "gh-pages>async": true,
         "lavamoat>json-stable-stringify": true,
         "watchify>xtend": true
@@ -3124,6 +3129,121 @@
       },
       "packages": {
         "browserify>process": true
+      }
+    },
+    "@metamask/controllers>web3>bignumber.js": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>crypto-browserify": true
+      }
+    },
+    "@metamask/controllers>web3>crypto-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/controllers>web3>utf8": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/controllers>web3>xhr2-cookies": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>https-browserify": true,
+        "browserify>os-browserify": true,
+        "browserify>process": true,
+        "browserify>stream-http": true,
+        "browserify>url": true,
+        "pubnub>superagent>cookiejar": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-json-rpc-infura>@metamask/utils": true,
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "node-fetch": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>@metamask/utils": {
+      "packages": {
+        "@metamask/eth-json-rpc-infura>@metamask/utils>superstruct": true,
+        "eslint>fast-deep-equal": true,
+        "madge>debug": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
+      "globals": {
+        "URL": true,
+        "btoa": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": true,
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
+        "browserify>browser-resolve": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "lavamoat>json-stable-stringify": true,
+        "vinyl>clone": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": {
+      "packages": {
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": true,
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": {
+      "packages": {
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": true,
+        "bn.js": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": {
+      "packages": {
+        "3box>ethers>elliptic": true,
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "bn.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-util>rlp": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": {
+      "packages": {
+        "3box>ethers>elliptic": true,
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "bn.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-util>rlp": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -3912,7 +4032,7 @@
         "localStorage": true
       }
     },
-    "@storybook/client-api>stable": {
+    "@storybook/react>@storybook/store>stable": {
       "globals": {
         "define": true
       }
@@ -4781,9 +4901,17 @@
         "setTimeout": true
       },
       "packages": {
+        "eth-block-tracker>@metamask/utils": true,
         "eth-block-tracker>pify": true,
         "eth-query>json-rpc-random-id": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true
+      }
+    },
+    "eth-block-tracker>@metamask/utils": {
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "eth-block-tracker>@metamask/utils>superstruct": true,
+        "madge>debug": true
       }
     },
     "eth-ens-namehash": {
@@ -4829,33 +4957,6 @@
         "eth-json-rpc-filters>json-rpc-engine": true
       }
     },
-    "eth-json-rpc-infura": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "eth-json-rpc-infura>eth-rpc-errors": true,
-        "eth-json-rpc-infura>json-rpc-engine": true,
-        "node-fetch": true
-      }
-    },
-    "eth-json-rpc-infura>eth-json-rpc-middleware": {
-      "packages": {
-        "safe-event-emitter": true
-      }
-    },
-    "eth-json-rpc-infura>eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "eth-json-rpc-infura>json-rpc-engine": {
-      "packages": {
-        "eth-json-rpc-infura>eth-rpc-errors": true,
-        "safe-event-emitter": true
-      }
-    },
     "eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
@@ -4866,6 +4967,7 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
+        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>eth-sig-util": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
@@ -4873,6 +4975,13 @@
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "lavamoat>json-stable-stringify": true,
         "vinyl>clone": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/utils": {
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "eth-json-rpc-middleware>@metamask/utils>superstruct": true,
+        "madge>debug": true
       }
     },
     "eth-json-rpc-middleware>eth-sig-util": {
@@ -5181,6 +5290,7 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
+        "madge>debug": true,
         "watchify>xtend": true
       }
     },
@@ -6366,6 +6476,11 @@
         "browserify>buffer": true
       }
     },
+    "pubnub>superagent>cookiejar": {
+      "globals": {
+        "console.warn": true
+      }
+    },
     "pump": {
       "packages": {
         "browserify>browser-resolve": true,
@@ -6676,9 +6791,9 @@
     "react-router-dom>react-router>mini-create-react-context": {
       "packages": {
         "@babel/runtime": true,
-        "@storybook/api>@reach/router>create-react-context>gud": true,
         "prop-types": true,
         "react": true,
+        "react-router-dom>react-router>mini-create-react-context>gud": true,
         "react-router-dom>tiny-warning": true
       }
     },
@@ -6905,6 +7020,44 @@
         "jsdom>request>is-typedarray": true
       }
     },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "TextDecoder": true,
+        "define": true
+      },
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
@@ -6939,18 +7092,7 @@
     },
     "web3": {
       "globals": {
-        "Web3": "write",
-        "XMLHttpRequest": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "web3>bignumber.js": true,
-        "web3>crypto-js": true,
-        "web3>utf8": true,
-        "web3>xhr2-cookies": true
+        "XMLHttpRequest": true
       }
     },
     "web3-stream-provider": {
@@ -6967,43 +7109,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "web3>bignumber.js": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>crypto-browserify": true
-      }
-    },
-    "web3>crypto-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "web3>utf8": {
-      "globals": {
-        "define": true
-      }
-    },
-    "web3>xhr2-cookies": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>https-browserify": true,
-        "browserify>os-browserify": true,
-        "browserify>process": true,
-        "browserify>stream-http": true,
-        "browserify>url": true,
-        "web3>xhr2-cookies>cookiejar": true
-      }
-    },
-    "web3>xhr2-cookies>cookiejar": {
-      "globals": {
-        "console.warn": true
       }
     },
     "webextension-polyfill": {

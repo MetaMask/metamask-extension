@@ -2001,9 +2001,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Mạng thử nghiệm"
   },
@@ -3289,9 +3286,6 @@
   "swap": {
     "message": "Hoán đổi"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là “trượt giá”. Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá “mức trượt giá tối đa” đã cài đặt."
-  },
   "swapAggregator": {
     "message": "Trình tổng hợp"
   },
@@ -3455,9 +3449,6 @@
   "swapQuoteDetails": {
     "message": "Chi tiết báo giá"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
-  },
   "swapQuoteSource": {
     "message": "Nguồn báo giá"
   },
@@ -3487,9 +3478,6 @@
   },
   "swapReviewSwap": {
     "message": "Xem lại giao dịch hoán đổi"
-  },
-  "swapSearchForAToken": {
-    "message": "Tìm kiếm token"
   },
   "swapSelect": {
     "message": "Chọn"

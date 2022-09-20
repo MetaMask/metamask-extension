@@ -2,13 +2,8 @@ import log from 'loglevel';
 
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
+  CHAIN_IDS,
 } from '../../../shared/constants/network';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
@@ -58,16 +53,16 @@ const createWyrePurchaseUrl = async (walletAddress, chainId) => {
  *
  * @param {string} walletAddress - Ethereum destination address
  * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
  * @returns String
  */
-const createTransakUrl = (walletAddress, chainId) => {
-  const { transakCurrencies, network } = BUYABLE_CHAINS_MAP[chainId];
+const createTransakUrl = (walletAddress, chainId, symbol) => {
+  const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
 
   const queryParams = new URLSearchParams({
     apiKey: TRANSAK_API_KEY,
     hostURL: 'https://metamask.io',
-    cryptoCurrencyList: transakCurrencies.join(','),
-    defaultCryptoCurrency: transakCurrencies[0],
+    defaultCryptoCurrency: symbol || nativeCurrency,
     networks: network,
     walletAddress,
   });
@@ -120,17 +115,20 @@ const createMoonPayUrl = async (walletAddress, chainId) => {
  *
  * @param {string} walletAddress - Ethereum destination address
  * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
  * @returns String
  */
-const createCoinbasePayUrl = (walletAddress, chainId) => {
-  const { coinbasePayCurrencies } = BUYABLE_CHAINS_MAP[chainId];
+const createCoinbasePayUrl = (walletAddress, chainId, symbol) => {
+  // since coinbasePayCurrencies is going to be extended to include all tokens supported
+  // we now default to nativeCurrency instead of the 2 previous tokens + eth that we had before
+  const { nativeCurrency } = BUYABLE_CHAINS_MAP[chainId];
   const queryParams = new URLSearchParams({
     appId: COINBASEPAY_API_KEY,
     attribution: 'extension',
     destinationWallets: JSON.stringify([
       {
         address: walletAddress,
-        assets: coinbasePayCurrencies,
+        assets: symbol ? [symbol] : [nativeCurrency],
       },
     ]),
   });
@@ -144,10 +142,11 @@ const createCoinbasePayUrl = (walletAddress, chainId) => {
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
  * @param opts.service
+ * @param {string|undefined} opts.symbol - The symbol of the token to buy. Only relevant if buying a token.
  * @returns {string|undefined} The url at which the user can access ETH, while in the given chain. If the passed
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
  */
-export default async function getBuyUrl({ chainId, address, service }) {
+export default async function getBuyUrl({ chainId, address, service, symbol }) {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
@@ -158,11 +157,11 @@ export default async function getBuyUrl({ chainId, address, service }) {
     case 'wyre':
       return await createWyrePurchaseUrl(address, chainId);
     case 'transak':
-      return createTransakUrl(address, chainId);
+      return createTransakUrl(address, chainId, symbol);
     case 'moonpay':
       return createMoonPayUrl(address, chainId);
     case 'coinbase':
-      return createCoinbasePayUrl(address, chainId);
+      return createCoinbasePayUrl(address, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':
@@ -182,17 +181,17 @@ export default async function getBuyUrl({ chainId, address, service }) {
 
 function getDefaultServiceForChain(chainId) {
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return 'wyre';
-    case ROPSTEN_CHAIN_ID:
+    case CHAIN_IDS.ROPSTEN:
       return 'metamask-faucet';
-    case RINKEBY_CHAIN_ID:
+    case CHAIN_IDS.RINKEBY:
       return 'rinkeby-faucet';
-    case KOVAN_CHAIN_ID:
+    case CHAIN_IDS.KOVAN:
       return 'kovan-faucet';
-    case GOERLI_CHAIN_ID:
+    case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
-    case SEPOLIA_CHAIN_ID:
+    case CHAIN_IDS.SEPOLIA:
       return 'sepolia-faucet';
     default:
       throw new Error(

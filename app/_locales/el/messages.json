@@ -2001,9 +2001,6 @@
   "networkNamePolygon": {
     "message": "Πολύγωνο"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -3289,9 +3286,6 @@
   "swap": {
     "message": "Ανταλλαγή"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Εάν η τιμή αλλάζει μεταξύ της ώρας που τοποθετείται η παραγγελία σας και της επιβεβαίωσης, αυτό ονομάζεται \"ολίσθηση\". Η ανταλλαγή σας θα ακυρωθεί αυτόματα αν η ολίσθηση υπερβαίνει τη ρύθμιση \"ανοχή ολίσθησης\"."
-  },
   "swapAggregator": {
     "message": "Aggregator Ανταλλακτηρίων"
   },
@@ -3455,9 +3449,6 @@
   "swapQuoteDetails": {
     "message": "Λεπτομέρειες προσφοράς"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Εάν η τιμή αλλάζει μεταξύ της ώρας που τοποθετείται η παραγγελία σας και επιβεβαιώνεται ονομάζεται \"ολίσθηση\". Η ανταλλαγή σας θα ακυρωθεί αυτόματα αν η ολίσθηση υπερβαίνει τη ρύθμιση \"ανοχή ολίσθησης\"."
-  },
   "swapQuoteSource": {
     "message": "Πηγή προσφοράς"
   },
@@ -3487,9 +3478,6 @@
   },
   "swapReviewSwap": {
     "message": "Επανεξέταση Ανταλλαγής"
-  },
-  "swapSearchForAToken": {
-    "message": "Αναζήτηση για ένα token"
   },
   "swapSelect": {
     "message": "Επιλογή"

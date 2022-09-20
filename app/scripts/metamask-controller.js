@@ -65,7 +65,7 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
   KEYRING_TYPES,
@@ -90,14 +90,14 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
-import {
-  getTokenIdParam,
-  getTokenValueParam,
-} from '../../ui/helpers/utils/token-util';
+import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import {
+  getTokenValueParam,
+  hexToDecimal,
+} from '../../shared/lib/metamask-controller-utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -431,11 +431,11 @@ export default class MetamaskController extends EventEmitter {
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
         const chainId = this.networkController.getCurrentChainId();
-        return process.env.IN_TEST || chainId === MAINNET_CHAIN_ID;
+        return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
       getChainId: () => {
         return process.env.IN_TEST
-          ? MAINNET_CHAIN_ID
+          ? CHAIN_IDS.MAINNET
           : this.networkController.getCurrentChainId();
       },
     });
@@ -1867,6 +1867,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
@@ -2262,7 +2266,7 @@ export default class MetamaskController extends EventEmitter {
     const isTokenDetectionInactiveInMainnet =
       !useTokenDetection &&
       this.networkController.store.getState().provider.chainId ===
-        MAINNET_CHAIN_ID;
+        CHAIN_IDS.MAINNET;
     const { tokenList } = this.tokenListController.state;
     const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
       ? STATIC_MAINNET_TOKEN_LIST
@@ -3280,18 +3284,14 @@ export default class MetamaskController extends EventEmitter {
    *  './controllers/transactions'
    * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
    *  instead of allowing this method to generate them
-   * @param newTxMetaProps
+   * @param options
    * @returns {object} MetaMask state
    */
-  async createCancelTransaction(
-    originalTxId,
-    customGasSettings,
-    newTxMetaProps,
-  ) {
+  async createCancelTransaction(originalTxId, customGasSettings, options) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasSettings,
-      newTxMetaProps,
+      options,
     );
     const state = await this.getState();
     return state;
@@ -3307,18 +3307,14 @@ export default class MetamaskController extends EventEmitter {
    *  './controllers/transactions'
    * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
    *  instead of allowing this method to generate them
-   * @param newTxMetaProps
+   * @param options
    * @returns {object} MetaMask state
    */
-  async createSpeedUpTransaction(
-    originalTxId,
-    customGasSettings,
-    newTxMetaProps,
-  ) {
+  async createSpeedUpTransaction(originalTxId, customGasSettings, options) {
     await this.txController.createSpeedUpTransaction(
       originalTxId,
       customGasSettings,
-      newTxMetaProps,
+      options,
     );
     const state = await this.getState();
     return state;

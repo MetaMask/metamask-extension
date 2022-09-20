@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
-import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
-import { calcGasTotal } from '../../../ui/pages/send/send.utils';
 import {
   conversionUtil,
   decGWEIToHexWEI,
@@ -30,10 +28,15 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   getBaseApi,
-} from '../../../ui/pages/swaps/swaps.util';
-import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
+} from '../../../shared/lib/swaps-utils';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator

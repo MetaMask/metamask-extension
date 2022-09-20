@@ -71,6 +71,7 @@ export default class Welcome extends PureComponent {
             type="primary"
             className="first-time-flow__button"
             onClick={this.handleContinue}
+            data-testid="first-time-flow__button"
           >
             {t('getStarted')}
           </Button>

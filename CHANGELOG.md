@@ -689,7 +689,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12230](https://github.com/MetaMask/metamask-extension/pull/12230): Fix gas control flicker on send screen when switching between EIP-1559 networks
 - [#12186](https://github.com/MetaMask/metamask-extension/pull/12186): Fix grammatical issue with "Not connected to this site" message
 - [#12381](https://github.com/MetaMask/metamask-extension/pull/12381): Fix width and padding of the hide token modal while in the popup view
-- [#12339](https://github.com/MetaMask/metamask-extension/pull/11996): Fix 'BigNumber' app error when '0x' is supplied as the transaction value
+- [#11996](https://github.com/MetaMask/metamask-extension/pull/11996): Fix 'BigNumber' app error when '0x' is supplied as the transaction value
 - [#12339](https://github.com/MetaMask/metamask-extension/pull/12339): Correctly notify the inpage provider of current selected account on "unlock" events
 - [#12405](https://github.com/MetaMask/metamask-extension/pull/12405): Fix allowance issue with WETH -> ETH Swaps
 
@@ -1750,7 +1750,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.0.0] - 2019-08-07
 ### Uncategorized
 - Capitalized speed up label to match rest of UI ([#6828](https://github.com/MetaMask/metamask-extension/pull/6828))
-- Allows skipping of seed phrase challenge during onboarding, and completing it at a later time ([#6874](https://github.com/MetaMask/metamask-extension/pull/6928))
+- Allows skipping of seed phrase challenge during onboarding, and completing it at a later time ([#6874](https://github.com/MetaMask/metamask-extension/pull/6874))
 - Prevent opening of asset dropdown if no tokens in account ([#6900](https://github.com/MetaMask/metamask-extension/pull/6900))
 - Set privacy mode as default ([#6904](https://github.com/MetaMask/metamask-extension/pull/6904))
 - Adds Address Book feature ([#6914](https://github.com/MetaMask/metamask-extension/pull/6914))
@@ -1936,7 +1936,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.3.5] - 2019-02-04
 ### Uncategorized
-- Privacy mode fixes ([#6084](https://github.com/MetaMask/metamask-extension/pull/6087))
+- Privacy mode fixes ([#6087](https://github.com/MetaMask/metamask-extension/pull/6087))
 
 ## [5.3.4] - 2019-01-31
 ### Uncategorized
