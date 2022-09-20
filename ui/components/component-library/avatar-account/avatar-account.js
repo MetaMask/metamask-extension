@@ -7,7 +7,7 @@ import { BaseAvatar } from '../base-avatar';
 
 import { SIZES } from '../../../helpers/constants/design-system';
 
-export const diameters = {
+const Diameters = {
   xs: '16',
   sm: '24',
   md: '32',
@@ -31,11 +31,11 @@ export const AvatarAccount = ({ size, address, className, type, ...props }) => {
       {...props}
     >
       {type === 'Jazzicon' ? (
-        <Jazzicon address={address} style={getStyles(diameters[size])} />
+        <Jazzicon address={address} style={getStyles(Diameters[size])} />
       ) : (
         <BlockieIdenticon
           address={address}
-          diameter={diameters[size]}
+          diameter={Diameters[size]}
           borderRadius="50%"
         />
       )}
