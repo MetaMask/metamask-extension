@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignatureRequestOriginal should match snapshot 1`] = `
+<div>
+  <div
+    class="request-signature__container"
+  >
+    <div
+      class="request-signature__header"
+    >
+      <div
+        class="request-signature__header-background"
+      />
+      <div
+        class="request-signature__header__text"
+      >
+        Signature request
+      </div>
+      <div
+        class="request-signature__header__tip-container"
+      >
+        <div
+          class="request-signature__header__tip"
+        />
+      </div>
+    </div>
+    <div
+      class="request-signature__body"
+    >
+      <div
+        class="request-signature__account-info"
+      >
+        <div
+          class="request-signature__account"
+        >
+          <div
+            class="request-signature__account-text"
+          >
+            Account:
+          </div>
+          <div
+            class="request-signature__account-item"
+          >
+            <div
+              class="account-list-item undefined"
+            >
+              <div
+                class="account-list-item__top-row"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon account-list-item__identicon"
+                    style="height: 18px; width: 18px; border-radius: 9px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+                    >
+                      <svg
+                        height="18"
+                        width="18"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#18CDF2"
+                          height="18"
+                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#035E56"
+                          height="18"
+                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F26602"
+                          height="18"
+                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          width="18"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="account-list-item__account-name"
+                >
+                  Test Account
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="request-signature__request-icon"
+        >
+          <div
+            class="identicon__image-border"
+            style="height: 40px; width: 40px; border-radius: 20px;"
+          />
+        </div>
+        <div
+          class="request-signature__balance"
+        >
+          <div
+            class="request-signature__balance-text"
+          >
+            Balance:
+          </div>
+          <div
+            class="request-signature__balance-value"
+          >
+            0 ETH
+          </div>
+        </div>
+      </div>
+      <div
+        class="request-signature__origin-row"
+      >
+        <div
+          class="request-signature__origin-label"
+        >
+          Origin:
+        </div>
+        <div
+          class="site-origin request-signature__origin"
+        >
+          <span>
+            https://happydapp.website/governance?futarchy=true
+          </span>
+        </div>
+      </div>
+      <div
+        class="request-signature__notice request-signature__warning"
+      >
+        Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site.
+        <span
+          class="request-signature__help-link"
+        >
+          Learn more
+        </span>
+      </div>
+      <div
+        class="request-signature__rows"
+      >
+        <div
+          class="request-signature__row"
+        >
+          <div
+            class="request-signature__row-title"
+          >
+            Message:
+          </div>
+          <div
+            class="request-signature__row-value"
+          >
+            {"domain":{"name":"happydapp.website"},"message":{"string":"haay wuurl","number":42},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirm-approve-content__ledger-instruction-wrapper"
+    >
+      <div>
+        <div
+          class="confirm-detail-row"
+        >
+          <div
+            class="dialog dialog--message"
+          >
+            <div
+              class="ledger-live-dialog"
+            >
+              <h6
+                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
+              >
+                Prior to clicking confirm:
+              </h6>
+              <h6
+                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
+              >
+                - Plug in your Ledger device and select the Ethereum app
+              </h6>
+              <h6
+                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
+              >
+                - Enable "smart contract data" or "blind signing" on your Ledger device
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="request-signature__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary btn--large request-signature__footer__cancel-button"
+        role="button"
+        tabindex="0"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-primary btn--large request-signature__footer__sign-button"
+        data-testid="request-signature__sign"
+        role="button"
+        tabindex="0"
+      >
+        Sign
+      </button>
+    </div>
+  </div>
+</div>
+`;

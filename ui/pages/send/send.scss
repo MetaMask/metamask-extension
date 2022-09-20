@@ -35,6 +35,15 @@
     margin: 1rem;
   }
 
+  &__warning-container {
+    padding-left: 16px;
+    padding-right: 16px;
+
+    &__link {
+      color: var(--primary-1);
+    }
+  }
+
   &__to-row {
     margin: 0;
     padding: 0.5rem;

@@ -6,6 +6,7 @@ const glob = require('fast-glob');
 const locales = require('../../app/_locales/index.json');
 const { BuildType } = require('../lib/build-type');
 
+const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 
 const EMPTY_JS_FILE = './development/empty.js';
@@ -41,7 +42,7 @@ module.exports = function createStaticAssetTasks({
   }
 
   const prod = createTask(
-    'static:prod',
+    TASKS.STATIC_PROD,
     composeSeries(
       ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
@@ -51,7 +52,7 @@ module.exports = function createStaticAssetTasks({
     ),
   );
   const dev = createTask(
-    'static:dev',
+    TASKS.STATIC_DEV,
     composeSeries(
       ...copyTargetsDev.map((target) => {
         return async function copyStaticAssets() {
@@ -151,6 +152,10 @@ function getCopyTargets(shouldIncludeLockdown) {
         ? `./node_modules/ses/dist/lockdown.umd.min.js`
         : EMPTY_JS_FILE,
       dest: `lockdown-install.js`,
+    },
+    {
+      src: './app/scripts/init-globals.js',
+      dest: 'init-globals.js',
     },
     {
       src: shouldIncludeLockdown

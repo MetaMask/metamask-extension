@@ -27,25 +27,27 @@ import {
   ADD_NETWORK_ROUTE,
   SNAPS_LIST_ROUTE,
   SNAPS_VIEW_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
+  [ADD_NETWORK_ROUTE]: 'networks',
+  [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
   [ALERTS_ROUTE]: 'alerts',
-  [GENERAL_ROUTE]: 'general',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
+  [CONTACT_VIEW_ROUTE]: 'viewContact',
+  [EXPERIMENTAL_ROUTE]: 'experimental',
+  [GENERAL_ROUTE]: 'general',
+  [NETWORKS_FORM_ROUTE]: 'networks',
+  [NETWORKS_ROUTE]: 'networks',
+  [SECURITY_ROUTE]: 'securityAndPrivacy',
   [SNAPS_LIST_ROUTE]: 'snaps',
   [SNAPS_VIEW_ROUTE]: 'snaps',
-  [CONTACT_VIEW_ROUTE]: 'viewContact',
-  [NETWORKS_ROUTE]: 'networks',
-  [NETWORKS_FORM_ROUTE]: 'networks',
-  [ADD_NETWORK_ROUTE]: 'networks',
-  [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [EXPERIMENTAL_ROUTE]: 'experimental',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -64,6 +66,9 @@ const mapStateToProps = (state, ownProps) => {
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
   const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
+  const isAddPopularCustomNetwork = Boolean(
+    pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
+  );
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -77,6 +82,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isSnapViewPage) {
     backRoute = SNAPS_LIST_ROUTE;
+  } else if (isAddPopularCustomNetwork) {
+    backRoute = NETWORKS_ROUTE;
   }
 
   let initialBreadCrumbRoute;
@@ -91,18 +98,18 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   return {
-    isAddressEntryPage,
-    backRoute,
-    currentPath: pathname,
-    isPopup,
-    pathnameI18nKey,
-    addressName,
-    initialBreadCrumbRoute,
-    initialBreadCrumbKey,
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     addNewNetwork,
+    addressName,
+    backRoute,
     conversionDate,
+    currentPath: pathname,
+    initialBreadCrumbKey,
+    initialBreadCrumbRoute,
+    isAddressEntryPage,
+    isPopup,
     isSnapViewPage,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    pathnameI18nKey,
   };
 };
 

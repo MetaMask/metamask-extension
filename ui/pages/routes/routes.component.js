@@ -77,6 +77,8 @@ import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
+import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -104,6 +106,12 @@ export default class Routes extends Component {
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
     sendStage: PropTypes.string,
+    isNetworkUsed: PropTypes.bool,
+    allAccountsOnNetworkAreEmpty: PropTypes.bool,
+    isTestNet: PropTypes.bool,
+    currentChainId: PropTypes.string,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -358,11 +366,33 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      isNetworkUsed,
+      allAccountsOnNetworkAreEmpty,
+      isTestNet,
+      currentChainId,
+      shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
+
+    const shouldShowNetworkInfo =
+      isUnlocked &&
+      currentChainId &&
+      !isTestNet &&
+      !isNetworkUsed &&
+      allAccountsOnNetworkAreEmpty;
+
+    const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
+
     return (
       <div
         className={classnames('app', {
@@ -378,6 +408,8 @@ export default class Routes extends Component {
           }
         }}
       >
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
+        {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
@@ -439,6 +471,8 @@ export default class Routes extends Component {
         return this.context.t('connectingToRinkeby');
       case 'goerli':
         return this.context.t('connectingToGoerli');
+      case 'sepolia':
+        return this.context.t('connectingToSepolia');
       default:
         return this.context.t('connectingTo', [providerId]);
     }

@@ -35,9 +35,9 @@ describe('Secure Your Wallet Onboarding View', () => {
       store,
     );
     const remindMeLaterButton = getByText('Remind me later (not recommended)');
-    expect(queryAllByText('Skip Account Security?')).toHaveLength(0);
+    expect(queryAllByText('Skip account security?')).toHaveLength(0);
     fireEvent.click(remindMeLaterButton);
-    expect(queryAllByText('Skip Account Security?')).toHaveLength(1);
+    expect(queryAllByText('Skip account security?')).toHaveLength(1);
   });
 
   it('should not be able to click "skip" until "Skip Account Security" terms are agreed to', () => {

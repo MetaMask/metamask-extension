@@ -111,7 +111,7 @@ export default function AwaitingSignatures() {
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
                   <Typography
-                    tag="span"
+                    as="span"
                     fontWeight={FONT_WEIGHT.BOLD}
                     key="allowToken"
                   >
@@ -123,14 +123,14 @@ export default function AwaitingSignatures() {
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
                   <Typography
-                    tag="span"
+                    as="span"
                     fontWeight={FONT_WEIGHT.BOLD}
                     key="tokenFrom"
                   >
                     {sourceTokenInfo?.symbol}
                   </Typography>,
                   <Typography
-                    tag="span"
+                    as="span"
                     fontWeight={FONT_WEIGHT.BOLD}
                     key="tokenTo"
                   >

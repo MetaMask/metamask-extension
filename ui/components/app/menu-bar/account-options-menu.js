@@ -5,10 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
-import { CONNECTED_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONNECTED_ROUTE,
+  NETWORKS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
+  getBlockExplorerLinkText,
   getCurrentChainId,
   getCurrentKeyring,
   getRpcPrefsForCurrentProvider,
@@ -17,7 +21,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
@@ -34,8 +38,29 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
+  const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
   const isRemovable = keyring.type !== 'HD Key Tree';
+
+  const routeToAddBlockExplorerUrl = () => {
+    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+  };
+
+  const openBlockExplorer = () => {
+    trackEvent({
+      event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
+      category: EVENT.CATEGORIES.NAVIGATION,
+      properties: {
+        link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+        location: 'Account Options',
+        url_domain: getURLHostName(addressLink),
+      },
+    });
+    global.platform.openTab({
+      url: addressLink,
+    });
+    onClose();
+  };
 
   return (
     <Menu
@@ -44,21 +69,11 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       onHide={onClose}
     >
       <MenuItem
-        onClick={() => {
-          trackEvent({
-            event: 'Clicked Block Explorer Link',
-            category: EVENT.CATEGORIES.NAVIGATION,
-            properties: {
-              link_type: 'Account Tracker',
-              action: 'Account Options',
-              block_explorer_domain: getURLHostName(addressLink),
-            },
-          });
-          global.platform.openTab({
-            url: addressLink,
-          });
-          onClose();
-        }}
+        onClick={
+          blockExplorerLinkText.firstPart === 'addBlockExplorer'
+            ? routeToAddBlockExplorerUrl
+            : openBlockExplorer
+        }
         subtitle={
           blockExplorerUrlSubTitle ? (
             <span className="account-options-menu__explorer-origin">
@@ -68,19 +83,21 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl
-          ? t('viewinExplorer', [t('blockExplorerAccountAction')])
-          : t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
+        {t(
+          blockExplorerLinkText.firstPart,
+          blockExplorerLinkText.secondPart === ''
+            ? null
+            : [t(blockExplorerLinkText.secondPart)],
+        )}
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           onClick={() => {
             trackEvent({
-              event: 'Clicked Expand View',
+              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
               category: EVENT.CATEGORIES.NAVIGATION,
               properties: {
-                action: 'Account Options',
-                legacy_event: true,
+                location: 'Account Options',
               },
             });
             global.platform.openExtensionInBrowser();
@@ -96,11 +113,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
-            event: 'Viewed Account Details',
+            event: EVENT_NAMES.NAV_ACCOUNT_DETAILS_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Account Options',
-              legacy_event: true,
+              location: 'Account Options',
             },
           });
           onClose();
@@ -113,11 +129,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         data-testid="account-options-menu__connected-sites"
         onClick={() => {
           trackEvent({
-            event: 'Opened Connected Sites',
+            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Account Options',
-              legacy_event: true,
+              location: 'Account Options',
             },
           });
           history.push(CONNECTED_ROUTE);

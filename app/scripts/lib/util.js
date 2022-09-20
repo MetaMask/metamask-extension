@@ -3,10 +3,7 @@ import browser from 'webextension-polyfill';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import {
-  MAINNET_CHAIN_ID,
-  TEST_CHAINS,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -76,7 +73,7 @@ const getPlatform = () => {
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} A BN object
+ * @returns {object} A BN object
  */
 function hexToBn(inputHex) {
   return new BN(stripHexPrefix(inputHex), 16);
@@ -148,7 +145,7 @@ function bnToHex(inputBn) {
 }
 
 function getChainType(chainId) {
-  if (chainId === MAINNET_CHAIN_ID) {
+  if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
   } else if (TEST_CHAINS.includes(chainId)) {
     return 'testnet';

@@ -309,7 +309,8 @@
       "mainnet": "ok",
       "rinkeby": "ok",
       "ropsten": "ok",
-      "goerli": "ok"
+      "goerli": "ok",
+      "sepolia": "ok"
     }
   },
   "send": {

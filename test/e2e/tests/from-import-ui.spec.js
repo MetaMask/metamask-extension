@@ -77,9 +77,9 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('.network-display');
         await driver.clickElement({ text: 'Localhost', tag: 'span' });
 
-        // choose Create Account from the account menu
+        // choose Create account from the account menu
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
 
         // set account name
         await driver.fill('.new-account-create-form input', '2nd account');
@@ -202,9 +202,9 @@ describe('MetaMask Import UI', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Imports an account with private key
-        // choose Create Account from the account menu
+        // choose Create account from the account menu
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey1);
@@ -231,8 +231,8 @@ describe('MetaMask Import UI', function () {
         assert.equal(await importedLabel.getText(), 'IMPORTED');
 
         // Imports and removes an account
-        // choose Create Account from the account menu
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        // choose Create account from the account menu
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
         // enter private key
         await driver.fill('#private-key-box', testPrivateKey2);
         await driver.clickElement({ text: 'Import', tag: 'button' });
@@ -306,7 +306,7 @@ describe('MetaMask Import UI', function () {
 
         // Imports an account with JSON file
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
 
         await driver.clickElement('.new-account-import-form__select');
         await driver.clickElement({ text: 'JSON File', tag: 'option' });
@@ -379,7 +379,7 @@ describe('MetaMask Import UI', function () {
 
         // choose Import Account from the account menu
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);
@@ -416,10 +416,10 @@ describe('MetaMask Import UI', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // choose Connect Hardware Wallet from the account menu
+        // choose Connect hardware wallet from the account menu
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({
-          text: 'Connect Hardware Wallet',
+          text: 'Connect hardware wallet',
           tag: 'div',
         });
         await driver.delay(regularDelayMs);

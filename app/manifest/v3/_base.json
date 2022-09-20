@@ -47,6 +47,12 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
+  "host_permissions": [
+    "http://localhost:8545/",
+    "file://*/*",
+    "http://*/*",
+    "https://*/*"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -60,23 +66,13 @@
   "manifest_version": 3,
   "name": "__MSG_appName__",
   "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "notifications",
+    "scripting",
     "storage",
     "unlimitedStorage",
-    "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
-    "activeTab",
-    "webRequest",
-    "*://*.eth/",
-    "notifications"
+    "webRequest"
   ],
-  "short_name": "__MSG_appName__",
-  "web_accessible_resources": [
-    {
-      "resources": ["inpage.js", "phishing.html"],
-      "matches": ["http://*/*", "https://*/*"]
-    }
-  ]
+  "short_name": "__MSG_appName__"
 }

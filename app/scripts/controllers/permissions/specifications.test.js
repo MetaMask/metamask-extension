@@ -1,3 +1,4 @@
+import { SnapCaveatType } from '@metamask/rpc-methods';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -15,10 +16,17 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(1);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(3);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+
+      expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
+        SnapCaveatType.PermittedDerivationPaths,
+      );
+      expect(caveatSpecifications.permittedCoinTypes.type).toStrictEqual(
+        SnapCaveatType.PermittedCoinTypes,
+      );
     });
 
     describe('restrictReturnedAccounts', () => {

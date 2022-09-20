@@ -2,7 +2,8 @@
   "data": {
     "AppStateController": {
       "mkrMigrationReminderTimestamp": null,
-      "swapsWelcomeMessageHasBeenShown": true
+      "swapsWelcomeMessageHasBeenShown": true,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -21,6 +22,7 @@
         "goerli": null,
         "kovan": null,
         "mainnet": null,
+        "sepolia": null,
         "rinkeby": 5570536
       }
     },
@@ -54,7 +56,22 @@
         "8": {
           "isShown": true
         },
+        "10": {
+          "isShown": true
+        },
+        "11": {
+          "isShown": true
+        },
         "12": {
+          "isShown": true
+        },
+        "13": {
+          "isShown": true
+        },
+        "14": {
+          "isShown": true
+        },
+        "15": {
           "isShown": true
         }
       }

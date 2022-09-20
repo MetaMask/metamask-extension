@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
-import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
-import { calcGasTotal } from '../../../ui/pages/send/send.utils';
 import {
   conversionUtil,
   decGWEIToHexWEI,
@@ -30,10 +28,15 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   getBaseApi,
-} from '../../../ui/pages/swaps/swaps.util';
-import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
+} from '../../../shared/lib/swaps-utils';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -90,7 +93,8 @@ const initialState = {
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsFeatureFlags: {},
   },
@@ -336,10 +340,8 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const [
-        _topAggId,
-        quotesWithSavingsAndFeeData,
-      ] = await this._findTopQuoteAndCalculateSavings(newQuotes);
+      const [_topAggId, quotesWithSavingsAndFeeData] =
+        await this._findTopQuoteAndCalculateSavings(newQuotes);
       topAggId = _topAggId;
       newQuotes = quotesWithSavingsAndFeeData;
     }
@@ -486,10 +488,8 @@ export default class SwapsController {
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
-    const {
-      gasLimit: newGasEstimate,
-      simulationFails,
-    } = await this.timedoutGasReturn(quoteToUpdate.trade);
+    const { gasLimit: newGasEstimate, simulationFails } =
+      await this.timedoutGasReturn(quoteToUpdate.trade);
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -637,9 +637,8 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const {
-      contractExchangeRates: tokenConversionRates,
-    } = this.getTokenRatesState();
+    const { contractExchangeRates: tokenConversionRates } =
+      this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
@@ -652,10 +651,8 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const {
-      gasFeeEstimates,
-      gasEstimateType,
-    } = await this._getEIP1559GasFeeEstimates();
+    const { gasFeeEstimates, gasEstimateType } =
+      await this._getEIP1559GasFeeEstimates();
 
     let usedGasPrice = '0x0';
 
@@ -756,9 +753,8 @@ export default class SwapsController {
       const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
         .minus(metaMaskFee, 10)
         .div(100);
-      const destinationAmountBeforeMetaMaskFee = decimalAdjustedDestinationAmount.div(
-        tokenPercentageOfPreFeeDestAmount,
-      );
+      const destinationAmountBeforeMetaMaskFee =
+        decimalAdjustedDestinationAmount.div(tokenPercentageOfPreFeeDestAmount);
       const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
         decimalAdjustedDestinationAmount,
       );
@@ -883,7 +879,7 @@ export default class SwapsController {
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
  * @param {Array} _quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @returns {object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
@@ -960,7 +956,7 @@ function getMedianEthValueQuote(_quotes) {
  *
  * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
  * ethValueOfTokens properties
- * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * @returns {object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
  * the passed quote objects
  */
 function meansOfQuotesFeesAndValue(quotes) {

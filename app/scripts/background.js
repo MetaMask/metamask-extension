@@ -22,13 +22,19 @@ import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
+  EVENT,
+  EVENT_NAMES,
+  TRAITS,
 } from '../../shared/constants/metametrics';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { maskObject } from '../../shared/modules/object.utils';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
+import { SENTRY_STATE } from './lib/setupSentry';
+
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
@@ -66,6 +72,7 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
+let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
@@ -93,7 +100,7 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
-if (isManifestV3()) {
+if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
 } else {
   // initialization flow
@@ -111,33 +118,33 @@ if (isManifestV3()) {
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
- * @property {Object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
- * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
+ * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
+ * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {Object} contractExchangeRates - Info about current token prices.
+ * @property {object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
- * @property {Object} send - TODO: Document
+ * @property {object} send - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
- * @property {Object} featureFlags - An object for optional feature flags.
+ * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {Object} provider - The current selected network provider.
+ * @property {object} provider - The current selected network provider.
  * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} network - A stringified number of the current network ID.
- * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
+ * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
- * @property {Object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
- * @property {Object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
- * @property {Object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
- * @property {Object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {Object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
@@ -301,7 +308,7 @@ async function loadStateFromPersistence() {
  * Streams emitted state updates to platform-specific storage strategy.
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
- * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
+ * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
@@ -311,7 +318,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   // MetaMask Controller
   //
 
-  const controller = new MetamaskController({
+  controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
@@ -353,10 +360,12 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     },
   );
 
+  setupSentryGetStateGlobal(controller);
+
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    *
-   * @param {Object} state - The state object as emitted by the MetaMaskController.
+   * @param {object} state - The state object as emitted by the MetaMaskController.
    * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
    */
   function versionifyData(state) {
@@ -393,7 +402,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // connect to other contexts
   //
-  if (isManifestV3() && remoteSourcePort) {
+  if (isManifestV3 && remoteSourcePort) {
     connectRemote(remoteSourcePort);
   }
 
@@ -467,7 +476,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3()) {
+      if (isManifestV3) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
@@ -596,7 +605,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       label = String(count);
     }
     // browserAction has been replaced by action in MV3
-    if (isManifestV3()) {
+    if (isManifestV3) {
       browser.action.setBadgeText({ text: label });
       browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
     } else {
@@ -610,11 +619,11 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const {
-      unapprovedEncryptionPublicKeyMsgCount,
-    } = controller.encryptionPublicKeyManager;
+    const { unapprovedEncryptionPublicKeyMsgCount } =
+      controller.encryptionPublicKeyManager;
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
-    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
+    const pendingApprovalCount =
+      controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
@@ -746,12 +755,44 @@ async function openPopup() {
   });
 }
 
+// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
+const addAppInstalledEvent = () => {
+  if (controller) {
+    controller.metaMetricsController.updateTraits({
+      [TRAITS.INSTALL_DATE_EXT]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+    });
+    controller.metaMetricsController.addEventBeforeMetricsOptIn({
+      category: EVENT.CATEGORIES.APP,
+      event: EVENT_NAMES.APP_INSTALLED,
+      properties: {},
+    });
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
+    addAppInstalledEvent();
+  }, 1000);
+};
+
 // On first install, open a new tab with MetaMask
 browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
+    addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
 });
+
+function setupSentryGetStateGlobal(store) {
+  global.sentryHooks.getSentryState = function () {
+    const fullState = store.getState();
+    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
+    return {
+      browser: window.navigator.userAgent,
+      store: debugState,
+      version: platform.getVersion(),
+    };
+  };
+}

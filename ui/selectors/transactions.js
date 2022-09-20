@@ -3,7 +3,6 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
-import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   TRANSACTION_STATUSES,
@@ -11,6 +10,7 @@ import {
   SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
@@ -150,8 +150,8 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * @private
  * @description Inserts (mutates) a transaction object into an array of ordered transactions, sorted
  * in ascending order by time.
- * @param {Object[]} transactions - Array of transaction objects.
- * @param {Object} transaction - Transaction object to be inserted into the array of transactions.
+ * @param {object[]} transactions - Array of transaction objects.
+ * @param {object} transaction - Transaction object to be inserted into the array of transactions.
  */
 const insertTransactionByTime = (transactions, transaction) => {
   const { time } = transaction;
@@ -173,11 +173,11 @@ const insertTransactionByTime = (transactions, transaction) => {
 /**
  * Contains transactions and properties associated with those transactions of the same nonce.
  *
- * @typedef {Object} transactionGroup
+ * @typedef {object} transactionGroup
  * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
- * @property {Object[]} transactions - An array of transaction (txMeta) objects.
- * @property {Object} initialTransaction - The transaction (txMeta) with the lowest "time".
- * @property {Object} primaryTransaction - Either the latest transaction or the confirmed
+ * @property {object[]} transactions - An array of transaction (txMeta) objects.
+ * @property {object} initialTransaction - The transaction (txMeta) with the lowest "time".
+ * @property {object} primaryTransaction - Either the latest transaction or the confirmed
  * transaction.
  * @property {boolean} hasRetried - True if a transaction in the group was a retry transaction.
  * @property {boolean} hasCancelled - True if a transaction in the group was a cancel transaction.
@@ -193,9 +193,8 @@ const insertTransactionByTime = (transactions, transaction) => {
  * array of transactionGroups.
  */
 const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
-  const {
-    primaryTransaction: { time: groupToInsertTime } = {},
-  } = transactionGroup;
+  const { primaryTransaction: { time: groupToInsertTime } = {} } =
+    transactionGroup;
 
   let insertIndex = transactionGroups.length;
 

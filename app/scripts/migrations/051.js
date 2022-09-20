@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
+import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
 
 const version = 51;
 
@@ -19,7 +19,7 @@ export default {
 
 function transformState(state) {
   const { chainId, type } = state?.NetworkController?.provider || {};
-  const enumChainId = NETWORK_TYPE_TO_ID_MAP[type]?.chainId;
+  const enumChainId = BUILT_IN_NETWORKS[type]?.chainId;
 
   if (enumChainId && chainId !== enumChainId) {
     state.NetworkController.provider.chainId = enumChainId;

@@ -35,13 +35,13 @@ const styles = {
     backgroundColor: 'var(--color-primary-default)',
     border: '1px solid var(--color-border-muted)',
     boxSizing: 'border-box',
-    boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+    boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '&:focus, &$active': {
       height: 20,
       width: 20,
       marginTop: -7,
       marginLeft: -7,
-      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 22,
@@ -49,7 +49,7 @@ const styles = {
       marginTop: -8,
       marginLeft: -8,
       border: 'none',
-      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
   },
 };

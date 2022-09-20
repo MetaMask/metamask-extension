@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -43,7 +44,7 @@ export default class EnsInput extends Component {
           !isBurnAddress(input) &&
           isValidHexAddress(input, { mixedCaseUseChecksum: true })
         ) {
-          this.props.onPaste(input);
+          this.props.onPaste(addHexPrefix(input));
         }
       });
     }
@@ -74,7 +75,7 @@ export default class EnsInput extends Component {
         !isBurnAddress(input) &&
         isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        onValidAddressTyped(input);
+        onValidAddressTyped(addHexPrefix(input));
       }
     }
 

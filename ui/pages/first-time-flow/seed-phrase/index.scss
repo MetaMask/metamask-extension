@@ -6,11 +6,11 @@
   &__sections {
     display: flex;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       flex-direction: row;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       flex-direction: column;
     }
   }
@@ -24,11 +24,11 @@
     flex: 2;
     min-width: 0;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-left: 81px;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       margin-top: 24px;
     }
 

@@ -118,7 +118,7 @@ export default class TokenInput extends PureComponent {
       isEqualCaseInsensitive(address, token.address),
     );
 
-    const tokenExchangeRate = tokenExchangeRates?.[existingToken.address] || 0;
+    const tokenExchangeRate = tokenExchangeRates?.[existingToken?.address] ?? 0;
     let currency, numberOfDecimals;
 
     if (hideConversion) {

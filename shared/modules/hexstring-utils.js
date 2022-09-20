@@ -23,7 +23,7 @@ export function isBurnAddress(address) {
  * provided this method will validate it has the proper checksum formatting.
  *
  * @param {string} possibleAddress - Input parameter to check against
- * @param {Object} [options] - options bag
+ * @param {object} [options] - options bag
  * @param {boolean} [options.allowNonPrefixed] - If true will first ensure '0x'
  *  is prepended to the string
  * @param {boolean} [options.mixedCaseUseChecksum] - If true will treat mixed
@@ -71,5 +71,5 @@ export function toChecksumHexAddress(address) {
     // closely mimics the original behavior.
     return hexPrefixed;
   }
-  return toChecksumAddress(addHexPrefix(address));
+  return toChecksumAddress(hexPrefixed);
 }
