@@ -1705,9 +1705,6 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
-  "install": {
-    "message": "Install"
-  },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
   },
@@ -1717,6 +1714,9 @@
   },
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
+  "install": {
+    "message": "Install"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
