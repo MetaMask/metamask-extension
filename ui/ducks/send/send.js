@@ -25,7 +25,6 @@ import {
 } from '../../pages/send/send.constants';
 
 import {
-  calcGasTotal,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
@@ -70,9 +69,7 @@ import {
   GAS_FEE_ESTIMATES_UPDATED,
 } from '../../store/actionConstants';
 import {
-  calcTokenAmount,
   getTokenAddressParam,
-  getTokenValueParam,
   getTokenMetadata,
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
@@ -112,6 +109,11 @@ import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -1729,8 +1731,10 @@ export function editExistingTransaction(assetType, transactionId) {
             ...draftTransactionInitialState.recipient,
             address: transaction.txParams.to,
             nickname:
-              getAddressBookEntryOrAccountName(state, transaction.txParams.to)
-                ?.name ?? '',
+              getAddressBookEntryOrAccountName(
+                state,
+                transaction.txParams.to,
+              ) ?? '',
           },
           amount: {
             ...draftTransactionInitialState.amount,
@@ -1754,8 +1758,7 @@ export function editExistingTransaction(assetType, transactionId) {
       const tokenAmountInDec =
         assetType === ASSET_TYPES.TOKEN ? getTokenValueParam(tokenData) : '1';
       const address = getTokenAddressParam(tokenData);
-      const nickname =
-        getAddressBookEntryOrAccountName(state, address)?.name ?? '';
+      const nickname = getAddressBookEntryOrAccountName(state, address) ?? '';
 
       const tokenAmountInHex = addHexPrefix(
         conversionUtil(tokenAmountInDec, {

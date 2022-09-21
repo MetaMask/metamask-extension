@@ -1,6 +1,7 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
   ASSET_TYPES,
@@ -12,7 +13,6 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { ETH, GWEI } from '../../helpers/constants/common';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   addGasBuffer,
   generateERC20TransferData,

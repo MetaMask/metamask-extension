@@ -2,8 +2,8 @@ import nock from 'nock';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({

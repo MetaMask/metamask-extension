@@ -1,10 +1,8 @@
+import { calcTokenValue } from '../../../shared/lib/swaps-utils';
+import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { decimalToHex } from '../../helpers/utils/conversions.util';
-import {
-  calcTokenValue,
-  getTokenAddressParam,
-} from '../../helpers/utils/token-util';
+import { getTokenAddressParam } from '../../helpers/utils/token-util';
 
 export function getCustomTxParamsData(
   data,

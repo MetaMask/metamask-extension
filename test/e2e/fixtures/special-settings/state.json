@@ -21,6 +21,7 @@
         "goerli": null,
         "kovan": null,
         "mainnet": null,
+        "sepolia": null,
         "rinkeby": 5570536
       }
     },
@@ -61,6 +62,9 @@
           "isShown": true
         },
         "14": {
+          "isShown": true
+        },
+        "15": {
           "isShown": true
         }
       }

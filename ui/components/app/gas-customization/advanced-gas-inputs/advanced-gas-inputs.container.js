@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import { getNetworkSupportsSettingGasFees } from '../../../../selectors/selectors';
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
+import {
+  decimalToHex,
+  hexWEIToDecGWEI,
+} from '../../../../../shared/lib/transactions-controller-utils';
 import AdvancedGasInputs from './advanced-gas-inputs.component';
 
 function convertGasPriceForInputs(gasPriceInHexWEI) {

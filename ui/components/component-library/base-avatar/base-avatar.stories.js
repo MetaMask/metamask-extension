@@ -159,6 +159,14 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     </BaseAvatar>
     <BaseAvatar
       {...args}
+      backgroundColor={COLORS.SEPOLIA}
+      borderColor={COLORS.SEPOLIA}
+      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
+    >
+      S
+    </BaseAvatar>
+    <BaseAvatar
+      {...args}
       backgroundColor={COLORS.ROPSTEN}
       borderColor={COLORS.ROPSTEN}
       color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
