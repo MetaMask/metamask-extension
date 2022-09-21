@@ -155,7 +155,6 @@ export default class AdvancedTab extends PureComponent {
     /**
      * so that we can restore same file again if we want to.
      * chrome blocks uploading same file twice.
-     *
      */
     event.target.value = '';
     try {
@@ -260,9 +259,10 @@ export default class AdvancedTab extends PureComponent {
                 const { fileName, data } = await this.props.backupUserData();
                 exportAsFile(fileName, data);
 
-                this._trackMetaMetricsEvent({
+                this.context.trackEvent({
                   event: 'User Data Exported',
                   category: 'Backup',
+                  properties: {},
                 });
               }}
             >
