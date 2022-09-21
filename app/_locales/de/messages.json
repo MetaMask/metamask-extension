@@ -2442,7 +2442,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Verwalten Sie Ihre „$1“-Konten und Vermögenswerte.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Ihre Saten speichern und auf Ihrem Gerät verwalten.",
