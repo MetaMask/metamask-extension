@@ -424,6 +424,9 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
   const isClientOpenStatus = () => {
+    console.log('Tab IDs: ', Object.keys(openMetamaskTabsIDs));
+    console.log('popup is open ', popupIsOpen);
+    console.log('notification is open ', notificationIsOpen);
     return (
       popupIsOpen ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
@@ -431,7 +434,46 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     );
   };
 
+  const resetStates = () => {
+    controller.accountTracker.resetState();
+    controller.txController.resetState();
+    controller.messageManager.resetState();
+    controller.personalMessageManager.resetState();
+    controller.decryptMessageManager.resetState();
+    controller.encryptionPublicKeyManager.resetState();
+    controller.typedMessageManager.resetState();
+    controller.swapsController.resetState();
+    controller.ensController.resetState();
+    controller.approvalController.clear();
+  };
+
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
+    /**
+     * Here we can know when the window is closed and clear the specific memstore we don't need anymore.
+     * We can also know if the client is open or not (i.e popup may be closed but fullscreen is still open)
+     * In this case we do nothing. We only clear states if popup is closed and there are no fullscreens open
+     *
+     * What we should clear:
+     *
+     * AccountTracker:
+     * TxController:
+     * TokenRatesController: Not sure how to update this as it's in controller repo
+     *    and it doesn't expose a method to clear store or setState.
+     * MessageManager:
+     * PersonalMessageManager:
+     * DecryptMessageManager:
+     * EncryptionPublicKeyManager:
+     * TypesMessageManager:
+     * SwapsController:
+     * EnsController:
+     * ApprovalController:
+     */
+    if (
+      popupIsOpen === false &&
+      Object.keys(openMetamaskTabsIDs).length === 0
+    ) {
+      resetStates();
+    }
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();

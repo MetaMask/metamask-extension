@@ -1059,6 +1059,18 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
+      // Previously in Memstore, now in Redux
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      TokenRatesController: this.tokenRatesController,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      DecryptMessageManager: this.decryptMessageManager.memStore,
+      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      SwapsController: this.swapsController.store,
+      EnsController: this.ensController.store,
+      ApprovalController: this.approvalController,
     });
 
     this.memStore = new ComposableObservableStore({
