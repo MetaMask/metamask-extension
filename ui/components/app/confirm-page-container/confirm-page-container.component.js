@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -22,6 +27,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -50,6 +56,8 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    accountBalance: PropTypes.string,
+    assetStandard: PropTypes.string,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -161,6 +169,8 @@ export default class ConfirmPageContainer extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
+      accountBalance,
+      assetStandard,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -198,23 +208,35 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          <ConfirmPageContainerHeader
-            showEdit={showEdit}
-            onEdit={() => onEdit()}
-            showAccountInHeader={showAccountInHeader}
-            accountAddress={fromAddress}
-          >
-            {hideSenderToRecipient ? null : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-              />
-            )}
-          </ConfirmPageContainerHeader>
+          {assetStandard === ERC20 ||
+          assetStandard === ERC721 ||
+          assetStandard === ERC1155 ? (
+            <NetworkAccountBalanceHeader
+              accountName={fromName}
+              accountBalance={accountBalance}
+              tokenName={nativeCurrency}
+              accountAddress={fromAddress}
+              networkName={networkName}
+            />
+          ) : (
+            <ConfirmPageContainerHeader
+              showEdit={showEdit}
+              onEdit={() => onEdit()}
+              showAccountInHeader={showAccountInHeader}
+              accountAddress={fromAddress}
+            >
+              {hideSenderToRecipient ? null : (
+                <SenderToRecipient
+                  senderName={fromName}
+                  senderAddress={fromAddress}
+                  recipientName={toName}
+                  recipientAddress={toAddress}
+                  recipientEns={toEns}
+                  recipientNickname={toNickname}
+                />
+              )}
+            </ConfirmPageContainerHeader>
+          )}
           <div>
             {showAddToAddressDialog && (
               <>
