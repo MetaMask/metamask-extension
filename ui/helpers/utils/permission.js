@@ -43,7 +43,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
         ]),
       );
     },
-    leftIcon: 'fas fa-door-open',
+    leftIcon: 'fas fa-eye',
     rightIcon: null,
   },
   [RestrictedMethods.snap_getBip32Entropy]: {
