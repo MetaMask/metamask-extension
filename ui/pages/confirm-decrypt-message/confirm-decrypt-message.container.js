@@ -15,6 +15,7 @@ import {
 } from '../../selectors';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 function mapStateToProps(state) {
@@ -40,6 +41,7 @@ function mapStateToProps(state) {
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    nativeCurrency: getNativeCurrency(state),
   };
 }
 
