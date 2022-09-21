@@ -14,8 +14,9 @@ import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
-// FOR DEV PURPOSE -- NEED TO BE UPDATED TO 3 BEFORE MERGING
-const DEFAULT_INTERVAL_MV3 = 0.2;
+// chrome alarms takes interval in minutes
+// unlike setIntervals and setTimeout which accepts the value in milliseconds.
+const DEFAULT_INTERVAL_MV3 = 3;
 
 /**
  * A controller that polls for token exchange
@@ -195,6 +196,7 @@ export default class DetectTokensController {
     this.detectNewTokens();
     if (isManifestV3) {
       chrome.alarms.clear(DETECT_TOKEN_ALARM);
+      chrome.alarms.onAlarm.removeListener(this.alarmListener);
     }
     this.interval = DEFAULT_INTERVAL;
   }
@@ -214,25 +216,25 @@ export default class DetectTokensController {
         (alarm) => alarm.name === DETECT_TOKEN_ALARM,
       );
       if (!hasAlarm) {
-        console.log('in rescheduleTokenDetectionPollingInMV3 ', hasAlarm);
         chrome.alarms.create(DETECT_TOKEN_ALARM, {
           delayInMinutes: DEFAULT_INTERVAL_MV3,
           periodInMinutes: DEFAULT_INTERVAL_MV3,
         });
       }
     });
-    chrome.alarms.onAlarm.addListener(() => {
-      chrome.alarms.getAll((alarms) => {
-        const hasAlarm = alarms.some(
-          (alarm) => alarm.name === DETECT_TOKEN_ALARM,
-        );
-        if (hasAlarm) {
-          console.log('in triggered', hasAlarm);
-          this.detectNewTokens();
-        }
-      });
-    });
+    chrome.alarms.onAlarm.addListener(this.alarmListener);
   }
+
+  alarmListener = () => {
+    chrome.alarms.getAll((alarms) => {
+      const hasAlarm = alarms.some(
+        (alarm) => alarm.name === DETECT_TOKEN_ALARM,
+      );
+      if (hasAlarm) {
+        this.detectNewTokens();
+      }
+    });
+  };
 
   getChainIdFromNetworkStore(network) {
     return network?.store.getState().provider.chainId;
