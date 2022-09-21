@@ -1,0 +1,78 @@
+.mm-button {
+  position: relative;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-default);
+  background-color: #dcdcdc;
+  vertical-align: middle;
+  user-select: none;
+
+  &:active,
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &--content {
+    height: 100%;
+  }
+
+  &-size--auto {
+    height: auto;
+    background-color: transparent;
+    border-radius: 0;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+
+  &-size--sm {
+    height: 2rem;
+  }
+
+  &-size--md {
+    height: 2.5rem;
+  }
+
+  &-size--lg {
+    height: 3rem;
+  }
+
+  &--loading {
+    cursor: not-allowed;
+  }
+
+  &--loading .mm-button--content {
+    color: transparent;
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.mm-button.box--display-block {
+  width: 100%;
+}
+
+
+// Temporary loading icon
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: spinner 1.2s linear infinite;
+}
+
+
+@keyframes spinner {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+

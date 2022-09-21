@@ -39,4 +39,8 @@
   &--size-xl {
     --size: 32px;
   }
+
+  &--size-auto {
+    --size: 1em;
+  }
 }

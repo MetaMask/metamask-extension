@@ -1,0 +1,45 @@
+.mm-button-link {
+  color: var(--color-primary-default);
+  background-color: transparent;
+  transition: opacity cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
+
+  &:hover {
+    color: var(--color-primary-default);
+    opacity: 0.5;
+  }
+
+  &:active {
+    color: var(--color-primary-default);
+    opacity: 0.5;
+  }
+
+  &--type-danger {
+    color: var(--color-error-default);
+
+    &:hover {
+      color: var(--color-error-default);
+      opacity: 0.5;
+    }
+
+    &:active {
+      color: var(--color-error-default);
+      opacity: 0.5;
+    }
+  }
+}
+
+
+.mm-button-link.mm-button--disabled {
+  &:hover {
+    color: var(--color-primary-default);
+    opacity: 0.3;
+  }
+
+  &:active {
+    opacity: 0.3;
+  }
+}
+
+.mm-button-link--type-danger.mm-button--disabled:hover {
+  color: var(--color-error-default);
+}

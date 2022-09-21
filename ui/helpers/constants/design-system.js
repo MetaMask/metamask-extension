@@ -170,6 +170,7 @@ export const TEXT = {
   BODY_MD: 'body-md',
   BODY_SM: 'body-sm',
   BODY_XS: 'body-xs',
+  INHERIT: 'inherit',
 };
 
 const NONE = 'none';
@@ -181,7 +182,20 @@ export const SIZES = {
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
+  AUTO: 'auto',
   NONE,
+};
+
+export const BUTTON_SIZES = {
+  AUTO: 'auto',
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+};
+
+export const BUTTON_TYPES = {
+  NORMAL: 'normal',
+  DANGER: 'danger',
 };
 
 export const BORDER_STYLE = {
