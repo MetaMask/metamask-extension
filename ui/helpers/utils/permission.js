@@ -32,6 +32,20 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: (t) => t('permission_notifications'),
     rightIcon: null,
   },
+  [RestrictedMethods.snap_getBip32PublicKey]: {
+    label: (t, _, permissionValue) => {
+      return permissionValue.caveats[0].value.map(({ path, curve }) =>
+        t('permission_viewBip32PublicKeys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+      );
+    },
+    leftIcon: 'fas fa-door-open',
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_getBip32Entropy]: {
     label: (t, _, permissionValue) => {
       return permissionValue.caveats[0].value.map(({ path, curve }) =>
