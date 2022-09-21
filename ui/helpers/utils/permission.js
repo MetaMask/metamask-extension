@@ -60,17 +60,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
-  [RestrictedMethods['snap_getBip44Entropy_*']]: {
-    label: (t, permissionName) => {
-      const coinType = permissionName.split('_').slice(-1);
-      return t('permission_manageBip44Keys', [
-        coinTypeToProtocolName(coinType) ||
-          `${coinType} (Unrecognized protocol)`,
-      ]);
-    },
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
-  },
   [RestrictedMethods.snap_manageState]: {
     label: (t) => t('permission_manageState'),
     leftIcon: 'fas fa-download',
