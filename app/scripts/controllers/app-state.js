@@ -210,7 +210,6 @@ export default class AppStateController extends EventEmitter {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      chrome.alarms.getAll((alarms) => console.log(alarms));
       chrome.alarms.onAlarm.addListener(() => {
         chrome.alarms.getAll((alarms) => {
           const hasAlarm = alarms.find(
