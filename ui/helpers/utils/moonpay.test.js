@@ -1,10 +1,4 @@
-import {
-  AVALANCHE_CHAIN_ID,
-  BSC_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  CELO_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { formatMoonpaySymbol } from './moonpay';
 
 describe('Moonpay Utils', () => {
@@ -21,18 +15,18 @@ describe('Moonpay Utils', () => {
     });
 
     it('should return the symbol in uppercase if chainId is different than Avalanche/BSC/Polygon', () => {
-      const result = formatMoonpaySymbol('ETH', MAINNET_CHAIN_ID);
+      const result = formatMoonpaySymbol('ETH', CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual('ETH');
-      const result2 = formatMoonpaySymbol('CELO', CELO_CHAIN_ID);
+      const result2 = formatMoonpaySymbol('CELO', CHAIN_IDS.CELO);
       expect(result2).toStrictEqual('CELO');
     });
 
     it('should return the symbol in uppercase with the network name if chainId is Avalanche/BSC/Polygon', () => {
-      const result = formatMoonpaySymbol('BNB', BSC_CHAIN_ID);
+      const result = formatMoonpaySymbol('BNB', CHAIN_IDS.BSC);
       expect(result).toStrictEqual('BNB_BSC');
-      const result2 = formatMoonpaySymbol('MATIC', POLYGON_CHAIN_ID);
+      const result2 = formatMoonpaySymbol('MATIC', CHAIN_IDS.POLYGON);
       expect(result2).toStrictEqual('MATIC_POLYGON');
-      const result3 = formatMoonpaySymbol('AVAX', AVALANCHE_CHAIN_ID);
+      const result3 = formatMoonpaySymbol('AVAX', CHAIN_IDS.AVALANCHE);
       expect(result3).toStrictEqual('AVAX_CCHAIN');
     });
   });

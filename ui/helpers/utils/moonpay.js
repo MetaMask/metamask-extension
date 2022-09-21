@@ -8,7 +8,7 @@ export const formatMoonpaySymbol = (symbol, chainId = CHAIN_IDS.MAINNET) => {
     return symbol;
   }
   let _symbol = symbol;
-  if (chainId === CHAIN_IDS.POLYGON || chainId === CHAIN_IDS.POLYGON) {
+  if (chainId === CHAIN_IDS.POLYGON || chainId === CHAIN_IDS.BSC) {
     _symbol = `${_symbol}_${BUYABLE_CHAINS_MAP?.[
       chainId
     ]?.network.toUpperCase()}`;
