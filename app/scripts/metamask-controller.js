@@ -163,6 +163,7 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
+import LocalStore from './lib/local-store';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -183,6 +184,8 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     this.defaultMaxListeners = 20;
+
+    this.localStore = new LocalStore();
 
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
@@ -1021,6 +1024,24 @@ export default class MetamaskController extends EventEmitter {
     // ensure isClientOpenAndUnlocked is updated when memState updates
     this.on('update', (memState) => this._onStateUpdate(memState));
 
+    /**
+     * All controllers in Memstore but not in store. They are not persisted.
+     * On chrome profile re-start, they will be re-initialized.
+     */
+    const resetOnRestartStore = {
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      TokenRatesController: this.tokenRatesController,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      DecryptMessageManager: this.decryptMessageManager.memStore,
+      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      SwapsController: this.swapsController.store,
+      EnsController: this.ensController.store,
+      ApprovalController: this.approvalController,
+    };
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
@@ -1048,21 +1069,14 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
+      ...resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
         NetworkController: this.networkController.store,
-        AccountTracker: this.accountTracker.store,
-        TxController: this.txController.memStore,
         CachedBalancesController: this.cachedBalancesController.store,
-        TokenRatesController: this.tokenRatesController,
-        MessageManager: this.messageManager.memStore,
-        PersonalMessageManager: this.personalMessageManager.memStore,
-        DecryptMessageManager: this.decryptMessageManager.memStore,
-        EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-        TypesMessageManager: this.typedMessageManager.memStore,
         KeyringController: this.keyringController.memStore,
         PreferencesController: this.preferencesController.store,
         MetaMetricsController: this.metaMetricsController.store,
@@ -1076,9 +1090,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
         BackupController: this.backupController,
-        SwapsController: this.swapsController.store,
-        EnsController: this.ensController.store,
-        ApprovalController: this.approvalController,
         AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
@@ -1089,9 +1100,29 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
+        ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
     });
+
+    // if this is the first time, clear the state of by calling these methods
+    const resetMethods = [
+      this.accountTracker.resetState,
+      this.txController.resetState,
+      this.messageManager.resetState,
+      this.personalMessageManager.resetState,
+      this.decryptMessageManager.resetState,
+      this.encryptionPublicKeyManager.resetState,
+      this.typedMessageManager.resetState,
+      this.swapsController.resetState,
+      this.ensController.resetState,
+      this.approvalController.clear.bind(this.approvalController),
+      // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
+    ];
+
+    if (globalThis.isFirstTimeProfileLoaded === true) {
+      this.resetStates(resetMethods);
+    }
 
     if (
       !this.isUnlocked() &&
@@ -1125,6 +1156,18 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+  }
+
+  resetStates(resetMethods) {
+    resetMethods.forEach((resetMethod) => {
+      try {
+        resetMethod();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    globalThis.isFirstTimeProfileLoaded = false;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
