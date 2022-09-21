@@ -412,6 +412,7 @@ export const createSwapsMockStore = () => {
             {
               uuid: 'uuid2',
               status: 'success',
+              cancellable: false,
               statusMetadata: {
                 cancellationFeeWei: 36777567771000,
                 cancellationReason: 'not_cancelled',
@@ -424,6 +425,7 @@ export const createSwapsMockStore = () => {
             {
               uuid: 'uuid2',
               status: 'pending',
+              cancellable: true,
               statusMetadata: {
                 cancellationFeeWei: 36777567771000,
                 cancellationReason: 'not_cancelled',
