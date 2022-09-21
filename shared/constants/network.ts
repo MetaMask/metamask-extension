@@ -52,9 +52,8 @@ type MoonPayChainSettings = {
     | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
   /**
    * We must also configure all possible onramp currencies we wish to support.
-   * This type matches 1 to 3 SupportedCurrencySymbol, joined by ','. It also
-   * matches 1 or 2 SupportedCurrencySymbol with a
-   * MoonPayNetworkAbbreviation joined by a '_', and concatenated with ','.
+   * This type matches either an array of SupportedCurrencySymbol or
+   * an array of SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
    */
   showOnlyCurrencies:
     | SupportedCurrencySymbol[]
