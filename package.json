@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.18.4",
+  "version": "10.19.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "dist": "yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
+    "build:icons": "node ui/components/component-library/icon/scripts/generate-icon-names.js && node ui/components/component-library/icon/scripts/generate-icon-scss.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/mv3-perf-stats/index.js",
@@ -126,7 +127,7 @@
     "@metamask/eth-ledger-bridge-keyring": "^0.13.0",
     "@metamask/eth-json-rpc-infura": "^7.0.0",
     "@metamask/eth-token-tracker": "^4.0.0",
-    "@metamask/etherscan-link": "^2.1.0",
+    "@metamask/etherscan-link": "^2.2.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^3.1.1",
     "@metamask/metamask-eth-abis": "^3.0.0",
@@ -187,6 +188,7 @@
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
     "immer": "^9.0.6",
+    "jest-junit": "^14.0.1",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",

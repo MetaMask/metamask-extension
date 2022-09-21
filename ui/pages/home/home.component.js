@@ -612,6 +612,7 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
+      shouldShowSeedPhraseReminder,
     } = this.props;
 
     if (forgottenPassword) {
@@ -658,7 +659,11 @@ export default class Home extends PureComponent {
               subHeader={
                 <Tooltip
                   position="bottom"
-                  open={!process.env.IN_TEST && showPortfolioTooltip}
+                  open={
+                    !process.env.IN_TEST &&
+                    !shouldShowSeedPhraseReminder &&
+                    showPortfolioTooltip
+                  }
                   interactive
                   theme="home__subheader-link--tooltip"
                   html={

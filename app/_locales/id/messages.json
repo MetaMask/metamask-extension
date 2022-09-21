@@ -3714,12 +3714,6 @@
   "tokenDetails": {
     "message": "Detail token"
   },
-  "tokenDetection": {
-    "message": "Deteksi token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Saat ini deteksi token tersedia di $1. $2"
-  },
   "tokenId": {
     "message": "ID token"
   },

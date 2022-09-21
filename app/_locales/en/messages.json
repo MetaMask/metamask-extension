@@ -1235,6 +1235,15 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "enhancedTokenDetection": {
+    "message": "Enhanced token detection"
+  },
+  "enhancedTokenDetectionAlertMessage": {
+    "message": "Enhanced token detection is currently available on $1. $2"
+  },
+  "enhancedTokenDetectionDescription": {
+    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -1526,7 +1535,7 @@
     "message": "Get Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
+    "message": "Get Ether from a faucet for the $1 network.",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1692,6 +1701,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "install": {
+    "message": "Install"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -2672,6 +2684,10 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_transactionInsight": {
+    "message": "Fetch and display transaction insights.",
+    "description": "The description for the `endowment:transaction-insight` permission"
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
@@ -3227,6 +3243,10 @@
     "message": "Added on $1 from $2",
     "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
+  "snapContent": {
+    "message": "This content is coming from $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
     "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
@@ -3256,6 +3276,12 @@
   },
   "snaps": {
     "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "Loading transaction insight..."
+  },
+  "snapsNoInsight": {
+    "message": "The snap didn't return any insight"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
@@ -3947,15 +3973,6 @@
   },
   "tokenDetails": {
     "message": "Token details"
-  },
-  "tokenDetection": {
-    "message": "Token detection"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Token detection is currently available on $1. $2"
-  },
-  "tokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
   "tokenFoundTitle": {
     "message": "1 new token found"

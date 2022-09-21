@@ -94,6 +94,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-infinity',
     rightIcon: null,
   },
+  [EndowmentPermissions['endowment:transaction-insight']]: {
+    label: (t) => t('permission_transactionInsight'),
+    leftIcon: 'fas fa-info',
+    rightIcon: null,
+  },
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: {
     label: (t, permissionName) =>

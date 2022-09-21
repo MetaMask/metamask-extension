@@ -9,6 +9,9 @@ import {
   isNetworkLoading,
   getTheme,
   getIsTestnet,
+  getCurrentChainId,
+  getShouldShowSeedPhraseReminder,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -45,7 +48,10 @@ function mapStateToProps(state) {
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
-    isTestnet: getIsTestnet(state),
+    isTestNet: getIsTestnet(state),
+    currentChainId: getCurrentChainId(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
   };
 }
 

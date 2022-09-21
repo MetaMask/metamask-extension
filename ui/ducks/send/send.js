@@ -1714,8 +1714,10 @@ export function editExistingTransaction(assetType, transactionId) {
             ...draftTransactionInitialState.recipient,
             address: transaction.txParams.to,
             nickname:
-              getAddressBookEntryOrAccountName(state, transaction.txParams.to)
-                ?.name ?? '',
+              getAddressBookEntryOrAccountName(
+                state,
+                transaction.txParams.to,
+              ) ?? '',
           },
           amount: {
             ...draftTransactionInitialState.amount,
@@ -1739,8 +1741,7 @@ export function editExistingTransaction(assetType, transactionId) {
       const tokenAmountInDec =
         assetType === ASSET_TYPES.TOKEN ? getTokenValueParam(tokenData) : '1';
       const address = getTokenAddressParam(tokenData);
-      const nickname =
-        getAddressBookEntryOrAccountName(state, address)?.name ?? '';
+      const nickname = getAddressBookEntryOrAccountName(state, address) ?? '';
 
       const tokenAmountInHex = addHexPrefix(
         conversionUtil(tokenAmountInDec, {

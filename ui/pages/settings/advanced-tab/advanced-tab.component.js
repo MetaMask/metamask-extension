@@ -827,9 +827,9 @@ export default class AdvancedTab extends PureComponent {
         data-testid="advanced-setting-token-detection"
       >
         <div className="settings-page__content-item">
-          <span>{t('tokenDetection')}</span>
+          <span>{t('enhancedTokenDetection')}</span>
           <div className="settings-page__content-description">
-            {t('tokenDetectionDescription')}
+            {t('enhancedTokenDetectionDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
