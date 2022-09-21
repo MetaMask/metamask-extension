@@ -392,7 +392,7 @@ export default class MetaMetricsController {
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
-      this._trackEventsAfterMetricsOptIn();
+      this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
 
