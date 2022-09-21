@@ -36,9 +36,9 @@ import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
-import TokenAllowance from '../token-allowance/token-allowance';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
@@ -158,17 +158,52 @@ export default function ConfirmApprove({
     parseStandardTokenTransactionData(transactionData);
   const isApprovalOrRejection = getTokenApprovedParam(parsedTransactionData);
 
-  return tokenSymbol === undefined && assetName === undefined ? (
-    <Loading />
-  ) : (
-    process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20 ? (
-      <TokenAllowance
-      origin={formattedOrigin}
-      siteImage={siteImage}
-      />
-    ) : (
+  if (tokenSymbol === undefined && assetName === undefined) {
+    return <Loading />;
+  }
+  if (process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20) {
+    return (
       <GasFeeContextProvider transaction={transaction}>
-        <ConfirmTransactionBase
+        <TransactionModalContextProvider>
+          <TokenAllowance
+            origin={formattedOrigin}
+            siteImage={siteImage}
+            showCustomizeGasModal={approveTransaction}
+            useNonceField={useNonceField}
+            currentCurrency={currentCurrency}
+            nativeCurrency={nativeCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
+            txData={transaction}
+            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+            supportsEIP1559V2={supportsEIP1559V2}
+            userAddress={userAddress}
+            tokenAddress={tokenAddress}
+            data={customData || transactionData}
+            isSetApproveForAll={isSetApproveForAll}
+            setApproveForAllArg={setApproveForAllArg}
+          />
+          {showCustomizeGasPopover && !supportsEIP1559V2 && (
+            <EditGasPopover
+              onClose={closeCustomizeGasPopover}
+              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              transaction={transaction}
+            />
+          )}
+          {supportsEIP1559V2 && (
+            <>
+              <EditGasFeePopover />
+              <AdvancedGasFeePopover />
+            </>
+          )}
+        </TransactionModalContextProvider>
+      </GasFeeContextProvider>
+    );
+  }
+  return (
+    <GasFeeContextProvider transaction={transaction}>
+         <ConfirmTransactionBase
           toAddress={toAddress}
           identiconAddress={toAddress}
           showAccountInHeader
@@ -285,8 +320,7 @@ export default function ConfirmApprove({
           customTxParamsData={customData}
           assetStandard={assetStandard}
         />
-      </GasFeeContextProvider>
-    )
+    </GasFeeContextProvider>
   );
 }
 
