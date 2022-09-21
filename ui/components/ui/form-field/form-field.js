@@ -43,7 +43,6 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
-  customSpendingCapText,
   maxButton,
 }) {
   return (
@@ -119,7 +118,6 @@ export default function FormField({
               'form-field__input--error': error,
               'form-field__input--warning': warning,
               'form-field__input--colour-value': coloredValue,
-              'form-field__input--max-button': maxButton,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -176,15 +174,6 @@ export default function FormField({
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}
-          </Typography>
-        )}
-        {customSpendingCapText && (
-          <Typography
-            color={COLORS.TEXT_DEFAULT}
-            variant={TYPOGRAPHY.H7}
-            className="form-field__custom-spending-cup-text"
-          >
-            {customSpendingCapText}
           </Typography>
         )}
       </Box>
@@ -302,18 +291,11 @@ FormField.propTypes = {
    */
   wrappingLabelProps: PropTypes.object,
   /**
-   * Custom spending cup description
-   */
-  customSpendingCapText: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
-  /**
-   * Max button inside input in CustomSpendingCap component
+   * Show max button inside the input field
    */
   maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Show colored value in the input field
+   * Show colored value inside the input field
    */
   coloredValue: PropTypes.bool,
 };

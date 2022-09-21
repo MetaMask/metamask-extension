@@ -86,11 +86,6 @@ export default function CustomSpendingCap({
         ])
       : t('inputLogicEmptyState');
 
-  const customSpendingCapMarginProps = {
-    marginBottom: 2,
-    marginRight: 0,
-  };
-
   return (
     <Box
       className="custom-spending-cap"
@@ -115,9 +110,6 @@ export default function CustomSpendingCap({
             autoFocus
             wrappingLabelProps={{ as: 'div' }}
             id="custom-spending-cap"
-            customSpendingCapText={
-              value ? customSpendingCapText : inputLogicEmptyStateText
-            }
             TooltipCustomComponent={
               <CustomSpendingCapTooltip
                 tooltipContentText={value ? chooseTooltipContentText : ''}
@@ -128,7 +120,7 @@ export default function CustomSpendingCap({
             titleText={t('customSpendingCap')}
             placeholder={t('enterANumber')}
             error={error}
-            coloredValue={value > currentTokenBalance}
+            coloredValue={value > currentTokenBalance || error}
             value={value}
             titleDetail={
               <button
@@ -147,7 +139,7 @@ export default function CustomSpendingCap({
                 {value > currentTokenBalance ? t('edit') : t('useDefault')}
               </button>
             }
-            titleDetailWrapperProps={customSpendingCapMarginProps}
+            titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
             maxButton={
               <button
                 className="custom-spending-cap__input--max-button"
@@ -162,6 +154,13 @@ export default function CustomSpendingCap({
               </button>
             }
           />
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+          >
+            {value ? customSpendingCapText : inputLogicEmptyStateText}
+          </Typography>
         </label>
       </Box>
     </Box>
@@ -169,8 +168,20 @@ export default function CustomSpendingCap({
 }
 
 CustomSpendingCap.propTypes = {
+  /**
+   * Displayed the token name currently tracked in description related to the input state
+   */
   tokenName: PropTypes.string,
+  /**
+   * The current token balance of the token
+   */
   currentTokenBalance: PropTypes.number,
+  /**
+   * The dapp suggested amount
+   */
   dappProposedValue: PropTypes.number,
+  /**
+   * onClick handler for the Edit link
+   */
   onEdit: PropTypes.func,
 };

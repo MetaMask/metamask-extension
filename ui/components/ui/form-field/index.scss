@@ -1,5 +1,4 @@
 .form-field {
-  margin-bottom: 20px;
 
   &__heading {
     display: flex;
@@ -66,18 +65,11 @@
 
     &--colour-value {
       color: var(--color-warning-default);
-    }
-
-    &--max-button {
       padding-inline-end: 60px;
     }
   }
 
   &__max-button {
     margin-top: -30px;
-  }
-
-  &__custom-spending-cup-text {
-    padding-top: 8px;
   }
 }
