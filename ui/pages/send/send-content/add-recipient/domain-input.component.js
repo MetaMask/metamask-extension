@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
-  getUdTlds,
   isValidENSDomainName,
   isValidUnstoppableDomainName,
 } from '../../../../helpers/utils/util';
@@ -77,15 +76,9 @@ export default class DomainInput extends Component {
     if (internalSearch) {
       return null;
     }
-    // checks temporary object for Tlds
-    // if no tlds calls the API and the set the UNS.state.tlds to the API results
-    if (this.udRequirements.tlds.length === 0) {
-      this.udRequirements.tlds = await getUdTlds();
-      updateUdTlds(this.udRequirements.tlds);
-    }
     // check if user input is a Valid Unstoppable Domain
     // if valid, calls prepareResolutionCall and resolves the Unstoppable Domain
-    if (await isValidUnstoppableDomainName(input, this.udRequirements.tlds)) {
+    if (await isValidUnstoppableDomainName(input)) {
       resetEnsResolution();
       prepareResolutionCall(input);
       resetEnsResolution(); 

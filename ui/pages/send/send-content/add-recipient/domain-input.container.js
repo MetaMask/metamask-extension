@@ -9,7 +9,6 @@ import {
   initializeUnsSlice,
   resetUnsResolution,
   prepareResolutionCall,
-  updateUdTlds,
 } from '../../../../ducks/uns';
 import DomainInput from './domain-input.component';
 // adding Uns functions to dispatch
@@ -24,6 +23,13 @@ function mapDispatchToProps(dispatch) {
       () => dispatch(resetDomainResolution()),
       300,
     ),
+<<<<<<< HEAD
+=======
+    initializeUnsSlice: () => dispatch(initializeUnsSlice()),
+    resetUnsResolution: debounce(() => dispatch(resetUnsResolution())),
+    initializeEnsSlice: () => dispatch(initializeEnsSlice()),
+    resetEnsResolution: debounce(() => dispatch(resetEnsResolution())),
+>>>>>>> 47095ebaa (swaps out API with new NPM package)
   };
 }
 
