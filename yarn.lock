@@ -5715,6 +5715,11 @@
     crypto-js "^4.1.1"
     elliptic "^6.5.4"
 
+"@unstoppabledomains/tldsresolverkeys@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@unstoppabledomains/tldsresolverkeys/-/tldsresolverkeys-1.0.0.tgz#84c77a1e1a706874bed59d5e153da4978ecb064c"
+  integrity sha512-g87iuTc1inW/bPqO2SnFvtRlM81Cb0s/hJplSXmDzLmbMG94o0UOlSbleRhzP3J5B/F1kb81JzSe4Y2MIOhEPQ==
+
 "@vue/compiler-core@3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.1.4.tgz#a3a74cf52e8f01af386d364ac8a099cbeb260424"

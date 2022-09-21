@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
+import { udTlds } from '@unstoppabledomains/tldsresolverkeys';
 import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -1360,17 +1361,14 @@ const slice = createSlice({
             tokens,
             tokenAddressList,
             isProbablyAnAssetContract,
-            udTlds,
           } = action.payload;
           // adds UD checks for Error Handling
           let validUDDomain = false;
-          if (udTlds !== undefined && udTlds !== null) {
-            udTlds.payload.forEach((tld) => {
-              if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
-                validUDDomain = true;
-              }
-            });
-          }
+          udTlds.forEach((tld) => {
+            if (state.recipientInput.toLowerCase().endsWith(`.${tld}`)) {
+              validUDDomain = true;
+            }
+          });
           let isValidDomain = true;
           if (!validUDDomain && !isValidENSDomainName(state.recipientInput)) {
             isValidDomain = false;
@@ -1938,7 +1936,6 @@ export function updateRecipientUserInput(userInput) {
           useTokenDetection,
           tokenAddressList,
           isProbablyAnAssetContract,
-          udTlds: state.UNS?.tlds,
         },
         resolve,
       );

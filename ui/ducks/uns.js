@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
 import Resolution from '@unstoppabledomains/resolution';
+import { udResolverKeys } from '@unstoppabledomains/tldsresolverkeys';
 import { isConfusing } from 'unicode-confusables';
 import { getCurrentChainId } from '../selectors';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
-import { getAndParseUdCurrencies } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
 import {
@@ -25,7 +25,6 @@ const initialState = {
   warning: null,
   network: null,
   domainName: null,
-  tlds: null,
 };
 
 export const unsInitialState = initialState;
@@ -40,7 +39,6 @@ const name = 'UNS';
  * @param {string} warning - contains warnings from resolution calls
  * @param {string} network - chain network
  * @param {string} domainName - contains the Unstoppable Domain name (blah.crypto)
- * @param {Array} tlds - contains the supported TLDs for Unstoppable Domains
  */
 const slice = createSlice({
   name,
@@ -100,10 +98,6 @@ const slice = createSlice({
       state.warning = null;
       state.error = null;
     },
-    // update Uns Tlds
-    updateUdTlds: (state, tlds) => {
-      state.tlds = tlds;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
@@ -117,13 +111,12 @@ const slice = createSlice({
 const { reducer, actions } = slice;
 export default reducer;
 
-const { unsLookup, enableUnsLookup, resetUnsResolution, updateUdTlds } =
-  actions;
+const { unsLookup, enableUnsLookup, resetUnsResolution } = actions;
 const SINGLE_CHAIN = 'SINGLE_CHAIN';
 const MULTI_CHAIN = 'MULTI_CHAIN';
 const NATIVE = 'NATIVE';
 
-export { resetUnsResolution, unsLookup, updateUdTlds };
+export { resetUnsResolution, unsLookup };
 // initialize slice of state
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
@@ -278,8 +271,9 @@ async function determineChainType(asset) {
   if (typeof asset === 'object') {
     return MULTI_CHAIN;
   }
-  const currencies = await getAndParseUdCurrencies();
-  return currencies.singleChain.includes(asset) ? SINGLE_CHAIN : MULTI_CHAIN;
+  return udResolverKeys.singleChain.includes(asset)
+    ? SINGLE_CHAIN
+    : MULTI_CHAIN;
 }
 // state getter methods
 export function getUnsResolution(state) {

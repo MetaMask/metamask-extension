@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill';
-import {
-  isValidUnstoppableDomainName,
-  getUdTlds,
-} from '../../../../ui/helpers/utils/util';
+import { udTlds } from '@unstoppabledomains/tldsresolverkeys';
+import { isValidUnstoppableDomainName } from '../../../../ui/helpers/utils/util';
 import resolveUnsToIpfsContentId from './resolver';
 /**
  * Initializes the Ipfs resolver
@@ -10,7 +8,6 @@ import resolveUnsToIpfsContentId from './resolver';
  * @param {Function} getIpfsGateway - the user selected IpfsGateway determined in MetaMask settings
  */
 export default async function setupUnsIpfsResolver({ getIpfsGateway }) {
-  const udTlds = await getUdTlds();
   const urlPatterns = udTlds.map((tld) => `*://*.${tld}/`);
   browser.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
     urls: urlPatterns,
@@ -34,10 +31,10 @@ export default async function setupUnsIpfsResolver({ getIpfsGateway }) {
       return;
     }
     const { hostname: name } = new URL(url);
-    if (!isValidUnstoppableDomainName(name, udTlds)) {
+    if (!isValidUnstoppableDomainName(name)) {
       return;
     }
-    attemptResolve({ tabId, name });
+    attemptResolve(tabId, name);
   }
   /**
    * Attempts to Resolve to IPFS
@@ -46,11 +43,10 @@ export default async function setupUnsIpfsResolver({ getIpfsGateway }) {
    * If an IPFS hash is returned by the resolution set the URL to the IPFS Gateway + the IPFS Hash
    * if no Ipfs hash, redirect users to the UD search page
    *
-   * @param {object} options0 - contains tabId, and domainName
-   * @param {string} options0.tabId - browser tab ID
-   * @param {stinrg} options0.domainName - UD domain name
+   * @param {string} tabId - browser tab ID
+   * @param {string} domainName - UD domain name
    */
-  async function attemptResolve({ tabId, domainName }) {
+  async function attemptResolve(tabId, domainName) {
     const ipfsGateway = getIpfsGateway();
     browser.tabs.update(tabId, { url: `unsloading.html` });
     let url = `http://unstoppabledomains.com/search?searchTerm=${domainName}`;
