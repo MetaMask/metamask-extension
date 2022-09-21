@@ -1306,7 +1306,6 @@ export function cancelTx(txData, _showLoadingIndication = true) {
             reject(error);
             return;
           }
-
           resolve();
         },
       );
