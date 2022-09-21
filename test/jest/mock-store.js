@@ -120,6 +120,7 @@ export const createSwapsMockStore = () => {
         },
       },
       fromToken: 'ETH',
+      toToken: 'USDC',
     },
     metamask: {
       networkDetails: {
@@ -314,10 +315,10 @@ export const createSwapsMockStore = () => {
         fetchParams: {
           metaData: {
             sourceTokenInfo: {
-              symbol: 'BAT',
+              symbol: 'ETH',
             },
             destinationTokenInfo: {
-              symbol: 'ETH',
+              symbol: 'USDC',
             },
           },
         },
