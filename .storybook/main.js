@@ -2,6 +2,8 @@ const path = require('path');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const { generateIconNames } = require('../development/generate-icon-names');
+
 module.exports = {
   stories: [
     '../ui/**/*.stories.js',
@@ -19,6 +21,14 @@ module.exports = {
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
+  // Sets env variables https://storybook.js.org/docs/react/configure/environment-variables/
+  env: async (config) => {
+    return {
+      ...config,
+      // Creates the icon names environment variable for the component-library/icon/icon.js component
+      ICON_NAMES: await generateIconNames(),
+    };
+  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {

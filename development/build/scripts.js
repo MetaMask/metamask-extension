@@ -29,6 +29,7 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
+const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -1018,7 +1019,9 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
 
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
+  const iconNames = await generateIconNames();
   return {
+    ICON_NAMES: iconNames,
     COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
@@ -1028,7 +1031,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    PORTFOLIO_URL: ENVIRONMENT.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
@@ -1036,6 +1038,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     ONBOARDING_V2: config.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
+    PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
     PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: config.SEGMENT_HOST,

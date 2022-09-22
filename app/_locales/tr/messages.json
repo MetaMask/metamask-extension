@@ -3714,12 +3714,6 @@
   "tokenDetails": {
     "message": "Token bilgileri"
   },
-  "tokenDetection": {
-    "message": "Token algılama"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
   "tokenId": {
     "message": "Token Kimliği"
   },

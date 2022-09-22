@@ -51,14 +51,14 @@ async function main() {
   const distFolder = 'dist/chrome';
   const backgroundFileList = [];
   const uiFileList = [];
+  const commonFileList = [];
 
   const files = await fs.readdir(distFolder);
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (CommonFileRegex.test(file)) {
       const stats = await fs.stat(`${distFolder}/${file}`);
-      backgroundFileList.push({ name: file, size: stats.size });
-      uiFileList.push({ name: file, size: stats.size });
+      commonFileList.push({ name: file, size: stats.size });
     } else if (
       backgroundFiles.includes(file) ||
       BackgroundFileRegex.test(file)
@@ -81,6 +81,11 @@ async function main() {
     0,
   );
 
+  const commonBundleSize = commonFileList.reduce(
+    (result, file) => result + file.size,
+    0,
+  );
+
   const result = {
     background: {
       name: 'background',
@@ -91,6 +96,11 @@ async function main() {
       name: 'ui',
       size: uiBundleSize,
       fileList: uiFileList,
+    },
+    common: {
+      name: 'common',
+      size: commonBundleSize,
+      fileList: commonFileList,
     },
   };
 
@@ -113,6 +123,7 @@ async function main() {
         {
           background: backgroundBundleSize,
           ui: uiBundleSize,
+          common: commonBundleSize,
           timestamp: new Date().getTime(),
         },
         null,
