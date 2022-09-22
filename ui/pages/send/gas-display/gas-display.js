@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -9,7 +10,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field/ledger-instruction-field';
-import TextField from '../../../components/ui/text-field';
 import Typography from '../../../components/ui/typography/typography';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
@@ -20,6 +20,8 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import DepositPopover from '../../../components/app/deposit-popover/deposit-popover';
+import { getProvider } from '../../../selectors';
+import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -27,11 +29,6 @@ export default function GasDisplay({
   primaryTotalTextOverride,
   secondaryTotalTextOverride,
   hexTransactionTotal,
-  useNonceField,
-  customNonceValue,
-  updateCustomNonce,
-  nextNonce,
-  getNextNonce,
   draftTransaction,
   useNativeCurrencyAsPrimaryCurrency,
   primaryTotalTextOverrideMaxAmount,
@@ -50,40 +47,15 @@ export default function GasDisplay({
   const t = useContext(I18nContext);
   const { estimateUsed, supportsEIP1559V2 } = useGasFeeContext();
   const [showDepositPopover, setShowDepositPopover] = useState(false);
+  const currentProvider = useSelector(getProvider);
   const networkName = NETWORK_TO_NAME_MAP[chainId];
-  const nonceField = useNonceField ? (
-    <div>
-      <div className="confirm-detail-row">
-        <div className="confirm-detail-row__label">
-          {t('nonceFieldHeading')}
-        </div>
-        <div className="custom-nonce-input">
-          <TextField
-            type="number"
-            min="0"
-            placeholder={
-              typeof nextNonce === 'number' ? nextNonce.toString() : null
-            }
-            onChange={({ target: { value } }) => {
-              if (!value.length || Number(value) < 0) {
-                updateCustomNonce('');
-              } else {
-                updateCustomNonce(String(Math.floor(value)));
-              }
-              getNextNonce();
-            }}
-            fullWidth
-            margin="dense"
-            value={customNonceValue || ''}
-          />
-        </div>
-      </div>
-    </div>
-  ) : null;
+  const isInsufficientTokenError =
+    draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const renderTotalMaxAmount = () => {
     if (
-      primaryTotalTextOverrideMaxAmount === undefined &&
-      secondaryTotalTextOverride === undefined
+      primaryTotalTextOverride === undefined &&
+      secondaryTotalTextOverride === undefined &&
+      draftTransaction.asset.type === 'NATIVE'
     ) {
       // Native Send
       return (
@@ -106,7 +78,8 @@ export default function GasDisplay({
   const renderTotalDetailTotal = () => {
     if (
       primaryTotalTextOverride === undefined &&
-      secondaryTotalTextOverride === undefined
+      secondaryTotalTextOverride === undefined &&
+      draftTransaction.asset.type === 'NATIVE'
     ) {
       return (
         <div className="confirm-page-container-content__total-value">
@@ -123,7 +96,7 @@ export default function GasDisplay({
       );
     }
     return useNativeCurrencyAsPrimaryCurrency
-      ? primaryTotalTextOverride
+      ? primaryTotalTextOverrideMaxAmount
       : secondaryTotalTextOverride;
   };
   const renderTotalDetailText = () => {
@@ -250,7 +223,7 @@ export default function GasDisplay({
           userAcknowledgedGasMissing={false}
           rows={[
             renderGasDetailsItem(),
-            !supportsEIP1559V2 && gasError && (
+            !supportsEIP1559V2 && (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
@@ -274,7 +247,6 @@ export default function GasDisplay({
             ),
           ]}
         />
-        {nonceField}
         {showLedgerSteps ? (
           <LedgerInstructionField
             showDataInstruction={Boolean(
@@ -283,16 +255,16 @@ export default function GasDisplay({
           />
         ) : null}
       </div>
-      {!supportsEIP1559V2 && gasError && (
+      {!supportsEIP1559V2 && (gasError || isInsufficientTokenError) && (
         <Box className="gas-display__warning-message">
           <div className="gas-display__confirm-approve-content__warning">
             <ActionableMessage
               message={
-                isBuyableChain ? (
+                isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,
-                      networkName,
+                      networkName ?? currentProvider.nickname,
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -316,9 +288,12 @@ export default function GasDisplay({
                 ) : (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
-                      nativeCurrency,
-                      networkName,
-                      '',
+                      draftTransaction.asset.details?.symbol ?? nativeCurrency,
+                      networkName ?? currentProvider.nickname,
+                      `${t('buyAsset', [
+                        draftTransaction.asset.details?.symbol ??
+                          nativeCurrency,
+                      ])}`,
                       <Button
                         type="inline"
                         className="gas-display__link"
@@ -345,11 +320,6 @@ GasDisplay.propTypes = {
   primaryTotalTextOverride: PropTypes.string,
   secondaryTotalTextOverride: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
-  useNonceField: PropTypes.bool,
-  customNonceValue: PropTypes.string,
-  updateCustomNonce: PropTypes.func,
-  nextNonce: PropTypes.number,
-  getNextNonce: PropTypes.func,
   draftTransaction: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   primaryTotalTextOverrideMaxAmount: PropTypes.string,

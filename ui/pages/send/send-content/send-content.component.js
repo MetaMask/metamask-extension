@@ -10,7 +10,12 @@ import {
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import { hexWEIToDecETH } from '../../../helpers/utils/conversions.util';
 import GasDisplay from '../gas-display';
@@ -100,7 +105,20 @@ export default class SendContent extends Component {
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';
     const hideAddContactDialog = recipient.warning === 'loading';
-    const title = '';
+    console.log(draftTransaction);
+
+    let title;
+    if (
+      draftTransaction?.asset.details?.standard === ERC721 ||
+      draftTransaction?.asset.details?.standard === ERC1155
+    ) {
+      title = draftTransaction?.asset.details?.name;
+    } else if (draftTransaction?.asset.details?.standard === ERC20) {
+      title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
+        draftTransaction?.asset.details?.symbol
+      }`;
+    }
+
     const ethTransactionTotalMaxAmount = Number(
       hexWEIToDecETH(hexMaximumTransactionFee),
     );
