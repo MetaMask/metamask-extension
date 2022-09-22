@@ -226,7 +226,7 @@ export async function swapUdOnTokenChange(unsName, asset) {
  * @param {string} unsName - inputted Unstoppable Domain Name
  * @param {string} symbol - inputted token symbol
  */
-async function resolveSingleChainUns(unsName, symbol) {
+export async function resolveSingleChainUns(unsName, symbol) {
   const resolution = {};
   const udResolutionInstance = new Resolution();
   resolution.unsName = unsName;
@@ -248,7 +248,7 @@ async function resolveSingleChainUns(unsName, symbol) {
  * @param {string} symbol - inputted token symbol
  * @param {string} version - inputted token version
  */
-async function resolveMultiChainUNS(unsName, symbol, version) {
+export async function resolveMultiChainUNS(unsName, symbol, version) {
   const udResolutionInstance = new Resolution();
   const resolution = {};
   resolution.unsName = unsName;
@@ -267,7 +267,7 @@ async function resolveMultiChainUNS(unsName, symbol, version) {
  *
  * @param {object || string} asset - token/currency
  */
-async function determineChainType(asset) {
+export async function determineChainType(asset) {
   if (typeof asset === 'object') {
     return MULTI_CHAIN;
   }
