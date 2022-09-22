@@ -1680,7 +1680,8 @@
     "message": "μάθε περισσότερα"
   },
   "learnMoreAboutGas": {
-    "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
+    "message": "Θέλετε να $1 για το τέλος συναλλαγής;",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Μάθε περισσότερα"

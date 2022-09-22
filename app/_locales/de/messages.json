@@ -1666,7 +1666,8 @@
     "message": "Mehr erfahren"
   },
   "learnMoreAboutGas": {
-    "message": "Wollen Sie $1 über Gas?"
+    "message": "Wollen Sie $1 über Gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Mehr erfahren"

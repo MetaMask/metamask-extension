@@ -1390,7 +1390,8 @@
     "message": "查看更多"
   },
   "learnMoreAboutGas": {
-    "message": "想要有关燃料$1？"
+    "message": "想要有关燃料$1？",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "查看更多"

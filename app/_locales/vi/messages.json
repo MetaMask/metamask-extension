@@ -1680,7 +1680,8 @@
     "message": "tìm hiểu thêm"
   },
   "learnMoreAboutGas": {
-    "message": "Muốn $1 về gas?"
+    "message": "Muốn $1 về gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Tìm hiểu thêm"

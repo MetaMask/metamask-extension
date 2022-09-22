@@ -1680,7 +1680,8 @@
     "message": "mempelajari"
   },
   "learnMoreAboutGas": {
-    "message": "Ingin $1 seputar gas?"
+    "message": "Ingin $1 seputar gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Pelajari selengkapnya"

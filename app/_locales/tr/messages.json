@@ -1680,7 +1680,8 @@
     "message": "daha fazla bilgi"
   },
   "learnMoreAboutGas": {
-    "message": "Gaz hakkında $1 istiyor musunuz?"
+    "message": "Gaz hakkında $1 istiyor musunuz?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Daha fazla bilgi"

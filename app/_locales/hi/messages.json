@@ -1680,7 +1680,8 @@
     "message": "अधिक जानें"
   },
   "learnMoreAboutGas": {
-    "message": "गैस के बारे में $1 चाहते हैं?"
+    "message": "गैस के बारे में $1 चाहते हैं?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "अधिक जानें"

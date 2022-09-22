@@ -1680,7 +1680,8 @@
     "message": "matuto pa"
   },
   "learnMoreAboutGas": {
-    "message": "Gusto mo bang $1 ang tungkol sa gas?"
+    "message": "Gusto mo bang $1 ang tungkol sa gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Matuto pa"

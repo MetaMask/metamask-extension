@@ -1680,7 +1680,8 @@
     "message": "詳細"
   },
   "learnMoreAboutGas": {
-    "message": "ガスについて$1しますか?"
+    "message": "ガスについて$1しますか?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "詳細"

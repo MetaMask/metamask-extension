@@ -1680,7 +1680,8 @@
     "message": "подробнее"
   },
   "learnMoreAboutGas": {
-    "message": "Хотите $1 о газе?"
+    "message": "Хотите $1 о газе?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Подробнее"

@@ -1680,7 +1680,8 @@
     "message": "Más información"
   },
   "learnMoreAboutGas": {
-    "message": "¿Quiere $1 sobre el gas?"
+    "message": "¿Quiere $1 sobre el gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Más información"
