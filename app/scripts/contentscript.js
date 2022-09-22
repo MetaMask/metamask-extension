@@ -211,12 +211,14 @@ function timeout(ms) {
 
 const setupExtensionStreams = async () => {
   /**
-   * There might be a chrome bug where the Port is not made immediately
-   * available upon runtime.connect. This timeout should be temporary workaround
-   * which delays browser.runtime.connect to allow onConnect listeners to be set up.
+   * There appears to be a chrome bug where the disconnect event gets called when
+   * chrome.runtime.connect is called and the port is not made immediately available.
+   * This timeout should be temporary workaround which delays browser.runtime.connect
+   * to allow onConnect listeners to be set up.
    *
-   * "Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist."
-   * still appears, but it shows less frequently with this timeout.
+   * The error we are preventing, "Unchecked runtime.lastError: Could not establish connection.
+   * Receiving end does not exist." still occurs, but it shows less frequently with this timeout.
+   * The application continues to work as expected despite this error.
    *
    * @see {@link https://stackoverflow.com/a/54686484/4053142}
    */
