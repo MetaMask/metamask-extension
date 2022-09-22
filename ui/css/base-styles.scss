@@ -31,16 +31,14 @@ html {
 
 /*
   This error class is used in the following files still:
-  /ui/pages/create-account/connect-hardware/index.js
   /ui/pages/create-account/import-account/json.js
   /ui/pages/create-account/import-account/private-key.js
-  /ui/pages/first-time-flow/create-password/import-with-seed-phrase/import-with-seed-phrase.component.js
-  /ui/pages/keychains/restore-vault.js
 */
 .error {
   color: var(--color-error-default);
   margin-top: 3px;
   margin-bottom: 9px;
+  overflow-wrap: anywhere;
 }
 
 /* stylelint-disable */
