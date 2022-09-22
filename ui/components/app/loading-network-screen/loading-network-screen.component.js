@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import LoadingScreen from '../../ui/loading-screen';
 import { SECOND } from '../../../../shared/constants/time';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -38,26 +39,24 @@ export default class LoadingNetworkScreen extends PureComponent {
     }
     const { provider, providerId } = this.props;
     const providerName = provider.type;
+    const { t } = this.context;
 
-    let name;
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet');
-    } else if (providerName === 'ropsten') {
-      name = this.context.t('connectingToRopsten');
-    } else if (providerName === 'kovan') {
-      name = this.context.t('connectingToKovan');
-    } else if (providerName === 'rinkeby') {
-      name = this.context.t('connectingToRinkeby');
-    } else if (providerName === 'goerli') {
-      name = this.context.t('connectingToGoerli');
-    } else if (providerName === 'sepolia') {
-      name = this.context.t('connectingToSepolia');
-    } else {
-      name = this.context.t('connectingTo', [providerId]);
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('connectingToMainnet');
+      case NETWORK_TYPES.ROPSTEN:
+        return t('connectingToRopsten');
+      case NETWORK_TYPES.KOVAN:
+        return t('connectingToKovan');
+      case NETWORK_TYPES.RINKEBY:
+        return t('connectingToRinkeby');
+      case NETWORK_TYPES.GOERLI:
+        return t('connectingToGoerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('connectingToSepolia');
+      default:
+        return t('connectingTo', [providerId]);
     }
-
-    return name;
   };
 
   renderErrorScreenContent = () => {

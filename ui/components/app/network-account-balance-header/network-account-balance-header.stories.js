@@ -12,7 +12,7 @@ export default {
       control: { type: 'text' },
     },
     accountBalance: {
-      control: { type: 'number' },
+      control: { type: 'text' },
     },
     tokenName: {
       control: { type: 'text' },
@@ -24,7 +24,7 @@ export default {
   args: {
     networkName: 'Ethereum Network',
     accountName: 'Account 1',
-    accountBalance: 200.12,
+    accountBalance: '200.12',
     tokenName: 'DAI',
     accountAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
   },
