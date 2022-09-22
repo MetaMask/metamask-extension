@@ -74,7 +74,17 @@ async function defineAndRunBuildTasks() {
 
   // build lavamoat runtime file
   await lavapack.buildRuntime({
-    scuttle: ['getComputedStyle', 'addEventListener', 'removeEventListener'],
+    scuttle: [
+      'getComputedStyle',
+      'addEventListener',
+      'removeEventListener',
+      'ShadowRoot',
+      'HTMLElement',
+      'Element',
+      'pageXOffset',
+      'pageYOffset',
+      'visualViewport',
+    ],
   });
 
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
