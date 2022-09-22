@@ -15,7 +15,6 @@ import {
   ethErrors,
 } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
-import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -78,7 +77,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -1866,6 +1868,10 @@ export default class MetamaskController extends EventEmitter {
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:remove',
+      ),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),

@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "前回の接続"
   },
-  "learmMoreAboutGas": {
-    "message": "ガスについて$1しますか?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1の方法を学ぶ",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "詳細"
+  },
+  "learnMoreAboutGas": {
+    "message": "ガスについて$1しますか?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "詳細"

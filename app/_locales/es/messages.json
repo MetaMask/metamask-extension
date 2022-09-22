@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "learmMoreAboutGas": {
-    "message": "¿Quiere $1 sobre el gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Aprenda cómo $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "Más información"
+  },
+  "learnMoreAboutGas": {
+    "message": "¿Quiere $1 sobre el gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Más información"
