@@ -49,6 +49,8 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import {
   SnapController,
   IframeExecutionService,
+  createMultiChainMiddleware,
+  MultiChainController,
 } from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
@@ -702,6 +704,21 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapController,
       messenger: snapControllerMessenger,
       featureFlags: { dappsCanUpdateSnaps: true },
+    });
+
+    this.multiChainController = new MultiChainController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'MultiChainController',
+        allowedActions: [
+          `${this.permissionController.name}:getPermissions`,
+          `${this.snapController.name}:getAll`,
+          `${this.snapController.name}:handleRequest`,
+          `${this.snapController.name}:onSessionOpen`,
+          `${this.snapController.name}:onSessionClose`,
+        ],
+      }),
+      notify: console.log,
+      state: initState.MultiChainController,
     });
 
     this.notificationController = new NotificationController({
@@ -3616,6 +3633,17 @@ export default class MetamaskController extends EventEmitter {
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    engine.push(
+      createMultiChainMiddleware({
+        onConnect: this.multiChainController.onConnect.bind(
+          this.multiChainController,
+        ),
+        onRequest: this.multiChainController.onRequest.bind(
+          this.multiChainController,
+        ),
+      }),
+    );
 
     engine.push(
       createRPCMethodTrackingMiddleware({
