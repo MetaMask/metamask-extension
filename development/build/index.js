@@ -88,6 +88,10 @@ async function defineAndRunBuildTasks() {
       'Set',
       'Object',
       'sentry',
+      'harden',
+      'console',
+      'eval',
+      'Function',
     ],
   });
 
