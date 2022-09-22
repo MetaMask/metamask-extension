@@ -1,6 +1,6 @@
+const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
 const { BuildType } = require('../lib/build-type');
-const {readFileSync, writeFileSync} = require('fs');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
 /**
