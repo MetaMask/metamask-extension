@@ -1160,7 +1160,7 @@ export default class MetamaskController extends EventEmitter {
           console.log('Was the login token found? ', loginToken);
           if (loginToken) {
             console.log(`Attempting to login using loginToken: ${loginToken}`);
-            this.keyringController.submitEncryptedKey(loginToken);
+            this.keyringController.submitEncryptionKey(loginToken);
           }
         });
       }
