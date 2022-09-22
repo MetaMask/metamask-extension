@@ -1887,6 +1887,14 @@
       "comment_id": 1245803622,
       "created_at": "2022-09-13T18:30:41Z",
       "repoId": 42009758
+    },
+    {
+      "id": 9363547,
+      "name": "Andrulko",
+      "pullRequestNo": 15910,
+      "comment_id": 1255324821,
+      "created_at": "2022-09-22T17:20:41Z",
+      "repoId": 42009758
     }
   ]
 }
