@@ -223,7 +223,7 @@ const setupExtensionStreams = async () => {
    */
   await timeout(ARBITRARY_CONNECT_EXT_DELAY);
 
-  extensionPort = await browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
