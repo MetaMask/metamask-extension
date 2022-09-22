@@ -1045,6 +1045,9 @@ describe('MetaMaskController', function () {
       nock('https://cdn.jsdelivr.net')
         .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
         .reply(200, {});
+      nock('https://cdn.jsdelivr.net')
+        .get('gh/phishfort/phishfort-lists@master/blacklists/hotlist.json')
+        .reply(200, {});
 
       const phishingMessageSender = {
         url: 'http://myethereumwalletntw.com',
