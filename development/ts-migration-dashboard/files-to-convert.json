@@ -122,6 +122,7 @@
   "app/scripts/lib/typed-message-manager.test.js",
   "app/scripts/lib/util.js",
   "app/scripts/lib/util.test.js",
+  "app/scripts/lockdown-more.js",
   "app/scripts/lockdown-run.js",
   "app/scripts/metamask-controller.js",
   "app/scripts/metamask-controller.test.js",
