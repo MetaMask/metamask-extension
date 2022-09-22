@@ -35,6 +35,7 @@
         "globalthis.js",
         "lockdown-install.js",
         "lockdown-run.js",
+        "lockdown-more.js",
         "contentscript.js"
       ],
       "run_at": "document_start",
