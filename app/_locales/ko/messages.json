@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "learmMoreAboutGas": {
-    "message": "가스에 대해 $1하시겠습니까?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1하는 방법 알아보기",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "자세히 알아보기"
+  },
+  "learnMoreAboutGas": {
+    "message": "가스에 대해 $1하시겠습니까?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "자세히 알아보기"

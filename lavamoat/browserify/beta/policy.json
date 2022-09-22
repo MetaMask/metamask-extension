@@ -2347,11 +2347,34 @@
     },
     "@keystonehq/bc-ur-registry-eth": {
       "packages": {
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
         "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "@keystonehq/bc-ur-registry-eth>hdkey": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "uuid": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@ethereumjs/util": {
+      "packages": {
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -2359,9 +2382,15 @@
         "define": true
       },
       "packages": {
+        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": true,
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
         "ethereumjs-wallet>bs58check": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -2381,8 +2410,8 @@
     "@keystonehq/metamask-airgapped-keyring": {
       "packages": {
         "@ethereumjs/tx": true,
+        "@keystonehq/bc-ur-registry-eth": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": true,
         "browserify>buffer": true,
         "browserify>events": true,
@@ -2392,37 +2421,18 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
       "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
         "@keystonehq/bc-ur-registry-eth>hdkey": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "uuid": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx": {
-      "packages": {
-        "@ethereumjs/common": true,
-        "browserify>buffer": true,
-        "ethereumjs-util": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": {
-      "packages": {
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
-        "@keystonehq/bc-ur-registry-eth>hdkey": true,
-        "browserify>buffer": true,
-        "ethereumjs-util": true,
-        "uuid": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": {
-      "packages": {
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
-        "@keystonehq/bc-ur-registry-eth>hdkey": true,
-        "browserify>buffer": true,
-        "ethereumjs-util": true,
-        "uuid": true
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": {
@@ -3312,6 +3322,20 @@
         "browserify>util": true,
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4324,13 +4348,8 @@
     },
     "enzyme>is-regex": {
       "packages": {
-        "enzyme>is-regex>has-tostringtag": true,
+        "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true
-      }
-    },
-    "enzyme>is-regex>has-tostringtag": {
-      "packages": {
-        "string.prototype.matchall>has-symbols": true
       }
     },
     "enzyme>object-inspect": {
@@ -4340,6 +4359,12 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "enzyme>object-is": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true
       }
     },
     "eslint>optionator>fast-levenshtein": {
@@ -4597,15 +4622,39 @@
         "txData.type": true
       },
       "packages": {
-        "@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "browserify>events": true,
+        "eth-lattice-keyring>@ethereumjs/common": true,
+        "eth-lattice-keyring>@ethereumjs/tx": true,
         "eth-lattice-keyring>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk": true,
         "eth-lattice-keyring>rlp": true,
         "eth-lattice-keyring>secp256k1": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/tx": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
         "ethereumjs-util": true
       }
     },
@@ -4626,12 +4675,12 @@
       },
       "packages": {
         "3box>ethers>elliptic": true,
-        "@ethereumjs/common": true,
         "@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
@@ -4646,6 +4695,30 @@
         "ethers>@ethersproject/keccak256>js-sha3": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "lodash": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx>@ethereumjs/common": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "ethereumjs-util": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
@@ -4928,7 +5001,6 @@
         "ethereumjs-util>bn.js": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>rlp": true
       }
     },
@@ -5043,13 +5115,6 @@
     "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
         "3box>ethers>elliptic": true
-      }
-    },
-    "ethereumjs-util>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -5701,6 +5766,11 @@
         "browserify>url": true
       }
     },
+    "koa>is-generator-function>has-tostringtag": {
+      "packages": {
+        "string.prototype.matchall>has-symbols": true
+      }
+    },
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
@@ -5813,9 +5883,15 @@
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
+    "nock>deep-equal>is-arguments": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
     "nock>deep-equal>is-date-object": {
       "packages": {
-        "enzyme>is-regex>has-tostringtag": true
+        "koa>is-generator-function>has-tostringtag": true
       }
     },
     "nock>qs": {

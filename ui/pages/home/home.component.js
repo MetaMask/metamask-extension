@@ -715,7 +715,10 @@ export default class Home extends PureComponent {
                     }}
                   >
                     <IconChart />
-                    <div className="home__subheader-link--text">
+                    <div
+                      className="home__subheader-link--text"
+                      data-testid="home__portfolio-site"
+                    >
                       {t('portfolioSite')}
                     </div>
                   </div>

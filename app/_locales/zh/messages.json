@@ -1675,15 +1675,16 @@
   "lastConnected": {
     "message": "最后连接"
   },
-  "learmMoreAboutGas": {
-    "message": "想要 $1 有关燃料的相关信息吗？"
-  },
   "learnCancelSpeeedup": {
     "message": "学习如何 $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "了解更多"
+  },
+  "learnMoreAboutGas": {
+    "message": "想要 $1 有关燃料的相关信息吗？",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "了解更多"

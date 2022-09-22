@@ -1821,15 +1821,16 @@
   "lastConnected": {
     "message": "Last connected"
   },
-  "learmMoreAboutGas": {
-    "message": "Want to $1 about gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "learn more"
+  },
+  "learnMoreAboutGas": {
+    "message": "Want to $1 about gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
