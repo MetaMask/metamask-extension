@@ -11,10 +11,11 @@ let resolution = {};
 const SINGLE_CHAIN = 'SINGLE_CHAIN';
 const MULTI_CHAIN = 'MULTI_CHAIN';
 describe('Unstoppable Domains Tests', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     nock.enableNetConnect();
   });
   describe('UNS Supported TLDs', () => {
+    jest.setTimeout(30000);
     // Valid Domain TLDs
     it('should determine a valid .crypto Unstoppable Domain', async () => {
       expect(
