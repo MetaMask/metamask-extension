@@ -424,9 +424,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
   const isClientOpenStatus = () => {
-    console.log('Tab IDs: ', Object.keys(openMetamaskTabsIDs));
-    console.log('popup is open ', popupIsOpen);
-    console.log('notification is open ', notificationIsOpen);
     return (
       popupIsOpen ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
