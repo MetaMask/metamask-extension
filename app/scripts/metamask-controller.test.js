@@ -1042,6 +1042,10 @@ describe('MetaMaskController', function () {
     });
 
     it('sets up phishing stream for untrusted communication', async function () {
+      nock('https://cdn.jsdelivr.net')
+        .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
+        .reply(200, {});
+
       const phishingMessageSender = {
         url: 'http://myethereumwalletntw.com',
         tab: {},
