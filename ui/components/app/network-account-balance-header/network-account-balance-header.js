@@ -9,6 +9,7 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
@@ -37,7 +38,6 @@ export default function NetworkAccountBalanceHeader({
         flexDirection={FLEX_DIRECTION.ROW}
         alignItems={ALIGN_ITEMS.CENTER}
         gap={2}
-        marginRight={5}
       >
         <Box
           display={DISPLAY.FLEX}
@@ -59,7 +59,7 @@ export default function NetworkAccountBalanceHeader({
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
           <Typography
-            variant={TYPOGRAPHY.H7}
+            variant={TYPOGRAPHY.H6}
             color={COLORS.TEXT_ALTERNATIVE}
             marginBottom={0}
           >
@@ -82,7 +82,7 @@ export default function NetworkAccountBalanceHeader({
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TYPOGRAPHY.H6}
           color={COLORS.TEXT_ALTERNATIVE}
           marginBottom={0}
         >
@@ -94,6 +94,7 @@ export default function NetworkAccountBalanceHeader({
           color={COLORS.TEXT_DEFAULT}
           fontWeight={FONT_WEIGHT.BOLD}
           marginTop={0}
+          align={TEXT_ALIGN.END}
         >
           {accountBalance} {tokenName}
         </Typography>
@@ -105,7 +106,7 @@ export default function NetworkAccountBalanceHeader({
 NetworkAccountBalanceHeader.propTypes = {
   networkName: PropTypes.string,
   accountName: PropTypes.string,
-  accountBalance: PropTypes.number,
+  accountBalance: PropTypes.string,
   tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
 };

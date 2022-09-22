@@ -4,6 +4,7 @@ import {
   getAddressBookEntry,
   getIsBuyableChain,
   getNetworkIdentifier,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
@@ -13,6 +14,9 @@ function mapStateToProps(state, ownProps) {
   const isBuyableChain = getIsBuyableChain(state);
   const contact = getAddressBookEntry(state, to);
   const networkIdentifier = getNetworkIdentifier(state);
+  const defaultToken = getSwapsDefaultToken(state);
+  const accountBalance = defaultToken.string;
+
   return {
     isBuyableChain,
     contact,
@@ -22,6 +26,7 @@ function mapStateToProps(state, ownProps) {
       .includes(to),
     to,
     networkIdentifier,
+    accountBalance,
   };
 }
 
