@@ -98,12 +98,9 @@ describe('Test Snap Notification', function () {
 
         // look for the correct text in notifications (via xpath)
         const notificationResultMessage = await driver.findElement(
-          '.notifications__item__details__message',
+          './/*[@id="app-content"]/div/div[3]/div/div[2]/div[2]/div[2]/div/div[2]/div[1]/div[2]/div[2]/span[2]-settings-card__version',
         );
-        assert.equal(
-          await notificationResultMessage.getText(),
-          'TEST INAPP NOTIFICATION',
-        );
+        assert.equal(await notificationResultMessage.getText(), 'v2.0.0');
       },
     );
   });
