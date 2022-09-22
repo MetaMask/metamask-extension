@@ -120,7 +120,7 @@ export function isValidENSDomainName(address) {
  * @param {string} domainInput - inputted Unstoppable Domain Name
  */
 export async function isValidUnstoppableDomainName(domainInput) {
-  if (domainInput.length > 1) {
+  if (domainInput.length > 1 && domainInput.includes('.')) {
     const udResolutionInstance = new Resolution();
     const isValidUD = await udResolutionInstance.isSupportedDomain(domainInput);
     return isValidUD;

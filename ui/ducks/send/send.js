@@ -2043,50 +2043,48 @@ export function updateSendAsset(
        * updates error messaging if necessary
        * dispatches the new resolved address to the transaction state
        */
-      if (state.UNS) {
-        if (
-          state.UNS.resolution ===
-            state.send.draftTransactions[state.send.currentTransactionUUID]
-              .recipient.address &&
-          state.UNS.domainName
-        ) {
-          let unsError = null;
-          const resolution = await swapUdOnTokenChange(
-            state.UNS.domainName,
-            state.metamask.provider?.ticker ?? 'ETH',
-          );
-          if (resolution.error) {
-            if (
-              resolution.error === 'UnspecifiedCurrency' ||
-              resolution.error === 'RecordNotFound'
-            ) {
-              unsError = UNS_CURRENCY_SPEC_ERROR;
-            } else if (resolution.error === 'UnsupportedCurrency') {
-              unsError = UNS_CURRENCY_ERROR;
-            } else {
-              unsError = UNS_UNKNOWN_ERROR;
-            }
-            await dispatch(
-              actions.updateAsset({
-                asset: {
-                  type,
-                  details: null,
-                  balance: account.balance,
-                  error: unsError,
-                },
-                initialAssetSet,
-              }),
-            );
-            throw new Error('No address associated with this token');
+      if (
+        state.UNS?.resolution ===
+          state.send.draftTransactions[state.send.currentTransactionUUID]
+            .recipient.address &&
+        state.UNS.domainName
+      ) {
+        let unsError = null;
+        const resolution = await swapUdOnTokenChange(
+          state.UNS.domainName,
+          state.metamask.provider?.ticker ?? 'ETH',
+        );
+        if (resolution.error) {
+          if (
+            resolution.error === 'UnspecifiedCurrency' ||
+            resolution.error === 'RecordNotFound'
+          ) {
+            unsError = UNS_CURRENCY_SPEC_ERROR;
+          } else if (resolution.error === 'UnsupportedCurrency') {
+            unsError = UNS_CURRENCY_ERROR;
           } else {
-            dispatch(unsLookup(resolution));
-            await dispatch(
-              updateRecipient({
-                address: resolution.address,
-                nickname: resolution.unsName,
-              }),
-            );
+            unsError = UNS_UNKNOWN_ERROR;
           }
+          await dispatch(
+            actions.updateAsset({
+              asset: {
+                type,
+                details: null,
+                balance: account.balance,
+                error: unsError,
+              },
+              initialAssetSet,
+            }),
+          );
+          throw new Error('No address associated with this token');
+        } else {
+          dispatch(unsLookup(resolution));
+          await dispatch(
+            updateRecipient({
+              address: resolution.address,
+              nickname: resolution.unsName,
+            }),
+          );
         }
       }
 
@@ -2200,39 +2198,37 @@ export function updateSendAsset(
        * updates error messaging if necessary
        * dispatches the new resolved address to the transaction state
        */
-      if (state.UNS) {
-        if (
-          state.UNS.resolution ===
-            state.send.draftTransactions[state.send.currentTransactionUUID]
-              .recipient.address &&
-          state.UNS.domainName
-        ) {
-          const resolution = await swapUdOnTokenChange(
-            state.UNS.domainName,
-            asset,
-          );
-          if (resolution.error) {
-            if (
-              resolution.error === 'UnspecifiedCurrency' ||
-              resolution.error === 'RecordNotFound'
-            ) {
-              asset.error = UNS_CURRENCY_SPEC_ERROR;
-            } else if (resolution.error === 'UnsupportedCurrency') {
-              asset.error = UNS_CURRENCY_ERROR;
-            } else {
-              asset.error = UNS_UNKNOWN_ERROR;
-            }
-            await dispatch(actions.updateAsset({ asset, initialAssetSet }));
-            throw new Error('No address associated with this token');
+      if (
+        state.UNS?.resolution ===
+          state.send.draftTransactions[state.send.currentTransactionUUID]
+            .recipient.address &&
+        state.UNS.domainName
+      ) {
+        const resolution = await swapUdOnTokenChange(
+          state.UNS.domainName,
+          asset,
+        );
+        if (resolution.error) {
+          if (
+            resolution.error === 'UnspecifiedCurrency' ||
+            resolution.error === 'RecordNotFound'
+          ) {
+            asset.error = UNS_CURRENCY_SPEC_ERROR;
+          } else if (resolution.error === 'UnsupportedCurrency') {
+            asset.error = UNS_CURRENCY_ERROR;
           } else {
-            dispatch(unsLookup(resolution));
-            await dispatch(
-              updateRecipient({
-                address: resolution.address,
-                nickname: resolution.unsName,
-              }),
-            );
+            asset.error = UNS_UNKNOWN_ERROR;
           }
+          await dispatch(actions.updateAsset({ asset, initialAssetSet }));
+          throw new Error('No address associated with this token');
+        } else {
+          dispatch(unsLookup(resolution));
+          await dispatch(
+            updateRecipient({
+              address: resolution.address,
+              nickname: resolution.unsName,
+            }),
+          );
         }
       }
 
