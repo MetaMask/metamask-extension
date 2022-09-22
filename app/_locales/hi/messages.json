@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "अंतिम बार कनेक्ट किया गया"
   },
-  "learmMoreAboutGas": {
-    "message": "गैस के बारे में $1 चाहते हैं?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1 करने का तरीका जानें",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "अधिक जानें"
+  },
+  "learnMoreAboutGas": {
+    "message": "गैस के बारे में $1 चाहते हैं?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "अधिक जानें"
