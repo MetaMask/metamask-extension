@@ -147,11 +147,10 @@ const setupPhishingExtStreams = () => {
 /** Destroys all of the phishing extension streams */
 const destroyPhishingExtStreams = () => {
   phishingPageChannel.removeAllListeners();
-
   phishingExtMux.removeAllListeners();
-  phishingExtMux.destroy();
-
   phishingExtChannel.removeAllListeners();
+
+  phishingExtMux.destroy();
   phishingExtChannel.destroy();
 };
 
@@ -254,11 +253,10 @@ const setupExtensionStreams = async () => {
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
   pageChannel.removeAllListeners();
-
   extensionMux.removeAllListeners();
-  extensionMux.destroy();
-
   extensionChannel.removeAllListeners();
+
+  extensionMux.destroy();
   extensionChannel.destroy();
 };
 
@@ -338,12 +336,11 @@ const destroyLegacyExtensionStreams = () => {
   legacyPagePublicConfigChannel.removeAllListeners();
 
   legacyExtMux.removeAllListeners();
-  legacyExtMux.destroy();
-
   legacyExtChannel.removeAllListeners();
-  legacyExtChannel.destroy();
-
   legacyExtPublicConfigChannel.removeAllListeners();
+
+  legacyExtMux.destroy();
+  legacyExtChannel.destroy();
   legacyExtPublicConfigChannel.destroy();
 };
 
