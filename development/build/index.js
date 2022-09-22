@@ -84,6 +84,10 @@ async function defineAndRunBuildTasks() {
       'pageXOffset',
       'pageYOffset',
       'visualViewport',
+      'Reflect',
+      'Set',
+      'Object',
+      'sentry',
     ],
   });
 
