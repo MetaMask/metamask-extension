@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { stripHexPrefix } from 'ethereumjs-util';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import accountImporter from '.';
 
 describe('Account Import Strategies', function () {
