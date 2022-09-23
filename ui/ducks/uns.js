@@ -4,7 +4,10 @@ import Resolution from '@unstoppabledomains/resolution';
 import { udResolverKeys } from '@unstoppabledomains/tldsresolverkeys';
 import { isConfusing } from 'unicode-confusables';
 import { getCurrentChainId } from '../selectors';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_ID_MAP,
+  infuraProjectId,
+} from '../../shared/constants/network';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
 import {
@@ -14,6 +17,10 @@ import {
   UNS_CURRENCY_ERROR,
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
+
+// Sets the Provider URLS to the MetaMask defaults
+const ethereumProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
+const polygonProviderUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -228,7 +235,22 @@ export async function swapUdOnTokenChange(unsName, asset) {
  */
 export async function resolveSingleChainUns(unsName, symbol) {
   const resolution = {};
-  const udResolutionInstance = new Resolution();
+  const udResolutionInstance = new Resolution({
+    sourceConfig: {
+      uns: {
+        locations: {
+          Layer1: {
+            url: ethereumProviderUrl,
+            network: 'mainnet',
+          },
+          Layer2: {
+            url: polygonProviderUrl,
+            network: 'polygon-mainnet',
+          },
+        },
+      },
+    },
+  });
   resolution.unsName = unsName;
   resolution.currency = symbol;
   resolution.address = await udResolutionInstance
@@ -249,7 +271,22 @@ export async function resolveSingleChainUns(unsName, symbol) {
  * @param {string} version - inputted token version
  */
 export async function resolveMultiChainUNS(unsName, symbol, version) {
-  const udResolutionInstance = new Resolution();
+  const udResolutionInstance = new Resolution({
+    sourceConfig: {
+      uns: {
+        locations: {
+          Layer1: {
+            url: ethereumProviderUrl,
+            network: 'mainnet',
+          },
+          Layer2: {
+            url: polygonProviderUrl,
+            network: 'polygon-mainnet',
+          },
+        },
+      },
+    },
+  });
   const resolution = {};
   resolution.unsName = unsName;
   resolution.currency = symbol;
