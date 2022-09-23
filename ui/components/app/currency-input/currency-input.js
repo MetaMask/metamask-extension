@@ -146,11 +146,16 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
+      dataTestId="currency-input"
       suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={initialDecimalValue}
       actionComponent={
-        <button className="currency-input__swap-component" onClick={swap}>
+        <button
+          className="currency-input__swap-component"
+          data-testid="currency-swap"
+          onClick={swap}
+        >
           <i className="fa fa-retweet fa-lg" />
         </button>
       }

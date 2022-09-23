@@ -51,6 +51,7 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
+    '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/constants/error-utils.test.js',
   ],
@@ -67,7 +68,7 @@ module.exports = {
   // installed in @metamask/controllers so I had to just blanket specify all
   // of the @metamask/controllers folder.
   transformIgnorePatterns: [
-    '/node_modules/(?!(multiformats|uuid|nanoid|@metamask/controllers|@metamask/snap-controllers)/)',
+    '/node_modules/(?!(multiformats|uuid|nanoid|@metamask/controllers|@metamask/snap-controllers|@metamask/rpc-methods)/)',
   ],
   workerIdleMemoryLimit: '500MB',
 };

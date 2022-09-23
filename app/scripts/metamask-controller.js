@@ -15,7 +15,6 @@ import {
   ethErrors,
 } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
-import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -51,7 +50,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
-import { satisfies as satisfiesSemver } from 'semver';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -78,7 +76,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -154,6 +155,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { checkSnapsBlockList } from './flask/snaps-utilities';
+import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -649,7 +654,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.7.0',
+        'https://metamask.github.io/iframe-execution-environment/0.8.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -683,13 +688,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const SNAP_BLOCKLIST = [
-      {
-        id: 'npm:@consensys/starknet-snap',
-        versionRange: '<0.1.11',
-      },
-    ];
-
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
@@ -699,27 +697,7 @@ export default class MetamaskController extends EventEmitter {
         return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
       },
       checkBlockList: async (snapsToCheck) => {
-        return Object.entries(snapsToCheck).reduce(
-          (acc, [snapId, snapVersion]) => {
-            const blockInfo = SNAP_BLOCKLIST.find(
-              (blocked) =>
-                blocked.id === snapId &&
-                satisfiesSemver(snapVersion, blocked.versionRange, {
-                  includePrerelease: true,
-                }),
-            );
-
-            const cur = blockInfo
-              ? {
-                  blocked: true,
-                  reason: blockInfo.reason,
-                  infoUrl: blockInfo.infoUrl,
-                }
-              : { blocked: false };
-            return { ...acc, [snapId]: cur };
-          },
-          {},
-        );
+        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
