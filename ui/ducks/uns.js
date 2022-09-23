@@ -18,7 +18,7 @@ import {
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
 
-// Sets the Provider URLS to the MetaMask defaults
+// Sets the Provider URLS to the MetaMask default infura
 const ethereumProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
 const polygonProviderUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
 
