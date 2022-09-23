@@ -8,7 +8,11 @@ import {
   setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
-import { setSwapsFromToken, setSwapToToken } from '../../../ducks/swaps/swaps';
+import {
+  setSwapsFromToken,
+  setSwapToToken,
+  setFromTokenInputValue,
+} from '../../../ducks/swaps/swaps';
 import BuildQuote from '.';
 
 const middleware = [thunk];
@@ -30,6 +34,8 @@ setBackgroundConnection({
   stopPollingForQuotes: jest.fn(),
   clearSmartTransactionFees: jest.fn(),
   setSwapsFromToken: jest.fn(),
+  setSwapToToken: jest.fn(),
+  setFromTokenInputValue: jest.fn(),
 });
 
 jest.mock('../../../ducks/swaps/swaps', () => {
@@ -38,6 +44,20 @@ jest.mock('../../../ducks/swaps/swaps', () => {
     ...actual,
     setSwapsFromToken: jest.fn(),
     setSwapToToken: jest.fn(),
+    setFromTokenInputValue: jest.fn(() => {
+      return {
+        type: 'MOCK_ACTION',
+      };
+    }),
+  };
+});
+
+jest.mock('../swaps.util', () => {
+  const actual = jest.requireActual('../swaps.util');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+    fetchTokenPrice: jest.fn(() => Promise.resolve()),
   };
 });
 
@@ -75,7 +95,8 @@ describe('BuildQuote', () => {
       };
     });
     setSwapToToken.mockImplementation(setSwapToTokenMock);
-    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
     const props = createProps();
     const { getByText, getByTestId } = renderWithProvider(
       <BuildQuote {...props} />,
@@ -83,7 +104,63 @@ describe('BuildQuote', () => {
     );
     expect(getByText('Swap from')).toBeInTheDocument();
     fireEvent.click(getByTestId('build-quote__swap-arrows'));
-    expect(setSwapsFromToken).toHaveBeenCalledWith('USDC');
+    expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken);
     expect(setSwapToToken).toHaveBeenCalled();
+  });
+
+  it('renders the block explorer link, only 1 verified source', () => {
+    const mockStore = createSwapsMockStore();
+    mockStore.swaps.toToken.occurances = 1;
+    const store = configureMockStore(middleware)(mockStore);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
+    expect(getByText('Swap from')).toBeInTheDocument();
+    expect(getByText('Only verified on 1 source.')).toBeInTheDocument();
+    expect(getByText('Etherscan')).toBeInTheDocument();
+  });
+
+  it('renders the block explorer link, 0 verified sources', () => {
+    const mockStore = createSwapsMockStore();
+    mockStore.swaps.toToken.occurances = 0;
+    const store = configureMockStore(middleware)(mockStore);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
+    expect(getByText('Swap from')).toBeInTheDocument();
+    expect(
+      getByText('This token has been added manually.'),
+    ).toBeInTheDocument();
+    expect(getByText('Etherscan')).toBeInTheDocument();
+  });
+
+  it('clicks on a block explorer link', () => {
+    global.platform = { openTab: jest.fn() };
+    const mockStore = createSwapsMockStore();
+    mockStore.swaps.toToken.occurances = 1;
+    const store = configureMockStore(middleware)(mockStore);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
+    const blockExplorer = getByText('Etherscan');
+    expect(blockExplorer).toBeInTheDocument();
+    fireEvent.click(blockExplorer);
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://etherscan.io/token/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    });
+  });
+
+  it('clicks on the "max" link', () => {
+    const setFromTokenInputValueMock = jest.fn(() => {
+      return {
+        type: 'MOCK_ACTION',
+      };
+    });
+    setFromTokenInputValue.mockImplementation(setFromTokenInputValueMock);
+    const mockStore = createSwapsMockStore();
+    mockStore.swaps.fromToken = 'DAI';
+    const store = configureMockStore(middleware)(mockStore);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
+    const maxLink = getByText('Max');
+    fireEvent.click(maxLink);
+    expect(setFromTokenInputValue).toHaveBeenCalled();
   });
 });

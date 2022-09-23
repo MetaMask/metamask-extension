@@ -325,4 +325,27 @@ describe('Ducks - Swaps', () => {
       );
     });
   });
+
+  describe('getSwapsNetworkConfig', () => {
+    it('returns Swaps network config', () => {
+      const state = createSwapsMockStore();
+      const {
+        swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime,
+        swapsStxGetTransactionsRefreshTime,
+        swapsStxBatchStatusRefreshTime,
+        swapsStxStatusDeadline,
+        swapsStxMaxFeeMultiplier,
+      } = state.metamask.swapsState;
+      const swapsNetworkConfig = swaps.getSwapsNetworkConfig(state);
+      expect(swapsNetworkConfig).toMatchObject({
+        quoteRefreshTime: swapsQuoteRefreshTime,
+        quotePrefetchingRefreshTime: swapsQuotePrefetchingRefreshTime,
+        stxGetTransactionsRefreshTime: swapsStxGetTransactionsRefreshTime,
+        stxBatchStatusRefreshTime: swapsStxBatchStatusRefreshTime,
+        stxStatusDeadline: swapsStxStatusDeadline,
+        stxMaxFeeMultiplier: swapsStxMaxFeeMultiplier,
+      });
+    });
+  });
 });

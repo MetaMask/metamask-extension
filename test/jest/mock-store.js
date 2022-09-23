@@ -120,7 +120,11 @@ export const createSwapsMockStore = () => {
         },
       },
       fromToken: 'ETH',
-      toToken: 'USDC',
+      toToken: {
+        symbol: 'USDC',
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        occurances: 4,
+      },
     },
     metamask: {
       networkDetails: {
@@ -327,6 +331,10 @@ export const createSwapsMockStore = () => {
         quotesLastFetched: 1519211809934,
         swapsQuoteRefreshTime: 60000,
         swapsQuotePrefetchingRefreshTime: 60000,
+        swapsStxBatchStatusRefreshTime: 5000,
+        swapsStxGetTransactionsRefreshTime: 5000,
+        swapsStxMaxFeeMultiplier: 1.5,
+        swapsStxStatusDeadline: 150000,
         customMaxGas: '',
         customGasPrice: null,
         selectedAggId: 'TEST_AGG_2',

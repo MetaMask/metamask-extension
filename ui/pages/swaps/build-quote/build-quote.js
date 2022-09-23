@@ -481,6 +481,7 @@ export default function BuildQuote({
         className="build-quote__token-etherscan-link build-quote__underline"
         key="build-quote-etherscan-link"
         onClick={() => {
+          /* istanbul ignore next */
           trackEvent({
             event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
             category: EVENT.CATEGORIES.SWAPS,
@@ -678,6 +679,7 @@ export default function BuildQuote({
           onSelect={onFromSelect}
           itemsToSearch={tokensToSearchSwapFrom}
           onInputChange={(value) => {
+            /* istanbul ignore next */
             onInputChange(value, fromTokenBalance);
           }}
           inputValue={fromTokenInputValue}
@@ -811,6 +813,7 @@ export default function BuildQuote({
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
+                        /* istanbul ignore next */
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
                           category: EVENT.CATEGORIES.SWAPS,

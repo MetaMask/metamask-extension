@@ -47,6 +47,21 @@ describe('SmartTransactionStatus', () => {
     expect(getByText('Close')).toBeInTheDocument();
   });
 
+  it('renders the "success" STX status', () => {
+    const mockStore = createSwapsMockStore();
+    const latestSmartTransaction =
+      mockStore.metamask.smartTransactionsState.smartTransactions[
+        CHAIN_IDS.MAINNET
+      ][1];
+    latestSmartTransaction.status = 'success';
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(<SmartTransactionStatus />, store);
+    expect(getByText('Swap complete!')).toBeInTheDocument();
+    expect(getByText('Your USDC is now available.')).toBeInTheDocument();
+    expect(getByText('Create a new swap')).toBeInTheDocument();
+    expect(getByText('Close')).toBeInTheDocument();
+  });
+
   it('renders the "reverted" STX status', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =

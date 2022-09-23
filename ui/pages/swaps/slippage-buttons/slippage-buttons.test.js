@@ -94,6 +94,20 @@ describe('SlippageButtons', () => {
     );
   });
 
+  it('opens the Advanced options section and sets a high slippage', () => {
+    const { getByText, getByTestId } = renderWithProvider(
+      <SlippageButtons
+        {...createProps({ currentSlippage: SLIPPAGE.DEFAULT })}
+      />,
+    );
+    fireEvent.click(getByText('Advanced options'));
+    fireEvent.click(getByTestId('button-group__button1'));
+    expect(getByTestId('button-group__button1')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+  });
+
   it('sets a custom slippage value', () => {
     const { getByTestId } = renderWithProvider(
       <SlippageButtons {...createProps()} />,
