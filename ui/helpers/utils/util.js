@@ -114,8 +114,7 @@ export function isValidENSDomainName(address) {
  * Determines whether or not user input is an Unstoppable Domain Name
  * Only checks if the user input has a . and is longer than 1
  * Sets the Provider URLS to the MetaMask defaults
- * If no array, grab the Tlds from the API
- * compare the ending of the inputted string to the Tld array
+ * checks if the domain name is a supported domain name
  * returns true or false
  *
  * @param {string} domainInput - inputted Unstoppable Domain Name
