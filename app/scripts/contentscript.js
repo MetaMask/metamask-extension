@@ -42,6 +42,7 @@ let legacyExtMux,
   legacyPageMux,
   legacyPageMuxLegacyProviderChannel,
   legacyPagePublicConfigChannel,
+  legacyPageStream,
   notificationTransformStream;
 
 const WORKER_KEEP_ALIVE_INTERVAL = 1000;
@@ -61,6 +62,7 @@ let extensionMux,
   extensionPort,
   extensionPhishingStream,
   extensionStream,
+  pageStream,
   pageMux,
   pageChannel;
 
@@ -184,12 +186,6 @@ const initPhishingStreams = () => {
  */
 
 const setupPageStreams = () => {
-  // the transport-specific streams for communication between inpage and background
-  const pageStream = new WindowPostMessageStream({
-    name: CONTENT_SCRIPT,
-    target: INPAGE,
-  });
-
   // create and connect channel muxers
   // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
@@ -200,6 +196,16 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(PROVIDER);
+};
+
+const initPageStreams = () => {
+  // the transport-specific streams for communication between inpage and background
+  pageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: INPAGE,
+  });
+
+  setupPageStreams();
 };
 
 const ARBITRARY_CONNECT_EXT_DELAY = 150;
@@ -255,6 +261,8 @@ const setupExtensionStreams = async () => {
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
   pageChannel.removeAllListeners();
+  pageStream.removeAllListeners();
+
   extensionMux.removeAllListeners();
   extensionChannel.removeAllListeners();
 
@@ -268,11 +276,6 @@ const destroyExtensionStreams = () => {
 
 // TODO:LegacyProvider: Delete
 const setupLegacyPageStreams = () => {
-  const legacyPageStream = new WindowPostMessageStream({
-    name: LEGACY_CONTENT_SCRIPT,
-    target: LEGACY_INPAGE,
-  });
-
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
@@ -284,6 +287,15 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PROVIDER);
   legacyPagePublicConfigChannel =
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+};
+
+const initLegacyPageStreams = () => {
+  legacyPageStream = new WindowPostMessageStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  });
+
+  setupLegacyPageStreams();
 };
 
 // TODO:LegacyProvider: Delete
@@ -334,6 +346,7 @@ const setupLegacyExtensionStreams = () => {
  * TODO:LegacyProvider: Delete
  */
 const destroyLegacyExtensionStreams = () => {
+  legacyPageStream.removeAllListeners();
   legacyPageMuxLegacyProviderChannel.removeAllListeners();
   legacyPagePublicConfigChannel.removeAllListeners();
 
@@ -356,6 +369,8 @@ const resetStreamAndListeners = async () => {
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
 
+  setupPageStreams();
+  setupLegacyPageStreams();
   await setupExtensionStreams();
   setupLegacyExtensionStreams();
 
@@ -368,11 +383,11 @@ const resetStreamAndListeners = async () => {
  * reset the streams if the service worker resets.
  */
 const initStreams = async () => {
-  setupPageStreams();
+  initPageStreams();
   await setupExtensionStreams();
 
   // TODO:LegacyProvider: Delete
-  setupLegacyPageStreams();
+  initLegacyPageStreams();
   setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
