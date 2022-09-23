@@ -74,7 +74,8 @@ async function defineAndRunBuildTasks() {
 
   // build lavamoat runtime file
   await lavapack.buildRuntime({
-    scuttle: [
+    scuttleGlobalThis: true,
+    scuttleGlobalThisExceptions: [
       'getComputedStyle',
       'addEventListener',
       'removeEventListener',
