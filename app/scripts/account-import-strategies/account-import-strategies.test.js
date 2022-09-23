@@ -1,4 +1,6 @@
 import { strict as assert } from 'assert';
+import nock from 'nock';
+
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import accountImporter from '.';
 
@@ -45,6 +47,19 @@ describe('Account Import Strategies', function () {
 
   describe('JSON keystore import', function () {
     it('fails when password is incorrect for keystore', async function () {
+      nock('https://cdn.jsdelivr.net')
+        .persist()
+        .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
+        .reply(200, {});
+      nock('cdn.jsdelivr.net:443')
+        .persist()
+        .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
+        .reply(200, {});
+      nock('https://cdn.jsdelivr.net')
+        .persist()
+        .get('gh/phishfort/phishfort-lists@master/blacklists/hotlist.json')
+        .reply(200, {});
+
       const wrongPassword = 'password2';
 
       try {

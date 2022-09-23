@@ -1043,9 +1043,15 @@ describe('MetaMaskController', function () {
 
     it('sets up phishing stream for untrusted communication', async function () {
       nock('https://cdn.jsdelivr.net')
+        .persist()
+        .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
+        .reply(200, {});
+      nock('cdn.jsdelivr.net:443')
+        .persist()
         .get('/gh/MetaMask/eth-phishing-detect@master/src/config.json')
         .reply(200, {});
       nock('https://cdn.jsdelivr.net')
+        .persist()
         .get('gh/phishfort/phishfort-lists@master/blacklists/hotlist.json')
         .reply(200, {});
 
