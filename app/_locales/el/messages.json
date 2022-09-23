@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
   },
-  "learmMoreAboutGas": {
-    "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
-  },
   "learnCancelSpeeedup": {
     "message": "Μάθετε πώς να $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "μάθε περισσότερα"
+  },
+  "learnMoreAboutGas": {
+    "message": "Θέλετε να $1 για το τέλος συναλλαγής;",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Μάθε περισσότερα"
