@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Terakhir Terhubung"
   },
-  "learmMoreAboutGas": {
-    "message": "Ingin $1 seputar gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Pelajari cara $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "mempelajari"
+  },
+  "learnMoreAboutGas": {
+    "message": "Ingin $1 seputar gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Pelajari selengkapnya"
@@ -2478,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Kontrol akun dan aset \"$1\" Anda.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Simpan dan kelola datanya di perangkat Anda.",
@@ -3713,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Detail token"
-  },
-  "tokenDetection": {
-    "message": "Deteksi token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Saat ini deteksi token tersedia di $1. $2"
   },
   "tokenId": {
     "message": "ID token"

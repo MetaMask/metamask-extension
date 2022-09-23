@@ -1056,6 +1056,10 @@ export async function removeSnapError(msgData) {
   return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
+export async function handleSnapRequest(args) {
+  return submitRequestToBackground('handleSnapRequest', [args]);
+}
+
 export function dismissNotifications(ids) {
   return async (dispatch) => {
     await submitRequestToBackground('dismissNotifications', [ids]);
@@ -2489,13 +2493,13 @@ export function showSendTokenPage() {
   };
 }
 
-export function buyEth(opts) {
+export function buy(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
     if (url) {
       global.platform.openTab({ url });
       dispatch({
-        type: actionConstants.BUY_ETH,
+        type: actionConstants.BUY,
       });
     }
   };

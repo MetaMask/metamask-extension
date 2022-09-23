@@ -62,36 +62,27 @@ describe('buy-url', () => {
   it('returns Transak url with an ETH address for Ethereum mainnet', async () => {
     const transakUrl = await getBuyUrl({ ...MAINNET, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[MAINNET.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
   it('returns Transak url with an BNB address for Binance Smart Chain', async () => {
     const transakUrl = await getBuyUrl({ ...BSC, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[BSC.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
   it('returns Transak url with an MATIC address for Polygon', async () => {
     const transakUrl = await getBuyUrl({ ...POLYGON, service: 'transak' });
     const buyableChain = BUYABLE_CHAINS_MAP[POLYGON.chainId];
-    const buyableCurrencies = encodeURIComponent(
-      buyableChain.transakCurrencies.join(','),
-    );
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
@@ -126,11 +117,11 @@ describe('buy-url', () => {
     nock(SWAPS_API_V2_BASE_URL)
       .get(`/moonpaySign/?${queryParams}`)
       .reply(200, {
-        url: `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=eth%2Cusdt%2Cusdc%2Cdai&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
+        url: `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=${showOnlyCurrencies}&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
       });
     const moonPayUrl = await getBuyUrl({ ...MAINNET, service: 'moonpay' });
     expect(moonPayUrl).toStrictEqual(
-      `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=eth%2Cusdt%2Cusdc%2Cdai&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
+      `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=${showOnlyCurrencies}&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
     );
     nock.cleanAll();
   });

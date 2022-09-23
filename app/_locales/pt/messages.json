@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
-  "learmMoreAboutGas": {
-    "message": "Quer $1 sobre o gás?"
-  },
   "learnCancelSpeeedup": {
     "message": "Saiba como $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "saiba mais"
+  },
+  "learnMoreAboutGas": {
+    "message": "Quer $1 sobre o gás?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Saiba mais"
@@ -2478,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Controlar suas contas e ativos do \"$1\".",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Armazenar e gerenciar dados pertinentes em seu dispositivo.",
@@ -3713,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Dados do token"
-  },
-  "tokenDetection": {
-    "message": "Detecção de token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "A detecção de tokens está atualmente disponível em $1. $2"
   },
   "tokenId": {
     "message": "ID do token"
