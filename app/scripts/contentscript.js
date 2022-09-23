@@ -148,12 +148,12 @@ const setupPhishingExtStreams = () => {
 
 /** Destroys all of the phishing extension streams */
 const destroyPhishingExtStreams = () => {
-  phishingPageChannel.removeAllListeners();
-  phishingExtMux.removeAllListeners();
-  phishingExtChannel.removeAllListeners();
+  phishingPageChannel?.removeAllListeners();
+  phishingExtMux?.removeAllListeners();
+  phishingExtChannel?.removeAllListeners();
 
-  phishingExtMux.destroy();
-  phishingExtChannel.destroy();
+  phishingExtMux?.destroy();
+  phishingExtChannel?.destroy();
 };
 
 /**
@@ -260,14 +260,14 @@ const setupExtensionStreams = async () => {
 
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
-  pageChannel.removeAllListeners();
-  pageStream.removeAllListeners();
+  pageChannel?.removeAllListeners();
+  pageStream?.removeAllListeners();
 
-  extensionMux.removeAllListeners();
-  extensionChannel.removeAllListeners();
+  extensionMux?.removeAllListeners();
+  extensionChannel?.removeAllListeners();
 
-  extensionMux.destroy();
-  extensionChannel.destroy();
+  extensionMux?.destroy();
+  extensionChannel?.destroy();
 };
 
 /**
@@ -346,17 +346,17 @@ const setupLegacyExtensionStreams = () => {
  * TODO:LegacyProvider: Delete
  */
 const destroyLegacyExtensionStreams = () => {
-  legacyPageStream.removeAllListeners();
-  legacyPageMuxLegacyProviderChannel.removeAllListeners();
-  legacyPagePublicConfigChannel.removeAllListeners();
+  legacyPageStream?.removeAllListeners();
+  legacyPageMuxLegacyProviderChannel?.removeAllListeners();
+  legacyPagePublicConfigChannel?.removeAllListeners();
 
-  legacyExtMux.removeAllListeners();
-  legacyExtChannel.removeAllListeners();
-  legacyExtPublicConfigChannel.removeAllListeners();
+  legacyExtMux?.removeAllListeners();
+  legacyExtChannel?.removeAllListeners();
+  legacyExtPublicConfigChannel?.removeAllListeners();
 
-  legacyExtMux.destroy();
-  legacyExtChannel.destroy();
-  legacyExtPublicConfigChannel.destroy();
+  legacyExtMux?.destroy();
+  legacyExtChannel?.destroy();
+  legacyExtPublicConfigChannel?.destroy();
 };
 
 /**
