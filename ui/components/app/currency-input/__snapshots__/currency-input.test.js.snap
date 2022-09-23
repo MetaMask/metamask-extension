@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyInput Component rendering should render properly with a fiat value 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value="1"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          USD
+        </div>
+      </div>
+      <div
+        class="currency-display-component currency-input__conversion-component"
+        title="0.00432788 ETH"
+      >
+        <span
+          class="currency-display-component__prefix"
+        />
+        <span
+          class="currency-display-component__text"
+        >
+          0.00432788
+        </span>
+        <span
+          class="currency-display-component__suffix"
+        >
+          ETH
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly with a native value when hideSecondary is true 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 10ch;"
+          type="number"
+          value="0.00432788"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="currency-input__conversion-component"
+      >
+        No conversion rate available
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly with an ETH value 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value="1"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="currency-display-component currency-input__conversion-component"
+        title="$231.06 USD"
+      >
+        <span
+          class="currency-display-component__prefix"
+        />
+        <span
+          class="currency-display-component__text"
+        >
+          $231.06
+        </span>
+        <span
+          class="currency-display-component__suffix"
+        >
+          USD
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should render properly without a suffix 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="currency-display-component currency-input__conversion-component"
+        title="$0.00 USD"
+      >
+        <span
+          class="currency-display-component__prefix"
+        />
+        <span
+          class="currency-display-component__text"
+        >
+          $0.00
+        </span>
+        <span
+          class="currency-display-component__suffix"
+        >
+          USD
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
