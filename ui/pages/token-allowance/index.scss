@@ -19,7 +19,16 @@
   }
 
   a.token-allowance-container__verify-link {
+    width: fit-content;
+    margin-inline-start: 96px;
+    margin-inline-end: 96px;
     padding: 0;
+  }
+
+  a.token-allowance-container__view-details {
+    width: fit-content;
+    margin-inline-start: 108px;
+    margin-inline-end: 108px;
   }
 
   &__card-wrapper {

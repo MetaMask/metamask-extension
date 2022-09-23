@@ -77,7 +77,6 @@ export default function TokenAllowance({
   const networkName = NETWORK_TO_NAME_MAP[txData.chainId] || networkIdentifier;
 
   const customNonceValue = '';
-
   const customNonceMerge = (transactionData) =>
     customNonceValue
       ? {
@@ -87,10 +86,10 @@ export default function TokenAllowance({
       : transactionData;
 
   const rejectTransaction = () => {
-    dispatch(cancelTx(txData.id)).then(() => {
+    dispatch(cancelTx(txData)).then(() => {
       dispatch(clearConfirmTransaction());
       dispatch(updateCustomNonce(''));
-      global.platform.closeCurrentWindow();
+      history.push(mostRecentOverviewPage);
     });
   };
 
@@ -420,6 +419,7 @@ export default function TokenAllowance({
         <Button
           type="link"
           onClick={() => setShowFullTxDetails(!showFullTxDetails)}
+          className="token-allowance-container__view-details"
         >
           <Typography
             variant={TYPOGRAPHY.H6}
