@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Последнее подключение"
   },
-  "learmMoreAboutGas": {
-    "message": "Хотите $1 о газе?"
-  },
   "learnCancelSpeeedup": {
     "message": "Узнайте, как $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "подробнее"
+  },
+  "learnMoreAboutGas": {
+    "message": "Хотите $1 о газе?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Подробнее"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Тестовая сеть"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Контролируйте свои счета и активы «$1».",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Храните и управляйте его данными на вашем устройстве.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "Обмен"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Ваш обмен будет автоматически отменен, если проскальзывание превысит вашу настройку «максимального проскальзывания»."
-  },
   "swapAggregator": {
     "message": "Агрегатор"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "Свдения о котировке"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Обмен будет автоматически отменен, если фактическое проскальзывание превысит установленный «допуск проскальзывания»."
-  },
   "swapQuoteSource": {
     "message": "Источник котировки"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "Проверить обмен"
-  },
-  "swapSearchForAToken": {
-    "message": "Поиск токена"
   },
   "swapSelect": {
     "message": "Выбрать"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Сведения о токене"
-  },
-  "tokenDetection": {
-    "message": "Обнаружение токена"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Обнаружение токена в настоящее время доступно на $1. $2"
   },
   "tokenId": {
     "message": "Ид. токена"

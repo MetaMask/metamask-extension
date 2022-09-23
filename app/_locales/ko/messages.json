@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "learmMoreAboutGas": {
-    "message": "가스에 대해 $1하시겠습니까?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1하는 방법 알아보기",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "자세히 알아보기"
+  },
+  "learnMoreAboutGas": {
+    "message": "가스에 대해 $1하시겠습니까?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "자세히 알아보기"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "테스트넷"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "'$1' 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "기기의 데이터를 저장하고 관리합니다.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "스왑"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 '슬리패지'라고 합니다. 슬리패지가 '최대 슬리패지' 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
   "swapAggregator": {
     "message": "애그리게이터"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "견적 세부 정보"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
   "swapQuoteSource": {
     "message": "견적 소스"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "스왑 검토"
-  },
-  "swapSearchForAToken": {
-    "message": "토큰 검색"
   },
   "swapSelect": {
     "message": "선택"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"
-  },
-  "tokenDetection": {
-    "message": "토큰 감지"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "토큰 감지 기능은 현재 $1. $2에서 사용할 수 있습니다."
   },
   "tokenId": {
     "message": "토큰 ID"

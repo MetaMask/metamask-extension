@@ -71,12 +71,14 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
+import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
 export default class Routes extends Component {
@@ -106,7 +108,11 @@ export default class Routes extends Component {
     theme: PropTypes.string,
     sendStage: PropTypes.string,
     isNetworkUsed: PropTypes.bool,
-    hasAnAccountWithNoFundsOnNetwork: PropTypes.bool,
+    allAccountsOnNetworkAreEmpty: PropTypes.bool,
+    isTestNet: PropTypes.bool,
+    currentChainId: PropTypes.string,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -362,7 +368,11 @@ export default class Routes extends Component {
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
-      hasAnAccountWithNoFundsOnNetwork,
+      allAccountsOnNetworkAreEmpty,
+      isTestNet,
+      currentChainId,
+      shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -370,7 +380,19 @@ export default class Routes extends Component {
         : null;
 
     const shouldShowNetworkInfo =
-      isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
+      isUnlocked &&
+      currentChainId &&
+      !isTestNet &&
+      !isNetworkUsed &&
+      allAccountsOnNetworkAreEmpty;
+
+    const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
 
     return (
       <div
@@ -387,6 +409,7 @@ export default class Routes extends Component {
           }
         }}
       >
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
@@ -437,20 +460,23 @@ export default class Routes extends Component {
       return loadingMessage;
     }
     const { providerType, providerId } = this.props;
+    const { t } = this.context;
 
     switch (providerType) {
-      case 'mainnet':
-        return this.context.t('connectingToMainnet');
-      case 'ropsten':
-        return this.context.t('connectingToRopsten');
-      case 'kovan':
-        return this.context.t('connectingToKovan');
-      case 'rinkeby':
-        return this.context.t('connectingToRinkeby');
-      case 'goerli':
-        return this.context.t('connectingToGoerli');
+      case NETWORK_TYPES.MAINNET:
+        return t('connectingToMainnet');
+      case NETWORK_TYPES.ROPSTEN:
+        return t('connectingToRopsten');
+      case NETWORK_TYPES.KOVAN:
+        return t('connectingToKovan');
+      case NETWORK_TYPES.RINKEBY:
+        return t('connectingToRinkeby');
+      case NETWORK_TYPES.GOERLI:
+        return t('connectingToGoerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('connectingToSepolia');
       default:
-        return this.context.t('connectingTo', [providerId]);
+        return t('connectingTo', [providerId]);
     }
   }
 }

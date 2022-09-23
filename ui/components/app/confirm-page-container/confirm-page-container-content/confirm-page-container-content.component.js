@@ -23,6 +23,9 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     hideSubtitle: PropTypes.bool,
@@ -59,15 +62,37 @@ export default class ConfirmPageContainerContent extends Component {
   renderContent() {
     const { detailsComponent, dataComponent } = this.props;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    const { insightComponent } = this.props;
+
+    if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     if (detailsComponent && dataComponent) {
       return this.renderTabs();
     }
-    return detailsComponent || dataComponent;
+
+    return (
+      detailsComponent ||
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent ||
+      ///: END:ONLY_INCLUDE_IN
+      dataComponent
+    );
   }
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const {
+      detailsComponent,
+      dataComponent,
+      dataHexComponent,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
 
     return (
       <Tabs>
@@ -88,6 +113,12 @@ export default class ConfirmPageContainerContent extends Component {
             {dataHexComponent}
           </Tab>
         )}
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          insightComponent
+          ///: END:ONLY_INCLUDE_IN
+        }
       </Tabs>
     );
   }

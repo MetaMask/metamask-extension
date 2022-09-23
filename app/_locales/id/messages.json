@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Terakhir Terhubung"
   },
-  "learmMoreAboutGas": {
-    "message": "Ingin $1 seputar gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Pelajari cara $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "mempelajari"
+  },
+  "learnMoreAboutGas": {
+    "message": "Ingin $1 seputar gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Pelajari selengkapnya"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Kontrol akun dan aset \"$1\" Anda.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Simpan dan kelola datanya di perangkat Anda.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "Pertukaran"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut “slippage”. Swap akan otomatis dibatalkan jika slippage melebihi pengaturan “slippage maks”."
-  },
   "swapAggregator": {
     "message": "Agregator"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "Detail kuotasi"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut \"slippage\". Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
-  },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "Tinjau Swap"
-  },
-  "swapSearchForAToken": {
-    "message": "Cari token"
   },
   "swapSelect": {
     "message": "Pilih"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Detail token"
-  },
-  "tokenDetection": {
-    "message": "Deteksi token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Saat ini deteksi token tersedia di $1. $2"
   },
   "tokenId": {
     "message": "ID token"

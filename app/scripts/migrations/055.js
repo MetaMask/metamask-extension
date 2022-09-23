@@ -1,5 +1,5 @@
 import { cloneDeep, mapKeys } from 'lodash';
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
+import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
 
 const version = 55;
 
@@ -30,8 +30,7 @@ function transformState(state) {
         // using optional chaining in case user's state has fetched blocks for
         // RPC network types (which don't map to a single chainId). This should
         // not be possible, but it's safer
-        (_, key) =>
-          NETWORK_TYPE_TO_ID_MAP[key]?.chainId ?? UNKNOWN_CHAIN_ID_KEY,
+        (_, key) => BUILT_IN_NETWORKS[key]?.chainId ?? UNKNOWN_CHAIN_ID_KEY,
       );
     // Now that mainnet and test net last fetched blocks are keyed by their
     // respective chainIds, we can safely delete anything we had for custom

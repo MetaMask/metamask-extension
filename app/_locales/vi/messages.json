@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "learmMoreAboutGas": {
-    "message": "Muốn $1 về gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Tìm hiểu cách $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "tìm hiểu thêm"
+  },
+  "learnMoreAboutGas": {
+    "message": "Muốn $1 về gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Tìm hiểu thêm"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Mạng thử nghiệm"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Kiểm soát các tài khoản và tài sản \"$1\" của bạn.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Lưu trữ và quản lý dữ liệu trong thiết bị.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "Hoán đổi"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là “trượt giá”. Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá “mức trượt giá tối đa” đã cài đặt."
-  },
   "swapAggregator": {
     "message": "Trình tổng hợp"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "Chi tiết báo giá"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
-  },
   "swapQuoteSource": {
     "message": "Nguồn báo giá"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "Xem lại giao dịch hoán đổi"
-  },
-  "swapSearchForAToken": {
-    "message": "Tìm kiếm token"
   },
   "swapSelect": {
     "message": "Chọn"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Chi tiết token"
-  },
-  "tokenDetection": {
-    "message": "Phát hiện token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Tính năng phát hiện token hiện có sẵn trên $1. $2"
   },
   "tokenId": {
     "message": "ID Token"

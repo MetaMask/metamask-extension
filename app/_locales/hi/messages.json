@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "अंतिम बार कनेक्ट किया गया"
   },
-  "learmMoreAboutGas": {
-    "message": "गैस के बारे में $1 चाहते हैं?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1 करने का तरीका जानें",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "अधिक जानें"
+  },
+  "learnMoreAboutGas": {
+    "message": "गैस के बारे में $1 चाहते हैं?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "अधिक जानें"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "बहुभुज"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "आपके \"$1\" अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "स्वैप करें"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे “स्लिपेज” कहा जाता है। यदि आपका स्लिपेज आपकी “अधिकतम स्लिपेज” सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "उद्धरण का विवरण"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "स्वैप की समीक्षा करें"
-  },
-  "swapSearchForAToken": {
-    "message": "एक टोकन की खोज करें"
   },
   "swapSelect": {
     "message": "चयन करें"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "टोकन विवरण"
-  },
-  "tokenDetection": {
-    "message": "टोकन डिटेक्शन"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "फिलहाल टोकन डिटेक्शन $1 पर उपलब्ध है। $2"
   },
   "tokenId": {
     "message": "टोकन आइडी"

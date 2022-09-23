@@ -1536,7 +1536,7 @@
     "message": "agregar activo"
   },
   "importTokensCamelCase": {
-    "message": "AGREGAR TOKENS"
+    "message": "Agregar Tokens"
   },
   "importWallet": {
     "message": "Importar cartera"
@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "learmMoreAboutGas": {
-    "message": "¿Quiere $1 sobre el gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Aprenda cómo $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "Más información"
+  },
+  "learnMoreAboutGas": {
+    "message": "¿Quiere $1 sobre el gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Más información"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Red de prueba"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Controle sus cuentas y activos \"$1\".",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Almacene y administre sus datos en su dispositivo.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "Canjear"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina “desfase”. El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración “max slippage” (desfase máximo)."
-  },
   "swapAggregator": {
     "message": "Agregador"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "Detalles de cotización"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"tolerancia de desfase\"."
-  },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "Revisar canje"
-  },
-  "swapSearchForAToken": {
-    "message": "Buscar un token"
   },
   "swapSelect": {
     "message": "Seleccionar"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Detalles del token"
-  },
-  "tokenDetection": {
-    "message": "Detección del token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "La detección de tókens está actualmente disponible en $1. $2"
   },
   "tokenId": {
     "message": "Identificador de Token"

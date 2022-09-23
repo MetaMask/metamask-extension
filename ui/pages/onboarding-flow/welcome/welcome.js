@@ -32,7 +32,7 @@ export default function OnboardingWelcome() {
   };
 
   return (
-    <div className="onboarding-welcome">
+    <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Typography

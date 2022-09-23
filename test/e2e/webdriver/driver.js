@@ -289,6 +289,10 @@ class Driver {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
   }
 
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
+  }
+
   // Metrics
 
   async collectMetrics() {
@@ -382,6 +386,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',

@@ -24,6 +24,7 @@ describe('Typography', () => {
         <Typography as="div">div</Typography>
         <Typography as="dt">dt</Typography>
         <Typography as="dd">dd</Typography>
+        <Typography as="label">label</Typography>
       </>,
     );
     expect(container.querySelector('p')).toBeDefined();
@@ -54,5 +55,7 @@ describe('Typography', () => {
     expect(getByText('dt')).toBeDefined();
     expect(container.querySelector('dd')).toBeDefined();
     expect(getByText('dd')).toBeDefined();
+    expect(container.querySelector('label')).toBeDefined();
+    expect(getByText('label')).toBeDefined();
   });
 });

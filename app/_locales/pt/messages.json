@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
-  "learmMoreAboutGas": {
-    "message": "Quer $1 sobre o gás?"
-  },
   "learnCancelSpeeedup": {
     "message": "Saiba como $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "saiba mais"
+  },
+  "learnMoreAboutGas": {
+    "message": "Quer $1 sobre o gás?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Saiba mais"
@@ -2000,9 +2001,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2481,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Controlar suas contas e ativos do \"$1\".",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Armazenar e gerenciar dados pertinentes em seu dispositivo.",
@@ -3289,9 +3287,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage exceder a sua configuração de \"slippage máximo\"."
-  },
   "swapAggregator": {
     "message": "Agregador"
   },
@@ -3455,9 +3450,6 @@
   "swapQuoteDetails": {
     "message": "Detalhes da cotação"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage for superior à configuração de \"tolerância a slippage\"."
-  },
   "swapQuoteSource": {
     "message": "Fonte da cotação"
   },
@@ -3487,9 +3479,6 @@
   },
   "swapReviewSwap": {
     "message": "Revisar troca"
-  },
-  "swapSearchForAToken": {
-    "message": "Pesquisar um token"
   },
   "swapSelect": {
     "message": "Selecione"
@@ -3725,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Dados do token"
-  },
-  "tokenDetection": {
-    "message": "Detecção de token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "A detecção de tokens está atualmente disponível em $1. $2"
   },
   "tokenId": {
     "message": "ID do token"

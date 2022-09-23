@@ -43,6 +43,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           >
             <div
               class="account-list-item undefined"
+              data-testid="account-list-item"
             >
               <div
                 class="account-list-item__top-row"
