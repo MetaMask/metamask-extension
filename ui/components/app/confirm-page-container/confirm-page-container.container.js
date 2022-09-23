@@ -5,6 +5,7 @@ import {
   getIsBuyableChain,
   getNetworkIdentifier,
   getSwapsDefaultToken,
+  getMetadataContractName,
   getAccountName,
 } from '../../../selectors';
 import { showModal } from '../../../store/actions';
@@ -18,11 +19,13 @@ function mapStateToProps(state, ownProps) {
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
   const toName = getAccountName(state, to);
+  const toMetadataName = getMetadataContractName(to);
 
   return {
     isBuyableChain,
     contact,
     toName,
+    toMetadataName,
     isOwnedAccount: getAccountsWithLabels(state)
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),

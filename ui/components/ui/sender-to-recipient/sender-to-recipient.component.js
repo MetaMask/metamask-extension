@@ -103,6 +103,7 @@ export function RecipientWithAddress({
   recipientNickname,
   recipientEns,
   recipientName,
+  recipientMetadataName,
 }) {
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
@@ -155,11 +156,13 @@ export function RecipientWithAddress({
             {addressOnly
               ? recipientName ||
                 recipientNickname ||
+                recipientMetadataName ||
                 recipientEns ||
                 shortenAddress(checksummedRecipientAddress)
-              : recipientNickname ||
+              : recipientName ||
+                recipientNickname ||
+                recipientMetadataName ||
                 recipientEns ||
-                recipientName ||
                 t('newContract')}
           </div>
         </Tooltip>
@@ -177,6 +180,7 @@ export function RecipientWithAddress({
 RecipientWithAddress.propTypes = {
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
+  recipientMetadataName: PropTypes.string,
   recipientEns: PropTypes.string,
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
@@ -207,6 +211,7 @@ export default function SenderToRecipient({
   senderName,
   recipientNickname,
   recipientName,
+  recipientMetadataName,
   recipientEns,
   onRecipientClick,
   onSenderClick,
@@ -240,6 +245,7 @@ export default function SenderToRecipient({
           recipientNickname={recipientNickname}
           recipientEns={recipientEns}
           recipientName={recipientName}
+          recipientMetadataName={recipientMetadataName}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -260,6 +266,7 @@ SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
   recipientName: PropTypes.string,
+  recipientMetadataName: PropTypes.string,
   recipientEns: PropTypes.string,
   recipientAddress: PropTypes.string,
   recipientNickname: PropTypes.string,

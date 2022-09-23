@@ -402,6 +402,13 @@ export function getAccountName(state, address) {
   return entry && entry.name !== '' ? entry.name : '';
 }
 
+export function getMetadataContractName(address) {
+  const entry = Object.values(STATIC_MAINNET_TOKEN_LIST).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
   const identities = getMetaMaskIdentities(state);
