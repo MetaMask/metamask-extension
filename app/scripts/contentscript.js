@@ -7,6 +7,7 @@ import { obj as createThoughStream } from 'through2';
 
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -42,10 +43,8 @@ let legacyExtMux,
   legacyPageMux,
   legacyPageMuxLegacyProviderChannel,
   legacyPagePublicConfigChannel,
+  legacyPageStream,
   notificationTransformStream;
-
-const WORKER_KEEP_ALIVE_INTERVAL = 1000;
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
@@ -61,8 +60,51 @@ let extensionMux,
   extensionPort,
   extensionPhishingStream,
   extensionStream,
+  pageChannel,
   pageMux,
-  pageChannel;
+  pageStream;
+
+// worker keep alive interval start
+
+const WORKER_KEEP_ALIVE_INTERVAL = 1000;
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
+const providerStateChunkIds = {};
+
+let keepWorkerAliveInterval;
+
+/**
+ * When a dapp has no connected accounts, end the keepWorkerAliveInterval
+ * TODO: Add logic to call method when all accounts are disconnected
+ */
+// const endKeepWorkerAliveInterval = () => {
+//   if (!keepWorkerAliveInterval) {
+//     return;
+//   }
+
+//   clearInterval(keepWorkerAliveInterval);
+// };
+
+/**
+ * Keep the service worker alive when a dapp provider is connected and in use.
+ * No need to create a new interval if one already exists.
+ *
+ * TODO: Add logic to call method when accounts are connected
+ */
+const startKeepWorkerAliveInterval = () => {
+  if (keepWorkerAliveInterval) {
+    return;
+  }
+
+  console.log('⚠ Starting keep worker alive interval ⚠');
+  keepWorkerAliveInterval = setInterval(() => {
+    // if (browser.runtime.id) {
+    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+    // }
+  }, WORKER_KEEP_ALIVE_INTERVAL);
+};
+
+// worker keep alive interval end
 
 /**
  * Injects a script tag into the current document
@@ -185,10 +227,6 @@ const initPhishingStreams = () => {
 
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
-  const pageStream = new WindowPostMessageStream({
-    name: CONTENT_SCRIPT,
-    target: INPAGE,
-  });
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -200,6 +238,45 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(PROVIDER);
+
+  pageChannel.on('data', (chunk) => {
+    if (chunk.method === MESSAGE_TYPE.GET_PROVIDER_STATE) {
+      console.log('getProviderState request chunk id', chunk.id);
+      providerStateChunkIds[chunk.id] = true;
+    }
+  });
+};
+
+/**
+ * If we identify permitted accounts for the current page, we can imply that
+ * our provider is connected and in use. We will keep the service worker alive
+ * during this state.
+ *
+ * @param {object} chunk - fragment of the stream data
+ * @param {object} chunk.data
+ */
+const handleKeepWorkerAliveLogic = ({ data }) => {
+  const providerStateChunkId = providerStateChunkIds[data?.id];
+
+  if (!providerStateChunkId) {
+    return;
+  }
+
+  delete providerStateChunkIds[providerStateChunkId];
+
+  const permittedAccounts = data?.result?.accounts;
+  if (permittedAccounts.length) {
+    startKeepWorkerAliveInterval();
+  }
+};
+
+const initPageStreams = () => {
+  pageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: INPAGE,
+  });
+
+  setupPageStreams();
 };
 
 const ARBITRARY_CONNECT_EXT_DELAY = 150;
@@ -245,6 +322,10 @@ const setupExtensionStreams = async () => {
     ),
   );
 
+  if (isManifestV3) {
+    extensionStream.on('data', handleKeepWorkerAliveLogic);
+  }
+
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
@@ -253,6 +334,8 @@ const setupExtensionStreams = async () => {
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
   pageChannel.removeAllListeners();
+  pageStream.removeAllListeners();
+
   extensionMux.removeAllListeners();
   extensionChannel.removeAllListeners();
 
@@ -265,12 +348,8 @@ const destroyExtensionStreams = () => {
  */
 
 // TODO:LegacyProvider: Delete
-const setupLegacyPageStreams = () => {
-  const legacyPageStream = new WindowPostMessageStream({
-    name: LEGACY_CONTENT_SCRIPT,
-    target: LEGACY_INPAGE,
-  });
 
+const setupLegacyPageStreams = () => {
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
@@ -282,6 +361,15 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PROVIDER);
   legacyPagePublicConfigChannel =
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+};
+
+const initLegacyPageStreams = () => {
+  legacyPageStream = new WindowPostMessageStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  });
+
+  setupLegacyPageStreams();
 };
 
 // TODO:LegacyProvider: Delete
@@ -332,6 +420,7 @@ const setupLegacyExtensionStreams = () => {
  * TODO:LegacyProvider: Delete
  */
 const destroyLegacyExtensionStreams = () => {
+  legacyPageStream.removeAllListeners();
   legacyPageMuxLegacyProviderChannel.removeAllListeners();
   legacyPagePublicConfigChannel.removeAllListeners();
 
@@ -349,11 +438,22 @@ const destroyLegacyExtensionStreams = () => {
  * and creates a new event listener to the reestablished extension port.
  */
 const resetStreamAndListeners = async () => {
+  // FIXME This is a temporary early return.
+  // We should destroy extension streams when the extension is destroyed.
+  // We need logic to identify if the service worker is connected again.
+  if (!keepWorkerAliveInterval) {
+    return;
+  }
+
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
+  // destroyExtensionStreams and destroyLegacyExtensionStreams now include
+  // removing all page listeners. TODO Revist naming here.
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
 
+  setupPageStreams();
+  setupLegacyPageStreams();
   await setupExtensionStreams();
   setupLegacyExtensionStreams();
 
@@ -366,11 +466,11 @@ const resetStreamAndListeners = async () => {
  * reset the streams if the service worker resets.
  */
 const initStreams = async () => {
-  setupPageStreams();
+  initPageStreams();
   await setupExtensionStreams();
 
   // TODO:LegacyProvider: Delete
-  setupLegacyPageStreams();
+  initLegacyPageStreams();
   setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
@@ -440,12 +540,6 @@ function redirectToPhishingWarning(data = {}) {
   window.location.href = `${baseUrl}#${querystring}`;
 }
 
-const initKeepWorkerAlive = () => {
-  setInterval(() => {
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-  }, WORKER_KEEP_ALIVE_INTERVAL);
-};
-
 const start = () => {
   const isDetectedPhishingSite =
     window.location.origin === phishingPageUrl.origin &&
@@ -457,9 +551,7 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    if (isManifestV3) {
-      initKeepWorkerAlive();
-    } else {
+    if (!isManifestV3) {
       injectScript(inpageBundle);
     }
     initStreams();
