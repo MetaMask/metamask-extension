@@ -2479,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "आपके \"$1\" अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",

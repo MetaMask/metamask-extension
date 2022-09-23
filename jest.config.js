@@ -67,7 +67,7 @@ module.exports = {
   // installed in @metamask/controllers so I had to just blanket specify all
   // of the @metamask/controllers folder.
   transformIgnorePatterns: [
-    '/node_modules/(?!(multiformats|uuid|nanoid|@metamask/controllers|@metamask/snap-controllers)/)',
+    '/node_modules/(?!(multiformats|uuid|nanoid|@metamask/controllers|@metamask/snap-controllers|@metamask/rpc-methods)/)',
   ],
   workerIdleMemoryLimit: '500MB',
 };

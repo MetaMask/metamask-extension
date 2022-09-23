@@ -2479,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "'$1' 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "기기의 데이터를 저장하고 관리합니다.",
