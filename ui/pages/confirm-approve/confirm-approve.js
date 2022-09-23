@@ -314,12 +314,12 @@ export default function ConfirmApprove({
                 <AdvancedGasFeePopover />
               </>
             )}
-            </TransactionModalContextProvider>
-          }
-          hideSenderToRecipient
-          customTxParamsData={customData}
-          assetStandard={assetStandard}
-        />
+          </TransactionModalContextProvider>
+        }
+        hideSenderToRecipient
+        customTxParamsData={customData}
+        assetStandard={assetStandard}
+      />
     </GasFeeContextProvider>
   );
 }
