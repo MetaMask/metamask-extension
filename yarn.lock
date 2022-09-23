@@ -3477,14 +3477,16 @@
   integrity sha512-wkFDdY4XtpF+XCqbgwhsrLRgEM/bYfIt47927JTQZQ2QxQYRbSZ6u0QygnVjIR1eqMteRGx2jtUUZ+bxYQTo/w==
 
 "@metamask/smart-transactions-controller@^2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.3.1.tgz#01f3d5e7b1a59782749ee17f19a400434dbbd2c9"
-  integrity sha512-nfMNtXxs/1JEfPomc7P4NuuUCWW2sRxzmKEJZPW1TdSk/Ey1jcf2az42uhYN6brzpt+YEXJFWfS3q6syi1PRmQ==
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.3.2.tgz#c7969f07c180e30a96c2631a8c856a9f41c894e7"
+  integrity sha512-7WDAiaSaY7aeBSghX1RFjdeeLh0Ce+K5r1jtzvN7RW8WUWGqhL095PVSUkCAUjbLCPdQUM94ASY9s2c9EUyq8Q==
   dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/providers" "^5.7.0"
     "@metamask/controllers" "^30.0.0"
     "@types/lodash" "^4.14.176"
     bignumber.js "^9.0.1"
-    ethers "^5.5.1"
     fast-json-patch "^3.1.0"
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.21"
@@ -12464,7 +12466,7 @@ ethers@^4.0.20, ethers@^4.0.28:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5, ethers@^5.5.1, ethers@^5.6.4:
+ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5, ethers@^5.6.4:
   version "5.6.5"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.5.tgz#3185ac7815dc640993408adf6f133ffabfbcbb63"
   integrity sha512-9CTmplO9bv0s/aPw3HB3txGzKz3tUSI2EfO4dJo0W2WvaEq1ArgsEX6obV+bj5X3yY+Zgb1kAux8TDtJKe1FaA==
