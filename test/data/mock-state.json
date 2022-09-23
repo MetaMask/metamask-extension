@@ -1,6 +1,7 @@
 {
   "appState": {
     "networkDropdownOpen": false,
+    "gasIsLoading": false,
     "isLoading": false,
     "modal": {
       "open": false,
