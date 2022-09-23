@@ -5,7 +5,7 @@ import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, infuraProjectId } from '../../../shared/constants/network';
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
@@ -112,7 +112,8 @@ export function isValidENSDomainName(address) {
 }
 /**
  * Determines whether or not user input is an Unstoppable Domain Name
- * Checks for already given Tld Array
+ * Only checks if the user input has a . and is longer than 1
+ * Sets the Provider URLS to the MetaMask defaults
  * If no array, grab the Tlds from the API
  * compare the ending of the inputted string to the Tld array
  * returns true or false
@@ -121,7 +122,24 @@ export function isValidENSDomainName(address) {
  */
 export async function isValidUnstoppableDomainName(domainInput) {
   if (domainInput.length > 1 && domainInput.includes('.')) {
-    const udResolutionInstance = new Resolution();
+    const ethereumProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
+    const polygonProviderUrl = `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`;
+    const udResolutionInstance = new Resolution({
+      sourceConfig: {
+        uns: {
+          locations: {
+            Layer1: {
+              url: ethereumProviderUrl,
+              network: 'mainnet',
+            },
+            Layer2: {
+              url: polygonProviderUrl,
+              network: 'polygon-mainnet',
+            },
+          },
+        },
+      },
+    });
     const isValidUD = await udResolutionInstance.isSupportedDomain(domainInput);
     return isValidUD;
   }
