@@ -1,5 +1,11 @@
 {
   "resources": {
+    "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": {
+      "packages": {
+        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object>for-in": true,
+        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
+      }
+    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -985,8 +991,8 @@
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
-        "lavamoat-core": true,
         "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true,
         "nyc>convert-source-map": true,
         "through2": true
       }
@@ -5447,9 +5453,9 @@
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
-        "lavamoat-core": true,
         "lavamoat>@lavamoat/aa": true,
-        "lavamoat>json-stable-stringify": true
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true
       }
     },
     "lavamoat-browserify>browser-resolve": {
@@ -5505,87 +5511,6 @@
       },
       "packages": {
         "lavamoat-browserify>readable-stream": true
-      }
-    },
-    "lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "path.extname": true,
-        "path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat-core>fromentries": true,
-        "lavamoat-core>merge-deep": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true
-      }
-    },
-    "lavamoat-core>merge-deep": {
-      "packages": {
-        "gulp-zip>plugin-error>arr-union": true,
-        "lavamoat-core>merge-deep>clone-deep": true,
-        "lavamoat-core>merge-deep>kind-of": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep": {
-      "packages": {
-        "@babel/register>clone-deep>is-plain-object": true,
-        "lavamoat-core>merge-deep>clone-deep>for-own": true,
-        "lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
-        "lavamoat-core>merge-deep>kind-of": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>for-own": {
-      "packages": {
-        "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>lazy-cache": {
-      "globals": {
-        "process.env.TRAVIS": true,
-        "process.env.UNLAZY": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>shallow-clone": {
-      "packages": {
-        "lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
-        "lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
-        "lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true,
-        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
-      "globals": {
-        "process.env.UNLAZY": true
-      }
-    },
-    "lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
-      "packages": {
-        "lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
-        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
-      }
-    },
-    "lavamoat-core>merge-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>@babel/highlight": {
@@ -5644,6 +5569,81 @@
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
+      }
+    },
+    "lavamoat>lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.writeFileSync": true,
+        "path.extname": true,
+        "path.join": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>merge-deep": true,
+        "lavamoat>lavamoat-tofu": true,
+        "nyc>process-on-spawn>fromentries": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep": {
+      "packages": {
+        "gulp-zip>plugin-error>arr-union": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep": {
+      "packages": {
+        "@babel/register>clone-deep>is-plain-object": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
+      "packages": {
+        "gulp>undertaker>object.reduce>for-own>for-in": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
+      "globals": {
+        "process.env.TRAVIS": true,
+        "process.env.UNLAZY": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
+      "packages": {
+        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
+      "globals": {
+        "process.env.UNLAZY": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-tofu": {
