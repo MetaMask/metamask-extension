@@ -18,6 +18,10 @@ const DEFAULT_INTERVAL = MINUTE * 3;
 // unlike setIntervals and setTimeout which accepts the value in milliseconds.
 const DEFAULT_INTERVAL_MV3 = 3;
 
+const checkAlarmExists = (alarmList) => {
+  return alarmList.some((alarm) => alarm.name === DETECT_TOKEN_ALARM);
+};
+
 /**
  * A controller that polls for token exchange
  * rates based on a user's current token list
@@ -212,9 +216,7 @@ export default class DetectTokensController {
       return;
     }
     chrome.alarms.getAll((alarms) => {
-      const hasAlarm = alarms.some(
-        (alarm) => alarm.name === DETECT_TOKEN_ALARM,
-      );
+      const hasAlarm = checkAlarmExists(alarms);
       if (!hasAlarm) {
         chrome.alarms.create(DETECT_TOKEN_ALARM, {
           delayInMinutes: DEFAULT_INTERVAL_MV3,
@@ -227,9 +229,7 @@ export default class DetectTokensController {
 
   alarmListener = () => {
     chrome.alarms.getAll((alarms) => {
-      const hasAlarm = alarms.some(
-        (alarm) => alarm.name === DETECT_TOKEN_ALARM,
-      );
+      const hasAlarm = checkAlarmExists(alarms);
       if (hasAlarm) {
         this.detectNewTokens();
       }
@@ -251,7 +251,9 @@ export default class DetectTokensController {
     if (isManifestV3) {
       this.rescheduleTokenDetectionPollingInMV3();
     } else {
-      this._handle && clearInterval(this._handle);
+      if (this._handle) {
+        clearInterval(this._handle);
+      }
       this._handle = setInterval(() => {
         this.detectNewTokens();
       }, interval);
