@@ -11,16 +11,13 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { DETECT_TOKEN_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { checkAlarmExists } from '../lib/util';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
 // chrome alarms takes interval in minutes
 // unlike setIntervals and setTimeout which accepts the value in milliseconds.
 const DEFAULT_INTERVAL_MV3 = 3;
-
-const checkAlarmExists = (alarmList) => {
-  return alarmList.some((alarm) => alarm.name === DETECT_TOKEN_ALARM);
-};
 
 /**
  * A controller that polls for token exchange
@@ -216,7 +213,7 @@ export default class DetectTokensController {
       return;
     }
     chrome.alarms.getAll((alarms) => {
-      const hasAlarm = checkAlarmExists(alarms);
+      const hasAlarm = checkAlarmExists(alarms, DETECT_TOKEN_ALARM);
       if (!hasAlarm) {
         chrome.alarms.create(DETECT_TOKEN_ALARM, {
           delayInMinutes: DEFAULT_INTERVAL_MV3,
@@ -229,7 +226,7 @@ export default class DetectTokensController {
 
   alarmListener = () => {
     chrome.alarms.getAll((alarms) => {
-      const hasAlarm = checkAlarmExists(alarms);
+      const hasAlarm = checkAlarmExists(alarms, DETECT_TOKEN_ALARM);
       if (hasAlarm) {
         this.detectNewTokens();
       }

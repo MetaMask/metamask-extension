@@ -4,6 +4,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { checkAlarmExists } from '../lib/util';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -209,9 +210,7 @@ export default class AppStateController extends EventEmitter {
       });
       chrome.alarms.onAlarm.addListener(() => {
         chrome.alarms.getAll((alarms) => {
-          const hasAlarm = alarms.find(
-            (alarm) => alarm.name === AUTO_LOCK_TIMEOUT_ALARM,
-          );
+          const hasAlarm = checkAlarmExists(alarms, AUTO_LOCK_TIMEOUT_ALARM);
           if (hasAlarm) {
             this.onInactiveTimeout();
             chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
