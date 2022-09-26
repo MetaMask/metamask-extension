@@ -12,10 +12,12 @@ global.chrome = {
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
-/* eslint-disable-next-line jest/require-top-level-describe */
-beforeEach(() => {
-  nock.cleanAll();
-});
+if (typeof beforeEach === 'function') {
+  /* eslint-disable-next-line jest/require-top-level-describe */
+  beforeEach(() => {
+    nock.cleanAll();
+  });
+}
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
