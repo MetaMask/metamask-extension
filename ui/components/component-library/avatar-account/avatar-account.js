@@ -21,6 +21,7 @@ const getStyles = (diameter) => ({
   width: diameter,
   height: diameter,
   borderRadius: diameter / 2,
+  display: 'flex',
 });
 
 export const AvatarAccount = ({ size, address, className, type, ...props }) => {
