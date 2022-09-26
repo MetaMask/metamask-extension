@@ -580,8 +580,12 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
-    this.keyringController.on('unlock', () => this._onUnlock());
-    this.keyringController.on('lock', () => this._onLock());
+    this.keyringController.on('unlock', () => {
+      this._onUnlock();
+    });
+    this.keyringController.on('lock', () => {
+      this._onLock();
+    });
 
     const getIdentities = () =>
       this.preferencesController.store.getState().identities;
@@ -3480,7 +3484,7 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
+    outStream.on('data', createMetaRPCHandler(api, outStream, this.store));
     const handleUpdate = (update) => {
       if (outStream._writableState.ended) {
         return;

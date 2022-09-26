@@ -498,6 +498,7 @@ export default class PreferencesController {
    */
   removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail();
+
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url;
     });
