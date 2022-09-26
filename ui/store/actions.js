@@ -3617,7 +3617,11 @@ export async function closeNotificationPopup() {
  * @returns {Promise<void>}
  */
 export function trackMetaMetricsEvent(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+  const actionId = generateActionId();
+  return submitRequestToBackground('trackMetaMetricsEvent', [
+    payload,
+    { ...options, actionId },
+  ]);
 }
 
 export function createEventFragment(options) {

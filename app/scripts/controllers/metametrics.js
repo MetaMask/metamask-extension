@@ -443,9 +443,17 @@ export default class MetaMetricsController {
     }
   }
 
-  // Track metametrics event by creating a fragment for it.
+  // Method to track metrics event
+  // If an actionId is provided createEventFragment, finalizeEventFragment are used to track event,
+  // this is to achieve idempotent behaviour.
+  // If actionid is not provided this._trackEvent is used to track the event.
   trackEvent(payload, options) {
-    this.createEventFragment({ ...payload, ...options });
+    if (options.actionId) {
+      const fragment = this.createEventFragment({ ...payload, ...options });
+      this.finalizeEventFragment(fragment.id);
+    } else {
+      this._trackEvent(payload, options);
+    }
   }
 
   /**
