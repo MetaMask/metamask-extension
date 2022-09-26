@@ -604,7 +604,7 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe.only('trackEvent', function () {
+  describe('trackEvent', function () {
     it('should call only metricsController._trackEvent if actionId is not provided', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
