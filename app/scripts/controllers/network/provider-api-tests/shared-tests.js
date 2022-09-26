@@ -287,26 +287,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const result = await withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            // Note that we have to manually capture the value that the
-            // promise that `makeRpcCall` returns when it resolves or is
-            // rejected using `then`/`catch` instead of `try`/`catch` because
-            // the resolution/rejection occurs out of band. To be more
-            // specific, the promise will be fulfilled while the `while` loop
-            // below is running. This means that if we did not attach `catch`
-            // to the promise, Node would complain that the promise had a
-            // unhandled rejection. So we attach `catch` to capture the
-            // rejection and we also attach `then` to capture the resolution
-            // and check them after the loop ends.
-
-            let capturedResolutionValue;
-            let capturedRejectionValue;
-            makeRpcCall(request)
-              .then((resolutionValue) => {
-                capturedResolutionValue = resolutionValue;
-              })
-              .catch((rejectionValue) => {
-                capturedRejectionValue = rejectionValue;
-              });
+            const promiseForResult = makeRpcCall(request);
 
             while (nock.pendingMocks().length > 0) {
               clock.runAll();
@@ -315,10 +296,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
               );
             }
 
-            if (capturedRejectionValue !== undefined) {
-              return Promise.reject(capturedRejectionValue);
-            }
-            return Promise.resolve(capturedResolutionValue);
+            return await promiseForResult;
           },
         );
 
@@ -411,26 +389,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const result = await withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            // Note that we have to manually capture the value that the
-            // promise that `makeRpcCall` returns when it resolves or is
-            // rejected using `then`/`catch` instead of `try`/`catch` because
-            // the resolution/rejection occurs out of band. To be more
-            // specific, the promise will be fulfilled while the `while` loop
-            // below is running. This means that if we did not attach `catch`
-            // to the promise, Node would complain that the promise had a
-            // unhandled rejection. So we attach `catch` to capture the
-            // rejection and we also attach `then` to capture the resolution
-            // and check them after the loop ends.
-
-            let capturedResolutionValue;
-            let capturedRejectionValue;
-            makeRpcCall(request)
-              .then((resolutionValue) => {
-                capturedResolutionValue = resolutionValue;
-              })
-              .catch((rejectionValue) => {
-                capturedRejectionValue = rejectionValue;
-              });
+            const promiseForResult = makeRpcCall(request);
 
             while (nock.pendingMocks().length > 0) {
               clock.runAll();
@@ -439,16 +398,13 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
               );
             }
 
-            if (capturedRejectionValue !== undefined) {
-              return Promise.reject(capturedRejectionValue);
-            }
-            return Promise.resolve(capturedResolutionValue);
+            return await promiseForResult;
           },
         );
 
         expect(result).toStrictEqual('the result');
       });
-    }, 10000);
+    });
 
     it(`causes a request to fail with a custom error if an "${errorMessagePrefix}" error is thrown while making the request to Infura 5 times in a row`, async () => {
       await withMockedInfuraCommunications(async (comms) => {
