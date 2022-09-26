@@ -5,6 +5,7 @@ import {
   addHexPrefix,
   toChecksumAddress,
   zeroAddress,
+  isHexPrefixed,
 } from 'ethereumjs-util';
 
 export const BURN_ADDRESS = zeroAddress();
@@ -72,4 +73,11 @@ export function toChecksumHexAddress(address) {
     return hexPrefixed;
   }
   return toChecksumAddress(hexPrefixed);
+}
+
+export function stripHexPrefix(str) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+  return isHexPrefixed(str) ? str.slice(2) : str;
 }
