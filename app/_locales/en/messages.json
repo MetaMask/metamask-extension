@@ -2671,11 +2671,11 @@
   },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy_*` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
@@ -2692,6 +2692,10 @@
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
+  },
+  "permission_viewBip32PublicKeys": {
+    "message": "View your public key for $1 ($2).",
+    "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permissions": {
     "message": "Permissions"
