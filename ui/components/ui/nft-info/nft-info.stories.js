@@ -5,7 +5,7 @@ export default {
   title: 'Components/UI/NftInfo',
   id: __filename,
   argTypes: {
-    tokenName: {
+    assetName: {
       control: { type: 'text' },
     },
     tokenAddress: {
@@ -16,7 +16,7 @@ export default {
     },
   },
   args: {
-    tokenName: 'Catnip Spicewight',
+    assetName: 'Catnip Spicewight',
     tokenAddress: '0xa3aee8bce55beea1951ef834b99f3ac60d1abeeb',
     tokenId: '112233',
   },

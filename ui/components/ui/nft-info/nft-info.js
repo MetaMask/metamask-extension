@@ -12,7 +12,7 @@ import {
 import Identicon from '../identicon';
 import Button from '../button';
 
-export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
+export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
 
   return (
@@ -31,7 +31,7 @@ export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
             variant={TYPOGRAPHY.H6}
             marginTop={4}
           >
-            {tokenName}
+            {assetName}
           </Typography>
           <Typography
             variant={TYPOGRAPHY.H7}
@@ -58,7 +58,7 @@ export default function NftInfo({ tokenName, tokenAddress, tokenId }) {
 }
 
 NftInfo.propTypes = {
-  tokenName: PropTypes.string,
+  assetName: PropTypes.string,
   tokenAddress: PropTypes.string,
   tokenId: PropTypes.string,
 };
