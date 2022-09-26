@@ -1,6 +1,7 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
+import ReadOnlyNetworkStore from './network-store';
 import LocalStore from './local-store';
 
 let dataPersistenceFailing = false;
@@ -15,12 +16,10 @@ async function persistData(state, localStore) {
   if (localStore.isSupported) {
     try {
       await localStore.set(state);
-      console.log('persistData in metaRPC:', state);
       if (dataPersistenceFailing) {
         dataPersistenceFailing = false;
       }
     } catch (err) {
-      // log error so we dont break the pipeline
       if (!dataPersistenceFailing) {
         dataPersistenceFailing = true;
         captureException(err);
@@ -30,14 +29,19 @@ async function persistData(state, localStore) {
   }
 }
 
+let isDirty = false;
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+
 const createMetaRPCHandler = (api, outStream, store) => {
-  let isDirty = false;
-  const localStore = new LocalStore();
-  return async (data) => {
-    const versionData = await localStore.get();
+  if (store) {
+    // don't think this is actually necessary,
+    // this will call without changes to state
     store.subscribe((_) => {
       isDirty = true;
     });
+  }
+  return async (data) => {
     if (outStream._writableState.ended) {
       return;
     }
@@ -56,8 +60,13 @@ const createMetaRPCHandler = (api, outStream, store) => {
     let error;
     try {
       result = await api[data.method](...data.params);
-      // save state
-      if (isDirty) {
+
+      if (
+        isDirty &&
+        store &&
+        !['trackMetaMetricsEvent', 'getState'].includes(data.method)
+      ) {
+        const versionData = await localStore.get();
         await persistData(
           { data: store.getState(), meta: versionData.meta },
           localStore,
