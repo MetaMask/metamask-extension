@@ -132,15 +132,12 @@ chrome.runtime.onMessage.addListener(() => {
  * MAIN world injection does not work properly via manifest
  * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
  */
-// eslint-disable-next-line no-undef
-self.addEventListener('install', () => {
-  chrome.scripting.registerContentScripts([
-    {
-      id: 'inpage',
-      matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-      js: ['inpage.js'],
-      runAt: 'document_start',
-      world: 'MAIN',
-    },
-  ]);
-});
+chrome.scripting.registerContentScripts([
+  {
+    id: 'inpage',
+    matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+    js: ['inpage.js'],
+    runAt: 'document_start',
+    world: 'MAIN',
+  },
+]);
