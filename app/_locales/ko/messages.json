@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "learmMoreAboutGas": {
-    "message": "가스에 대해 $1하시겠습니까?"
-  },
   "learnCancelSpeeedup": {
     "message": "$1하는 방법 알아보기",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "자세히 알아보기"
+  },
+  "learnMoreAboutGas": {
+    "message": "가스에 대해 $1하시겠습니까?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "자세히 알아보기"
@@ -2478,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "'$1' 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "기기의 데이터를 저장하고 관리합니다.",
@@ -3713,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"
-  },
-  "tokenDetection": {
-    "message": "토큰 감지"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "토큰 감지 기능은 현재 $1. $2에서 사용할 수 있습니다."
   },
   "tokenId": {
     "message": "토큰 ID"

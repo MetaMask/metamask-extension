@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
   },
-  "learmMoreAboutGas": {
-    "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
-  },
   "learnCancelSpeeedup": {
     "message": "Μάθετε πώς να $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "μάθε περισσότερα"
+  },
+  "learnMoreAboutGas": {
+    "message": "Θέλετε να $1 για το τέλος συναλλαγής;",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Μάθε περισσότερα"
@@ -2478,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Ελέγξτε τους λογαριασμούς και τα περιουσιακά σας στοιχεία σας στο \"$1\".",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
@@ -3713,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Λεπτομέρειες token"
-  },
-  "tokenDetection": {
-    "message": "Εντοπισμός token"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Ο εντοπισμός token είναι επί του παρόντος διαθέσιμος στο $1. $2"
   },
   "tokenId": {
     "message": "Αναγνωριστικό token"

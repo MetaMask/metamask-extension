@@ -1415,15 +1415,16 @@
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
-  "learmMoreAboutGas": {
-    "message": "Quer $1 sobre o gás?"
-  },
   "learnCancelSpeeedup": {
     "message": "Saiba como $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "mais informações"
+  },
+  "learnMoreAboutGas": {
+    "message": "Quer $1 sobre o gás?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Mais informações"

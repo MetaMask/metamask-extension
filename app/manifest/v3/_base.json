@@ -67,6 +67,7 @@
   "name": "__MSG_appName__",
   "permissions": [
     "activeTab",
+    "alarms",
     "clipboardWrite",
     "notifications",
     "scripting",

@@ -1672,15 +1672,16 @@
   "lastConnected": {
     "message": "Последнее подключение"
   },
-  "learmMoreAboutGas": {
-    "message": "Хотите $1 о газе?"
-  },
   "learnCancelSpeeedup": {
     "message": "Узнайте, как $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "подробнее"
+  },
+  "learnMoreAboutGas": {
+    "message": "Хотите $1 о газе?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Подробнее"
@@ -2478,7 +2479,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "Контролируйте свои счета и активы «$1».",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Храните и управляйте его данными на вашем устройстве.",
@@ -3713,12 +3714,6 @@
   },
   "tokenDetails": {
     "message": "Сведения о токене"
-  },
-  "tokenDetection": {
-    "message": "Обнаружение токена"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "Обнаружение токена в настоящее время доступно на $1. $2"
   },
   "tokenId": {
     "message": "Ид. токена"

@@ -62,10 +62,12 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
+import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
-import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -435,7 +437,7 @@ export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
 }
 
 export function getCurrentEthBalance(state) {
-  return getCurrentAccountWithSendEtherInfo(state).balance;
+  return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
 
 export function getGasIsLoading(state) {
@@ -708,6 +710,23 @@ export function getIsBuyableTransakChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
 }
 
+export function getIsBuyableTransakToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
+  );
+}
+
+export function getIsBuyableMoonpayToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  const _symbol = formatMoonpaySymbol(symbol, chainId);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay.showOnlyCurrencies?.includes(
+      _symbol,
+    ),
+  );
+}
+
 export function getIsBuyableMoonPayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
@@ -720,6 +739,13 @@ export function getIsBuyableWyreChain(state) {
 export function getIsBuyableCoinbasePayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
+export function getIsBuyableCoinbasePayToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
+  );
 }
 
 export function getNativeCurrencyImage(state) {
@@ -738,6 +764,17 @@ export function getShowWhatsNewPopup(state) {
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
+}
+
+export function getInsightSnaps(state) {
+  const snaps = Object.values(state.metamask.snaps);
+  const subjects = getPermissionSubjects(state);
+
+  const insightSnaps = snaps.filter(
+    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+  );
+
+  return insightSnaps;
 }
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
@@ -1122,21 +1159,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
- * To check if the token detection is ON and either a dynamic list is available
- * or the user is on mainnet
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getDisplayDetectedTokensLink(state) {
-  const useTokenDetection = getUseTokenDetection(state);
-  const isMainnet = getIsMainnet(state);
-  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
-
-  return (isDynamicTokenListAvailable || isMainnet) && useTokenDetection;
-}
-
-/**
  * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
  *
  * @param {*} state
@@ -1201,4 +1223,15 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   const hasNoTokens = getNumberOfTokens(state) === 0;
 
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
+}
+
+export function getShouldShowSeedPhraseReminder(state) {
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+    state.metamask;
+  const accountBalance = getCurrentEthBalance(state) ?? 0;
+  return (
+    seedPhraseBackedUp === false &&
+    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+    dismissSeedBackUpReminder === false
+  );
 }
