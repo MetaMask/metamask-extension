@@ -18,8 +18,8 @@ const Diameters = {
 export const types = ['Jazzicon', 'Blockie'];
 
 const getStyles = (diameter) => ({
-  height: diameter,
   width: diameter,
+  height: diameter,
   borderRadius: diameter / 2,
 });
 
@@ -31,7 +31,11 @@ export const AvatarAccount = ({ size, address, className, type, ...props }) => {
       {...props}
     >
       {type === 'Jazzicon' ? (
-        <Jazzicon address={address} style={getStyles(Diameters[size])} />
+        <Jazzicon
+          address={address}
+          diameter={Diameters[size]}
+          style={getStyles(Diameters[size])}
+        />
       ) : (
         <BlockieIdenticon
           address={address}
