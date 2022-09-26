@@ -15,7 +15,6 @@
     "dist": "yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
-    "build:icons": "node ui/components/component-library/icon/scripts/generate-icon-names.js && node ui/components/component-library/icon/scripts/generate-icon-scss.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 PORTFOLIO_URL=http://127.0.0.1:8080 yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/mv3-perf-stats/index.js",
