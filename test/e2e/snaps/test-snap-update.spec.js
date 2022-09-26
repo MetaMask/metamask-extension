@@ -27,7 +27,7 @@ describe('Test Snap update', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page and connect
+        // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // find and scroll to the correct card and click first
@@ -53,7 +53,7 @@ describe('Test Snap update', function () {
           10000,
         );
 
-        await driver.delay(2000);
+        await driver.delay(1000);
 
         // approve install of snap
         windowHandles = await driver.getAllWindowHandles();
@@ -80,8 +80,7 @@ describe('Test Snap update', function () {
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(3, 5000, 10000);
-
-        await driver.delay(2000);
+        await driver.delay(1000);
 
         // approve update of snap
         windowHandles = await driver.getAllWindowHandles();
@@ -94,30 +93,30 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        // try to go to the MM pages
+        // switch to the original MM tab
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
+        await driver.delay(500);
 
-        // try to click on the account menu icon
+        // click on the account menu icon
         const notificationResult = await driver.findElement(
           '.account-menu__icon',
         );
         await driver.clickElement('.account-menu__icon');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // try to click on the notification item
         await driver.clickElement({
           text: 'Settings',
           tag: 'div',
         });
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // try to click on the snaps item
         await driver.clickElement({
           text: 'Snaps',
           tag: 'div',
         });
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // look for the correct version text
         const notificationResultMessage = await driver.findElement(
