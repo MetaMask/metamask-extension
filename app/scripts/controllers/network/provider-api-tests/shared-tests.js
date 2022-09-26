@@ -11,7 +11,7 @@ import {
 } from './helpers';
 
 const originalSetTimeout = setTimeout;
-const TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY = 50;
+const TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY = 10;
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method that
