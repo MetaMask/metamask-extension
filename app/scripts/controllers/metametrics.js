@@ -449,7 +449,11 @@ export default class MetaMetricsController {
   // If actionid is not provided this._trackEvent is used to track the event.
   trackEvent(payload, options) {
     if (options?.actionId) {
-      const fragment = this.createEventFragment({ ...payload, ...options });
+      const fragment = this.createEventFragment({
+        ...payload,
+        ...options,
+        successEvent: payload.event,
+      });
       this.finalizeEventFragment(fragment.id);
     } else {
       this._trackEvent(payload, options);
