@@ -68,7 +68,7 @@ const createMetaRPCHandler = (api, outStream, store) => {
       ) {
         const versionData = await localStore.get();
         await persistData(
-          { data: store.getState(), meta: versionData.meta },
+          { data: store.getState(), meta: versionData?.meta },
           localStore,
         );
         isDirty = false;
