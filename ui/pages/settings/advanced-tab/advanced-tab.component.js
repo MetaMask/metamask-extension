@@ -236,6 +236,17 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  backupUserData = async () => {
+    const { fileName, data } = await this.props.backupUserData();
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'User Data Exported',
+      category: 'Backup',
+      properties: {},
+    });
+  };
+
   renderUserDataBackup() {
     const { t } = this.context;
     return (
@@ -255,16 +266,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={async () => {
-                const { fileName, data } = await this.props.backupUserData();
-                exportAsFile(fileName, data);
-
-                this.context.trackEvent({
-                  event: 'User Data Exported',
-                  category: 'Backup',
-                  properties: {},
-                });
-              }}
+              onClick={() => this.backupUserData()}
             >
               {t('backup')}
             </Button>
