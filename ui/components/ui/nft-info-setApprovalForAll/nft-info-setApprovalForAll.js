@@ -77,7 +77,7 @@ export default function NftInfoSetApprovalForAll({
                 </Typography>
               }
             >
-              <i className="fa fa-exclamation-triangle  nft-info__content__tooltip__icon" />
+              <i className="fa fa-exclamation-triangle nft-info__content__tooltip__icon" />
             </Tooltip>
             <Typography
               variant={TYPOGRAPHY.H5}
