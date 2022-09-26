@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-const { PAGES } = require('../webdriver/driver');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap update', function () {
@@ -98,9 +97,6 @@ describe('Test Snap update', function () {
         await driver.delay(500);
 
         // click on the account menu icon
-        const notificationResult = await driver.findElement(
-          '.account-menu__icon',
-        );
         await driver.clickElement('.account-menu__icon');
         await driver.delay(500);
 
