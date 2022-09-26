@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
   },
-  "connectingToRinkeby": {
-    "message": "Jungiamasi prie „Rinkeby“ bandomojo tinklo"
-  },
   "connectingToRopsten": {
     "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
   },
@@ -767,9 +764,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Šia fraze su niekuo NESIDALINKITE!"
-  },
-  "rinkeby": {
-    "message": "„Rinkeby“ bandomasis tinklas"
   },
   "ropsten": {
     "message": "„Ropsten“ bandomasis tinklas"

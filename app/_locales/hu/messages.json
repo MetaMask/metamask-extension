@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
   },
-  "connectingToRinkeby": {
-    "message": "Kapcsolódás a Rinkeby Teszthálózathoz"
-  },
   "connectingToRopsten": {
     "message": "Csatlakozás a Ropsten teszthálózathoz"
   },
@@ -760,9 +757,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE ossza meg ezt a mondatot senkivel!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby teszthálózat"
   },
   "ropsten": {
     "message": "Ropsten teszthálózat"

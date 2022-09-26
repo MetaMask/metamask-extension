@@ -7,12 +7,12 @@ import NetworksListItem from '.';
 const mockState = {
   metamask: {
     provider: {
-      chainId: '0x4',
+      chainId: '0x5',
       nickname: '',
       rpcPrefs: {},
-      rpcUrl: 'https://rinkeby.infura.io/v3/undefined',
+      rpcUrl: 'https://goerli.infura.io/v3/undefined',
       ticker: 'ETH',
-      type: 'rinkeby',
+      type: 'goerli',
     },
   },
 };

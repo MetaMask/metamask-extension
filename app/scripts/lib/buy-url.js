@@ -167,8 +167,6 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
       return createCoinbasePayUrl(address, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
-    case 'rinkeby-faucet':
-      return 'https://www.rinkeby.io/';
     case 'kovan-faucet':
       return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
@@ -188,8 +186,6 @@ function getDefaultServiceForChain(chainId) {
       return 'wyre';
     case CHAIN_IDS.ROPSTEN:
       return 'metamask-faucet';
-    case CHAIN_IDS.RINKEBY:
-      return 'rinkeby-faucet';
     case CHAIN_IDS.KOVAN:
       return 'kovan-faucet';
     case CHAIN_IDS.GOERLI:

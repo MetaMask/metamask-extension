@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkebyテストネットワークに接続中"
-  },
   "connectingToRopsten": {
     "message": "Ropstenテストネットワークに接続中"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "アクセス許可を取り消すと、次の $1 が今後 $2 にアクセスできなくなります",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkebyテストネットワーク"
   },
   "ropsten": {
     "message": "Ropstenテストネットワーク"

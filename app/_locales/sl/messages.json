@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
-  "connectingToRinkeby": {
-    "message": "Povezovanje na testno omrežje Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Povezovanje na testno omrežje Ropsten"
   },
@@ -755,9 +752,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Tega ne delite z nikomer!"
-  },
-  "rinkeby": {
-    "message": "Testno omrežje Rinkeby"
   },
   "ropsten": {
     "message": "Testno omrežje Ropsten"

@@ -202,9 +202,6 @@
   "connectingToMainnet": {
     "message": "連線到主 Ethereum 網路"
   },
-  "connectingToRinkeby": {
-    "message": "連線到 Rinkeby 測試網路"
-  },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"
   },
@@ -749,9 +746,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "請勿將助憶詞洩漏予他人"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 測試網路"
   },
   "ropsten": {
     "message": "Ropsten 測試網路"

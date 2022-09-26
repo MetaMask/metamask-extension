@@ -193,9 +193,6 @@
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
   },
@@ -745,9 +742,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "USISHIRIKI kirai hiki na mtu yeyote!"
-  },
-  "rinkeby": {
-    "message": "Mtandao wa Majaribio wa Rinkeby"
   },
   "ropsten": {
     "message": "Mtandao wa Majaribio wa Ropsten"

@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμών Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "Με την ανάκληση της άδειας, το ακόλουθο $1 δεν θα έχει πλέον πρόσβαση στο $2 σας",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Δοκιμαστικό Δίκτυο Rinkeby"
   },
   "ropsten": {
     "message": "Δίκτυο Δοκιμών Ropsten"

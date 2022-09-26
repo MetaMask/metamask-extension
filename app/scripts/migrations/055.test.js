@@ -32,7 +32,7 @@ describe('migration #55', () => {
           incomingTxLastFetchedBlocksByNetwork: {
             [NETWORK_TYPES.MAINNET]: 1,
             [NETWORK_TYPES.ROPSTEN]: 2,
-            [NETWORK_TYPES.RINKEBY]: 3,
+            rinkeby: 3,
             [NETWORK_TYPES.GOERLI]: 4,
             [NETWORK_TYPES.KOVAN]: 5,
           },
@@ -49,7 +49,7 @@ describe('migration #55', () => {
         incomingTxLastFetchedBlockByChainId: {
           [CHAIN_IDS.MAINNET]: 1,
           [CHAIN_IDS.ROPSTEN]: 2,
-          [CHAIN_IDS.RINKEBY]: 3,
+          '0x4': 3,
           [CHAIN_IDS.GOERLI]: 4,
           [CHAIN_IDS.KOVAN]: 5,
         },

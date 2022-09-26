@@ -32,18 +32,6 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://ropsten.etherscan.io',
   },
   {
-    labelKey: NETWORK_TYPES.RINKEBY,
-    iconColor: '#F6C343',
-    providerType: NETWORK_TYPES.RINKEBY,
-    rpcUrl: getRpcUrl({
-      network: NETWORK_TYPES.RINKEBY,
-      excludeProjectId: true,
-    }),
-    chainId: CHAIN_IDS.RINKEBY,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.RINKEBY],
-    blockExplorerUrl: 'https://rinkeby.etherscan.io',
-  },
-  {
     labelKey: NETWORK_TYPES.GOERLI,
     iconColor: '#3099f2',
     providerType: NETWORK_TYPES.GOERLI,

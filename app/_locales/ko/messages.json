@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "이더리움 메인넷에 연결 중"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby 테스트 네트워크에 연결 중"
-  },
   "connectingToRopsten": {
     "message": "Ropsten 테스트 네트워크에 연결 중"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "권한을 취소하면 다음 $1의 $2 권한은 더 이상 유효하지 않습니다",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 테스트 네트워크"
   },
   "ropsten": {
     "message": "Ropsten 테스트 네트워크"

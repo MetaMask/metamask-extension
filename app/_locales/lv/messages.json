@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },
-  "connectingToRinkeby": {
-    "message": "Pieslēdzas Rinkeby testa tīklam"
-  },
   "connectingToRopsten": {
     "message": "Pieslēdzas Ropsten testa tīklam"
   },
@@ -763,9 +760,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NEDALIETIES ar šo frāzi!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby testa tīkls"
   },
   "ropsten": {
     "message": "Ropsten testa tīkls"

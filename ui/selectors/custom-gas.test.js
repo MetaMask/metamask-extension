@@ -378,8 +378,8 @@ describe('custom-gas selectors', () => {
               showFiatInTestnets: false,
             },
             provider: {
-              type: 'rinkeby',
-              chainId: '0x4',
+              type: 'goerli',
+              chainId: '0x5',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -427,8 +427,8 @@ describe('custom-gas selectors', () => {
               showFiatInTestnets: true,
             },
             provider: {
-              type: 'rinkeby',
-              chainId: '0x4',
+              type: 'goerli',
+              chainId: '0x5',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -639,8 +639,8 @@ describe('custom-gas selectors', () => {
               showFiatInTestnets: false,
             },
             provider: {
-              type: 'rinkeby',
-              chainId: '0x4',
+              type: 'goerli',
+              chainId: '0x5',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -688,8 +688,8 @@ describe('custom-gas selectors', () => {
               showFiatInTestnets: true,
             },
             provider: {
-              type: 'rinkeby',
-              chainId: '0x4',
+              type: 'goerli',
+              chainId: '0x5',
             },
           },
           send: getInitialSendStateWithExistingTxState({

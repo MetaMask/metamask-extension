@@ -469,8 +469,6 @@ export default class Routes extends Component {
         return t('connectingToRopsten');
       case NETWORK_TYPES.KOVAN:
         return t('connectingToKovan');
-      case NETWORK_TYPES.RINKEBY:
-        return t('connectingToRinkeby');
       case NETWORK_TYPES.GOERLI:
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:

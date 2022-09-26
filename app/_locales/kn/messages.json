@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
   "connectingToRopsten": {
     "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -767,9 +764,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "ropsten": {
     "message": "Ropsten ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"

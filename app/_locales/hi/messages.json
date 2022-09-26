@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
   "connectingToRopsten": {
     "message": "Ropsten टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "अनुमति निरस्त करने से, निम्नलिखित $1 अब आपके $2 को एक्सेस नहीं कर सकेगा",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क"
   },
   "ropsten": {
     "message": "Ropsten टेस्ट नेटवर्क"

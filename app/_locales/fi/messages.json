@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
   },
-  "connectingToRinkeby": {
-    "message": "Yhdistetään Rinkebyn koeverkkoon"
-  },
   "connectingToRopsten": {
     "message": "Yhdistetään Ropstenin koeverkkoon"
   },
@@ -764,9 +761,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
-  },
-  "rinkeby": {
-    "message": "Rinkebyn koeverkko"
   },
   "ropsten": {
     "message": "Ropstenin koeverkko"

@@ -98,13 +98,6 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     />
     <AvatarNetwork
       {...args}
-      backgroundColor={COLORS.RINKEBY}
-      borderColor={COLORS.RINKEBY}
-      networkName="R"
-      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
-    />
-    <AvatarNetwork
-      {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       networkName="G"

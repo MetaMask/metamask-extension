@@ -361,9 +361,6 @@
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
   "connectingToRopsten": {
     "message": "Kumokonekta sa Ropsten Test Network"
   },
@@ -1434,9 +1431,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Huwag ibahagi ang phrase na ito sa kahit sino!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
   },
   "ropsten": {
     "message": "Ropsten Test Network"

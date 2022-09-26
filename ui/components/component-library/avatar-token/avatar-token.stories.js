@@ -98,13 +98,6 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     />
     <AvatarToken
       {...args}
-      backgroundColor={COLORS.RINKEBY}
-      borderColor={COLORS.RINKEBY}
-      tokenName="R"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
-    />
-    <AvatarToken
-      {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       tokenName="G"

@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
   },
-  "connectingToRinkeby": {
-    "message": "Menyambung kepada Rangkaian Ujian Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
   },
@@ -747,9 +744,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
-  },
-  "rinkeby": {
-    "message": "Rangkaian Ujian Rinkeby"
   },
   "ropsten": {
     "message": "Rangkaian Ujian Ropsten"

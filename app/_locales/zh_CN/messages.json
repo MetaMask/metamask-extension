@@ -512,9 +512,6 @@
   "connectingToMainnet": {
     "message": "正在连接到以太坊 Ethereum 主网"
   },
-  "connectingToRinkeby": {
-    "message": "正在连接到 Rinkeby 测试网络"
-  },
   "connectingToRopsten": {
     "message": "正在连接到 Ropsten 测试网络"
   },
@@ -2196,9 +2193,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "不要对任何人展示此账户助记词！"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 测试网络"
   },
   "ropsten": {
     "message": "Ropsten 测试网络"

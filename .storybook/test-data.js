@@ -38,17 +38,6 @@ const state = {
       viewOnly: true,
     },
     {
-      blockExplorerUrl: 'https://rinkeby.etherscan.io',
-      chainId: '0x4',
-      iconColor: 'var(--rinkeby)',
-      isATestNetwork: true,
-      labelKey: 'rinkeby',
-      providerType: 'rinkeby',
-      rpcUrl: 'https://rinkeby.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
       blockExplorerUrl: 'https://goerli.etherscan.io',
       chainId: '0x5',
       iconColor: 'var(--goerli)',
@@ -581,18 +570,18 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
     previousProviderStore: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
     network: '3',
     accounts: {
@@ -1318,7 +1307,6 @@ const state = {
     },
     incomingTxLastFetchedBlocksByNetwork: {
       ropsten: 8872820,
-      rinkeby: null,
       kovan: null,
       goerli: null,
       sepolia: null,

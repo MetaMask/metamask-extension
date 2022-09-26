@@ -18,6 +18,11 @@ export default {
 };
 
 const UNKNOWN_CHAIN_ID_KEY = 'UNKNOWN';
+BUILT_IN_NETWORKS.rinkeby = {
+  networkId: '4',
+  chainId: '0x4',
+  ticker: 'ETH',
+};
 
 function transformState(state) {
   if (

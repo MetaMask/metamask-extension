@@ -114,9 +114,6 @@
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
   },
-  "connectingToRinkeby": {
-    "message": "Konekte nan Rinkeby Tès Rezo a"
-  },
   "connectingToRopsten": {
     "message": "Konekte ak Ropsten Tès Rezo a"
   },
@@ -490,9 +487,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "PA pataje fraz sa a avèk nenpòt moun!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Tès Rezo"
   },
   "ropsten": {
     "message": "Ropsten Tès Rezo"

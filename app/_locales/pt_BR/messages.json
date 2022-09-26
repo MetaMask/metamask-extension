@@ -520,9 +520,6 @@
   "connectingToMainnet": {
     "message": "Conectando à mainnet do Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Conectando à rede de testes Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Conectando à rede de testes Ropsten"
   },
@@ -2229,9 +2226,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NÃO compartilhe essa frase com ninguém!"
-  },
-  "rinkeby": {
-    "message": "Rede de testes Rinkeby"
   },
   "ropsten": {
     "message": "Rede de testes Ropsten"

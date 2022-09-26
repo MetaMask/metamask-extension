@@ -520,9 +520,6 @@
   "connectingToMainnet": {
     "message": "Estableciendo conexión a la red principal de Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Estableciendo conexión a la red de prueba Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Estableciendo conexión a la red de prueba Ropsten"
   },
@@ -2245,9 +2242,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "¡NO comparta esta frase con nadie!"
-  },
-  "rinkeby": {
-    "message": "Red de prueba Rinkeby"
   },
   "ropsten": {
     "message": "Red de prueba Ropsten"

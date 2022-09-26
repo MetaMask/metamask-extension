@@ -193,9 +193,6 @@
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
   },
-  "connectingToRinkeby": {
-    "message": "Ansluter till Rinkeby Test Network"
-  },
   "connectingToRopsten": {
     "message": "Ansluter till Ropsten Test Network"
   },
@@ -751,9 +748,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DELA INTE frasen med någon!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby testnätverk"
   },
   "ropsten": {
     "message": "Ropsten testnätverk"

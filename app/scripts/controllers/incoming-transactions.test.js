@@ -33,7 +33,6 @@ const PREPOPULATED_BLOCKS_BY_NETWORK = {
   [CHAIN_IDS.GOERLI]: 1,
   [CHAIN_IDS.KOVAN]: 2,
   [CHAIN_IDS.MAINNET]: 3,
-  [CHAIN_IDS.RINKEBY]: 5,
   [CHAIN_IDS.ROPSTEN]: 4,
   [CHAIN_IDS.SEPOLIA]: 6,
 };
@@ -41,7 +40,6 @@ const EMPTY_BLOCKS_BY_NETWORK = {
   [CHAIN_IDS.GOERLI]: null,
   [CHAIN_IDS.KOVAN]: null,
   [CHAIN_IDS.MAINNET]: null,
-  [CHAIN_IDS.RINKEBY]: null,
   [CHAIN_IDS.ROPSTEN]: null,
   [CHAIN_IDS.SEPOLIA]: null,
 };
@@ -149,7 +147,6 @@ function nockEtherscanApiForAllChains(mockResponse) {
     CHAIN_IDS.GOERLI,
     CHAIN_IDS.KOVAN,
     CHAIN_IDS.MAINNET,
-    CHAIN_IDS.RINKEBY,
     CHAIN_IDS.ROPSTEN,
     CHAIN_IDS.SEPOLIA,
     'undefined',

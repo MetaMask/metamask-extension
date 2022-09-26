@@ -144,13 +144,6 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     </BaseAvatar>
     <BaseAvatar
       {...args}
-      backgroundColor={COLORS.RINKEBY}
-      borderColor={COLORS.RINKEBY}
-    >
-      R
-    </BaseAvatar>
-    <BaseAvatar
-      {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens

@@ -47,9 +47,8 @@ function transformState(state = {}) {
               newAccountTokens[address][CHAIN_IDS.ROPSTEN] =
                 accountTokens[address][NETWORK_TYPES.ROPSTEN];
               break;
-            case NETWORK_TYPES.RINKEBY:
-              newAccountTokens[address][CHAIN_IDS.RINKEBY] =
-                accountTokens[address][NETWORK_TYPES.RINKEBY];
+            case 'rinkeby':
+              newAccountTokens[address]['0x4'] = accountTokens[address].rinkeby;
               break;
             case NETWORK_TYPES.GOERLI:
               newAccountTokens[address][CHAIN_IDS.GOERLI] =
@@ -86,9 +85,9 @@ function transformState(state = {}) {
               newAccountHiddenTokens[address][CHAIN_IDS.ROPSTEN] =
                 accountHiddenTokens[address][NETWORK_TYPES.ROPSTEN];
               break;
-            case NETWORK_TYPES.RINKEBY:
-              newAccountHiddenTokens[address][CHAIN_IDS.RINKEBY] =
-                accountHiddenTokens[address][NETWORK_TYPES.RINKEBY];
+            case 'rinkeby':
+              newAccountHiddenTokens[address]['0x4'] =
+                accountHiddenTokens[address].rinkeby;
               break;
             case NETWORK_TYPES.GOERLI:
               newAccountHiddenTokens[address][CHAIN_IDS.GOERLI] =

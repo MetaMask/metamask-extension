@@ -18,9 +18,6 @@ const MAINNET = {
 const ROPSTEN = {
   chainId: CHAIN_IDS.ROPSTEN,
 };
-const RINKEBY = {
-  chainId: CHAIN_IDS.RINKEBY,
-};
 const KOVAN = {
   chainId: CHAIN_IDS.KOVAN,
 };
@@ -89,11 +86,6 @@ describe('buy-url', () => {
   it('returns metamask ropsten faucet for network 3', async () => {
     const ropstenUrl = await getBuyUrl(ROPSTEN);
     expect(ropstenUrl).toStrictEqual('https://faucet.metamask.io/');
-  });
-
-  it('returns rinkeby dapp for network 4', async () => {
-    const rinkebyUrl = await getBuyUrl(RINKEBY);
-    expect(rinkebyUrl).toStrictEqual('https://www.rinkeby.io/');
   });
 
   it('returns kovan github test faucet for network 42', async () => {

@@ -196,9 +196,6 @@
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },
-  "connectingToRinkeby": {
-    "message": "Kobler til Rinkeby Test Network "
-  },
   "connectingToRopsten": {
     "message": "Kobler til Ropsten testnettverk"
   },
@@ -754,9 +751,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "IKKE del denne frasen med noen! "
-  },
-  "rinkeby": {
-    "message": "Rinkeby testnettverk"
   },
   "rpcUrl": {
     "message": "NY RPC-URL "

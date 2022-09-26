@@ -221,8 +221,6 @@ class NetworkDropdown extends Component {
         return t('ropsten');
       case NETWORK_TYPES.KOVAN:
         return t('kovan');
-      case NETWORK_TYPES.RINKEBY:
-        return t('rinkeby');
       case NETWORK_TYPES.GOERLI:
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
@@ -356,7 +354,6 @@ class NetworkDropdown extends Component {
             <>
               {this.renderNetworkEntry(NETWORK_TYPES.ROPSTEN)}
               {this.renderNetworkEntry(NETWORK_TYPES.KOVAN)}
-              {this.renderNetworkEntry(NETWORK_TYPES.RINKEBY)}
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
               {this.renderCustomRpcList(

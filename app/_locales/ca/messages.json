@@ -196,9 +196,6 @@
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Connectant a la Xarxa de Prova Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Connectant a la xarxa de test Ropsten"
   },
@@ -745,9 +742,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NO comparteixis aquesta frase amb ningú!"
-  },
-  "rinkeby": {
-    "message": "Xarxa del test Rinkeby"
   },
   "ropsten": {
     "message": "Xarxa de Prova Ropsten"

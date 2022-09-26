@@ -678,7 +678,7 @@ describe('TransactionStateManager', function () {
           if (i === 0 || i === 1) {
             return CHAIN_IDS.MAINNET;
           } else if (i === 4 || i === 5) {
-            return CHAIN_IDS.RINKEBY;
+            return CHAIN_IDS.GOERLI;
           }
           return currentChainId;
         },

@@ -49,7 +49,6 @@ export function isDefaultMetaMaskChain(chainId) {
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
     chainId === CHAIN_IDS.ROPSTEN ||
-    chainId === CHAIN_IDS.RINKEBY ||
     chainId === CHAIN_IDS.KOVAN ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||

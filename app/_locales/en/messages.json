@@ -717,9 +717,6 @@
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby test network"
-  },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten test network"
   },
@@ -2943,9 +2940,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
-  },
-  "rinkeby": {
-    "message": "Rinkeby test network"
   },
   "ropsten": {
     "message": "Ropsten test network"

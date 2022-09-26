@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Povezivanje na testnu mrežu Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Povezivanje na testnu mrežu Ropsten"
   },
@@ -760,9 +757,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE DIJELITE ovu rečenicu ni s kim!"
-  },
-  "rinkeby": {
-    "message": "Testna mreža Rinkeby"
   },
   "ropsten": {
     "message": "Testna mreža Ropsten"

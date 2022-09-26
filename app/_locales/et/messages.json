@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
-  "connectingToRinkeby": {
-    "message": "Ühendamine Rinkeby testvõrguga"
-  },
   "connectingToRopsten": {
     "message": "Ühendamine Ropsteni testvõrguga"
   },
@@ -757,9 +754,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby katsevõrk"
   },
   "ropsten": {
     "message": "Ropsteni testvõrk"

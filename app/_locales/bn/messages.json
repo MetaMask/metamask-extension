@@ -199,9 +199,6 @@
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
   },
-  "connectingToRinkeby": {
-    "message": "রিঙ্কেবি টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
   "connectingToRopsten": {
     "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
   },
@@ -767,9 +764,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "এই ফ্রেজটি কারোর সাথে শেয়ার করবেন না!"
-  },
-  "rinkeby": {
-    "message": "রিঙ্কেবি টেস্ট নেটওয়ার্ক"
   },
   "ropsten": {
     "message": "রোপস্টেন টেস্ট নেটওয়ার্ক"

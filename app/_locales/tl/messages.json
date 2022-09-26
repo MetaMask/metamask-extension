@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
   "connectingToRopsten": {
     "message": "Kumokonekta sa Ropsten Test Network"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "Sa pamamagitan ng pagbawi ng pahintulot, hindi na maa-access ng sumusunod na $1 ang iyong $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
   },
   "ropsten": {
     "message": "Ropsten Test Network"

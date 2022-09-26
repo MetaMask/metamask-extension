@@ -138,10 +138,6 @@ describe('NetworkController', () => {
           expected: 'Ropsten',
         },
         {
-          input: '4',
-          expected: 'Rinkeby',
-        },
-        {
           input: '42',
           expected: 'Kovan',
         },
@@ -150,20 +146,12 @@ describe('NetworkController', () => {
           expected: 'Ropsten',
         },
         {
-          input: '0x4',
-          expected: 'Rinkeby',
-        },
-        {
           input: '0x2a',
           expected: 'Kovan',
         },
         {
           input: 'ropsten',
           expected: 'Ropsten',
-        },
-        {
-          input: 'rinkeby',
-          expected: 'Rinkeby',
         },
         {
           input: 'kovan',

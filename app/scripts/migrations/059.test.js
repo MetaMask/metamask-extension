@@ -36,7 +36,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   3: {
     type: SENT_ETHER,
     id: 3,
-    chainId: CHAIN_IDS.RINKEBY,
+    chainId: '0x4',
     txParams: {
       nonce: '0x3',
     },
@@ -44,7 +44,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   4: {
     type: SENT_ETHER,
     id: 4,
-    chainId: CHAIN_IDS.RINKEBY,
+    chainId: '0x4',
     txParams: {
       nonce: '0x4',
     },
@@ -68,7 +68,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   7: {
     type: SENT_ETHER,
     id: 7,
-    chainId: CHAIN_IDS.RINKEBY,
+    chainId: '0x4',
     txParams: {
       nonce: '0x7',
     },
@@ -76,7 +76,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   8: {
     type: SENT_ETHER,
     id: 8,
-    chainId: CHAIN_IDS.RINKEBY,
+    chainId: '0x4',
     txParams: {
       nonce: '0x8',
     },
@@ -84,7 +84,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   9: {
     type: SENT_ETHER,
     id: 9,
-    chainId: CHAIN_IDS.RINKEBY,
+    chainId: '0x4',
     status: TRANSACTION_STATUSES.UNAPPROVED,
   },
 };

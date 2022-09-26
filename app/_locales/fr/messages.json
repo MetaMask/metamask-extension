@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Connexion au réseau de test Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Connexion au réseau de test Ropsten"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "En révoquant cette autorisation, les $1 suivants ne pourront plus accéder à vos $2. ",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Réseau de test Rinkeby"
   },
   "ropsten": {
     "message": "Réseau de test Ropsten"

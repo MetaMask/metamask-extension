@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Đang kết nối với mạng thử nghiệm Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Đang kết nối với mạng thử nghiệm Ropsten"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "Bằng cách thu hồi quyền truy cập, $1 sau đây sẽ không thể truy cập vào $2 của bạn nữa",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Mạng thử nghiệm Rinkeby"
   },
   "ropsten": {
     "message": "Mạng thử nghiệm Ropsten"

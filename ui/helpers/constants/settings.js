@@ -220,13 +220,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('rinkeby'),
-    descriptionMessage: (t) => t('rinkeby'),
-    route: `${NETWORKS_ROUTE}#networks-rinkeby`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('goerli'),
     descriptionMessage: (t) => t('goerli'),
     route: `${NETWORKS_ROUTE}#networks-goerli`,

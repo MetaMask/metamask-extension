@@ -625,9 +625,6 @@
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
   },
-  "connectingToRinkeby": {
-    "message": "正在连接到 Rinkeby 测试网络"
-  },
   "connectingToRopsten": {
     "message": "正在连接到 Ropsten 测试网络"
   },
@@ -2731,9 +2728,6 @@
   "revokeApproveForAllDescription": {
     "message": "通过撤销权限，以下$1将无法再访问您的$2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 测试网络"
   },
   "ropsten": {
     "message": "Ropsten 测试网络"

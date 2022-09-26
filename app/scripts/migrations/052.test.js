@@ -73,25 +73,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${NETWORK_TYPES.RINKEBY} tokens and hidden tokens to be keyed by ${CHAIN_IDS.RINKEBY} for each address`, async () => {
+  it(`should move rinkeby tokens and hidden tokens to be keyed by '0x4' for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [NETWORK_TYPES.RINKEBY]: [TOKEN1],
+              rinkeby: [TOKEN1],
             },
             '0x1112': {
-              [NETWORK_TYPES.RINKEBY]: [TOKEN3],
+              rinkeby: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [NETWORK_TYPES.RINKEBY]: [TOKEN1, TOKEN2],
+              rinkeby: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [NETWORK_TYPES.RINKEBY]: [TOKEN1, TOKEN3],
+              rinkeby: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -105,18 +105,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [CHAIN_IDS.RINKEBY]: [TOKEN1],
+            '0x4': [TOKEN1],
           },
           '0x1112': {
-            [CHAIN_IDS.RINKEBY]: [TOKEN3],
+            '0x4': [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [CHAIN_IDS.RINKEBY]: [TOKEN1, TOKEN2],
+            '0x4': [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [CHAIN_IDS.RINKEBY]: [TOKEN1, TOKEN3],
+            '0x4': [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',

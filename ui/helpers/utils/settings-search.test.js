@@ -101,8 +101,6 @@ const t = (key) => {
       return 'Ethereum Mainnet';
     case 'ropsten':
       return 'Ropsten Test Network';
-    case 'rinkeby':
-      return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':
@@ -187,7 +185,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(7);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
     });
 
     it('should get good experimental section number', () => {

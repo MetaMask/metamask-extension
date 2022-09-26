@@ -125,7 +125,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x4',
+          chainId: '0x5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',

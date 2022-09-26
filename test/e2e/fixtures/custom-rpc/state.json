@@ -18,11 +18,10 @@
     "IncomingTransactionsController": {
       "incomingTransactions": {},
       "incomingTxLastFetchedBlocksByNetwork": {
-        "goerli": null,
         "kovan": null,
         "mainnet": null,
         "sepolia": null,
-        "rinkeby": 5570536
+        "goerli": 5570536
       }
     },
     "KeyringController": {
@@ -130,7 +129,7 @@
       ],
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "rinkeby": [],
+          "goerli": [],
           "ropsten": []
         }
       },

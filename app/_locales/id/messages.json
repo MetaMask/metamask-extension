@@ -622,9 +622,6 @@
   "connectingToMainnet": {
     "message": "Menghubungkan ke Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": "Menghubungkan ke Jaringan Uji Rinkeby"
-  },
   "connectingToRopsten": {
     "message": "Menghubungkan ke Jaringan Uji Ropsten"
   },
@@ -2721,9 +2718,6 @@
   "revokeApproveForAllDescription": {
     "message": "Dengan mencabut izin, $1 berikut tidak lagi dapat mengakses $2 Anda",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Jaringan Uji Rinkeby"
   },
   "ropsten": {
     "message": "Jaringan Uji Ropsten"

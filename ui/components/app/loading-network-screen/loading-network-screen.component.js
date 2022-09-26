@@ -48,8 +48,6 @@ export default class LoadingNetworkScreen extends PureComponent {
         return t('connectingToRopsten');
       case NETWORK_TYPES.KOVAN:
         return t('connectingToKovan');
-      case NETWORK_TYPES.RINKEBY:
-        return t('connectingToRinkeby');
       case NETWORK_TYPES.GOERLI:
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:

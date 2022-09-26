@@ -614,9 +614,6 @@
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": " Verbinde zum Rinkeby Testnetzwerk"
-  },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
   },
@@ -2676,9 +2673,6 @@
   },
   "revealTheSeedPhrase": {
     "message": "Seed-Phrase anzeigen"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Testnetzwerk"
   },
   "ropsten": {
     "message": "Ropsten Testnetzwerk"
