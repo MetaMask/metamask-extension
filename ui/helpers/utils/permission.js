@@ -32,6 +32,20 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: (t) => t('permission_notifications'),
     rightIcon: null,
   },
+  [RestrictedMethods.snap_getBip32PublicKey]: {
+    label: (t, _, permissionValue) => {
+      return permissionValue.caveats[0].value.map(({ path, curve }) =>
+        t('permission_viewBip32PublicKeys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+      );
+    },
+    leftIcon: 'fas fa-eye',
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_getBip32Entropy]: {
     label: (t, _, permissionValue) => {
       return permissionValue.caveats[0].value.map(({ path, curve }) =>
@@ -56,17 +70,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
         ]),
       );
-    },
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
-  },
-  [RestrictedMethods['snap_getBip44Entropy_*']]: {
-    label: (t, permissionName) => {
-      const coinType = permissionName.split('_').slice(-1);
-      return t('permission_manageBip44Keys', [
-        coinTypeToProtocolName(coinType) ||
-          `${coinType} (Unrecognized protocol)`,
-      ]);
     },
     leftIcon: 'fas fa-door-open',
     rightIcon: null,

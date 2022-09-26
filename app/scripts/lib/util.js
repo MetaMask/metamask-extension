@@ -1,6 +1,4 @@
 import browser from 'webextension-polyfill';
-
-import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
@@ -16,6 +14,7 @@ import {
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}

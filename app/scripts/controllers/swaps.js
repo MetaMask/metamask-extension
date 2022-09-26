@@ -691,15 +691,15 @@ export default class SwapsController {
         destinationAmount = 0,
         destinationToken,
         destinationTokenInfo,
-        gasEstimate,
+        gasEstimateWithRefund,
         sourceAmount,
         sourceToken,
         trade,
         fee: metaMaskFee,
       } = quote;
 
-      const tradeGasLimitForCalculation = gasEstimate
-        ? new BigNumber(gasEstimate, 16)
+      const tradeGasLimitForCalculation = gasEstimateWithRefund
+        ? new BigNumber(gasEstimateWithRefund, 16)
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
 
       const totalGasLimitForCalculation = tradeGasLimitForCalculation

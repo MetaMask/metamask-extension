@@ -1675,15 +1675,16 @@
   "lastConnected": {
     "message": "最后连接"
   },
-  "learmMoreAboutGas": {
-    "message": "想要 $1 有关燃料的相关信息吗？"
-  },
   "learnCancelSpeeedup": {
     "message": "学习如何 $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "了解更多"
+  },
+  "learnMoreAboutGas": {
+    "message": "想要 $1 有关燃料的相关信息吗？",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "了解更多"
@@ -2488,7 +2489,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "控制您的“$1”账户和资产。",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
