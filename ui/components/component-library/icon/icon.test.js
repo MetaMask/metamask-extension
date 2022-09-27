@@ -44,16 +44,16 @@ describe('Icon', () => {
     );
     expect(
       window.getComputedStyle(getByTestId('icon-add-square-filled')).maskImage,
-    ).toBe(`url('/images/icons/icon-add-square-filled.svg`);
+    ).toBe(`url('./images/icons/icon-add-square-filled.svg`);
     expect(
       window.getComputedStyle(getByTestId('icon-bank-filled')).maskImage,
-    ).toBe(`url('/images/icons/icon-bank-filled.svg`);
+    ).toBe(`url('./images/icons/icon-bank-filled.svg`);
     expect(
       window.getComputedStyle(getByTestId('icon-bookmark-filled')).maskImage,
-    ).toBe(`url('/images/icons/icon-bookmark-filled.svg`);
+    ).toBe(`url('./images/icons/icon-bookmark-filled.svg`);
     expect(
       window.getComputedStyle(getByTestId('icon-calculator-filled')).maskImage,
-    ).toBe(`url('/images/icons/icon-calculator-filled.svg`);
+    ).toBe(`url('./images/icons/icon-calculator-filled.svg`);
   });
   it('should render with different size classes', () => {
     const { getByTestId } = render(
