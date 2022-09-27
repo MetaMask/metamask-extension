@@ -2,9 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "acceleratingATransaction": {
-    "message": "* 提高交易費 Gas 價格將可加速處理時間，但不保證會有顯著效果"
-  },
   "accessingYourCamera": {
     "message": "正在存取您的攝影鏡頭..."
   },
@@ -250,12 +247,6 @@
   "currentLanguage": {
     "message": "當前語言"
   },
-  "customGas": {
-    "message": "自訂 Gas"
-  },
-  "customGasSubTitle": {
-    "message": "提升費用可能會加快處理時間，但不保證"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "請輸入密碼"
-  },
-  "estimatedProcessingTimes": {
-    "message": "預估處理時間"
   },
   "ethereumPublicAddress": {
     "message": "以太坊公開位址"
@@ -598,12 +586,6 @@
   "newToMetaMask": {
     "message": "新來到 MetaMask？"
   },
-  "newTotal": {
-    "message": "總費用"
-  },
-  "newTransactionFee": {
-    "message": "自訂交易費"
-  },
   "next": {
     "message": "下一頁"
   },
@@ -792,9 +774,6 @@
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"
   },
-  "selectAHigherGasFee": {
-    "message": "選擇更高的交易費可加速您的交易處理時間 *"
-  },
   "selectAnAccount": {
     "message": "選擇帳戶"
   },
@@ -809,9 +788,6 @@
   },
   "send": {
     "message": "發送"
-  },
-  "sendAmount": {
-    "message": "發送數量"
   },
   "sendTokens": {
     "message": "發送代幣"
@@ -854,9 +830,6 @@
   },
   "signed": {
     "message": "已簽署"
-  },
-  "slow": {
-    "message": "慢"
   },
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"

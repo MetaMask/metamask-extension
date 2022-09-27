@@ -101,9 +101,6 @@
   "about": {
     "message": "Общие сведения"
   },
-  "acceleratingATransaction": {
-    "message": "* Ускорение транзакции за счет более высокой цены газа увеличивает шансы транзакции на более быструю обработку в сети, но это не всегда гарантируется."
-  },
   "acceptTermsOfUse": {
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Поиск ранее добавленной сети"
   },
-  "customGas": {
-    "message": "Настроить газ"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Использовать $1, чтобы настроить цену на газ. Это может сбивать с толку, если вы не знакомы с этим. Взаимодействуйте на свой страх и риск.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Увеличение комиссии может сократить время обработки, но это не гарантируется."
   },
   "customSpendLimit": {
     "message": "Пользовательский лимит расходов"
@@ -1300,9 +1291,6 @@
     "message": "Стек:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Примерное время обработки"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Быстрый"
-  },
-  "fastest": {
-    "message": "Самый быстрый"
   },
   "feeAssociatedRequest": {
     "message": "За выполнение этого запроса взимается комиссия."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Токен импортирован"
   },
-  "newTotal": {
-    "message": "Новая общая сумма"
-  },
-  "newTransactionFee": {
-    "message": "Новая комиссия за транзакцию"
-  },
   "newValues": {
     "message": "новые значения"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Запишите секретную фразу для восстановления"
   },
-  "selectAHigherGasFee": {
-    "message": "Выберите более высокую плату за газ, чтобы ускорить обработку транзакции.*"
-  },
   "selectAccounts": {
     "message": "Выберите счета(-а) для использования на этом сайте"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Отправить"
-  },
-  "sendAmount": {
-    "message": "Сумма для отправки"
   },
   "sendBugReport": {
     "message": "Отправьте нам сообщение об ошибке."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Я понимаю, что, если я не создам резервную копию своей секретной фразы для восстановления, я могу потерять доступ ко всем своим счетам и всем средствам на них."
-  },
-  "slow": {
-    "message": "Медленный"
   },
   "smartTransaction": {
     "message": "Смарт-транзакция"

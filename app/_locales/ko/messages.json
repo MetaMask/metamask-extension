@@ -101,9 +101,6 @@
   "about": {
     "message": "정보"
   },
-  "acceleratingATransaction": {
-    "message": "* 높은 가스 가격을 이용해 거래를 가속화하면 네트워크를 통한 처리 속도가 개선되지만 항상 그렇지는 않습니다."
-  },
   "acceptTermsOfUse": {
     "message": "$1의 내용을 읽고 이에 동의합니다.",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "이전에 추가된 네트워크 검색"
   },
-  "customGas": {
-    "message": "가스 커스터마이징"
-  },
   "customGasSettingToolTipMessage": {
     "message": "$1을(를) 사용하여 가스 가격을 맞춤설정하세요. 익숙하지 않은 경우 혼동될 수 있습니다. 자신의 책임하에 상호 작용하세요.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
   },
   "customSpendLimit": {
     "message": "커스텀 지출 한도"
@@ -1300,9 +1291,6 @@
     "message": "스택:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "예상 처리 시간"
-  },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "빠름"
-  },
-  "fastest": {
-    "message": "가장 빠름"
   },
   "feeAssociatedRequest": {
     "message": "수수료가 이 요청과 연결되어 있습니다."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "불러온 토큰"
   },
-  "newTotal": {
-    "message": "새 합계"
-  },
-  "newTransactionFee": {
-    "message": "새 트랜잭션 수수료"
-  },
   "newValues": {
     "message": "새로운 가치"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "비밀 복구 구문 기록"
   },
-  "selectAHigherGasFee": {
-    "message": "높은 가스 수수료를 선택하면 거래 처리 속도를 높일 수 있습니다.*"
-  },
   "selectAccounts": {
     "message": "계정 선택"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "보내기"
-  },
-  "sendAmount": {
-    "message": "송금"
   },
   "sendBugReport": {
     "message": "버그 리포트 전송"
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "본인은 본인의 비밀 복구 구문을 백업하지 않는 한 본인의 계정과 모든 자산을 잃을 수 있다는 사실을 이해합니다."
-  },
-  "slow": {
-    "message": "느림"
   },
   "smartTransaction": {
     "message": "스마트 트랜잭션"

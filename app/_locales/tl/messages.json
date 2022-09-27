@@ -101,9 +101,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gasolina, mas magiging malaki ang tsansang mas mabilis na maproseso ng network, pero hindi ito palaging ginagarantiya."
-  },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Maghanap ng naunang idinagdag na network"
   },
-  "customGas": {
-    "message": "I-customize ang gasolina"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para i-customize ang presyo ng gas. Ito ay maaaring nakakalito kung hindi ka pamilyar. Harapin ang sarili mong panganib.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
@@ -1300,9 +1291,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Mga tinatantyang tagal ng pagproseso"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup gas price ay inilalaan dahil ang pangunahing pagtantiya ng presyo ng gas ay hindi available sa ngayon."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "fastest": {
-    "message": "Pinakamabilis"
   },
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Na-import ang token"
   },
-  "newTotal": {
-    "message": "Bagong Kabuuan"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Bayarin sa Transaksyon"
-  },
   "newValues": {
     "message": "bagong value"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Isulat ang iyong Secret Recovery Phrase"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAccounts": {
     "message": "Pumili ng (mga) account"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendAmount": {
-    "message": "Halaga ng Ipapadala"
   },
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Secret Recovery Phrase, maaari kong maiwala ang aking mga account at lahat ng kanilang mga asset."
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "smartTransaction": {
     "message": "Smart Transaction"

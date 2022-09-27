@@ -8,9 +8,6 @@
   "about": {
     "message": "Mengenai"
   },
-  "acceleratingATransaction": {
-    "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera anda..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Lanjutan"
   },
-  "customGas": {
-    "message": "Suaikan Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Meningkatkan fi mungkin akan mengurangkan masa pemprosesan, tetapi ia tidak dijamin."
-  },
   "customToken": {
     "message": "Token Tersuai"
   },
@@ -336,9 +327,6 @@
   },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Masa Pemprosesan yang Dijangka"
   },
   "ethereumPublicAddress": {
     "message": "Alamat Awam Ethereum"
@@ -587,12 +575,6 @@
   "newToMetaMask": {
     "message": "Baru mengenali MetaMask?"
   },
-  "newTotal": {
-    "message": "Jumlah Keseluruhan Baru"
-  },
-  "newTransactionFee": {
-    "message": "Fi Transaksi Baru"
-  },
   "next": {
     "message": "Seterusnya"
   },
@@ -790,9 +772,6 @@
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"
   },
-  "selectAHigherGasFee": {
-    "message": "Pilih yuran gas yang lebih tinggi untuk mempercepatkan pemprosesan transaksi anda.*"
-  },
   "selectAnAccount": {
     "message": "Pilih Akaun"
   },
@@ -810,9 +789,6 @@
   },
   "send": {
     "message": "Hantar"
-  },
-  "sendAmount": {
-    "message": "Hantar Amaun"
   },
   "sendTokens": {
     "message": "Hantar Token"
@@ -855,9 +831,6 @@
   },
   "signed": {
     "message": "Ditandatangani"
-  },
-  "slow": {
-    "message": "Perlahan"
   },
   "somethingWentWrong": {
     "message": "Alamak! Ada yang tak kena."

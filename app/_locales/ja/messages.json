@@ -101,9 +101,6 @@
   "about": {
     "message": "バージョン情報"
   },
-  "acceleratingATransaction": {
-    "message": "*より高いガス代を使用してトランザクションを加速すると、ネットワーク処理の高速化の可能性が増しますが、これは常に保証されるわけではありません。"
-  },
   "acceptTermsOfUse": {
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "以前追加されたネットワークを検索"
   },
-  "customGas": {
-    "message": "ガスのカスタマイズ"
-  },
   "customGasSettingToolTipMessage": {
     "message": "ガス代をカスタマイズするには$1を使用します。慣れていない場合はわかりにくい可能性があります。自己責任で操作してください。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "手数料を増やすと処理時間は短くなる可能性がありますが、必ずそうなるとは限りません。"
   },
   "customSpendLimit": {
     "message": "カスタム使用限度額"
@@ -1300,9 +1291,6 @@
     "message": "スタック:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "推定処理時間"
-  },
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス代が提供されています。"
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "高速"
-  },
-  "fastest": {
-    "message": "最高速"
   },
   "feeAssociatedRequest": {
     "message": "手数料はこのリクエストに関連付けられています。"
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "トークンがインポートされました"
   },
-  "newTotal": {
-    "message": "新しい総額"
-  },
-  "newTransactionFee": {
-    "message": "新しいトランザクション手数料"
-  },
   "newValues": {
     "message": "新しい値"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "シークレットリカバリーフレーズを書き留めてください"
   },
-  "selectAHigherGasFee": {
-    "message": "トランザクションの処理を加速させるには、より高いガス代を選択します。*"
-  },
   "selectAccounts": {
     "message": "このサイトに使用するアカウントを選択してください"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "送金"
-  },
-  "sendAmount": {
-    "message": "送金額"
   },
   "sendBugReport": {
     "message": "バグレポートをお送りください。"
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
-  },
-  "slow": {
-    "message": "低速"
   },
   "smartTransaction": {
     "message": "スマートトランザクション"

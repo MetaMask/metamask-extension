@@ -72,9 +72,6 @@
   "createAccount": {
     "message": "Account aanmaken"
   },
-  "customGas": {
-    "message": "Pas Gas aan"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },

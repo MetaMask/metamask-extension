@@ -8,9 +8,6 @@
   "about": {
     "message": "সম্পর্কে"
   },
-  "acceleratingATransaction": {
-    "message": "* একটি উচ্চতর গ্যাসের মূল্য ব্যবহার করে একটি লেনদেনের গতি বৃদ্ধি নেটওয়ার্কের দ্বারা সেটির প্রক্রিয়াকরণ দ্রুততর হওয়ার সম্ভাবনা বৃদ্ধি করে, কিন্তু সবসময় সেটির নিশ্চয়তা দেওয়া যায় না।"
-  },
   "accessingYourCamera": {
     "message": "আপনার ক্যামেরা অ্যাক্সেস করছে..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "উন্নত"
   },
-  "customGas": {
-    "message": "গ্যাস কাস্টোমাইজ করুন"
-  },
-  "customGasSubTitle": {
-    "message": "ফী বৃদ্ধি করা প্রক্রিয়াকরণের সময় কমাতে পারে, কিন্তু সেটির নিশ্চয়তা দেওয়া হয় না।"
-  },
   "customToken": {
     "message": "কাস্টম টোকেন"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
-  },
-  "estimatedProcessingTimes": {
-    "message": "আনুমানিক প্রক্রিয়াকরণের সময়"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum পাবলিক অ্যাড্রেস"
@@ -604,12 +592,6 @@
   "newToMetaMask": {
     "message": "MetaMask এ নতুন?"
   },
-  "newTotal": {
-    "message": "নতুন সমষ্টি"
-  },
-  "newTransactionFee": {
-    "message": "নতুন লেনদেন ফী"
-  },
   "next": {
     "message": "পরবর্তী"
   },
@@ -810,9 +792,6 @@
   "seedPhraseReq": {
     "message": "সীড ফ্রেজগুলি 12 শব্দের"
   },
-  "selectAHigherGasFee": {
-    "message": "আপনার লেনদেনটি প্রক্রিয়াকরণ ত্বরান্বিত করতে একটি উচ্চতর গ্যাস ফী নির্বাচন করুন।*"
-  },
   "selectAnAccount": {
     "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
   },
@@ -830,9 +809,6 @@
   },
   "send": {
     "message": "পাঠান"
-  },
-  "sendAmount": {
-    "message": "পাঠানো অর্থরাশি"
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
@@ -875,9 +851,6 @@
   },
   "signed": {
     "message": "স্বাক্ষরিত"
-  },
-  "slow": {
-    "message": "মন্থর"
   },
   "somethingWentWrong": {
     "message": "ওহো! কিছু সমস্যা হয়েছে।"

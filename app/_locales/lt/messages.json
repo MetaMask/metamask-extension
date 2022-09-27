@@ -8,9 +8,6 @@
   "about": {
     "message": "Apie"
   },
-  "acceleratingATransaction": {
-    "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
-  },
   "accessingYourCamera": {
     "message": "Kreipiamasi į kamerą..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Išplėstiniai"
   },
-  "customGas": {
-    "message": "Pritaikyti dujas"
-  },
-  "customGasSubTitle": {
-    "message": "Didinant mokestį gali mažėti apdorojimo trukmė, bet tai negarantuojama."
-  },
   "customToken": {
     "message": "Pritaikytas žetonas"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Numatomos apdorojimo trukmės"
   },
   "ethereumPublicAddress": {
     "message": "„Ethereum“ viešasis adresas"
@@ -604,12 +592,6 @@
   "newToMetaMask": {
     "message": "Tik pradedate naudotis „MetaMask“?"
   },
-  "newTotal": {
-    "message": "Nauja bendra suma"
-  },
-  "newTransactionFee": {
-    "message": "Naujas operacijos mokestis"
-  },
   "next": {
     "message": "Toliau"
   },
@@ -810,9 +792,6 @@
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
   },
-  "selectAHigherGasFee": {
-    "message": "Pasirinkite didesnį dujų mokestį, kad paspartintumėte savo operacijos apdorojimą.*"
-  },
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
   },
@@ -830,9 +809,6 @@
   },
   "send": {
     "message": "Siųsti"
-  },
-  "sendAmount": {
-    "message": "Siųsti sumą"
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
@@ -875,9 +851,6 @@
   },
   "signed": {
     "message": "Pasirašyta"
-  },
-  "slow": {
-    "message": "Lėtas"
   },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."

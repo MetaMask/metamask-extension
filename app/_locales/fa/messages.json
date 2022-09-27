@@ -8,9 +8,6 @@
   "about": {
     "message": "درباره"
   },
-  "acceleratingATransaction": {
-    "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
-  },
   "accessingYourCamera": {
     "message": "در حال دسترسی به کمره شما..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "پیشرفته"
   },
-  "customGas": {
-    "message": "گاز دلخواه"
-  },
-  "customGasSubTitle": {
-    "message": "اضافه نمودن فیس ممکن زمان پروسس را کاهش دهد، اما تضمین نمیشود."
-  },
   "customToken": {
     "message": "رمزیاب دلخواه"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
-  },
-  "estimatedProcessingTimes": {
-    "message": "زمان های تخمینی پروسس"
   },
   "ethereumPublicAddress": {
     "message": "آدرس عمومی ایتریم"
@@ -604,12 +592,6 @@
   "newToMetaMask": {
     "message": "آیا به MetaMask جدید هستید؟"
   },
-  "newTotal": {
-    "message": "مجموع جدید"
-  },
-  "newTransactionFee": {
-    "message": "فیس جدید معامله"
-  },
   "next": {
     "message": "بعدی"
   },
@@ -810,9 +792,6 @@
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"
   },
-  "selectAHigherGasFee": {
-    "message": "یک فیس بالاتر گاز را انتخاب نمایید تا پروسس معامله تان تسریع یابد.*"
-  },
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
   },
@@ -830,9 +809,6 @@
   },
   "send": {
     "message": "ارسال"
-  },
-  "sendAmount": {
-    "message": "ارسال مبلغ"
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
@@ -875,9 +851,6 @@
   },
   "signed": {
     "message": "وارد شد"
-  },
-  "slow": {
-    "message": "آهسته"
   },
   "somethingWentWrong": {
     "message": "اوه! مشکلی پیش آمده."

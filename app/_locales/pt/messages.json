@@ -101,9 +101,6 @@
   "about": {
     "message": "Sobre"
   },
-  "acceleratingATransaction": {
-    "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta as chances de agilizar o processamento pela rede, mas isso nem sempre é garantido."
-  },
   "acceptTermsOfUse": {
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Buscar uma rede previamente adicionada"
   },
-  "customGas": {
-    "message": "Personalizar gás"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar o preço do gás. Isso pode parecer confuso se você não estiver familiarizado. Interaja por sua conta e risco.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas isso não é garantido."
   },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
@@ -1300,9 +1291,6 @@
     "message": "Lista:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tempo de processamento estimado"
-  },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "O mais rápido"
   },
   "feeAssociatedRequest": {
     "message": "Há uma taxa associada a essa solicitação."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Token importado"
   },
-  "newTotal": {
-    "message": "Novo total"
-  },
-  "newTransactionFee": {
-    "message": "Nova taxa de transação"
-  },
   "newValues": {
     "message": "novos valores"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote sua Frase Secreta de Recuperação"
   },
-  "selectAHigherGasFee": {
-    "message": "Selecione uma taxa de gás mais alta para acelerar o processamento da sua transação.*"
-  },
   "selectAccounts": {
     "message": "Selecione a(s) conta(s) para usar nesse site"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar valor"
   },
   "sendBugReport": {
     "message": "Envie-nos um relatório de erros."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "smartTransaction": {
     "message": "Transação inteligente"
