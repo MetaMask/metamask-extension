@@ -3538,10 +3538,10 @@
     semver "^7.3.7"
     ses "^0.15.17"
 
-"@metamask/test-dapp@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.2.0.tgz#ecae2525e7b4d5ef42b7f478b33e3a25152789f8"
-  integrity sha512-/1nUFm6kzYB0xigrLHc+yzkunnrUoqfnsiLs7eUD+Qfl2Qn5G6C9tIj9cgAx72lWVtqoo2vBTP+55ZW8lDroYw==
+"@metamask/test-dapp@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.2.1.tgz#a7591393eec6d15f5e4bddee567018444db372ff"
+  integrity sha512-p9Jt31RDAyVfzbNrPL3pFsYgFuren+saxSbeMlytU2LyKXkMIvxdpEYmyqWIvCoZvdBAc9LH/arXbeSSXJ+aMA==
 
 "@metamask/types@^1.1.0":
   version "1.1.0"

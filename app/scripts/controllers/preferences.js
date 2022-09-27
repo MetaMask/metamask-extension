@@ -263,7 +263,7 @@ export default class PreferencesController {
     // If the selected account is no longer valid,
     // select an arbitrary other account:
     if (address === this.getSelectedAddress()) {
-      const selected = Object.keys(identities)[0];
+      const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
     return address;
@@ -326,7 +326,7 @@ export default class PreferencesController {
     // select an arbitrary other account:
     let selected = this.getSelectedAddress();
     if (!addresses.includes(selected)) {
-      selected = addresses[0];
+      [selected] = addresses;
       this.setSelectedAddress(selected);
     }
 
