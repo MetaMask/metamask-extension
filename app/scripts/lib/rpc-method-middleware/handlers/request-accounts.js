@@ -88,12 +88,11 @@ async function requestEthereumAccountsHandler(
 
   // If no accounts, request the accounts permission
   try {
-    locks.add(origin);
+    // locks.add(origin);
     await getUnlockPromise(true);
     await requestAccountsPermission();
   } catch (err) {
     res.error = err;
-    locks.delete(origin);
     return end();
   } finally {
     locks.delete(origin);
