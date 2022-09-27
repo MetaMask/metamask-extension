@@ -84,6 +84,9 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-build-test
+      - mv3-test-e2e-chrome:
+          requires:
+            - prep-build-test-mv3
       - test-e2e-chrome-snaps:
           requires:
             - prep-build-test-flask
@@ -145,6 +148,8 @@ workflows:
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
+      - mv3-test-e2e-chrome:
+          when: manual
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -526,6 +531,33 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  mv3-test-e2e-chrome:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
       - run:
           name: test:e2e:chrome
           command: |
