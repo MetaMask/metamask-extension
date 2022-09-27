@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToKovan": {
-    "message": "در حال اتصال به شبکه آزمایشی Kovan"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
-  },
-  "connectingToRopsten": {
-    "message": "در حال اتصال به شبکه آزمایشی Ropsten"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"
@@ -500,9 +494,6 @@
   "knownAddressRecipient": {
     "message": "آدرس شناخته شده قرارداد"
   },
-  "kovan": {
-    "message": "شبکه آزمایشی Kovan"
-  },
   "learnMore": {
     "message": "بیشتر بدانید"
   },
@@ -764,9 +755,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "این عبارت را با هیچکس شریک نسازید!"
-  },
-  "ropsten": {
-    "message": "شبکه آزمایشی Ropsten"
   },
   "rpcUrl": {
     "message": "RPC URL جدید"

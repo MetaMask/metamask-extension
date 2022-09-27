@@ -616,14 +616,8 @@
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
   },
-  "connectingToKovan": {
-    "message": "Подключение к тестовой сети Kovan..."
-  },
   "connectingToMainnet": {
     "message": "Подключение к сети Ethereum Mainnet..."
-  },
-  "connectingToRopsten": {
-    "message": "Подключение к тестовой сети Ropsten..."
   },
   "contactUs": {
     "message": "Свяжитесь с нами"
@@ -1662,9 +1656,6 @@
   },
   "knownTokenWarning": {
     "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены. Узнайте подробнее о $1"
-  },
-  "kovan": {
-    "message": "Тестовая сеть Kovan"
   },
   "lastConnected": {
     "message": "Последнее подключение"
@@ -2718,9 +2709,6 @@
   "revokeApproveForAllDescription": {
     "message": "При отмене разрешения следующий $1 больше не сможет получить доступ к вашему $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "ropsten": {
-    "message": "Тестовая сеть Ropsten"
   },
   "rpcUrl": {
     "message": "Новый URL-адрес RPC"

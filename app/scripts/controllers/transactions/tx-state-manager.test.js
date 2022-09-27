@@ -44,7 +44,7 @@ function generateTransactions(
 }
 describe('TransactionStateManager', function () {
   let txStateManager;
-  const currentNetworkId = NETWORK_IDS.KOVAN;
+  const currentNetworkId = NETWORK_IDS.GOERLI;
   const currentChainId = CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
 

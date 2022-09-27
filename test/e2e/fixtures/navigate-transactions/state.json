@@ -18,10 +18,9 @@
     "IncomingTransactionsController": {
       "incomingTransactions": {},
       "incomingTxLastFetchedBlocksByNetwork": {
-        "kovan": null,
+        "goerli": null,
         "mainnet": null,
-        "sepolia": null,
-        "goerli": 5570536
+        "sepolia": null
       }
     },
     "KeyringController": {
@@ -114,7 +113,7 @@
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "goerli": [],
-          "ropsten": []
+          "sepolia": []
         }
       },
       "assetImages": {},

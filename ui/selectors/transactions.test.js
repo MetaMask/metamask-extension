@@ -30,7 +30,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: CHAIN_IDS.KOVAN,
+            chainId: '0x5',
           },
         },
       };
@@ -60,7 +60,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: CHAIN_IDS.KOVAN,
+            chainId: '0x5',
           },
         },
       };
@@ -91,7 +91,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: CHAIN_IDS.KOVAN,
+            chainId: '0x5',
           },
         },
       };

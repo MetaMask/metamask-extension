@@ -190,14 +190,8 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kobler til Kovan testnettverk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
-  },
-  "connectingToRopsten": {
-    "message": "Kobler til Ropsten testnettverk"
   },
   "continueToWyre": {
     "message": "Fortsett til Wyre "
@@ -486,9 +480,6 @@
   },
   "knownAddressRecipient": {
     "message": "Kjent kontaktadresse"
-  },
-  "kovan": {
-    "message": "Kovan testnettverk"
   },
   "learnMore": {
     "message": "Lær mer"

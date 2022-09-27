@@ -217,10 +217,6 @@ class NetworkDropdown extends Component {
     switch (providerName) {
       case NETWORK_TYPES.MAINNET:
         return t('mainnet');
-      case NETWORK_TYPES.ROPSTEN:
-        return t('ropsten');
-      case NETWORK_TYPES.KOVAN:
-        return t('kovan');
       case NETWORK_TYPES.GOERLI:
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
@@ -352,8 +348,6 @@ class NetworkDropdown extends Component {
 
           {shouldShowTestNetworks && (
             <>
-              {this.renderNetworkEntry(NETWORK_TYPES.ROPSTEN)}
-              {this.renderNetworkEntry(NETWORK_TYPES.KOVAN)}
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
               {this.renderCustomRpcList(

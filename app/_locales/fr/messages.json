@@ -616,14 +616,8 @@
   "connectingToGoerli": {
     "message": "Connexion au réseau de test Goerli"
   },
-  "connectingToKovan": {
-    "message": "Connexion au réseau de test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Connexion au réseau de test Ropsten"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1662,9 +1656,6 @@
   },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
-  },
-  "kovan": {
-    "message": "Réseau de test Kovan"
   },
   "lastConnected": {
     "message": "Dernière connexion"
@@ -2718,9 +2709,6 @@
   "revokeApproveForAllDescription": {
     "message": "En révoquant cette autorisation, les $1 suivants ne pourront plus accéder à vos $2. ",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "ropsten": {
-    "message": "Réseau de test Ropsten"
   },
   "rpcUrl": {
     "message": "Nouvelle URL de RPC"

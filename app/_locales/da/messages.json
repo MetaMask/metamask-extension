@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
-  "connectingToKovan": {
-    "message": "Forbinder til Kovan Testnetværk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
-  },
-  "connectingToRopsten": {
-    "message": "Forbinder til Ropsten-testnetværk"
   },
   "continueToWyre": {
     "message": "Fortsæt til Wyre"
@@ -493,9 +487,6 @@
   "knownAddressRecipient": {
     "message": "Kendte kontaktadresser."
   },
-  "kovan": {
-    "message": "Kovan Test-Netværk"
-  },
   "learnMore": {
     "message": "Lær mere"
   },
@@ -745,9 +736,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DEL IKKE denne sætning med nogen!"
-  },
-  "ropsten": {
-    "message": "Ropsten Test-netværk"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"

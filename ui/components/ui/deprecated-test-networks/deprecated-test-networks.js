@@ -21,12 +21,7 @@ export default function DeprecatedTestNetworks() {
   const t = useI18nContext();
 
   useEffect(() => {
-    if (
-      completedOnboarding &&
-      (currentChainID === '0x3' ||
-        currentChainID === '0x2a' ||
-        currentChainID === '0x4')
-    ) {
+    if (completedOnboarding && currentChainID === '0x4') {
       setIsShowingWarning(true);
     } else {
       setIsShowingWarning(false);

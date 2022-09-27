@@ -80,17 +80,6 @@ describe('Network Dropdown', () => {
       expect(mainnetColorIndicator).toBeInTheDocument();
     });
 
-    it('checks background color for second ColorIndicator', () => {
-      // find where test networks start in case there are custom RPCs
-      const ropstenColorIndicator = screen.queryByTestId('color-icon-ropsten');
-      expect(ropstenColorIndicator).toBeInTheDocument();
-    });
-
-    it('checks background color for third ColorIndicator', () => {
-      const kovanColorIndicator = screen.queryByTestId('color-icon-kovan');
-      expect(kovanColorIndicator).toBeInTheDocument();
-    });
-
     it('checks background color for fourth ColorIndicator', () => {
       const goerliColorIndicator = screen.queryByTestId('color-icon-goerli');
       expect(goerliColorIndicator).toBeInTheDocument();
@@ -116,7 +105,7 @@ describe('Network Dropdown', () => {
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
 
-      expect(networkItems).toHaveLength(8);
+      expect(networkItems).toHaveLength(6);
     });
   });
 

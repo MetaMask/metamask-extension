@@ -167,8 +167,6 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
       return createCoinbasePayUrl(address, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
-    case 'kovan-faucet':
-      return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
     case 'sepolia-faucet':
@@ -184,10 +182,6 @@ function getDefaultServiceForChain(chainId) {
   switch (chainId) {
     case CHAIN_IDS.MAINNET:
       return 'wyre';
-    case CHAIN_IDS.ROPSTEN:
-      return 'metamask-faucet';
-    case CHAIN_IDS.KOVAN:
-      return 'kovan-faucet';
     case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
     case CHAIN_IDS.SEPOLIA:

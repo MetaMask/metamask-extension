@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "מתחבר ל-Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "connectingToRopsten": {
-    "message": "מתחבר אל רשת בדיקה Ropsten "
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -499,9 +493,6 @@
   },
   "knownAddressRecipient": {
     "message": "כתובת חוזה ידועה."
-  },
-  "kovan": {
-    "message": "רשת בדיקה Kovan "
   },
   "learnMore": {
     "message": "למדו עוד"

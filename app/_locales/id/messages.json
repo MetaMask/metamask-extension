@@ -616,14 +616,8 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke Jaringan Uji Goerli"
   },
-  "connectingToKovan": {
-    "message": "Menghubungkan ke Jaringan Uji Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menghubungkan ke Ethereum Mainnet"
-  },
-  "connectingToRopsten": {
-    "message": "Menghubungkan ke Jaringan Uji Ropsten"
   },
   "contactUs": {
     "message": "Hubungi kami"
@@ -1662,9 +1656,6 @@
   },
   "knownTokenWarning": {
     "message": "Tindakan ini akan mengedit token yang telah terdaftar dalam dompet Anda, yang dapat digunakan untuk menipu Anda. Setujui hanya jika Anda yakin bahwa Anda ingin mengubah apa yang diwakili token ini. Pelajari selengkapnya seputar $1"
-  },
-  "kovan": {
-    "message": "Jaringan Uji Kovan"
   },
   "lastConnected": {
     "message": "Terakhir Terhubung"
@@ -2718,9 +2709,6 @@
   "revokeApproveForAllDescription": {
     "message": "Dengan mencabut izin, $1 berikut tidak lagi dapat mengakses $2 Anda",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "ropsten": {
-    "message": "Jaringan Uji Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC Baru"

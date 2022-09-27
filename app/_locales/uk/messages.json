@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "Підключення до тестової мережі Goerli"
   },
-  "connectingToKovan": {
-    "message": "Підключення до тестової мережі Kovan"
-  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Під'єднуємось до Тестової мережі Ropsten"
   },
   "continueToWyre": {
     "message": "Продовжити у Wyre"
@@ -500,9 +494,6 @@
   "knownAddressRecipient": {
     "message": "Відома контрактна адреса."
   },
-  "kovan": {
-    "message": "Тестова мережа Kovan"
-  },
   "learnMore": {
     "message": "Дізнатись більше"
   },
@@ -764,9 +755,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "НЕ передавайте цю фразу нікому!"
-  },
-  "ropsten": {
-    "message": "Тестова мережа Ropsten"
   },
   "rpcUrl": {
     "message": "Новий RPC URL"

@@ -35,8 +35,6 @@
       "incomingTransactions": {},
       "incomingTxLastFetchedBlockByChainId": {
         "0x1": null,
-        "0x2a": null,
-        "0x3": null,
         "0x5": 8977934
       }
     },

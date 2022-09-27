@@ -514,14 +514,8 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToKovan": {
-    "message": "Conectando à rede de testes Kovan"
-  },
   "connectingToMainnet": {
     "message": "Conectando à mainnet do Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Conectando à rede de testes Ropsten"
   },
   "contactUs": {
     "message": "Fale conosco"
@@ -1406,9 +1400,6 @@
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usado para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam."
   },
-  "kovan": {
-    "message": "Rede de testes Kovan"
-  },
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
@@ -2226,9 +2217,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NÃO compartilhe essa frase com ninguém!"
-  },
-  "ropsten": {
-    "message": "Rede de testes Ropsten"
   },
   "rpcUrl": {
     "message": "Novo URL da RPC"

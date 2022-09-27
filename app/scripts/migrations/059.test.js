@@ -28,7 +28,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   2: {
     type: SENT_ETHER,
     id: 2,
-    chainId: CHAIN_IDS.KOVAN,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x2',
     },
@@ -60,7 +60,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   6: {
     type: SENT_ETHER,
     id: 6,
-    chainId: CHAIN_IDS.KOVAN,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x6',
     },

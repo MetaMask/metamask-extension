@@ -305,9 +305,7 @@
     "conversionDate": 1538859376,
     "shapeShiftTxList": [],
     "infuraNetworkStatus": {
-      "kovan": "ok",
       "mainnet": "ok",
-      "ropsten": "ok",
       "goerli": "ok",
       "sepolia": "ok"
     }

@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToKovan": {
-    "message": "Свързване с тестовата мрежа на Kovan"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Свързване с тестова мрежа Ropsten"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -496,9 +490,6 @@
   "knownAddressRecipient": {
     "message": "Известен адрес на договора."
   },
-  "kovan": {
-    "message": "Тестова мрежа на Кован"
-  },
   "learnMore": {
     "message": "Научете повече"
   },
@@ -760,9 +751,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "НЕ споделяйте тази фраза с никого!"
-  },
-  "ropsten": {
-    "message": "Тестова мрежа Ropsten"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"

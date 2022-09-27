@@ -193,14 +193,8 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToKovan": {
-    "message": "Ühendamine Kovani testvõrguga"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "connectingToRopsten": {
-    "message": "Ühendamine Ropsteni testvõrguga"
   },
   "continueToWyre": {
     "message": "Ava Wyre"
@@ -496,9 +490,6 @@
   "knownAddressRecipient": {
     "message": "Teadaolev lepinguaadress."
   },
-  "kovan": {
-    "message": "Kovani testvõrk"
-  },
   "learnMore": {
     "message": "Lisateave"
   },
@@ -754,9 +745,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
-  },
-  "ropsten": {
-    "message": "Ropsteni testvõrk"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
