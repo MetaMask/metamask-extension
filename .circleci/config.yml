@@ -90,6 +90,14 @@ workflows:
       - test-e2e-firefox-snaps:
           requires:
             - prep-build-test-flask
+      - test-e2e-chrome-mv3:
+          filters:
+            tags:
+              only: /^PR - P1.*/
+            branches:
+              ignore: /.*/
+          requires:
+            - prep-build-test-mv3
       - test-unit:
           requires:
             - prep-deps
@@ -512,6 +520,33 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+    
+  test-e2e-chrome-mv3:
     executor: node-browsers
     steps:
       - checkout
