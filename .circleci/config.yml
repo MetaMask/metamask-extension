@@ -81,9 +81,6 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
-          filters:
-            branches:
-              ignore: /^.*mv3.*$/
       - test-e2e-firefox:
           requires:
             - prep-build-test
