@@ -16,29 +16,19 @@ import {
   addHistoryEntry,
 } from '../../../../ducks/send';
 import {
-  getEnsResolution,
-  getEnsError,
-  getEnsWarning,
-} from '../../../../ducks/ens';
-import {
-  getUnsError,
-  getUnsResolution,
-  getUnsWarning,
-} from '../../../../ducks/uns';
+  getDomainError,
+  getDomainWarning,
+  getDomainResolution,
+} from '../../../../ducks/domain';
 import AddRecipient from './add-recipient.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
 function mapStateToProps(state) {
-  const ensResolution = getEnsResolution(state);
-  const unsResolution = getUnsResolution(state);
+  const domainResolution = getDomainResolution(state);
   let addressBookEntryName = '';
-  if (ensResolution) {
-    const addressBookEntry = getAddressBookEntry(state, ensResolution) || {};
-    addressBookEntryName = addressBookEntry.name;
-  }
-  if (unsResolution) {
-    const addressBookEntry = getAddressBookEntry(state, unsResolution) || {};
+  if (domainResolution) {
+    const addressBookEntry = getAddressBookEntry(state, domainResolution) || {};
     addressBookEntryName = addressBookEntry.name;
   }
 
@@ -50,12 +40,9 @@ function mapStateToProps(state) {
     addressBook,
     addressBookEntryName,
     contacts: addressBook.filter(({ name }) => Boolean(name)),
-    ensResolution,
-    ensError: getEnsError(state),
-    ensWarning: getEnsWarning(state),
-    unsResolution,
-    unsError: getUnsError(state),
-    unsWarning: getUnsWarning(state),
+    domainResolution,
+    domainError: getDomainError(state),
+    domainWarning: getDomainWarning(state),
     nonContacts: addressBook.filter(({ name }) => !name),
     ownedAccounts,
     isUsingMyAccountsForRecipientSearch:

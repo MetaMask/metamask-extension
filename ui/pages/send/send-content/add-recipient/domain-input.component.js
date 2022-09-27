@@ -18,11 +18,6 @@ export default class DomainInput extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  // temporary object to store Unstoppable Tlds
-  udRequirements = {
-    tlds: [],
-  };
-
   static propTypes = {
     className: PropTypes.string,
     selectedAddress: PropTypes.string,
@@ -35,16 +30,13 @@ export default class DomainInput extends Component {
     onChange: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
     lookupEnsName: PropTypes.func.isRequired,
-    prepareResolutionCall: PropTypes.func.isRequired,
-    initializeEnsSlice: PropTypes.func.isRequired,
-    initializeUnsSlice: PropTypes.func.isRequired,
-    resetUnsResolution: PropTypes.func.isRequired,
-    resetEnsResolution: PropTypes.func.isRequired,
+    lookupUnsName: PropTypes.func.isRequired,
+    initializeDomainSlice: PropTypes.func.isRequired,
+    resetDomainResolution: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
-    this.props.initializeEnsSlice();
-    this.props.initializeUnsSlice();
+    this.props.initializeDomainSlice();
   }
 
   onPaste = (event) => {
@@ -68,9 +60,8 @@ export default class DomainInput extends Component {
       internalSearch,
       onChange,
       lookupEnsName,
-      resetEnsResolution,
-      resetUnsResolution,
-      prepareResolutionCall,
+      lookupUnsName,
+      resetDomainResolution,
     } = this.props;
     const input = value.trim();
 
@@ -81,14 +72,13 @@ export default class DomainInput extends Component {
     // check if user input is a Valid Unstoppable Domain
     // if valid, calls prepareResolutionCall and resolves the Unstoppable Domain
     if (await isValidUnstoppableDomainName(input)) {
-      resetEnsResolution();
-      prepareResolutionCall(input);
+      resetDomainResolution();
+      lookupUnsName(input);
     } else if (isValidENSDomainName(input)) {
-      resetUnsResolution();
+      resetDomainResolution();
       lookupEnsName(input);
     } else {
-      resetUnsResolution();
-      resetEnsResolution();
+      resetDomainResolution();
       if (
         onValidAddressTyped &&
         !isBurnAddress(input) &&

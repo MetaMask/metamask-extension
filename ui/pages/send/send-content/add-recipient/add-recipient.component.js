@@ -16,12 +16,9 @@ export default class AddRecipient extends Component {
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
     updateRecipient: PropTypes.func,
-    ensResolution: PropTypes.string,
-    ensError: PropTypes.string,
-    ensWarning: PropTypes.string,
-    unsResolution: PropTypes.string,
-    unsError: PropTypes.string,
-    unsWarning: PropTypes.string,
+    domainResolution: PropTypes.string,
+    domainError: PropTypes.string,
+    domainWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
@@ -105,8 +102,7 @@ export default class AddRecipient extends Component {
 
   render() {
     const {
-      ensResolution,
-      unsResolution,
+      domainResolution,
       recipient,
       userInput,
       addressBookEntryName,
@@ -121,17 +117,11 @@ export default class AddRecipient extends Component {
         recipient.nickname,
         'validated user input',
       );
-    } else if (ensResolution && !recipient.error) {
+    } else if (domainResolution && !recipient.error) {
       content = this.renderExplicitAddress(
-        ensResolution,
+        domainResolution,
         addressBookEntryName || userInput,
-        'ENS resolution',
-      );
-    } else if (unsResolution && !recipient.error) {
-      content = this.renderExplicitAddress(
-        unsResolution,
-        addressBookEntryName || userInput,
-        'UNS resolution',
+        'Domain resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -243,34 +233,18 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { ensError, recipient, ensWarning, unsError, unsWarning } =
-      this.props;
+    const { domainError, recipient, domainWarning } = this.props;
     const { t } = this.context;
-    if (unsError || (recipient.error && recipient.error !== 'required')) {
+    if (domainError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send_error-dialog">
-          {t(unsError ?? recipient.error)}
+          {t(domainError ?? recipient.error)}
         </Dialog>
       );
-    } else if (unsWarning || recipient.warning) {
+    } else if (domainWarning || recipient.warning) {
       return (
         <Dialog type="warning" className="send_error-dialog">
-          {t(unsWarning ?? recipient.warning)}
-        </Dialog>
-      );
-    } else if (
-      ensError ||
-      (recipient.error && recipient.error !== 'required')
-    ) {
-      return (
-        <Dialog type="error" className="send__error-dialog">
-          {t(ensError ?? recipient.error)}
-        </Dialog>
-      );
-    } else if (ensWarning || recipient.warning) {
-      return (
-        <Dialog type="warning" className="send__error-dialog">
-          {t(ensWarning ?? recipient.warning)}
+          {t(domainWarning ?? recipient.warning)}
         </Dialog>
       );
     }

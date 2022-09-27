@@ -1,27 +1,23 @@
 import { debounce } from 'lodash';
 import { connect } from 'react-redux';
 import {
+  resetDomainResolution,
+  initializeDomainSlice,
   lookupEnsName,
-  initializeEnsSlice,
-  resetEnsResolution,
-} from '../../../../ducks/ens';
-import {
-  initializeUnsSlice,
-  resetUnsResolution,
-  prepareResolutionCall,
-} from '../../../../ducks/uns';
+  lookupUnsName,
+} from '../../../../ducks/domain';
 import DomainInput from './domain-input.component';
 // adding Uns functions to dispatch
 function mapDispatchToProps(dispatch) {
   return {
-    lookupEnsName: debounce((ensName) => dispatch(lookupEnsName(ensName))),
-    prepareResolutionCall: debounce((unsName) =>
-      dispatch(prepareResolutionCall(unsName)),
+    lookupEnsName: debounce((domainName) =>
+      dispatch(lookupEnsName(domainName)),
     ),
-    initializeUnsSlice: () => dispatch(initializeUnsSlice()),
-    resetUnsResolution: debounce(() => dispatch(resetUnsResolution())),
-    initializeEnsSlice: () => dispatch(initializeEnsSlice()),
-    resetEnsResolution: debounce(() => dispatch(resetEnsResolution())),
+    lookupUnsName: debounce((domainName) =>
+      dispatch(lookupUnsName(domainName)),
+    ),
+    initializeDomainSlice: () => dispatch(initializeDomainSlice()),
+    resetDomainResolution: debounce(() => dispatch(resetDomainResolution())),
   };
 }
 

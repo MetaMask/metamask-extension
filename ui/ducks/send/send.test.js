@@ -1748,9 +1748,6 @@ describe('Send Slice', () => {
           provider: {
             chainId: '',
           },
-          UNS: {
-            tlds: [],
-          },
           tokens: [],
           useTokenDetection: true,
           tokenList: {
@@ -2046,7 +2043,6 @@ describe('Send Slice', () => {
             provider: {
               chainId: '',
             },
-            UNS: {},
             tokens: [],
             useTokenDetection: true,
             tokenList: {
@@ -2083,7 +2079,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(12);
+        expect(actionResult).toHaveLength(11);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2111,9 +2107,10 @@ describe('Send Slice', () => {
         expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[10].type).toStrictEqual('UNS/resetUnsResolution');
-        expect(actionResult[11].type).toStrictEqual(
+        expect(actionResult[9].type).toStrictEqual(
+          'domainState/resetDomainResolution',
+        );
+        expect(actionResult[10].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });

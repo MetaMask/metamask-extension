@@ -3,8 +3,7 @@ import { ALERT_TYPES } from '../../shared/constants/alerts';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
-import ensReducer from './ens';
-import unsReducer from './uns';
+import domainReducer from './domain';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
 import gasReducer from './gas/gas.duck';
@@ -18,8 +17,7 @@ export default combineReducers({
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
   appState: appStateReducer,
-  ENS: ensReducer,
-  UNS: unsReducer,
+  domainState: domainReducer,
   history: historyReducer,
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,

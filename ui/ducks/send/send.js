@@ -86,8 +86,11 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetEnsResolution } from '../ens';
-import { swapUdOnTokenChange, resetUnsResolution, unsLookup } from '../uns';
+import {
+  swapUdOnTokenChange,
+  resetDomainResolution,
+  domainLookup,
+} from '../domain';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -2036,14 +2039,13 @@ export function updateSendAsset(
        * dispatches the new resolved address to the transaction state
        */
       if (
-        state.UNS?.resolution ===
-          state.send.draftTransactions[state.send.currentTransactionUUID]
-            .recipient.address &&
-        state.UNS.domainName
+        state.domainState?.domainType === 'UNS' &&
+        state.send.draftTransactions[state.send.currentTransactionUUID]
+          .recipient.address === state.domainState.resolution
       ) {
         let unsError = null;
         const resolution = await swapUdOnTokenChange(
-          state.UNS.domainName,
+          state.domainState.domainName,
           state.metamask.provider?.ticker ?? 'ETH',
         );
         if (resolution.error) {
@@ -2070,7 +2072,15 @@ export function updateSendAsset(
           );
           throw new Error('No address associated with this token');
         } else {
-          dispatch(unsLookup(resolution));
+          console.log(resolution);
+          dispatch(
+            domainLookup({
+              domainName: resolution.unsName,
+              address: resolution.address,
+              error: resolution.error,
+              domainType: 'UNS',
+            }),
+          );
           await dispatch(
             updateRecipient({
               address: resolution.address,
@@ -2191,13 +2201,12 @@ export function updateSendAsset(
        * dispatches the new resolved address to the transaction state
        */
       if (
-        state.UNS?.resolution ===
-          state.send.draftTransactions[state.send.currentTransactionUUID]
-            .recipient.address &&
-        state.UNS.domainName
+        state.domainState?.domainType === 'UNS' &&
+        state.send.draftTransactions[state.send.currentTransactionUUID]
+          .recipient.address === state.domainState.resolution
       ) {
         const resolution = await swapUdOnTokenChange(
-          state.UNS.domainName,
+          state.domainState.domainName,
           asset,
         );
         if (resolution.error) {
@@ -2214,7 +2223,14 @@ export function updateSendAsset(
           await dispatch(actions.updateAsset({ asset, initialAssetSet }));
           throw new Error('No address associated with this token');
         } else {
-          dispatch(unsLookup(resolution));
+          dispatch(
+            domainLookup({
+              domainName: resolution.unsName,
+              address: resolution.address,
+              error: resolution.error,
+              domainType: 'UNS',
+            }),
+          );
           await dispatch(
             updateRecipient({
               address: resolution.address,
@@ -2304,8 +2320,7 @@ export function resetRecipientInput() {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetEnsResolution());
-    await dispatch(resetUnsResolution());
+    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }
