@@ -161,6 +161,7 @@ export const TEXT = {
   BODY_MD: 'body-md',
   BODY_SM: 'body-sm',
   BODY_XS: 'body-xs',
+  INHERIT: 'inherit',
 };
 
 const NONE = 'none';
@@ -172,7 +173,7 @@ export const SIZES = {
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
-  AUTO: 'auto', // Used for Text and Icon components to inherit the parent elements font-size
+  AUTO: 'auto', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   NONE,
 };
 
