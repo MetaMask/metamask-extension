@@ -14,6 +14,14 @@
     &--max-button {
       color: var(--color-text-alternative);
       background: none;
+      position: fixed;
+      margin-top: 55px;
+      margin-inline-start: -75px;
     }
+  }
+
+  #custom-spending-cap-input-value {
+    color: var(--color-error-default);
+    padding-inline-end: 60px;
   }
 }

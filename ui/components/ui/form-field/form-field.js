@@ -26,7 +26,6 @@ export default function FormField({
   TooltipCustomComponent,
   titleDetail = '',
   titleDetailWrapperProps,
-  coloredValue,
   error,
   onChange = undefined,
   value = 0,
@@ -43,7 +42,6 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
-  maxButton,
 }) {
   return (
     <div
@@ -117,7 +115,6 @@ export default function FormField({
             className={classNames('form-field__input', {
               'form-field__input--error': error,
               'form-field__input--warning': warning,
-              'form-field__input--colour-value': coloredValue,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -129,16 +126,6 @@ export default function FormField({
             id={id}
             {...inputProps}
           />
-        )}
-        {maxButton && (
-          <Box
-            className="form-field__max-button"
-            textAlign={TEXT_ALIGN.END}
-            marginRight={4}
-            marginBottom={3}
-          >
-            {maxButton}
-          </Box>
         )}
         {error && (
           <Typography
@@ -290,12 +277,4 @@ FormField.propTypes = {
    * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
    */
   wrappingLabelProps: PropTypes.object,
-  /**
-   * Show max button inside the input field
-   */
-  maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  /**
-   * Show colored value inside the input field
-   */
-  coloredValue: PropTypes.bool,
 };

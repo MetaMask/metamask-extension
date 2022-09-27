@@ -14,6 +14,9 @@ export default {
     dappProposedValue: {
       control: { type: 'number' },
     },
+    siteOrigin: {
+      control: { type: 'text' },
+    },
     onEdit: {
       action: 'onEdit',
     },
@@ -22,6 +25,7 @@ export default {
     tokenName: 'DAI',
     currentTokenBalance: 200.12,
     dappProposedValue: 7,
+    siteOrigin: 'Uniswap.org',
   },
 };
 

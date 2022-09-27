@@ -19,7 +19,7 @@
       width: 180px;
 
       &__warning-icon {
-        color: var(--color-warning-default) !important;
+        color: var(--color-error-default) !important;
       }
     }
   }
@@ -61,14 +61,5 @@
     &--warning {
       border-color: var(--color-warning-default);
     }
-
-    &--colour-value {
-      color: var(--color-warning-default);
-      padding-inline-end: 60px;
-    }
-  }
-
-  &__max-button {
-    margin-top: -30px;
   }
 }

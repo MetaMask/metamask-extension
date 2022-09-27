@@ -9,6 +9,7 @@ import {
   COLORS,
   DISPLAY,
   FLEX_DIRECTION,
+  TEXT_ALIGN,
   FONT_WEIGHT,
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
@@ -20,6 +21,7 @@ export default function CustomSpendingCap({
   tokenName,
   currentTokenBalance,
   dappProposedValue,
+  siteOrigin,
   onEdit,
 }) {
   const t = useContext(I18nContext);
@@ -56,14 +58,14 @@ export default function CustomSpendingCap({
   };
 
   const handleChange = (valueInput) => {
-    let spendingCapInvalid = '';
+    let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
 
     if (valueInput < 0 || isNaN(valueInput)) {
-      spendingCapInvalid = t('spendingCapInvalid');
-      setCustomSpendingCapText('');
-      setError(spendingCapInvalid);
+      spendingCapError = t('spendingCapError');
+      setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
+      setError(spendingCapError);
     } else {
       setCustomSpendingCapText(inputTextLogicDescription);
       setError('');
@@ -79,7 +81,7 @@ export default function CustomSpendingCap({
             key="tooltip-text"
             variant={TYPOGRAPHY.H7}
             fontWeight={FONT_WEIGHT.BOLD}
-            color={COLORS.WARNING_DEFAULT}
+            color={COLORS.ERROR_DEFAULT}
           >
             <i className="fa fa-exclamation-circle" /> {t('beCareful')}
           </Typography>,
@@ -87,83 +89,94 @@ export default function CustomSpendingCap({
       : t('inputLogicEmptyState');
 
   return (
-    <Box
-      className="custom-spending-cap"
-      borderRadius={SIZES.SM}
-      paddingTop={2}
-      paddingRight={6}
-      paddingLeft={6}
-      display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.FLEX_START}
-      flexDirection={FLEX_DIRECTION.COLUMN}
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-      gap={2}
-    >
-      <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        display={DISPLAY.BLOCK}
-        className="custom-spending-cap__input"
-      >
-        <label htmlFor="custom-spending-cap">
-          <FormField
-            dataTestId="custom-spending-cap-input"
-            autoFocus
-            wrappingLabelProps={{ as: 'div' }}
-            id="custom-spending-cap"
-            TooltipCustomComponent={
-              <CustomSpendingCapTooltip
-                tooltipContentText={value ? chooseTooltipContentText : ''}
-                tooltipIcon={value ? value > currentTokenBalance : ''}
-              />
-            }
-            onChange={handleChange}
-            titleText={t('customSpendingCap')}
-            placeholder={t('enterANumber')}
-            error={error}
-            coloredValue={value > currentTokenBalance || error}
-            value={value}
-            titleDetail={
-              <button
-                className="custom-spending-cap__input--button"
-                type="link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (value <= currentTokenBalance) {
-                    handleChange(dappProposedValue);
-                    setValue(dappProposedValue);
-                  } else {
-                    onEdit();
-                  }
-                }}
-              >
-                {value > currentTokenBalance ? t('edit') : t('useDefault')}
-              </button>
-            }
-            titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
-            maxButton={
-              <button
-                className="custom-spending-cap__input--max-button"
-                type="link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleChange(currentTokenBalance);
-                  setValue(currentTokenBalance);
-                }}
-              >
-                {t('max')}
-              </button>
-            }
-          />
-          <Typography
-            color={COLORS.TEXT_DEFAULT}
-            variant={TYPOGRAPHY.H7}
-            boxProps={{ paddingTop: 2, paddingBottom: 2 }}
-          >
-            {value ? customSpendingCapText : inputLogicEmptyStateText}
-          </Typography>
-        </label>
+    <>
+      <Box textAlign={TEXT_ALIGN.END}>
+        <button
+          className="custom-spending-cap__input--max-button"
+          type="link"
+          onClick={(e) => {
+            e.preventDefault();
+            handleChange(currentTokenBalance);
+            setValue(currentTokenBalance);
+          }}
+        >
+          {t('max')}
+        </button>
       </Box>
-    </Box>
+      <Box
+        className="custom-spending-cap"
+        borderRadius={SIZES.SM}
+        paddingTop={2}
+        paddingRight={6}
+        paddingLeft={6}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.FLEX_START}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        gap={2}
+      >
+        <Box
+          justifyContent={JUSTIFY_CONTENT.CENTER}
+          display={DISPLAY.BLOCK}
+          className="custom-spending-cap__input"
+        >
+          <label
+            htmlFor={
+              value > (currentTokenBalance || error)
+                ? 'custom-spending-cap-input-value'
+                : 'custom-spending-cap'
+            }
+          >
+            <FormField
+              dataTestId="custom-spending-cap-input"
+              autoFocus
+              wrappingLabelProps={{ as: 'div' }}
+              id={
+                value > (currentTokenBalance || error)
+                  ? 'custom-spending-cap-input-value'
+                  : 'custom-spending-cap'
+              }
+              TooltipCustomComponent={
+                <CustomSpendingCapTooltip
+                  tooltipContentText={value ? chooseTooltipContentText : ''}
+                  tooltipIcon={value ? value > currentTokenBalance : ''}
+                />
+              }
+              onChange={handleChange}
+              titleText={t('customSpendingCap')}
+              placeholder={t('enterANumber')}
+              error={error}
+              value={value}
+              titleDetail={
+                <button
+                  className="custom-spending-cap__input--button"
+                  type="link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (value <= currentTokenBalance || error) {
+                      handleChange(dappProposedValue);
+                      setValue(dappProposedValue);
+                    } else {
+                      onEdit();
+                    }
+                  }}
+                >
+                  {value > currentTokenBalance ? t('edit') : t('useDefault')}
+                </button>
+              }
+              titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
+            />
+            <Typography
+              color={COLORS.TEXT_DEFAULT}
+              variant={TYPOGRAPHY.H7}
+              boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+            >
+              {value ? customSpendingCapText : inputLogicEmptyStateText}
+            </Typography>
+          </label>
+        </Box>
+      </Box>
+    </>
   );
 }
 
@@ -180,6 +193,10 @@ CustomSpendingCap.propTypes = {
    * The dapp suggested amount
    */
   dappProposedValue: PropTypes.number,
+  /**
+   * The origin of the site generally the URL
+   */
+  siteOrigin: PropTypes.string,
   /**
    * onClick handler for the Edit link
    */

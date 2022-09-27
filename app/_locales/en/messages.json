@@ -3356,8 +3356,12 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
-  "spendingCapInvalid": {
-    "message": "Spending cap invalid; must be a positive number"
+  "spendingCapError": {
+    "message": "Error: Enter numbers only"
+  },
+  "spendingCapErrorDescription": {
+    "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
+    "description": "$1 is origin of the site requesting the token limit"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
