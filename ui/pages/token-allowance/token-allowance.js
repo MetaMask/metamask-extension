@@ -29,8 +29,10 @@ import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message/mu
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import {
   getCurrentAccountWithSendEtherInfo,
-  getSwapsDefaultToken,
   getNetworkIdentifier,
+  transactionFeeSelector,
+  getKnownMethodData,
+  getRpcPrefsForCurrentProvider,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -60,6 +62,11 @@ export default function TokenAllowance({
   data,
   isSetApproveForAll,
   setApproveForAllArg,
+  customTxParamsData,
+  dappProposedTokenAmount,
+  currentTokenBalance,
+  toAddress,
+  tokenSymbol,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -68,13 +75,31 @@ export default function TokenAllowance({
 
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
-  const [isFirstPage, setFirstPage] = useState(false);
+  const [isFirstPage, setIsFirstPage] = useState(false);
 
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
-  const accountBalance = useSelector(getSwapsDefaultToken);
   const networkIdentifier = useSelector(getNetworkIdentifier);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
-  const networkName = NETWORK_TO_NAME_MAP[txData.chainId] || networkIdentifier;
+  let fullTxData = { ...txData };
+
+  if (customTxParamsData) {
+    fullTxData = {
+      ...fullTxData,
+      txParams: {
+        ...fullTxData.txParams,
+        data: customTxParamsData,
+      },
+    };
+  }
+
+  const txAdditionalData = useSelector((state) => ({
+    fee: transactionFeeSelector(state, fullTxData),
+    methodData: getKnownMethodData(state, fullTxData.txParams.data),
+  }));
+
+  const networkName =
+    NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
   const customNonceValue = '';
   const customNonceMerge = (transactionData) =>
@@ -85,16 +110,36 @@ export default function TokenAllowance({
         }
       : transactionData;
 
-  const rejectTransaction = () => {
-    dispatch(cancelTx(txData)).then(() => {
+  const handleReject = () => {
+    dispatch(cancelTx(fullTxData)).then(() => {
       dispatch(clearConfirmTransaction());
       dispatch(updateCustomNonce(''));
       history.push(mostRecentOverviewPage);
     });
   };
 
-  const approveTransaction = () => {
-    dispatch(updateAndApproveTx(customNonceMerge(txData))).then(() => {
+  const handleApprove = () => {
+    const { name } = txAdditionalData.methodData;
+
+    if (txAdditionalData.fee.gasEstimationObject.baseFeePerGas) {
+      fullTxData.estimatedBaseFee =
+        txAdditionalData.fee.gasEstimationObject.baseFeePerGas;
+    }
+
+    if (name) {
+      fullTxData.contractMethodName = name;
+    }
+
+    if (dappProposedTokenAmount) {
+      fullTxData.dappProposedTokenAmount = dappProposedTokenAmount;
+      fullTxData.originalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (currentTokenBalance) {
+      fullTxData.currentTokenBalance = currentTokenBalance;
+    }
+
+    dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       dispatch(clearConfirmTransaction());
       dispatch(updateCustomNonce(''));
       history.push(mostRecentOverviewPage);
@@ -204,7 +249,7 @@ export default function TokenAllowance({
               </Typography>
             </Box>
             <MultiLayerFeeMessage
-              transaction={txData}
+              transaction={fullTxData}
               layer2fee={hexTransactionTotal}
               nativeCurrency={nativeCurrency}
               plainStyle
@@ -312,7 +357,7 @@ export default function TokenAllowance({
       >
         <Box>
           {!isFirstPage && (
-            <Button type="inline" onClick={() => setFirstPage(true)}>
+            <Button type="inline" onClick={() => setIsFirstPage(true)}>
               <Typography
                 variant={TYPOGRAPHY.H6}
                 color={COLORS.TEXT_MUTED}
@@ -336,8 +381,8 @@ export default function TokenAllowance({
       <NetworkAccountBalanceHeader
         networkName={networkName}
         accountName={currentAccount.name}
-        accountBalance={parseFloat(accountBalance.string)}
-        tokenName={nativeCurrency}
+        accountBalance={currentTokenBalance}
+        tokenName={tokenSymbol}
         accountAddress={userAddress}
       />
       <Box
@@ -376,13 +421,15 @@ export default function TokenAllowance({
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {t('reviewSpendingCap')}
+          {isFirstPage ? t('setSpendingCap') : t('reviewSpendingCap')}
         </Typography>
       </Box>
       <Box>
         <ContractTokenValues
-          tokenName={nativeCurrency}
+          tokenName={tokenSymbol}
           address={tokenAddress}
+          chainId={fullTxData.chainId}
+          rpcPrefs={rpcPrefs}
         />
       </Box>
       <Box marginTop={1}>
@@ -398,23 +445,25 @@ export default function TokenAllowance({
       </Box>
       <Box margin={[4, 4, 3, 4]}>
         <ReviewSpendingCap
-          tokenName={nativeCurrency}
-          currentTokenBalance={parseFloat(accountBalance.string)}
+          tokenName={tokenSymbol}
+          currentTokenBalance={parseFloat(currentTokenBalance)}
           tokenValue={10}
-          onEdit={() => setFirstPage(true)}
+          onEdit={() => setIsFirstPage(true)}
         />
       </Box>
-      <Box className="token-allowance-container__card-wrapper">
-        {renderApproveContentCard({
-          symbol: <i className="fa fa-tag" />,
-          title: t('transactionFee'),
-          showEdit: true,
-          showAdvanceGasFeeOptions: true,
-          onEditClick: showCustomizeGasModal,
-          content: renderTransactionDetailsContent(),
-          noBorder: useNonceField || !showFullTxDetails,
-        })}
-      </Box>
+      {!isFirstPage && (
+        <Box className="token-allowance-container__card-wrapper">
+          {renderApproveContentCard({
+            symbol: <i className="fa fa-tag" />,
+            title: t('transactionFee'),
+            showEdit: true,
+            showAdvanceGasFeeOptions: true,
+            onEditClick: showCustomizeGasModal,
+            content: renderTransactionDetailsContent(),
+            noBorder: useNonceField || !showFullTxDetails,
+          })}
+        </Box>
+      )}
       <Box>
         <Button
           type="link"
@@ -438,15 +487,20 @@ export default function TokenAllowance({
       {showFullTxDetails ? renderFullDetails() : null}
       <PageContainerFooter
         cancelText={t('reject')}
-        submitText={t('approveButtonText')}
-        onCancel={() => rejectTransaction()}
-        onSubmit={() => approveTransaction()}
+        submitText={isFirstPage ? t('next') : t('approveButtonText')}
+        onCancel={() => handleReject()}
+        onSubmit={() => (isFirstPage ? setIsFirstPage(false) : handleApprove())}
       />
       {showContractDetails && (
         <ContractDetailsModal
-          tokenName={nativeCurrency}
-          address={tokenAddress}
+          tokenName={tokenSymbol}
           onClose={() => setShowContractDetails(false)}
+          tokenAddress={tokenAddress}
+          toAddress={toAddress}
+          chainId={fullTxData.chainId}
+          rpcPrefs={rpcPrefs}
+          origin={origin}
+          siteImage={siteImage}
         />
       )}
     </Box>
@@ -471,4 +525,9 @@ TokenAllowance.propTypes = {
   data: PropTypes.string,
   isSetApproveForAll: PropTypes.bool,
   setApproveForAllArg: PropTypes.bool,
+  customTxParamsData: PropTypes.object,
+  dappProposedTokenAmount: PropTypes.string,
+  currentTokenBalance: PropTypes.string,
+  toAddress: PropTypes.string,
+  tokenSymbol: PropTypes.string,
 };

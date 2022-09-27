@@ -3125,6 +3125,9 @@
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
   },
+  "setSpendingCap": {
+    "message": "Set a spending cap for your"
+  },
   "settings": {
     "message": "Settings"
   },
