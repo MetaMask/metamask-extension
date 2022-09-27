@@ -8,7 +8,7 @@ import { checkForError } from './util';
  */
 export default class ExtensionStore {
   constructor() {
-    this.isSupported = Boolean(browser.storage.local);
+    this.isSupported = Boolean(browser.storage?.local);
     if (!this.isSupported) {
       log.error('Storage local API not available.');
     }
