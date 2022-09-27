@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import { showModal } from '../../../../store/actions';
 
 import {
-  resetCustomData,
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
@@ -40,12 +39,6 @@ jest.mock('../../send.utils.js', () => ({
 
 jest.mock('../../../../store/actions', () => ({
   showModal: jest.fn(),
-}));
-
-jest.mock('../../../../ducks/gas/gas.duck', () => ({
-  resetCustomData: jest.fn(),
-  setCustomGasPrice: jest.fn(),
-  setCustomGasLimit: jest.fn(),
 }));
 
 require('./send-gas-row.container');
@@ -86,14 +79,6 @@ describe('send-gas-row container', () => {
         expect(dispatchSpy.calledTwice).toStrictEqual(true);
         expect(updateGasLimit).toHaveBeenCalled();
         expect(setCustomGasLimit).toHaveBeenCalledWith('mockNewLimit');
-      });
-    });
-
-    describe('resetCustomData()', () => {
-      it('should dispatch an action', () => {
-        mapDispatchToPropsObject.resetCustomData();
-        expect(dispatchSpy.calledOnce).toStrictEqual(true);
-        expect(resetCustomData).toHaveBeenCalled();
       });
     });
   });
