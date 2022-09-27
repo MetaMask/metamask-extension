@@ -149,7 +149,8 @@ workflows:
           requires:
             - prep-build-test-mv3
       - mv3-test-e2e-chrome:
-          when: manual
+          rules:
+            when: manual
       - job-publish-prerelease:
           requires:
             - prep-deps
