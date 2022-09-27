@@ -62,7 +62,7 @@ export const ButtonBase = ({
         {icon && (
           <Icon
             name={icon}
-            size={size === BUTTON_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
+            size={size === BUTTON_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
           />
         )}
         {children}

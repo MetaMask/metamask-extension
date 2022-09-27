@@ -106,17 +106,11 @@ export default {
     },
   },
   args: {
-    // children: 'Button Tertiary',
+    children: 'Button Tertiary',
   },
 };
 
-export const DefaultStory = (args) => (
-  <>
-    <Text variant={TEXT.BODY_MD}>
-      Hello web <ButtonLink {...args}>Click Me</ButtonLink> world
-    </Text>
-  </>
-);
+export const DefaultStory = (args) => <ButtonLink {...args} />;
 
 DefaultStory.storyName = 'Default';
 
