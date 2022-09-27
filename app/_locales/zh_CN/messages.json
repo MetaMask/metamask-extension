@@ -711,9 +711,6 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToKovan": {
-    "message": "正在连接 Kovan 测试网络"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
   },

@@ -215,11 +215,14 @@ describe('PermissionController specifications', () => {
               '0x3': {
                 lastSelected: 3,
               },
+              '0x4': {
+                lastSelected: 3,
+              },
             };
           });
           const getAllAccounts = jest
             .fn()
-            .mockImplementationOnce(() => ['0x1', '0x2', '0x3']);
+            .mockImplementationOnce(() => ['0x1', '0x2', '0x3', '0x4']);
 
           const { methodImplementation } = getPermissionSpecifications({
             getIdentities,
@@ -228,6 +231,7 @@ describe('PermissionController specifications', () => {
 
           expect(await methodImplementation()).toStrictEqual([
             '0x3',
+            '0x4',
             '0x1',
             '0x2',
           ]);
