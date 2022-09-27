@@ -1,4 +1,4 @@
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { getInitialSendStateWithExistingTxState } from '../../test/jest/mocks';
 import {
   getCustomGasLimit,
