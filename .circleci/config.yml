@@ -554,10 +554,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-mv3 ./dist
+          command: mv ./dist-test ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-mv3 ./builds
+          command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome
           command: |
