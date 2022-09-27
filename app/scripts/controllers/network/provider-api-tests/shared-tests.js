@@ -343,17 +343,23 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
                 capturedRejectionValue = rejectionValue;
               });
 
-            while (nock.pendingMocks().length > 0) {
+            let i = 0;
+            while (nock.pendingMocks().length > 0 && i < 15) {
               clock.runAll();
               await new Promise((resolve) =>
                 originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
               );
+              i += 1;
             }
 
-            if (capturedRejectionValue !== undefined) {
-              return Promise.reject(capturedRejectionValue);
-            }
-            return Promise.resolve(capturedResolutionValue);
+            return new Promise((resolve, reject) => {
+              if (capturedRejectionValue !== undefined) {
+                reject(capturedRejectionValue);
+              }
+              if (capturedResolutionValue !== undefined) {
+                resolve(capturedResolutionValue);
+              }
+            });
           },
         );
 
@@ -442,17 +448,23 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
                 capturedRejectionValue = rejectionValue;
               });
 
-            while (nock.pendingMocks().length > 0) {
+            let i = 0;
+            while (nock.pendingMocks().length > 0 && i < 15) {
               clock.runAll();
               await new Promise((resolve) =>
                 originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
               );
+              i += 1;
             }
 
-            if (capturedRejectionValue !== undefined) {
-              return Promise.reject(capturedRejectionValue);
-            }
-            return Promise.resolve(capturedResolutionValue);
+            return new Promise((resolve, reject) => {
+              if (capturedRejectionValue !== undefined) {
+                reject(capturedRejectionValue);
+              }
+              if (capturedResolutionValue !== undefined) {
+                resolve(capturedResolutionValue);
+              }
+            });
           },
         );
 
