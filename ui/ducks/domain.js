@@ -183,7 +183,7 @@ const {
 
 export { resetDomainResolution, domainLookup };
 
-// creates a slice of state that will contain both ENS and UNS resolution as long as we are not no a testnet
+// creates a slice of state that contains both ENS and UNS resolution as long as we are not no a testnet
 export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
