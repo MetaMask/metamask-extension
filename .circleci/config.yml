@@ -148,9 +148,6 @@ workflows:
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
-      - mv3-test-e2e-chrome:
-          rules:
-            when: manual
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -185,6 +182,10 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
+  test_mv3:
+    when: manual
+    jobs:
+      - mv3-test-e2e-chrome
 
 jobs:
   create_release_pull_request:
