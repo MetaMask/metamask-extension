@@ -32,6 +32,20 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: (t) => t('permission_notifications'),
     rightIcon: null,
   },
+  [RestrictedMethods.snap_getBip32PublicKey]: {
+    label: (t, _, permissionValue) => {
+      return permissionValue.caveats[0].value.map(({ path, curve }) =>
+        t('permission_viewBip32PublicKeys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+      );
+    },
+    leftIcon: 'fas fa-eye',
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_getBip32Entropy]: {
     label: (t, _, permissionValue) => {
       return permissionValue.caveats[0].value.map(({ path, curve }) =>
@@ -60,17 +74,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
-  [RestrictedMethods['snap_getBip44Entropy_*']]: {
-    label: (t, permissionName) => {
-      const coinType = permissionName.split('_').slice(-1);
-      return t('permission_manageBip44Keys', [
-        coinTypeToProtocolName(coinType) ||
-          `${coinType} (Unrecognized protocol)`,
-      ]);
-    },
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
-  },
   [RestrictedMethods.snap_manageState]: {
     label: (t) => t('permission_manageState'),
     leftIcon: 'fas fa-download',
@@ -92,6 +95,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:long-running']]: {
     label: (t) => t('permission_longRunning'),
     leftIcon: 'fas fa-infinity',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:transaction-insight']]: {
+    label: (t) => t('permission_transactionInsight'),
+    leftIcon: 'fas fa-info',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN

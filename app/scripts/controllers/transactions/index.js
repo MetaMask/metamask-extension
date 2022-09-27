@@ -1082,6 +1082,7 @@ export default class TransactionController extends EventEmitter {
       blockGasLimit,
       customNetworkGasBuffer,
     );
+
     return { gasLimit, simulationFails };
   }
 
