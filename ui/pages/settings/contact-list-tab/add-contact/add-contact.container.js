@@ -11,7 +11,11 @@ import {
   getDomainError,
   getDomainResolution,
   resetDomainResolution,
+<<<<<<< HEAD
 } from '../../../../ducks/domains';
+=======
+} from '../../../../ducks/domain';
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {

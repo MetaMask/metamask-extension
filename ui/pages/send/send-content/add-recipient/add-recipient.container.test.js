@@ -18,6 +18,7 @@ jest.mock('../../../../selectors', () => ({
   ],
 }));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 jest.mock('../../../../ducks/domains', () => ({
   getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
@@ -36,6 +37,12 @@ jest.mock('../../../../ducks/ens', () => ({
 >>>>>>> 8e33b41b9 (working through unit tests)
   useMyAccountsForRecipientSearch: (s) =>
     `useMyAccountsForRecipientSearch:${s}`,
+=======
+jest.mock('../../../../ducks/domain', () => ({
+  getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
+  getDomainError: (s) => `mockSendDomainResolutionError:${s}`,
+  getDomainWarning: (s) => `mockSendDomainResolutionWarning:${s}`,
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
 }));
 
 jest.mock('../../../../ducks/send', () => ({
@@ -62,6 +69,7 @@ describe('add-recipient container', () => {
         addressBookEntryName: undefined,
         contacts: [{ name: 'mockAddressBook:mockState' }],
 <<<<<<< HEAD
+<<<<<<< HEAD
         domainResolution: 'mockSendDomainResolution:mockState',
         domainError: 'mockSendDomainResolutionError:mockState',
         domainWarning: 'mockSendDomainResolutionWarning:mockState',
@@ -73,6 +81,11 @@ describe('add-recipient container', () => {
         ensError: 'mockSendEnsResolutionError:mockState',
         ensWarning: 'mockSendEnsResolutionWarning:mockState',
 >>>>>>> 8e33b41b9 (working through unit tests)
+=======
+        domainResolution: 'mockSendDomainResolution:mockState',
+        domainError: 'mockSendDomainResolutionError:mockState',
+        domainWarning: 'mockSendDomainResolutionWarning:mockState',
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
         nonContacts: [],
         ownedAccounts: [
           { name: 'account1:mockState' },

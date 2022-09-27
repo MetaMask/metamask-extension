@@ -121,13 +121,7 @@ export default class AddRecipient extends Component {
       content = this.renderExplicitAddress(
         domainResolution,
         addressBookEntryName || userInput,
-        'ENS resolution',
-      );
-    } else if (unsResolution && !recipient.error) {
-      content = this.renderExplicitAddress(
-        unsResolution,
-        addressBookEntryName || userInput,
-        'UNS resolution',
+        'Domain resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -239,18 +233,30 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
+<<<<<<< HEAD
     const { ensError, recipient, ensWarning, unsError, unsWarning } = this.props;
     const { t } = this.context;
 
     if (domainError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send__error-dialog">
+=======
+    const { domainError, recipient, domainWarning } = this.props;
+    const { t } = this.context;
+    if (domainError || (recipient.error && recipient.error !== 'required')) {
+      return (
+        <Dialog type="error" className="send_error-dialog">
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
           {t(domainError ?? recipient.error)}
         </Dialog>
       );
     } else if (domainWarning || recipient.warning) {
       return (
+<<<<<<< HEAD
         <Dialog type="warning" className="send__error-dialog">
+=======
+        <Dialog type="warning" className="send_error-dialog">
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
           {t(domainWarning ?? recipient.warning)}
         </Dialog>
       );

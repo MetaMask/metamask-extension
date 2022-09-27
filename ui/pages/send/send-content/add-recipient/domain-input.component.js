@@ -18,11 +18,6 @@ export default class DomainInput extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  // temporary object to store Unstoppable Tlds
-  udRequirements = {
-    tlds: [],
-  };
-
   static propTypes = {
     className: PropTypes.string,
     selectedAddress: PropTypes.string,
@@ -35,10 +30,16 @@ export default class DomainInput extends Component {
     onChange: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
     lookupEnsName: PropTypes.func.isRequired,
+<<<<<<< HEAD
     resolveUNS: PropTypes.func.isRequired,
     initializeDomainSlice: PropTypes.func.isRequired,
     resetDomainResolution: PropTypes.func.isRequired,
     updateUdTlds: PropTypes.func.isRequired,
+=======
+    lookupUnsName: PropTypes.func.isRequired,
+    initializeDomainSlice: PropTypes.func.isRequired,
+    resetDomainResolution: PropTypes.func.isRequired,
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
   };
 
   componentDidMount() {
@@ -66,9 +67,14 @@ export default class DomainInput extends Component {
       internalSearch,
       onChange,
       lookupEnsName,
+<<<<<<< HEAD
       resolveUNS,
       resetDomainResolution,
       updateUdTlds,
+=======
+      lookupUnsName,
+      resetDomainResolution,
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
     } = this.props;
     const input = value.trim();
 
@@ -79,6 +85,7 @@ export default class DomainInput extends Component {
     // check if user input is a Valid Unstoppable Domain
     // if valid, calls prepareResolutionCall and resolves the Unstoppable Domain
     if (await isValidUnstoppableDomainName(input)) {
+<<<<<<< HEAD
       resetEnsResolution();
       prepareResolutionCall(input);
       resetEnsResolution(); 
@@ -92,6 +99,13 @@ export default class DomainInput extends Component {
     } else if (isValidDomainName(input) && !isValidUnstoppableDomainName(input)) {
         resetUnsResolution();
         lookupEnsName(input);
+=======
+      resetDomainResolution();
+      lookupUnsName(input);
+    } else if (isValidENSDomainName(input)) {
+      resetDomainResolution();
+      lookupEnsName(input);
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
     } else {
       resetDomainResolution();
       if (

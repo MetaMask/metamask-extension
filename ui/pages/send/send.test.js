@@ -3,7 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
+<<<<<<< HEAD
 import { domainInitialState } from '../../ducks/domains';
+=======
+import { domainInitialState } from '../../ducks/domain';
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
 import { renderWithProvider } from '../../../test/jest';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
@@ -54,7 +58,11 @@ jest.mock('ethers', () => {
 });
 const baseStore = {
   send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+<<<<<<< HEAD
   DNS: domainInitialState,
+=======
+  domainState: domainInitialState,
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
   gas: {
     customData: { limit: null, price: null },
   },

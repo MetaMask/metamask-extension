@@ -16,10 +16,17 @@ import {
   addHistoryEntry,
 } from '../../../../ducks/send';
 import {
+<<<<<<< HEAD
   getDomainResolution,
   getDomainError,
   getDomainWarning,
 } from '../../../../ducks/domains';
+=======
+  getDomainError,
+  getDomainWarning,
+  getDomainResolution,
+} from '../../../../ducks/domain';
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
 import AddRecipient from './add-recipient.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
@@ -27,8 +34,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 function mapStateToProps(state) {
   const domainResolution = getDomainResolution(state);
   let addressBookEntryName = '';
+<<<<<<< HEAD
   if (ensResolution) {
     const addressBookEntry = getAddressBookEntry(state, ensResolution) || {};
+=======
+  if (domainResolution) {
+    const addressBookEntry = getAddressBookEntry(state, domainResolution) || {};
+>>>>>>> 1f8b43e69 (combines UNS and ENS basic resolution into one module and generalizes their state to domains rather than their individual names)
     addressBookEntryName = addressBookEntry.name;
   }
 
