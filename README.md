@@ -107,7 +107,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 ## Architecture
 
-- [Visual of the controller heirarchy and dependencies as of summer 2022.](https://gist.github.com/rekmarks/8dba6306695dcd44967cce4b6a94ae33)
+- [Visual of the controller hierarchy and dependencies as of summer 2022.](https://gist.github.com/rekmarks/8dba6306695dcd44967cce4b6a94ae33)
 - [Visual of the entire codebase.](https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=metamask%2Fmetamask-extension)
 
 [![Architecture Diagram](./docs/architecture.png)][1]

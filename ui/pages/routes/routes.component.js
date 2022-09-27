@@ -77,7 +77,7 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
