@@ -92,10 +92,8 @@ workflows:
             - prep-build-test-flask
       - test-e2e-chrome-mv3:
           filters:
-            tags:
-              only: /^accessibility$/
             branches:
-              ignore: /.*/
+              only: /^.*mv3.*$/
           requires:
             - prep-build-test-mv3
       - test-unit:
@@ -142,7 +140,6 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-chrome-mv3
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
       - benchmark:
