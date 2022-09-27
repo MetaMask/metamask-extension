@@ -142,6 +142,7 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-chrome-mv3
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
       - benchmark:
