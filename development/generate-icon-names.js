@@ -39,8 +39,6 @@ const generateIconNames = async () => {
         getIconNameKebabCase(fileName)),
   );
 
-  console.log('ICON_NAMES env var successfully generated!');
-
   return iconNames;
 };
 
