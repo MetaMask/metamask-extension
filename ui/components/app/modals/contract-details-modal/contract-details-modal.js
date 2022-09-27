@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import Box from '../../../ui/box';
 import IconCopy from '../../../ui/icon/icon-copy';
 import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
@@ -170,8 +171,18 @@ export default function ContractDetailsModal({
           className="contract-details-modal__content__contract"
         >
           <UrlIcon
-            className="contract-details-modal__content__contract__identicon"
-            fallbackClassName="contract-details-modal__content__contract__identicon"
+            className={classnames({
+              'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                addressBookEntry?.data?.name === undefined,
+              'contract-details-modal__content__contract__identicon':
+                addressBookEntry?.data?.name !== undefined,
+            })}
+            fallbackClassName={classnames({
+              'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                addressBookEntry?.data?.name === undefined,
+              'contract-details-modal__content__contract__identicon':
+                addressBookEntry?.data?.name !== undefined,
+            })}
             name={origin}
             url={siteImage}
           />

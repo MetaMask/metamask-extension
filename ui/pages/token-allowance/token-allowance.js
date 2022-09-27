@@ -346,7 +346,7 @@ export default function TokenAllowance({
   };
 
   return (
-    <Box className="token-allowance-container">
+    <Box className="token-allowance-container page-container">
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -387,18 +387,22 @@ export default function TokenAllowance({
       />
       <Box
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        marginTop={6}
-        marginRight={12}
-        marginBottom={8}
-        marginLeft={12}
-        paddingTop={2}
-        paddingRight={4}
-        paddingBottom={2}
-        paddingLeft={2}
-        className="token-allowance-container__icon-display-content"
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
       >
-        <Box display={DISPLAY.FLEX}>
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+          marginTop={6}
+          marginRight={12}
+          marginBottom={8}
+          marginLeft={12}
+          paddingTop={2}
+          paddingRight={4}
+          paddingBottom={2}
+          paddingLeft={2}
+          className="token-allowance-container__icon-display-content"
+        >
           <UrlIcon
             className="token-allowance-container__icon-display-content__siteimage-identicon"
             fallbackClassName="token-allowance-container__icon-display-content__siteimage-identicon"
@@ -432,7 +436,12 @@ export default function TokenAllowance({
           rpcPrefs={rpcPrefs}
         />
       </Box>
-      <Box marginTop={1}>
+      <Box
+        marginTop={1}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+      >
         <Button
           type="link"
           onClick={() => setShowContractDetails(true)}
@@ -464,7 +473,11 @@ export default function TokenAllowance({
           })}
         </Box>
       )}
-      <Box>
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+      >
         <Button
           type="link"
           onClick={() => setShowFullTxDetails(!showFullTxDetails)}

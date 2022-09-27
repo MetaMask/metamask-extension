@@ -1,6 +1,4 @@
 .token-allowance-container {
-  width: inherit;
-
   &__icon-display-content {
     width: fit-content;
     height: 40px;
@@ -12,7 +10,6 @@
     &__siteimage-identicon {
       width: 24px;
       height: 24px;
-      margin-top: 4px;
       box-shadow: none;
       background: none;
     }
