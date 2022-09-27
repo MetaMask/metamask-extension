@@ -81,6 +81,9 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+          filters:
+            branches:
+              ignore: /^.*mv3.*$/
       - test-e2e-firefox:
           requires:
             - prep-build-test
@@ -555,10 +558,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test ./dist
+          command: mv ./dist-test-mv3 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test ./builds
+          command: mv ./builds-test-mv3 ./builds
       - run:
           name: test:e2e:chrome
           command: |
