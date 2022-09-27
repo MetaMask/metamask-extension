@@ -113,6 +113,10 @@ type WyreChainSettings = {
    * The native currency for the network
    */
   currencyCode: CurrencySymbol;
+  /**
+   * The list of supported currencies for the Wyre onramp provider
+   */
+  currencies: SupportedCurrencySymbol[];
 };
 
 /**
@@ -309,6 +313,8 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   AUCTION: 'AUCTION',
   AXS: 'AXS',
   AVAX: 'AVAX',
+  AVAXC: 'AVAXC',
+  AVAXCUSDC: 'AVAXCUSDC',
   BADGER: 'BADGER',
   BAL: 'BAL',
   BAND: 'BAND',
@@ -340,6 +346,8 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   GRT: 'GRT',
   GTC: 'GTC',
   GTH: 'GTH',
+  GUSD: 'GUSD',
+  GYEN: 'GYEN',
   HEX: 'HEX',
   IOTX: 'IOTX',
   IMX: 'IMX',
@@ -358,6 +366,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   MKR: 'MKR',
   MLN: 'MLN',
   MTL: 'MTL',
+  MUSDC: 'mUSDC',
   NKN: 'NKN',
   NMR: 'NMR',
   NU: 'NU',
@@ -397,13 +406,16 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   TXL: 'TXL',
   UMA: 'UMA',
   UNI: 'UNI',
+  USDS: 'USDS',
   VRA: 'VRA',
   WBTC: 'WBTC',
   WCFG: 'WCFG',
   XYO: 'XYO',
   YFII: 'YFII',
+  YFI: 'YFI',
   YLD: 'YLD',
   ZRX: 'ZRX',
+  ZUSD: 'ZUSD',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -693,6 +705,31 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'ethereum',
       currencyCode: CURRENCY_SYMBOLS.ETH,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.ETH,
+        SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+        SUPPORTED_CURRENCY_SYMBOLS.BAT,
+        SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.COMP,
+        SUPPORTED_CURRENCY_SYMBOLS.CRV,
+        SUPPORTED_CURRENCY_SYMBOLS.DAI,
+        SUPPORTED_CURRENCY_SYMBOLS.GUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.GYEN,
+        SUPPORTED_CURRENCY_SYMBOLS.LINK,
+        SUPPORTED_CURRENCY_SYMBOLS.MKR,
+        SUPPORTED_CURRENCY_SYMBOLS.PAX,
+        SUPPORTED_CURRENCY_SYMBOLS.RAI,
+        SUPPORTED_CURRENCY_SYMBOLS.SNX,
+        SUPPORTED_CURRENCY_SYMBOLS.UMA,
+        SUPPORTED_CURRENCY_SYMBOLS.UNI,
+        SUPPORTED_CURRENCY_SYMBOLS.USDC,
+        SUPPORTED_CURRENCY_SYMBOLS.USDS,
+        SUPPORTED_CURRENCY_SYMBOLS.USDT,
+        SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+        SUPPORTED_CURRENCY_SYMBOLS.WETH,
+        SUPPORTED_CURRENCY_SYMBOLS.YFI,
+        SUPPORTED_CURRENCY_SYMBOLS.ZUSD,
+      ],
     },
     coinbasePayCurrencies: [
       SUPPORTED_CURRENCY_SYMBOLS.ETH,
@@ -849,6 +886,10 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'matic',
       currencyCode: CURRENCY_SYMBOLS.MATIC,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+        SUPPORTED_CURRENCY_SYMBOLS.MUSDC,
+      ],
     },
   },
   [CHAIN_IDS.AVALANCHE]: {
@@ -862,6 +903,11 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'avalanche',
       currencyCode: CURRENCY_SYMBOLS.AVALANCHE,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXC,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXCUSDC,
+      ],
     },
     coinbasePayCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
   },
