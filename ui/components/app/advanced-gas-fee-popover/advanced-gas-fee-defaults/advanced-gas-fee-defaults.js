@@ -18,7 +18,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
@@ -96,7 +96,7 @@ const AdvancedGasFeeDefaults = () => {
         >
           {isDefaultSettingsSelected
             ? t('advancedFeeDefaultOptOut', [
-                currentProvider.type === NETWORK_TYPE_RPC
+                currentProvider.type === NETWORK_TYPES.RPC
                   ? currentProvider.nickname ?? t('privateNetwork')
                   : t(currentProvider.type),
               ])
