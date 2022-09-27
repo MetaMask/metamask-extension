@@ -115,10 +115,10 @@ describe('Test Snap update', function () {
         await driver.delay(500);
 
         // look for the correct version text
-        const notificationResultMessage = await driver.findElement(
+        const versionResult = await driver.findElement(
           '.snap-settings-card__version',
         );
-        assert.equal(await notificationResultMessage.getText(), 'v2.0.0');
+        assert.equal(await versionResult.getText(), 'v2.0.0');
       },
     );
   });
