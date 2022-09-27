@@ -49,9 +49,10 @@
   "description": "__MSG_appDescription__",
   "host_permissions": [
     "http://localhost:8545/",
-    "file://*/*",
-    "http://*/*",
-    "https://*/*"
+    "https://*.infura.io/",
+    "https://chainid.network/chains.json",
+    "https://lattice.gridplus.io/*",
+    "*://*.eth/"
   ],
   "icons": {
     "16": "images/icon-16.png",
