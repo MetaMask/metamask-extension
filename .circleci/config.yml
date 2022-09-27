@@ -93,7 +93,7 @@ workflows:
       - test-e2e-chrome-mv3:
           filters:
             tags:
-              only: accessibility
+              only: /^accessibility$/
             branches:
               ignore: /.*/
           requires:
