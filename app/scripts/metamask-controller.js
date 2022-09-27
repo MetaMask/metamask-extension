@@ -1038,32 +1038,19 @@ export default class MetamaskController extends EventEmitter {
      * All controllers in Memstore but not in store. They are not persisted.
      * On chrome profile re-start, they will be re-initialized.
      */
-    const resetOnRestartControllers = [
-      { AccountTracker: this.accountTracker },
-      { TxController: this.txController },
-      { TokenRatesController: this.tokenRatesController },
-      { MessageManager: this.messageManager },
-      { PersonalMessageManager: this.personalMessageManager },
-      { DecryptMessageManager: this.decryptMessageManager },
-      { EncryptionPublicKeyManager: this.encryptionPublicKeyManager },
-      { TypesMessageManager: this.typedMessageManager },
-      { SwapsController: this.swapsController },
-      { EnsController: this.ensController },
-      { ApprovalController: this.approvalController },
-    ];
-
-    const resetOnRestartConfig = resetOnRestartControllers.reduce(
-      (acc, controller) => {
-        const [name, instance] = Object.entries(controller)[0];
-        let { store } = instance;
-        if (store === undefined) {
-          store = instance.memStore || instance;
-        }
-        acc[name] = store;
-        return acc;
-      },
-      {},
-    );
+    const resetOnRestartStore = {
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      TokenRatesController: this.tokenRatesController,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      DecryptMessageManager: this.decryptMessageManager.memStore,
+      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      SwapsController: this.swapsController.store,
+      EnsController: this.ensController.store,
+      ApprovalController: this.approvalController,
+    };
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -1093,7 +1080,7 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
-      ...resetOnRestartConfig,
+      ...resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -1125,15 +1112,29 @@ export default class MetamaskController extends EventEmitter {
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
-        ...resetOnRestartConfig,
+        ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
     // if this is the first time, clear the state of resetOnRestartControllers
+    const resetOnRestartControllers = [
+      this.accountTracker,
+      this.txController,
+      this.tokenRatesController,
+      this.messageManager,
+      this.personalMessageManager,
+      this.decryptMessageManager,
+      this.encryptionPublicKeyManager,
+      this.typedMessageManager,
+      this.swapsController,
+      this.ensController,
+      this.approvalController,
+    ];
+
     this.localStore.get(['isFirstTime']).then((state) => {
-      if (state.isFirstTime === true) {
+      if (state && state.isFirstTime === true) {
         console.log('first time');
         resetOnRestartControllers.forEach((controller) => {
           const [instance] = Object.values(controller);
