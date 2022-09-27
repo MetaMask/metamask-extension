@@ -254,9 +254,9 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-  async isElementPresent(element) {
+  async isElementPresent(rawLocator) {
     try {
-      await this.findElement(element);
+      await this.findElement(rawLocator);
       return true;
     } catch (err) {
       return false;
