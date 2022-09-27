@@ -322,26 +322,12 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const promiseForResult = withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            // Note that we have to manually capture the value that the
-            // promise that `makeRpcCall` returns when it resolves or is
-            // rejected using `then`/`catch` instead of `try`/`catch` because
-            // the resolution/rejection occurs out of band. To be more
-            // specific, the promise will be fulfilled while the `while` loop
-            // below is running. This means that if we did not attach `catch`
-            // to the promise, Node would complain that the promise had a
-            // unhandled rejection. So we attach `catch` to capture the
-            // rejection and we also attach `then` to capture the resolution
-            // and check them after the loop ends.
-
-            let capturedResolutionValue;
-            let capturedRejectionValue;
-            makeRpcCall(request)
-              .then((resolutionValue) => {
-                capturedResolutionValue = resolutionValue;
-              })
-              .catch((rejectionValue) => {
-                capturedRejectionValue = rejectionValue;
-              });
+            const promise = makeRpcCall(request);
+            promise.catch(() => {
+              // This is used to silence Node.js warnings about the rejection
+              // being handled asynchronously. The error is handled later when
+              // `promise` is awaited.
+            });
 
             let i = 0;
             while (nock.pendingMocks().length > 0 && i < 15) {
@@ -352,14 +338,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
               i += 1;
             }
 
-            return new Promise((resolve, reject) => {
-              if (capturedRejectionValue !== undefined) {
-                reject(capturedRejectionValue);
-              }
-              if (capturedResolutionValue !== undefined) {
-                resolve(capturedResolutionValue);
-              }
-            });
+            return await promise;
           },
         );
 
@@ -427,26 +406,12 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const promiseForResult = withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            // Note that we have to manually capture the value that the
-            // promise that `makeRpcCall` returns when it resolves or is
-            // rejected using `then`/`catch` instead of `try`/`catch` because
-            // the resolution/rejection occurs out of band. To be more
-            // specific, the promise will be fulfilled while the `while` loop
-            // below is running. This means that if we did not attach `catch`
-            // to the promise, Node would complain that the promise had a
-            // unhandled rejection. So we attach `catch` to capture the
-            // rejection and we also attach `then` to capture the resolution
-            // and check them after the loop ends.
-
-            let capturedResolutionValue;
-            let capturedRejectionValue;
-            makeRpcCall(request)
-              .then((resolutionValue) => {
-                capturedResolutionValue = resolutionValue;
-              })
-              .catch((rejectionValue) => {
-                capturedRejectionValue = rejectionValue;
-              });
+            const promise = makeRpcCall(request);
+            promise.catch(() => {
+              // This is used to silence Node.js warnings about the rejection
+              // being handled asynchronously. The error is handled later when
+              // `promise` is awaited.
+            });
 
             let i = 0;
             while (nock.pendingMocks().length > 0 && i < 15) {
@@ -457,14 +422,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
               i += 1;
             }
 
-            return new Promise((resolve, reject) => {
-              if (capturedRejectionValue !== undefined) {
-                reject(capturedRejectionValue);
-              }
-              if (capturedResolutionValue !== undefined) {
-                resolve(capturedResolutionValue);
-              }
-            });
+            return await promise;
           },
         );
 
