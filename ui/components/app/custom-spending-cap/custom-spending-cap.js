@@ -90,7 +90,10 @@ export default function CustomSpendingCap({
 
   return (
     <>
-      <Box textAlign={TEXT_ALIGN.END}>
+      <Box
+        textAlign={TEXT_ALIGN.END}
+        className="custom-spending-cap__max-button"
+      >
         <button
           className="custom-spending-cap__input--max-button"
           type="link"

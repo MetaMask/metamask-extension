@@ -3,6 +3,10 @@
     display: contents;
   }
 
+  &__max-button {
+    position: relative;
+  }
+
   &__input {
     width: 100%;
 
@@ -14,7 +18,7 @@
     &--max-button {
       color: var(--color-text-alternative);
       background: none;
-      position: fixed;
+      position: absolute;
       margin-top: 55px;
       margin-inline-start: -75px;
     }
