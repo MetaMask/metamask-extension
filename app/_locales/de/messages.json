@@ -101,9 +101,6 @@
   "about": {
     "message": "Über"
   },
-  "acceleratingATransaction": {
-    "message": "* Die Beschleunigung einer Transaktion durch die Verwendung eines höheren Gaspreises erhöht die Chancen einer schnelleren Verarbeitung durch das Netz, wofür es allerdings keine Garantie gibt."
-  },
   "acceptTermsOfUse": {
     "message": "Ich habe die $1 gelesen und stimme ihnen zu",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Suche nach einem zuvor hinzugefügten Netzwerk"
   },
-  "customGas": {
-    "message": "Gas anpassen"
-  },
   "customGasSettingToolTipMessage": {
     "message": "$1 verwenden, um den Gaspreis anzupassen. Das kann verwirrend sein, wenn Sie damit nicht vertraut sind. Interaktion auf eigene Gefahr.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
   "customSpendLimit": {
     "message": "Benutzerdefiniertes Ausgabelimit"
@@ -1300,9 +1291,6 @@
     "message": "Stapel:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Geschätzte Bearbeitungszeiten"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Der Gaspreis, der sich aus der Gaseinschätzung ergibt, ist derzeit nicht verfügbar."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Schnell"
-  },
-  "fastest": {
-    "message": "Schnellste"
   },
   "feeAssociatedRequest": {
     "message": "Mit dieser Anfrage ist eine Gebühr verbunden."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Token importiert"
   },
-  "newTotal": {
-    "message": "Neue Summe"
-  },
-  "newTransactionFee": {
-    "message": "Neue Transaktionsgebühr"
-  },
   "newValues": {
     "message": "neue Werte"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Schreiben Sie Ihre geheime Sicherungsphrase auf"
   },
-  "selectAHigherGasFee": {
-    "message": "Wählen Sie eine höhere Gasgebühr, um die Abwicklung Ihrer Transaktion zu beschleunigen.*"
-  },
   "selectAccounts": {
     "message": "Wählen Sie das Konto/die Konten aus, um sie auf dieser Seite zu verwenden"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Senden"
-  },
-  "sendAmount": {
-    "message": "Betrag senden"
   },
   "sendBugReport": {
     "message": "Übermitteln Sie uns einen Fehlerbericht."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Mir ist klar, dass ich meine Konten und alle dazugehörigen Vermögenswerte verlieren kann, solange ich keine Sicherungskopie meiner Geheimen Wiederherstellungsphrase erstelle."
-  },
-  "slow": {
-    "message": "Langsam"
   },
   "smartTransaction": {
     "message": "Intelligente Transaktionen"

@@ -101,9 +101,6 @@
   "about": {
     "message": "Σχετικά με"
   },
-  "acceleratingATransaction": {
-    "message": "* Η επιτάχυνση μιας συναλλαγής με τη χρήση υψηλότερης τιμής καυσίμου αυξάνει τις πιθανότητές της για ταχύτερη επεξεργασία από το δίκτυο, αλλά δεν είναι πάντοτε εγγυημένη."
-  },
   "acceptTermsOfUse": {
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Αναζήτηση δικτύου που προστέθηκε προηγουμένως"
   },
-  "customGas": {
-    "message": "Προσαρμογή τέλους συναλλαγής"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε 1 $ για να προσαρμόσετε την τιμή του τέλους συναλλαγής. Αυτό μπορεί να προκαλέσει σύγχυση, αν δεν είστε εξοικειωμένοι. Επεξεργαστείτε το με δικό σας ρίσκο.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
   },
   "customSpendLimit": {
     "message": "Προσαρμοσμένο Όριο Δαπάνης"
@@ -1300,9 +1291,6 @@
     "message": "Στοίβα:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Εκτιμώμενοι Χρόνοι Επεξεργασίας"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Το εφεδρικό τέλος συναλλαγής που παρέχεται ως η κύρια υπηρεσία εκτίμησης τελών συναλλαγής, δεν είναι διαθέσιμο αυτή τη στιγμή."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Γρήγορα"
-  },
-  "fastest": {
-    "message": "Ταχύτερη"
   },
   "feeAssociatedRequest": {
     "message": "Ένα τέλος σχετίζεται με αυτό το αίτημα."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Τα token εισήχθησαν"
   },
-  "newTotal": {
-    "message": "Νέο Σύνολο"
-  },
-  "newTransactionFee": {
-    "message": "Τέλος Νέας Συναλλαγής"
-  },
   "newValues": {
     "message": "νέες τιμές"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Γράψτε τη Μυστική Φράση Ανάκτησης σας"
   },
-  "selectAHigherGasFee": {
-    "message": "Επιλέξτε ένα μεγαλύτερο τέλος gas για να επιταχύνετε την επεξεργασία της συναλλαγής σας.*"
-  },
   "selectAccounts": {
     "message": "Επιλέξτε τον/τους λογαριασμό(ούς) που θα χρησιμοποιήσετε σε αυτόν τον ιστότοπο"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Αποστολή"
-  },
-  "sendAmount": {
-    "message": "Αποστολή Ποσού"
   },
   "sendBugReport": {
     "message": "Στείλτε μας μια αναφορά σφάλματος."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Καταλαβαίνω ότι μέχρι να δημιουργήσω αντίγραφα ασφαλείας για τη Μυστική Φράση Ανάκτησής μου, μπορεί να χάσω τους λογαριασμούς μου και όλα τα περιουσιακά στοιχεία τους."
-  },
-  "slow": {
-    "message": "Αργά"
   },
   "smartTransaction": {
     "message": "Έξυπνη Συναλλαγή"

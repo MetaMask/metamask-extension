@@ -101,9 +101,6 @@
   "about": {
     "message": "About"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
-  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Search for a previously added network"
   },
-  "customGas": {
-    "message": "Customize gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customSpendLimit": {
     "message": "Custom spend limit"
@@ -1303,9 +1294,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Estimated processing times"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1350,9 +1338,6 @@
   },
   "fast": {
     "message": "Fast"
-  },
-  "fastest": {
-    "message": "Fastest"
   },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
@@ -2247,12 +2232,6 @@
   "newTokensImportedTitle": {
     "message": "Token imported"
   },
-  "newTotal": {
-    "message": "New total"
-  },
-  "newTransactionFee": {
-    "message": "New transaction fee"
-  },
   "newValues": {
     "message": "new values"
   },
@@ -3074,9 +3053,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
-  "selectAHigherGasFee": {
-    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
-  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
@@ -3109,9 +3085,6 @@
   },
   "send": {
     "message": "Send"
-  },
-  "sendAmount": {
-    "message": "Send amount"
   },
   "sendBugReport": {
     "message": "Send us a bug report."
@@ -3246,9 +3219,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
-  },
-  "slow": {
-    "message": "Slow"
   },
   "smartTransaction": {
     "message": "Smart transaction"

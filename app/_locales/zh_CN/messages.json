@@ -101,9 +101,6 @@
   "about": {
     "message": "关于"
   },
-  "acceleratingATransaction": {
-    "message": "* 通过使用更高的燃料价格来加速交易，会增加其更快地被网络处理的机会，但这并不总是得到保证。"
-  },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "搜索以前添加的网络"
   },
-  "customGas": {
-    "message": "自定义燃料"
-  },
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "提升费用可能会缩短处理时间，但不能保证。"
   },
   "customSpendLimit": {
     "message": "自定义消费限额"
@@ -1300,9 +1291,6 @@
     "message": "栈：",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "预计处理时间"
-  },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "快"
-  },
-  "fastest": {
-    "message": "最快"
   },
   "feeAssociatedRequest": {
     "message": "此请求需要支付一定的费用。"
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "已导入代币"
   },
-  "newTotal": {
-    "message": "新总额"
-  },
-  "newTransactionFee": {
-    "message": "新交易费用"
-  },
   "newValues": {
     "message": "新的值"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "写下您的助记词"
   },
-  "selectAHigherGasFee": {
-    "message": "选择更高的燃料费用，加快交易处理速度。*"
-  },
   "selectAccounts": {
     "message": "选择要在此网站上使用的账户"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "发送"
-  },
-  "sendAmount": {
-    "message": "发送金额"
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
-  },
-  "slow": {
-    "message": "慢"
   },
   "smartTransaction": {
     "message": "智能交易"

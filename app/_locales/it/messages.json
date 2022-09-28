@@ -8,9 +8,6 @@
   "about": {
     "message": "Informazioni"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
-  },
   "acceptTermsOfUse": {
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
@@ -367,12 +364,6 @@
   "custom": {
     "message": "Avanzate"
   },
-  "customGas": {
-    "message": "Personalizza Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Incrementare il costo potrebbe diminuire il tempo di elaborazione, ma non è garantito."
-  },
   "customSpendLimit": {
     "message": "Limite Spesa Personalizzato"
   },
@@ -541,9 +532,6 @@
     "message": "MetaMask ha riscontrato un errore",
     "description": "Title of generic error page"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tempi di Elaborazione Stimati"
-  },
   "ethereumPublicAddress": {
     "message": "Indirizzo pubblico Ethereum "
   },
@@ -570,9 +558,6 @@
   },
   "fast": {
     "message": "Veloce"
-  },
-  "fastest": {
-    "message": "Più veloce"
   },
   "feeAssociatedRequest": {
     "message": "Una tassa è associata a questa richiesta."
@@ -935,12 +920,6 @@
   "newToMetaMask": {
     "message": "Nuovo su MetaMask?"
   },
-  "newTotal": {
-    "message": "Nuovo Totale"
-  },
-  "newTransactionFee": {
-    "message": "Costo in gas per la Transazione"
-  },
   "next": {
     "message": "Avanti"
   },
@@ -1200,9 +1179,6 @@
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },
-  "selectAHigherGasFee": {
-    "message": "Seleziona un costo in gas maggiore per accelerare l'elaborazione della transazione.*"
-  },
   "selectAccounts": {
     "message": "Seleziona account"
   },
@@ -1229,9 +1205,6 @@
   },
   "send": {
     "message": "Invia"
-  },
-  "sendAmount": {
-    "message": "Invia Importo"
   },
   "sendSpecifiedTokens": {
     "message": "Invia $1",
@@ -1287,9 +1260,6 @@
   },
   "signed": {
     "message": "Firmata"
-  },
-  "slow": {
-    "message": "Lenta"
   },
   "somethingWentWrong": {
     "message": "Oops! Qualcosa è andato storto."

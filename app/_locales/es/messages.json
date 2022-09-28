@@ -101,9 +101,6 @@
   "about": {
     "message": "Acerca de"
   },
-  "acceleratingATransaction": {
-    "message": "* Usar un precio de gas más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
-  },
   "acceptTermsOfUse": {
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Buscar una red agregada anteriormente"
   },
-  "customGas": {
-    "message": "Personalizar gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar el precio de gas. Esto puede ser confuso si no está familiarizado. Interactúe bajo su propio riesgo.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar la cuota puede disminuir los tiempos de procesamiento, pero no está garantizado."
   },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
@@ -1300,9 +1291,6 @@
     "message": "Pila:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tiempos de procesamiento estimados"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "El más rápido"
   },
   "feeAssociatedRequest": {
     "message": "Esta solicitud tiene asociada una cuota."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Token importado"
   },
-  "newTotal": {
-    "message": "Total nuevo"
-  },
-  "newTransactionFee": {
-    "message": "Cuota de transacción nueva"
-  },
   "newValues": {
     "message": "nuevos valores"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote la frase secreta de recuperación"
   },
-  "selectAHigherGasFee": {
-    "message": "Seleccione una cuota de gas más alta para acelerar el procesamiento de la transacción.*"
-  },
   "selectAccounts": {
     "message": "Seleccionar cuentas"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar monto"
   },
   "sendBugReport": {
     "message": "Envíenos un informe de error."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "smartTransaction": {
     "message": "Transacción inteligente"

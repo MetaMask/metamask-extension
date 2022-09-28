@@ -8,9 +8,6 @@
   "about": {
     "message": "O opcijama"
   },
-  "acceleratingATransaction": {
-    "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
-  },
   "accessingYourCamera": {
     "message": "Pristupanje vašoj kameri..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Napredno"
   },
-  "customGas": {
-    "message": "Prilagodi gorivo"
-  },
-  "customGasSubTitle": {
-    "message": "Povećavanjem se naknade može smanjiti vrijeme obrade, ali se ne jamči."
-  },
   "customToken": {
     "message": "Prilagođeni token"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Procijenjeno vrijeme obrade"
   },
   "ethereumPublicAddress": {
     "message": "Javna adresa Ethereum"
@@ -597,12 +585,6 @@
   "newToMetaMask": {
     "message": "Novi korisnik usluge MetaMask?"
   },
-  "newTotal": {
-    "message": "Novi ukupni zbroj"
-  },
-  "newTransactionFee": {
-    "message": "Nova naknada za transakciju"
-  },
   "next": {
     "message": "Sljedeće"
   },
@@ -803,9 +785,6 @@
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"
   },
-  "selectAHigherGasFee": {
-    "message": "Odaberite višu naknadu za gorivo kako biste ubrzali obrađivanje vaše transakcije.*"
-  },
   "selectAnAccount": {
     "message": "Odaberi račun"
   },
@@ -823,9 +802,6 @@
   },
   "send": {
     "message": "Pošalji"
-  },
-  "sendAmount": {
-    "message": "Odaberi iznos"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
@@ -868,9 +844,6 @@
   },
   "signed": {
     "message": "Potpisano"
-  },
-  "slow": {
-    "message": "Sporo"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."

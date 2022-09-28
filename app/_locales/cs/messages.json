@@ -93,9 +93,6 @@
   "createAccount": {
     "message": "Vytvořit účet"
   },
-  "customGas": {
-    "message": "Nastavit palivo"
-  },
   "customToken": {
     "message": "Vlastní token"
   },

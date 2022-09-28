@@ -8,9 +8,6 @@
   "about": {
     "message": "Информация"
   },
-  "acceleratingATransaction": {
-    "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
-  },
   "accessingYourCamera": {
     "message": "Достъп до вашата камера ..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Разширени"
   },
-  "customGas": {
-    "message": "Персонализирайте газ"
-  },
-  "customGasSubTitle": {
-    "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
-  },
   "customToken": {
     "message": "Персонализиран маркер"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизителни времена за обработка"
   },
   "ethereumPublicAddress": {
     "message": "Публичен адрес за етереум"
@@ -600,12 +588,6 @@
   "newToMetaMask": {
     "message": "Нови ли сте в MetaMask?"
   },
-  "newTotal": {
-    "message": "Ново общо"
-  },
-  "newTransactionFee": {
-    "message": "Нова такса за транзакция"
-  },
   "next": {
     "message": "Напред"
   },
@@ -806,9 +788,6 @@
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"
   },
-  "selectAHigherGasFee": {
-    "message": "\nИзберете по-висока такса за газ, за ​​да ускорите обработката на Вашата транзакция.*"
-  },
   "selectAnAccount": {
     "message": "Изберете акаунт"
   },
@@ -826,9 +805,6 @@
   },
   "send": {
     "message": "Изпращане"
-  },
-  "sendAmount": {
-    "message": "Изпратете сумата"
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
@@ -871,9 +847,6 @@
   },
   "signed": {
     "message": "Подписан"
-  },
-  "slow": {
-    "message": "Бавно"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."
