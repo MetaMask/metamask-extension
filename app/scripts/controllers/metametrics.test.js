@@ -19,6 +19,7 @@ const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const DUMMY_ID = 'DUMMY_ID'
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -623,8 +624,6 @@ describe('MetaMetricsController', function () {
       assert(spyTrackEvent.calledOnce);
       assert(spyCreateEvent.notCalled);
       assert(spyFinalizeEvent.notCalled);
-
-      // spyTrackEvent.
     });
 
     it('should call createEventFragment, finalizeEventFragment if actionId is provided', function () {
@@ -635,13 +634,13 @@ describe('MetaMetricsController', function () {
       metaMetricsController._trackEvent = spyTrackEvent;
 
       const stubCreateEvent = sinon.stub();
-      stubCreateEvent.returns({ id: 'DUMMY_ID' });
+      stubCreateEvent.returns({ id: DUMMY_ID });
       metaMetricsController.createEventFragment = stubCreateEvent;
 
       const spyFinalizeEvent = sinon.spy();
       metaMetricsController.finalizeEventFragment = spyFinalizeEvent;
 
-      metaMetricsController.trackEvent({}, { actionId: 'DUMMY_ID' });
+      metaMetricsController.trackEvent({}, { actionId: DUMMY_ID });
 
       assert(spyTrackEvent.notCalled);
       assert(stubCreateEvent.calledOnce);
