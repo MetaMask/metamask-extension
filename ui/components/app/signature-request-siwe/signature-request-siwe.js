@@ -13,6 +13,9 @@ import {
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
+import { Icon } from '../../component-library/icon/icon';
+import { COLORS } from '../../../helpers/constants/design-system';
+
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -97,6 +100,7 @@ export default function SignatureRequestSIWE({
           iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
+          icon={<Icon name="danger-filled" color={COLORS.WARNING_DEFAULT} />}
         />
       )}
       {!isSIWEDomainValid && (
@@ -107,6 +111,7 @@ export default function SignatureRequestSIWE({
           iconFillColor="var(--color-error-default)"
           useIcon
           withRightButton
+          icon={<Icon name="danger-filled" color={COLORS.ERROR_DEFAULT} />}
         />
       )}
       <PageContainerFooter
