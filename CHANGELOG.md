@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [10.20.0]
+### Fixed
+- [FLASK] Fix crash when uninstalling snap ([#15799](https://github.com/MetaMask/metamask-extension/pull/15799))
+- [FLASK] Fix crash with certain permissions on the snap settings page ([#15797](https://github.com/MetaMask/metamask-extension/pull/15797))
+- [FLASK] Fix an issue with installing and updating snaps with 0 permissions ([#15796](https://github.com/MetaMask/metamask-extension/pull/15796))
 
 ## [10.19.0]
 ### Added
@@ -3189,7 +3194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...HEAD
+[10.20.0]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...v10.20.0
 [10.19.0]: https://github.com/MetaMask/metamask-extension/compare/v10.18.4...v10.19.0
 [10.18.4]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...v10.18.4
 [10.18.3]: https://github.com/MetaMask/metamask-extension/compare/v10.18.2...v10.18.3
