@@ -1,7 +1,6 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export, jest/no-identical-title */
 
 import { fill } from 'lodash';
-import nock from 'nock';
 import {
   withMockedInfuraCommunications,
   withInfuraClient,
@@ -11,7 +10,50 @@ import {
 } from './helpers';
 
 const originalSetTimeout = setTimeout;
-const TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY = 10;
+
+/**
+ * Some middleware contain logic which retries the request if some condition
+ * applies. This retrying always happens out of band via `setTimeout`, and
+ * because we are stubbing time via Jest's fake timers, we have to manually
+ * advance the clock so that the `setTimeout` handlers get fired. We don't know
+ * when these timers will get created, however, so we have to keep advancing
+ * timers until the request has been made an appropriate number of times.
+ * Unfortunately we don't have a good way to know how many times a request has
+ * been retried, but the good news is that the middleware won't end, and thus
+ * the promise which the RPC call returns won't get fulfilled, until all retries
+ * have been made.
+ *
+ * @param promise - The promise which is returned by the RPC call.
+ * @param clock - A Sinon clock object which can be used to advance to the next
+ * `setTimeout` handler.
+ */
+async function waitForPromiseToBeFulfilledAfterRunningAllTimers(
+  promise,
+  clock,
+) {
+  let hasPromiseBeenFulfilled = false;
+  let numTimesClockHasBeenAdvanced = 0;
+
+  promise
+    .catch(() => {
+      // This is used to silence Node.js warnings about the rejection
+      // being handled asynchronously. The error is handled later when
+      // `promise` is awaited.
+    })
+    .finally(() => {
+      hasPromiseBeenFulfilled = true;
+    });
+
+  // `isPromiseFulfilled` is modified asynchronously.
+  /* eslint-disable-next-line no-unmodified-loop-condition */
+  while (!hasPromiseBeenFulfilled && numTimesClockHasBeenAdvanced < 15) {
+    clock.runAll();
+    await new Promise((resolve) => originalSetTimeout(resolve, 10));
+    numTimesClockHasBeenAdvanced += 1;
+  }
+
+  return promise;
+}
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method that
@@ -287,16 +329,10 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const result = await withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            const promiseForResult = makeRpcCall(request);
-
-            while (nock.pendingMocks().length > 0) {
-              clock.runAll();
-              await new Promise((resolve) =>
-                originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
-              );
-            }
-
-            return await promiseForResult;
+            return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+              makeRpcCall(request),
+              clock,
+            );
           },
         );
 
@@ -322,23 +358,10 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const promiseForResult = withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            const promise = makeRpcCall(request);
-            promise.catch(() => {
-              // This is used to silence Node.js warnings about the rejection
-              // being handled asynchronously. The error is handled later when
-              // `promise` is awaited.
-            });
-
-            let i = 0;
-            while (nock.pendingMocks().length > 0 && i < 15) {
-              clock.runAll();
-              await new Promise((resolve) =>
-                originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
-              );
-              i += 1;
-            }
-
-            return await promise;
+            return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+              makeRpcCall(request),
+              clock,
+            );
           },
         );
 
@@ -374,16 +397,10 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const result = await withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            const promiseForResult = makeRpcCall(request);
-
-            while (nock.pendingMocks().length > 0) {
-              clock.runAll();
-              await new Promise((resolve) =>
-                originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
-              );
-            }
-
-            return await promiseForResult;
+            return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+              makeRpcCall(request),
+              clock,
+            );
           },
         );
 
@@ -406,23 +423,10 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
         });
         const promiseForResult = withInfuraClient(
           async ({ makeRpcCall, clock }) => {
-            const promise = makeRpcCall(request);
-            promise.catch(() => {
-              // This is used to silence Node.js warnings about the rejection
-              // being handled asynchronously. The error is handled later when
-              // `promise` is awaited.
-            });
-
-            let i = 0;
-            while (nock.pendingMocks().length > 0 && i < 15) {
-              clock.runAll();
-              await new Promise((resolve) =>
-                originalSetTimeout(resolve, TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY),
-              );
-              i += 1;
-            }
-
-            return await promise;
+            return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+              makeRpcCall(request),
+              clock,
+            );
           },
         );
 
@@ -1053,46 +1057,10 @@ export function testsForRpcMethodSupportingBlockParam(
             });
             const result = await withInfuraClient(
               async ({ makeRpcCall, clock }) => {
-                // Note that we have to manually capture the value that the
-                // promise that `makeRpcCall` returns when it resolves or is
-                // rejected using `then`/`catch` instead of `try`/`catch`
-                // because the resolution/rejection occurs out of band. To be
-                // more specific, the promise will be fulfilled while the
-                // `while` loop below is running. This means that if we did not
-                // attach `catch` to the promise, Node would complain that the
-                // promise had a unhandled rejection. So we attach `catch` to
-                // capture the rejection and we also attach `then` to capture
-                // the resolution and check them after the loop ends.
-
-                let capturedResolutionValue;
-                let capturedRejectionValue;
-                makeRpcCall(request)
-                  .then((resolutionValue) => {
-                    capturedResolutionValue = resolutionValue;
-                  })
-                  .catch((rejectionValue) => {
-                    capturedRejectionValue = rejectionValue;
-                  });
-
-                while (
-                  /* eslint-disable-next-line no-unmodified-loop-condition */
-                  capturedResolutionValue === undefined &&
-                  /* eslint-disable-next-line no-unmodified-loop-condition */
-                  capturedRejectionValue === undefined
-                ) {
-                  clock.runAll();
-                  await new Promise((resolve) =>
-                    originalSetTimeout(
-                      resolve,
-                      TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY,
-                    ),
-                  );
-                }
-
-                if (capturedRejectionValue !== undefined) {
-                  return Promise.reject(capturedRejectionValue);
-                }
-                return Promise.resolve(capturedResolutionValue);
+                return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+                  makeRpcCall(request),
+                  clock,
+                );
               },
             );
 
@@ -1132,46 +1100,10 @@ export function testsForRpcMethodSupportingBlockParam(
             });
             const promiseForResult = withInfuraClient(
               async ({ makeRpcCall, clock }) => {
-                // Note that we have to manually capture the value that the
-                // promise that `makeRpcCall` returns when it resolves or is
-                // rejected using `then`/`catch` instead of `try`/`catch`
-                // because the resolution/rejection occurs out of band. To be
-                // more specific, the promise will be fulfilled while the
-                // `while` loop below is running. This means that if we did not
-                // attach `catch` to the promise, Node would complain that the
-                // promise had a unhandled rejection. So we attach `catch` to
-                // capture the rejection and we also attach `then` to capture
-                // the resolution and check them after the loop ends.
-
-                let capturedResolutionValue;
-                let capturedRejectionValue;
-                makeRpcCall(request)
-                  .then((resolutionValue) => {
-                    capturedResolutionValue = resolutionValue;
-                  })
-                  .catch((rejectionValue) => {
-                    capturedRejectionValue = rejectionValue;
-                  });
-
-                while (
-                  /* eslint-disable-next-line no-unmodified-loop-condition */
-                  capturedResolutionValue === undefined &&
-                  /* eslint-disable-next-line no-unmodified-loop-condition */
-                  capturedRejectionValue === undefined
-                ) {
-                  clock.runAll();
-                  await new Promise((resolve) =>
-                    originalSetTimeout(
-                      resolve,
-                      TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY,
-                    ),
-                  );
-                }
-
-                if (capturedRejectionValue !== undefined) {
-                  return Promise.reject(capturedRejectionValue);
-                }
-                return Promise.resolve(capturedResolutionValue);
+                return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+                  makeRpcCall(request),
+                  clock,
+                );
               },
             );
 
@@ -1232,52 +1164,16 @@ export function testsForRpcMethodSupportingBlockParam(
               });
               const result = await withInfuraClient(
                 async ({ makeRpcCall, clock }) => {
-                  // Note that we have to manually capture the value that the
-                  // promise that `makeRpcCall` returns when it resolves or is
-                  // rejected using `then`/`catch` instead of `try`/`catch`
-                  // because the resolution/rejection occurs out of band. To be
-                  // more specific, the promise will be fulfilled while the
-                  // `while` loop below is running. This means that if we did
-                  // not attach `catch` to the promise, Node would complain that
-                  // the promise had a unhandled rejection. So we attach `catch`
-                  // to capture the rejection and we also attach `then` to
-                  // capture the resolution and check them after the loop ends.
-
-                  let capturedResolutionValue;
-                  let capturedRejectionValue;
-                  makeRpcCall(request)
-                    .then((resolutionValue) => {
-                      capturedResolutionValue = resolutionValue;
-                    })
-                    .catch((rejectionValue) => {
-                      capturedRejectionValue = rejectionValue;
-                    });
-
-                  while (
-                    /* eslint-disable-next-line no-unmodified-loop-condition */
-                    capturedResolutionValue === undefined &&
-                    /* eslint-disable-next-line no-unmodified-loop-condition */
-                    capturedRejectionValue === undefined
-                  ) {
-                    clock.runAll();
-                    await new Promise((resolve) =>
-                      originalSetTimeout(
-                        resolve,
-                        TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY,
-                      ),
-                    );
-                  }
-
-                  if (capturedRejectionValue !== undefined) {
-                    return Promise.reject(capturedRejectionValue);
-                  }
-                  return Promise.resolve(capturedResolutionValue);
+                  return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+                    makeRpcCall(request),
+                    clock,
+                  );
                 },
               );
 
               expect(result).toStrictEqual('the result');
             });
-          }, 5000);
+          });
 
           it(`causes a request to fail with a custom error if an "${errorMessagePrefix}" error is thrown while making the request to Infura 5 times in a row`, async () => {
             await withMockedInfuraCommunications(async (comms) => {
@@ -1308,46 +1204,10 @@ export function testsForRpcMethodSupportingBlockParam(
               });
               const promiseForResult = withInfuraClient(
                 async ({ makeRpcCall, clock }) => {
-                  // Note that we have to manually capture the value that the
-                  // promise that `makeRpcCall` returns when it resolves or is
-                  // rejected using `then`/`catch` instead of `try`/`catch`
-                  // because the resolution/rejection occurs out of band. To be
-                  // more specific, the promise will be fulfilled while the
-                  // `while` loop below is running. This means that if we did
-                  // not attach `catch` to the promise, Node would complain that
-                  // the promise had a unhandled rejection. So we attach `catch`
-                  // to capture the rejection and we also attach `then` to
-                  // capture the resolution and check them after the loop ends.
-
-                  let capturedResolutionValue;
-                  let capturedRejectionValue;
-                  makeRpcCall(request)
-                    .then((resolutionValue) => {
-                      capturedResolutionValue = resolutionValue;
-                    })
-                    .catch((rejectionValue) => {
-                      capturedRejectionValue = rejectionValue;
-                    });
-
-                  while (
-                    /* eslint-disable-next-line no-unmodified-loop-condition */
-                    capturedResolutionValue === undefined &&
-                    /* eslint-disable-next-line no-unmodified-loop-condition */
-                    capturedRejectionValue === undefined
-                  ) {
-                    clock.runAll();
-                    await new Promise((resolve) =>
-                      originalSetTimeout(
-                        resolve,
-                        TIME_TO_WAIT_FOR_NEXT_INFURA_RETRY,
-                      ),
-                    );
-                  }
-
-                  if (capturedRejectionValue !== undefined) {
-                    return Promise.reject(capturedRejectionValue);
-                  }
-                  return Promise.resolve(capturedResolutionValue);
+                  return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
+                    makeRpcCall(request),
+                    clock,
+                  );
                 },
               );
 
