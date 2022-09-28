@@ -8,9 +8,6 @@
   "about": {
     "message": "Informacje"
   },
-  "acceleratingATransaction": {
-    "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
-  },
   "accessingYourCamera": {
     "message": "Uruchamianie kamery..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Zaawansowane"
   },
-  "customGas": {
-    "message": "Ustaw gaz"
-  },
-  "customGasSubTitle": {
-    "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
-  },
   "customToken": {
     "message": "Własny token"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Szacunkowy czas przetwarzania"
   },
   "ethereumPublicAddress": {
     "message": "Adres publiczny Ethereum"
@@ -601,12 +589,6 @@
   "newToMetaMask": {
     "message": "Pierwszy raz w MetaMask?"
   },
-  "newTotal": {
-    "message": "Nowa suma"
-  },
-  "newTransactionFee": {
-    "message": "Nowa opłata transakcyjna"
-  },
   "next": {
     "message": "Dalej"
   },
@@ -804,9 +786,6 @@
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"
   },
-  "selectAHigherGasFee": {
-    "message": "Wybierz wyższą opłatę za gaz, aby przyspieszyć przetwarzanie transakcji.*"
-  },
   "selectAnAccount": {
     "message": "Wybierz konto"
   },
@@ -824,9 +803,6 @@
   },
   "send": {
     "message": "Wyślij"
-  },
-  "sendAmount": {
-    "message": "Wyślij kwotę"
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
@@ -869,9 +845,6 @@
   },
   "signed": {
     "message": "Podpisane"
-  },
-  "slow": {
-    "message": "Powoli"
   },
   "somethingWentWrong": {
     "message": "Ups! Coś poszło nie tak."

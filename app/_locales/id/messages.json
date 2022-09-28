@@ -101,9 +101,6 @@
   "about": {
     "message": "Tentang"
   },
-  "acceleratingATransaction": {
-    "message": "* Mempercepat transaksi dengan biaya gas yang lebih tinggi akan meningkatkan peluang untuk diproses oleh jaringan lebih cepat, namun tidak selalu terjamin."
-  },
   "acceptTermsOfUse": {
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Cari jaringan yang ditambahkan sebelumnya"
   },
-  "customGas": {
-    "message": "Sesuaikan gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menyesuaikan harga gas. Anda akan bingung jika tidak terbiasa. Berinteraksi dengan risiko Anda sendiri.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak ada jaminan."
   },
   "customSpendLimit": {
     "message": "Batas penggunaan kustom"
@@ -1300,9 +1291,6 @@
     "message": "Tumpukan:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Estimasi waktu pemrosesan"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Cepat"
-  },
-  "fastest": {
-    "message": "Tercepat"
   },
   "feeAssociatedRequest": {
     "message": "Biaya dikaitkan dengan permintaan ini."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Token diimpor"
   },
-  "newTotal": {
-    "message": "Total baru"
-  },
-  "newTransactionFee": {
-    "message": "Biaya transaksi baru"
-  },
   "newValues": {
     "message": "nilai baru"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Tuliskan Frasa Pemulihan Rahasia Anda"
   },
-  "selectAHigherGasFee": {
-    "message": "Pilih biaya gas yang lebih tinggi untuk mempercepat pemrosesan transaksi Anda.*"
-  },
   "selectAccounts": {
     "message": "Pilih akun"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Kirim"
-  },
-  "sendAmount": {
-    "message": "Kirim jumlah"
   },
   "sendBugReport": {
     "message": "Kirimi kami laporan bug."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Saya memahami bahwa sampai saya mencadangkan Frasa Pemulihan Rahasia, saya dapat kehilangan akun saya dan semua aset yang ada."
-  },
-  "slow": {
-    "message": "Lambat"
   },
   "smartTransaction": {
     "message": "Transaksi pintar"

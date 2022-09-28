@@ -47,9 +47,6 @@
   "about": {
     "message": "Sobre"
   },
-  "acceleratingATransaction": {
-    "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta as chances de agilizar o processamento pela rede, mas isso nem sempre é garantido."
-  },
   "acceptTermsOfUse": {
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
@@ -616,12 +613,6 @@
   "custom": {
     "message": "Avançado"
   },
-  "customGas": {
-    "message": "Personalizar gás"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas isso não é garantido."
-  },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
   },
@@ -992,9 +983,6 @@
     "message": "Lista:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tempos de processamento estimados"
-  },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
@@ -1033,9 +1021,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "O mais rápido"
   },
   "feeAssociatedRequest": {
     "message": "Há uma taxa associada a essa solicitação."
@@ -1751,12 +1736,6 @@
   "newToMetaMask": {
     "message": "Acabou de chegar à MetaMask?"
   },
-  "newTotal": {
-    "message": "Novo total"
-  },
-  "newTransactionFee": {
-    "message": "Nova taxa de transação"
-  },
   "newValues": {
     "message": "novos valores"
   },
@@ -2341,9 +2320,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote sua Frase de Recuperação Secreta"
   },
-  "selectAHigherGasFee": {
-    "message": "Selecione uma taxa de gás mais alta para acelerar o processamento da sua transação.*"
-  },
   "selectAccounts": {
     "message": "Selecione a(s) conta(s) para usar nesse site"
   },
@@ -2376,9 +2352,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar valor"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -2480,9 +2453,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."

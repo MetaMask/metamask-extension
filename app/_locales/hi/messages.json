@@ -101,9 +101,6 @@
   "about": {
     "message": "इसके बारे में"
   },
-  "acceleratingATransaction": {
-    "message": "* गैस की उच्च कीमत का उपयोग करके लेनदेन में तेज़ी लाने से नेटवर्क द्वारा तेज़ी से संसाधित होने की संभावना बढ़ जाती है, लेकिन हमेशा इसकी गारंटी नहीं होती है।"
-  },
   "acceptTermsOfUse": {
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "पहले से जुड़े हुए नेटवर्क के लिए खोजें"
   },
-  "customGas": {
-    "message": "गैस अनुकूलित करें"
-  },
   "customGasSettingToolTipMessage": {
     "message": "गैस की कीमत को अनुकूलित करने के लिए $1 का उपयोग करें। यदि आप परिचित नहीं हैं तो ये भ्रामक हो सकता है। अपनी ज़िम्मेदारी पर बातचीत करें।",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
@@ -1300,9 +1291,6 @@
     "message": "स्टैक:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "अनुमानित प्रॉसेसिंग समय"
-  },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "तेज"
-  },
-  "fastest": {
-    "message": "सबसे तेज"
   },
   "feeAssociatedRequest": {
     "message": "इस अनुरोध के साथ एक शुल्क जुड़ा हुआ है।"
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "टोकन इम्पोर्ट हो गया"
   },
-  "newTotal": {
-    "message": "नया कुलयोग"
-  },
-  "newTransactionFee": {
-    "message": "नया लेनदेन शुल्क"
-  },
   "newValues": {
     "message": "नए मान"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
-  "selectAHigherGasFee": {
-    "message": "अपने लेनदेन की प्रक्रिया में तेजी लाने के लिए उच्च गैस शुल्क का चयन करें। *"
-  },
   "selectAccounts": {
     "message": "इस साइट पर उपयोग करने के लिए खाते (खातों) का चयन करें"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "भेजें"
-  },
-  "sendAmount": {
-    "message": "राशि भेजें"
   },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
-  },
-  "slow": {
-    "message": "धीमा"
   },
   "smartTransaction": {
     "message": "स्मार्ट लेनदेन"

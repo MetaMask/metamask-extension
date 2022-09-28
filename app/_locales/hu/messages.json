@@ -8,9 +8,6 @@
   "about": {
     "message": "Névjegy"
   },
-  "acceleratingATransaction": {
-    "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
-  },
   "accessingYourCamera": {
     "message": "Kamerához való hozzáférés..."
   },
@@ -250,12 +247,6 @@
   "custom": {
     "message": "Speciális"
   },
-  "customGas": {
-    "message": "Gáz testreszabása"
-  },
-  "customGasSubTitle": {
-    "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
-  },
   "customToken": {
     "message": "Egyéni token"
   },
@@ -339,9 +330,6 @@
   },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Becsült feldolgozási idők"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum nyilvános címe"
@@ -597,12 +585,6 @@
   "newToMetaMask": {
     "message": "Új a MetaMask-on?"
   },
-  "newTotal": {
-    "message": "Új végösszeg"
-  },
-  "newTransactionFee": {
-    "message": "Új tranzakciós költség"
-  },
   "next": {
     "message": "Következő"
   },
@@ -803,9 +785,6 @@
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"
   },
-  "selectAHigherGasFee": {
-    "message": "Válasszon magasabb gázdíjat az ügylet feldolgozásának gyorsításához.*"
-  },
   "selectAnAccount": {
     "message": "Válasszon fiókot"
   },
@@ -823,9 +802,6 @@
   },
   "send": {
     "message": "Küldés"
-  },
-  "sendAmount": {
-    "message": "Összeg küldése"
   },
   "sendTokens": {
     "message": "Token küldése"
@@ -868,9 +844,6 @@
   },
   "signed": {
     "message": "Aláírva"
-  },
-  "slow": {
-    "message": "Lassú"
   },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."

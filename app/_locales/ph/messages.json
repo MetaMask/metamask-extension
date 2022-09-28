@@ -2,9 +2,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
-  },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
@@ -436,12 +433,6 @@
   "currentLanguage": {
     "message": "Kasalukuyang Wika"
   },
-  "customGas": {
-    "message": "I-customize ang Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
-  },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },
@@ -641,9 +632,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Mga Tinatantyang Tagal ng Pagproseso"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ibinibigay ang backup na presyo ng gas dahil hindi available ang pangunahing serbisyo sa pagtatantya ng gas sa ngayon."
   },
@@ -676,9 +664,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "fastest": {
-    "message": "Pinakamabilis"
   },
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
@@ -1121,12 +1106,6 @@
   "newToMetaMask": {
     "message": "Bago ka ba sa MetaMask?"
   },
-  "newTotal": {
-    "message": "Bagong Kabuuan"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Bayarin sa Transaksyon"
-  },
   "next": {
     "message": "Susunod"
   },
@@ -1522,9 +1501,6 @@
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAccounts": {
     "message": "Pumili ng (mga) account"
   },
@@ -1554,9 +1530,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendAmount": {
-    "message": "Halaga ng Ipapadala"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -1615,9 +1588,6 @@
   },
   "signed": {
     "message": "Nilagdaan"
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."

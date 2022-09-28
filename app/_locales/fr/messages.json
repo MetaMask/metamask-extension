@@ -101,9 +101,6 @@
   "about": {
     "message": "À propos"
   },
-  "acceleratingATransaction": {
-    "message": "* Accélérer une transaction en utilisant un prix de l’essence plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
-  },
   "acceptTermsOfUse": {
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
@@ -852,15 +849,9 @@
   "customContentSearch": {
     "message": "Chercher un réseau ajouté précédemment"
   },
-  "customGas": {
-    "message": "Personnaliser les frais de transaction"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Utilisez $1 pour personnaliser le prix du carburant. Cela peut porter à confusion si vous n’en avez pas l’habitude. Agissez avec prudence !",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n’est pas garanti."
   },
   "customSpendLimit": {
     "message": "Limite de dépenses personnalisée"
@@ -1300,9 +1291,6 @@
     "message": "Stack :",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Délais de traitement estimés"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
   },
@@ -1347,9 +1335,6 @@
   },
   "fast": {
     "message": "Rapide"
-  },
-  "fastest": {
-    "message": "Plus rapide"
   },
   "feeAssociatedRequest": {
     "message": "Des frais sont associés à cette demande."
@@ -2234,12 +2219,6 @@
   "newTokensImportedTitle": {
     "message": "Jeton importé"
   },
-  "newTotal": {
-    "message": "Nouveau total"
-  },
-  "newTransactionFee": {
-    "message": "Coût de la nouvelle transaction"
-  },
   "newValues": {
     "message": "nouvelles valeurs"
   },
@@ -3061,9 +3040,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Notez votre phrase secrète de récupération"
   },
-  "selectAHigherGasFee": {
-    "message": "Choisissez des frais de carburant plus élevés pour accélérer le traitement de votre transaction*."
-  },
   "selectAccounts": {
     "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
   },
@@ -3096,9 +3072,6 @@
   },
   "send": {
     "message": "Envoyer"
-  },
-  "sendAmount": {
-    "message": "Envoyer le montant"
   },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
@@ -3233,9 +3206,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Je suis conscient(e) que tant que je n’aurai pas sauvegardé ma phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
-  },
-  "slow": {
-    "message": "Lente"
   },
   "smartTransaction": {
     "message": "Transaction intelligente"
