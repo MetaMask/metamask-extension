@@ -12,8 +12,11 @@ export default function SiteOrigin({
   chip,
   className,
   title,
+  leftIcon,
   rightIcon,
 }) {
+  console.log('leftIcon', leftIcon);
+  console.log('rightIcon', rightIcon);
   return (
     <div className={classnames('site-origin', className)} title={title}>
       {chip ? (
@@ -22,7 +25,7 @@ export default function SiteOrigin({
           label={siteOrigin}
           maxContent={false}
           leftIcon={
-            <IconWithFallback icon={iconSrc} name={iconName} size={24} />
+            leftIcon || <IconWithFallback icon={iconSrc} name={iconName} size={24} />
           }
           rightIcon={rightIcon}
         />
@@ -61,6 +64,10 @@ SiteOrigin.propTypes = {
    * if false iconSrc and iconName props will not be used.
    */
   chip: PropTypes.bool,
+  /**
+   * The icon to display on the left side of the chip. If not provided, the iconSrc and iconName will be used.
+   */
+  leftIcon: PropTypes.node,
   /**
    * The icon to display on the right side of the chip.
    */

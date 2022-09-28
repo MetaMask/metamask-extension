@@ -55,6 +55,9 @@
     "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
     "description": "$1 represents the website domain"
   },
+  "SIWEDomainWarningLabel": {
+    "message": "Unsafe"
+  },
   "SIWELabelChainID": {
     "message": "Chain ID:"
   },
