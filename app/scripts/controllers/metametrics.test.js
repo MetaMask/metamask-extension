@@ -19,7 +19,7 @@ const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
-const DUMMY_ID = 'DUMMY_ID'
+const DUMMY_ID = 'DUMMY_ID';
 
 const MOCK_TRAITS = {
   test_boolean: true,
