@@ -2457,15 +2457,15 @@
     },
     "@eth-optimism/contracts>@ethersproject/abstract-provider": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
     "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/networks": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true
+        "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/web": {
@@ -2475,16 +2475,16 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash>@ethersproject/base64": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
     "@eth-optimism/contracts>@ethersproject/abstract-signer": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
@@ -2495,11 +2495,11 @@
       "packages": {
         "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
         "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true,
         "ethers>@ethersproject/wallet>@ethersproject/transactions": true
       }
@@ -2524,6 +2524,31 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util": true
+      }
+    },
+    "@ethersproject/bignumber": {
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@ethersproject/bignumber>bn.js": true
+      }
+    },
+    "@ethersproject/bignumber>@ethersproject/bytes": {
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@ethersproject/bignumber>@ethersproject/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@ethersproject/bignumber>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@formatjs/intl-relativetimeformat": {
@@ -3564,10 +3589,10 @@
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
-        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": true,
         "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/rpc-methods>@metamask/controllers>nanoid": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
@@ -3592,46 +3617,15 @@
         "console.log": true
       },
       "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
         "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/hash": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers": {
-      "globals": {
-        "WebSocket": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "console.warn": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/networks": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/web": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/basex": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
-        "ethers>@ethersproject/providers>bech32": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash>@ethersproject/base64": true,
-        "ethers>@ethersproject/wallet>@ethersproject/properties": true,
-        "ethers>@ethersproject/wallet>@ethersproject/random": true,
-        "ethers>@ethersproject/wallet>@ethersproject/transactions": true
       }
     },
     "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": {
@@ -3774,12 +3768,60 @@
         "setInterval": true
       },
       "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@metamask/controllers": true,
         "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/smart-transactions-controller>fast-json-patch": true,
-        "ethers": true,
         "lodash": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethersproject/providers": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
+        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/networks": true,
+        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/web": true,
+        "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/basex": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
+        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
+        "ethers>@ethersproject/providers>bech32": true,
+        "ethers>@ethersproject/units>@ethersproject/constants": true,
+        "ethers>@ethersproject/wallet>@ethersproject/address": true,
+        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
+        "ethers>@ethersproject/wallet>@ethersproject/properties": true,
+        "ethers>@ethersproject/wallet>@ethersproject/random": true,
+        "ethers>@ethersproject/wallet>@ethersproject/transactions": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": {
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -3875,7 +3917,7 @@
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
-        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/providers": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers": true,
         "@metamask/snap-controllers>@metamask/controllers>eth-method-registry": true,
         "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/snap-controllers>nanoid": true,
@@ -6611,13 +6653,13 @@
     },
     "ethers>@ethersproject/hdnode": {
       "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode>@ethersproject/basex": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
         "ethers>@ethersproject/pbkdf2": true,
         "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true,
         "ethers>@ethersproject/wallet>@ethersproject/signing-key": true,
         "ethers>@ethersproject/wallet>@ethersproject/transactions": true,
@@ -6626,27 +6668,27 @@
     },
     "ethers>@ethersproject/hdnode>@ethersproject/basex": {
       "packages": {
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
     "ethers>@ethersproject/hdnode>@ethersproject/strings": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "ethers>@ethersproject/units>@ethersproject/constants": true
       }
     },
     "ethers>@ethersproject/json-wallets": {
       "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
         "ethers>@ethersproject/json-wallets>aes-js": true,
         "ethers>@ethersproject/json-wallets>scrypt-js": true,
         "ethers>@ethersproject/pbkdf2": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true,
         "ethers>@ethersproject/wallet>@ethersproject/random": true,
@@ -6698,15 +6740,15 @@
     },
     "ethers>@ethersproject/pbkdf2": {
       "packages": {
-        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true
       }
     },
     "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": {
       "packages": {
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "ethers>@ethersproject/sha2>hash.js": true
       }
     },
     "ethers>@ethersproject/properties": {
@@ -6990,11 +7032,11 @@
     },
     "ethers>@ethersproject/solidity": {
       "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
         "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true
       }
     },
@@ -7117,44 +7159,24 @@
     },
     "ethers>@ethersproject/units": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/units>@ethersproject/bignumber": {
-      "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber>bn.js": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
-      }
-    },
-    "ethers>@ethersproject/units>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/units>@ethersproject/constants": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true
-      }
-    },
-    "ethers>@ethersproject/units>@ethersproject/logger": {
-      "globals": {
-        "console": true
+        "@ethersproject/bignumber": true
       }
     },
     "ethers>@ethersproject/wallet": {
       "packages": {
         "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
         "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/hash": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true,
@@ -7165,78 +7187,58 @@
     },
     "ethers>@ethersproject/wallet>@ethersproject/address": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address>@ethersproject/rlp": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true
-      }
-    },
-    "ethers>@ethersproject/wallet>@ethersproject/address>@ethersproject/rlp": {
-      "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
-      }
-    },
-    "ethers>@ethersproject/wallet>@ethersproject/bytes": {
-      "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/wallet>@ethersproject/hash": {
       "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash>@ethersproject/base64": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
-    "ethers>@ethersproject/wallet>@ethersproject/hash>@ethersproject/base64": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
-      }
-    },
     "ethers>@ethersproject/wallet>@ethersproject/keccak256": {
       "packages": {
-        "ethers>@ethersproject/keccak256>js-sha3": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
     "ethers>@ethersproject/wallet>@ethersproject/properties": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true
+        "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/wallet>@ethersproject/random": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/wallet>@ethersproject/signing-key": {
       "packages": {
         "3box>ethers>elliptic": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
     "ethers>@ethersproject/wallet>@ethersproject/transactions": {
       "packages": {
-        "ethers>@ethersproject/units>@ethersproject/bignumber": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": true,
         "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address>@ethersproject/rlp": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true,
         "ethers>@ethersproject/wallet>@ethersproject/signing-key": true
@@ -7309,9 +7311,9 @@
     },
     "ethers>@ethersproject/wordlists": {
       "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/logger": true,
-        "ethers>@ethersproject/wallet>@ethersproject/bytes": true,
         "ethers>@ethersproject/wallet>@ethersproject/hash": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }

@@ -727,6 +727,13 @@ export function getIsBuyableMoonpayToken(state, symbol) {
   );
 }
 
+export function getIsBuyableWyreToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
+  );
+}
+
 export function getIsBuyableMoonPayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);

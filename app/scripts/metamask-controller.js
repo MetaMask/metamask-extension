@@ -2161,8 +2161,8 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const primaryKeyring =
-        keyringController.getKeyringsByType('HD Key Tree')[0];
+      const [primaryKeyring] =
+        keyringController.getKeyringsByType('HD Key Tree');
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2287,8 +2287,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const hdKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [hdKeyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     const simpleKeyPairKeyrings =
       this.keyringController.getKeyringsByType('Simple Key Pair');
     const hdAccounts = await hdKeyring.getAccounts();
@@ -2394,7 +2393,7 @@ export default class MetamaskController extends EventEmitter {
    */
   selectFirstIdentity() {
     const { identities } = this.preferencesController.store.getState();
-    const address = Object.keys(identities)[0];
+    const [address] = Object.keys(identities);
     this.preferencesController.setSelectedAddress(address);
   }
 
@@ -2402,7 +2401,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const keyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [keyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
@@ -2433,9 +2432,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
     }
-    let keyring = await this.keyringController.getKeyringsByType(
-      keyringName,
-    )[0];
+    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName);
     }
@@ -2635,8 +2632,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2679,8 +2676,8 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2804,12 +2801,12 @@ export default class MetamaskController extends EventEmitter {
       'Simple Key Pair',
       [privateKey],
     );
-    const accounts = await keyring.getAccounts();
+    const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(allAccounts);
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(accounts[0]);
+    await this.preferencesController.setSelectedAddress(firstAccount);
   }
 
   // ---------------------------------------------------------------------------
@@ -2875,7 +2872,7 @@ export default class MetamaskController extends EventEmitter {
     if (requestedAccount) {
       account = requestedAccount;
     } else {
-      account = (await this.keyringController.getAccounts())[0];
+      [account] = await this.keyringController.getAccounts();
     }
 
     return this.keyringController.exportAppKeyForAddress(account, subject);
