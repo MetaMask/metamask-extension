@@ -47,6 +47,12 @@
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
   },
+  "SIWEDomainInvalidTitle": {
+    "message": "Deceptive site request."
+  },
+  "SIWEDomainInvalidText": {
+    "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
+  },
   "SIWEDomainInvalid": {
     "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
     "description": "$1 represents the website domain"

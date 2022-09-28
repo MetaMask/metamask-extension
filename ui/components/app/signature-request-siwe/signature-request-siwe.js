@@ -107,7 +107,17 @@ export default function SignatureRequestSIWE({
         <ActionableMessage
           className="signature-request-siwe__actionable-message"
           type="danger"
-          message={t('SIWEDomainInvalid', [parsedMessage.domain])}
+          message={
+            <>
+              <p
+                className="typography--weight-bold"
+                style={{ display: 'inline' }}
+              >
+                {t('SIWEDomainInvalidTitle')}
+              </p>{' '}
+              {t('SIWEDomainInvalidText')}
+            </>
+          }
           iconFillColor="var(--color-error-default)"
           useIcon
           withRightButton
