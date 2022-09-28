@@ -22,6 +22,7 @@ import {
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
   getIsBuyableMoonpayToken,
+  getIsBuyableWyreToken,
 } from '../../../selectors/selectors';
 
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -63,8 +64,15 @@ const TokenOverview = ({ className, token }) => {
   const isTokenBuyableMoonpay = useSelector((state) =>
     getIsBuyableMoonpayToken(state, token.symbol),
   );
+  const isTokenBuyableWyre = useSelector((state) =>
+    getIsBuyableWyreToken(state, token.symbol),
+  );
+
   const isBuyable =
-    isTokenBuyableCoinbasePay || isTokenBuyableTransak || isTokenBuyableMoonpay;
+    isTokenBuyableCoinbasePay ||
+    isTokenBuyableTransak ||
+    isTokenBuyableMoonpay ||
+    isTokenBuyableWyre;
 
   useEffect(() => {
     if (token.isERC721 && process.env.COLLECTIBLES_V1) {

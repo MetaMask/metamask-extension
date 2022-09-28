@@ -1,82 +1,72 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
-import sinon from 'sinon';
-import configureStore from 'redux-mock-store';
-import { mount } from 'enzyme';
-import ConfirmRemoveAccount from './confirm-remove-account.container';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import ConfirmRemoveAccount from '.';
 
 describe('Confirm Remove Account', () => {
-  let wrapper;
-
   const state = {
     metamask: {
       provider: {
-        chainId: '0x0',
+        chainId: '0x99',
       },
     },
   };
 
   const props = {
-    hideModal: sinon.spy(),
-    removeAccount: sinon.stub().resolves(),
-    network: '101',
+    hideModal: jest.fn(),
+    removeAccount: jest.fn().mockResolvedValue(),
     identity: {
       address: '0x0',
       name: 'Account 1',
     },
-    chainId: '0x0',
+    chainId: '0x99',
     rpcPrefs: {},
   };
 
-  const mockStore = configureStore();
-  const store = mockStore(state);
+  const mockStore = configureMockStore()(state);
 
-  beforeEach(() => {
-    wrapper = mount(
-      <Provider store={store}>
-        <ConfirmRemoveAccount.WrappedComponent {...props} />
-      </Provider>,
-      {
-        context: {
-          t: (str) => str,
-          store,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-        },
-      },
-    );
-  });
-
-  afterEach(() => {
-    props.hideModal.resetHistory();
-  });
-
-  it('nevermind', () => {
-    const nevermind = wrapper.find({ type: 'secondary' });
-    nevermind.simulate('click');
-
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
-  });
-
-  it('remove', async () => {
-    const remove = wrapper.find({ type: 'primary' });
-    remove.simulate('click');
-
-    expect(await props.removeAccount.calledOnce).toStrictEqual(true);
-    expect(props.removeAccount.getCall(0).args[0]).toStrictEqual(
-      props.identity.address,
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <ConfirmRemoveAccount.WrappedComponent {...props} />,
+      mockStore,
     );
 
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    expect(container).toMatchSnapshot();
   });
 
-  it('closes', () => {
-    const close = wrapper.find('.modal-container__header-close');
-    close.simulate('click');
+  it('should only hide modal when clicking "Nevermind"', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmRemoveAccount.WrappedComponent {...props} />,
+      mockStore,
+    );
 
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('Nevermind'));
+
+    expect(props.removeAccount).not.toHaveBeenCalled();
+    expect(props.hideModal).toHaveBeenCalled();
+  });
+
+  it('should call remove account with identity address', async () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmRemoveAccount.WrappedComponent {...props} />,
+      mockStore,
+    );
+
+    fireEvent.click(queryByText('Remove'));
+
+    expect(props.removeAccount).toHaveBeenCalledWith(props.identity.address);
+    expect(props.hideModal).toHaveBeenCalled();
+  });
+
+  it('should close modal when clicking close from the header', () => {
+    const { queryByTestId } = renderWithProvider(
+      <ConfirmRemoveAccount.WrappedComponent {...props} />,
+      mockStore,
+    );
+
+    fireEvent.click(queryByTestId('modal-header-close'));
+
+    expect(props.hideModal).toHaveBeenCalled();
   });
 });
