@@ -208,28 +208,7 @@ const initPageStreams = () => {
   setupPageStreams();
 };
 
-const ARBITRARY_CONNECT_EXT_DELAY = 150;
-
-/** @param {number} ms */
-function timeout(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-const setupExtensionStreams = async () => {
-  /**
-   * There appears to be a chrome bug where the disconnect event gets called when
-   * chrome.runtime.connect is called and the port is not made immediately available.
-   * This timeout should be temporary workaround which delays browser.runtime.connect
-   * to allow onConnect listeners to be set up.
-   *
-   * The error we are preventing, "Unchecked runtime.lastError: Could not establish connection.
-   * Receiving end does not exist." still occurs, but it shows less frequently with this timeout.
-   * The application continues to work as expected despite this error.
-   *
-   * @see {@link https://stackoverflow.com/a/54686484/4053142}
-   */
-  await timeout(ARBITRARY_CONNECT_EXT_DELAY);
-
+const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
@@ -363,7 +342,7 @@ const destroyLegacyExtensionStreams = () => {
  * Resets the extension stream with new streams to channel with the in page streams,
  * and creates a new event listener to the reestablished extension port.
  */
-const resetStreamAndListeners = async () => {
+const resetStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   destroyExtensionStreams();
@@ -371,7 +350,7 @@ const resetStreamAndListeners = async () => {
 
   setupPageStreams();
   setupLegacyPageStreams();
-  await setupExtensionStreams();
+  setupExtensionStreams();
   setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
@@ -382,9 +361,9 @@ const resetStreamAndListeners = async () => {
  * the local per-page browser context. This function also creates an event listener to
  * reset the streams if the service worker resets.
  */
-const initStreams = async () => {
+const initStreams = () => {
   initPageStreams();
-  await setupExtensionStreams();
+  setupExtensionStreams();
 
   // TODO:LegacyProvider: Delete
   initLegacyPageStreams();
