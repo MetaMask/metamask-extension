@@ -25,7 +25,9 @@ export default function SiteOrigin({
           label={siteOrigin}
           maxContent={false}
           leftIcon={
-            leftIcon || <IconWithFallback icon={iconSrc} name={iconName} size={24} />
+            leftIcon || (
+              <IconWithFallback icon={iconSrc} name={iconName} size={24} />
+            )
           }
           rightIcon={rightIcon}
         />
