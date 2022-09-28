@@ -20,15 +20,20 @@ const fetchWithTimeout = getFetchWithTimeout();
  *
  * @param {string} walletAddress - Ethereum destination address
  * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
  * @returns String
  */
-const createWyrePurchaseUrl = async (walletAddress, chainId) => {
+const createWyrePurchaseUrl = async (walletAddress, chainId, symbol) => {
   const { wyre = {} } = BUYABLE_CHAINS_MAP[chainId];
   const { srn, currencyCode } = wyre;
 
   const networkId = parseInt(chainId, 16);
-  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}`;
-  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${currencyCode}&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}&currency=${
+    symbol || currencyCode
+  }`;
+  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${
+    symbol || currencyCode
+  }&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
@@ -158,7 +163,7 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
 
   switch (service) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address, chainId);
+      return await createWyrePurchaseUrl(address, chainId, symbol);
     case 'transak':
       return createTransakUrl(address, chainId, symbol);
     case 'moonpay':
