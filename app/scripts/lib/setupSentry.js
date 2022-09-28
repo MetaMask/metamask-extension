@@ -159,8 +159,6 @@ export default function setupSentry({ release, getState }) {
     try {
       // simplify certain complex error messages (e.g. Ethjs)
       simplifyErrorMessages(report);
-      // modify report urls
-      rewriteReportUrls(report);
       // append app state
       if (getState) {
         const appState = getState();
@@ -208,28 +206,4 @@ function rewriteErrorMessages(report, rewriteFn) {
       }
     });
   }
-}
-
-function rewriteReportUrls(report) {
-  // update request url
-  report.request.url = toMetamaskUrl(report.request.url);
-  // update exception stack trace
-  if (report.exception && report.exception.values) {
-    report.exception.values.forEach((item) => {
-      if (item.stacktrace) {
-        item.stacktrace.frames.forEach((frame) => {
-          frame.filename = toMetamaskUrl(frame.filename);
-        });
-      }
-    });
-  }
-}
-
-function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
-  if (!filePath) {
-    return origUrl;
-  }
-  const metamaskUrl = `metamask${filePath}`;
-  return metamaskUrl;
 }
