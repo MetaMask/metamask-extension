@@ -74,6 +74,7 @@ export default class AppHeader extends PureComponent {
     return (
       isUnlocked && (
         <button
+          data-testid="account-menu-icon"
           className={classnames('account-menu__icon', {
             'account-menu__icon--disabled': disabled,
           })}
