@@ -15,7 +15,7 @@ describe('migration #74', () => {
     });
   });
 
-  it('should add a deprecated testnet to custom networks if that network is currently selected and modify the provider type', async () => {
+  it('should add a deprecated testnet to custom networks if that network is currently selected and modify the provider', async () => {
     const oldStorage = {
       meta: {
         version: 73,
@@ -40,6 +40,9 @@ describe('migration #74', () => {
           provider: {
             chainId: '0x4',
             type: 'rpc',
+            rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            nickname: 'Rinkeby',
+            ticker: 'RinkebyETH',
           },
         },
         PreferencesController: {
@@ -47,8 +50,8 @@ describe('migration #74', () => {
             {
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
-              ticker: 'ETH',
               nickname: 'Rinkeby',
+              ticker: 'RinkebyETH',
               rpcPrefs: {},
             },
           ],
@@ -144,15 +147,15 @@ describe('migration #74', () => {
             {
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
-              ticker: 'ETH',
               nickname: 'Rinkeby',
+              ticker: 'RinkebyETH',
               rpcPrefs: {},
             },
             {
               rpcUrl: `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x3',
-              ticker: 'ETH',
               nickname: 'Ropsten',
+              ticker: 'RopstenETH',
               rpcPrefs: {},
             },
           ],
@@ -219,8 +222,8 @@ describe('migration #74', () => {
             {
               rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x2a',
-              ticker: 'ETH',
               nickname: 'Kovan',
+              ticker: 'KovanETH',
               rpcPrefs: {},
             },
           ],
@@ -280,7 +283,10 @@ describe('migration #74', () => {
       data: {
         NetworkController: {
           provider: {
+            rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
             chainId: '0x2a',
+            nickname: 'Kovan',
+            ticker: 'KovanETH',
             type: 'rpc',
           },
         },
@@ -289,22 +295,22 @@ describe('migration #74', () => {
             {
               rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x2a',
-              ticker: 'ETH',
               nickname: 'Kovan',
+              ticker: 'KovanETH',
               rpcPrefs: {},
             },
             {
               rpcUrl: `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x3',
-              ticker: 'ETH',
               nickname: 'Ropsten',
+              ticker: 'RopstenETH',
               rpcPrefs: {},
             },
             {
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
-              ticker: 'ETH',
               nickname: 'Rinkeby',
+              ticker: 'RinkebyETH',
               rpcPrefs: {},
             },
           ],

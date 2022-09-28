@@ -12,20 +12,24 @@ const DEPRECATED_TEST_NET_DETAILS = {
   '0x3': {
     rpcUrl: getRpcUrl({ network: 'ropsten' }),
     nickname: 'Ropsten',
+    ticker: 'RopstenETH',
   },
   '0x2a': {
     rpcUrl: getRpcUrl({ network: 'kovan' }),
     nickname: 'Kovan',
+    ticker: 'KovanETH',
   },
   '0x4': {
     rpcUrl: getRpcUrl({ network: 'rinkeby' }),
     nickname: 'Rinkeby',
+    ticker: 'RinkebyETH',
   },
 };
 
 /**
  * Migrates the user default but deprecated testnet networks to custom networks, and
- * if the current network is one such network, updates the provider type to 'rpc'
+ * if the current network is one such network, updates the network provider details so that it
+ * will work as a custom rpc
  */
 export default {
   version,
@@ -93,7 +97,7 @@ function transformState(state) {
       newFrequentRpcListDetail.unshift({
         rpcUrl: DEPRECATED_TEST_NET_DETAILS[chainId].rpcUrl,
         chainId,
-        ticker: 'ETH',
+        ticker: DEPRECATED_TEST_NET_DETAILS[chainId].ticker,
         nickname: DEPRECATED_TEST_NET_DETAILS[chainId].nickname,
         rpcPrefs: {},
       });
@@ -105,9 +109,14 @@ function transformState(state) {
   }
 
   if (currentlyOnDeprecatedNetwork.length) {
+    const selectedNetworkChainId = currentlyOnDeprecatedNetwork[0];
     NetworkController.provider = {
       ...NetworkController.provider,
       type: 'rpc',
+      rpcUrl: DEPRECATED_TEST_NET_DETAILS[selectedNetworkChainId].rpcUrl,
+      chainId: selectedNetworkChainId,
+      nickname: DEPRECATED_TEST_NET_DETAILS[selectedNetworkChainId].nickname,
+      ticker: DEPRECATED_TEST_NET_DETAILS[selectedNetworkChainId].ticker,
     };
   }
 
