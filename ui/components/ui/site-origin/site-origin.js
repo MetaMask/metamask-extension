@@ -15,8 +15,6 @@ export default function SiteOrigin({
   leftIcon,
   rightIcon,
 }) {
-  console.log('leftIcon', leftIcon);
-  console.log('rightIcon', rightIcon);
   return (
     <div className={classnames('site-origin', className)} title={title}>
       {chip ? (
