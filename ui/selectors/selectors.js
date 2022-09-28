@@ -412,8 +412,8 @@ export function getAddressBookEntryOrAccountName(state, address) {
   return entry && entry.name !== '' ? entry.name : address;
 }
 
-export function getAccountName(state, address) {
-  const entry = Object.values(state.metamask.identities).find((identity) =>
+export function getAccountName(identities, address) {
+  const entry = Object.values(identities).find((identity) =>
     isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
   );
   return entry && entry.name !== '' ? entry.name : '';

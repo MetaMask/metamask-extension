@@ -8,6 +8,21 @@ import SignatureRequest from './signature-request.container';
 describe('Signature Request', () => {
   const mockStore = {
     metamask: {
+      identities: {
+        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+          name: 'Account 2',
+          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        },
+      },
+      addressBook: {
+        undefined: {
+          0: {
+            address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
+            name: '',
+            isEns: false,
+          },
+        },
+      },
       provider: {
         type: 'rpc',
       },
