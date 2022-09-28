@@ -699,7 +699,7 @@
   "ui/components/app/signature-request/signature-request-header/signature-request-header.component.js",
   "ui/components/app/signature-request/signature-request-header/signature-request-header.stories.js",
   "ui/components/app/signature-request/signature-request-message/index.js",
-  "ui/components/app/signature-request/signature-request-message/signature-request-message.component.js",
+  "ui/components/app/signature-request/signature-request-message/signature-request-message.js",
   "ui/components/app/signature-request/signature-request.component.js",
   "ui/components/app/signature-request/signature-request.component.test.js",
   "ui/components/app/signature-request/signature-request.container.js",

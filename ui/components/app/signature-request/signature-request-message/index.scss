@@ -6,11 +6,14 @@
   position: relative;
 
   &__title {
-    @include H6;
-
-    font-weight: 500;
-    color: var(--color-text-alternative);
+    font-weight: 700;
+    color: var(--color-text-default);
     margin-left: 12px;
+  }
+
+  &__party {
+    display: flex;
+    align-items: center;
   }
 
   h2 {
@@ -26,11 +29,14 @@
 
   &--root {
     flex: 1 100%;
-    background-color: var(--color-background-alternative);
-    padding-bottom: 0.5rem;
+    background-color: var(--color-background-default);
+    padding-bottom: 0.75rem;
+    padding-top: 0.75rem;
     overflow: auto;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-right: 0.75rem;
+    margin: 10px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 12px;
 
     @include screen-sm-min {
       width: auto;
@@ -42,7 +48,8 @@
     padding-left: 0.3rem;
 
     &-label {
-      color: var(--color-text-alternative);
+      color: var(--color-text-default);
+      font-weight: 700;
       margin-left: 0.5rem;
     }
 
@@ -52,11 +59,34 @@
       white-space: pre-line;
       overflow: hidden;
       word-wrap: break-word;
+
+      &__name {
+        @include H7;
+
+        padding-left: 14px;
+        color: var(--color-info-default);
+
+        [dir='rtl'] & {
+          /*rtl:ignore*/
+          direction: ltr;
+
+          /*rtl:ignore*/
+          text-align: right;
+
+          span {
+            display: block;
+
+            /*rtl:ignore*/
+            direction: rtl;
+          }
+        }
+      }
     }
   }
 
   &--node-leaf {
     display: flex;
+    padding: 4px;
   }
 
   &__scroll-button {
@@ -67,7 +97,7 @@
     background: var(--color-background-alternative);
     color: var(--color-icon-default);
     position: absolute;
-    right: 24px;
+    right: 28px;
     bottom: 12px;
     border-radius: 50%;
     cursor: pointer;
