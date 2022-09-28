@@ -74,21 +74,21 @@ function transformState(state) {
       return userHasABalanceGreaterThanZeroOnThisChain;
     });
   const deprecatedTestnetsThatHaveBeenUsed = uniq([
-    ...currentlyOnDeprecatedNetwork,
-    ...deprecatedTestnetsOnWhichTheUserHasMadeATransaction,
     ...deprecatedTestnetsOnWhichTheUserHasCachedBalance,
+    ...deprecatedTestnetsOnWhichTheUserHasMadeATransaction,
+    ...currentlyOnDeprecatedNetwork,
   ]);
 
-  PreferencesController.frequentRpcListDetail =
+  const newFrequentRpcListDetail =
     PreferencesController.frequentRpcListDetail ?? [];
 
   deprecatedTestnetsThatHaveBeenUsed.forEach((chainId) => {
     if (
-      !PreferencesController.frequentRpcListDetail.find(
+      !newFrequentRpcListDetail.find(
         (rpcDetails) => rpcDetails.chainId === chainId,
       )
     ) {
-      PreferencesController.frequentRpcListDetail.unshift({
+      newFrequentRpcListDetail.unshift({
         rpcUrl: DEPRECATED_TEST_NET_DETAILS[chainId].rpcUrl,
         chainId,
         ticker: 'ETH',
@@ -97,6 +97,10 @@ function transformState(state) {
       });
     }
   });
+
+  if (newFrequentRpcListDetail.length) {
+    PreferencesController.frequentRpcListDetail = newFrequentRpcListDetail;
+  }
 
   return {
     ...state,
