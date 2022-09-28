@@ -7,6 +7,7 @@ import InfoIcon from '../../../ui/icon/info-icon.component';
 import {
   TYPOGRAPHY,
   SEVERITIES,
+  SIZES,
   DISPLAY,
   ALIGN_ITEMS,
   COLORS,
@@ -27,14 +28,15 @@ const LeftIconWarning = ({ domain }) => {
       containerClassName="signature-request-siwe-header__tooltip__container"
     >
       <Box
-        className="rounded"
+        // className="rounded"
+        className="circle"
         padding={1}
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.CENTER}
         backgroundColor={COLORS.ERROR_DEFAULT}
         // borderRadius="50%"
       >
-        <Icon name="danger-filled" color={COLORS.ERROR_INVERSE} />
+        <Icon name="danger-filled" color={COLORS.ERROR_INVERSE} margin={1} />
       </Box>
     </Tooltip>
   );
@@ -51,15 +53,17 @@ const RightIconWarning = ({ domain }) => {
     >
       {/* <InfoIcon severity={SEVERITIES.DANGER} /> */}
       <Box
-        className="rounded"
         marginRight={1}
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.CENTER}
         backgroundColor={COLORS.ERROR_DEFAULT}
+        borderRadius={SIZES.XL}
+        paddingLeft={5}
+        paddingRight={5}
       >
         <Typography
           fontWeight="bold"
-          margin={1}
+          margin={0}
           variant={TYPOGRAPHY.H7}
           color={COLORS.ERROR_INVERSE}
         >
