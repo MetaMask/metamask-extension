@@ -2460,7 +2460,7 @@ describe('Send Slice', () => {
             recipient: {
               address: '0xRecipientAddress',
               error: null,
-              nickname: '',
+              nickname: '0xRecipientAddress',
               warning: null,
               recipientWarningAcknowledged: false,
               type: '',
@@ -2605,7 +2605,7 @@ describe('Send Slice', () => {
             recipient: {
               address: BURN_ADDRESS,
               error: null,
-              nickname: '',
+              nickname: BURN_ADDRESS,
               warning: null,
               type: '',
               recipientWarningAcknowledged: false,
@@ -2797,7 +2797,7 @@ describe('Send Slice', () => {
             address: BURN_ADDRESS,
             error: null,
             warning: null,
-            nickname: '',
+            nickname: BURN_ADDRESS,
             type: '',
             recipientWarningAcknowledged: false,
           },

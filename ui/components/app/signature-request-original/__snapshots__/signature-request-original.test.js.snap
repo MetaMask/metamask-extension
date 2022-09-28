@@ -43,6 +43,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           >
             <div
               class="account-list-item undefined"
+              data-testid="account-list-item"
             >
               <div
                 class="account-list-item__top-row"
@@ -164,39 +165,6 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             class="request-signature__row-value"
           >
             {"domain":{"name":"happydapp.website"},"message":{"string":"haay wuurl","number":42},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="confirm-approve-content__ledger-instruction-wrapper"
-    >
-      <div>
-        <div
-          class="confirm-detail-row"
-        >
-          <div
-            class="dialog dialog--message"
-          >
-            <div
-              class="ledger-live-dialog"
-            >
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                Prior to clicking confirm:
-              </h6>
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                - Plug in your Ledger device and select the Ethereum app
-              </h6>
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                - Enable "smart contract data" or "blind signing" on your Ledger device
-              </h6>
-            </div>
           </div>
         </div>
       </div>
