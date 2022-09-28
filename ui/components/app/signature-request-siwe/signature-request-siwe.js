@@ -122,6 +122,7 @@ export default function SignatureRequestSIWE({
         }
         cancelText={t('cancel')}
         submitText={t('signin')}
+        submitButtonType={isSIWEDomainValid ? 'primary' : 'danger-primary'}
       />
       {isShowingDomainWarning && (
         <Popover
