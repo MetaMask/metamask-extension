@@ -822,6 +822,9 @@
   "currentLanguage": {
     "message": "Current language"
   },
+  "currentRpcUrlDeprecated": {
+    "message": "The current rpc url for this network has been deprecated."
+  },
   "currentTitle": {
     "message": "Current:"
   },

@@ -24,6 +24,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     setProviderType: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
     isNetworkLoading: PropTypes.bool,
+    showDeprecatedRpcUrlWarning: PropTypes.bool,
   };
 
   componentDidMount = () => {
@@ -51,6 +52,28 @@ export default class LoadingNetworkScreen extends PureComponent {
       default:
         return t('connectingTo', [providerId]);
     }
+  };
+
+  renderDeprecatedRpcUrlWarning = () => {
+    const { showNetworkDropdown } = this.props;
+
+    return (
+      <div className="loading-overlay__error-screen">
+        <span className="loading-overlay__emoji">&#128542;</span>
+        <span>{this.context.t('currentRpcUrlDeprecated')}</span>
+        <div className="loading-overlay__error-buttons">
+          <Button
+            type="secondary"
+            onClick={() => {
+              window.clearTimeout(this.cancelCallTimeout);
+              showNetworkDropdown();
+            }}
+          >
+            {this.context.t('switchNetworks')}
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   renderErrorScreenContent = () => {
@@ -117,7 +140,19 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   render() {
-    const { rollbackToPreviousProvider } = this.props;
+    const { rollbackToPreviousProvider, showDeprecatedRpcUrlWarning } =
+      this.props;
+
+    let loadingMessageToRender;
+    if (this.state.showErrorScreen) {
+      loadingMessageToRender = this.renderErrorScreenContent();
+    } else if (showDeprecatedRpcUrlWarning) {
+      loadingMessageToRender = this.renderDeprecatedRpcUrlWarning();
+    } else {
+      loadingMessageToRender = this.getConnectingLabel(
+        this.props.loadingMessage,
+      );
+    }
 
     return (
       <LoadingScreen
@@ -128,11 +163,7 @@ export default class LoadingNetworkScreen extends PureComponent {
           />
         }
         showLoadingSpinner={!this.state.showErrorScreen}
-        loadingMessage={
-          this.state.showErrorScreen
-            ? this.renderErrorScreenContent()
-            : this.getConnectingLabel(this.props.loadingMessage)
-        }
+        loadingMessage={loadingMessageToRender}
       />
     );
   }
