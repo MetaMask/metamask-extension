@@ -1,146 +1,81 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
+import configureMockStore from 'redux-mock-store';
+import { waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
-
-import messages from '../../../../app/_locales/en/messages.json';
-
-import { getMessage } from '../../../helpers/utils/i18n-helper';
-
-import * as i18nhooks from '../../../hooks/useI18nContext';
-
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getIsGasEstimatesLoading,
-} from '../../../ducks/metamask/metamask';
+import mockState from '../../../../test/data/mock-state.json';
 
 import GasTiming from '.';
 
-const MOCK_FEE_ESTIMATE = {
-  low: {
-    minWaitTimeEstimate: 180000,
-    maxWaitTimeEstimate: 300000,
-    suggestedMaxPriorityFeePerGas: '3',
-    suggestedMaxFeePerGas: '53',
-  },
-  medium: {
-    minWaitTimeEstimate: 15000,
-    maxWaitTimeEstimate: 60000,
-    suggestedMaxPriorityFeePerGas: '7',
-    suggestedMaxFeePerGas: '70',
-  },
-  high: {
-    minWaitTimeEstimate: 0,
-    maxWaitTimeEstimate: 15000,
-    suggestedMaxPriorityFeePerGas: '10',
-    suggestedMaxFeePerGas: '100',
-  },
-  estimatedBaseFee: '50',
-};
-
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-
-  return {
-    ...actual,
-    useSelector: jest.fn(),
-  };
-});
-
-const DEFAULT_OPTS = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-  gasFeeEstimates: {
-    low: '10',
-    medium: '20',
-    high: '30',
-  },
-  isGasEstimatesLoading: true,
-};
-
-const generateUseSelectorRouter =
-  (opts = DEFAULT_OPTS) =>
-  (selector) => {
-    if (selector === checkNetworkAndAccountSupports1559) {
-      return true;
-    }
-    if (selector === getGasEstimateType) {
-      return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
-    }
-    if (selector === getGasFeeEstimates) {
-      return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
-    }
-    if (selector === getIsGasEstimatesLoading) {
-      return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
-    }
-    return undefined;
-  };
+jest.mock('../../../store/actions.js', () => ({
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
+}));
 
 describe('Gas timing', () => {
-  beforeEach(() => {
-    const useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
-    useI18nContext.returns((key, variables) =>
-      getMessage('en', messages, key, variables),
-    );
-    jest.clearAllMocks();
-    useSelector.mockImplementation(generateUseSelectorRouter());
-  });
-  afterEach(() => {
-    sinon.restore();
-  });
-
   it('renders nothing when gas is loading', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        isGasEstimatesLoading: true,
+    // Fails the networkAndAccountSupports1559 check
+    const nullGasState = {
+      metamask: {
         gasFeeEstimates: null,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      }),
-    );
+      },
+    };
 
-    const wrapper = shallow(<GasTiming />);
-    expect(wrapper.html()).toBeNull();
+    const mockStore = configureMockStore()(nullGasState);
+
+    const { container } = renderWithProvider(<GasTiming />, mockStore);
+    expect(container).toMatchSnapshot();
   });
 
-  it('renders "very likely" when high estimate is chosen', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        isGasEstimatesLoading: false,
-        gasFeeEstimates: MOCK_FEE_ESTIMATE,
-        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      }),
+  it('renders "very likely" when high estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '10',
+    };
+
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
     );
 
-    const wrapper = shallow(<GasTiming maxPriorityFeePerGas="10" />);
-    expect(wrapper.html()).toContain('gasTimingVeryPositive');
+    await waitFor(() => {
+      expect(queryByText(/Very likely in/u)).toBeInTheDocument();
+    });
   });
 
-  it('renders "likely" when medium estimate is chosen', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        isGasEstimatesLoading: false,
-        gasFeeEstimates: MOCK_FEE_ESTIMATE,
-        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      }),
+  it('renders "likely" when medium estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '8',
+    };
+
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
     );
 
-    const wrapper = shallow(<GasTiming maxPriorityFeePerGas="8" />);
-    expect(wrapper.html()).toContain('gasTimingPositive');
+    await waitFor(() => {
+      expect(queryByText(/Likely in/u)).toBeInTheDocument();
+    });
   });
 
-  it('renders "maybe" when low estimate is chosen', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        isGasEstimatesLoading: false,
-        gasFeeEstimates: MOCK_FEE_ESTIMATE,
-        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      }),
+  it('renders "maybe" when low estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '3',
+    };
+
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
     );
 
-    const wrapper = shallow(<GasTiming maxPriorityFeePerGas="3" />);
-    expect(wrapper.html()).toContain('gasTimingNegative');
+    await waitFor(() => {
+      expect(queryByText(/Maybe in/u)).toBeInTheDocument();
+    });
   });
 });

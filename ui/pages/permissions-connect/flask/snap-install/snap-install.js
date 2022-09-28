@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { flatMap } from '@metamask/snap-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
@@ -17,7 +16,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
-import { coinTypeToProtocolName } from '../../../../helpers/utils/util';
+import { getSnapInstallWarnings } from '../util';
 
 export default function SnapInstall({
   request,
@@ -42,31 +41,13 @@ export default function SnapInstall({
   const hasPermissions =
     request?.permissions && Object.keys(request.permissions).length > 0;
 
-  const bip44LegacyEntropyPermissions =
-    request.permissions &&
-    Object.keys(request.permissions).filter((v) =>
-      v.startsWith('snap_getBip44Entropy_'),
-    );
+  const warnings = getSnapInstallWarnings(
+    request.permissions,
+    targetSubjectMetadata,
+    t,
+  );
 
-  const bip32EntropyPermissions =
-    request.permissions &&
-    Object.entries(request.permissions)
-      .filter(([key]) => key === 'snap_getBip32Entropy')
-      .map(([, value]) => value);
-
-  const bip44EntropyPermissions =
-    request.permissions &&
-    Object.entries(request.permissions)
-      .filter(([key]) => key === 'snap_getBip44Entropy')
-      .map(([, value]) => value);
-
-  const shouldShowWarning =
-    bip32EntropyPermissions?.length > 0 ||
-    bip44EntropyPermissions?.length > 0 ||
-    bip44LegacyEntropyPermissions?.length > 0;
-
-  const getCoinType = (bip44EntropyPermission) =>
-    bip44EntropyPermission?.split('_').slice(-1);
+  const shouldShowWarning = warnings.length > 0;
 
   return (
     <Box
@@ -130,38 +111,7 @@ export default function SnapInstall({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          warnings={[
-            ...flatMap(bip32EntropyPermissions, (permission, i) =>
-              permission.caveats[0].value.map(({ path, curve }) => ({
-                id: `key-access-bip32-${path.join('/')}-${curve}-${i}`,
-                message: t('snapInstallWarningKeyAccess', [
-                  targetSubjectMetadata.name,
-                  `${path.join('/')} (${curve})`,
-                ]),
-              })),
-            ),
-            ...flatMap(bip44EntropyPermissions, (permission, i) =>
-              permission.caveats[0].value.map(({ coinType }) => ({
-                id: `key-access-bip44-${coinType}-${i}`,
-                message: t('snapInstallWarningKeyAccess', [
-                  targetSubjectMetadata.name,
-                  coinTypeToProtocolName(coinType) ||
-                    t('unrecognizedProtocol', [coinType]),
-                ]),
-              })),
-            ),
-            ...bip44LegacyEntropyPermissions.map((permission, i) => {
-              const coinType = getCoinType(permission);
-              return {
-                id: `key-access-bip44-legacy-${i}`,
-                message: t('snapInstallWarningKeyAccess', [
-                  targetSubjectMetadata.name,
-                  coinTypeToProtocolName(coinType) ||
-                    t('unrecognizedProtocol', [coinType]),
-                ]),
-              };
-            }),
-          ]}
+          warnings={warnings}
         />
       )}
     </Box>

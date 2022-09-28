@@ -254,9 +254,9 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-  async isElementPresent(element) {
+  async isElementPresent(rawLocator) {
     try {
-      await this.findElement(element);
+      await this.findElement(rawLocator);
       return true;
     } catch (err) {
       return false;
@@ -287,6 +287,10 @@ class Driver {
 
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
   }
 
   // Metrics
