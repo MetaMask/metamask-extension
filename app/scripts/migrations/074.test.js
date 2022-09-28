@@ -15,7 +15,7 @@ describe('migration #74', () => {
     });
   });
 
-  it('should add a deprecated testnet to custom networks if that network is currently selected', async () => {
+  it('should add a deprecated testnet to custom networks if that network is currently selected and modify the provider type', async () => {
     const oldStorage = {
       meta: {
         version: 73,
@@ -24,6 +24,7 @@ describe('migration #74', () => {
         NetworkController: {
           provider: {
             chainId: '0x4',
+            type: 'rinkeby',
           },
         },
       },
@@ -38,6 +39,7 @@ describe('migration #74', () => {
         NetworkController: {
           provider: {
             chainId: '0x4',
+            type: 'rpc',
           },
         },
         PreferencesController: {
@@ -279,6 +281,7 @@ describe('migration #74', () => {
         NetworkController: {
           provider: {
             chainId: '0x2a',
+            type: 'rpc',
           },
         },
         PreferencesController: {

@@ -24,7 +24,8 @@ const DEPRECATED_TEST_NET_DETAILS = {
 };
 
 /**
- * Migrates the networks default but deprecated testnet users to custom networks
+ * Migrates the user default but deprecated testnet networks to custom networks, and
+ * if the current network is one such network, updates the provider type to 'rpc'
  */
 export default {
   version,
@@ -41,7 +42,8 @@ export default {
 function transformState(state) {
   const PreferencesController = state?.PreferencesController || {};
   const preferences = PreferencesController.preferences || {};
-  const provider = state.NetworkController?.provider || {};
+  const NetworkController = state?.NetworkController || {};
+  const provider = NetworkController?.provider || {};
 
   const currentlyOnDeprecatedNetwork = DEPRECATED_TEST_NET_CHAINIDS.filter(
     (chainId) => chainId === provider?.chainId,
@@ -102,10 +104,20 @@ function transformState(state) {
     PreferencesController.frequentRpcListDetail = newFrequentRpcListDetail;
   }
 
+  if (currentlyOnDeprecatedNetwork.length) {
+    NetworkController.provider = {
+      ...NetworkController.provider,
+      type: 'rpc',
+    };
+  }
+
   return {
     ...state,
     PreferencesController: {
       ...PreferencesController,
+    },
+    NetworkController: {
+      ...NetworkController,
     },
   };
 }
