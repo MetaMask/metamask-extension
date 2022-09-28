@@ -55,7 +55,8 @@ let phishingExtChannel,
   phishingExtPort,
   phishingExtStream,
   phishingPageChannel,
-  phishingPageMux;
+  phishingPageMux,
+  phishingPageStream;
 
 let extensionMux,
   extensionChannel,
@@ -89,12 +90,6 @@ function injectScript(content) {
  */
 
 function setupPhishingPageStreams() {
-  // the transport-specific streams for communication between inpage and background
-  const phishingPageStream = new WindowPostMessageStream({
-    name: CONTENT_SCRIPT,
-    target: PHISHING_WARNING_PAGE,
-  });
-
   // create and connect channel muxers
   // so we can handle the channels individually
   phishingPageMux = new ObjectMultiplex();
@@ -106,6 +101,16 @@ function setupPhishingPageStreams() {
 
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
 }
+
+const initPhishingPageStreams = () => {
+  // the transport-specific streams for communication between inpage and background
+  phishingPageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: PHISHING_WARNING_PAGE,
+  });
+
+  setupPhishingPageStreams();
+};
 
 const setupPhishingExtStreams = () => {
   phishingExtPort = browser.runtime.connect({
@@ -148,6 +153,7 @@ const setupPhishingExtStreams = () => {
 
 /** Destroys all of the phishing extension streams */
 const destroyPhishingExtStreams = () => {
+  phishingPageStream?.removeAllListeners();
   phishingPageChannel?.removeAllListeners();
   phishingExtMux?.removeAllListeners();
   phishingExtChannel?.removeAllListeners();
@@ -164,6 +170,7 @@ const resetPhishingStreamAndListeners = () => {
   phishingExtPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
 
   destroyPhishingExtStreams();
+  setupPhishingPageStreams();
   setupPhishingExtStreams();
 
   phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
@@ -175,7 +182,7 @@ const resetPhishingStreamAndListeners = () => {
  * reset the streams if the service worker resets.
  */
 const initPhishingStreams = () => {
-  setupPhishingPageStreams();
+  initPhishingPageStreams();
   setupPhishingExtStreams();
 
   phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
