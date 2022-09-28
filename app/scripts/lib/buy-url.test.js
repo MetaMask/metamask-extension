@@ -39,7 +39,7 @@ describe('buy-url', () => {
   it('returns Wyre url with an ETH address for Ethereum mainnet', async () => {
     nock(SWAPS_API_V2_BASE_URL)
       .get(
-        `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
+        `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}&currency=${CURRENCY_SYMBOLS.ETH}`,
       )
       .reply(200, {
         url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${CURRENCY_SYMBOLS.ETH}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
