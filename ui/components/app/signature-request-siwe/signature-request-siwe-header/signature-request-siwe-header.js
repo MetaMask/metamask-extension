@@ -3,17 +3,14 @@ import PropTypes from 'prop-types';
 import AccountListItem from '../../account-list-item';
 import { I18nContext } from '../../../../contexts/i18n';
 import Tooltip from '../../../ui/tooltip';
-import InfoIcon from '../../../ui/icon/info-icon.component';
 import {
   TYPOGRAPHY,
-  SEVERITIES,
   SIZES,
   DISPLAY,
   ALIGN_ITEMS,
   COLORS,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import Chip from '../../../ui/chip';
 import Typography from '../../../ui/typography/typography';
 import { Icon } from '../../../component-library/icon/icon';
 import PermissionsConnectHeader from '../../permissions-connect-header';
@@ -28,13 +25,11 @@ const LeftIconWarning = ({ domain }) => {
       containerClassName="signature-request-siwe-header__tooltip__container"
     >
       <Box
-        // className="rounded"
         className="circle"
         padding={1}
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.CENTER}
         backgroundColor={COLORS.ERROR_DEFAULT}
-        // borderRadius="50%"
       >
         <Icon name="danger-filled" color={COLORS.ERROR_INVERSE} margin={1} />
       </Box>
@@ -51,7 +46,6 @@ const RightIconWarning = ({ domain }) => {
       wrapperClassName="signature-request-siwe-header__tooltip"
       containerClassName="signature-request-siwe-header__tooltip__container"
     >
-      {/* <InfoIcon severity={SEVERITIES.DANGER} /> */}
       <Box
         marginRight={1}
         display={DISPLAY.FLEX}
@@ -73,28 +67,6 @@ const RightIconWarning = ({ domain }) => {
     </Tooltip>
   );
 };
-
-// function LeftIconWarning() {
-//   return (
-//     <Tooltip
-//       position="top"
-//       title="This site is requesting access to your account"
-//     >
-//       <InfoIcon severity={SEVERITIES.WARNING} />
-//     </Tooltip>
-//   );
-// }
-
-// function RightIconWarning() {
-//   return (
-//     <Tooltip
-//       position="top"
-//       title="This site is requesting access to your account"
-//     >
-//       <InfoIcon severity={SEVERITIES.WARNING} />
-//     </Tooltip>
-//   );
-// }
 
 export default function SignatureRequestSIWEHeader({
   fromAccount,

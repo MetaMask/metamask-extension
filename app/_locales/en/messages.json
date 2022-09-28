@@ -53,10 +53,6 @@
   "SIWEDomainInvalidText": {
     "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
   },
-  "SIWEDomainInvalid": {
-    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
     "description": "$1 represents the website domain"
