@@ -1,5 +1,5 @@
-import Analytics from 'analytics-node';
-import { SECOND } from '../../../shared/constants/time';
+import { SECOND } from '../../../../shared/constants/time';
+import Analytics from './analytics';
 
 const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
 const SEGMENT_HOST = process.env.SEGMENT_HOST ?? null;
