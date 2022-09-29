@@ -22,7 +22,7 @@ const SignatureRequestSIWETag = ({ domain }) => {
       >
         <Box
           marginRight={1}
-          display={DISPLAY.FLEX}
+          display={DISPLAY.INLINE_FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
           backgroundColor={COLORS.ERROR_DEFAULT}
           borderRadius={SIZES.XL}
