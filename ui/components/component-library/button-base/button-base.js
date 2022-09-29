@@ -128,6 +128,10 @@ ButtonBase.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(BUTTON_SIZES)),
   /**
+   * Addition style properties to apply to the button.
+   */
+  style: PropTypes.object,
+  /**
    * ButtonBase accepts all the props from Box
    */
   ...Box.propTypes,
