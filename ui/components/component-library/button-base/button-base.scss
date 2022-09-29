@@ -52,7 +52,7 @@
     cursor: not-allowed;
   }
 
-  &--loading .mm-button--content {
+  &--loading &__content {
     color: transparent;
   }
 

@@ -19,11 +19,14 @@ The `ButtonBase` accepts all props below as well as all [Box](/docs/ui-component
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonBase`. Defaults to `SIZES.MD`
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
+to change the size of `ButtonBase`. Defaults to `SIZES.MD`
+
+Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` 22px
+- `SIZES.AUTO` inherits the font-size of the parent element.
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -56,7 +59,6 @@ import { ButtonBase } from '../ui/component-library';
 
 <ButtonBase>Default Button</ButtonBase>
 <ButtonBase block>Block Button</ButtonBase>
-<ButtonBase display={DISPLAY.BLOCK}>Block Button</ButtonBase>
 ```
 
 ### As

@@ -111,12 +111,16 @@ ButtonBase.propTypes = {
    */
   iconPositionRight: PropTypes.bool,
   /**
+   * iconProps accepts all the props from Icon
+   */
+  iconProps: Icon.propTypes,
+  /**
    * Boolean to show loading spinner in button
    */
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'BUTTON_SIZES.XS', 'BUTTON_SIZES.SM', 'BUTTON_SIZES.MD', 'BUTTON_SIZES.LG',
+   * Possible values could be 'SIZES.AUTO', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
    */
   size: PropTypes.oneOf(Object.values(BUTTON_SIZES)),
   /**

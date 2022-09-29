@@ -4,10 +4,11 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   SIZES,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-
+import { Text } from '../text';
 import { BUTTON_SIZES } from './button.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -98,12 +99,30 @@ export const DefaultStory = (args) => <ButtonBase {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonBase {...args} size={SIZES.AUTO} />
-    <ButtonBase {...args} size={SIZES.SM} />
-    <ButtonBase {...args} size={SIZES.MD} />
-    <ButtonBase {...args} size={SIZES.LG} />
-  </Box>
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.BASELINE}
+      gap={1}
+      marginBottom={2}
+    >
+      <ButtonBase {...args} size={SIZES.SM}>
+        Button SM
+      </ButtonBase>
+      <ButtonBase {...args} size={SIZES.MD}>
+        Button MD
+      </ButtonBase>
+      <ButtonBase {...args} size={SIZES.LG}>
+        Button LG
+      </ButtonBase>
+    </Box>
+    <Text variant={TEXT.BODY_SM}>
+      <ButtonBase {...args} size={SIZES.AUTO}>
+        Button Auto
+      </ButtonBase>{' '}
+      inherits the font-size of the parent element.
+    </Text>
+  </>
 );
 
 export const Block = (args) => (
