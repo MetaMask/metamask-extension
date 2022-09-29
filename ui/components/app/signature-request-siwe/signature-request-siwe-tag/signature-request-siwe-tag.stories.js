@@ -5,7 +5,7 @@ export default {
   title: 'Components/App/SignatureRequestSIWE/SignatureRequestSIWETag',
   id: __filename,
   argTypes: {
-    domain: { control: 'text' },
+    text: { control: 'text' },
   },
 };
 
@@ -14,5 +14,5 @@ export const DefaultStory = (args) => <SignatureRequestSIWETag {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  domain: window.location.host,
+  text: 'Unsafe',
 };
