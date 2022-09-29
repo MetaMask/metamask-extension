@@ -2,8 +2,6 @@ import removeSlash from 'remove-trailing-slash';
 import looselyValidate from '@segment/loosely-validate-event';
 import { isString } from 'lodash';
 
-// eslint-disable-next-line
-const setImmediate = global.setImmediate || process.nextTick.bind(process);
 const noop = () => ({});
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
@@ -124,7 +122,6 @@ export default class Analytics {
     if (message.userId && !isString(message.userId)) {
       message.userId = JSON.stringify(message.userId);
     }
-
     this.queue.push({ message, callback });
 
     if (!this.flushed) {
@@ -140,6 +137,10 @@ export default class Analytics {
     if (hasReachedFlushAt || hasReachedQueueSize) {
       this.flush();
     }
+
+    if (this.flushInterval && !this.timer) {
+      this.timer = setTimeout(this.flush.bind(this), this.flushInterval);
+    }
   }
 
   /**
@@ -154,6 +155,11 @@ export default class Analytics {
     if (!this.enable) {
       setImmediate(callback);
       return Promise.resolve();
+    }
+
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
     }
 
     if (!this.queue.length) {
