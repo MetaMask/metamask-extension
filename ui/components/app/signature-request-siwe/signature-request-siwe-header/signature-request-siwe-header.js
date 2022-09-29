@@ -30,7 +30,7 @@ export default function SignatureRequestSIWEHeader({
               position="bottom"
               html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
             >
-              <SignatureRequestSIWEIcon domain={domain} />
+              <SignatureRequestSIWEIcon />
             </Tooltip>
           )
         }
