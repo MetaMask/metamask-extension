@@ -6,6 +6,7 @@ import {
   DISPLAY,
   ALIGN_ITEMS,
   COLORS,
+  JUSTIFY_CONTENT,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import { Icon, ICON_NAMES } from '../../../component-library/icon';
@@ -22,16 +23,12 @@ const SignatureRequestSIWEIcon = ({ domain }) => {
       >
         <Box
           className="signature-request-siwe-icon__icon"
-          padding={1}
-          display={DISPLAY.FLEX}
+          display={DISPLAY.INLINE_FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
           backgroundColor={COLORS.ERROR_DEFAULT}
+          justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          <Icon
-            name={ICON_NAMES.DANGER_FILLED}
-            color={COLORS.ERROR_INVERSE}
-            margin={1}
-          />
+          <Icon name={ICON_NAMES.DANGER_FILLED} color={COLORS.ERROR_INVERSE} />
         </Box>
       </Tooltip>
     </div>
