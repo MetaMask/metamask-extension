@@ -373,7 +373,7 @@ describe('Swaps Util', () => {
         swapsFeatureIsLive: true,
       };
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
-      swapsFeatureFlags[ETHEREUM].extension_active = false;
+      swapsFeatureFlags[ETHEREUM].extensionActive = false;
       expect(
         getSwapsLivenessForNetwork(swapsFeatureFlags, CHAIN_IDS.MAINNET),
       ).toMatchObject(expectedSwapsLiveness);

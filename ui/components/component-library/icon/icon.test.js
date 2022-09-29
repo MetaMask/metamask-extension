@@ -88,6 +88,11 @@ describe('Icon', () => {
           size={SIZES.XL}
           data-testid="icon-xl"
         />
+        <Icon
+          name={MOCK_ICON_NAMES.ADD_SQUARE_FILLED}
+          size={SIZES.AUTO}
+          data-testid="icon-auto"
+        />
       </>,
     );
     expect(getByTestId('icon-xxs')).toHaveClass('icon--size-xxs');
@@ -96,6 +101,7 @@ describe('Icon', () => {
     expect(getByTestId('icon-md')).toHaveClass('icon--size-md');
     expect(getByTestId('icon-lg')).toHaveClass('icon--size-lg');
     expect(getByTestId('icon-xl')).toHaveClass('icon--size-xl');
+    expect(getByTestId('icon-auto')).toHaveClass('icon--size-auto');
   });
   it('should render with icon colors', () => {
     const { getByTestId } = render(
