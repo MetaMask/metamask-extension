@@ -317,10 +317,6 @@ describe('Swaps Util', () => {
     it('returns "avalanche" for Avalanche chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.AVALANCHE)).toBe(AVALANCHE);
     });
-
-    it('returns an empty string for an unsupported network', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.KOVAN)).toBe('');
-    });
   });
 
   describe('getSwapsLivenessForNetwork', () => {
@@ -355,7 +351,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          CHAIN_IDS.KOVAN,
+          CHAIN_IDS.SEPOLIA,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });

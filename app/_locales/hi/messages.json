@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToKovan": {
-    "message": "Kovan टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToSepolia": {
     "message": "सेपोलिया टेस्ट नेटवर्क से कनेक्ट कर रहा है"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "यह कार्रवाई उन टोकन को संपादित करेगी, जो पहले से ही आपके वॉलेट में सूचीबद्ध हैं, जिसका उपयोग आपको फ़िश करने के लिए किया जा सकता है। केवल तभी अनुमोदित करें, जब आप इस बात को लेकर सुनिश्चित हों कि आप इन टोकन का प्रतिनिधित्व बदलना चाहते हैं। $1 के बारे में और अधिक जानें"
-  },
-  "kovan": {
-    "message": "Kovan टेस्ट नेटवर्क"
   },
   "lastConnected": {
     "message": "अंतिम बार जुड़ा"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "यह अनुबंध आपके वर्तमान या भविष्य के और टोकन पर खर्च करने में असमर्थ है।"
-  },
-  "rinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क"
-  },
-  "ropsten": {
-    "message": "Ropsten टेस्ट नेटवर्क"
   },
   "rpcUrl": {
     "message": "नया RPC URL"

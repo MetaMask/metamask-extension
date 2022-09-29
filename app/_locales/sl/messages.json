@@ -190,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToKovan": {
-    "message": "Povezovanje na testno omrežje Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
-  },
-  "connectingToRinkeby": {
-    "message": "Povezovanje na testno omrežje Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Povezovanje na testno omrežje Ropsten"
   },
   "continueToWyre": {
     "message": "Nadaljuj na Wyre"
@@ -485,9 +476,6 @@
   "knownAddressRecipient": {
     "message": "Znan naslov pogodbe."
   },
-  "kovan": {
-    "message": "Testno omrežje Kovan"
-  },
   "learnMore": {
     "message": "Preberite več"
   },
@@ -737,12 +725,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Tega ne delite z nikomer!"
-  },
-  "rinkeby": {
-    "message": "Testno omrežje Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testno omrežje Ropsten"
   },
   "rpcUrl": {
     "message": "Nov URL RPC"

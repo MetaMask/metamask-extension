@@ -190,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToKovan": {
-    "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
-  },
-  "connectingToRinkeby": {
-    "message": "Jungiamasi prie „Rinkeby“ bandomojo tinklo"
-  },
-  "connectingToRopsten": {
-    "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -491,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "Žinomas sutarties adresas."
   },
-  "kovan": {
-    "message": "„Kovan“ bandomasis tinklas"
-  },
   "learnMore": {
     "message": "Sužinokite daugiau"
   },
@@ -749,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Šia fraze su niekuo NESIDALINKITE!"
-  },
-  "rinkeby": {
-    "message": "„Rinkeby“ bandomasis tinklas"
-  },
-  "ropsten": {
-    "message": "„Ropsten“ bandomasis tinklas"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"

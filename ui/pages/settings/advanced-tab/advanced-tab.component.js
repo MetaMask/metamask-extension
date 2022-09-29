@@ -21,7 +21,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import { exportAsFile } from '../../../../shared/modules/export-utils';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
@@ -155,7 +155,6 @@ export default class AdvancedTab extends PureComponent {
     /**
      * so that we can restore same file again if we want to.
      * chrome blocks uploading same file twice.
-     *
      */
     event.target.value = '';
     try {
@@ -237,6 +236,17 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  backupUserData = async () => {
+    const { fileName, data } = await this.props.backupUserData();
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'User Data Exported',
+      category: 'Backup',
+      properties: {},
+    });
+  };
+
   renderUserDataBackup() {
     const { t } = this.context;
     return (
@@ -256,9 +266,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={() => {
-                this.props.backupUserData();
-              }}
+              onClick={() => this.backupUserData()}
             >
               {t('backup')}
             </Button>

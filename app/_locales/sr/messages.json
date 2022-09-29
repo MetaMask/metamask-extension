@@ -187,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Povezuje se sa test mrežom Goerli "
   },
-  "connectingToKovan": {
-    "message": "Povezuje se na test mrežu Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
-  },
-  "connectingToRinkeby": {
-    "message": "Poezivanje na Rinkeby Test mrežu"
-  },
-  "connectingToRopsten": {
-    "message": "Povezuje se na Ropsten Test mrežu"
   },
   "continueToWyre": {
     "message": "Nastavite ka Wyre"
@@ -488,9 +479,6 @@
   "knownAddressRecipient": {
     "message": "Poznata adresa ugovora."
   },
-  "kovan": {
-    "message": "Kovan test mreža"
-  },
   "learnMore": {
     "message": "Nauči više"
   },
@@ -740,12 +728,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE delite ovu frazu ni sa kim!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby test mreža"
-  },
-  "ropsten": {
-    "message": "Test mreža Ropsten"
   },
   "rpcUrl": {
     "message": "Novi RPC URL"

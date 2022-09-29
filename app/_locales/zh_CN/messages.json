@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToKovan": {
-    "message": "正在连接 Kovan 测试网络"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
-  },
-  "connectingToRinkeby": {
-    "message": "正在连接 Rinkeby 测试网络"
-  },
-  "connectingToRopsten": {
-    "message": "正在连接 Ropsten 测试网络"
   },
   "connectingToSepolia": {
     "message": "正在连接Sepolia测试网络"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
-  },
-  "kovan": {
-    "message": "Kovan 测试网络"
   },
   "lastConnected": {
     "message": "最后连接"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "本合约将无法再使用您当前或未来的任何代币。"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 测试网络"
-  },
-  "ropsten": {
-    "message": "Ropsten 测试网络"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"

@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
-  "connectingToKovan": {
-    "message": "Đang kết nối với mạng thử nghiệm Kovan"
-  },
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Đang kết nối với mạng thử nghiệm Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Đang kết nối với mạng thử nghiệm Ropsten"
   },
   "connectingToSepolia": {
     "message": "Đang kết nối với mạng thử nghiệm Sepolia"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Hành động này sẽ chỉnh sửa các token đã niêm yết trong ví của bạn, kẻ xấu có thể lợi dụng việc này để lừa đảo bạn. Chỉ phê duyệt nếu bạn chắc chắn rằng bạn muốn thay đổi giá trị mà những token này đại diện cho. Tìm hiểu thêm về $1"
-  },
-  "kovan": {
-    "message": "Mạng thử nghiệm Kovan"
   },
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "Hợp đồng này sẽ không thể chi tiêu thêm bất kỳ token hiện tại hoặc tương lai nào của bạn."
-  },
-  "rinkeby": {
-    "message": "Mạng thử nghiệm Rinkeby"
-  },
-  "ropsten": {
-    "message": "Mạng thử nghiệm Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC mới"

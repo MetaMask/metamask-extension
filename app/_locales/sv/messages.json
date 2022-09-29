@@ -184,17 +184,8 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Ansluter till Kovans testnätverk"
-  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
-  },
-  "connectingToRinkeby": {
-    "message": "Ansluter till Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Ansluter till Ropsten Test Network"
   },
   "continueToWyre": {
     "message": "Fortsätt till Wyre"
@@ -481,9 +472,6 @@
   "knownAddressRecipient": {
     "message": "Känd kontraktadress."
   },
-  "kovan": {
-    "message": "Kovan testnätverk"
-  },
   "learnMore": {
     "message": "Läs mer"
   },
@@ -733,12 +721,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DELA INTE frasen med någon!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby testnätverk"
-  },
-  "ropsten": {
-    "message": "Ropsten testnätverk"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"

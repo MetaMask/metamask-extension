@@ -1,7 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
@@ -275,7 +274,7 @@ describe('Confirm Transaction Duck', () => {
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
-        metamaskNetworkId: NETWORK_IDS.ROPSTEN,
+        metamaskNetworkId: '5',
         origin: 'faucet.metamask.io',
         status: TRANSACTION_STATUSES.UNAPPROVED,
         time: 1530838113716,
@@ -341,16 +340,16 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          network: NETWORK_IDS.ROPSTEN,
+          network: '5',
           provider: {
-            chainId: CHAIN_IDS.ROPSTEN,
+            chainId: '0x5',
           },
           unapprovedTxs: {
             2603411941761054: {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
-              metamaskNetworkId: NETWORK_IDS.ROPSTEN,
+              metamaskNetworkId: '5',
               origin: 'faucet.metamask.io',
               status: TRANSACTION_STATUSES.UNAPPROVED,
               time: 1530838113716,
