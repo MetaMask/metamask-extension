@@ -37,7 +37,8 @@ export default function ContractDetailsModal({
   siteImage,
 }) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
+  const [copiedToAddress, handleCopyToAddress] = useCopyToClipboard();
 
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
@@ -113,13 +114,17 @@ export default function ContractDetailsModal({
             <Box marginTop={4} marginRight={5}>
               <Tooltip
                 position="top"
-                title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+                title={
+                  copiedTokenAddress
+                    ? t('copiedExclamation')
+                    : t('copyToClipboard')
+                }
               >
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
                   onClick={() => {
-                    handleCopy(tokenAddress);
+                    handleCopyTokenAddress(tokenAddress);
                   }}
                 >
                   <IconCopy color="var(--color-icon-muted)" />
@@ -211,13 +216,17 @@ export default function ContractDetailsModal({
             <Box marginTop={4} marginRight={5}>
               <Tooltip
                 position="top"
-                title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+                title={
+                  copiedToAddress
+                    ? t('copiedExclamation')
+                    : t('copyToClipboard')
+                }
               >
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
                   onClick={() => {
-                    handleCopy(toAddress);
+                    handleCopyToAddress(toAddress);
                   }}
                 >
                   <IconCopy color="var(--color-icon-muted)" />
@@ -269,12 +278,36 @@ export default function ContractDetailsModal({
 }
 
 ContractDetailsModal.propTypes = {
+  /**
+   * Function that should close the modal
+   */
   onClose: PropTypes.func,
+  /**
+   * Name of the token that is waiting to be allowed
+   */
   tokenName: PropTypes.string,
+  /**
+   * Address of the token that is waiting to be allowed
+   */
   tokenAddress: PropTypes.string,
+  /**
+   * Contract address requesting spending cap
+   */
   toAddress: PropTypes.string,
+  /**
+   * Current network chainId
+   */
   chainId: PropTypes.string,
+  /**
+   * RPC prefs of the current network
+   */
   rpcPrefs: PropTypes.object,
+  /**
+   * Dapp URL
+   */
   origin: PropTypes.string,
+  /**
+   * Dapp image
+   */
   siteImage: PropTypes.string,
 };

@@ -93,10 +93,8 @@ export default function TokenAllowance({
     };
   }
 
-  const txAdditionalData = useSelector((state) => ({
-    fee: transactionFeeSelector(state, fullTxData),
-    methodData: getKnownMethodData(state, fullTxData.txParams.data),
-  }));
+  const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
+  const methodData = useSelector((state) => getKnownMethodData(state, data));
 
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
@@ -119,11 +117,10 @@ export default function TokenAllowance({
   };
 
   const handleApprove = () => {
-    const { name } = txAdditionalData.methodData;
+    const { name } = methodData;
 
-    if (txAdditionalData.fee.gasEstimationObject.baseFeePerGas) {
-      fullTxData.estimatedBaseFee =
-        txAdditionalData.fee.gasEstimationObject.baseFeePerGas;
+    if (fee.gasEstimationObject.baseFeePerGas) {
+      fullTxData.estimatedBaseFee = fee.gasEstimationObject.baseFeePerGas;
     }
 
     if (name) {
@@ -521,26 +518,92 @@ export default function TokenAllowance({
 }
 
 TokenAllowance.propTypes = {
+  /**
+   * Dapp URL
+   */
   origin: PropTypes.string,
+  /**
+   * Dapp image
+   */
   siteImage: PropTypes.string,
+  /**
+   * Function that is supposed to open the customized gas modal
+   */
   showCustomizeGasModal: PropTypes.func,
+  /**
+   * Whether nonce field should be used or not
+   */
   useNonceField: PropTypes.bool,
+  /**
+   * Current fiat currency (e.g. USD)
+   */
   currentCurrency: PropTypes.string,
+  /**
+   * Current native currency (e.g. RopstenETH)
+   */
   nativeCurrency: PropTypes.string,
+  /**
+   * Total sum of the transaction in native currency
+   */
   ethTransactionTotal: PropTypes.string,
+  /**
+   * Total sum of the transaction in fiat currency
+   */
   fiatTransactionTotal: PropTypes.string,
+  /**
+   * Total sum of the transaction converted to hex value
+   */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Current transaction
+   */
   txData: PropTypes.object,
+  /**
+   * Is multi-layer fee network or not
+   */
   isMultiLayerFeeNetwork: PropTypes.bool,
+  /**
+   * Is the enhanced gas fee enabled or not
+   */
   supportsEIP1559V2: PropTypes.bool,
+  /**
+   * User's address
+   */
   userAddress: PropTypes.string,
+  /**
+   * Address of the token that is waiting to be allowed
+   */
   tokenAddress: PropTypes.string,
+  /**
+   * Current transaction data
+   */
   data: PropTypes.string,
+  /**
+   * Is set approve for all or not
+   */
   isSetApproveForAll: PropTypes.bool,
+  /**
+   * Whether a current set approval for all transaction will approve or revoke access
+   */
   setApproveForAllArg: PropTypes.bool,
+  /**
+   * Custom transaction parameters data made by the user (fees)
+   */
   customTxParamsData: PropTypes.object,
+  /**
+   * Token amount proposed by the Dapp
+   */
   dappProposedTokenAmount: PropTypes.string,
+  /**
+   * Token balance of the current account
+   */
   currentTokenBalance: PropTypes.string,
+  /**
+   * Contract address requesting spending cap
+   */
   toAddress: PropTypes.string,
+  /**
+   * Symbol of the token that is waiting to be allowed
+   */
   tokenSymbol: PropTypes.string,
 };
