@@ -7,7 +7,7 @@ describe('CachedBalancesController', function () {
   describe('updateCachedBalances', function () {
     it('should update the cached balances', async function () {
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => CHAIN_IDS.KOVAN,
+        getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: () => undefined,
@@ -27,7 +27,7 @@ describe('CachedBalancesController', function () {
       assert.equal(controller._generateBalancesToCache.callCount, 1);
       assert.deepEqual(controller._generateBalancesToCache.args[0], [
         'mockAccounts',
-        CHAIN_IDS.KOVAN,
+        CHAIN_IDS.GOERLI,
       ]);
       assert.equal(
         controller.store.getState().cachedBalances,
@@ -46,7 +46,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            [CHAIN_IDS.KOVAN]: {
+            [CHAIN_IDS.GOERLI]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -66,11 +66,11 @@ describe('CachedBalancesController', function () {
           b: { balance: null },
           c: { balance: '0x5' },
         },
-        CHAIN_IDS.KOVAN,
+        CHAIN_IDS.GOERLI,
       );
 
       assert.deepEqual(result, {
-        [CHAIN_IDS.KOVAN]: {
+        [CHAIN_IDS.GOERLI]: {
           a: '0x4',
           b: '0x2',
           c: '0x5',
@@ -92,7 +92,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            [CHAIN_IDS.KOVAN]: {
+            [CHAIN_IDS.GOERLI]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -111,7 +111,7 @@ describe('CachedBalancesController', function () {
       );
 
       assert.deepEqual(result, {
-        [CHAIN_IDS.KOVAN]: {
+        [CHAIN_IDS.GOERLI]: {
           a: '0x1',
           b: '0x2',
           c: '0x3',
@@ -128,7 +128,7 @@ describe('CachedBalancesController', function () {
     it('should subscribe to the account tracker with the updateCachedBalances method', async function () {
       const subscribeSpy = sinon.spy();
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => CHAIN_IDS.KOVAN,
+        getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: subscribeSpy,

@@ -8,9 +8,6 @@
   "about": {
     "message": "Informació"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
-  },
   "accessingYourCamera": {
     "message": "Accedint a la teva càmera..."
   },
@@ -190,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToKovan": {
-    "message": "Conectant a la xarxa de Kovan Test"
-  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Connectant a la Xarxa de Prova Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Connectant a la xarxa de test Ropsten"
   },
   "continueToWyre": {
     "message": "Continua a Wyre"
@@ -246,12 +234,6 @@
   },
   "custom": {
     "message": "Configuració avançada"
-  },
-  "customGas": {
-    "message": "Customitza el gas"
-  },
-  "customGasSubTitle": {
-    "message": "Augmentar la tarifa pot disminuir els temps de processament, però això no està garantit."
   },
   "customToken": {
     "message": "Fitxa a Mida"
@@ -336,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Temps de processament estimats"
   },
   "ethereumPublicAddress": {
     "message": "Adreça Pública d'Ethereum"
@@ -490,9 +469,6 @@
   "knownAddressRecipient": {
     "message": "Adreça de contracte coneguda"
   },
-  "kovan": {
-    "message": "Xarxa de Prova Kovan"
-  },
   "learnMore": {
     "message": "Saber més"
   },
@@ -587,12 +563,6 @@
   },
   "newToMetaMask": {
     "message": "Nou a MetaMask?"
-  },
-  "newTotal": {
-    "message": "Nou total"
-  },
-  "newTransactionFee": {
-    "message": "Nova Tarifa de Transacció"
   },
   "next": {
     "message": "Següent"
@@ -746,12 +716,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NO comparteixis aquesta frase amb ningú!"
   },
-  "rinkeby": {
-    "message": "Xarxa del test Rinkeby"
-  },
-  "ropsten": {
-    "message": "Xarxa de Prova Ropsten"
-  },
   "rpcUrl": {
     "message": "Nova URL de RPC"
   },
@@ -788,9 +752,6 @@
   "seedPhraseReq": {
     "message": "Les frases de recuperació tenen 12 paraules"
   },
-  "selectAHigherGasFee": {
-    "message": "Selecciona un preu de gas més alt per a accelerar el procès de la teva transacció.*"
-  },
   "selectAnAccount": {
     "message": "Selecciona un Compte"
   },
@@ -808,9 +769,6 @@
   },
   "send": {
     "message": "Envia"
-  },
-  "sendAmount": {
-    "message": "Enviar Quantitat"
   },
   "sendTokens": {
     "message": "Enviar Fitxes"
@@ -853,9 +811,6 @@
   },
   "signed": {
     "message": "Signat"
-  },
-  "slow": {
-    "message": "Lent"
   },
   "somethingWentWrong": {
     "message": "Ui! Alguna cosa ha fallat."

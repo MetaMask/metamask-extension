@@ -34,7 +34,7 @@ describe('createInfuraClient', () => {
     describe('eth_chainId', () => {
       it('does not hit Infura, instead returning the chain id that maps to the Infura network, as a hex string', async () => {
         const chainId = await withInfuraClient(
-          { network: 'ropsten' },
+          { network: 'goerli' },
           ({ makeRpcCall }) => {
             return makeRpcCall({
               method: 'eth_chainId',
@@ -42,7 +42,7 @@ describe('createInfuraClient', () => {
           },
         );
 
-        expect(chainId).toStrictEqual('0x3');
+        expect(chainId).toStrictEqual('0x5');
       });
     });
 
@@ -286,7 +286,7 @@ describe('createInfuraClient', () => {
     describe('net_version', () => {
       it('does not hit Infura, instead returning the chain id that maps to the Infura network, as a decimal string', async () => {
         const chainId = await withInfuraClient(
-          { network: 'ropsten' },
+          { network: 'goerli' },
           ({ makeRpcCall }) => {
             return makeRpcCall({
               method: 'net_version',
@@ -294,7 +294,7 @@ describe('createInfuraClient', () => {
           },
         );
 
-        expect(chainId).toStrictEqual('3');
+        expect(chainId).toStrictEqual('5');
       });
     });
 

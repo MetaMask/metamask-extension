@@ -100,7 +100,7 @@ function getMockNetworkController() {
     store: {
       getState: () => {
         return {
-          network: NETWORK_IDS.ROPSTEN,
+          network: NETWORK_IDS.GOERLI,
         };
       },
     },
@@ -269,7 +269,7 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(NETWORK_IDS.ROPSTEN);
+      onNetworkDidChange(NETWORK_IDS.GOERLI);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(

@@ -22,10 +22,9 @@
     "IncomingTransactionsController": {
       "incomingTransactions": {},
       "incomingTxLastFetchedBlockByChainId": {
-        "0x5": null,
-        "0x2a": null,
+        "0xaa36a7": null,
         "0x1": null,
-        "0x4": 5570536
+        "0x5": 5570536
       }
     },
     "KeyringController": {
@@ -101,8 +100,8 @@
       ],
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "0x4": [],
-          "0x3": []
+          "0x5": [],
+          "0xaa36a7": []
         }
       },
       "accountHiddenTokens": {},

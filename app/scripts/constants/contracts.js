@@ -1,11 +1,5 @@
 export const SINGLE_CALL_BALANCES_ADDRESS =
   '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39';
-export const SINGLE_CALL_BALANCES_ADDRESS_RINKEBY =
-  '0x9f510b19f1ad66f0dcf6e45559fab0d6752c1db7';
-export const SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN =
-  '0xb8e671734ce5c8d7dfbbea5574fa4cf39f7a54a4';
-export const SINGLE_CALL_BALANCES_ADDRESS_KOVAN =
-  '0xb1d3fbb2f83aecd196f474c16ca5d9cffa0d0ffc';
 export const SINGLE_CALL_BALANCES_ADDRESS_GOERLI =
   '0x9788C4E93f9002a7ad8e72633b11E8d1ecd51f9b';
 // TODO(SEPOLIA) There is currently no balance call address for Sepolia

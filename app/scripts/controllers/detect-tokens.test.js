@@ -195,15 +195,15 @@ describe('DetectTokensController', function () {
 
   it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(NETWORK_TYPES.ROPSTEN);
-    const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
+    network.setProviderType(NETWORK_TYPES.SEPOLIA);
+    const tokenListMessengerSepolia = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '3',
+      chainId: '11155111',
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessengerRopsten,
+      messenger: tokenListMessengerSepolia,
     });
     await tokenListController.start();
     const controller = new DetectTokensController({

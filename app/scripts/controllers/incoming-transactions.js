@@ -50,10 +50,7 @@ const fetchWithTimeout = getFetchWithTimeout();
  */
 const etherscanSupportedNetworks = [
   CHAIN_IDS.GOERLI,
-  CHAIN_IDS.KOVAN,
   CHAIN_IDS.MAINNET,
-  CHAIN_IDS.RINKEBY,
-  CHAIN_IDS.ROPSTEN,
   CHAIN_IDS.SEPOLIA,
 ];
 
@@ -79,10 +76,7 @@ export default class IncomingTransactionsController {
       incomingTransactions: {},
       incomingTxLastFetchedBlockByChainId: {
         [CHAIN_IDS.GOERLI]: null,
-        [CHAIN_IDS.KOVAN]: null,
         [CHAIN_IDS.MAINNET]: null,
-        [CHAIN_IDS.RINKEBY]: null,
-        [CHAIN_IDS.ROPSTEN]: null,
         [CHAIN_IDS.SEPOLIA]: null,
       },
       ...opts.initState,
