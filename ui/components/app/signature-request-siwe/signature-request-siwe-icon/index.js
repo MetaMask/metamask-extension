@@ -18,8 +18,6 @@ const SignatureRequestSIWEIcon = ({ domain }) => {
       <Tooltip
         position="bottom"
         html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
-        wrapperClassName="signature-request-siwe-header__tooltip"
-        containerClassName="signature-request-siwe-header__tooltip__container"
       >
         <Box
           className="signature-request-siwe-icon__icon"
