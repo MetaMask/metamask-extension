@@ -638,14 +638,14 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
     };
   }
   const isNetworkEnabledForNewApi =
-    swapsFeatureFlags[networkName].extension_active;
+    swapsFeatureFlags[networkName].extensionActive;
   if (isNetworkEnabledForNewApi) {
     return {
       swapsFeatureIsLive: true,
     };
   }
   return {
-    swapsFeatureIsLive: swapsFeatureFlags[networkName].fallback_to_v1,
+    swapsFeatureIsLive: swapsFeatureFlags[networkName].fallbackToV1,
   };
 };
 
