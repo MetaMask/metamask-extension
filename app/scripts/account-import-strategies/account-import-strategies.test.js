@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import nock from 'nock';
 
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import accountImporter from '.';
