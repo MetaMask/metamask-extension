@@ -1118,32 +1118,27 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    // if this is the first time, clear the state of resetOnRestartControllers
-    const resetOnRestartControllers = [
-      this.accountTracker,
-      this.txController,
-      this.tokenRatesController,
-      this.messageManager,
-      this.personalMessageManager,
-      this.decryptMessageManager,
-      this.encryptionPublicKeyManager,
-      this.typedMessageManager,
-      this.swapsController,
-      this.ensController,
-      this.approvalController,
+    // if this is the first time, clear the state of by calling these methods
+    const resetMethods = [
+      this.accountTracker.resetState,
+      this.txController.resetState,
+      this.messageManager.resetState,
+      this.personalMessageManager.resetState,
+      this.decryptMessageManager.resetState,
+      this.encryptionPublicKeyManager.resetState,
+      this.typedMessageManager.resetState,
+      this.swapsController.resetState,
+      this.ensController.resetState,
+      this.approvalController.clear,
     ];
 
     this.localStore.get(['isFirstTime']).then((state) => {
       if (state && state.isFirstTime === true) {
-        console.log('first time');
-        resetOnRestartControllers.forEach((controller) => {
-          const [instance] = Object.values(controller);
-          console.log('resetting', instance);
-          if (typeof instance.resetState === 'function') {
-            instance.resetState();
-          } else if (typeof instance.clear === 'function') {
-            // this is needed for approvalController
-            instance.clear();
+        resetMethods.forEach((resetMethod) => {
+          try {
+            resetMethod();
+          } catch (err) {
+            console.error(err);
           }
         });
 
