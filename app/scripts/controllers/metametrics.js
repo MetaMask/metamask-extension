@@ -170,31 +170,26 @@ export default class MetaMetricsController {
           );
 
           if (hasAlarm) {
-            Object.values(this.store.getState().fragments).forEach(
-              (fragment) => {
-                if (
-                  fragment.timeout &&
-                  Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-                ) {
-                  this.finalizeEventFragment(fragment.id, { abandoned: true });
-                }
-              },
-            );
+            this.finalizeAbandonedFragments();
           }
         });
       });
     } else {
       setInterval(() => {
-        Object.values(this.store.getState().fragments).forEach((fragment) => {
-          if (
-            fragment.timeout &&
-            Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-          ) {
-            this.finalizeEventFragment(fragment.id, { abandoned: true });
-          }
-        });
+        this.finalizeAbandonedFragments();
       }, SECOND * 30);
     }
+  }
+
+  finalizeAbandonedFragments() {
+    Object.values(this.store.getState().fragments).forEach((fragment) => {
+      if (
+        fragment.timeout &&
+        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+      ) {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
+    });
   }
 
   generateMetaMetricsId() {
