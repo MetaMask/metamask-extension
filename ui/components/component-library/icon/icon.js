@@ -28,8 +28,8 @@ export const Icon = ({
          * the icon component uses mask-image instead of rendering
          * the svg directly.
          */
-        maskImage: `url('/images/icons/icon-${name}.svg`,
-        WebkitMaskImage: `url('/images/icons/icon-${name}.svg`,
+        maskImage: `url('./images/icons/icon-${name}.svg`,
+        WebkitMaskImage: `url('./images/icons/icon-${name}.svg`,
         ...style,
       }}
       {...props}

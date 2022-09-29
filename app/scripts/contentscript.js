@@ -230,6 +230,8 @@ const setupExtensionStreams = () => {
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
+
+  notifyInpageOfExtensionStreamConnect();
 };
 
 /** Destroys all of the extension streams */
@@ -384,6 +386,26 @@ function logStreamDisconnectWarning(remoteLabel, error) {
   console.debug(
     `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
+  );
+}
+
+/**
+ * The function send message to inpage to notify it of extension stream connection
+ */
+function notifyInpageOfExtensionStreamConnect() {
+  window.postMessage(
+    {
+      target: INPAGE, // the post-message-stream "target"
+      data: {
+        // this object gets passed to obj-multiplex
+        name: PROVIDER, // the obj-multiplex channel name
+        data: {
+          jsonrpc: '2.0',
+          method: 'METAMASK_EXTENSION_STREAM_CONNECT',
+        },
+      },
+    },
+    window.location.origin,
   );
 }
 

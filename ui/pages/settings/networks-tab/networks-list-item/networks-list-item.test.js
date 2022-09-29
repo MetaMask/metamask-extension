@@ -7,12 +7,12 @@ import NetworksListItem from '.';
 const mockState = {
   metamask: {
     provider: {
-      chainId: '0x4',
+      chainId: '0x5',
       nickname: '',
       rpcPrefs: {},
-      rpcUrl: 'https://rinkeby.infura.io/v3/undefined',
+      rpcUrl: 'https://goerli.infura.io/v3/undefined',
       ticker: 'ETH',
-      type: 'rinkeby',
+      type: 'goerli',
     },
   },
 };
@@ -46,6 +46,6 @@ describe('NetworksListItem Component', () => {
 
   it('should render a test network item correctly', () => {
     const { queryByText } = renderComponent(testNetProps);
-    expect(queryByText('Ropsten test network')).toBeInTheDocument();
+    expect(queryByText('Goerli test network')).toBeInTheDocument();
   });
 });

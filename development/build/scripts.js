@@ -112,7 +112,7 @@ function getPhishingWarningPageUrl({ config, testing }) {
   if (!phishingWarningPageUrl) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
-      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
+      : 'https://metamask.github.io/phishing-warning/latest/';
   }
 
   // We add a hash/fragment to the URL dynamically, so we need to ensure it

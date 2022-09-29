@@ -101,9 +101,6 @@
   "about": {
     "message": "About"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
-  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -711,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
-  "connectingToKovan": {
-    "message": "Connecting to Kovan test network"
-  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby test network"
-  },
-  "connectingToRopsten": {
-    "message": "Connecting to Ropsten test network"
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
@@ -831,6 +819,9 @@
   "currentLanguage": {
     "message": "Current language"
   },
+  "currentRpcUrlDeprecated": {
+    "message": "The current rpc url for this network has been deprecated."
+  },
   "currentTitle": {
     "message": "Current:"
   },
@@ -852,15 +843,9 @@
   "customContentSearch": {
     "message": "Search for a previously added network"
   },
-  "customGas": {
-    "message": "Customize gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customSpendLimit": {
     "message": "Custom spend limit"
@@ -1259,6 +1244,9 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
+  "enterANumber": {
+    "message": "Enter a number"
+  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
@@ -1299,9 +1287,6 @@
   "errorStack": {
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Estimated processing times"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -1347,9 +1332,6 @@
   },
   "fast": {
     "message": "Fast"
-  },
-  "fastest": {
-    "message": "Fastest"
   },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
@@ -1702,6 +1684,16 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "inputLogicEmptyState": {
+    "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "This allows the contract to spend $1 from your current balance.",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
   "install": {
     "message": "Install"
   },
@@ -1814,9 +1806,6 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
-  },
-  "kovan": {
-    "message": "Kovan test network"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2233,12 +2222,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token imported"
-  },
-  "newTotal": {
-    "message": "New total"
-  },
-  "newTransactionFee": {
-    "message": "New transaction fee"
   },
   "newValues": {
     "message": "new values"
@@ -2671,11 +2654,11 @@
   },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy_*` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
@@ -2692,6 +2675,10 @@
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
+  },
+  "permission_viewBip32PublicKeys": {
+    "message": "View your public key for $1 ($2).",
+    "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permissions": {
     "message": "Permissions"
@@ -2940,12 +2927,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
   },
-  "rinkeby": {
-    "message": "Rinkeby test network"
-  },
-  "ropsten": {
-    "message": "Ropsten test network"
-  },
   "rpcUrl": {
     "message": "New RPC URL"
   },
@@ -3057,9 +3038,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
-  "selectAHigherGasFee": {
-    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
-  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
@@ -3092,9 +3070,6 @@
   },
   "send": {
     "message": "Send"
-  },
-  "sendAmount": {
-    "message": "Send amount"
   },
   "sendBugReport": {
     "message": "Send us a bug report."
@@ -3230,9 +3205,6 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
-  "slow": {
-    "message": "Slow"
-  },
   "smartTransaction": {
     "message": "Smart transaction"
   },
@@ -3338,6 +3310,13 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "spendingCapError": {
+    "message": "Error: Enter numbers only"
+  },
+  "spendingCapErrorDescription": {
+    "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
+    "description": "$1 is origin of the site requesting the token limit"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -4218,6 +4197,9 @@
   },
   "useCollectibleDetectionDescription": {
     "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+  },
+  "useDefault": {
+    "message": "Use default"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

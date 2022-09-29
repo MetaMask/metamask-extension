@@ -32,7 +32,7 @@ describe('Confirm Page Container Container Test', () => {
       id: 8783053010106567,
       time: 1656448479005,
       status: 'unapproved',
-      metamaskNetworkId: '4',
+      metamaskNetworkId: '5',
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
       loadingDefaults: false,
@@ -121,10 +121,10 @@ describe('Confirm Page Container Container Test', () => {
       const addressBookName = 'test save name';
 
       const addressBook = {
-        '0x4': {
+        '0x5': {
           '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8': {
             address: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-            chainId: '0x4',
+            chainId: '054',
             isEns: false,
             memo: '',
             name: addressBookName,

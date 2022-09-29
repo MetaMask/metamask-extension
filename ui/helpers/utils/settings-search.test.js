@@ -99,16 +99,10 @@ const t = (key) => {
       return 'Networks';
     case 'mainnet':
       return 'Ethereum Mainnet';
-    case 'ropsten':
-      return 'Ropsten Test Network';
-    case 'rinkeby':
-      return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':
       return 'Sepolia test network';
-    case 'kovan':
-      return 'Kovan test network';
     case 'localhost':
       return 'Localhost 8545';
     case 'experimental':
@@ -165,7 +159,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingsInSection', () => {
     it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(5);
+      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
     });
 
     it('should get good advanced section number', () => {
@@ -187,12 +181,12 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(7);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(4);
     });
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        2,
       );
     });
 
