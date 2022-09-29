@@ -5,10 +5,12 @@ import { isString } from 'lodash';
 // eslint-disable-next-line
 const setImmediate = global.setImmediate || process.nextTick.bind(process);
 const noop = () => ({});
-const makeid = () => {
+
+// Taken from https://stackoverflow.com/a/1349426/3696652
+const characters =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const generateRandomId = () => {
   let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
   for (let i = 0; i < 20; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -51,6 +53,12 @@ export default class Analytics {
     looselyValidate(message, type);
   }
 
+  _message(type, message, callback) {
+    this._validate(message, type);
+    this.enqueue(type, message, callback);
+    return this;
+  }
+
   /**
    * Send an identify `message`.
    *
@@ -59,22 +67,7 @@ export default class Analytics {
    * @returns {Analytics}
    */
   identify(message, callback) {
-    this._validate(message, 'identify');
-    this.enqueue('identify', message, callback);
-    return this;
-  }
-
-  /**
-   * Send a group `message`.
-   *
-   * @param {object} message
-   * @param {Function} [callback] - (optional)
-   * @returns {Analytics}
-   */
-  group(message, callback) {
-    this._validate(message, 'group');
-    this.enqueue('group', message, callback);
-    return this;
+    return this._message('identify', message, callback);
   }
 
   /**
@@ -85,9 +78,7 @@ export default class Analytics {
    * @returns {Analytics}
    */
   track(message, callback) {
-    this._validate(message, 'track');
-    this.enqueue('track', message, callback);
-    return this;
+    return this._message('track', message, callback);
   }
 
   /**
@@ -98,9 +89,7 @@ export default class Analytics {
    * @returns {Analytics}
    */
   page(message, callback) {
-    this._validate(message, 'page');
-    this.enqueue('page', message, callback);
-    return this;
+    return this._message('page', message, callback);
   }
 
   /**
@@ -119,15 +108,14 @@ export default class Analytics {
       return;
     }
 
-    const message = { ...msg };
-    message.type = type;
+    const message = { ...msg, type };
 
     if (!message.timestamp) {
       message.timestamp = new Date();
     }
 
     if (!message.messageId) {
-      message.messageId = makeid();
+      message.messageId = generateRandomId();
     }
 
     if (message.anonymousId && !isString(message.anonymousId)) {
@@ -151,11 +139,6 @@ export default class Analytics {
       this.maxQueueSize;
     if (hasReachedFlushAt || hasReachedQueueSize) {
       this.flush();
-      return;
-    }
-
-    if (this.flushInterval && !this.timer) {
-      this.timer = setTimeout(this.flush.bind(this), this.flushInterval);
     }
   }
 
@@ -171,11 +154,6 @@ export default class Analytics {
     if (!this.enable) {
       setImmediate(callback);
       return Promise.resolve();
-    }
-
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
     }
 
     if (!this.queue.length) {
@@ -210,10 +188,19 @@ export default class Analytics {
       method: 'POST',
       body: JSON.stringify(data),
       ...req,
-    }).then((res) => {
-      const response = res.json();
-      done();
-      return Promise.resolve(response);
-    });
+    })
+      .then(async (res) => {
+        const response = await res.json();
+        if (res.ok) {
+          done();
+        } else {
+          const error = new Error(res.statusText);
+          done(error);
+        }
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        done(error);
+      });
   }
 }
