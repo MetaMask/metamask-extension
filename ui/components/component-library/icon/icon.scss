@@ -39,4 +39,11 @@
   &--size-xl {
     --size: 32px;
   }
+
+  &--size-auto {
+    --size: 1em; // Inherits parent font-size
+
+    position: relative; // Fixes vertical alignment
+    top: 0.125em; // Fixes vertical alignment
+  }
 }

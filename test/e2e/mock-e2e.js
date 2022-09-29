@@ -1,9 +1,6 @@
 const blacklistedHosts = [
   'goerli.infura.io',
-  'kovan.infura.io',
   'mainnet.infura.io',
-  'rinkeby.infura.io',
-  'ropsten.infura.io',
   'sepolia.infura.io',
 ];
 
@@ -124,36 +121,24 @@ async function setupMocking(server, testSpecificMock) {
         json: [
           {
             ethereum: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             bsc: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             polygon: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             avalanche: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
-            },
-            smart_transactions: {
-              mobile_active: false,
-              extension_active: false,
             },
             smartTransactions: {
               mobileActive: false,

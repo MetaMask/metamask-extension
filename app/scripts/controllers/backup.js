@@ -1,4 +1,3 @@
-import { exportAsFile } from '../../../shared/modules/export-utils';
 import { prependZero } from '../../../shared/modules/string-utils';
 
 export default class BackupController {
@@ -65,13 +64,6 @@ export default class BackupController {
       date.getMinutes(),
     )}_${prefixZero(date.getDay())}.json`;
 
-    exportAsFile(userDataFileName, result);
-
-    this._trackMetaMetricsEvent({
-      event: 'User Data Exported',
-      category: 'Backup',
-    });
-
-    return result;
+    return { fileName: userDataFileName, data: result };
   }
 }

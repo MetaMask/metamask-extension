@@ -97,9 +97,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gasolina, mas magiging malaki ang tsansang mas mabilis na maproseso ng network, pero hindi ito palaging ginagarantiya."
-  },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
@@ -707,17 +704,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "AwwKumokonekta sa Rinkeby test network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten test network"
   },
   "connectingToSepolia": {
     "message": "Kumokonekta sa Sepolia test network"
@@ -848,15 +836,9 @@
   "customContentSearch": {
     "message": "Maghanap ng naunang idinagdag na network"
   },
-  "customGas": {
-    "message": "I-customize ang gasolina"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para i-customize ang presyo ng gas. Ito ay maaaring nakakalito kung hindi ka pamilyar. Harapin ang sarili mong panganib.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
@@ -1296,9 +1278,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Mga tinatantyang tagal ng pagproseso"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup gas price ay inilalaan dahil ang pangunahing pagtantiya ng presyo ng gas ay hindi available sa ngayon."
   },
@@ -1343,9 +1322,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "fastest": {
-    "message": "Pinakamabilis"
   },
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
@@ -1811,9 +1787,6 @@
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito. Alamin pa ang tungkol sa $1"
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "lastConnected": {
     "message": "Huling Kumonekta"
   },
@@ -2229,12 +2202,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Na-import ang token"
-  },
-  "newTotal": {
-    "message": "Bagong Kabuuan"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Bayarin sa Transaksyon"
   },
   "newValues": {
     "message": "bagong value"
@@ -2940,12 +2907,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "Hindi na magagawang gastusin pa ng kontratang ito ang iyong mga pangkasalukuyan o panghinaharap na mga token."
   },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
-  },
   "rpcUrl": {
     "message": "Bagong RPC URL"
   },
@@ -3057,9 +3018,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Isulat ang iyong Secret Recovery Phrase"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAccounts": {
     "message": "Pumili ng (mga) account"
   },
@@ -3092,9 +3050,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendAmount": {
-    "message": "Halaga ng Ipapadala"
   },
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
@@ -3229,9 +3184,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Secret Recovery Phrase, maaari kong maiwala ang aking mga account at lahat ng kanilang mga asset."
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "smartTransaction": {
     "message": "Smart Transaction"
