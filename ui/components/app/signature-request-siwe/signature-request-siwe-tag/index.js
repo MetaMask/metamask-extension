@@ -8,6 +8,7 @@ import {
   DISPLAY,
   ALIGN_ITEMS,
   COLORS,
+  FONT_WEIGHT,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography/typography';
@@ -30,7 +31,7 @@ const SignatureRequestSIWETag = ({ domain }) => {
           paddingRight={4}
         >
           <Typography
-            fontWeight="bold"
+            fontWeight={FONT_WEIGHT.BOLD}
             margin={0}
             variant={TYPOGRAPHY.H7}
             color={COLORS.ERROR_INVERSE}
