@@ -70,7 +70,7 @@ describe('PendingNonceMiddleware', () => {
       gasPrice: '0x1e8480',
       hash: '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       input: '0x',
-      nonce: '0x4',
+      nonce: '0x5',
       type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
       to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       transactionIndex: null,

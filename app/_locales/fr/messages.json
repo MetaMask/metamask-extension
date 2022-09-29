@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Connexion au réseau de test Goerli"
   },
-  "connectingToKovan": {
-    "message": "Connexion au réseau de test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Connexion au réseau de test Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Connexion au réseau de test Ropsten"
+  "connectingToSepolia": {
+    "message": "Connexion au réseau de test Sepolia"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
-  },
-  "kovan": {
-    "message": "Réseau de test Kovan"
   },
   "lastConnected": {
     "message": "Dernière connexion"
@@ -2724,11 +2715,8 @@
     "message": "En révoquant cette autorisation, les $1 suivants ne pourront plus accéder à vos $2. ",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Réseau de test Rinkeby"
-  },
-  "ropsten": {
-    "message": "Réseau de test Ropsten"
+  "revokeSpendingCapTooltipText": {
+    "message": "L’autre partie à ce contrat ne pourra plus dépenser vos jetons actuels ou futurs."
   },
   "rpcUrl": {
     "message": "Nouvelle URL de RPC"

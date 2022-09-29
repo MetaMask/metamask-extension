@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
-import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
+import { GOERLI_CHAIN_ID } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
@@ -81,17 +81,17 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     provider: {
-      chainId: RINKEBY_CHAIN_ID,
+      chainId: GOERLI_CHAIN_ID,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
-      [RINKEBY_CHAIN_ID]: [],
+      [GOERLI_CHAIN_ID]: [],
     },
     cachedBalances: {
-      [RINKEBY_CHAIN_ID]: {},
+      [GOERLI_CHAIN_ID]: {},
     },
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },

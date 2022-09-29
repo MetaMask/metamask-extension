@@ -35,11 +35,8 @@ import {
 } from '../../../store/actions';
 import {
   GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
   POLYGON_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
 } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -105,9 +102,6 @@ export default function CollectibleDetails({ collectible }) {
       case POLYGON_CHAIN_ID:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
       case GOERLI_CHAIN_ID:
-      case KOVAN_CHAIN_ID:
-      case ROPSTEN_CHAIN_ID:
-      case RINKEBY_CHAIN_ID:
       case SEPOLIA_CHAIN_ID:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:

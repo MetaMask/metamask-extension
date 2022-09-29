@@ -187,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToKovan": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"
@@ -490,9 +481,6 @@
   "knownAddressRecipient": {
     "message": "Anwani za mkataba zinazofahamika."
   },
-  "kovan": {
-    "message": "Mtandao wa Majaribio wa Kovan"
-  },
   "learnMore": {
     "message": "Jifunze zaidi"
   },
@@ -745,12 +733,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "USISHIRIKI kirai hiki na mtu yeyote!"
-  },
-  "rinkeby": {
-    "message": "Mtandao wa Majaribio wa Rinkeby"
-  },
-  "ropsten": {
-    "message": "Mtandao wa Majaribio wa Ropsten"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"

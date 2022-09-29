@@ -33,7 +33,7 @@ export default {
     },
   },
   args: {
-    targetNetwork: 'ropsten',
+    targetNetwork: 'goerli',
   },
 };
 

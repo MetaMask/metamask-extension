@@ -193,17 +193,8 @@
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToKovan": {
-    "message": "Łączenie z siecią testową Kovan"
-  },
   "connectingToMainnet": {
     "message": "Łączenie z główną siecią Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Łączenie z siecią testową Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Łączenie z siecią testową Ropsten"
   },
   "continueToWyre": {
     "message": "Przejdź do Wyre"
@@ -503,9 +494,6 @@
   "knownAddressRecipient": {
     "message": "Znany adres kontraktu."
   },
-  "kovan": {
-    "message": "Sieć testowa Kovan"
-  },
   "learnMore": {
     "message": "Dowiedz się więcej"
   },
@@ -761,12 +749,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NIE pokazuj tej frazy nikomu!"
-  },
-  "rinkeby": {
-    "message": "Sieć testowa Rinkeby"
-  },
-  "ropsten": {
-    "message": "Sieć testowa Ropsten"
   },
   "rpcUrl": {
     "message": "Nowy adres URL RPC"

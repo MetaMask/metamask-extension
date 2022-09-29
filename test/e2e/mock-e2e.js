@@ -1,9 +1,6 @@
 const blacklistedHosts = [
   'goerli.infura.io',
-  'kovan.infura.io',
   'mainnet.infura.io',
-  'rinkeby.infura.io',
-  'ropsten.infura.io',
   'sepolia.infura.io',
 ];
 

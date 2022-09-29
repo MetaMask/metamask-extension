@@ -193,17 +193,8 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToKovan": {
-    "message": "Savienojas ar Kovan testa tīklu"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
-  },
-  "connectingToRinkeby": {
-    "message": "Pieslēdzas Rinkeby testa tīklam"
-  },
-  "connectingToRopsten": {
-    "message": "Pieslēdzas Ropsten testa tīklam"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"
@@ -499,9 +490,6 @@
   "knownAddressRecipient": {
     "message": "Zināmā līguma adrese."
   },
-  "kovan": {
-    "message": "Kovan testa tīkls"
-  },
   "learnMore": {
     "message": "Uzzināt vairāk"
   },
@@ -763,12 +751,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NEDALIETIES ar šo frāzi!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby testa tīkls"
-  },
-  "ropsten": {
-    "message": "Ropsten testa tīkls"
   },
   "rpcUrl": {
     "message": "Jauns RPC URL"

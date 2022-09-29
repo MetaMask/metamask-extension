@@ -193,17 +193,8 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "מתחבר ל-Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "connectingToRinkeby": {
-    "message": "מתחבר ל- Rinkeby Test Network  "
-  },
-  "connectingToRopsten": {
-    "message": "מתחבר אל רשת בדיקה Ropsten "
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -503,9 +494,6 @@
   "knownAddressRecipient": {
     "message": "כתובת חוזה ידועה."
   },
-  "kovan": {
-    "message": "רשת בדיקה Kovan "
-  },
   "learnMore": {
     "message": "למדו עוד"
   },
@@ -764,9 +752,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "אין לשתף צירוף מילים זה עם אף אחד!"
-  },
-  "rinkeby": {
-    "message": "רשת בדיקה Rinkeby "
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"

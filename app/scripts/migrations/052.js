@@ -2,15 +2,9 @@ import { cloneDeep } from 'lodash';
 import {
   GOERLI,
   GOERLI_CHAIN_ID,
-  KOVAN,
-  KOVAN_CHAIN_ID,
   MAINNET,
   MAINNET_CHAIN_ID,
   NETWORK_TYPE_RPC,
-  RINKEBY,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN,
-  ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 const version = 52;
@@ -55,21 +49,18 @@ function transformState(state = {}) {
               newAccountTokens[address][MAINNET_CHAIN_ID] =
                 accountTokens[address][MAINNET];
               break;
-            case ROPSTEN:
-              newAccountTokens[address][ROPSTEN_CHAIN_ID] =
-                accountTokens[address][ROPSTEN];
+            case 'ropsten':
+              newAccountTokens[address]['0x3'] = accountTokens[address].ropsten;
               break;
-            case RINKEBY:
-              newAccountTokens[address][RINKEBY_CHAIN_ID] =
-                accountTokens[address][RINKEBY];
+            case 'rinkeby':
+              newAccountTokens[address]['0x4'] = accountTokens[address].rinkeby;
               break;
             case GOERLI:
               newAccountTokens[address][GOERLI_CHAIN_ID] =
                 accountTokens[address][GOERLI];
               break;
-            case KOVAN:
-              newAccountTokens[address][KOVAN_CHAIN_ID] =
-                accountTokens[address][KOVAN];
+            case 'kovan':
+              newAccountTokens[address]['0x2a'] = accountTokens[address].kovan;
               break;
             default:
               break;
@@ -94,21 +85,21 @@ function transformState(state = {}) {
               newAccountHiddenTokens[address][MAINNET_CHAIN_ID] =
                 accountHiddenTokens[address][MAINNET];
               break;
-            case ROPSTEN:
-              newAccountHiddenTokens[address][ROPSTEN_CHAIN_ID] =
-                accountHiddenTokens[address][ROPSTEN];
+            case 'ropsten':
+              newAccountHiddenTokens[address]['0x3'] =
+                accountHiddenTokens[address].ropsten;
               break;
-            case RINKEBY:
-              newAccountHiddenTokens[address][RINKEBY_CHAIN_ID] =
-                accountHiddenTokens[address][RINKEBY];
+            case 'rinkeby':
+              newAccountHiddenTokens[address]['0x4'] =
+                accountHiddenTokens[address].rinkeby;
               break;
             case GOERLI:
               newAccountHiddenTokens[address][GOERLI_CHAIN_ID] =
                 accountHiddenTokens[address][GOERLI];
               break;
-            case KOVAN:
-              newAccountHiddenTokens[address][KOVAN_CHAIN_ID] =
-                accountHiddenTokens[address][KOVAN];
+            case 'kovan':
+              newAccountHiddenTokens[address]['0x2a'] =
+                accountHiddenTokens[address].kovan;
               break;
             default:
               break;

@@ -5,8 +5,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  KOVAN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
   ETH_SYMBOL,
 } from '../../../shared/constants/network';
@@ -19,7 +18,6 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
-  RINKEBY,
   AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
@@ -274,11 +272,8 @@ describe('Swaps Util', () => {
     });
 
     it('returns true if "to" is Rinkeby contract address on Rinkeby network', () => {
-      usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[RINKEBY_CHAIN_ID];
-      expect(
-        isContractAddressValid(usedTradeTxParams.to, RINKEBY_CHAIN_ID),
-      ).toBe(true);
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP['0x4'];
+      expect(isContractAddressValid(usedTradeTxParams.to, '0x4')).toBe(true);
     });
 
     it('returns true if "to" is testnet contract address', () => {
@@ -318,15 +313,11 @@ describe('Swaps Util', () => {
     });
 
     it('returns "rinkeby" for Rinkeby chain ID', () => {
-      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+      expect(getNetworkNameByChainId('0x4')).toBe('rinkeby');
     });
 
     it('returns "avalanche" for Avalanche chain ID', () => {
       expect(getNetworkNameByChainId(AVALANCHE_CHAIN_ID)).toBe(AVALANCHE);
-    });
-
-    it('returns an empty string for an unsupported network', () => {
-      expect(getNetworkNameByChainId(KOVAN_CHAIN_ID)).toBe('');
     });
   });
 
@@ -343,18 +334,6 @@ describe('Swaps Util', () => {
       ).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('returns info that Swaps are enabled and cannot use API v2 for Rinkeby chain ID', () => {
-      const expectedSwapsLiveness = {
-        swapsFeatureIsLive: true,
-      };
-      expect(
-        getSwapsLivenessForNetwork(
-          MOCKS.createFeatureFlagsResponse(),
-          RINKEBY_CHAIN_ID,
-        ),
-      ).toMatchObject(expectedSwapsLiveness);
-    });
-
     it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
@@ -362,7 +341,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          KOVAN_CHAIN_ID,
+          SEPOLIA_CHAIN_ID,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });

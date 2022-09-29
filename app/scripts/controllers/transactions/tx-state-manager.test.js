@@ -5,10 +5,9 @@ import {
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
 import {
-  KOVAN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  KOVAN_NETWORK_ID,
+  GOERLI_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
@@ -49,8 +48,8 @@ function generateTransactions(
 }
 describe('TransactionStateManager', function () {
   let txStateManager;
-  const currentNetworkId = KOVAN_NETWORK_ID;
-  const currentChainId = KOVAN_CHAIN_ID;
+  const currentNetworkId = GOERLI_NETWORK_ID;
+  const currentChainId = GOERLI_CHAIN_ID;
   const otherNetworkId = '2';
 
   beforeEach(function () {
@@ -683,7 +682,7 @@ describe('TransactionStateManager', function () {
           if (i === 0 || i === 1) {
             return MAINNET_CHAIN_ID;
           } else if (i === 4 || i === 5) {
-            return RINKEBY_CHAIN_ID;
+            return GOERLI_CHAIN_ID;
           }
           return currentChainId;
         },

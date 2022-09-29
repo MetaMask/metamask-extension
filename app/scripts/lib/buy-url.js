@@ -3,10 +3,7 @@ import log from 'loglevel';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
   GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
@@ -165,10 +162,6 @@ export default async function getBuyUrl({ chainId, address, service }) {
       return createCoinbasePayUrl(address, chainId);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
-    case 'rinkeby-faucet':
-      return 'https://www.rinkeby.io/';
-    case 'kovan-faucet':
-      return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
     case 'sepolia-faucet':
@@ -184,12 +177,6 @@ function getDefaultServiceForChain(chainId) {
   switch (chainId) {
     case MAINNET_CHAIN_ID:
       return 'wyre';
-    case ROPSTEN_CHAIN_ID:
-      return 'metamask-faucet';
-    case RINKEBY_CHAIN_ID:
-      return 'rinkeby-faucet';
-    case KOVAN_CHAIN_ID:
-      return 'kovan-faucet';
     case GOERLI_CHAIN_ID:
       return 'goerli-faucet';
     case SEPOLIA_CHAIN_ID:

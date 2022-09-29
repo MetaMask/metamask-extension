@@ -8,7 +8,6 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
-  RINKEBY,
   AVALANCHE,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
@@ -26,7 +25,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   ETH_SYMBOL,
   AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
@@ -82,7 +81,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const TEST_CHAIN_IDS = [RINKEBY_CHAIN_ID, LOCALHOST_CHAIN_ID];
+const TEST_CHAIN_IDS = ['0x4', LOCALHOST_CHAIN_ID];
 
 export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   // eslint-disable-next-line no-param-reassign
@@ -874,8 +873,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return BSC;
     case POLYGON_CHAIN_ID:
       return POLYGON;
-    case RINKEBY_CHAIN_ID:
-      return RINKEBY;
+    case '0x4':
+      return 'rinkeby';
     case AVALANCHE_CHAIN_ID:
       return AVALANCHE;
     default:
@@ -893,7 +892,7 @@ export const getNetworkNameByChainId = (chainId) => {
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
   // Use old APIs for testnet and Rinkeby.
-  if ([LOCALHOST_CHAIN_ID, RINKEBY_CHAIN_ID].includes(chainId)) {
+  if ([LOCALHOST_CHAIN_ID, GOERLI_CHAIN_ID].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
     };

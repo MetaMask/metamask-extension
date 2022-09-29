@@ -12,7 +12,7 @@ import {
 } from '../../pages/send/send.constants';
 import {
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
@@ -726,7 +726,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
@@ -750,7 +750,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
@@ -775,7 +775,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -800,7 +800,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [{ address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }],
             useTokenDetection: true,
             tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
@@ -1290,12 +1290,12 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              0x4: {
+              0x5: {
                 '0xAddress': '0x0',
               },
             },
             provider: {
-              chainId: '0x4',
+              chainId: '0x5',
             },
             useTokenDetection: true,
             tokenList: {
@@ -1577,10 +1577,10 @@ describe('Send Slice', () => {
           blockGasLimit: '',
           selectedAddress: '',
           provider: {
-            chainId: RINKEBY_CHAIN_ID,
+            chainId: GOERLI_CHAIN_ID,
           },
           cachedBalances: {
-            [RINKEBY_CHAIN_ID]: {
+            [GOERLI_CHAIN_ID]: {
               '0xAddress': '0x0',
             },
           },
@@ -2169,7 +2169,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: RINKEBY_CHAIN_ID,
+              chainId: GOERLI_CHAIN_ID,
             },
           },
         };
@@ -2218,7 +2218,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: RINKEBY_CHAIN_ID,
+              chainId: GOERLI_CHAIN_ID,
             },
           },
         };
@@ -2376,11 +2376,11 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             provider: {
-              chainId: RINKEBY_CHAIN_ID,
+              chainId: GOERLI_CHAIN_ID,
             },
             tokens: [],
             addressBook: {
-              [RINKEBY_CHAIN_ID]: {},
+              [GOERLI_CHAIN_ID]: {},
             },
             identities: {},
             accounts: {
@@ -2390,7 +2390,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [RINKEBY_CHAIN_ID]: {
+              [GOERLI_CHAIN_ID]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2511,11 +2511,11 @@ describe('Send Slice', () => {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
             provider: {
-              chainId: RINKEBY_CHAIN_ID,
+              chainId: GOERLI_CHAIN_ID,
             },
             tokens: [],
             addressBook: {
-              [RINKEBY_CHAIN_ID]: {},
+              [GOERLI_CHAIN_ID]: {},
             },
             identities: {},
             accounts: {
@@ -2525,7 +2525,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [RINKEBY_CHAIN_ID]: {
+              [GOERLI_CHAIN_ID]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2685,7 +2685,7 @@ describe('Send Slice', () => {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
           provider: {
-            chainId: RINKEBY_CHAIN_ID,
+            chainId: GOERLI_CHAIN_ID,
           },
           tokens: [
             {
@@ -2700,7 +2700,7 @@ describe('Send Slice', () => {
             },
           },
           addressBook: {
-            [RINKEBY_CHAIN_ID]: {},
+            [GOERLI_CHAIN_ID]: {},
           },
           identities: {},
           accounts: {
@@ -2710,7 +2710,7 @@ describe('Send Slice', () => {
             },
           },
           cachedBalances: {
-            [RINKEBY_CHAIN_ID]: {
+            [GOERLI_CHAIN_ID]: {
               '0xAddress': '0x0',
             },
           },

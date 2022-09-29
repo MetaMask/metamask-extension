@@ -10,13 +10,13 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import {
-  RINKEBY,
   MAINNET,
+  GOERLI_CHAIN_ID,
+  GOERLI,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../../shared/constants/network';
@@ -42,9 +42,9 @@ if (process.env.IN_TEST) {
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigOpts = {
-    type: RINKEBY,
-    chainId: RINKEBY_CHAIN_ID,
-    ticker: TEST_NETWORK_TICKER_MAP.rinkeby,
+    type: GOERLI,
+    chainId: GOERLI_CHAIN_ID,
+    ticker: TEST_NETWORK_TICKER_MAP.goerli,
   };
 } else {
   defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };

@@ -193,17 +193,8 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToKovan": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
-  },
-  "connectingToRinkeby": {
-    "message": "Menyambung kepada Rangkaian Ujian Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"
@@ -492,9 +483,6 @@
   "knownAddressRecipient": {
     "message": "Alamat kontrak diketahui."
   },
-  "kovan": {
-    "message": "Rangkaian Ujian Kovan"
-  },
   "learnMore": {
     "message": "Maklumat lanjut"
   },
@@ -747,12 +735,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
-  },
-  "rinkeby": {
-    "message": "Rangkaian Ujian Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rangkaian Ujian Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC baru"

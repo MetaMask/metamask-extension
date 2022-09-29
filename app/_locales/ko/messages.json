@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
   },
-  "connectingToKovan": {
-    "message": "Kovan 테스트 네트워크에 연결 중"
-  },
   "connectingToMainnet": {
     "message": "이더리움 메인넷에 연결 중"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby 테스트 네트워크에 연결 중"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten 테스트 네트워크에 연결 중"
+  "connectingToSepolia": {
+    "message": "Sepolia 테스트 네트워크에 연결 중"
   },
   "contactUs": {
     "message": "문의하기"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "이 작업은 지갑에 이미 나열되어 있고 피싱에 사용될 수 있는 토큰을 편집합니다. 해당 토큰이 나타내는 내용을 변경하려는 경우에만 작업을 승인하세요. $1에 대해 자세히 알아보기"
-  },
-  "kovan": {
-    "message": "Kovan 테스트 네트워크"
   },
   "lastConnected": {
     "message": "마지막 연결"
@@ -2724,11 +2715,8 @@
     "message": "권한을 취소하면 다음 $1의 $2 권한은 더 이상 유효하지 않습니다",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Rinkeby 테스트 네트워크"
-  },
-  "ropsten": {
-    "message": "Ropsten 테스트 네트워크"
+  "revokeSpendingCapTooltipText": {
+    "message": "이 계약은 현재나 미래의 토큰을 더 이상 사용할 수 없습니다."
   },
   "rpcUrl": {
     "message": "새 RPC URL"

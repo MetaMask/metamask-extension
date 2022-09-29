@@ -93,7 +93,7 @@ describe('CustomContentSearch', () => {
     const networksSearchFuse = new Fuse(testData.networkList, {
       keys: ['label', 'labelKey'],
     });
-    const fuseSearchResult = networksSearchFuse.search('ropsten');
+    const fuseSearchResult = networksSearchFuse.search('goerli');
     const wrapper = renderComponent({
       componentProps: {
         onSearch,
@@ -103,7 +103,7 @@ describe('CustomContentSearch', () => {
       },
     });
     const input = wrapper.getByTestId('search-networks');
-    expect(fuseSearchResult).toHaveLength(1);
+    expect(fuseSearchResult).toHaveLength(2);
     fireEvent.change(input, { target: { error: '' } });
     expect(input.error).toBe('');
   });

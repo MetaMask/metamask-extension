@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
-  "connectingToKovan": {
-    "message": "Kovan Test Ağına bağlanıyor"
-  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet ağına bağlanıyor"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby Test Ağına bağlanıyor"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten Test Ağına bağlanıyor"
+  "connectingToSepolia": {
+    "message": "Sepolia test ağına bağlanılıyor"
   },
   "contactUs": {
     "message": "Bize ulaşın"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "Bu eylem kimlik avı için kullanılabilecek şekilde cüzdanınızda zaten listelenmiş olan tokenleri düzenleyecektir. Sadece bu tokenlerin neyi temsil ettiğini değiştirmek istediğinizden eminseniz onaylayın. $1 hakkında daha fazla bilgi edinin"
-  },
-  "kovan": {
-    "message": "Kovan Test Ağı"
   },
   "lastConnected": {
     "message": "Son Bağlanma"
@@ -2724,11 +2715,8 @@
     "message": "İzni geri çektiğinizde aşağıdaki $1 artık $2 alanınıza erişim sağlayamayacak",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Rinkeby Test Ağı"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Ağı"
+  "revokeSpendingCapTooltipText": {
+    "message": "Bu sözleşme şimdiki ya da gelecekteki tokenlerinizin hiçbirini kullanamayacak."
   },
   "rpcUrl": {
     "message": "Yeni RPC URL adresi"

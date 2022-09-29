@@ -1,7 +1,4 @@
-import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-} from '../../shared/constants/network';
+import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
@@ -33,7 +30,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };
@@ -63,7 +60,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };
@@ -94,7 +91,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };

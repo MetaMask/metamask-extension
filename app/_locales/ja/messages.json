@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
-  "connectingToKovan": {
-    "message": "Kovanテストネットワークに接続中"
-  },
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkebyテストネットワークに接続中"
-  },
-  "connectingToRopsten": {
-    "message": "Ropstenテストネットワークに接続中"
+  "connectingToSepolia": {
+    "message": "Sepolia テストネットワークに接続中"
   },
   "contactUs": {
     "message": "お問い合わせ"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
-  },
-  "kovan": {
-    "message": "Kovanテストネットワーク"
   },
   "lastConnected": {
     "message": "前回の接続"
@@ -2724,11 +2715,8 @@
     "message": "アクセス許可を取り消すと、次の $1 が今後 $2 にアクセスできなくなります",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Rinkebyテストネットワーク"
-  },
-  "ropsten": {
-    "message": "Ropstenテストネットワーク"
+  "revokeSpendingCapTooltipText": {
+    "message": "このコントラクトは、現在または今後のトークンをこれ以上使用できなくなります。"
   },
   "rpcUrl": {
     "message": "新しいRPC URL"

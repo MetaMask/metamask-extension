@@ -13,10 +13,7 @@ import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
   GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
 } from '../../../shared/constants/network';
 
@@ -55,10 +52,7 @@ const fetchWithTimeout = getFetchWithTimeout();
  */
 const etherscanSupportedNetworks = [
   GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
 ];
 
@@ -84,10 +78,7 @@ export default class IncomingTransactionsController {
       incomingTransactions: {},
       incomingTxLastFetchedBlockByChainId: {
         [GOERLI_CHAIN_ID]: null,
-        [KOVAN_CHAIN_ID]: null,
         [MAINNET_CHAIN_ID]: null,
-        [RINKEBY_CHAIN_ID]: null,
-        [ROPSTEN_CHAIN_ID]: null,
         [SEPOLIA_CHAIN_ID]: null,
       },
       ...opts.initState,
