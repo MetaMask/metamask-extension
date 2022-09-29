@@ -1,4 +1,4 @@
-import { getRandomFileName } from '../../ui/helpers/utils/util';
+import { getRandomFileName } from './util';
 
 export function exportAsFile(filename, data, type = 'text/csv') {
   // eslint-disable-next-line no-param-reassign
