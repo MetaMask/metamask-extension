@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "로그인 요청 주소가 현재 로그인 계정의 주소와 일치하지 않습니다."
   },
-  "SIWEDomainInvalid": {
-    "message": "($1) 로그인을 시도하는 웹사이트가 로그인 요청 도메인과 일치하지 않습니다. 주의하여 진행하세요.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "($1) 웹사이트가 잘못된 도메인에 로그인하도록 요청하고 있습니다. 이는 피싱 공격일 수도 있습니다.",
     "description": "$1 represents the website domain"

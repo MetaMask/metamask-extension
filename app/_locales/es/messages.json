@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "La dirección de la solicitud de inicio de sesión no coincide con la dirección de la cuenta que está utilizando para iniciar sesión."
   },
-  "SIWEDomainInvalid": {
-    "message": "El sitio web en el que intenta iniciar sesión ($1) no coincide con el dominio de la solicitud de inicio de sesión. Proceda con precaución.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "El sitio web ($1) le pide que inicie sesión en un dominio incorrecto. Esto puede ser un ataque de phishing.",
     "description": "$1 represents the website domain"

@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "O endereço na solicitação de entrada não coincide com o endereço da conta que você está usando para entrar."
   },
-  "SIWEDomainInvalid": {
-    "message": "O site em que você está tentando entrar ($1) não coincide com o domínio na solicitação de entrada. Prossiga com cautela.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "O site ($1) está solicitando que você entre no domínio incorreto. Pode-se tratar de um ataque de phishing.",
     "description": "$1 represents the website domain"
