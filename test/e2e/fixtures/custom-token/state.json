@@ -17,7 +17,7 @@
     },
     "CachedBalancesController": {
       "cachedBalances": {
-        "0x4": {
+        "0x5": {
           "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "0x0"
         }
       }
@@ -35,10 +35,7 @@
       "incomingTransactions": {},
       "incomingTxLastFetchedBlockByChainId": {
         "0x1": null,
-        "0x2a": null,
-        "0x3": null,
-        "0x4": 8977934,
-        "0x5": null
+        "0x5": 8977934
       }
     },
     "KeyringController": {
@@ -54,9 +51,9 @@
         "EIPS": {}
       },
       "previousProviderStore": {
-        "chainId": "0x4",
+        "chainId": "0x5",
         "ticker": "ETH",
-        "type": "rinkeby"
+        "type": "goerli"
       },
       "provider": {
         "chainId": "0x539",

@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
   },
-  "connectingToKovan": {
-    "message": "Подключение к тестовой сети Kovan..."
-  },
   "connectingToMainnet": {
     "message": "Подключение к сети Ethereum Mainnet..."
-  },
-  "connectingToRinkeby": {
-    "message": "Подключение к тестовой сети Rinkeby..."
-  },
-  "connectingToRopsten": {
-    "message": "Подключение к тестовой сети Ropsten..."
   },
   "connectingToSepolia": {
     "message": "Подключение к тестовой сети Sepolia..."
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены. Узнайте подробнее о $1"
-  },
-  "kovan": {
-    "message": "Тестовая сеть Kovan"
   },
   "lastConnected": {
     "message": "Последнее подключение"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "Этот контракт не позволит вам больше тратить ваши текущие или будущие токены."
-  },
-  "rinkeby": {
-    "message": "Тестовая сеть Rinkeby"
-  },
-  "ropsten": {
-    "message": "Тестовая сеть Ropsten"
   },
   "rpcUrl": {
     "message": "Новый URL-адрес RPC"

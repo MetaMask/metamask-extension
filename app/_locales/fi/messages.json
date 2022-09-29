@@ -190,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
-  "connectingToKovan": {
-    "message": "Yhdistetään Kovanin koeverkkoon"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
-  },
-  "connectingToRinkeby": {
-    "message": "Yhdistetään Rinkebyn koeverkkoon"
-  },
-  "connectingToRopsten": {
-    "message": "Yhdistetään Ropstenin koeverkkoon"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"
@@ -491,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "Tunnettu sopimusosoite."
   },
-  "kovan": {
-    "message": "Kovanin koeverkko"
-  },
   "learnMore": {
     "message": "Lisätietoa"
   },
@@ -746,12 +734,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
-  },
-  "rinkeby": {
-    "message": "Rinkebyn koeverkko"
-  },
-  "ropsten": {
-    "message": "Ropstenin koeverkko"
   },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"

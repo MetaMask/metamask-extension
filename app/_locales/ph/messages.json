@@ -352,17 +352,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -909,9 +900,6 @@
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito."
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "lastConnected": {
     "message": "Huling Kumonekta"
   },
@@ -1413,12 +1401,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Huwag ibahagi ang phrase na ito sa kahit sino!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"

@@ -44,7 +44,7 @@ function generateTransactions(
 }
 describe('TransactionStateManager', function () {
   let txStateManager;
-  const currentNetworkId = NETWORK_IDS.KOVAN;
+  const currentNetworkId = NETWORK_IDS.GOERLI;
   const currentChainId = CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
 
@@ -678,7 +678,7 @@ describe('TransactionStateManager', function () {
           if (i === 0 || i === 1) {
             return CHAIN_IDS.MAINNET;
           } else if (i === 4 || i === 5) {
-            return CHAIN_IDS.RINKEBY;
+            return CHAIN_IDS.GOERLI;
           }
           return currentChainId;
         },

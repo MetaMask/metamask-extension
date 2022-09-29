@@ -190,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToKovan": {
-    "message": "Kovan ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ "
-  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "continueToWyre": {
     "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
@@ -491,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "ತಿಳಿದಿರುವ ಒಪ್ಪಂದದ ವಿಳಾಸ."
   },
-  "kovan": {
-    "message": "Kovan ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
   "learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
@@ -749,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "ropsten": {
-    "message": "Ropsten ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "rpcUrl": {
     "message": "ಹೊಸ RPC URL"

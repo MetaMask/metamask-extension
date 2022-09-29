@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
-  "connectingToKovan": {
-    "message": "Connexion au testnet Kovan"
-  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Connexion au testnet Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Connexion au testnet Ropsten"
   },
   "connectingToSepolia": {
     "message": "Connexion au réseau de test Sepolia"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
-  },
-  "kovan": {
-    "message": "Testnet Kovan"
   },
   "lastConnected": {
     "message": "Dernière connexion"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "L’autre partie à ce contrat ne pourra plus dépenser vos jetons actuels ou futurs."
-  },
-  "rinkeby": {
-    "message": "Testnet Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testnet Ropsten"
   },
   "rpcUrl": {
     "message": "Nouvelle URL de RPC"

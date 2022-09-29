@@ -198,17 +198,8 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToKovan": {
-    "message": "الاتصال بشبكة اختبار Kovan"
-  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "connectingToRinkeby": {
-    "message": "جارِ الاتصال بشبكة اختبار Rinkeby "
-  },
-  "connectingToRopsten": {
-    "message": "جارِ الاتصال بشبكة اختبار Ropsten "
   },
   "continueToWyre": {
     "message": "الاستمرار إلى Wyre"
@@ -495,9 +486,6 @@
   "knownAddressRecipient": {
     "message": "عنوان العقد المعروف."
   },
-  "kovan": {
-    "message": "شبكة اختبار Kovan "
-  },
   "learnMore": {
     "message": "اكتشف المزيد"
   },
@@ -750,12 +738,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
-  },
-  "rinkeby": {
-    "message": "شبكة اختبارات Rinkeby"
-  },
-  "ropsten": {
-    "message": "شبكة اختبار Ropsten"
   },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"

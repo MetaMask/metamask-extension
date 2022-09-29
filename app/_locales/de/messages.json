@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
   },
-  "connectingToKovan": {
-    "message": " Verbindungsaufbau zum Kovan-Testnetzwerk"
-  },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": " Verbindungsaufbau zum Rinkeby-Testnetzwerk"
-  },
-  "connectingToRopsten": {
-    "message": " Verbindungsaufbau zum Ropsten-Testnetzwerk"
   },
   "connectingToSepolia": {
     "message": "Verbindungsaufbau zum Sepolia-Testnetzwerk"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Mit dieser Aktion werden Token bearbeitet, die bereits in Ihrer Wallet aufgelistet sind und die dazu verwendet werden können, Sie zu betrügen. Genehmigen Sie diese Aktion nur, wenn Sie sicher sind, dass Sie den Wert dieser Token ändern wollen. Erfahren Sie mehr über $1"
-  },
-  "kovan": {
-    "message": "Kovan-Testnetzwerk"
   },
   "lastConnected": {
     "message": "Zuletzt verbunden"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "Mit diesem Contract können Sie keine weiteren Ihrer aktuellen oder zukünftigen Token ausgeben."
-  },
-  "rinkeby": {
-    "message": "Rinkeby-Testnetzwerk"
-  },
-  "ropsten": {
-    "message": "Ropsten-Testnetzwerk"
   },
   "rpcUrl": {
     "message": "Neue RPC-URL"

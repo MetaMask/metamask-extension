@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
-  "connectingToKovan": {
-    "message": "Menghubungkan ke jaringan uji Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menghubungkan ke Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Menghubungkan ke jaringan uji Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Menghubungkan ke jaringan uji Ropsten"
   },
   "connectingToSepolia": {
     "message": "Menghubungkan ke jaringan uji Sepolia"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Tindakan ini akan mengedit token yang telah terdaftar dalam dompet Anda, yang dapat digunakan untuk menipu Anda. Setujui hanya jika Anda yakin bahwa Anda ingin mengubah apa yang diwakili token ini. Pelajari selengkapnya seputar $1"
-  },
-  "kovan": {
-    "message": "Jaringan uji Kovan"
   },
   "lastConnected": {
     "message": "Terakhir terhubung"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "Kontrak ini tidak akan dapat mempergunakan token Anda saat ini atau di masa mendatang."
-  },
-  "rinkeby": {
-    "message": "Jaringan uji Rinkeby"
-  },
-  "ropsten": {
-    "message": "Jaringan uji Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC Baru"

@@ -190,17 +190,8 @@
   "connectingToGoerli": {
     "message": "গোয়েরলি টেস্ট নেটওয়ার্কের সাথে সংযোগ করা হচ্ছে"
   },
-  "connectingToKovan": {
-    "message": "কোভান টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "connectingToRinkeby": {
-    "message": "রিঙ্কেবি টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "connectingToRopsten": {
-    "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
   },
   "continueToWyre": {
     "message": "Wyre এ অবিরত রাখুন"
@@ -491,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "জানা পরিচিতির ঠিকানা৷"
   },
-  "kovan": {
-    "message": "কোভান টেস্ট নেটওয়ার্ক"
-  },
   "learnMore": {
     "message": "আরও জানুন"
   },
@@ -749,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "এই ফ্রেজটি কারোর সাথে শেয়ার করবেন না!"
-  },
-  "rinkeby": {
-    "message": "রিঙ্কেবি টেস্ট নেটওয়ার্ক"
-  },
-  "ropsten": {
-    "message": "রোপস্টেন টেস্ট নেটওয়ার্ক"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"
