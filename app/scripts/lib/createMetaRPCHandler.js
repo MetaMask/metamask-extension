@@ -53,11 +53,8 @@ const createMetaRPCHandler = (api, outStream, store) => {
     try {
       result = await api[data.method](...data.params);
 
-      if (
-        store &&
-        // TODO: add any methods we know to not change state
-        !['getState'].includes(data.method)
-      ) {
+      if (store && data.method !== 'getState') {
+        // we retrieve the already persisted data from local store to provide the version metadata to this persist call
         const versionData = await localStore.get();
         await persistData(
           { data: store.getState(), meta: versionData?.meta },
