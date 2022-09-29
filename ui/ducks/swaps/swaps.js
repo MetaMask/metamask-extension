@@ -92,7 +92,7 @@ import {
   hexWEIToDecGWEI,
 } from '../../../shared/lib/transactions-controller-utils';
 
-const GAS_PRICES_LOADING_STATES = {
+export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
   LOADING: 'LOADING',
   FAILED: 'FAILED',
