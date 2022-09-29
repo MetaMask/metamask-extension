@@ -4446,11 +4446,6 @@
         "localStorage": true
       }
     },
-    "@storybook/components>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "@storybook/react>@storybook/store>stable": {
       "globals": {
         "define": true
@@ -7638,25 +7633,17 @@
         "navigator": true
       }
     },
-    "nock>deep-equal": {
+    "nock>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
       "packages": {
-        "enzyme>is-regex": true,
-        "enzyme>object-is": true,
-        "nock>deep-equal>is-arguments": true,
-        "nock>deep-equal>is-date-object": true,
-        "nock>deep-equal>object-keys": true,
-        "string.prototype.matchall>regexp.prototype.flags": true
-      }
-    },
-    "nock>deep-equal>is-arguments": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true
-      }
-    },
-    "nock>deep-equal>is-date-object": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "browserify>process": true,
+        "nock>debug>ms": true
       }
     },
     "node-fetch": {
