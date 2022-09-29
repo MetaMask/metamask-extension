@@ -114,9 +114,6 @@ export const Block = (args) => (
     <ButtonBase {...args} block marginBottom={2}>
       Block Button
     </ButtonBase>
-    <ButtonBase {...args} display={DISPLAY.BLOCK}>
-      Block Button
-    </ButtonBase>
   </>
 );
 
