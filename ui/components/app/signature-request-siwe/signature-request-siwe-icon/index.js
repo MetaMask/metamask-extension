@@ -8,7 +8,7 @@ import {
   COLORS,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Icon } from '../../../component-library/icon/icon';
+import { Icon, ICON_NAMES } from '../../../component-library/icon';
 
 const SignatureRequestSIWEIcon = ({ domain }) => {
   const t = useContext(I18nContext);
@@ -27,7 +27,11 @@ const SignatureRequestSIWEIcon = ({ domain }) => {
           alignItems={ALIGN_ITEMS.CENTER}
           backgroundColor={COLORS.ERROR_DEFAULT}
         >
-          <Icon name="danger-filled" color={COLORS.ERROR_INVERSE} margin={1} />
+          <Icon
+            name={ICON_NAMES.DANGER_FILLED}
+            color={COLORS.ERROR_INVERSE}
+            margin={1}
+          />
         </Box>
       </Tooltip>
     </div>
