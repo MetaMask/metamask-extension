@@ -26,8 +26,8 @@ const SignatureRequestSIWETag = ({ domain }) => {
           alignItems={ALIGN_ITEMS.CENTER}
           backgroundColor={COLORS.ERROR_DEFAULT}
           borderRadius={SIZES.XL}
-          paddingLeft={5}
-          paddingRight={5}
+          paddingLeft={4}
+          paddingRight={4}
         >
           <Typography
             fontWeight="bold"
