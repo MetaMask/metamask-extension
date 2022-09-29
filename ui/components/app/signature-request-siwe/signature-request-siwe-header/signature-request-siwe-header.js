@@ -5,6 +5,7 @@ import { I18nContext } from '../../../../contexts/i18n';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import SignatureRequestSIWEIcon from '../signature-request-siwe-icon';
 import SignatureRequestSIWETag from '../signature-request-siwe-tag';
+import Tooltip from '../../../ui/tooltip';
 
 export default function SignatureRequestSIWEHeader({
   fromAccount,
@@ -24,10 +25,24 @@ export default function SignatureRequestSIWEHeader({
         siteOrigin={domain}
         className={isSIWEDomainValid ? '' : 'bad-domain'}
         leftIcon={
-          !isSIWEDomainValid && <SignatureRequestSIWEIcon domain={domain} />
+          !isSIWEDomainValid && (
+            <Tooltip
+              position="bottom"
+              html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
+            >
+              <SignatureRequestSIWEIcon domain={domain} />
+            </Tooltip>
+          )
         }
         rightIcon={
-          !isSIWEDomainValid && <SignatureRequestSIWETag domain={domain} />
+          !isSIWEDomainValid && (
+            <Tooltip
+              position="bottom"
+              html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
+            >
+              <SignatureRequestSIWETag text={t('SIWEDomainWarningLabel')} />
+            </Tooltip>
+          )
         }
       />
       {fromAccount && (
