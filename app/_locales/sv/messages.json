@@ -8,9 +8,6 @@
   "about": {
     "message": "Om"
   },
-  "acceleratingATransaction": {
-    "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
-  },
   "accessingYourCamera": {
     "message": "Begär åtkomst till din kamera..."
   },
@@ -235,12 +232,6 @@
   "custom": {
     "message": "Avancerat"
   },
-  "customGas": {
-    "message": "Anpassa gas"
-  },
-  "customGasSubTitle": {
-    "message": "Att öka avgiften kan minska behandlingstiden, men det är inte garanterat att göra det."
-  },
   "customToken": {
     "message": "Anpassad token"
   },
@@ -324,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Uppskattade behandlingstider"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum offentlig adress"
@@ -576,12 +564,6 @@
   "newToMetaMask": {
     "message": "Ny på MetaMask?"
   },
-  "newTotal": {
-    "message": "Ny totalsumma"
-  },
-  "newTransactionFee": {
-    "message": "Ingen transaktionsavgift"
-  },
   "next": {
     "message": "Nästa"
   },
@@ -776,9 +758,6 @@
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."
   },
-  "selectAHigherGasFee": {
-    "message": "Välj en högre bränsleavgift för att accelerera transaktionsprocessen.*"
-  },
   "selectAnAccount": {
     "message": "Välj ett konto"
   },
@@ -796,9 +775,6 @@
   },
   "send": {
     "message": "Skicka"
-  },
-  "sendAmount": {
-    "message": "Skicka belopp"
   },
   "sendTokens": {
     "message": "Skicka tokens"
@@ -841,9 +817,6 @@
   },
   "signed": {
     "message": "Signerat"
-  },
-  "slow": {
-    "message": "Långsamt"
   },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."

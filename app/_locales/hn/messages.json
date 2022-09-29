@@ -72,9 +72,6 @@
   "createAccount": {
     "message": "खाता बनाएं"
   },
-  "customGas": {
-    "message": "अनुकूलित करें गैस"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
