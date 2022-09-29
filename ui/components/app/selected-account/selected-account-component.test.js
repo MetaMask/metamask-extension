@@ -1,24 +1,29 @@
 import React from 'react';
-import { render } from 'enzyme';
-import SelectedAccount from './selected-account.component';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import SelectedAccount from '.';
 
 describe('SelectedAccount Component', () => {
+  const props = {
+    selectedIdentity: {
+      name: 'testName',
+      address: '0x1b82543566f41a7db9a9a75fc933c340ffb55c9d',
+    },
+  };
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <SelectedAccount.WrappedComponent {...props} />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('should render checksummed address', () => {
-    const wrapper = render(
-      <SelectedAccount
-        selectedIdentity={{
-          name: 'testName',
-          address: '0x1b82543566f41a7db9a9a75fc933c340ffb55c9d',
-        }}
-      />,
-      { context: { t: () => undefined } },
+    const { queryByText } = renderWithProvider(
+      <SelectedAccount.WrappedComponent {...props} />,
     );
-    // Checksummed version of address is displayed
-    expect(wrapper.find('.selected-account__address').text()).toStrictEqual(
-      '0x1B8...5C9D',
-    );
-    expect(wrapper.find('.selected-account__name').text()).toStrictEqual(
-      'testName',
-    );
+
+    expect(queryByText('0x1B8...5C9D')).toBeInTheDocument();
+    expect(queryByText(props.selectedIdentity.name)).toBeInTheDocument();
   });
 });
