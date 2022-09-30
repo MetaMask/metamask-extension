@@ -91,9 +91,6 @@ workflows:
           requires:
             - prep-build-test-flask
       - test-e2e-chrome-mv3:
-          filters:
-            branches:
-              only: /^.*mv3.*$/
           requires:
             - prep-build-test-mv3
       - test-unit:
