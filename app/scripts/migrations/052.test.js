@@ -1,15 +1,9 @@
 import {
   GOERLI,
   GOERLI_CHAIN_ID,
-  KOVAN,
-  KOVAN_CHAIN_ID,
   MAINNET,
   MAINNET_CHAIN_ID,
   NETWORK_TYPE_RPC,
-  RINKEBY,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN,
-  ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import migration52 from './052';
 
@@ -85,25 +79,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${RINKEBY} tokens and hidden tokens to be keyed by ${RINKEBY_CHAIN_ID} for each address`, async () => {
+  it(`should move rinkeby tokens and hidden tokens to be keyed by '0x4' for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [RINKEBY]: [TOKEN1],
+              rinkeby: [TOKEN1],
             },
             '0x1112': {
-              [RINKEBY]: [TOKEN3],
+              rinkeby: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [RINKEBY]: [TOKEN1, TOKEN2],
+              rinkeby: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [RINKEBY]: [TOKEN1, TOKEN3],
+              rinkeby: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -117,18 +111,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [RINKEBY_CHAIN_ID]: [TOKEN1],
+            '0x4': [TOKEN1],
           },
           '0x1112': {
-            [RINKEBY_CHAIN_ID]: [TOKEN3],
+            '0x4': [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [RINKEBY_CHAIN_ID]: [TOKEN1, TOKEN2],
+            '0x4': [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [RINKEBY_CHAIN_ID]: [TOKEN1, TOKEN3],
+            '0x4': [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',
@@ -137,25 +131,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${KOVAN} tokens and hidden tokens to be keyed by ${KOVAN_CHAIN_ID} for each address`, async () => {
+  it(`should move kovan tokens and hidden tokens to be keyed by 0x2a for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [KOVAN]: [TOKEN1],
+              kovan: [TOKEN1],
             },
             '0x1112': {
-              [KOVAN]: [TOKEN3],
+              kovan: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [KOVAN]: [TOKEN1, TOKEN2],
+              kovan: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [KOVAN]: [TOKEN1, TOKEN3],
+              kovan: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -169,18 +163,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [KOVAN_CHAIN_ID]: [TOKEN1],
+            '0x2a': [TOKEN1],
           },
           '0x1112': {
-            [KOVAN_CHAIN_ID]: [TOKEN3],
+            '0x2a': [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [KOVAN_CHAIN_ID]: [TOKEN1, TOKEN2],
+            '0x2a': [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [KOVAN_CHAIN_ID]: [TOKEN1, TOKEN3],
+            '0x2a': [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',
@@ -241,25 +235,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${ROPSTEN} tokens and hidden tokens to be keyed by ${ROPSTEN_CHAIN_ID} for each address`, async () => {
+  it(`should move ropsten tokens and hidden tokens to be keyed by 0x3 for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [ROPSTEN]: [TOKEN1],
+              ropsten: [TOKEN1],
             },
             '0x1112': {
-              [ROPSTEN]: [TOKEN3],
+              ropsten: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [ROPSTEN]: [TOKEN1, TOKEN2],
+              ropsten: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [ROPSTEN]: [TOKEN1, TOKEN3],
+              ropsten: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -273,18 +267,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [ROPSTEN_CHAIN_ID]: [TOKEN1],
+            '0x3': [TOKEN1],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [TOKEN3],
+            '0x3': [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [ROPSTEN_CHAIN_ID]: [TOKEN1, TOKEN2],
+            '0x3': [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [ROPSTEN_CHAIN_ID]: [TOKEN1, TOKEN3],
+            '0x3': [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',

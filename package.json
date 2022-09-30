@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.19.0",
+  "version": "10.20.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -99,6 +99,7 @@
     "3box/**/libp2p-crypto/node-forge": "^1.3.0",
     "3box/**/libp2p-keychain/node-forge": "^1.3.0",
     "3box/ipfs/libp2p-webrtc-star/socket.io/engine.io": "^4.0.0",
+    "3box/**/@hapi/hoek": "^8.5.1",
     "analytics-node/axios": "^0.21.2",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",

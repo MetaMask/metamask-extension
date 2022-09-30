@@ -608,17 +608,11 @@
   "connectingToGoerli": {
     "message": "Verbindung mit Goerli Test Network wird hergestellt"
   },
-  "connectingToKovan": {
-    "message": " Verbinde zum Kovan Testnetzwerk"
-  },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
   },
-  "connectingToRinkeby": {
-    "message": " Verbinde zum Rinkeby Testnetzwerk"
-  },
-  "connectingToRopsten": {
-    "message": " Verbinde zum Ropsten Testnetzwerk"
+  "connectingToSepolia": {
+    "message": "Verbindungsaufbau zum Sepolia-Testnetzwerk"
   },
   "contactUs": {
     "message": "Kontaktaufnahme"
@@ -1652,9 +1646,6 @@
   "knownTokenWarning": {
     "message": "Mit dieser Aktion werden Token bearbeitet, die bereits in Ihrer Wallet aufgelistet sind und die dazu verwendet werden können, Sie zu betrügen. Genehmigen Sie diese Aktion nur, wenn Sie sicher sind, dass Sie den Wert dieser Token ändern wollen. Erfahren Sie mehr über $1"
   },
-  "kovan": {
-    "message": "Kovan Testnetzwerk"
-  },
   "lastConnected": {
     "message": "Zuletzt verbunden"
   },
@@ -2679,11 +2670,16 @@
   "revealTheSeedPhrase": {
     "message": "Seed-Phrase anzeigen"
   },
-  "rinkeby": {
-    "message": "Rinkeby Testnetzwerk"
+  "revokeAllTokensTitle": {
+    "message": "Erlaubnis zum Zugriff auf alle Ihre $1 entziehen?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
-  "ropsten": {
-    "message": "Ropsten Testnetzwerk"
+  "revokeApproveForAllDescription": {
+    "message": "Wenn Sie diese Erlaubnis entziehen, wird folgende/s/r $1 nicht mehr dazu in der Lage sein, auf Ihr/e/n $2 zuzugreifen.",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCapTooltipText": {
+    "message": "Mit diesem Contract können Sie keine weiteren Ihrer aktuellen oder zukünftigen Token ausgeben."
   },
   "rpcUrl": {
     "message": "Neue RPC-URL"

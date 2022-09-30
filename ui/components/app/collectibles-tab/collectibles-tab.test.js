@@ -299,7 +299,7 @@ describe('Collectible Items', () => {
 
     it('should render a link "Refresh list" when some collectibles are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateCollectiblesOwnershipStatus', () => {
       render({
-        chainId: '0x4',
+        chainId: '0x5',
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
         useCollectibleDetection: true,

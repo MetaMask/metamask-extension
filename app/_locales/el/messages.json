@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
-  "connectingToKovan": {
-    "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμών Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
+  "connectingToSepolia": {
+    "message": "Σύνδεση στο δίκτυο δοκιμών Sepolia"
   },
   "contactUs": {
     "message": "Επικοινωνήστε μαζί μας"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "Αυτή η ενέργεια θα επεξεργαστεί tokens που είναι ήδη εισηγμένα στο πορτοφόλι σας, τα οποίαο μπορεί να χρησιμοποιηθούν για να σας κλέψουν στοιχεία. Αποδεχθείτε μόνο αν είστε σίγουροι ότι θέλετε να αλλάξετε αυτό που αντιπροσωπεύουν αυτά τα νομίσματα. Μάθετε περισσότερά γι'αυτό $1"
-  },
-  "kovan": {
-    "message": "Δίκτυο Δοκιμής Kovan"
   },
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
@@ -2724,11 +2715,8 @@
     "message": "Με την ανάκληση της άδειας, το ακόλουθο $1 δεν θα έχει πλέον πρόσβαση στο $2 σας",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Δοκιμαστικό Δίκτυο Rinkeby"
-  },
-  "ropsten": {
-    "message": "Δίκτυο Δοκιμών Ropsten"
+  "revokeSpendingCapTooltipText": {
+    "message": "Αυτός ο συμβαλλόμενος δεν θα μπορεί να ξοδέψει άλλα από τα τρέχοντα ή μελλοντικά σας tokens."
   },
   "rpcUrl": {
     "message": "Νέο RPC URL"

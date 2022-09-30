@@ -1,9 +1,6 @@
 import nock from 'nock';
 import {
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   ETH_SYMBOL,
@@ -19,15 +16,6 @@ const MAINNET = {
   chainId: MAINNET_CHAIN_ID,
   amount: 5,
   address: ETH_ADDRESS,
-};
-const ROPSTEN = {
-  chainId: ROPSTEN_CHAIN_ID,
-};
-const RINKEBY = {
-  chainId: RINKEBY_CHAIN_ID,
-};
-const KOVAN = {
-  chainId: KOVAN_CHAIN_ID,
 };
 const BSC = {
   chainId: BSC_CHAIN_ID,
@@ -98,21 +86,6 @@ describe('buy-url', () => {
     expect(transakUrl).toStrictEqual(
       `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyList=${buyableCurrencies}&defaultCryptoCurrency=${buyableChain.transakCurrencies[0]}&networks=${buyableChain.network}&walletAddress=${ETH_ADDRESS}`,
     );
-  });
-
-  it('returns metamask ropsten faucet for network 3', async () => {
-    const ropstenUrl = await getBuyUrl(ROPSTEN);
-    expect(ropstenUrl).toStrictEqual('https://faucet.metamask.io/');
-  });
-
-  it('returns rinkeby dapp for network 4', async () => {
-    const rinkebyUrl = await getBuyUrl(RINKEBY);
-    expect(rinkebyUrl).toStrictEqual('https://www.rinkeby.io/');
-  });
-
-  it('returns kovan github test faucet for network 42', async () => {
-    const kovanUrl = await getBuyUrl(KOVAN);
-    expect(kovanUrl).toStrictEqual('https://github.com/kovan-testnet/faucet');
   });
 
   it('returns a MoonPay url with a prefilled wallet address for the Ethereum network', async () => {

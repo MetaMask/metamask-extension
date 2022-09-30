@@ -9,7 +9,7 @@ import {
   TokensController,
   AssetsContractController,
 } from '@metamask/controllers';
-import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
+import { MAINNET, SEPOLIA } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
@@ -195,15 +195,15 @@ describe('DetectTokensController', function () {
 
   it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(ROPSTEN);
-    const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
+    network.setProviderType(SEPOLIA);
+    const tokenListMessengerSepolia = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '3',
+      chainId: '11155111',
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessengerRopsten,
+      messenger: tokenListMessengerSepolia,
     });
     await tokenListController.start();
     const controller = new DetectTokensController({

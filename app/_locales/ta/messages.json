@@ -78,17 +78,8 @@
   "connect": {
     "message": "இணை"
   },
-  "connectingToKovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
-  },
   "connectingToMainnet": {
     "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
-  },
-  "connectingToRinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
-  "connectingToRopsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "contractDeployment": {
     "message": "ஒப்பந்த வரிசைப்படுத்தல்"
@@ -237,9 +228,6 @@
   "jsonFile": {
     "message": "JSON கோப்பு",
     "description": "format for importing an account"
-  },
-  "kovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்"
   },
   "learnMore": {
     "message": "மேலும் அறிக"
@@ -391,12 +379,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "உங்கள் விதை வார்த்தைகள் ஒரு பொது இடத்தில் மீட்க வேண்டாம்! உங்கள் எல்லா கணக்குகளையும் திருட இந்த வார்த்தைகள் பயன்படுத்தப்படலாம்."
-  },
-  "rinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்"
-  },
-  "ropsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்"
   },
   "save": {
     "message": "சேமி"

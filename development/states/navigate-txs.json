@@ -229,7 +229,7 @@
       "useETHAsPrimaryCurrency": true
     },
     "provider": {
-      "type": "rinkeby"
+      "type": "goerli"
     },
     "network": "4",
     "accounts": {
@@ -276,7 +276,7 @@
       "0x8cf82b5aa41ff2282427be151dd328568684007a": {},
       "0xbe1a00e10ec68b154adb84e8119167146a71c9a2": {},
       "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2": {
-        "rinkeby": [
+        "goerli": [
           {
             "address": "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a",
             "decimals": 9,
@@ -305,10 +305,7 @@
     "conversionDate": 1538859376,
     "shapeShiftTxList": [],
     "infuraNetworkStatus": {
-      "kovan": "ok",
       "mainnet": "ok",
-      "rinkeby": "ok",
-      "ropsten": "ok",
       "goerli": "ok",
       "sepolia": "ok"
     }

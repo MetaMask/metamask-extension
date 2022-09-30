@@ -2070,7 +2070,6 @@ export default class TransactionController extends EventEmitter {
 
   async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
-      id,
       type,
       time,
       status,
@@ -2088,8 +2087,14 @@ export default class TransactionController extends EventEmitter {
       originalType,
       replacedById,
       metamaskNetworkId: network,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
+      originalApprovalAmount,
+      finalApprovalAmount,
+      contractMethodName,
     } = txMeta;
-    const { transactions } = this.store.getState();
+
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
     const { assetType, tokenStandard } = await determineTransactionAssetType(
@@ -2181,11 +2186,6 @@ export default class TransactionController extends EventEmitter {
       APPROVE: 'Approve',
     };
 
-    const customTokenAmount = transactions[id]?.customTokenAmount;
-    const dappProposedTokenAmount = transactions[id]?.dappProposedTokenAmount;
-    const currentTokenBalance = transactions[id]?.currentTokenBalance;
-    const originalApprovalAmount = transactions[id]?.originalApprovalAmount;
-    const finalApprovalAmount = transactions[id]?.finalApprovalAmount;
     let transactionApprovalAmountType;
     let transactionContractMethod;
     let transactionApprovalAmountVsProposedRatio;
@@ -2199,7 +2199,7 @@ export default class TransactionController extends EventEmitter {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
       transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
-      transactionContractMethod = transactions[id]?.contractMethodName;
+      transactionContractMethod = contractMethodName;
       if (
         transactionContractMethod === contractMethodNames.APPROVE &&
         tokenStandard === TOKEN_STANDARDS.ERC20

@@ -31,10 +31,10 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';
 
 const noop = () => true;
-const currentNetworkId = '42';
-const currentChainId = '0x2a';
+const currentNetworkId = '5';
+const currentChainId = '0x5';
 const providerConfig = {
-  type: 'kovan',
+  type: 'goerli',
 };
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -940,7 +940,7 @@ describe('Transaction Controller', function () {
       );
       const rawTx = await txController.signTransaction('1');
       const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
-      assert.equal(ethTx.common.chainIdBN().toNumber(), 42);
+      assert.equal(ethTx.common.chainIdBN().toNumber(), 5);
     });
   });
 
@@ -1524,11 +1524,11 @@ describe('Transaction Controller', function () {
           category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
-            chain_id: '0x2a',
+            chain_id: '0x5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '42',
+            network: '5',
             referrer: ORIGIN_METAMASK,
             source: EVENT.SOURCE.TRANSACTION.USER,
             transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -1606,11 +1606,11 @@ describe('Transaction Controller', function () {
           category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
-            chain_id: '0x2a',
+            chain_id: '0x5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '42',
+            network: '5',
             referrer: ORIGIN_METAMASK,
             source: EVENT.SOURCE.TRANSACTION.USER,
             transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -1698,11 +1698,11 @@ describe('Transaction Controller', function () {
           category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
-            chain_id: '0x2a',
+            chain_id: '0x5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '42',
+            network: '5',
             referrer: 'other',
             source: EVENT.SOURCE.TRANSACTION.DAPP,
             transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -1782,11 +1782,11 @@ describe('Transaction Controller', function () {
           category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
-            chain_id: '0x2a',
+            chain_id: '0x5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '42',
+            network: '5',
             referrer: 'other',
             source: EVENT.SOURCE.TRANSACTION.DAPP,
             transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -1866,11 +1866,11 @@ describe('Transaction Controller', function () {
         category: EVENT.CATEGORIES.TRANSACTIONS,
         persist: true,
         properties: {
-          chain_id: '0x2a',
+          chain_id: '0x5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          network: '42',
+          network: '5',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
           transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -1932,11 +1932,11 @@ describe('Transaction Controller', function () {
         persist: true,
         category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
-          network: '42',
+          network: '5',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
           transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,
-          chain_id: '0x2a',
+          chain_id: '0x5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
@@ -2008,11 +2008,11 @@ describe('Transaction Controller', function () {
         persist: true,
         category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
-          chain_id: '0x2a',
+          chain_id: '0x5',
           eip_1559_version: '1',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          network: '42',
+          network: '5',
           referrer: 'other',
           source: EVENT.SOURCE.TRANSACTION.DAPP,
           transaction_type: TRANSACTION_TYPES.SIMPLE_SEND,

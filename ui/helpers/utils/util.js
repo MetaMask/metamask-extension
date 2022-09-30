@@ -8,11 +8,8 @@ import slip44 from '@metamask/slip44';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
   SEPOLIA_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -54,9 +51,6 @@ export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
     chainId === MAINNET_CHAIN_ID ||
-    chainId === ROPSTEN_CHAIN_ID ||
-    chainId === RINKEBY_CHAIN_ID ||
-    chainId === KOVAN_CHAIN_ID ||
     chainId === GOERLI_CHAIN_ID ||
     chainId === SEPOLIA_CHAIN_ID ||
     chainId === LOCALHOST_CHAIN_ID

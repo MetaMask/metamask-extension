@@ -196,17 +196,8 @@
   "connectingToGoerli": {
     "message": "連接至 Goerli 測試網路"
   },
-  "connectingToKovan": {
-    "message": "連線到 Kovan 測試網路"
-  },
   "connectingToMainnet": {
     "message": "連線到主 Ethereum 網路"
-  },
-  "connectingToRinkeby": {
-    "message": "連線到 Rinkeby 測試網路"
-  },
-  "connectingToRopsten": {
-    "message": "連線到 Ropsten 測試網路"
   },
   "continueToWyre": {
     "message": "繼續至 Wyre"
@@ -503,9 +494,6 @@
   "knownAddressRecipient": {
     "message": "已知合約位址"
   },
-  "kovan": {
-    "message": "Kovan 測試網路"
-  },
   "learnMore": {
     "message": "了解更多"
   },
@@ -749,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "請勿將助憶詞洩漏予他人"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 測試網路"
-  },
-  "ropsten": {
-    "message": "Ropsten 測試網路"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"

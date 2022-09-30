@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash';
 import {
-  KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
   GOERLI_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
@@ -33,7 +31,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   2: {
     type: SENT_ETHER,
     id: 2,
-    chainId: KOVAN_CHAIN_ID,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x2',
     },
@@ -41,7 +39,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   3: {
     type: SENT_ETHER,
     id: 3,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x3',
     },
@@ -49,7 +47,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   4: {
     type: SENT_ETHER,
     id: 4,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x4',
     },
@@ -65,7 +63,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   6: {
     type: SENT_ETHER,
     id: 6,
-    chainId: KOVAN_CHAIN_ID,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x6',
     },
@@ -73,7 +71,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   7: {
     type: SENT_ETHER,
     id: 7,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x7',
     },
@@ -81,7 +79,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   8: {
     type: SENT_ETHER,
     id: 8,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x8',
     },
@@ -89,7 +87,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   9: {
     type: SENT_ETHER,
     id: 9,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     status: TRANSACTION_STATUSES.UNAPPROVED,
   },
 };

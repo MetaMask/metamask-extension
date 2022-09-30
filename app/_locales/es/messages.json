@@ -616,17 +616,11 @@
   "connectingToGoerli": {
     "message": "Estableciendo conexión a la red de prueba Goerli"
   },
-  "connectingToKovan": {
-    "message": "Estableciendo conexión a la red de prueba Kovan"
-  },
   "connectingToMainnet": {
     "message": "Estableciendo conexión a la red principal de Ethereum"
   },
-  "connectingToRinkeby": {
-    "message": "Estableciendo conexión a la red de prueba Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Estableciendo conexión a la red de prueba Ropsten"
+  "connectingToSepolia": {
+    "message": "Conectando a la red de prueba Sepolia"
   },
   "contactUs": {
     "message": "Contáctenos"
@@ -1665,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens."
-  },
-  "kovan": {
-    "message": "Red de prueba Kovan"
   },
   "lastConnected": {
     "message": "Última conexión"
@@ -2724,11 +2715,8 @@
     "message": "Al revocar permisos, el/la siguiente $1 no tendrá más acceso a su $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
-  "rinkeby": {
-    "message": "Red de prueba Rinkeby"
-  },
-  "ropsten": {
-    "message": "Red de prueba Ropsten"
+  "revokeSpendingCapTooltipText": {
+    "message": "Este contrato no podrá gastar más de sus tokens actuales o futuros."
   },
   "rpcUrl": {
     "message": "Nueva dirección URL de RPC"

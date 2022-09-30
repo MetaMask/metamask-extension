@@ -1,4 +1,4 @@
-import { KOVAN_CHAIN_ID } from '../../shared/constants/network';
+import { GOERLI_CHAIN_ID } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
@@ -150,7 +150,7 @@ describe('selectors', () => {
       },
       metamask: {
         provider: {
-          chainId: KOVAN_CHAIN_ID,
+          chainId: GOERLI_CHAIN_ID,
         },
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
