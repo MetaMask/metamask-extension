@@ -1,4 +1,7 @@
 .gas-display {
+  overflow-y: auto;
+  flex: 1;
+
   .transaction-detail-rows {
     padding: 10px;
     border-radius: 8px;
@@ -16,10 +19,14 @@
     height: 120px;
   }
 
+  &__currency-container,
+  &__total-amount,
+  &__total-value {
+    position: relative;
+  }
+
   &__confirm-approve-content {
     &__warning {
-      padding: 0 16px 16px 16px;
-
       @media screen and (max-width: $break-small) {
         padding: 0 32px 16px 16px;
         position: fixed;

@@ -16,8 +16,23 @@ import {
   ERC20,
   ERC721,
 } from '../../../../shared/constants/transaction';
-import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
-import { hexWEIToDecETH } from '../../../helpers/utils/conversions.util';
+import Box from '../../../components/ui/box';
+import {
+  DISPLAY,
+  FLEX_DIRECTION,
+  BLOCK_SIZES,
+} from '../../../helpers/constants/design-system';
+import {
+  CONTRACT_ADDRESS_LINK,
+  PRIMARY,
+  SECONDARY,
+} from '../../../helpers/constants/common';
+import {
+  hexWEIToDecETH,
+  addHexes,
+} from '../../../helpers/utils/conversions.util';
+import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
@@ -105,7 +120,6 @@ export default class SendContent extends Component {
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';
     const hideAddContactDialog = recipient.warning === 'loading';
-    console.log(draftTransaction);
 
     let title;
     if (
@@ -122,6 +136,70 @@ export default class SendContent extends Component {
     const ethTransactionTotalMaxAmount = Number(
       hexWEIToDecETH(hexMaximumTransactionFee),
     );
+
+    const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
+
+    const detailText = () => {
+      return (
+        <Box
+          height={BLOCK_SIZES.MAX}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          className="gas-display__total-value"
+        >
+          <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
+          <UserPreferencedCurrencyDisplay
+            type={SECONDARY}
+            key="total-detail-text"
+            value={hexTransactionTotal}
+            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+          />
+        </Box>
+      );
+    };
+
+    const detailTotal = () => {
+      if (draftTransaction?.asset.type === 'NATIVE') {
+        return (
+          <Box
+            height={BLOCK_SIZES.MAX}
+            display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            className="gas-display__total-value"
+          >
+            <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={hexTransactionTotal}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          </Box>
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverrideMaxAmount
+        : undefined;
+    };
+
+    const maxAmount = () => {
+      if (draftTransaction?.asset.type === 'NATIVE') {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            key="total-max-amount"
+            value={addHexes(
+              draftTransaction.amount.value,
+              hexMaximumTransactionFee,
+            )}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverrideMaxAmount
+        : undefined;
+    };
 
     return (
       <PageContainerContent>
@@ -144,11 +222,16 @@ export default class SendContent extends Component {
           {showHexData ? <SendHexDataRow /> : null}
           <GasDisplay
             draftTransaction={draftTransaction}
+            detailText={detailText()}
+            detailTotal={detailTotal()}
+            maxAmount={maxAmount()}
             hexMaximumTransactionFee={hexMaximumTransactionFee}
             hexMinimumTransactionFee={hexMinimumTransactionFee}
             hexTransactionAmount={hexTransactionAmount}
             hexTransactionTotal={hexTransactionTotal}
-            primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+            primaryTotalTextOverrideMaxAmount={
+              primaryTotalTextOverrideMaxAmount
+            }
             useNonceField={useNonceField}
             useNativeCurrencyAsPrimaryCurrency={
               useNativeCurrencyAsPrimaryCurrency
