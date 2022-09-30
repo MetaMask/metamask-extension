@@ -190,7 +190,7 @@
   }
 }
 
-@media screen and (max-width: $break-small) {
+@include screen-sm-max {
   .page-container {
     height: 100%;
     width: 100%;
@@ -201,7 +201,7 @@
   }
 }
 
-@media screen and (min-width: $break-large) {
+@include screen-sm-min {
   .page-container {
     max-height: 82vh;
     min-height: 570px;

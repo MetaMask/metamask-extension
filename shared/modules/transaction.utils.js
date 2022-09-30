@@ -15,7 +15,7 @@ import { isEqualCaseInsensitive } from './string-utils';
  */
 
 /**
- * @typedef {Object} InferTransactionTypeResult
+ * @typedef {object} InferTransactionTypeResult
  * @property {InferrableTransactionTypes} type - The type of transaction
  * @property {string} getCodeResponse - The contract code, in hex format if
  *  it exists. '0x0' or '0x' are also indicators of non-existent contract
@@ -132,13 +132,26 @@ export function parseStandardTokenTransactionData(data) {
 }
 
 /**
+ * Determines the contractCode of the transaction by analyzing the txParams.
+ *
+ * @param {object} txParams - Parameters for the transaction
+ * @param {EthQuery} query - EthQuery instance
+ * @returns {InferTransactionTypeResult}
+ */
+export async function determineTransactionContractCode(txParams, query) {
+  const { to } = txParams;
+  const { contractCode } = await readAddressAsContract(query, to);
+  return contractCode;
+}
+
+/**
  * Determines the type of the transaction by analyzing the txParams.
  * This method will return one of the types defined in shared/constants/transactions
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
  * represent specific events that we control from the extension and are added manually
  * at transaction creation.
  *
- * @param {Object} txParams - Parameters for the transaction
+ * @param {object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
  * @returns {InferTransactionTypeResult}
  */
@@ -157,10 +170,8 @@ export async function determineTransactionType(txParams, query) {
   if (data && !to) {
     result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
   } else {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
 

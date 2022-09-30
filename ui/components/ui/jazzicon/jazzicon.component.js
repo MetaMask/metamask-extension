@@ -1,4 +1,4 @@
-import React, { createRef, PureComponent } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import jazzicon from '@metamask/jazzicon';
 import iconFactoryGenerator from '../../../helpers/utils/icon-factory';
@@ -9,52 +9,61 @@ const iconFactory = iconFactoryGenerator(jazzicon);
  * Wrapper around the jazzicon library to return a React component, as the library returns an
  * HTMLDivElement which needs to be appended.
  */
-export default class Jazzicon extends PureComponent {
-  static propTypes = {
-    address: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    diameter: PropTypes.number,
-    style: PropTypes.object,
-    tokenList: PropTypes.object,
-  };
 
-  static defaultProps = {
-    diameter: 46,
-  };
+function Jazzicon({
+  address,
+  className,
+  diameter = 46,
+  style,
+  tokenList = {},
+}) {
+  const container = useRef();
 
-  container = createRef();
+  useEffect(() => {
+    const _container = container.current;
 
-  componentDidMount() {
-    this.appendJazzicon();
-  }
+    // add icon
+    const imageNode = iconFactory.iconForAddress(
+      address,
+      diameter,
+      tokenList[address?.toLowerCase()],
+    );
 
-  componentDidUpdate(prevProps) {
-    const { address: prevAddress, diameter: prevDiameter } = prevProps;
-    const { address, diameter } = this.props;
+    _container?.appendChild(imageNode);
 
-    if (address !== prevAddress || diameter !== prevDiameter) {
-      this.removeExistingChildren();
-      this.appendJazzicon();
-    }
-  }
+    // remove icon
+    return () => {
+      while (_container.firstChild) {
+        _container.firstChild.remove();
+      }
+    };
+  }, [address, diameter, tokenList]);
 
-  removeExistingChildren() {
-    const { children } = this.container.current;
-
-    for (let i = 0; i < children.length; i++) {
-      this.container.current.removeChild(children[i]);
-    }
-  }
-
-  appendJazzicon() {
-    const { address, diameter, tokenList } = this.props;
-    const image = iconFactory.iconForAddress(address, diameter, tokenList);
-    this.container.current.appendChild(image);
-  }
-
-  render() {
-    const { className, style } = this.props;
-
-    return <div className={className} ref={this.container} style={style} />;
-  }
+  return <div ref={container} className={className} style={style} />;
 }
+
+Jazzicon.propTypes = {
+  /**
+   * Address used for generating random image
+   */
+  address: PropTypes.string.isRequired,
+  /**
+   * Add custom css class
+   */
+  className: PropTypes.string,
+  /**
+   * Sets the width and height of the inner img element
+   * Jazzicon accepts a pixel diameter
+   */
+  diameter: PropTypes.number,
+  /**
+   * Add inline style for the component
+   */
+  style: PropTypes.object,
+  /**
+   * Add list of token in object
+   */
+  tokenList: PropTypes.object,
+};
+
+export default Jazzicon;

@@ -9,7 +9,6 @@ import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   getTokenAddressParam,
   getTokenIdParam,
-  getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
   formatDateWithYearContext,
@@ -29,6 +28,7 @@ import {
 } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -63,7 +63,7 @@ const signatureTypes = [
  */
 
 /**
- * @typedef {Object} TransactionDisplayData
+ * @typedef {object} TransactionDisplayData
  * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient

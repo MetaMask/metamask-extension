@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
-  MAINNET_NETWORK_ID,
+  NETWORK_IDS,
   NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
@@ -62,10 +62,10 @@ const slice = createSlice({
           error.message === 'ENS name not defined.'
         ) {
           state.error =
-            network === MAINNET_NETWORK_ID
+            network === NETWORK_IDS.MAINNET
               ? ENS_NO_ADDRESS_FOR_NAME
               : ENS_NOT_FOUND_ON_NETWORK;
-        } else if (error.message === 'Illegal Character for ENS.') {
+        } else if (error.message === 'Illegal character for ENS.') {
           state.error = ENS_ILLEGAL_CHARACTER;
         } else {
           log.error(error);

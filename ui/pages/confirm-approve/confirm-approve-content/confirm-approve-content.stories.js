@@ -120,8 +120,7 @@ export default {
     assetStandard: ERC20,
     tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
     tokenBalance: '15',
-    data:
-      '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+    data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
     currentCurrency: 'TST',
     nativeCurrency: 'ETH',

@@ -7,9 +7,9 @@ const cssToXPath = require('css-to-xpath');
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
- * @param {Object} element - Selenium Element
+ * @param {object} element - Selenium Element
  * @param driver
- * @returns {Object} modified Selenium Element
+ * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -254,9 +254,9 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-  async isElementPresent(element) {
+  async isElementPresent(rawLocator) {
     try {
-      await this.findElement(element);
+      await this.findElement(rawLocator);
       return true;
     } catch (err) {
       return false;
@@ -287,6 +287,10 @@ class Driver {
 
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
   }
 
   // Metrics
@@ -382,6 +386,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',

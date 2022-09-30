@@ -88,7 +88,7 @@ describe('Add existing token using search', function () {
           tag: 'span',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

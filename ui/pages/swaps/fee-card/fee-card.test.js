@@ -9,7 +9,7 @@ import {
   setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import {
@@ -82,7 +82,7 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     supportsEIP1559V2: false,
     ...customProps,
@@ -126,7 +126,7 @@ describe('FeeCard', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders the component with Smart Transactions enabled and user opted in', () => {
+  it('renders the component with smart transactions enabled and user opted in', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
       smartTransactionsOptInStatus: true,

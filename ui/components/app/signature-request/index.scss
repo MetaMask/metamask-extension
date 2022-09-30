@@ -8,7 +8,7 @@
   flex-direction: column;
   min-width: 0;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     flex: initial;
   }
 }

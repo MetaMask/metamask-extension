@@ -11,11 +11,11 @@ import createId from '../../../shared/modules/random-id';
  * Represents, and contains data about, an 'eth_getEncryptionPublicKey' type request. These are created when
  * an eth_getEncryptionPublicKey call is requested.
  *
- * @typedef {Object} EncryptionPublicKey
+ * @typedef {object} EncryptionPublicKey
  * @property {number} id An id to track and identify the message object
- * @property {Object} msgParams The parameters to pass to the encryptionPublicKey method once the request is
+ * @property {object} msgParams The parameters to pass to the encryptionPublicKey method once the request is
  * approved.
- * @property {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+ * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the request is 'unapproved', 'approved', 'received' or 'rejected'
@@ -52,7 +52,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' EncryptionPublicKeys in this.messages
    *
-   * @returns {Object} An index of EncryptionPublicKey ids to EncryptionPublicKeys, for all 'unapproved' EncryptionPublicKeys in
+   * @returns {object} An index of EncryptionPublicKey ids to EncryptionPublicKeys, for all 'unapproved' EncryptionPublicKeys in
    * this.messages
    */
   getUnapprovedMsgs() {
@@ -69,8 +69,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * the new EncryptionPublicKey to this.messages, and to save the unapproved EncryptionPublicKeys from that list to
    * this.memStore.
    *
-   * @param {Object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
-   * @param {Object} [req] - The original request object possibly containing the origin
+   * @param {object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
+   * @param {object} [req] - The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The raw public key contents
    */
   addUnapprovedMessageAsync(address, req) {
@@ -110,8 +110,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * the new EncryptionPublicKey to this.messages, and to save the unapproved EncryptionPublicKeys from that list to
    * this.memStore.
    *
-   * @param {Object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
-   * @param {Object} [req] - The original request object possibly containing the origin
+   * @param {object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
+   * @param {object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created EncryptionPublicKey.
    */
   addUnapprovedMessage(address, req) {
@@ -164,8 +164,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Approves a EncryptionPublicKey. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper providing.
    *
-   * @param {Object} msgParams - The msgParams to be used when eth_getEncryptionPublicKey is called, plus data added by MetaMask.
-   * @param {Object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
+   * @param {object} msgParams - The msgParams to be used when eth_getEncryptionPublicKey is called, plus data added by MetaMask.
+   * @param {object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    */
   approveMessage(msgParams) {
@@ -199,7 +199,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams - The msgParams to modify
+   * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
   prepMsgForEncryptionPublicKey(msgParams) {

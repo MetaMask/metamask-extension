@@ -1,4 +1,4 @@
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -128,10 +128,10 @@ export const createSwapsMockStore = () => {
         },
       },
       provider: {
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
-        [MAINNET_CHAIN_ID]: 5,
+        [CHAIN_IDS.MAINNET]: 5,
       },
       preferences: {
         showFiatInTestnets: true,
@@ -408,7 +408,7 @@ export const createSwapsMockStore = () => {
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
-          [MAINNET_CHAIN_ID]: [
+          [CHAIN_IDS.MAINNET]: [
             {
               uuid: 'uuid2',
               status: 'success',

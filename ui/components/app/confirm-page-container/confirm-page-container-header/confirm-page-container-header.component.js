@@ -29,14 +29,20 @@ export default function ConfirmPageContainerHeader({
     return children;
   }
   return (
-    <div className="confirm-page-container-header">
+    <div
+      className="confirm-page-container-header"
+      data-testid="header-container"
+    >
       <div className="confirm-page-container-header__row">
         {showAccountInHeader ? (
           <div className="confirm-page-container-header__address-container">
             <div className="confirm-page-container-header__address-identicon">
               <Identicon address={accountAddress} diameter={24} />
             </div>
-            <div className="confirm-page-container-header__address">
+            <div
+              className="confirm-page-container-header__address"
+              data-testid="header-address"
+            >
               {shortenAddress(accountAddress)}
             </div>
             <AccountMismatchWarning address={accountAddress} />

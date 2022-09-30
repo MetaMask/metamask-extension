@@ -9,7 +9,7 @@ import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
@@ -34,12 +34,8 @@ export default function TokenDetailsPage() {
   const tokenList = useSelector(getTokenList);
 
   const { address: tokenAddress } = useParams();
-  const tokenMetadata = Object.values(tokenList).find((token) =>
-    isEqualCaseInsensitive(token.address, tokenAddress),
-  );
+  const tokenMetadata = tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
-  const fileName = tokenMetadata?.iconUrl;
-  const imagePath = fileName;
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -99,7 +95,7 @@ export default function TokenDetailsPage() {
             <Identicon
               diameter={32}
               address={token.address}
-              image={tokenMetadata ? imagePath : token.image}
+              image={tokenMetadata ? tokenMetadata.iconUrl : token.image}
             />
           </Box>
         </Box>
@@ -179,11 +175,11 @@ export default function TokenDetailsPage() {
           marginTop={0}
           color={COLORS.TEXT_DEFAULT}
         >
-          {networkType === NETWORK_TYPE_RPC
+          {networkType === NETWORK_TYPES.RPC
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
-        {process.env.TOKEN_DETECTION_V2 && aggregators && (
+        {aggregators && (
           <>
             <Typography
               variant={TYPOGRAPHY.H9}

@@ -20,7 +20,7 @@ import {
   getProvider,
 } from '../../../selectors';
 import {
-  NETWORK_TYPE_RPC,
+  NETWORK_TYPES,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
@@ -43,7 +43,9 @@ const NetworksTab = ({ addNewNetwork }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+    isFullScreen ||
+    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
+    window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
@@ -56,7 +58,7 @@ const NetworksTab = ({ addNewNetwork }) => {
     return {
       label: rpc.nickname,
       iconColor: 'var(--color-icon-alternative)',
-      providerType: NETWORK_TYPE_RPC,
+      providerType: NETWORK_TYPES.RPC,
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
@@ -81,7 +83,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       networksToRender.find((network) => {
         return (
           network.rpcUrl === provider.rpcUrl ||
-          (network.providerType !== NETWORK_TYPE_RPC &&
+          (network.providerType !== NETWORK_TYPES.RPC &&
             network.providerType === provider.type)
         );
       }) || {};

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { isEqual } from 'lodash';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -51,7 +52,6 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import {
   showRemainingTimeInMinAndSec,
   getFeeForSmartTransaction,
@@ -59,6 +59,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -71,22 +72,25 @@ export default function SmartTransactionStatus() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const fetchParams = useSelector(getFetchParams) || {};
+  const fetchParams = useSelector(getFetchParams, isEqual) || {};
   const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
     fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const selectedQuote = useSelector(getSelectedQuote);
-  const topQuote = useSelector(getTopQuote);
+  const selectedQuote = useSelector(getSelectedQuote, isEqual);
+  const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
-  const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
+  const currentSmartTransactions = useSelector(
+    getCurrentSmartTransactions,
+    isEqual,
+  );
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
@@ -129,7 +133,6 @@ export default function SmartTransactionStatus() {
     custom_slippage: fetchParams?.slippage === 2,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_uuid: latestSmartTransactionUuid,
     stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,

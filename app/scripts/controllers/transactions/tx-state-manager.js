@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import { keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
+import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
@@ -39,7 +39,7 @@ export const ERROR_SUBMITTING =
  */
 
 /**
- * @typedef {Object} TransactionState
+ * @typedef {object} TransactionState
  * @property {Record<string, TransactionMeta>} transactions - TransactionMeta
  *  keyed by the transaction's id.
  */
@@ -49,7 +49,7 @@ export const ERROR_SUBMITTING =
  * storing the transaction. It also has some convenience methods for finding
  * subsets of transactions.
  *
- * @param {Object} opts
+ * @param {object} opts
  * @param {TransactionState} [opts.initState={ transactions: {} }] - initial
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
@@ -202,6 +202,21 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * Get transaction with provided.
+   *
+   * @param {string} [actionId]
+   * @returns {TransactionMeta} the filtered transaction
+   */
+  getTransactionWithActionId(actionId) {
+    return values(
+      pickBy(
+        this.store.getState().transactions,
+        (transaction) => transaction.actionId === actionId,
+      ),
+    )[0];
+  }
+
+  /**
    * Adds the txMeta to the list of transactions in the store.
    * if the list is over txHistoryLimit it will remove a transaction that
    * is in its final state.
@@ -300,7 +315,7 @@ export default class TransactionStateManager extends EventEmitter {
   /**
    * updates the txMeta in the list and adds a history entry
    *
-   * @param {Object} txMeta - the txMeta to update
+   * @param {object} txMeta - the txMeta to update
    * @param {string} [note] - a note about the update for history
    */
   updateTransaction(txMeta, note) {

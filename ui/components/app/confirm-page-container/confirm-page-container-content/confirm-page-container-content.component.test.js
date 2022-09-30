@@ -11,15 +11,15 @@ describe('Confirm Page Container Content', () => {
     metamask: {
       provider: {
         type: 'test',
-        chainId: '0x3',
+        chainId: '0x5',
       },
       eip1559V2Enabled: false,
       addressBook: {
-        '0x3': {
+        '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {
             address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x3',
+            chainId: '0x5',
           },
         },
       },
@@ -70,7 +70,7 @@ describe('Confirm Page Container Content', () => {
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     expect(
-      getByText('Transaction Error. Exception thrown in contract code.'),
+      getByText('Transaction error. Exception thrown in contract code.'),
     ).toBeInTheDocument();
 
     const cancelButton = getByText('Reject');
@@ -91,7 +91,7 @@ describe('Confirm Page Container Content', () => {
       ),
     ).not.toBeInTheDocument();
     expect(
-      queryByText('Transaction Error. Exception thrown in contract code.'),
+      queryByText('Transaction error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
 

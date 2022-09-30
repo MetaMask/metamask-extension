@@ -47,9 +47,6 @@
   "about": {
     "message": "Sobre"
   },
-  "acceleratingATransaction": {
-    "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta as chances de agilizar o processamento pela rede, mas isso nem sempre é garantido."
-  },
   "acceptTermsOfUse": {
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
@@ -514,17 +511,8 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToKovan": {
-    "message": "Conectando à rede de testes Kovan"
-  },
   "connectingToMainnet": {
     "message": "Conectando à mainnet do Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Conectando à rede de testes Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Conectando à rede de testes Ropsten"
   },
   "contactUs": {
     "message": "Fale conosco"
@@ -615,12 +603,6 @@
   },
   "custom": {
     "message": "Avançado"
-  },
-  "customGas": {
-    "message": "Personalizar gás"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas isso não é garantido."
   },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
@@ -992,9 +974,6 @@
     "message": "Lista:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tempos de processamento estimados"
-  },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
@@ -1031,14 +1010,8 @@
   "failureMessage": {
     "message": "Ocorreu algum erro e não conseguimos concluir a ação"
   },
-  "fakeTokenWarning": {
-    "message": "Qualquer um pode criar um token, incluindo versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "O mais rápido"
   },
   "feeAssociatedRequest": {
     "message": "Há uma taxa associada a essa solicitação."
@@ -1412,14 +1385,8 @@
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usado para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam."
   },
-  "kovan": {
-    "message": "Rede de testes Kovan"
-  },
   "lastConnected": {
     "message": "Conectado pela última vez em"
-  },
-  "learmMoreAboutGas": {
-    "message": "Quer $1 sobre o gás?"
   },
   "learnCancelSpeeedup": {
     "message": "Saiba como $1",
@@ -1427,6 +1394,10 @@
   },
   "learnMore": {
     "message": "mais informações"
+  },
+  "learnMoreAboutGas": {
+    "message": "Quer $1 sobre o gás?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Mais informações"
@@ -1517,7 +1488,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Use $1 para aguardar um preço mais baixo. As estimativas de tempo são muito menos exatas, pois os preços são relativamente imprevisíveis.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "baixa"
@@ -1549,7 +1520,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Use $1 para um processamento rápido pelo preço atual de mercado.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "nota"
@@ -1690,9 +1661,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -1755,12 +1723,6 @@
   },
   "newToMetaMask": {
     "message": "Acabou de chegar à MetaMask?"
-  },
-  "newTotal": {
-    "message": "Novo total"
-  },
-  "newTransactionFee": {
-    "message": "Nova taxa de transação"
   },
   "newValues": {
     "message": "novos valores"
@@ -1895,7 +1857,7 @@
   },
   "notifications8ActionText": {
     "message": "Ir para Configurações Avançadas",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "A partir da MetaMask v10.4.0, não é mais necessário o Ledger Live para conectar o seu dispositivo Ledger à MetaMask.",
@@ -2069,7 +2031,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Anterior"
@@ -2235,12 +2197,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NÃO compartilhe essa frase com ninguém!"
   },
-  "rinkeby": {
-    "message": "Rede de testes Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rede de testes Ropsten"
-  },
   "rpcUrl": {
     "message": "Novo URL da RPC"
   },
@@ -2346,9 +2302,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote sua Frase de Recuperação Secreta"
   },
-  "selectAHigherGasFee": {
-    "message": "Selecione uma taxa de gás mais alta para acelerar o processamento da sua transação.*"
-  },
   "selectAccounts": {
     "message": "Selecione a(s) conta(s) para usar nesse site"
   },
@@ -2381,9 +2334,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar valor"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -2485,9 +2435,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
@@ -2601,9 +2548,6 @@
   },
   "swap": {
     "message": "Trocar"
-  },
-  "swapAdvancedSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage exceder a sua configuração de \"slippage máximo\"."
   },
   "swapAggregator": {
     "message": "Agregador"
@@ -2760,9 +2704,6 @@
   "swapQuoteDetails": {
     "message": "Detalhes da cotação"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage for superior à configuração de \"tolerância a slippage\"."
-  },
   "swapQuoteSource": {
     "message": "Fonte da cotação"
   },
@@ -2792,9 +2733,6 @@
   },
   "swapReviewSwap": {
     "message": "Revisar troca"
-  },
-  "swapSearchForAToken": {
-    "message": "Buscar um token"
   },
   "swapSelect": {
     "message": "Selecione"
@@ -2991,7 +2929,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3004,9 +2942,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "A casa decimal do token é necessária."
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Novidade! A detecção aprimorada de token está disponível na Mainnet do Ethereum como uma funcionalidade experimental. $1"
   },
   "tokenId": {
     "message": "ID do token"
@@ -3219,12 +3154,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Exibir uma advertência para os domínios de phishing destinados a usuários do Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Usar detecção de tokens"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Utilizamos APIs terceirizadas para detectar e exibir novos tokens enviados à sua carteira. Desative essa opção se não deseja que a MetaMask extraia dados desses serviços."
   },
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"

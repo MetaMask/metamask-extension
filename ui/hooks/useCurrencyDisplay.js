@@ -16,7 +16,7 @@ import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
  *
- * @typedef {Object} UseCurrencyOptions
+ * @typedef {object} UseCurrencyOptions
  * @property {string} [displayValue] - When present is used in lieu of formatting the inputValue
  * @property {string} [prefix] - String to prepend to the final result
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
@@ -27,7 +27,7 @@ import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 /**
  * Defines the return shape of the second value in the tuple
  *
- * @typedef {Object} CurrencyDisplayParts
+ * @typedef {object} CurrencyDisplayParts
  * @property {string} [prefix] - string to prepend to the value for display
  * @property {string} value - string representing the value, formatted for display
  * @property {string} [suffix] - string to append to the value for display
@@ -96,7 +96,7 @@ export function useCurrencyDisplay(
   let suffix;
 
   if (!opts.hideLabel) {
-    // if the currency we are displaying is the native currency of one of our preloaded test-nets (rinkeby, ropsten etc.)
+    // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
     const currencyTickerSymbol = Object.values(
       TEST_NETWORK_TICKER_MAP,

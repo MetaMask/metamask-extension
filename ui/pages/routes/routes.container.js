@@ -2,10 +2,16 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getAllAccountsOnNetworkAreEmpty,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
   getTheme,
+  getIsTestnet,
+  getCurrentChainId,
+  getShouldShowSeedPhraseReminder,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -40,6 +46,12 @@ function mapStateToProps(state) {
     providerType: state.metamask.provider?.type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
+    isTestNet: getIsTestnet(state),
+    currentChainId: getCurrentChainId(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
   };
 }
 

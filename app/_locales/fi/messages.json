@@ -8,9 +8,6 @@
   "about": {
     "message": "Tietoja asetuksista"
   },
-  "acceleratingATransaction": {
-    "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
-  },
   "accessingYourCamera": {
     "message": "Muodostamme yhteyttä kameraasi..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
-  "connectingToKovan": {
-    "message": "Yhdistetään Kovanin koeverkkoon"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
-  },
-  "connectingToRinkeby": {
-    "message": "Yhdistetään Rinkebyn koeverkkoon"
-  },
-  "connectingToRopsten": {
-    "message": "Yhdistetään Ropstenin koeverkkoon"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Lisäasetukset"
-  },
-  "customGas": {
-    "message": "Mukauta bensa"
-  },
-  "customGasSubTitle": {
-    "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
   },
   "customToken": {
     "message": "Mukautettu tietue"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Arvioidut käsittelyajat"
   },
   "ethereumPublicAddress": {
     "message": "Ethereumin julkinen osoite"
@@ -503,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "Tunnettu sopimusosoite."
   },
-  "kovan": {
-    "message": "Kovanin koeverkko"
-  },
   "learnMore": {
     "message": "Lisätietoa"
   },
@@ -603,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "Onko MetaMask ennestään outo?"
-  },
-  "newTotal": {
-    "message": "Uusi kokonaissumma"
-  },
-  "newTransactionFee": {
-    "message": "Uusi tapahtumamaksu"
   },
   "next": {
     "message": "Seuraava"
@@ -765,12 +735,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
   },
-  "rinkeby": {
-    "message": "Rinkebyn koeverkko"
-  },
-  "ropsten": {
-    "message": "Ropstenin koeverkko"
-  },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"
   },
@@ -807,9 +771,6 @@
   "seedPhraseReq": {
     "message": "Juurilauseet ovat 12 sanan pituisia"
   },
-  "selectAHigherGasFee": {
-    "message": "Valitse korkeampi bensataksa vauhdittaaksesi tapahtumasi käsittelyä.*"
-  },
   "selectAnAccount": {
     "message": "Valitse tili"
   },
@@ -827,9 +788,6 @@
   },
   "send": {
     "message": "Lähetä"
-  },
-  "sendAmount": {
-    "message": "Lähetä summa"
   },
   "sendTokens": {
     "message": "Lähetä tietueita"
@@ -872,9 +830,6 @@
   },
   "signed": {
     "message": "Allekirjoitettu"
-  },
-  "slow": {
-    "message": "Hidas"
   },
   "somethingWentWrong": {
     "message": "Hupsis! Jotakin meni pieleen."

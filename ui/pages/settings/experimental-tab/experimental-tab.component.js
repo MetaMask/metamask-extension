@@ -5,9 +5,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import Dropdown from '../../../components/ui/dropdown';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { THEME_TYPE } from './experimental-tab.constant';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -16,16 +14,12 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useTokenDetection: PropTypes.bool,
-    setUseTokenDetection: PropTypes.func,
     useCollectibleDetection: PropTypes.bool,
     setUseCollectibleDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
-    theme: PropTypes.string,
-    setTheme: PropTypes.func,
     customNetworkListEnabled: PropTypes.bool,
     setCustomNetworkListEnabled: PropTypes.func,
   };
@@ -49,42 +43,6 @@ export default class ExperimentalTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
-  }
-
-  renderTokenDetectionToggle() {
-    const { t } = this.context;
-    const { useTokenDetection, setUseTokenDetection } = this.props;
-
-    return (
-      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useTokenDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useTokenDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Token Detection',
-                  properties: {
-                    action: 'Token Detection',
-                    legacy_event: true,
-                  },
-                });
-                setUseTokenDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
   }
 
   renderCollectibleDetectionToggle() {
@@ -234,64 +192,10 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  renderTheme() {
-    const { t } = this.context;
-    const { theme, setTheme } = this.props;
-
-    const themesOptions = [
-      {
-        name: t('lightTheme'),
-        value: THEME_TYPE.LIGHT,
-      },
-      {
-        name: t('darkTheme'),
-        value: THEME_TYPE.DARK,
-      },
-      {
-        name: t('osTheme'),
-        value: THEME_TYPE.OS,
-      },
-    ];
-
-    const onChange = (newTheme) => {
-      this.context.trackEvent({
-        category: EVENT.CATEGORIES.SETTINGS,
-        event: 'Theme Changed',
-        properties: {
-          theme_selected: newTheme,
-        },
-      });
-      setTheme(newTheme);
-    };
-
-    return (
-      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{this.context.t('theme')}</span>
-          <div className="settings-page__content-description">
-            {this.context.t('themeDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Dropdown
-              id="select-theme"
-              options={themesOptions}
-              selectedOption={theme}
-              onChange={onChange}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderCustomNetworkListToggle() {
     const { t } = this.context;
-    const {
-      customNetworkListEnabled,
-      setCustomNetworkListEnabled,
-    } = this.props;
+    const { customNetworkListEnabled, setCustomNetworkListEnabled } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[5]} className="settings-page__content-row">
@@ -328,14 +232,9 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {/* TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */}
-        {process.env.TOKEN_DETECTION_V2
-          ? null
-          : this.renderTokenDetectionToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
-        {this.renderTheme()}
         {this.renderCustomNetworkListToggle()}
       </div>
     );

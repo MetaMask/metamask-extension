@@ -72,9 +72,6 @@
   "createAccount": {
     "message": "खाता बनाएं"
   },
-  "customGas": {
-    "message": "अनुकूलित करें गैस"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
@@ -178,9 +175,6 @@
     "message": "JSON फ़ाइल",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "कोवान टेस्ट नेटवर्क"
-  },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
   },
@@ -283,12 +277,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
-  },
-  "rinkeby": {
-    "message": "रिचीव टेस्ट नेटवर्क"
-  },
-  "ropsten": {
-    "message": "रॉप्स्टेन टेस्ट नेटवर्क"
   },
   "save": {
     "message": "सहेजें"

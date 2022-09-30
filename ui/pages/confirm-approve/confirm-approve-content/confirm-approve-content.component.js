@@ -4,15 +4,13 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
-import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
+import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { isBeta } from '../../../helpers/utils/build-types';
 import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import CopyIcon from '../../../components/ui/icon/copy-icon.component';
@@ -33,6 +31,7 @@ import {
   ERC20,
   ERC721,
 } from '../../../../shared/constants/transaction';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -81,7 +80,7 @@ export default class ConfirmApproveContent extends Component {
   };
 
   state = {
-    showFullTxDetails: true,
+    showFullTxDetails: false,
     copied: false,
   };
 
@@ -462,31 +461,12 @@ export default class ConfirmApproveContent extends Component {
       userAddress,
     } = this.props;
     const { t } = this.context;
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+
     let titleTokenDescription = t('token');
-    if (rpcPrefs?.blockExplorerUrl || chainId) {
-      const unknownTokenBlockExplorerLink = getTokenTrackerLink(
-        tokenAddress,
-        chainId,
-        null,
-        userAddress,
-        {
-          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-        },
-      );
-
-      const unknownTokenLink = (
-        <a
-          href={unknownTokenBlockExplorerLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="confirm-approve-content__unknown-asset"
-        >
-          {t('token')}
-        </a>
-      );
-      titleTokenDescription = unknownTokenLink;
-    }
-
+    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -499,11 +479,14 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
       if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
+        titleTokenDescription = `${assetName ?? tokenSymbol}`;
       } else {
-        const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+        titleTokenDescription = t('nft');
+      }
+
+      if (useBlockExplorer) {
+        const blockExplorerLink = getTokenTrackerLink(
           tokenAddress,
           chainId,
           null,
@@ -512,24 +495,38 @@ export default class ConfirmApproveContent extends Component {
             blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
           },
         );
-        const unknownNFTLink = (
+        const blockExplorerElement = (
           <>
             <a
-              href={unknownNFTBlockExplorerLink}
+              href={blockExplorerLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="confirm-approve-content__unknown-asset"
+              title={tokenAddress}
+              className="confirm-approve-content__approval-asset-link"
             >
-              {t('nft')}
+              {titleTokenDescription}
             </a>
             {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
           </>
         );
-        titleTokenDescription = unknownNFTLink;
+        return blockExplorerElement;
       }
     }
 
-    return titleTokenDescription;
+    return (
+      <>
+        <span
+          className="confirm-approve-content__approval-asset-title"
+          onClick={() => {
+            copyToClipboard(tokenAddress);
+          }}
+          title={tokenAddress}
+        >
+          {titleTokenDescription}
+        </span>
+        {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+      </>
+    );
   }
 
   renderTitle() {
@@ -608,17 +605,11 @@ export default class ConfirmApproveContent extends Component {
           display={DISPLAY.FLEX}
           className="confirm-approve-content__icon-display-content"
         >
-          <Box className="confirm-approve-content__metafoxlogo">
-            <MetaFoxLogo useDark={isBeta()} />
-          </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            className="confirm-approve-content__siteinfo"
-          >
+          <Box display={DISPLAY.FLEX}>
             <UrlIcon
               className="confirm-approve-content__siteimage-identicon"
               fallbackClassName="confirm-approve-content__siteimage-identicon"
-              name={getURLHostName(origin)}
+              name={origin}
               url={siteImage}
             />
             <Typography
@@ -627,11 +618,14 @@ export default class ConfirmApproveContent extends Component {
               color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
-              {getURLHostName(origin)}
+              {origin}
             </Typography>
           </Box>
         </Box>
-        <div className="confirm-approve-content__title">
+        <div
+          className="confirm-approve-content__title"
+          data-testid="confirm-approve-title"
+        >
           {this.renderTitle()}
         </div>
         <div className="confirm-approve-content__description">

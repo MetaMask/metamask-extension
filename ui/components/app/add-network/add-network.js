@@ -28,12 +28,13 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   MESSAGE_TYPE,
 } from '../../../../shared/constants/app';
-import { requestUserApproval } from '../../../store/actions';
+import { requestAddNetworkApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
 import ConfirmationPage from '../../../pages/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
@@ -58,14 +59,13 @@ const AddNetwork = () => {
   const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
-    const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations?.find(
-      (confirmation) => {
+    const anAddNetworkConfirmationFromMetaMaskExists =
+      unapprovedConfirmations?.find((confirmation) => {
         return (
           confirmation.origin === 'metamask' &&
           confirmation.type === MESSAGE_TYPE.ADD_ETHEREUM_CHAIN
         );
-      },
-    );
+      });
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
       setShowPopover(true);
     }
@@ -217,7 +217,7 @@ const AddNetwork = () => {
                             {t('addNetworkTooltipWarning', [
                               <a
                                 key="zendesk_page_link"
-                                href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                                href={ZENDESK_URLS.UNKNOWN_NETWORK}
                                 rel="noreferrer"
                                 target="_blank"
                               >
@@ -239,7 +239,7 @@ const AddNetwork = () => {
                     type="inline"
                     className="add-network__add-button"
                     onClick={async () => {
-                      await dispatch(requestUserApproval(item, true));
+                      await dispatch(requestAddNetworkApproval(item, true));
                     }}
                   >
                     {t('add')}
@@ -277,7 +277,7 @@ const AddNetwork = () => {
       )}
       {showPopover && (
         <Popover>
-          <ConfirmationPage />
+          <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
         </Popover>
       )}
     </>

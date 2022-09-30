@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     margin: 0;
   }
 

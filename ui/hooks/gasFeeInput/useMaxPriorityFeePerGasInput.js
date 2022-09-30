@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { addHexPrefix } from 'ethereumjs-util';
 
 import { SECONDARY } from '../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
@@ -14,6 +13,7 @@ import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const getMaxPriorityFeePerGasFromTransaction = (
@@ -32,7 +32,7 @@ const getMaxPriorityFeePerGasFromTransaction = (
 };
 
 /**
- * @typedef {Object} MaxPriorityFeePerGasInputReturnType
+ * @typedef {object} MaxPriorityFeePerGasInputReturnType
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
  *  input value.
  * @property {string} [maxPriorityFeePerGasFiat] - the maxPriorityFeePerGas
@@ -63,10 +63,8 @@ export function useMaxPriorityFeePerGasInput({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 

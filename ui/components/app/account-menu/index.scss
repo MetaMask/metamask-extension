@@ -9,19 +9,19 @@
   min-width: 150px;
   color: var(--color-text-default);
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     right: 16px;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     right: calc((100vw - 85vw) / 2);
   }
 
-  @media screen and (min-width: 769px) {
+  @include screen-md-min {
     right: calc((100vw - 80vw) / 2);
   }
 
-  @media screen and (min-width: 1281px) {
+  @include screen-lg-min {
     right: calc((100vw - 65vw) / 2);
   }
 
@@ -36,9 +36,9 @@
     background: none;
     width: 100%;
 
-    @media screen and (max-width: $break-small) {
-      padding: 14px;
-      height: 54px;
+    @include screen-sm-max {
+      padding: 0 14px;
+      height: 40px;
     }
 
     &--clickable {
@@ -65,7 +65,11 @@
     }
 
     &__text {
-      @include Paragraph;
+      @include H6;
+
+      @include screen-md-min {
+        @include Paragraph;
+      }
 
       color: var(--color-text-default);
     }
@@ -121,10 +125,6 @@
     position: relative;
     flex-direction: column;
     z-index: 200;
-
-    @media (max-height: 600px) {
-      max-height: 236px;
-    }
   }
 
   &__accounts {
@@ -133,8 +133,14 @@
     max-height: 256px;
     scrollbar-width: auto;
 
-    @media screen and (max-width: $break-small) {
-      max-height: 156px;
+    @include screen-sm-max {
+      max-height: 240px;
+    }
+
+    // If window is smaller than extension popover height
+    // reduce scrollable accounts window height
+    @media screen and (max-height: 600px) {
+      max-height: 130px;
     }
 
     .keyring-label {
@@ -191,7 +197,7 @@
     border: 0;
     width: 100%;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding: 12px 14px;
     }
 
@@ -231,7 +237,11 @@
   }
 
   &__name {
-    @include H4;
+    @include H6;
+
+    @include screen-md-min {
+      @include Paragraph;
+    }
 
     color: var(--color-text-default);
     text-overflow: ellipsis;

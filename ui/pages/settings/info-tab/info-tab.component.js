@@ -1,15 +1,19 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
 import Button from '../../../components/ui/button';
-import {
-  SUPPORT_LINK,
-  SUPPORT_REQUEST_LINK,
-} from '../../../helpers/constants/common';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -18,6 +22,7 @@ export default class InfoTab extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -87,6 +92,20 @@ export default class InfoTab extends PureComponent {
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
+            onClick={() => {
+              this.context.trackEvent(
+                {
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  properties: {
+                    url: SUPPORT_LINK,
+                  },
+                },
+                {
+                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                },
+              );
+            }}
           >
             {t('supportCenter')}
           </Button>
@@ -109,6 +128,20 @@ export default class InfoTab extends PureComponent {
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
+            onClick={() => {
+              this.context.trackEvent(
+                {
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  properties: {
+                    url: SUPPORT_REQUEST_LINK,
+                  },
+                },
+                {
+                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                },
+              );
+            }}
           >
             {t('contactUs')}
           </Button>

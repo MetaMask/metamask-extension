@@ -11,7 +11,7 @@ import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
 } from '../../../../shared/constants/hardware-wallets';
-import { message } from '@truffle/codec/dist/lib/format/utils/exception';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -199,7 +199,7 @@ export default class SelectHardware extends Component {
       message: this.context.t('step2LedgerWalletMsg', [
         <a
           className="hw-connect__msg-link"
-          href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+          href={ZENDESK_URLS.HARDWARE_CONNECTION}
           rel="noopener noreferrer"
           target="_blank"
           key="ledger-support-link"
@@ -266,7 +266,7 @@ export default class SelectHardware extends Component {
         message: this.context.t('step1LatticeWalletMsg', [
           <a
             className="hw-connect__msg-link"
-            href="https://metamask.zendesk.com/hc/en-us/articles/4408552261275"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
             rel="noopener noreferrer"
             target="_blank"
             key="lattice-setup-link"
@@ -334,7 +334,7 @@ export default class SelectHardware extends Component {
         message: this.context.t('step1TrezorWalletMsg', [
           <a
             className="hw-connect__msg-link"
-            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
             rel="noopener noreferrer"
             target="_blank"
             key="trezor-support-link"

@@ -10,7 +10,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from './fetch-with-cache';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
 /**
  * @typedef EthersContractCall
@@ -43,22 +43,13 @@ async function getMethodFrom4Byte(fourBytePrefix) {
   return fourByteResponse.results[0].text_signature;
 }
 
-function pickShortest(registrySig, fourByteSig) {
-  if (!registrySig) {
-    return fourByteSig;
-  } else if (!fourByteSig) {
-    return registrySig;
-  }
-  return fourByteSig.length < registrySig.length ? fourByteSig : registrySig;
-}
-
 let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @returns {Object}
+ * @returns {object}
  */
 export async function getMethodDataAsync(fourBytePrefix) {
   try {
@@ -71,18 +62,11 @@ export async function getMethodDataAsync(fourBytePrefix) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    const registrySig = await registry.lookup(fourBytePrefix).catch((e) => {
-      log.error(e);
-      return null;
-    });
-
-    const sig = pickShortest(registrySig, fourByteSig);
-
-    if (!sig) {
+    if (!fourByteSig) {
       return {};
     }
 
-    const parsedResult = registry.parse(sig);
+    const parsedResult = registry.parse(fourByteSig);
 
     return {
       name: parsedResult.name,
@@ -144,8 +128,11 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const { isContractCode } = await readAddressAsContract(global.eth, address);
-  return isContractCode;
+  const { isContractAddress } = await readAddressAsContract(
+    global.eth,
+    address,
+  );
+  return isContractAddress;
 }
 
 export function sumHexes(...args) {
@@ -168,8 +155,8 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {Object} transaction - The txMeta object of a transaction.
- * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @param {object} transaction - The txMeta object of a transaction.
+ * @param {object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {

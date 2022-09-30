@@ -13,11 +13,11 @@ import {
   getAdvancedInlineGasShown,
   getEIP1559V2Enabled,
 } from '../../selectors';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -41,7 +41,7 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  */
 
 /**
- * @typedef {Object} GasFeeInputReturnType
+ * @typedef {object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
  *  user's preferred currency.
@@ -186,30 +186,24 @@ export function useGasFeeInputs(
     transaction,
   ]);
 
-  const {
-    gasPrice,
-    setGasPrice,
-    setGasPriceHasBeenManuallySet,
-  } = useGasPriceInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    transaction,
-  });
+  const { gasPrice, setGasPrice, setGasPriceHasBeenManuallySet } =
+    useGasPriceInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      transaction,
+    });
 
-  const {
-    maxFeePerGas,
-    maxFeePerGasFiat,
-    setMaxFeePerGas,
-  } = useMaxFeePerGasInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    gasPrice,
-    supportsEIP1559V2,
-    transaction,
-  });
+  const { maxFeePerGas, maxFeePerGasFiat, setMaxFeePerGas } =
+    useMaxFeePerGasInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      gasLimit,
+      gasPrice,
+      supportsEIP1559V2,
+      transaction,
+    });
 
   const {
     maxPriorityFeePerGas,

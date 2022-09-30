@@ -2,7 +2,6 @@
 import React from 'react';
 import log from 'loglevel';
 import * as Sentry from '@sentry/browser';
-
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 const fetchWithTimeout = getFetchWithTimeout();
@@ -15,7 +14,7 @@ const missingSubstitutionErrors = {};
  * Returns a localized message for the given key
  *
  * @param {string} localeCode - The code for the current locale
- * @param {Object} localeMessages - The map of messages for the current locale
+ * @param {object} localeMessages - The map of messages for the current locale
  * @param {string} key - The message key
  * @param {string[]} substitutions - A list of message substitution replacements
  * @returns {null|string} The localized message

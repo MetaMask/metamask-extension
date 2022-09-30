@@ -33,7 +33,8 @@ function transformState(state) {
           delete frequentRpcListDetail[index].chainId;
         }
       });
-      newState.PreferencesController.frequentRpcListDetail = frequentRpcListDetail;
+      newState.PreferencesController.frequentRpcListDetail =
+        frequentRpcListDetail;
     }
   }
   if (state.NetworkController) {

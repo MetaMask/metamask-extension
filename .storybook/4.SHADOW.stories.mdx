@@ -1,0 +1,307 @@
+import { Meta, Canvas, Story } from '@storybook/addon-docs';
+
+<Meta title="Foundations / Shadow" />
+
+# Shadow
+
+Shadows convey elevation of elements on a surface
+
+## Size
+
+There are 4 different sizes of shadow in MetaMask
+
+<div
+  style={{
+    display: 'grid',
+    gap: '32px',
+    gridTemplateColumns: 'repeat(auto-fill, 200px)',
+    marginTop: 16,
+    marginBottom: 16,
+  }}
+>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-background-default)',
+      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+    }}
+  >
+    XS
+  </div>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-background-default)',
+      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+    }}
+  >
+    SM
+  </div>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-background-default)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+    }}
+  >
+    MD
+  </div>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-background-default)',
+      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+    }}
+  >
+    LG
+  </div>
+</div>
+
+| Size   | CSS                     |
+| ------ | ----------------------- |
+| **XS** | `var(--shadow-size-xs)` |
+| **SM** | `var(--shadow-size-sm)` |
+| **MD** | `var(--shadow-size-md)` |
+| **LG** | `var(--shadow-size-lg)` |
+
+## Color
+
+As well as the neutral colors for shadow 2 other colors exist that are used for the primary and error/danger button hover states
+
+<div
+  style={{
+    display: 'grid',
+    gap: '32px',
+    gridTemplateColumns: 'repeat(auto-fill, 200px)',
+    marginTop: 16,
+    marginBottom: 16,
+  }}
+>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-background-default)',
+      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+    }}
+    color="default"
+  >
+    <span>Default</span>
+  </div>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-primary-default)',
+      boxShadow: 'var(--shadow-size-lg) var(--color-primary-shadow',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+      color: 'var(--color-primary-inverse)',
+    }}
+  >
+    <span>Primary</span>
+  </div>
+  <div
+    style={{
+      height: 100,
+      backgroundColor: 'var(--color-error-default)',
+      boxShadow: 'var(--shadow-size-lg) var(--color-error-shadow',
+      borderRadius: '4px',
+      display: 'grid',
+      alignContent: 'center',
+      justifyContent: 'center',
+      spanAlign: 'center',
+      color: 'var(--color-error-inverse)',
+    }}
+  >
+    <span>Error/Danger</span>
+  </div>
+</div>
+
+| Color       | CSS                           |
+| ----------- | ----------------------------- |
+| **neutral** | `var(--color-shadow-default)` |
+| **primary** | `var(--color-primary-shadow)` |
+| **danger**  | `var(--color-error-shadow)`   |
+
+## Example usage
+
+Using both size and color tokens, different shadows can be applied to components
+
+<div>
+  <div
+    style={{
+      display: 'grid',
+      gap: '32px',
+      gridTemplateColumns: 'repeat(auto-fill, 200px)',
+      marginBottom: '64px',
+    }}
+  >
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+      }}
+    >
+      <span>Card</span>
+    </div>
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
+      }}
+    >
+      <span>Dropdown</span>
+    </div>
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      }}
+    >
+      <span>Toast</span>
+    </div>
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+      }}
+    >
+      <span>Modal</span>
+    </div>
+  </div>
+  <div
+    style={{
+      display: 'grid',
+      gap: '32px',
+      gridTemplateColumns: 'repeat(auto-fill, 200px)',
+    }}
+  >
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--component-button-primary-shadow)',
+        backgroundColor: 'var(--color-primary-default)',
+        color: 'var(--color-primary-inverse)',
+      }}
+    >
+      <span>Button Primary Hover</span>
+    </div>
+    <div
+      style={{
+        borderRadius: '4px',
+        display: 'grid',
+        alignContent: 'center',
+        justifyContent: 'center',
+        spanAlign: 'center',
+        height: 100,
+        textAlign: 'center',
+        boxShadow: 'var(--component-button-danger-shadow)',
+        backgroundColor: 'var(--color-error-default)',
+        color: 'var(--color-error-inverse)',
+      }}
+    >
+      <span>Button Error/Danger Hover</span>
+    </div>
+  </div>
+</div>
+
+| Component                | JS                                                               | CSS |
+| ------------------------ | ---------------------------------------------------------------- | --- |
+| **Card**                 | `box-shadow: var(--shadow-size-xs) var(--color-shadow-default);` |
+| **Dropdown**             | `box-shadow: var(--shadow-size-sm) var(--color-shadow-default);` |
+| **Toast**                | `box-shadow: var(--shadow-size-md) var(--color-shadow-default);` |
+| **Modal**                | `box-shadow: var(--shadow-size-lg) var(--color-shadow-default);` |
+| **Button Primary Hover** | `box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);` |
+| **Button Danger Hover**  | `box-shadow: var(--shadow-size-sm) var(--color-error-shadow);`   |
+
+## Takeaways
+
+- Try to avoid using static media queries in your code
+- Try to use the provided SCSS mixins
+
+### ❌ Don't do this
+
+Don't use static media queries in your code
+
+```css
+/**
+* Don't do this
+* Static box-shadows create inconsistency in elevation of elements
+**/
+.card {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+```
+
+### ✅ Do this
+
+Do use the provided shadow design token css variables
+
+```css
+.card {
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+}
+```
+
+## References
+
+- [Shadow design tokens](https://metamask.github.io/design-tokens/?path=/docs/shadows-shadows--shadow)
+- [Figma light theme colors library(shadows page)](https://www.figma.com/file/kdFzEC7xzSNw7cXteqgzDW/%5BColor%5D-Light-Theme?node-id=753%3A719)(internal use only)
+- [Figma dark theme colors library(shadows page)](https://www.figma.com/file/rLKsoqpjyoKauYnFDcBIbO/%5BColor%5D-Dark-Theme?node-id=522%3A1022)(internal use only)

@@ -46,7 +46,8 @@ export default class AddContact extends PureComponent {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const { ensResolution } = this.props;
-        const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase();
+        const scannedAddress =
+          nextProps.qrCodeData.values.address.toLowerCase();
         const currentAddress = ensResolution || this.state.ethAddress;
         if (currentAddress.toLowerCase() !== scannedAddress) {
           this.setState({ input: scannedAddress });

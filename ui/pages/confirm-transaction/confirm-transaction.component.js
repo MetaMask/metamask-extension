@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import Loading from '../../components/ui/loading-screen';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
-import ConfirmTransactionBase from '../confirm-transaction-base';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
 import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
@@ -68,7 +68,7 @@ export default class ConfirmTransaction extends Component {
       sendTo,
       history,
       mostRecentOverviewPage,
-      transaction: { txParams: { data } = {} } = {},
+      transaction: { txParams: { data } = {}, origin } = {},
       getContractMethodData,
       transactionId,
       paramsTransactionId,
@@ -91,7 +91,9 @@ export default class ConfirmTransaction extends Component {
       return;
     }
 
-    getContractMethodData(data);
+    if (origin !== 'metamask') {
+      getContractMethodData(data);
+    }
 
     const txId = transactionId || paramsTransactionId;
     if (txId) {
@@ -107,7 +109,7 @@ export default class ConfirmTransaction extends Component {
   componentDidUpdate(prevProps) {
     const {
       setTransactionToConfirm,
-      transaction: { txData: { txParams: { data } = {} } = {} },
+      transaction: { txData: { txParams: { data } = {}, origin } = {} },
       clearConfirmTransaction,
       getContractMethodData,
       paramsTransactionId,
@@ -124,8 +126,10 @@ export default class ConfirmTransaction extends Component {
       prevProps.paramsTransactionId !== paramsTransactionId
     ) {
       clearConfirmTransaction();
-      getContractMethodData(data);
       setTransactionToConfirm(paramsTransactionId);
+      if (origin !== 'metamask') {
+        getContractMethodData(data);
+      }
     } else if (
       prevProps.transactionId &&
       !transactionId &&
@@ -176,7 +180,7 @@ export default class ConfirmTransaction extends Component {
         <Route
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
-          component={ConfirmTransactionBase}
+          component={ConfirmContractInteraction}
         />
         <Route
           exact

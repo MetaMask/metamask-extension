@@ -15,18 +15,15 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
 const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
-  const {
-    closeAllModals,
-    closeModal,
-    currentModal,
-    openModalCount,
-  } = useTransactionModalContext();
+  const { closeAllModals, closeModal, currentModal, openModalCount } =
+    useTransactionModalContext();
 
   if (currentModal !== 'editGasFee') {
     return null;
@@ -94,12 +91,12 @@ const EditGasFeePopover = () => {
                 tag={TYPOGRAPHY.Paragraph}
                 variant={TYPOGRAPHY.H7}
               >
-                {t('learmMoreAboutGas', [
+                {t('learnMoreAboutGas', [
                   <a
                     key="learnMoreLink"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
+                    href={ZENDESK_URLS.USER_GUIDE_GAS}
                   >
                     {t('learnMore')}
                   </a>,
