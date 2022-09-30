@@ -39,9 +39,9 @@ export const ButtonBase = ({
         'mm-button',
         `mm-button--size-${size}`,
         {
-          [`mm-button--loading`]: Boolean(loading),
-          [`mm-button--disabled`]: Boolean(disabled),
-          [`mm-button--block`]: Boolean(block),
+          'mm-button--loading': Boolean(loading),
+          'mm-button--disabled': Boolean(disabled),
+          'mm-button--block': Boolean(block),
         },
         className,
       )}
