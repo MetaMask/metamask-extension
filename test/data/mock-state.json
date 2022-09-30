@@ -265,7 +265,7 @@
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
     "advancedGasFee": {
-      "0x4": {
+      "0x5": {
         "maxBaseFee": "75",
         "priorityFee": "2"
       }
