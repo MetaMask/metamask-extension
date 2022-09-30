@@ -10,12 +10,16 @@ import LogoLattice from '../../../components/ui/logo/logo-lattice';
 import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
+  AFFILIATE_LINKS,
+  AFFILIATE_TUTORIAL_LINKS,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -195,7 +199,7 @@ export default class SelectHardware extends Component {
     steps.push({
       asset: 'plug-in-wallet',
       dimensions: { width: '225px', height: '75px' },
-      title: this.context.t('step2LedgerWallet'), 
+      title: this.context.t('step2LedgerWallet'),
       message: this.context.t('step2LedgerWalletMsg', [
         <a
           className="hw-connect__msg-link"
@@ -215,33 +219,31 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked Ledger Buy Now',
-              })
-              window.open("https://shop.ledger.com/?r=17c4991a03fa", "_blank")
-            }
-            }
-          >
-           {this.context.t('buyNow')}
-          </Button>
-          <Button
-            className="hw-connect__external-btn"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked Ledger Tutorial',
-              })
-              window.open("https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true", "_blank")
-            }
-            }
-          >
-           {this.context.t('tutorial')}
-          </Button>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Ledger Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.LEDGER, '_blank');
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Ledger Tutorial',
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.LEDGER, '_blank');
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -283,33 +285,31 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked GridPlus Buy Now',
-              })
-              window.open("https://gridplus.io/?afmc=7p", "_blank")
-            }
-            }
-          >
-          {this.context.t('buyNow')}
-          </Button>
-          <Button
-            className="hw-connect__external-btn"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked GidPlus Tutorial',
-              })
-              window.open("https://docs.gridplus.io/setup/metamask", "_blank")
-            }
-            }
-          >
-           {this.context.t('tutorial')}
-          </Button>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked GridPlus Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.GRIDPLUS, '_blank');
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked GidPlus Tutorial',
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.GRIDPLUS, '_blank');
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -351,33 +351,31 @@ export default class SelectHardware extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked Trezor Buy Now',
-              })
-              window.open("https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009", "_blank")
-            }
-            }
-          >
-           {this.context.t('buyNow')}
-          </Button>
-          <Button
-            className="hw-connect__external-btn"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked Trezor Tutorial',
-              })
-              window.open("https://wiki.trezor.io/Apps:MetaMask", "_blank")
-            }
-            }
-          >
-           {this.context.t('tutorial')}
-          </Button>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Trezor Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.TREZOR, '_blank');
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Trezor Tutorial',
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.TREZOR, '_blank');
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -403,31 +401,33 @@ export default class SelectHardware extends Component {
       {
         message: (
           <>
-            <p className="hw-connect__QR-subtitle">Keystone</p>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('keystone')}
+            </p>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked Keystone Buy Now',
-              })
-              window.open("https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9", "_blank")
-            }
-            }>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Keystone Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.KEYSTONE, '_blank');
+              }}
+            >
               {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => {
-                trackEvent({
+                this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Keystone Buy Now',
-                })
-                window.open("https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone", "_blank")
-              }
-              }>
+                  event: 'Clicked Keystone Tutorial',
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.KEYSTONE, '_blank');
+              }}
+            >
               {this.context.t('tutorial')}
             </Button>
           </>
@@ -436,31 +436,33 @@ export default class SelectHardware extends Component {
       {
         message: (
           <>
-            <p className="hw-connect__QR-subtitle">AirGap Vault</p>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('airgapVault')}
+            </p>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked AirGap Vault Buy Now',
-              })
-              window.open("https://airgap.it/", "_blank")
-            }
-            }>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked AirGap Vault Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.AIRGAP, '_blank');
+              }}
+            >
               {this.context.t('downloadNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => {
-                trackEvent({
+                this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked AirGap Vault Tutorial',
-                })
-                window.open("https://support.airgap.it/guides/metamask/", "_blank")
-              }
-              }>
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.AIRGAP, '_blank');
+              }}
+            >
               {this.context.t('tutorial')}
             </Button>
           </>
@@ -469,31 +471,33 @@ export default class SelectHardware extends Component {
       {
         message: (
           <>
-            <p className="hw-connect__QR-subtitle">CoolWallet</p>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('coolWallet')}
+            </p>
             <Button
               className="hw-connect__external-btn-first"
               type="secondary"
               onClick={() => {
-                trackEvent({
+                this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Buy Now',
-                })
-                window.open("https://www.coolwallet.io/", "_blank")
-              }
-            }>
+                });
+                window.open(AFFILIATE_LINKS.COOLWALLET, '_blank');
+              }}
+            >
               {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => {
-                trackEvent({
+                this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Tutorial',
-                })
-                window.open("https://www.coolwallet.io/metamask-step-by-step-guides/", "_blank")
-              }
-              }>
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.COOLWALLET, '_blank');
+              }}
+            >
               {this.context.t('tutorial')}
             </Button>
           </>
@@ -502,32 +506,32 @@ export default class SelectHardware extends Component {
       {
         message: (
           <>
-            <p className="hw-connect__QR-subtitle">D'Cent</p>
+            <p className="hw-connect__QR-subtitle">{this.context.t('dcent')}</p>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.NAVIGATION,
-                event: 'Clicked DCent Buy Now',
-              })
-              window.open("https://dcentwallet.com/", "_blank")
-            }
-            }>
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked DCent Buy Now',
+                });
+                window.open(AFFILIATE_LINKS.DCENT, '_blank');
+              }}
+            >
               {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => {
-                trackEvent({
+                this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked DCent Tutorial',
-                })
-                window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
-              }
-              }>
-                {this.context.t('tutorial')}
+                });
+                window.open(AFFILIATE_TUTORIAL_LINKS.DCENT, '_blank');
+              }}
+            >
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),

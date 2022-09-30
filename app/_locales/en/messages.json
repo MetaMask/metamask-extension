@@ -98,9 +98,6 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
-  "QRHardwareWalletSteps3Description": {
-    "message": "CoolWallet (Coming Soon)"
-  },
   "about": {
     "message": "About"
   },
@@ -265,9 +262,6 @@
   },
   "airgapVault": {
     "message": "AirGap Vault"
-  },
-  "airgapVaultTutorial": {
-    "message": " (Tutorials)"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -774,6 +768,9 @@
   "convertTokenToNFTExistDescription": {
     "message": "We’ve detected that this asset has been added as an NFT. Would you like to remove it from your token list?"
   },
+  "coolWallet": {
+    "message": "CoolWallet"
+  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -902,6 +899,9 @@
   },
   "dataHex": {
     "message": "Hex"
+  },
+  "dcent": {
+    "message": "D'Cent"
   },
   "decimal": {
     "message": "Token decimal"
@@ -1806,9 +1806,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Tutorials)"
   },
   "knownAddressRecipient": {
     "message": "Known contract address."
@@ -4119,14 +4116,14 @@
   "tryAgain": {
     "message": "Try again"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "tryOur": {
     "message": "Try our"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
+  },
+  "tutorial": {
+    "message": "Tutorial"
   },
   "twelveHrTitle": {
     "message": "12hr:"
