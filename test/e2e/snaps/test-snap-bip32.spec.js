@@ -1,9 +1,8 @@
 const { strict: assert } = require('assert');
-const { check } = require('yargs');
 const { withFixtures } = require('../helpers');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap update', function () {
+describe('Test Snap bip-32', function () {
   it('can install an old and then updated version', async function () {
     const ganacheOptions = {
       accounts: [
@@ -40,7 +39,6 @@ describe('Test Snap update', function () {
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
-        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -122,11 +120,11 @@ describe('Test Snap update', function () {
         await driver.clickElement('#sendBip32CompressedPublicKey');
         // check result
         await driver.delay(1000);
-        const CompressedPublicKeyResult = await driver.findElement(
+        const compressedPublicKeyResult = await driver.findElement(
           '#bip32CompressedPublicKeyResult',
         );
         assert.equal(
-          await CompressedPublicKeyResult.getText(),
+          await compressedPublicKeyResult.getText(),
           'Public key: "033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
         );
 
