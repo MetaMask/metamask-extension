@@ -3,7 +3,7 @@ const { withFixtures } = require('../helpers');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap bip-32', function () {
-  it('can install an old and then updated version', async function () {
+  it('tests various functions of bip-32', async function () {
     const ganacheOptions = {
       accounts: [
         {
