@@ -222,7 +222,7 @@
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",
     "react-toggle-button": "^2.2.0",
-    "react-transition-group": "^1.2.1",
+    "react-transition-group": "^4.4.5",
     "readable-stream": "^2.3.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
