@@ -3276,7 +3276,7 @@ export function setAdvancedGasFee(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setAdvancedGasFee`);
-    callBackgroundMethod('setAdvancedGasFee', [val], (err) => {
+    callBackgroundMethod('setAdvancedGasFee', [val, chainId], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err));
