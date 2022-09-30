@@ -278,9 +278,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "将这些 $1 保存为“高级”默认值"
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "始终使用这些值和高级设置作为默认值。"
-  },
   "advancedGasFeeModalTitle": {
     "message": "高级燃料费"
   },
