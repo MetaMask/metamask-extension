@@ -58,7 +58,7 @@ function getValues(pendingApproval, t, actions) {
                 },
               },
               props: {
-                className: 'snap-confirm',
+                className: 'snap-confirmation',
               },
             },
           ]
@@ -91,15 +91,15 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    approvalText: t('approveButtonText'),
     cancelText: t('reject'),
-    onApprove: () => actions.resolvePendingApproval(pendingApproval.id, true),
+    submitText: t('approveButtonText'),
+    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
     onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
   };
 }
 
-const snapConfirm = {
+const snapConfirmation = {
   getValues,
 };
 
-export default snapConfirm;
+export default snapConfirmation;

@@ -1228,11 +1228,23 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getSnapState',
         ),
+        showAlert: (origin, alertData) =>
+          this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+            requestData: alertData,
+          }),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
-            type: MESSAGE_TYPE.SNAP_CONFIRM,
+            type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
+          }),
+        showPrompt: (origin, promptData) =>
+          this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+            requestData: promptData,
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
@@ -1398,7 +1410,7 @@ export default class MetamaskController extends EventEmitter {
         ).filter(
           (approval) =>
             approval.origin === truncatedSnap.id &&
-            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+            approval.type.startsWith(RestrictedMethods.snap_dialog),
         );
         for (const approval of approvals) {
           this.approvalController.reject(

@@ -53,7 +53,9 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_CONFIRM: RestrictedMethods.snap_confirm,
+  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
+  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
+  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
 } as const;
 

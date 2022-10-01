@@ -6,11 +6,12 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
+
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -132,12 +133,23 @@ export default function ConfirmationPage({
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
 
+  const [inputStates, setInputStates] = useState({});
+  const setInputState = (key, value) => {
+    setInputStates((currentState) => ({ ...currentState, [key]: value }));
+  };
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
-      ? getTemplateValues(pendingConfirmation, t, dispatch, history)
+      ? getTemplateValues(
+          pendingConfirmation,
+          t,
+          dispatch,
+          history,
+          setInputState,
+        )
       : {};
   }, [pendingConfirmation, t, dispatch, history]);
 
@@ -245,9 +257,17 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        onApprove={templatedValues.onApprove}
+        onSubmit={
+          pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
+            ? () => {
+                templatedValues.onSubmit(
+                  inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT],
+                );
+              }
+            : templatedValues.onSubmit
+        }
         onCancel={templatedValues.onCancel}
-        approveText={templatedValues.approvalText}
+        submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
       />
     </div>

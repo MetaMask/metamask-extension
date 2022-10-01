@@ -8,28 +8,30 @@ import Box from '../../ui/box';
 import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import TextArea from '../../ui/textarea/textarea';
+import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
 
 export const safeComponentList = {
-  MetaMaskTranslation,
   a: 'a',
   b: 'b',
+  i: 'i',
   p: 'p',
   div: 'div',
   span: 'span',
-  Typography,
-  Chip,
-  DefinitionList,
-  TruncatedDefinitionList,
-  Button,
-  Popover,
   Box,
-  NetworkDisplay,
-  TextArea,
+  Button,
+  Chip,
   ConfirmationNetworkSwitch,
-  UrlIcon,
+  DefinitionList,
+  MetaMaskTranslation,
+  NetworkDisplay,
+  Popover,
+  TextArea,
+  TextField,
   Tooltip,
-  i: 'i',
+  TruncatedDefinitionList,
+  Typography,
+  UrlIcon,
 };
