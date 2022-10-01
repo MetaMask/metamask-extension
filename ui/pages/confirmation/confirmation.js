@@ -310,7 +310,19 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
+<<<<<<< HEAD
         onSubmit={handleSubmit}
+=======
+        onSubmit={
+          pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
+            ? () => {
+                templatedValues.onSubmit(
+                  inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT],
+                );
+              }
+            : templatedValues.onSubmit
+        }
+>>>>>>> Add snap alerts and prompts via snap_dialog
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
