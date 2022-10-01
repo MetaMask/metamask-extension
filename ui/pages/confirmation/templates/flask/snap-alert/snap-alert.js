@@ -91,7 +91,7 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    submitText: t('submit'),
+    submitText: t('ok'),
     onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, null),
   };
 }

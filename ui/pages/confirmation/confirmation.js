@@ -29,6 +29,9 @@ import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
+// TODO(rekmarks): This component and all of its sub-components should probably
+// be renamed to "Dialog", now that we are using it in that manner.
+
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
  * immutable and painless. This state is not stored in redux state because it
@@ -258,6 +261,11 @@ export default function ConfirmationPage({
             ))
         }
         onSubmit={
+          // TODO(rekmarks): We need some generic way of managing this, as
+          // opposed to this one-time hack. This component should not have to
+          // keep track of which message types / templates have input values.
+          // We should define that in a constant somewhere, and then we can do
+          // something like: if (hasInputState(pendingConfirmation.type)) { ... }
           pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
             ? () => {
                 templatedValues.onSubmit(
