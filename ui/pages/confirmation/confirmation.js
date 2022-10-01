@@ -314,6 +314,11 @@ export default function ConfirmationPage({
         onSubmit={handleSubmit}
 =======
         onSubmit={
+          // TODO(rekmarks): We need some generic way of managing this, as
+          // opposed to this one-time hack. This component should not have to
+          // keep track of which message types / templates have input values.
+          // We should define that in a constant somewhere, and then we can do
+          // something like: if (hasInputState(pendingConfirmation.type)) { ... }
           pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
             ? () => {
                 templatedValues.onSubmit(
