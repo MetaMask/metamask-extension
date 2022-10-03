@@ -76,28 +76,6 @@ export default class LoadingNetworkScreen extends PureComponent {
     );
   };
 
-  renderDeprecatedRpcUrlWarning = () => {
-    const { showNetworkDropdown } = this.props;
-
-    return (
-      <div className="loading-overlay__error-screen">
-        <span className="loading-overlay__emoji">&#128542;</span>
-        <span>{this.context.t('currentRpcUrlDeprecated')}</span>
-        <div className="loading-overlay__error-buttons">
-          <Button
-            type="secondary"
-            onClick={() => {
-              window.clearTimeout(this.cancelCallTimeout);
-              showNetworkDropdown();
-            }}
-          >
-            {this.context.t('switchNetworks')}
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
   renderErrorScreenContent = () => {
     const { showNetworkDropdown, setProviderArgs, setProviderType } =
       this.props;
