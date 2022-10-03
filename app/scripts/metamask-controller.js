@@ -711,10 +711,13 @@ export default class MetamaskController extends EventEmitter {
         name: 'MultiChainController',
         allowedActions: [
           `${this.permissionController.name}:getPermissions`,
+          `${this.permissionController.name}:hasPermission`,
           `${this.snapController.name}:getAll`,
           `${this.snapController.name}:handleRequest`,
           `${this.snapController.name}:onSessionOpen`,
           `${this.snapController.name}:onSessionClose`,
+          `${this.approvalController.name}:addRequest`,
+          `${this.permissionController.name}:grantPermissions`,
         ],
       }),
       notify: console.log,
