@@ -52,7 +52,7 @@
         "@babel/preset-typescript": true,
         "depcheck>@babel/traverse": true,
         "depcheck>json5": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>convert-source-map": true
       }
     },
@@ -1202,6 +1202,11 @@
         "pumpify>inherits": true
       }
     },
+    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true
+      }
+    },
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
@@ -1230,6 +1235,11 @@
     "@storybook/api>util-deprecate": {
       "builtin": {
         "util.deprecate": true
+      }
+    },
+    "@storybook/components>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "@storybook/react>acorn-walk": {
@@ -1265,6 +1275,7 @@
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
         "madge>debug": true,
+        "nock>debug": true,
         "typescript": true
       }
     },
@@ -1300,7 +1311,7 @@
       "packages": {
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "typescript": true
       }
     },
@@ -1333,7 +1344,7 @@
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint>is-glob": true,
         "globby": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "semver": true,
         "typescript": true
       }
@@ -2160,7 +2171,7 @@
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "depcheck>@babel/traverse>globals": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
@@ -2332,7 +2343,7 @@
     "enzyme>object.assign": {
       "packages": {
         "globalthis>define-properties": true,
-        "nock>deep-equal>object-keys": true,
+        "mocha>object.assign>object-keys": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
@@ -2399,7 +2410,7 @@
         "eslint>natural-compare": true,
         "eslint>regexpp": true,
         "globby>ignore": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint-config-prettier": {
@@ -2447,7 +2458,7 @@
         "brfs>resolve": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint>is-glob": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>glob": true
       }
     },
@@ -2693,7 +2704,7 @@
         "eslint-plugin-jsdoc>escape-string-regexp": true,
         "eslint-plugin-jsdoc>spdx-expression-parse": true,
         "eslint>esquery": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "semver": true
       }
     },
@@ -2920,7 +2931,7 @@
         "eslint>minimatch": true,
         "eslint>strip-json-comments": true,
         "globby>ignore": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint>@humanwhocodes/config-array": {
@@ -2930,7 +2941,7 @@
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
         "eslint>minimatch": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint>ajv": {
@@ -3278,7 +3289,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "nock>deep-equal>object-keys": true
+        "mocha>object.assign>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3666,10 +3677,10 @@
         "console.error": true
       },
       "packages": {
+        "@storybook/components>qs": true,
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
-        "nock>qs": true,
         "react>object-assign": true
       }
     },
@@ -6608,25 +6619,6 @@
         "loose-envify>js-tokens": true
       }
     },
-    "madge>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "madge>debug>ms": true,
-        "sinon>supports-color": true
-      }
-    },
     "madge>detective-scss>gonzales-pe": {
       "globals": {
         "console.error": true,
@@ -6652,6 +6644,13 @@
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
         "stylelint>balanced-match": true
+      }
+    },
+    "mocha>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "mocha>supports-color>has-flag": {
@@ -6686,21 +6685,23 @@
         "process.platform": true
       }
     },
-    "nock>deep-equal>is-date-object": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "nock>mkdirp": {
+    "nock>debug": {
       "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
-      }
-    },
-    "nock>qs": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
       "packages": {
-        "string.prototype.matchall>side-channel": true
+        "nock>debug>ms": true,
+        "sinon>supports-color": true
       }
     },
     "node-sass": {
@@ -7116,9 +7117,9 @@
     },
     "string.prototype.matchall>es-abstract>es-to-primitive": {
       "packages": {
+        "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@storybook/api>telejson>is-symbol": true,
-        "enzyme>is-callable": true,
-        "nock>deep-equal>is-date-object": true
+        "enzyme>is-callable": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
@@ -7185,7 +7186,7 @@
         "globby>ignore": true,
         "globby>slash": true,
         "lodash": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>resolve-from": true,
         "stylelint>@stylelint/postcss-css-in-js": true,
         "stylelint>@stylelint/postcss-markdown": true,
@@ -7499,7 +7500,7 @@
         "path.dirname": true
       },
       "packages": {
-        "nock>mkdirp": true
+        "mocha>mkdirp": true
       }
     },
     "stylelint>global-modules": {

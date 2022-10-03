@@ -374,6 +374,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   SHIB: 'SHIB',
   SKL: 'SKL',
   SNX: 'SNX',
+  SPA: 'SPA',
   STETH: 'STETH',
   STORJ: 'STORJ',
   SUKU: 'SUKU',
@@ -577,9 +578,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.PALM
     | typeof CHAIN_IDS.HARMONY
-    | typeof CHAIN_IDS.OPTIMISM
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
-    | typeof CHAIN_IDS.ARBITRUM
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -843,6 +842,24 @@ export const BUYABLE_CHAINS_MAP: {
       defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.CELO,
       showOnlyCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
     },
+  },
+  [CHAIN_IDS.OPTIMISM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'optimism',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+    ],
+  },
+  [CHAIN_IDS.ARBITRUM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
+    network: 'arbitrum',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ARBITRUM,
+      SUPPORTED_CURRENCY_SYMBOLS.SPA,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDS,
+    ],
   },
 };
 
