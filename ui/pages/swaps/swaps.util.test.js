@@ -42,7 +42,7 @@ jest.mock('../../../shared/lib/storage-helpers', () => ({
 }));
 
 describe('Swaps Util', () => {
-  afterAll(() => {
+  afterEach(() => {
     nock.cleanAll();
   });
 
@@ -112,7 +112,7 @@ describe('Swaps Util', () => {
   });
 
   describe('fetchTokens', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/tokens')
@@ -131,7 +131,7 @@ describe('Swaps Util', () => {
   });
 
   describe('fetchAggregatorMetadata', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/aggregatorMetadata')
@@ -150,7 +150,7 @@ describe('Swaps Util', () => {
   });
 
   describe('fetchTopAssets', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/topAssets')
@@ -373,7 +373,7 @@ describe('Swaps Util', () => {
         swapsFeatureIsLive: true,
       };
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
-      swapsFeatureFlags[ETHEREUM].extension_active = false;
+      swapsFeatureFlags[ETHEREUM].extensionActive = false;
       expect(
         getSwapsLivenessForNetwork(swapsFeatureFlags, CHAIN_IDS.MAINNET),
       ).toMatchObject(expectedSwapsLiveness);
