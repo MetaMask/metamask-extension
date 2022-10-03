@@ -8,6 +8,14 @@ import { obj as createThoughStream } from 'through2';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
+/**
+ * Prerequisites for debugging:
+ * - comment out keep alive logic
+ * - comment out legacy provider support
+ * - add node.js stream listeners
+ *
+ * New changes:
+ */
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
@@ -184,6 +192,25 @@ const initPhishingStreams = () => {
  * INPAGE - EXTENSION STREAM LOGIC
  */
 
+const setupPageChannelListeners = () => {
+  pageChannel.on('data', (chunk) => {
+    const { result, method, params } = chunk;
+    if (!browser.runtime.id) {
+      console.info('pageChannel !browser.runtime.id');
+    }
+    console.info(
+      `pageChannel > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
+      params,
+    );
+  });
+  pageChannel.on('finish', () => {
+    console.log('pageChannel finished');
+  });
+  pageChannel.on('error', (error) => {
+    console.info('pageChannel error', error);
+  });
+};
+
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
@@ -191,16 +218,57 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
+  pageStream.on('data', (chunk) => {
+    const { result, method, params } = chunk;
+
+    // UPDATED LOGIC
+    if (!browser.runtime.id) {
+      console.info('pageStream !browser.runtime.id');
+    }
+
+    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+    console.info(
+      `pageStream > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
+      params,
+    );
+  });
+  pageStream.on('finish', () => {
+    console.log('pageStream finished');
+  });
+  pageStream.on('error', (error) => {
+    console.info('pageStream error', error);
+  });
+
   // create and connect channel muxers
   // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
+
+  pageMux.on('data', (chunk) => {
+    const { result, method, params } = chunk;
+    if (!browser.runtime.id) {
+      console.info('pageMux !browser.runtime.id');
+    }
+    console.info(
+      `pageMux > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
+      params,
+    );
+  });
+  pageMux.on('finish', () => {
+    console.log('pageMux finished');
+  });
+  pageMux.on('error', (error) => {
+    console.info('pageMux error', error);
+  });
 
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
   pageChannel = pageMux.createStream(PROVIDER);
+
+  setupPageChannelListeners();
 };
 
 const setupExtensionStreams = () => {
@@ -227,10 +295,47 @@ const setupExtensionStreams = () => {
     ),
   );
 
+  extensionMux.on('error', (err) => {
+    console.log('extensionMux error ', err);
+  });
+  extensionStream.on('data', (chunk) => {
+    const method = chunk.data?.method;
+    if (!browser.runtime.id) {
+      console.info('extensionStream !browser.runtime.id');
+    }
+    console.info(
+      `extensionStream > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | params: `,
+      chunk.data?.params,
+    );
+  });
+  extensionStream.on('finish', () => {
+    console.log('extensionStream finished');
+  });
+  extensionStream.on('error', (err) => {
+    console.log('extensionStream error ', err);
+  });
+  extensionChannel.on('data', (chunk) => {
+    const { result, method, params } = chunk;
+    if (!browser.runtime.id) {
+      console.info('extensionChannel !browser.runtime.id');
+    }
+    console.info(
+      `extensionChannel > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
+      params,
+    );
+  });
+  extensionChannel.on('finish', () => {
+    console.log('extensionChannel finished');
+  });
+  extensionChannel.on('error', (err) => {
+    console.log('extensionChannel error ', err);
+  });
+
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
 
+  console.log('extension streams connected');
   notifyInpageOfExtensionStreamConnect();
 };
 
@@ -338,12 +443,14 @@ const resetStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   destroyExtensionStreams();
+  setupPageChannelListeners();
+
   setupExtensionStreams();
 
-  destroyLegacyExtensionStreams();
-  setupLegacyExtensionStreams();
-
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
+
+  // destroyLegacyExtensionStreams();
+  // setupLegacyExtensionStreams();
 };
 
 /**
@@ -353,11 +460,12 @@ const resetStreamAndListeners = () => {
  */
 const initStreams = () => {
   setupPageStreams();
+
   setupExtensionStreams();
 
   // TODO:LegacyProvider: Delete
-  setupLegacyPageStreams();
-  setupLegacyExtensionStreams();
+  // setupLegacyPageStreams();
+  // setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
@@ -464,7 +572,7 @@ const start = () => {
 
   if (shouldInjectProvider()) {
     if (isManifestV3) {
-      initKeepWorkerAlive();
+      // initKeepWorkerAlive();
     } else {
       injectScript(inpageBundle);
     }
