@@ -1,5 +1,3 @@
-const { promises: fs } = require('fs');
-const path = require('path');
 const Koa = require('koa');
 const { isObject, mapValues } = require('lodash');
 
@@ -94,15 +92,11 @@ class FixtureServer {
     });
   }
 
-  async loadState(directory) {
-    const statePath = path.resolve(__dirname, directory, 'state.json');
-
+  async loadJsonState(statePath, rawState) {
     let state;
     if (this._initialStateCache.has(statePath)) {
       state = this._initialStateCache.get(statePath);
     } else {
-      const data = await fs.readFile(statePath);
-      const rawState = JSON.parse(data.toString('utf-8'));
       state = performStateSubstitutions(rawState);
       this._initialStateCache.set(statePath, state);
     }
