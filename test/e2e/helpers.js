@@ -198,26 +198,6 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}/`);
-  await driver.delay(regularDelayMs);
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-  await driver.delay(regularDelayMs);
-
-  const windowHandles = await getWindowHandles(driver, 3);
-
-  // open extension popup and confirm connect
-  await driver.switchToWindow(windowHandles.popup);
-  await driver.delay(largeDelayMs);
-  await driver.clickElement({ text: 'Next', tag: 'button' });
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-  // send from dapp
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindow(windowHandles.dapp);
-  await driver.delay(regularDelayMs);
-};
-
 const completeImportSRPOnboardingFlow = async (
   driver,
   seedPhrase,
@@ -333,7 +313,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   createDownloadFolder,
