@@ -3362,7 +3362,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
+  async setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
     let _subjectType;
@@ -3377,7 +3377,7 @@ export default class MetamaskController extends EventEmitter {
     if (sender.url) {
       const { hostname } = new URL(sender.url);
       // Check if new connection is blocked if phishing detection is on
-      const phishingTestResponse = this.phishingController.test(hostname);
+      const phishingTestResponse = await this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
         this.sendPhishingWarning(
           connectionStream,
