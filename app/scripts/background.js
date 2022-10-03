@@ -362,7 +362,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   // connect to other contexts
   //
   if (isManifestV3 && remoteSourcePort) {
-    connectRemote(remoteSourcePort);
+    await connectRemote(remoteSourcePort);
   }
 
   browser.runtime.onConnect.addListener(connectRemote);
@@ -408,7 +408,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  function connectRemote(remotePort) {
+  async function connectRemote(remotePort) {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
