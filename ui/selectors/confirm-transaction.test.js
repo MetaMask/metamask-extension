@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import {
   unconfirmedTransactionsCountSelector,
@@ -24,7 +25,7 @@ describe('Confirm Transaction Selector', () => {
             metamaskNetworkId: '5',
           },
           2: {
-            chainId: '0x1',
+            chainId: CHAIN_IDS.MAINNET,
           },
         },
         unapprovedMsgCount: 1,

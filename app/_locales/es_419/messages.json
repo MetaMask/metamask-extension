@@ -47,9 +47,6 @@
   "about": {
     "message": "Acerca de"
   },
-  "acceleratingATransaction": {
-    "message": "* Usar un precio de gas más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
-  },
   "acceptTermsOfUse": {
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
@@ -607,12 +604,6 @@
   "custom": {
     "message": "Avanzado"
   },
-  "customGas": {
-    "message": "Personalizar gas"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar la tarifa puede disminuir los tiempos de procesamiento, pero no se garantiza esto."
-  },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
   },
@@ -999,9 +990,6 @@
     "message": "Pila:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tiempos de procesamiento estimados"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
@@ -1040,9 +1028,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "El más rápido"
   },
   "feeAssociatedRequest": {
     "message": "Esta solicitud tiene asociada una tarifa."
@@ -1419,15 +1404,16 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "learmMoreAboutGas": {
-    "message": "¿Quiere $1 sobre el gas?"
-  },
   "learnCancelSpeeedup": {
     "message": "Aprenda cómo $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "más información"
+  },
+  "learnMoreAboutGas": {
+    "message": "¿Quiere $1 sobre el gas?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "Más información"
@@ -1691,9 +1677,6 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Red de prueba"
   },
@@ -1756,12 +1739,6 @@
   },
   "newToMetaMask": {
     "message": "¿Es nuevo en MetaMask?"
-  },
-  "newTotal": {
-    "message": "Total nuevo"
-  },
-  "newTransactionFee": {
-    "message": "Tarifa de transacción nueva"
   },
   "newValues": {
     "message": "nuevos valores"
@@ -2341,9 +2318,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote su frase secreta de recuperación"
   },
-  "selectAHigherGasFee": {
-    "message": "Seleccione una tarifa de gas más alta para acelerar el procesamiento de la transacción.*"
-  },
   "selectAccounts": {
     "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
   },
@@ -2376,9 +2350,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar monto"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -2480,9 +2451,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
@@ -2596,9 +2564,6 @@
   },
   "swap": {
     "message": "Canjear"
-  },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina “desfase”. El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración “max slippage” (desfase máximo)."
   },
   "swapAggregator": {
     "message": "Agregador"
@@ -2755,9 +2720,6 @@
   "swapQuoteDetails": {
     "message": "Detalles de cotización"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración de la \"tolerancia de desfase\"."
-  },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
   },
@@ -2787,9 +2749,6 @@
   },
   "swapReviewSwap": {
     "message": "Revisar canje"
-  },
-  "swapSearchForAToken": {
-    "message": "Buscar un token"
   },
   "swapSelect": {
     "message": "Seleccionar"

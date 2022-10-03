@@ -8,9 +8,6 @@
   "about": {
     "message": "Informácie"
   },
-  "acceleratingATransaction": {
-    "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
-  },
   "accessingYourCamera": {
     "message": "Prístupuje k fotoaparátu..."
   },
@@ -235,12 +232,6 @@
   "custom": {
     "message": "Rozšírené"
   },
-  "customGas": {
-    "message": "Nastavit palivo"
-  },
-  "customGasSubTitle": {
-    "message": "Zvýšenie poplatku môže skrátiť dobu spracovania, nie je to však zaručené."
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -324,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Odhadovaný čas spracovania"
   },
   "ethereumPublicAddress": {
     "message": "Verejná adresa Ethereum"
@@ -567,12 +555,6 @@
   "newToMetaMask": {
     "message": "Ste noví na MetaMask?"
   },
-  "newTotal": {
-    "message": "Nový súčet"
-  },
-  "newTransactionFee": {
-    "message": "Nový poplatok za transakciu"
-  },
   "next": {
     "message": "Další"
   },
@@ -764,9 +746,6 @@
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
-  "selectAHigherGasFee": {
-    "message": "Ak chcete urýchliť spracovanie transakcie, vyberte vyšší poplatok GAS.*"
-  },
   "selectAnAccount": {
     "message": "Vybrať účet"
   },
@@ -784,9 +763,6 @@
   },
   "send": {
     "message": "Odeslat"
-  },
-  "sendAmount": {
-    "message": "Poslať sumu"
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
@@ -829,9 +805,6 @@
   },
   "signed": {
     "message": "Podepsáno"
-  },
-  "slow": {
-    "message": "Pomalé"
   },
   "somethingWentWrong": {
     "message": "Och! Niečo zlyhalo."

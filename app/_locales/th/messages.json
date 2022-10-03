@@ -108,12 +108,6 @@
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },
-  "customGas": {
-    "message": "กำหนดค่าแก็สเอง"
-  },
-  "customGasSubTitle": {
-    "message": "การเพิ่มค่าธรรมเนียมอาจลดเวลาดำเนินการ แต่ก็ไม่แน่เสมอไป"
-  },
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
   },
@@ -312,9 +306,6 @@
   "newToMetaMask": {
     "message": "เพิ่งเริ่มใช้ MetaMask?"
   },
-  "newTransactionFee": {
-    "message": "ค่าธรรมเนียมธุรกรรมใหม่"
-  },
   "next": {
     "message": "ถัดไป"
   },
@@ -394,9 +385,6 @@
   },
   "send": {
     "message": "ส่ง"
-  },
-  "sendAmount": {
-    "message": "ส่งจำนวนเงินนี้"
   },
   "sendTokens": {
     "message": "ส่งโทเค็น"

@@ -7,8 +7,8 @@ import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import {
-  NETWORK_TYPE_RPC,
   LOCALHOST_RPC_URL,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
@@ -152,7 +152,7 @@ class NetworkDropdown extends Component {
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
       const isCurrentRpcTarget =
-        provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl;
+        provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
 
       return (
         <DropdownMenuItem
@@ -212,22 +212,20 @@ class NetworkDropdown extends Component {
   getNetworkName() {
     const { provider } = this.props;
     const providerName = provider.type;
+    const { t } = this.context;
 
-    let name;
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('mainnet');
-    } else if (providerName === 'goerli') {
-      name = this.context.t('goerli');
-    } else if (providerName === 'sepolia') {
-      name = this.context.t('sepolia');
-    } else if (providerName === 'localhost') {
-      name = this.context.t('localhost');
-    } else {
-      name = provider.nickname || this.context.t('unknownNetwork');
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
     }
-
-    return name;
   }
 
   renderNetworkEntry(network) {
@@ -341,7 +339,7 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {this.renderNetworkEntry('mainnet')}
+          {this.renderNetworkEntry(NETWORK_TYPES.MAINNET)}
 
           {this.renderCustomRpcList(
             rpcListDetailWithoutLocalHost,
@@ -350,8 +348,8 @@ class NetworkDropdown extends Component {
 
           {shouldShowTestNetworks && (
             <>
-              {this.renderNetworkEntry('goerli')}
-              {this.renderNetworkEntry('sepolia')}
+              {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
+              {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

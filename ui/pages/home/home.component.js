@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(main)
-import { SUPPORT_LINK } from '../../helpers/constants/common';
-///: END:ONLY_INCLUDE_IN
 import {
   EVENT,
   EVENT_NAMES,
@@ -52,6 +49,9 @@ import {
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import Tooltip from '../../components/ui/tooltip';
+///: BEGIN:ONLY_INCLUDE_IN(main)
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
@@ -715,7 +715,10 @@ export default class Home extends PureComponent {
                     }}
                   >
                     <IconChart />
-                    <div className="home__subheader-link--text">
+                    <div
+                      className="home__subheader-link--text"
+                      data-testid="home__portfolio-site"
+                    >
                       {t('portfolioSite')}
                     </div>
                   </div>

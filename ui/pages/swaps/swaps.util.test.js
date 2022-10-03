@@ -1,14 +1,7 @@
 import nock from 'nock';
 import { MOCKS } from '../../../test/jest';
-import {
-  MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-  ETH_SYMBOL,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -18,8 +11,13 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
+  GOERLI,
   AVALANCHE,
 } from '../../../shared/constants/swaps';
+import {
+  fetchTradesInfo,
+  shouldEnableDirectWrapping,
+} from '../../../shared/lib/swaps-utils';
 import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
@@ -28,7 +26,6 @@ import {
   TOP_ASSETS,
 } from './swaps-util-test-constants';
 import {
-  fetchTradesInfo,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
@@ -36,18 +33,16 @@ import {
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
   countDecimals,
-  shouldEnableDirectWrapping,
   showRemainingTimeInMinAndSec,
-  getSwapsTokensReceivedFromTxMeta,
 } from './swaps.util';
 
-jest.mock('../../helpers/utils/storage-helpers.js', () => ({
+jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));
 
 describe('Swaps Util', () => {
-  afterAll(() => {
+  afterEach(() => {
     nock.cleanAll();
   });
 
@@ -110,14 +105,14 @@ describe('Swaps Util', () => {
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
         },
-        { chainId: MAINNET_CHAIN_ID },
+        { chainId: CHAIN_IDS.MAINNET },
       );
       expect(result).toStrictEqual(expectedResult2);
     });
   });
 
   describe('fetchTokens', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/tokens')
@@ -125,18 +120,18 @@ describe('Swaps Util', () => {
     });
 
     it('should fetch tokens', async () => {
-      const result = await fetchTokens(MAINNET_CHAIN_ID);
+      const result = await fetchTokens(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
 
     it('should fetch tokens on prod', async () => {
-      const result = await fetchTokens(MAINNET_CHAIN_ID);
+      const result = await fetchTokens(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
   });
 
   describe('fetchAggregatorMetadata', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/aggregatorMetadata')
@@ -144,18 +139,18 @@ describe('Swaps Util', () => {
     });
 
     it('should fetch aggregator metadata', async () => {
-      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
+      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(AGGREGATOR_METADATA);
     });
 
     it('should fetch aggregator metadata on prod', async () => {
-      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
+      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(AGGREGATOR_METADATA);
     });
   });
 
   describe('fetchTopAssets', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/topAssets')
@@ -180,12 +175,12 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch top assets', async () => {
-      const result = await fetchTopAssets(MAINNET_CHAIN_ID);
+      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(expectedResult);
     });
 
     it('should fetch top assets on prod', async () => {
-      const result = await fetchTopAssets(MAINNET_CHAIN_ID);
+      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(expectedResult);
     });
   });
@@ -206,28 +201,28 @@ describe('Swaps Util', () => {
 
     it('returns true if "to" is WETH contract address', () => {
       expect(
-        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is WETH contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0xc02AAA39B223fe8d0a0e5c4f27ead9083c756cc2';
       expect(
-        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is ETH mainnet contract address on ETH mainnet', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.MAINNET];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is WBNB contract address on BSC mainnet', () => {
       usedTradeTxParams.to = WBNB_CONTRACT_ADDRESS;
-      expect(isContractAddressValid(usedTradeTxParams.to, BSC_CHAIN_ID)).toBe(
+      expect(isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.BSC)).toBe(
         true,
       );
     });
@@ -235,19 +230,19 @@ describe('Swaps Util', () => {
     it('returns true if "to" is WMATIC contract address on Polygon mainnet', () => {
       usedTradeTxParams.to = WMATIC_CONTRACT_ADDRESS;
       expect(
-        isContractAddressValid(usedTradeTxParams.to, POLYGON_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.POLYGON),
       ).toBe(true);
     });
 
     it('returns false if "to" is BSC contract address on ETH mainnet', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, MAINNET_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
       ).toBe(false);
     });
 
     it('returns false if contractAddress is null', () => {
-      expect(isContractAddressValid(null, LOCALHOST_CHAIN_ID)).toBe(false);
+      expect(isContractAddressValid(null, CHAIN_IDS.LOCALHOST)).toBe(false);
     });
 
     it('returns false if chainId is incorrect', () => {
@@ -257,67 +252,70 @@ describe('Swaps Util', () => {
     });
 
     it('returns true if "to" is BSC contract address on BSC network', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
-      expect(isContractAddressValid(usedTradeTxParams.to, BSC_CHAIN_ID)).toBe(
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
+      expect(isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.BSC)).toBe(
         true,
       );
     });
 
     it('returns true if "to" is Polygon contract address on Polygon network', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[POLYGON_CHAIN_ID];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.POLYGON];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, POLYGON_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.POLYGON),
       ).toBe(true);
     });
 
-    it('returns true if "to" is Rinkeby contract address on Rinkeby network', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP['0x4'];
-      expect(isContractAddressValid(usedTradeTxParams.to, '0x4')).toBe(true);
+    it('returns true if "to" is Goerli contract address on Goerli network', () => {
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.GOERLI];
+      expect(
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.GOERLI),
+      ).toBe(true);
     });
 
     it('returns true if "to" is testnet contract address', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[LOCALHOST_CHAIN_ID];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.LOCALHOST];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
       ).toBe(true);
     });
 
     it('returns true if "to" is testnet contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0x881D40237659C251811CEC9c364ef91dC08D300C';
       expect(
-        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
       ).toBe(true);
     });
 
     it('returns false if "to" has mismatch with current chainId', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
       ).toBe(false);
     });
   });
 
   describe('getNetworkNameByChainId', () => {
     it('returns "ethereum" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(MAINNET_CHAIN_ID)).toBe(ETHEREUM);
+      expect(getNetworkNameByChainId(CHAIN_IDS.MAINNET)).toBe(ETHEREUM);
     });
 
     it('returns "bsc" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(BSC_CHAIN_ID)).toBe(BSC);
+      expect(getNetworkNameByChainId(CHAIN_IDS.BSC)).toBe(BSC);
     });
 
     it('returns "polygon" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
+      expect(getNetworkNameByChainId(CHAIN_IDS.POLYGON)).toBe(POLYGON);
     });
 
-    it('returns "rinkeby" for Rinkeby chain ID', () => {
-      expect(getNetworkNameByChainId('0x4')).toBe('rinkeby');
+    it('returns "goerli" for Goerli chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.GOERLI)).toBe(GOERLI);
     });
 
     it('returns "avalanche" for Avalanche chain ID', () => {
-      expect(getNetworkNameByChainId(AVALANCHE_CHAIN_ID)).toBe(AVALANCHE);
+      expect(getNetworkNameByChainId(CHAIN_IDS.AVALANCHE)).toBe(AVALANCHE);
     });
   });
 
@@ -329,7 +327,19 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          LOCALHOST_CHAIN_ID,
+          CHAIN_IDS.LOCALHOST,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('returns info that Swaps are enabled and cannot use API v2 for Goerli chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          CHAIN_IDS.GOERLI,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -341,7 +351,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          SEPOLIA_CHAIN_ID,
+          CHAIN_IDS.SEPOLIA,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -353,7 +363,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          MAINNET_CHAIN_ID,
+          CHAIN_IDS.MAINNET,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -363,9 +373,9 @@ describe('Swaps Util', () => {
         swapsFeatureIsLive: true,
       };
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
-      swapsFeatureFlags[ETHEREUM].extension_active = false;
+      swapsFeatureFlags[ETHEREUM].extensionActive = false;
       expect(
-        getSwapsLivenessForNetwork(swapsFeatureFlags, MAINNET_CHAIN_ID),
+        getSwapsLivenessForNetwork(swapsFeatureFlags, CHAIN_IDS.MAINNET),
       ).toMatchObject(expectedSwapsLiveness);
     });
   });
@@ -398,8 +408,8 @@ describe('Swaps Util', () => {
     it('returns true if swapping from ETH to WETH', () => {
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          CHAIN_IDS.MAINNET,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
           WETH_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -410,7 +420,7 @@ describe('Swaps Util', () => {
         '0X0000000000000000000000000000000000000000';
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
+          CHAIN_IDS.MAINNET,
           ethAddressWithUpperCaseChars,
           WETH_CONTRACT_ADDRESS,
         ),
@@ -420,9 +430,9 @@ describe('Swaps Util', () => {
     it('returns true if swapping from WETH to ETH', () => {
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
+          CHAIN_IDS.MAINNET,
           WETH_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
         ),
       ).toBe(true);
     });
@@ -432,9 +442,9 @@ describe('Swaps Util', () => {
         '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
+          CHAIN_IDS.MAINNET,
           wethContractAddressWithUpperCaseChars,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
         ),
       ).toBe(true);
     });
@@ -442,8 +452,8 @@ describe('Swaps Util', () => {
     it('returns false if swapping from ETH to a non-WETH token', () => {
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          CHAIN_IDS.MAINNET,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -452,8 +462,8 @@ describe('Swaps Util', () => {
     it('returns true if swapping from BNB to WBNB', () => {
       expect(
         shouldEnableDirectWrapping(
-          BSC_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          CHAIN_IDS.BSC,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
           WBNB_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -462,9 +472,9 @@ describe('Swaps Util', () => {
     it('returns true if swapping from WBNB to BNB', () => {
       expect(
         shouldEnableDirectWrapping(
-          BSC_CHAIN_ID,
+          CHAIN_IDS.BSC,
           WBNB_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
         ),
       ).toBe(true);
     });
@@ -472,8 +482,8 @@ describe('Swaps Util', () => {
     it('returns false if swapping from BNB to a non-WBNB token', () => {
       expect(
         shouldEnableDirectWrapping(
-          BSC_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          CHAIN_IDS.BSC,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -482,8 +492,8 @@ describe('Swaps Util', () => {
     it('returns true if swapping from MATIC to WMATIC', () => {
       expect(
         shouldEnableDirectWrapping(
-          POLYGON_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          CHAIN_IDS.POLYGON,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
           WMATIC_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -492,9 +502,9 @@ describe('Swaps Util', () => {
     it('returns true if swapping from WMATIC to MATIC', () => {
       expect(
         shouldEnableDirectWrapping(
-          POLYGON_CHAIN_ID,
+          CHAIN_IDS.POLYGON,
           WMATIC_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
         ),
       ).toBe(true);
     });
@@ -502,8 +512,8 @@ describe('Swaps Util', () => {
     it('returns false if swapping from MATIC to a non-WMATIC token', () => {
       expect(
         shouldEnableDirectWrapping(
-          POLYGON_CHAIN_ID,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          CHAIN_IDS.POLYGON,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -512,7 +522,7 @@ describe('Swaps Util', () => {
     it('returns false if a source token is undefined', () => {
       expect(
         shouldEnableDirectWrapping(
-          MAINNET_CHAIN_ID,
+          CHAIN_IDS.MAINNET,
           undefined,
           WETH_CONTRACT_ADDRESS,
         ),
@@ -521,7 +531,7 @@ describe('Swaps Util', () => {
 
     it('returns false if a destination token is undefined', () => {
       expect(
-        shouldEnableDirectWrapping(MAINNET_CHAIN_ID, WETH_CONTRACT_ADDRESS),
+        shouldEnableDirectWrapping(CHAIN_IDS.MAINNET, WETH_CONTRACT_ADDRESS),
       ).toBe(false);
     });
   });
@@ -550,7 +560,7 @@ describe('Swaps Util', () => {
   describe('getSwapsTokensReceivedFromTxMeta', () => {
     const createProps = () => {
       return {
-        tokenSymbol: ETH_SYMBOL,
+        tokenSymbol: CURRENCY_SYMBOLS.ETH,
         txMeta: {
           swapMetaData: {
             token_to_amount: 5,
@@ -565,7 +575,7 @@ describe('Swaps Util', () => {
         accountAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
         tokenDecimals: 6,
         approvalTxMeta: null,
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
       };
     };
 

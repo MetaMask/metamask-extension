@@ -10,10 +10,7 @@ import {
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
-import {
-  MAINNET_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   ASSET_TYPES,
@@ -1577,10 +1574,10 @@ describe('Send Slice', () => {
           blockGasLimit: '',
           selectedAddress: '',
           provider: {
-            chainId: GOERLI_CHAIN_ID,
+            chainId: CHAIN_IDS.GOERLI,
           },
           cachedBalances: {
-            [GOERLI_CHAIN_ID]: {
+            [CHAIN_IDS.GOERLI]: {
               '0xAddress': '0x0',
             },
           },
@@ -2169,7 +2166,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2218,7 +2215,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2376,11 +2373,11 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             provider: {
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [GOERLI_CHAIN_ID]: {},
+              [CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2390,7 +2387,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [GOERLI_CHAIN_ID]: {
+              [CHAIN_IDS.GOERLI]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2463,7 +2460,7 @@ describe('Send Slice', () => {
             recipient: {
               address: '0xRecipientAddress',
               error: null,
-              nickname: '',
+              nickname: '0xRecipientAddress',
               warning: null,
               recipientWarningAcknowledged: false,
               type: '',
@@ -2511,11 +2508,11 @@ describe('Send Slice', () => {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
             provider: {
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [GOERLI_CHAIN_ID]: {},
+              [CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2525,7 +2522,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [GOERLI_CHAIN_ID]: {
+              [CHAIN_IDS.GOERLI]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2608,7 +2605,7 @@ describe('Send Slice', () => {
             recipient: {
               address: BURN_ADDRESS,
               error: null,
-              nickname: '',
+              nickname: BURN_ADDRESS,
               warning: null,
               type: '',
               recipientWarningAcknowledged: false,
@@ -2685,7 +2682,7 @@ describe('Send Slice', () => {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
           provider: {
-            chainId: GOERLI_CHAIN_ID,
+            chainId: CHAIN_IDS.GOERLI,
           },
           tokens: [
             {
@@ -2700,7 +2697,7 @@ describe('Send Slice', () => {
             },
           },
           addressBook: {
-            [GOERLI_CHAIN_ID]: {},
+            [CHAIN_IDS.GOERLI]: {},
           },
           identities: {},
           accounts: {
@@ -2710,7 +2707,7 @@ describe('Send Slice', () => {
             },
           },
           cachedBalances: {
-            [GOERLI_CHAIN_ID]: {
+            [CHAIN_IDS.GOERLI]: {
               '0xAddress': '0x0',
             },
           },
@@ -2800,7 +2797,7 @@ describe('Send Slice', () => {
             address: BURN_ADDRESS,
             error: null,
             warning: null,
-            nickname: '',
+            nickname: BURN_ADDRESS,
             type: '',
             recipientWarningAcknowledged: false,
           },
@@ -2915,7 +2912,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: MAINNET_CHAIN_ID },
+                provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2941,7 +2938,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: MAINNET_CHAIN_ID },
+                provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: initialState,
@@ -2953,7 +2950,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: MAINNET_CHAIN_ID },
+                provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
               },
@@ -2967,7 +2964,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: MAINNET_CHAIN_ID },
+                provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
               },
@@ -2981,7 +2978,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                provider: { chainId: MAINNET_CHAIN_ID },
+                provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: {

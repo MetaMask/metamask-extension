@@ -29,6 +29,7 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
+const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -111,7 +112,7 @@ function getPhishingWarningPageUrl({ config, testing }) {
   if (!phishingWarningPageUrl) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
-      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
+      : 'https://metamask.github.io/phishing-warning/latest/';
   }
 
   // We add a hash/fragment to the URL dynamically, so we need to ensure it
@@ -1013,7 +1014,9 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
 
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
+  const iconNames = await generateIconNames();
   return {
+    ICON_NAMES: iconNames,
     COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,

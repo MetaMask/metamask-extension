@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -22,6 +27,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -50,6 +56,8 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    accountBalance: PropTypes.string,
+    assetStandard: PropTypes.string,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -64,6 +72,9 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
@@ -155,6 +166,11 @@ export default class ConfirmPageContainer extends Component {
       isBuyableChain,
       networkIdentifier,
       setApproveForAllArg,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent,
+      ///: END:ONLY_INCLUDE_IN
+      accountBalance,
+      assetStandard,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -179,7 +195,7 @@ export default class ConfirmPageContainer extends Component {
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container">
+        <div className="page-container" data-testid="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
             positionOfCurrentTx={positionOfCurrentTx}
@@ -192,23 +208,35 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          <ConfirmPageContainerHeader
-            showEdit={showEdit}
-            onEdit={() => onEdit()}
-            showAccountInHeader={showAccountInHeader}
-            accountAddress={fromAddress}
-          >
-            {hideSenderToRecipient ? null : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-              />
-            )}
-          </ConfirmPageContainerHeader>
+          {assetStandard === ERC20 ||
+          assetStandard === ERC721 ||
+          assetStandard === ERC1155 ? (
+            <NetworkAccountBalanceHeader
+              accountName={fromName}
+              accountBalance={accountBalance}
+              tokenName={nativeCurrency}
+              accountAddress={fromAddress}
+              networkName={networkName}
+            />
+          ) : (
+            <ConfirmPageContainerHeader
+              showEdit={showEdit}
+              onEdit={() => onEdit()}
+              showAccountInHeader={showAccountInHeader}
+              accountAddress={fromAddress}
+            >
+              {hideSenderToRecipient ? null : (
+                <SenderToRecipient
+                  senderName={fromName}
+                  senderAddress={fromAddress}
+                  recipientName={toName}
+                  recipientAddress={toAddress}
+                  recipientEns={toEns}
+                  recipientNickname={toNickname}
+                />
+              )}
+            </ConfirmPageContainerHeader>
+          )}
           <div>
             {showAddToAddressDialog && (
               <>
@@ -242,6 +270,9 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               dataHexComponent={dataHexComponent}
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              insightComponent={insightComponent}
+              ///: END:ONLY_INCLUDE_IN
               errorMessage={errorMessage}
               errorKey={errorKey}
               tokenAddress={tokenAddress}
@@ -310,7 +341,24 @@ export default class ConfirmPageContainer extends Component {
           )}
           {isSetApproveForAll && setApproveForAllArg && (
             <Dialog type="error" className="confirm-page-container__dialog">
-              {t('confirmPageDialogSetApprovalForAll')}
+              {/*
+                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
+                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
+              */}
+              {t('confirmPageDialogSetApprovalForAll', [
+                <b
+                  key="confirm-page-container__dialog-placeholder-1"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
+                </b>,
+                <b
+                  key="confirm-page-container__dialog-placeholder-2"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
+                </b>,
+              ])}
             </Dialog>
           )}
           {contentComponent && (

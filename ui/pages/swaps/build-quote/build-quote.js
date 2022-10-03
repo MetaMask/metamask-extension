@@ -71,11 +71,7 @@ import {
   getHardwareWalletType,
 } from '../../../selectors';
 
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../../helpers/utils/conversions.util';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -106,10 +102,12 @@ import {
   countDecimals,
   fetchTokenPrice,
   fetchTokenBalance,
-  shouldEnableDirectWrapping,
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -750,7 +748,6 @@ export default function BuildQuote({
           <DropdownSearchList
             startingItem={selectedToToken}
             itemsToSearch={tokensToSearchSwapTo}
-            searchPlaceholderText={t('swapSearchForAToken')}
             fuseSearchKeys={fuseSearchKeys}
             selectPlaceHolderText={t('swapSelectAToken')}
             maxListItems={30}

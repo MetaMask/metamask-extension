@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import LoadingScreen from '../../ui/loading-screen';
 import { SECOND } from '../../../../shared/constants/time';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -39,20 +40,40 @@ export default class LoadingNetworkScreen extends PureComponent {
     }
     const { provider, providerId } = this.props;
     const providerName = provider.type;
+    const { t } = this.context;
 
-    let name;
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet');
-    } else if (providerName === 'goerli') {
-      name = this.context.t('connectingToGoerli');
-    } else if (providerName === 'sepolia') {
-      name = this.context.t('connectingToSepolia');
-    } else {
-      name = this.context.t('connectingTo', [providerId]);
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('connectingToMainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('connectingToGoerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('connectingToSepolia');
+      default:
+        return t('connectingTo', [providerId]);
     }
+  };
 
-    return name;
+  renderDeprecatedRpcUrlWarning = () => {
+    const { showNetworkDropdown } = this.props;
+
+    return (
+      <div className="loading-overlay__error-screen">
+        <span className="loading-overlay__emoji">&#128542;</span>
+        <span>{this.context.t('currentRpcUrlDeprecated')}</span>
+        <div className="loading-overlay__error-buttons">
+          <Button
+            type="secondary"
+            onClick={() => {
+              window.clearTimeout(this.cancelCallTimeout);
+              showNetworkDropdown();
+            }}
+          >
+            {this.context.t('switchNetworks')}
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   renderDeprecatedRpcUrlWarning = () => {

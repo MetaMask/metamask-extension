@@ -1,8 +1,5 @@
 import { cloneDeep } from 'lodash';
-import {
-  MAINNET_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -15,7 +12,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   0: {
     type: TRANSACTION_TYPES.CANCEL,
     id: 0,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x0',
     },
@@ -23,7 +20,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   1: {
     type: SENT_ETHER,
     id: 1,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x1',
     },
@@ -55,7 +52,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   5: {
     type: SENT_ETHER,
     id: 5,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x5',
     },
@@ -105,7 +102,7 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   10: {
     type: TRANSACTION_TYPES.RETRY,
     id: 10,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xa',
     },
@@ -113,7 +110,7 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   11: {
     type: TRANSACTION_TYPES.RETRY,
     id: 11,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xb',
     },
@@ -167,7 +164,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE['0'],
               id: 11,
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },
@@ -248,7 +245,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE_RETRY['0'],
               id: 11,
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },

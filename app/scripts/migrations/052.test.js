@@ -1,10 +1,4 @@
-import {
-  GOERLI,
-  GOERLI_CHAIN_ID,
-  MAINNET,
-  MAINNET_CHAIN_ID,
-  NETWORK_TYPE_RPC,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import migration52 from './052';
 
 const TOKEN1 = { symbol: 'TST', address: '0x10', decimals: 18 };
@@ -27,25 +21,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${MAINNET} tokens and hidden tokens to be keyed by ${MAINNET_CHAIN_ID} for each address`, async () => {
+  it(`should move ${NETWORK_TYPES.MAINNET} tokens and hidden tokens to be keyed by ${CHAIN_IDS.MAINNET} for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [MAINNET]: [TOKEN1],
+              [NETWORK_TYPES.MAINNET]: [TOKEN1],
             },
             '0x1112': {
-              [MAINNET]: [TOKEN3],
+              [NETWORK_TYPES.MAINNET]: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [MAINNET]: [TOKEN1, TOKEN2],
+              [NETWORK_TYPES.MAINNET]: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [MAINNET]: [TOKEN1, TOKEN3],
+              [NETWORK_TYPES.MAINNET]: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -59,18 +53,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [TOKEN1],
+            [CHAIN_IDS.MAINNET]: [TOKEN1],
           },
           '0x1112': {
-            [MAINNET_CHAIN_ID]: [TOKEN3],
+            [CHAIN_IDS.MAINNET]: [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [MAINNET_CHAIN_ID]: [TOKEN1, TOKEN2],
+            [CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [MAINNET_CHAIN_ID]: [TOKEN1, TOKEN3],
+            [CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',
@@ -183,25 +177,25 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${GOERLI} tokens and hidden tokens to be keyed by ${GOERLI_CHAIN_ID} for each address`, async () => {
+  it(`should move ${NETWORK_TYPES.GOERLI} tokens and hidden tokens to be keyed by ${CHAIN_IDS.GOERLI} for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
         PreferencesController: {
           accountHiddenTokens: {
             '0x1111': {
-              [GOERLI]: [TOKEN1],
+              [NETWORK_TYPES.GOERLI]: [TOKEN1],
             },
             '0x1112': {
-              [GOERLI]: [TOKEN3],
+              [NETWORK_TYPES.GOERLI]: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [GOERLI]: [TOKEN1, TOKEN2],
+              [NETWORK_TYPES.GOERLI]: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [GOERLI]: [TOKEN1, TOKEN3],
+              [NETWORK_TYPES.GOERLI]: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -215,18 +209,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [GOERLI_CHAIN_ID]: [TOKEN1],
+            [CHAIN_IDS.GOERLI]: [TOKEN1],
           },
           '0x1112': {
-            [GOERLI_CHAIN_ID]: [TOKEN3],
+            [CHAIN_IDS.GOERLI]: [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [GOERLI_CHAIN_ID]: [TOKEN1, TOKEN2],
+            [CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [GOERLI_CHAIN_ID]: [TOKEN1, TOKEN3],
+            [CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',
@@ -287,7 +281,7 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should duplicate ${NETWORK_TYPE_RPC} tokens and hidden tokens to all custom networks for each address`, async () => {
+  it(`should duplicate ${NETWORK_TYPES.RPC} tokens and hidden tokens to all custom networks for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -299,18 +293,18 @@ describe('migration #52', () => {
           ],
           accountHiddenTokens: {
             '0x1111': {
-              [NETWORK_TYPE_RPC]: [TOKEN1],
+              [NETWORK_TYPES.RPC]: [TOKEN1],
             },
             '0x1112': {
-              [NETWORK_TYPE_RPC]: [TOKEN3],
+              [NETWORK_TYPES.RPC]: [TOKEN3],
             },
           },
           accountTokens: {
             '0x1111': {
-              [NETWORK_TYPE_RPC]: [TOKEN1, TOKEN2],
+              [NETWORK_TYPES.RPC]: [TOKEN1, TOKEN2],
             },
             '0x1112': {
-              [NETWORK_TYPE_RPC]: [TOKEN1, TOKEN3],
+              [NETWORK_TYPES.RPC]: [TOKEN1, TOKEN3],
             },
           },
           bar: 'baz',
@@ -357,7 +351,7 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should overwrite ${NETWORK_TYPE_RPC} tokens with built in networks if chainIds match`, async () => {
+  it(`should overwrite ${NETWORK_TYPES.RPC} tokens with built in networks if chainIds match`, async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -365,14 +359,14 @@ describe('migration #52', () => {
           frequentRpcListDetail: [{ chainId: '0x1' }],
           accountHiddenTokens: {
             '0x1111': {
-              [NETWORK_TYPE_RPC]: [TOKEN3],
-              [MAINNET]: [TOKEN1],
+              [NETWORK_TYPES.RPC]: [TOKEN3],
+              [NETWORK_TYPES.MAINNET]: [TOKEN1],
             },
           },
           accountTokens: {
             '0x1111': {
-              [NETWORK_TYPE_RPC]: [TOKEN1, TOKEN2],
-              [MAINNET]: [TOKEN3, TOKEN4],
+              [NETWORK_TYPES.RPC]: [TOKEN1, TOKEN2],
+              [NETWORK_TYPES.MAINNET]: [TOKEN3, TOKEN4],
             },
           },
           bar: 'baz',

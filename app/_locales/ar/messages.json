@@ -8,9 +8,6 @@
   "about": {
     "message": "حول"
   },
-  "acceleratingATransaction": {
-    "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
-  },
   "acceptTermsOfUse": {
     "message": "لقد قرأت دولار واحد وأوافق عليه",
     "description": "$1 is the `terms` message"
@@ -249,12 +246,6 @@
   "custom": {
     "message": "إعدادات متقدمة"
   },
-  "customGas": {
-    "message": "تخصيص الغاز"
-  },
-  "customGasSubTitle": {
-    "message": "قد تؤدي زيادة الرسوم إلى تقليل أزمنة المعالجة، ولكن ذلك غير مضمون."
-  },
   "customToken": {
     "message": "عملة رمزية مخصصة"
   },
@@ -338,9 +329,6 @@
   },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
-  },
-  "estimatedProcessingTimes": {
-    "message": "أوقات المعالجة المقدرة"
   },
   "ethereumPublicAddress": {
     "message": "عنوان الإيثيريوم العمومي"
@@ -593,12 +581,6 @@
   "newToMetaMask": {
     "message": "هل انت جديد في MetaMask؟"
   },
-  "newTotal": {
-    "message": "إجمالي جديد"
-  },
-  "newTransactionFee": {
-    "message": "رسوم المعاملات الجديدة"
-  },
   "next": {
     "message": "التالي"
   },
@@ -793,9 +775,6 @@
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },
-  "selectAHigherGasFee": {
-    "message": "حدد رسوم جاس أعلى لتسريع معالجة معاملتك. *"
-  },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
   },
@@ -813,9 +792,6 @@
   },
   "send": {
     "message": "إرسال"
-  },
-  "sendAmount": {
-    "message": "إرسال المبلغ"
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
@@ -858,9 +834,6 @@
   },
   "signed": {
     "message": "مسجل الدخول"
-  },
-  "slow": {
-    "message": "بطيء"
   },
   "somethingWentWrong": {
     "message": "عذراً! حدث خطأ ما."

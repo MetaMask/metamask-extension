@@ -8,9 +8,6 @@
   "about": {
     "message": "מידע כללי"
   },
-  "acceleratingATransaction": {
-    "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
-  },
   "accessingYourCamera": {
     "message": "ניגש למצלמה שלך ..."
   },
@@ -241,12 +238,6 @@
   "custom": {
     "message": "מתקדם"
   },
-  "customGas": {
-    "message": "התאמה אישית של דלק"
-  },
-  "customGasSubTitle": {
-    "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
-  },
   "customToken": {
     "message": "אסימון מותאם אישית"
   },
@@ -330,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
-  },
-  "estimatedProcessingTimes": {
-    "message": "זמני עיבוד משוערים"
   },
   "ethereumPublicAddress": {
     "message": "כתובת אתריום ציבורית"
@@ -589,12 +577,6 @@
   "newToMetaMask": {
     "message": "חדש/ה ב- MetaMask?"
   },
-  "newTotal": {
-    "message": "סכום כולל חדש"
-  },
-  "newTransactionFee": {
-    "message": "עמלת עסקה חדשה"
-  },
   "next": {
     "message": "הבא"
   },
@@ -789,9 +771,6 @@
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
   },
-  "selectAHigherGasFee": {
-    "message": "בחר/י בעמלת דלק גבוהה יותר כדי להאיץ את עיבוד העסקה שלך. *"
-  },
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
@@ -809,9 +788,6 @@
   },
   "send": {
     "message": "שלח"
-  },
-  "sendAmount": {
-    "message": "שלח סכום"
   },
   "sendTokens": {
     "message": "שלח טוקנים"
@@ -854,9 +830,6 @@
   },
   "signed": {
     "message": "חתום"
-  },
-  "slow": {
-    "message": "אטי"
   },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."

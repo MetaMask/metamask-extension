@@ -8,9 +8,6 @@
   "about": {
     "message": "Kuhusu"
   },
-  "acceleratingATransaction": {
-    "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
-  },
   "accessingYourCamera": {
     "message": "Kufikia kamera yako..."
   },
@@ -235,12 +232,6 @@
   "custom": {
     "message": "Mipangilio ya kina"
   },
-  "customGas": {
-    "message": "Weka Mipangilio ya Gesi Upendavyo"
-  },
-  "customGasSubTitle": {
-    "message": "Ada iliyoongezeka inaweza kupunguza muda wa uchakataji, lakini haihakikishwi."
-  },
   "customToken": {
     "message": "Kianzio Maalumu"
   },
@@ -324,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Muda wa Kuchakata Uliokadiriwa"
   },
   "ethereumPublicAddress": {
     "message": "Anwani ya Umma ya Ethereum"
@@ -570,12 +558,6 @@
   "newToMetaMask": {
     "message": "MetaMask mpya?"
   },
-  "newTotal": {
-    "message": "Jumla Mpya"
-  },
-  "newTransactionFee": {
-    "message": "Ada Mpya ya Muamala"
-  },
   "next": {
     "message": "Inayofuata"
   },
@@ -770,9 +752,6 @@
   "seedPhraseReq": {
     "message": "Virai vianzio vina urefu wa maneno 12"
   },
-  "selectAHigherGasFee": {
-    "message": "Chagua ada ya juu ya gesi ili kuharakisha uchakataji wa muamala wako.*"
-  },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
   },
@@ -790,9 +769,6 @@
   },
   "send": {
     "message": "Tuma"
-  },
-  "sendAmount": {
-    "message": "Tuma Kiasi"
   },
   "sendTokens": {
     "message": "Tuma Vianzio"
@@ -835,9 +811,6 @@
   },
   "signed": {
     "message": "Imesainiwa"
-  },
-  "slow": {
-    "message": "Polepole"
   },
   "somethingWentWrong": {
     "message": "Ayaa! Hitilafu fulani imetokea."

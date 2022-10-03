@@ -1,11 +1,5 @@
 import { cloneDeep } from 'lodash';
-import {
-  GOERLI,
-  GOERLI_CHAIN_ID,
-  MAINNET,
-  MAINNET_CHAIN_ID,
-  NETWORK_TYPE_RPC,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 
 const version = 52;
 
@@ -37,17 +31,17 @@ function transformState(state = {}) {
     if (accountTokens && Object.keys(accountTokens).length > 0) {
       for (const address of Object.keys(accountTokens)) {
         newAccountTokens[address] = {};
-        if (accountTokens[address][NETWORK_TYPE_RPC]) {
+        if (accountTokens[address][NETWORK_TYPES.RPC]) {
           frequentRpcListDetail.forEach((detail) => {
             newAccountTokens[address][detail.chainId] =
-              accountTokens[address][NETWORK_TYPE_RPC];
+              accountTokens[address][NETWORK_TYPES.RPC];
           });
         }
         for (const providerType of Object.keys(accountTokens[address])) {
           switch (providerType) {
-            case MAINNET:
-              newAccountTokens[address][MAINNET_CHAIN_ID] =
-                accountTokens[address][MAINNET];
+            case NETWORK_TYPES.MAINNET:
+              newAccountTokens[address][CHAIN_IDS.MAINNET] =
+                accountTokens[address][NETWORK_TYPES.MAINNET];
               break;
             case 'ropsten':
               newAccountTokens[address]['0x3'] = accountTokens[address].ropsten;
@@ -55,9 +49,9 @@ function transformState(state = {}) {
             case 'rinkeby':
               newAccountTokens[address]['0x4'] = accountTokens[address].rinkeby;
               break;
-            case GOERLI:
-              newAccountTokens[address][GOERLI_CHAIN_ID] =
-                accountTokens[address][GOERLI];
+            case NETWORK_TYPES.GOERLI:
+              newAccountTokens[address][CHAIN_IDS.GOERLI] =
+                accountTokens[address][NETWORK_TYPES.GOERLI];
               break;
             case 'kovan':
               newAccountTokens[address]['0x2a'] = accountTokens[address].kovan;
@@ -73,17 +67,17 @@ function transformState(state = {}) {
     if (accountHiddenTokens && Object.keys(accountHiddenTokens).length > 0) {
       for (const address of Object.keys(accountHiddenTokens)) {
         newAccountHiddenTokens[address] = {};
-        if (accountHiddenTokens[address][NETWORK_TYPE_RPC]) {
+        if (accountHiddenTokens[address][NETWORK_TYPES.RPC]) {
           frequentRpcListDetail.forEach((detail) => {
             newAccountHiddenTokens[address][detail.chainId] =
-              accountHiddenTokens[address][NETWORK_TYPE_RPC];
+              accountHiddenTokens[address][NETWORK_TYPES.RPC];
           });
         }
         for (const providerType of Object.keys(accountHiddenTokens[address])) {
           switch (providerType) {
-            case MAINNET:
-              newAccountHiddenTokens[address][MAINNET_CHAIN_ID] =
-                accountHiddenTokens[address][MAINNET];
+            case NETWORK_TYPES.MAINNET:
+              newAccountHiddenTokens[address][CHAIN_IDS.MAINNET] =
+                accountHiddenTokens[address][NETWORK_TYPES.MAINNET];
               break;
             case 'ropsten':
               newAccountHiddenTokens[address]['0x3'] =
@@ -93,9 +87,9 @@ function transformState(state = {}) {
               newAccountHiddenTokens[address]['0x4'] =
                 accountHiddenTokens[address].rinkeby;
               break;
-            case GOERLI:
-              newAccountHiddenTokens[address][GOERLI_CHAIN_ID] =
-                accountHiddenTokens[address][GOERLI];
+            case NETWORK_TYPES.GOERLI:
+              newAccountHiddenTokens[address][CHAIN_IDS.GOERLI] =
+                accountHiddenTokens[address][NETWORK_TYPES.GOERLI];
               break;
             case 'kovan':
               newAccountHiddenTokens[address]['0x2a'] =

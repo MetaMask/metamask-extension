@@ -1,9 +1,4 @@
-import {
-  GOERLI,
-  GOERLI_CHAIN_ID,
-  MAINNET,
-  MAINNET_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import migration55 from './055';
 
 describe('migration #55', () => {
@@ -35,10 +30,10 @@ describe('migration #55', () => {
             },
           },
           incomingTxLastFetchedBlocksByNetwork: {
-            [MAINNET]: 1,
+            [NETWORK_TYPES.MAINNET]: 1,
             ropsten: 2,
             rinkeby: 3,
-            [GOERLI]: 4,
+            [NETWORK_TYPES.GOERLI]: 4,
             kovan: 5,
           },
         },
@@ -52,10 +47,10 @@ describe('migration #55', () => {
         incomingTransactions:
           oldStorage.data.IncomingTransactionsController.incomingTransactions,
         incomingTxLastFetchedBlockByChainId: {
-          [MAINNET_CHAIN_ID]: 1,
+          [CHAIN_IDS.MAINNET]: 1,
           '0x3': 2,
           '0x4': 3,
-          [GOERLI_CHAIN_ID]: 4,
+          [CHAIN_IDS.GOERLI]: 4,
           '0x2a': 5,
         },
       },

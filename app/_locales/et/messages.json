@@ -8,9 +8,6 @@
   "about": {
     "message": "Teave"
   },
-  "acceleratingATransaction": {
-    "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
-  },
   "accessingYourCamera": {
     "message": "Kaamerale ligipääs..."
   },
@@ -241,12 +238,6 @@
   "custom": {
     "message": "Täpsemad"
   },
-  "customGas": {
-    "message": "Gaasi kohandamine"
-  },
-  "customGasSubTitle": {
-    "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
-  },
   "customToken": {
     "message": "Kohandatud luba"
   },
@@ -330,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Eeldatavad töötlemisajad"
   },
   "ethereumPublicAddress": {
     "message": "Ethereumi avalik aadress"
@@ -582,12 +570,6 @@
   "newToMetaMask": {
     "message": "Pole MetaMaski varem kasutanud?"
   },
-  "newTotal": {
-    "message": "Uus kogusumma"
-  },
-  "newTransactionFee": {
-    "message": "Uus vahendustasu"
-  },
   "next": {
     "message": "Edasi"
   },
@@ -782,9 +764,6 @@
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"
   },
-  "selectAHigherGasFee": {
-    "message": "Valige suurem gaasihind, et kiirendada tehingu töötlemist.*"
-  },
   "selectAnAccount": {
     "message": "Valige konto"
   },
@@ -802,9 +781,6 @@
   },
   "send": {
     "message": "Saada"
-  },
-  "sendAmount": {
-    "message": "Saatke kogus"
   },
   "sendTokens": {
     "message": "Saada lube"
@@ -847,9 +823,6 @@
   },
   "signed": {
     "message": "Allkirjastatud"
-  },
-  "slow": {
-    "message": "Aeglane"
   },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."

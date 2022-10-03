@@ -12,19 +12,9 @@ import EthQuery from 'eth-query';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import pify from 'pify';
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import {
-  MAINNET_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-  BSC_CHAIN_ID,
-  OPTIMISM_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-  FANTOM_CHAIN_ID,
-  ARBITRUM_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -37,7 +27,6 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
 } from '../constants/contracts';
-import { bnToHex } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -81,7 +70,7 @@ export default class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
 
-    this.web3 = new Web3(this._provider);
+    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
   }
 
   start() {
@@ -212,63 +201,63 @@ export default class AccountTracker {
     const chainId = this.getCurrentChainId();
 
     switch (chainId) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS,
         );
         break;
 
-      case GOERLI_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
         );
         break;
 
-      case SEPOLIA_CHAIN_ID:
+      case CHAIN_IDS.SEPOLIA:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
         );
         break;
 
-      case BSC_CHAIN_ID:
+      case CHAIN_IDS.BSC:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_BSC,
         );
         break;
 
-      case OPTIMISM_CHAIN_ID:
+      case CHAIN_IDS.OPTIMISM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
         );
         break;
 
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
         );
         break;
 
-      case AVALANCHE_CHAIN_ID:
+      case CHAIN_IDS.AVALANCHE:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
         );
         break;
 
-      case FANTOM_CHAIN_ID:
+      case CHAIN_IDS.FANTOM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
         );
         break;
 
-      case ARBITRUM_CHAIN_ID:
+      case CHAIN_IDS.ARBITRUM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
@@ -318,26 +307,29 @@ export default class AccountTracker {
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const { accounts } = this.store.getState();
-    this.web3.setProvider(this._provider);
-    const ethContract = this.web3.eth
-      .contract(SINGLE_CALL_BALANCES_ABI)
-      .at(deployedContractAddress);
-    const ethBalance = ['0x0'];
+    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
 
-    ethContract.balances(addresses, ethBalance, (error, result) => {
-      if (error) {
-        log.warn(
-          `MetaMask - Account Tracker single call balance fetch failed`,
-          error,
-        );
-        Promise.all(addresses.map(this._updateAccount.bind(this)));
-        return;
-      }
+    const ethContract = await new ethers.Contract(
+      deployedContractAddress,
+      SINGLE_CALL_BALANCES_ABI,
+      this.ethersProvider,
+    );
+    const ethBalance = ['0x0000000000000000000000000000000000000000'];
+
+    try {
+      const balances = await ethContract.balances(addresses, ethBalance);
+
       addresses.forEach((address, index) => {
-        const balance = result[index] ? bnToHex(result[index]) : '0x0';
+        const balance = balances[index] ? balances[index].toHexString() : '0x0';
         accounts[address] = { address, balance };
       });
       this.store.updateState({ accounts });
-    });
+    } catch (error) {
+      log.warn(
+        `MetaMask - Account Tracker single call balance fetch failed`,
+        error,
+      );
+      Promise.all(addresses.map(this._updateAccount.bind(this)));
+    }
   }
 }

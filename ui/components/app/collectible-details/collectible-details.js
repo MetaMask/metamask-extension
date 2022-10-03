@@ -33,12 +33,7 @@ import {
   checkAndUpdateSingleCollectibleOwnershipStatus,
   removeAndIgnoreCollectible,
 } from '../../../store/actions';
-import {
-  GOERLI_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  SEPOLIA_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
@@ -97,12 +92,12 @@ export default function CollectibleDetails({ collectible }) {
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         return `https://opensea.io/assets/${address}/${tokenId}`;
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
-      case GOERLI_CHAIN_ID:
-      case SEPOLIA_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
+      case CHAIN_IDS.SEPOLIA:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:
         return null;

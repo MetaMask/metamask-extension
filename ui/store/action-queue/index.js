@@ -29,6 +29,8 @@ let promisifiedBackground = null;
 
 const actionRetryQueue = [];
 
+export const generateActionId = () => Date.now() + Math.random();
+
 function failQueue() {
   actionRetryQueue.forEach(({ reject }) =>
     reject(
@@ -81,7 +83,7 @@ const executeActionOrAddToRetryQueue = (item) => {
 export function submitRequestToBackground(
   method,
   args = [],
-  actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
+  actionId = generateActionId(), // current date is not guaranteed to be unique
 ) {
   if (isManifestV3) {
     return new Promise((resolve, reject) => {
@@ -112,7 +114,7 @@ export const callBackgroundMethod = (
   method,
   args = [],
   callback,
-  actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
+  actionId = generateActionId(), // current date is not guaranteed to be unique
 ) => {
   if (isManifestV3) {
     const resolve = (value) => callback(null, value);
