@@ -29,6 +29,12 @@ class Fixture {
           9: {
             isShown: true,
           },
+          10: {
+            isShown: true,
+          },
+          11: {
+            isShown: true,
+          },
         },
       },
       AppStateController: {},
