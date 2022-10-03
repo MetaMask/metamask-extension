@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
@@ -13,7 +14,25 @@ describe('Localization', function () {
       ],
     };
     await withFixtures(
-      { fixtures: 'localization', ganacheOptions, title: this.test.title },
+      {
+        fixtures: new FixtureBuilder()
+          .withCurrencyController({
+            conversionDate: 1664383189.726,
+            conversionRate: 1233.01,
+            currentCurrency: 'php',
+            nativeCurrency: 'ETH',
+            usdConversionRate: 1332.01,
+          })
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+              useNativeCurrencyAsPrimaryCurrency: true,
+            },
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');

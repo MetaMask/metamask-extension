@@ -8,6 +8,7 @@ const {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
@@ -27,7 +28,16 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'onboarding',
+        fixtures: new FixtureBuilder()
+          .withKeyringController({ vault: undefined })
+          .withMetaMetricsController({
+            metaMetricsId: undefined,
+            participateInMetaMetrics: undefined,
+          })
+          .withOnboardingController({
+            completedOnboarding: undefined,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -145,7 +155,16 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'onboarding',
+        fixtures: new FixtureBuilder()
+          .withKeyringController({ vault: undefined })
+          .withMetaMetricsController({
+            metaMetricsId: undefined,
+            participateInMetaMetrics: undefined,
+          })
+          .withOnboardingController({
+            completedOnboarding: undefined,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -192,7 +211,12 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'import-ui',
+        fixtures: new FixtureBuilder()
+          .withKeyringController({
+            vault:
+              '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -295,7 +319,12 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'import-ui',
+        fixtures: new FixtureBuilder()
+          .withKeyringController({
+            vault:
+              '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -315,7 +344,6 @@ describe('MetaMask Import UI', function () {
         const importJsonFile = path.join(
           __dirname,
           '..',
-          'fixtures',
           'import-utc-json',
           'test-json-import-account-file.json',
         );
@@ -368,7 +396,12 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'import-ui',
+        fixtures: new FixtureBuilder()
+          .withKeyringController({
+            vault:
+              '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -407,7 +440,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'import-ui',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
