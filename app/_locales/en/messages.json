@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
-  "connectingToKovan": {
-    "message": "Connecting to Kovan test network"
-  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby test network"
-  },
-  "connectingToRopsten": {
-    "message": "Connecting to Ropsten test network"
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
@@ -827,6 +818,9 @@
   },
   "currentLanguage": {
     "message": "Current language"
+  },
+  "currentRpcUrlDeprecated": {
+    "message": "The current rpc url for this network has been deprecated."
   },
   "currentTitle": {
     "message": "Current:"
@@ -1812,9 +1806,6 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
-  },
-  "kovan": {
-    "message": "Kovan test network"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2935,12 +2926,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
-  },
-  "rinkeby": {
-    "message": "Rinkeby test network"
-  },
-  "ropsten": {
-    "message": "Ropsten test network"
   },
   "rpcUrl": {
     "message": "New RPC URL"

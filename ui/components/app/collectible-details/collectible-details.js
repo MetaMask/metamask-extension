@@ -97,9 +97,6 @@ export default function CollectibleDetails({ collectible }) {
       case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
       case CHAIN_IDS.GOERLI:
-      case CHAIN_IDS.KOVAN:
-      case CHAIN_IDS.ROPSTEN:
-      case CHAIN_IDS.RINKEBY:
       case CHAIN_IDS.SEPOLIA:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:

@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
-  "connectingToKovan": {
-    "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Σύνδεση στο Δίκτυο Δοκιμών Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
   },
   "connectingToSepolia": {
     "message": "Σύνδεση στο δίκτυο δοκιμών Sepolia"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "Αυτή η ενέργεια θα επεξεργαστεί tokens που είναι ήδη εισηγμένα στο πορτοφόλι σας, τα οποίαο μπορεί να χρησιμοποιηθούν για να σας κλέψουν στοιχεία. Αποδεχθείτε μόνο αν είστε σίγουροι ότι θέλετε να αλλάξετε αυτό που αντιπροσωπεύουν αυτά τα νομίσματα. Μάθετε περισσότερά γι'αυτό $1"
-  },
-  "kovan": {
-    "message": "Δίκτυο Δοκιμής Kovan"
   },
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "Αυτός ο συμβαλλόμενος δεν θα μπορεί να ξοδέψει άλλα από τα τρέχοντα ή μελλοντικά σας tokens."
-  },
-  "rinkeby": {
-    "message": "Δοκιμαστικό Δίκτυο Rinkeby"
-  },
-  "ropsten": {
-    "message": "Δίκτυο Δοκιμών Ropsten"
   },
   "rpcUrl": {
     "message": "Νέο RPC URL"

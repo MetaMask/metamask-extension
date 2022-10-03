@@ -708,17 +708,8 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
-  "connectingToKovan": {
-    "message": "Kovanテストネットワークに接続中"
-  },
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkebyテストネットワークに接続中"
-  },
-  "connectingToRopsten": {
-    "message": "Ropstenテストネットワークに接続中"
   },
   "connectingToSepolia": {
     "message": "Sepolia テストネットワークに接続中"
@@ -1799,9 +1790,6 @@
   },
   "knownTokenWarning": {
     "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
-  },
-  "kovan": {
-    "message": "Kovanテストネットワーク"
   },
   "lastConnected": {
     "message": "前回の接続"
@@ -2922,12 +2910,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "このコントラクトは、現在または今後のトークンをこれ以上使用できなくなります。"
-  },
-  "rinkeby": {
-    "message": "Rinkebyテストネットワーク"
-  },
-  "ropsten": {
-    "message": "Ropstenテストネットワーク"
   },
   "rpcUrl": {
     "message": "新しいRPC URL"
