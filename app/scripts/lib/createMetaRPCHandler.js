@@ -52,7 +52,9 @@ const createMetaRPCHandler = (api, outStream, store) => {
     let error;
     try {
       result = await api[data.method](...data.params);
-
+    } catch (err) {
+      error = err;
+    } finally {
       if (store && data.method !== 'getState') {
         // we retrieve the already persisted data from local store to provide the version metadata to this persist call
         const versionData = await localStore.get();
@@ -61,8 +63,6 @@ const createMetaRPCHandler = (api, outStream, store) => {
           localStore,
         );
       }
-    } catch (err) {
-      error = err;
     }
 
     if (outStream._writableState.ended) {
