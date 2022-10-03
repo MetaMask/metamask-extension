@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const { PAGES } = require('../webdriver/driver');
+const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Notification', function () {
@@ -16,7 +17,7 @@ describe('Test Snap Notification', function () {
     };
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },

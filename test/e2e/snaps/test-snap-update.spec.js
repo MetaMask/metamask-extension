@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap update', function () {
@@ -15,7 +16,7 @@ describe('Test Snap update', function () {
     };
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
