@@ -214,6 +214,225 @@ class FixtureBuilder {
     return this;
   }
 
+  withTransactionControllerMultipleTransactions() {
+    return this.withTransactionController({
+      transactions: {
+        7911313280012623: {
+          chainId: '0x539',
+          dappSuggestedGasFees: {
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+          },
+          history: [
+            {
+              chainId: '0x539',
+              dappSuggestedGasFees: {
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+              },
+              id: 7911313280012623,
+              loadingDefaults: true,
+              metamaskNetworkId: '1337',
+              origin: 'https://metamask.github.io',
+              status: 'unapproved',
+              time: 1631545991949,
+              txParams: {
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+                value: '0x29a2241af62c0000',
+              },
+              type: 'simpleSend',
+            },
+            [
+              {
+                note: 'Added new unapproved transaction.',
+                op: 'replace',
+                path: '/loadingDefaults',
+                timestamp: 1631545992244,
+                value: false,
+              },
+            ],
+          ],
+          id: 7911313280012623,
+          loadingDefaults: false,
+          metamaskNetworkId: '1337',
+          origin: 'https://metamask.github.io',
+          status: 'unapproved',
+          time: 1631545991949,
+          txParams: {
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+            value: '0x29a2241af62c0000',
+          },
+          type: 'simpleSend',
+        },
+        7911313280012624: {
+          chainId: '0x539',
+          dappSuggestedGasFees: {
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+          },
+          history: [
+            {
+              chainId: '0x539',
+              dappSuggestedGasFees: {
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+              },
+              id: 7911313280012624,
+              loadingDefaults: true,
+              metamaskNetworkId: '1337',
+              origin: 'https://metamask.github.io',
+              status: 'unapproved',
+              time: 1631545994578,
+              txParams: {
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+                value: '0x29a2241af62c0000',
+              },
+              type: 'simpleSend',
+            },
+            [
+              {
+                note: 'Added new unapproved transaction.',
+                op: 'replace',
+                path: '/loadingDefaults',
+                timestamp: 1631545994695,
+                value: false,
+              },
+            ],
+          ],
+          id: 7911313280012624,
+          loadingDefaults: false,
+          metamaskNetworkId: '1337',
+          origin: 'https://metamask.github.io',
+          status: 'unapproved',
+          time: 1631545994578,
+          txParams: {
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+            value: '0x29a2241af62c0000',
+          },
+          type: 'simpleSend',
+        },
+        7911313280012625: {
+          chainId: '0x539',
+          dappSuggestedGasFees: {
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+          },
+          history: [
+            {
+              chainId: '0x539',
+              dappSuggestedGasFees: {
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+              },
+              id: 7911313280012625,
+              loadingDefaults: true,
+              metamaskNetworkId: '1337',
+              origin: 'https://metamask.github.io',
+              status: 'unapproved',
+              time: 1631545996673,
+              txParams: {
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+                value: '0x29a2241af62c0000',
+              },
+              type: 'simpleSend',
+            },
+            [
+              {
+                note: 'Added new unapproved transaction.',
+                op: 'replace',
+                path: '/loadingDefaults',
+                timestamp: 1631545996678,
+                value: false,
+              },
+            ],
+          ],
+          id: 7911313280012625,
+          loadingDefaults: false,
+          metamaskNetworkId: '1337',
+          origin: 'https://metamask.github.io',
+          status: 'unapproved',
+          time: 1631545996673,
+          txParams: {
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+            value: '0x29a2241af62c0000',
+          },
+          type: 'simpleSend',
+        },
+        7911313280012626: {
+          chainId: '0x539',
+          dappSuggestedGasFees: {
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+          },
+          history: [
+            {
+              chainId: '0x539',
+              dappSuggestedGasFees: {
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+              },
+              id: 7911313280012626,
+              loadingDefaults: true,
+              metamaskNetworkId: '1337',
+              origin: 'https://metamask.github.io',
+              status: 'unapproved',
+              time: 1631545998675,
+              txParams: {
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                gas: '0x5208',
+                gasPrice: '0x4a817c800',
+                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+                value: '0x29a2241af62c0000',
+              },
+              type: 'simpleSend',
+            },
+            [
+              {
+                note: 'Added new unapproved transaction.',
+                op: 'replace',
+                path: '/loadingDefaults',
+                timestamp: 1631545998677,
+                value: false,
+              },
+            ],
+          ],
+          id: 7911313280012626,
+          loadingDefaults: false,
+          metamaskNetworkId: '1337',
+          origin: 'https://metamask.github.io',
+          status: 'unapproved',
+          time: 1631545998675,
+          txParams: {
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            gas: '0x5208',
+            gasPrice: '0x4a817c800',
+            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+            value: '0x29a2241af62c0000',
+          },
+          type: 'simpleSend',
+        },
+      },
+    });
+  }
+
   withTransactionControllerTypeOneTransaction() {
     return this.withTransactionController({
       transactions: {
