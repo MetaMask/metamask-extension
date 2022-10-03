@@ -54,11 +54,11 @@ describe('ButtonBase', () => {
   it('should render with different button states', () => {
     const { getByTestId } = render(
       <>
-        {/* <ButtonBase loading data-testid="loading" /> */}
+        <ButtonBase loading data-testid="loading" />
         <ButtonBase disabled data-testid="disabled" />
       </>,
     );
-    // expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
+    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
     expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
   });
   it('should render with icon', () => {
