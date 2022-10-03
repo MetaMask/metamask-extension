@@ -1112,8 +1112,8 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    // Automatic login via config password or loginToken
     if (!this.isUnlocked()) {
+      // Automatic login via config password
       const password = process.env.CONF?.PASSWORD;
       if (
         password &&
@@ -1121,16 +1121,21 @@ export default class MetamaskController extends EventEmitter {
       ) {
         this.submitPassword(password);
       }
-      // MV3TODO: Try to log in based on storage values
+      // Automatic login via storage encryption key
       else if (isManifestV3) {
         console.log('Is MV3, going to try to autologin with loginToken');
-        chrome.storage.session.get(['loginToken'], ({ loginToken }) => {
-          console.log('Was the login token found? ', loginToken);
-          if (loginToken) {
-            console.log(`Attempting to login using loginToken: ${loginToken}`);
-            this.keyringController.submitEncryptionKey(loginToken);
-          }
-        });
+        chrome.storage.session.get(
+          ['loginToken', 'loginData'],
+          ({ loginToken, loginData }) => {
+            console.log('Was the login token found? ', loginToken, loginData);
+            if (loginToken) {
+              console.log(
+                `Attempting to login using loginToken: ${loginToken} / ${loginData}`,
+              );
+              this.keyringController.submitEncryptionKey(loginToken, loginData);
+            }
+          },
+        );
       }
     }
 
@@ -2343,11 +2348,13 @@ export default class MetamaskController extends EventEmitter {
   async submitPassword(password) {
     console.log('Attempting to submit password: ', password);
 
-    const loginToken = await this.keyringController.submitPassword(password);
+    await this.keyringController.submitPassword(password);
+    const loginToken = this.keyringController.encryptionKey;
+    const loginData = this.keyringController.encryptionData;
 
     if (isManifestV3) {
-      console.log(`Trying to set loginToken: ${loginToken}`);
-      await chrome.storage.session.set({ loginToken });
+      console.log(`Trying to set login data: ${loginToken} / ${loginData}`);
+      await chrome.storage.session.set({ loginToken, loginData });
     }
 
     try {
@@ -4346,6 +4353,7 @@ export default class MetamaskController extends EventEmitter {
       chrome.storage.session.clear();
     }
 
+    console.log('Setting the keyring controller locked!');
     return this.keyringController.setLocked();
   }
 
