@@ -15,6 +15,8 @@ import shouldInjectProvider from '../../shared/modules/provider-injection';
  * - add node.js stream listeners
  *
  * New changes:
+ * - add retry logic for setupExtensionStreams
+ * - see "// UPDATED LOGIC" for other changes
  */
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -438,16 +440,26 @@ const destroyLegacyExtensionStreams = () => {
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
  * and creates a new event listener to the reestablished extension port.
+ *
+ * @param test
+ * @param test2
  */
-const resetStreamAndListeners = () => {
+const resetStreamAndListeners = (test, test2) => {
+  console.info('resetStreamAndListeners: ', test);
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   destroyExtensionStreams();
   setupPageChannelListeners();
 
-  setupExtensionStreams();
+  // UPDATED LOGIC
+  const interval = setInterval(() => {
+    if (browser.runtime.id) {
+      setupExtensionStreams();
+      clearInterval(interval);
 
-  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
+      extensionPort.onDisconnect.addListener(resetStreamAndListeners);
+    }
+  }, 3000);
 
   // destroyLegacyExtensionStreams();
   // setupLegacyExtensionStreams();
