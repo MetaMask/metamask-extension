@@ -309,7 +309,7 @@ async function loadStateFromPersistence() {
  * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-function setupController(initState, initLangCode, remoteSourcePort) {
+async function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // MetaMask Controller
   //
@@ -501,14 +501,14 @@ function setupController(initState, initLangCode, remoteSourcePort) {
           }
         });
       }
-      connectExternal(remotePort);
+      await connectExternal(remotePort);
     }
   }
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  async function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+    await controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
