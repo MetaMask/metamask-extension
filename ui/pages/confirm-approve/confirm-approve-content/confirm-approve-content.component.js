@@ -32,6 +32,7 @@ import {
   ERC721,
 } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import ConfirmApproveWarning from '../confirm-approve-warning';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -793,6 +794,11 @@ export default class ConfirmApproveContent extends Component {
         ) : null}
 
         {showFullTxDetails ? this.renderFullDetails() : null}
+        <ConfirmApproveWarning
+          onClose={this.setState({
+            showFullTxDetails: this.state.showFullTxDetails,
+          })}
+        />
       </div>
     );
   }

@@ -53,6 +53,7 @@ import Tooltip from '../../components/ui/tooltip';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
+import ConfirmApproveWarning from '../confirm-approve/confirm-approve-warning';
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -805,6 +806,7 @@ export default class Home extends PureComponent {
           </div>
 
           {this.renderNotifications()}
+          <ConfirmApproveWarning onClose={this.renderPopover} />
         </div>
       </div>
     );
