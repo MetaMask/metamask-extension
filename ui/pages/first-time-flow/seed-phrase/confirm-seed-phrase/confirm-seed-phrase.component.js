@@ -10,7 +10,7 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
-import { exportAsFile } from '../../../../../shared/modules/export-utils';
+import { exportAsFile } from '../../../../helpers/utils/export-utils';
 import DraggableSeed from './draggable-seed.component';
 
 const EMPTY_SEEDS = Array(12).fill(null);

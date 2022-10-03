@@ -200,16 +200,26 @@ export const Name = (args) => {
 };
 
 export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <Icon {...args} size={SIZES.XXS} />
-    <Icon {...args} size={SIZES.XS} />
-    <Icon {...args} size={SIZES.SM} />
-    <Icon {...args} size={SIZES.MD} />
-    <Icon {...args} size={SIZES.LG} />
-    <Icon {...args} size={SIZES.XL} />
-  </Box>
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.BASELINE}
+      gap={1}
+      marginBottom={4}
+    >
+      <Icon {...args} size={SIZES.XXS} />
+      <Icon {...args} size={SIZES.XS} />
+      <Icon {...args} size={SIZES.SM} />
+      <Icon {...args} size={SIZES.MD} />
+      <Icon {...args} size={SIZES.LG} />
+      <Icon {...args} size={SIZES.XL} />
+    </Box>
+    <Text as="p" variant={TEXT.BODY_SM}>
+      <Icon {...args} size={SIZES.AUTO} /> Auto also exists and inherits the
+      font-size of the parent element.
+    </Text>
+  </>
 );
-
 export const Color = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE}>
     <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>

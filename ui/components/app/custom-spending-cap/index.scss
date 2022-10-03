@@ -1,0 +1,31 @@
+.custom-spending-cap {
+  &__input-value-and-token-name {
+    display: contents;
+  }
+
+  &__max-button {
+    position: relative;
+  }
+
+  &__input {
+    width: 100%;
+
+    &--button {
+      background: none;
+      color: var(--color-primary-default);
+    }
+
+    &--max-button {
+      color: var(--color-text-alternative);
+      background: none;
+      position: absolute;
+      margin-top: 55px;
+      margin-inline-start: -75px;
+    }
+  }
+
+  #custom-spending-cap-input-value {
+    color: var(--color-error-default);
+    padding-inline-end: 60px;
+  }
+}
