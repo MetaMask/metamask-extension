@@ -20,3 +20,29 @@ export function maskObject(object, mask) {
     return state;
   }, {});
 }
+
+export function cloneDeep(value) {
+  if (value instanceof Date) {
+    return new Date(value.getTime());
+  }
+
+  if (value instanceof Array) {
+    return value.reduce((arr, item, i) => {
+      arr[i] = cloneDeep(item);
+      return arr;
+    }, []);
+  }
+
+  if (value instanceof Object) {
+    return Object.keys(value).reduce((clonedValue, key) => {
+      clonedValue[key] = cloneDeep(value[key]);
+      return clonedValue;
+    }, {});
+  }
+
+  if (Buffer.isBuffer(value)) {
+    return value.slice();
+  }
+
+  return value;
+}
