@@ -1,6 +1,6 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
-import { omit } from 'lodash';
+import { omit } from '../../../../../shared/modules/object.utils';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,

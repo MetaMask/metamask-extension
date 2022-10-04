@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { omit } from 'lodash';
+import { omit } from '../../../../../shared/modules/object.utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,

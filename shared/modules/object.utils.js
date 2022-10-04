@@ -62,6 +62,10 @@ export function cloneDeep(value) {
  * @returns {object}
  */
 export function omit(object, keys) {
+  if (typeof object !== 'object' || object === null) {
+    return object;
+  }
+
   return Object.keys(object).reduce((destinationObj, key) => {
     if (!keys.includes(key)) {
       destinationObj[key] = cloneDeep(object[key]);
@@ -79,6 +83,10 @@ export function omit(object, keys) {
  * @returns {object}
  */
 export function pick(object, keys) {
+  if (typeof object !== 'object' || object === null) {
+    return object;
+  }
+
   return Object.keys(object).reduce((destinationObj, key) => {
     if (keys.includes(key)) {
       destinationObj[key] = cloneDeep(object[key]);
