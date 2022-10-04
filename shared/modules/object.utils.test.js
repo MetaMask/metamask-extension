@@ -1,4 +1,4 @@
-import { cloneDeep } from './object.utils';
+import { cloneDeep, omit, pick } from './object.utils';
 
 describe('object utils', function () {
   describe('cloneDeep', function () {
@@ -33,6 +33,24 @@ describe('object utils', function () {
         clonedValue[0].timestamp !== value[0].timestamp &&
         clonedValue[0].timestamp.getTime() === value[0].timestamp.getTime();
       expect(result).toStrictEqual(true);
+    });
+  });
+
+  describe('omit', function () {
+    it('should create an object without omitted keys', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withOmittedKeys = omit(object, ['surname']);
+      expect(withOmittedKeys.name).toStrictEqual(object.name);
+      expect(withOmittedKeys.surname).toBeUndefined();
+    });
+  });
+
+  describe('pick', function () {
+    it('should create an object with picked keys', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withPickedKeys = pick(object, ['surname']);
+      expect(withPickedKeys.surname).toStrictEqual(object.surname);
+      expect(withPickedKeys.name).toBeUndefined();
     });
   });
 });

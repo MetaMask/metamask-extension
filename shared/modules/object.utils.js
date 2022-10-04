@@ -21,6 +21,12 @@ export function maskObject(object, mask) {
   }, {});
 }
 
+/**
+ * Recursively clones a value of different types
+ *
+ * @param {*} value
+ * @returns {*}
+ */
 export function cloneDeep(value) {
   if (value instanceof Date) {
     return new Date(value.getTime());
@@ -45,4 +51,38 @@ export function cloneDeep(value) {
   }
 
   return value;
+}
+
+/**
+ * Creates a new object composed of all properties of `object`
+ * that are not included in `keys`
+ *
+ * @param {object} object - The origin object
+ * @param {string[]} keys - Array of object keys to omit
+ * @returns {object}
+ */
+export function omit(object, keys) {
+  return Object.keys(object).reduce((destinationObj, key) => {
+    if (!keys.includes(key)) {
+      destinationObj[key] = cloneDeep(object[key]);
+    }
+    return destinationObj;
+  }, {});
+}
+
+/**
+ * Creates a new object composed of all properties of `object`
+ * that are included in `keys`
+ *
+ * @param {object} object - The origin object
+ * @param {string[]} keys - Array of object keys to pick
+ * @returns {object}
+ */
+export function pick(object, keys) {
+  return Object.keys(object).reduce((destinationObj, key) => {
+    if (keys.includes(key)) {
+      destinationObj[key] = cloneDeep(object[key]);
+    }
+    return destinationObj;
+  }, {});
 }
