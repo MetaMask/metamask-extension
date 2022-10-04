@@ -88,6 +88,15 @@ const WORKER_KEEP_ALIVE_INTERVAL = 1000;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
 
+/**
+ * Don't run the keep worker alive logic for initial JSON RPC methods.
+ * We should not run keep-alive logic for non-dapp pages.
+ */
+const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
+  MESSAGE_TYPE.GET_PROVIDER_STATE,
+  MESSAGE_TYPE.SEND_METADATA,
+];
+
 let keepAliveInterval;
 let keepAliveTimer;
 
@@ -123,6 +132,12 @@ function setupPhishingPageStreams() {
   const phishingPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
+  });
+
+  phishingPageStream.on('data', ({ data: { method } }) => {
+    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+      runWorkerKeepAliveInterval();
+    }
   });
 
   // create and connect channel muxers
@@ -215,12 +230,6 @@ const initPhishingStreams = () => {
 /**
  * INPAGE - EXTENSION STREAM LOGIC
  */
-
-/** Don't run the keep worker alive logic for initial JSON RPC methods. We should not call */
-const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
-  MESSAGE_TYPE.GET_PROVIDER_STATE,
-  MESSAGE_TYPE.SEND_METADATA,
-];
 
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
