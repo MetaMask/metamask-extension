@@ -33,7 +33,7 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_STATE } from './lib/setupSentry';
-import persistData from './lib/persistData';
+import persistData from './lib/persist-data';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {

@@ -1,7 +1,7 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import ReadOnlyNetworkStore from './network-store';
 import LocalStore from './local-store';
-import persistData from './persistData';
+import persistData from './persist-data';
 
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
