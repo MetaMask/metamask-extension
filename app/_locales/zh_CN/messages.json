@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
-  "airgapVaultTutorial": {
-    "message": " （使用教程）"
-  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " （使用教程）"
   },
   "knownAddressRecipient": {
     "message": "已知合约地址。"
