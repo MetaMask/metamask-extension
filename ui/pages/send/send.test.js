@@ -81,17 +81,17 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     provider: {
-      chainId: CHAIN_IDS.RINKEBY,
+      chainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
-      [CHAIN_IDS.RINKEBY]: [],
+      [CHAIN_IDS.GOERLI]: [],
     },
     cachedBalances: {
-      [CHAIN_IDS.RINKEBY]: {},
+      [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },

@@ -92,7 +92,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
-      featureFlagsResponse.ethereum.extension_active = false;
+      featureFlagsResponse.ethereum.extensionActive = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
@@ -113,8 +113,8 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
-      featureFlagsResponse.ethereum.extension_active = false;
-      featureFlagsResponse.ethereum.fallback_to_v1 = false;
+      featureFlagsResponse.ethereum.extensionActive = false;
+      featureFlagsResponse.ethereum.fallbackToV1 = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });

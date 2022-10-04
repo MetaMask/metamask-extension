@@ -96,7 +96,7 @@ export function useCurrencyDisplay(
   let suffix;
 
   if (!opts.hideLabel) {
-    // if the currency we are displaying is the native currency of one of our preloaded test-nets (rinkeby, ropsten etc.)
+    // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
     const currencyTickerSymbol = Object.values(
       TEST_NETWORK_TICKER_MAP,

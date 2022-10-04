@@ -8,9 +8,6 @@
   "about": {
     "message": "درباره"
   },
-  "acceleratingATransaction": {
-    "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
-  },
   "accessingYourCamera": {
     "message": "در حال دسترسی به کمره شما..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToKovan": {
-    "message": "در حال اتصال به شبکه آزمایشی Kovan"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
-  },
-  "connectingToRinkeby": {
-    "message": "در حال اتصال به شبکه آزمایشی Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "در حال اتصال به شبکه آزمایشی Ropsten"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "پیشرفته"
-  },
-  "customGas": {
-    "message": "گاز دلخواه"
-  },
-  "customGasSubTitle": {
-    "message": "اضافه نمودن فیس ممکن زمان پروسس را کاهش دهد، اما تضمین نمیشود."
   },
   "customToken": {
     "message": "رمزیاب دلخواه"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
-  },
-  "estimatedProcessingTimes": {
-    "message": "زمان های تخمینی پروسس"
   },
   "ethereumPublicAddress": {
     "message": "آدرس عمومی ایتریم"
@@ -503,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "آدرس شناخته شده قرارداد"
   },
-  "kovan": {
-    "message": "شبکه آزمایشی Kovan"
-  },
   "learnMore": {
     "message": "بیشتر بدانید"
   },
@@ -603,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "آیا به MetaMask جدید هستید؟"
-  },
-  "newTotal": {
-    "message": "مجموع جدید"
-  },
-  "newTransactionFee": {
-    "message": "فیس جدید معامله"
   },
   "next": {
     "message": "بعدی"
@@ -768,12 +738,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "این عبارت را با هیچکس شریک نسازید!"
   },
-  "rinkeby": {
-    "message": "شبکه آزمایشی Rinkeby"
-  },
-  "ropsten": {
-    "message": "شبکه آزمایشی Ropsten"
-  },
   "rpcUrl": {
     "message": "RPC URL جدید"
   },
@@ -810,9 +774,6 @@
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"
   },
-  "selectAHigherGasFee": {
-    "message": "یک فیس بالاتر گاز را انتخاب نمایید تا پروسس معامله تان تسریع یابد.*"
-  },
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
   },
@@ -830,9 +791,6 @@
   },
   "send": {
     "message": "ارسال"
-  },
-  "sendAmount": {
-    "message": "ارسال مبلغ"
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
@@ -875,9 +833,6 @@
   },
   "signed": {
     "message": "وارد شد"
-  },
-  "slow": {
-    "message": "آهسته"
   },
   "somethingWentWrong": {
     "message": "اوه! مشکلی پیش آمده."

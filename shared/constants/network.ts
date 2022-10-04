@@ -113,6 +113,10 @@ type WyreChainSettings = {
    * The native currency for the network
    */
   currencyCode: CurrencySymbol;
+  /**
+   * The list of supported currencies for the Wyre onramp provider
+   */
+  currencies: SupportedCurrencySymbol[];
 };
 
 /**
@@ -156,11 +160,8 @@ type BuyableChainSettings = {
  */
 export const NETWORK_TYPES = {
   GOERLI: 'goerli',
-  KOVAN: 'kovan',
   LOCALHOST: 'localhost',
   MAINNET: 'mainnet',
-  RINKEBY: 'rinkeby',
-  ROPSTEN: 'ropsten',
   RPC: 'rpc',
   SEPOLIA: 'sepolia',
 } as const;
@@ -185,10 +186,7 @@ export const NETWORK_NAMES = {
  */
 export const NETWORK_IDS = {
   MAINNET: '1',
-  ROPSTEN: '3',
-  RINKEBY: '4',
   GOERLI: '5',
-  KOVAN: '42',
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
 } as const;
@@ -199,10 +197,7 @@ export const NETWORK_IDS = {
  */
 export const CHAIN_IDS = {
   MAINNET: '0x1',
-  ROPSTEN: '0x3',
-  RINKEBY: '0x4',
   GOERLI: '0x5',
-  KOVAN: '0x2a',
   LOCALHOST: '0x539',
   BSC: '0x38',
   OPTIMISM: '0xa',
@@ -215,6 +210,7 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
+  AURORA: '0x4e454152',
 } as const;
 
 /**
@@ -223,9 +219,6 @@ export const CHAIN_IDS = {
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
-export const ROPSTEN_DISPLAY_NAME = 'Ropsten';
-export const RINKEBY_DISPLAY_NAME = 'Rinkeby';
-export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
@@ -240,6 +233,7 @@ export const OPTIMISM_DISPLAY_NAME = 'Optimism';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
+export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -251,13 +245,6 @@ export const getRpcUrl = ({
 }) =>
   `https://${network}.infura.io/v3/${excludeProjectId ? '' : infuraProjectId}`;
 
-export const ROPSTEN_RPC_URL = getRpcUrl({
-  network: NETWORK_TYPES.ROPSTEN,
-});
-export const RINKEBY_RPC_URL = getRpcUrl({
-  network: NETWORK_TYPES.RINKEBY,
-});
-export const KOVAN_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.KOVAN });
 export const MAINNET_RPC_URL = getRpcUrl({
   network: NETWORK_TYPES.MAINNET,
 });
@@ -272,6 +259,7 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
+  AURORA: 'Aurora ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -309,6 +297,8 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   AUCTION: 'AUCTION',
   AXS: 'AXS',
   AVAX: 'AVAX',
+  AVAXC: 'AVAXC',
+  AVAXCUSDC: 'AVAXCUSDC',
   BADGER: 'BADGER',
   BAL: 'BAL',
   BAND: 'BAND',
@@ -340,6 +330,8 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   GRT: 'GRT',
   GTC: 'GTC',
   GTH: 'GTH',
+  GUSD: 'GUSD',
+  GYEN: 'GYEN',
   HEX: 'HEX',
   IOTX: 'IOTX',
   IMX: 'IMX',
@@ -358,6 +350,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   MKR: 'MKR',
   MLN: 'MLN',
   MTL: 'MTL',
+  MUSDC: 'mUSDC',
   NKN: 'NKN',
   NMR: 'NMR',
   NU: 'NU',
@@ -384,6 +377,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   SHIB: 'SHIB',
   SKL: 'SKL',
   SNX: 'SNX',
+  SPA: 'SPA',
   STETH: 'STETH',
   STORJ: 'STORJ',
   SUKU: 'SUKU',
@@ -397,13 +391,16 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   TXL: 'TXL',
   UMA: 'UMA',
   UNI: 'UNI',
+  USDS: 'USDS',
   VRA: 'VRA',
   WBTC: 'WBTC',
   WCFG: 'WCFG',
   XYO: 'XYO',
   YFII: 'YFII',
+  YFI: 'YFI',
   YLD: 'YLD',
   ZRX: 'ZRX',
+  ZUSD: 'ZUSD',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -416,21 +413,16 @@ export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
 export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
+export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 
 export const INFURA_PROVIDER_TYPES = [
-  NETWORK_TYPES.ROPSTEN,
-  NETWORK_TYPES.RINKEBY,
-  NETWORK_TYPES.KOVAN,
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
 ];
 
 export const TEST_CHAINS = [
-  CHAIN_IDS.ROPSTEN,
-  CHAIN_IDS.RINKEBY,
   CHAIN_IDS.GOERLI,
-  CHAIN_IDS.KOVAN,
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LOCALHOST,
 ];
@@ -444,15 +436,6 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc'
   >]: `${Capitalize<K>}${typeof CURRENCY_SYMBOLS.ETH}`;
 } = {
-  [NETWORK_TYPES.ROPSTEN]: `${typedCapitalize(NETWORK_TYPES.ROPSTEN)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
-  [NETWORK_TYPES.RINKEBY]: `${typedCapitalize(NETWORK_TYPES.RINKEBY)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
-  [NETWORK_TYPES.KOVAN]: `${typedCapitalize(NETWORK_TYPES.KOVAN)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
   [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
     CURRENCY_SYMBOLS.ETH
   }`,
@@ -465,21 +448,6 @@ export const TEST_NETWORK_TICKER_MAP: {
  * Map of all build-in Infura networks to their network, ticker and chain IDs.
  */
 export const BUILT_IN_NETWORKS = {
-  [NETWORK_TYPES.ROPSTEN]: {
-    networkId: NETWORK_IDS.ROPSTEN,
-    chainId: CHAIN_IDS.ROPSTEN,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.ROPSTEN],
-  },
-  [NETWORK_TYPES.RINKEBY]: {
-    networkId: NETWORK_IDS.RINKEBY,
-    chainId: CHAIN_IDS.RINKEBY,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.RINKEBY],
-  },
-  [NETWORK_TYPES.KOVAN]: {
-    networkId: NETWORK_IDS.KOVAN,
-    chainId: CHAIN_IDS.KOVAN,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.KOVAN],
-  },
   [NETWORK_TYPES.GOERLI]: {
     networkId: NETWORK_IDS.GOERLI,
     chainId: CHAIN_IDS.GOERLI,
@@ -501,25 +469,16 @@ export const BUILT_IN_NETWORKS = {
 } as const;
 
 export const NETWORK_TO_NAME_MAP = {
-  [NETWORK_TYPES.ROPSTEN]: ROPSTEN_DISPLAY_NAME,
-  [NETWORK_TYPES.RINKEBY]: RINKEBY_DISPLAY_NAME,
-  [NETWORK_TYPES.KOVAN]: KOVAN_DISPLAY_NAME,
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
-  [NETWORK_IDS.ROPSTEN]: ROPSTEN_DISPLAY_NAME,
-  [NETWORK_IDS.RINKEBY]: RINKEBY_DISPLAY_NAME,
-  [NETWORK_IDS.KOVAN]: KOVAN_DISPLAY_NAME,
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
-  [CHAIN_IDS.ROPSTEN]: ROPSTEN_DISPLAY_NAME,
-  [CHAIN_IDS.RINKEBY]: RINKEBY_DISPLAY_NAME,
-  [CHAIN_IDS.KOVAN]: KOVAN_DISPLAY_NAME,
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
@@ -530,16 +489,10 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
-  [CHAIN_IDS.KOVAN]: NETWORK_TYPES.KOVAN,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
-  [CHAIN_IDS.RINKEBY]: NETWORK_TYPES.RINKEBY,
-  [CHAIN_IDS.ROPSTEN]: NETWORK_TYPES.ROPSTEN,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
-  [CHAIN_IDS.ROPSTEN]: ROPSTEN_RPC_URL,
-  [CHAIN_IDS.RINKEBY]: RINKEBY_RPC_URL,
-  [CHAIN_IDS.KOVAN]: KOVAN_RPC_URL,
   [CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
   [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
@@ -556,11 +509,10 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
-  [NETWORK_IDS.ROPSTEN]: NETWORK_TYPES.ROPSTEN,
-  [NETWORK_IDS.RINKEBY]: NETWORK_TYPES.RINKEBY,
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
   [NETWORK_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
@@ -570,10 +522,7 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
-  [CHAIN_IDS.KOVAN]: NETWORK_IDS.KOVAN,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
-  [CHAIN_IDS.RINKEBY]: NETWORK_IDS.RINKEBY,
-  [CHAIN_IDS.ROPSTEN]: NETWORK_IDS.ROPSTEN,
 } as const;
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
@@ -634,9 +583,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.PALM
     | typeof CHAIN_IDS.HARMONY
-    | typeof CHAIN_IDS.OPTIMISM
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
-    | typeof CHAIN_IDS.ARBITRUM
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -693,6 +640,31 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'ethereum',
       currencyCode: CURRENCY_SYMBOLS.ETH,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.ETH,
+        SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+        SUPPORTED_CURRENCY_SYMBOLS.BAT,
+        SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.COMP,
+        SUPPORTED_CURRENCY_SYMBOLS.CRV,
+        SUPPORTED_CURRENCY_SYMBOLS.DAI,
+        SUPPORTED_CURRENCY_SYMBOLS.GUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.GYEN,
+        SUPPORTED_CURRENCY_SYMBOLS.LINK,
+        SUPPORTED_CURRENCY_SYMBOLS.MKR,
+        SUPPORTED_CURRENCY_SYMBOLS.PAX,
+        SUPPORTED_CURRENCY_SYMBOLS.RAI,
+        SUPPORTED_CURRENCY_SYMBOLS.SNX,
+        SUPPORTED_CURRENCY_SYMBOLS.UMA,
+        SUPPORTED_CURRENCY_SYMBOLS.UNI,
+        SUPPORTED_CURRENCY_SYMBOLS.USDC,
+        SUPPORTED_CURRENCY_SYMBOLS.USDS,
+        SUPPORTED_CURRENCY_SYMBOLS.USDT,
+        SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+        SUPPORTED_CURRENCY_SYMBOLS.WETH,
+        SUPPORTED_CURRENCY_SYMBOLS.YFI,
+        SUPPORTED_CURRENCY_SYMBOLS.ZUSD,
+      ],
     },
     coinbasePayCurrencies: [
       SUPPORTED_CURRENCY_SYMBOLS.ETH,
@@ -795,24 +767,12 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.ZRX,
     ],
   },
-  [CHAIN_IDS.ROPSTEN]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.ROPSTEN],
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.RINKEBY]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.RINKEBY],
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
   [CHAIN_IDS.GOERLI]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.SEPOLIA]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.KOVAN]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.KOVAN],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.BSC]: {
@@ -849,6 +809,10 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'matic',
       currencyCode: CURRENCY_SYMBOLS.MATIC,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+        SUPPORTED_CURRENCY_SYMBOLS.MUSDC,
+      ],
     },
   },
   [CHAIN_IDS.AVALANCHE]: {
@@ -862,6 +826,11 @@ export const BUYABLE_CHAINS_MAP: {
     wyre: {
       srn: 'avalanche',
       currencyCode: CURRENCY_SYMBOLS.AVALANCHE,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXC,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXCUSDC,
+      ],
     },
     coinbasePayCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
   },
@@ -879,6 +848,29 @@ export const BUYABLE_CHAINS_MAP: {
       showOnlyCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
     },
   },
+  [CHAIN_IDS.OPTIMISM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'optimism',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+    ],
+  },
+  [CHAIN_IDS.ARBITRUM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
+    network: 'arbitrum',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ARBITRUM,
+      SUPPORTED_CURRENCY_SYMBOLS.SPA,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDS,
+    ],
+  },
+  [CHAIN_IDS.AURORA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA,
+    network: 'aurora',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AURORA],
+  },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
@@ -890,6 +882,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://explorer.arbitrum.io',
       imageUrl: AETH_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.AURORA,
+    nickname: AURORA_DISPLAY_NAME,
+    rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
+    ticker: CURRENCY_SYMBOLS.AURORA,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://aurorascan.dev/',
+      imageUrl: AURORA_TOKEN_IMAGE_URL,
     },
   },
   {
