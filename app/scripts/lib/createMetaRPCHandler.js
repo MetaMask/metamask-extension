@@ -1,12 +1,6 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import ReadOnlyNetworkStore from './network-store';
-import LocalStore from './local-store';
 
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
-localStore.init();
-
-const createMetaRPCHandler = (api, outStream, store) => {
+const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
   return async (data) => {
     if (outStream._writableState.ended) {
       return;
@@ -30,7 +24,9 @@ const createMetaRPCHandler = (api, outStream, store) => {
       error = err;
     } finally {
       if (store && data.method !== 'getState') {
-        localStore.persistStateToLocalStore({ data: store.getState() });
+        localStoreApiWrapper.persistStateToLocalStore({
+          data: store.getState(),
+        });
       }
     }
 

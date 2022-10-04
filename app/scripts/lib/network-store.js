@@ -22,8 +22,8 @@ export default class ReadOnlyNetworkStore {
    */
   isSupported = true;
 
-  async init() {
-    // noop in test
+  setMetaData() {
+    // noop
   }
 
   /**

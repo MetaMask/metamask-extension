@@ -15,8 +15,8 @@ export default class ExtensionStore {
     this.dataPersistenceFailing = false;
   }
 
-  async init() {
-    this.initialStoreState = await this.get();
+  setMetaData(initMetaData) {
+    this.metadata = initMetaData;
   }
 
   async persistStateToLocalStore(state) {
@@ -27,7 +27,7 @@ export default class ExtensionStore {
       throw new Error('MetaMask - updated state does not have data');
     }
     if (!state.meta) {
-      state.meta = this.initialStoreState?.meta;
+      state.meta = this.metadata;
     }
 
     if (this.isSupported) {

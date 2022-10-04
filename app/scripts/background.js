@@ -7,7 +7,7 @@ import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
+import { storeAsStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -292,6 +292,8 @@ async function loadStateFromPersistence() {
   // write to disk
   if (localStore.isSupported) {
     localStore.set(versionedData);
+    // this initializes the meta/version data as a class variable to be used for future writes
+    localStore.setMetaData(versionedData.meta);
   } else {
     // throw in setTimeout so as to not block boot
     setTimeout(() => {
@@ -338,6 +340,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
+    localStore,
   });
 
   setupEnsIpfsResolver({
@@ -354,25 +357,13 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    storeTransformStream(versionifyData),
-    createStreamSink((data) => localStore.persistStateToLocalStore(data)),
+    createStreamSink((data) => localStore.persistStateToLocalStore({ data })),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
   );
 
   setupSentryGetStateGlobal(controller);
-
-  /**
-   * Assigns the given state to the versioned object (with metadata), and returns that.
-   *
-   * @param {object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
-   */
-  function versionifyData(state) {
-    versionedData.data = state;
-    return versionedData;
-  }
 
   //
   // connect to other contexts
