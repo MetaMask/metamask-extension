@@ -13,26 +13,25 @@ import Typography from '../../../ui/typography/typography';
 
 const SignatureRequestSIWETag = ({ text }) => {
   return (
-    <div className="signature-request-siwe-tag">
-      <Box
-        marginRight={1}
-        display={DISPLAY.INLINE_FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        backgroundColor={COLORS.ERROR_DEFAULT}
-        borderRadius={SIZES.XL}
-        paddingLeft={4}
-        paddingRight={4}
+    <Box
+      className="signature-request-siwe-tag"
+      marginRight={1}
+      display={DISPLAY.INLINE_FLEX}
+      alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={COLORS.ERROR_DEFAULT}
+      borderRadius={SIZES.XL}
+      paddingLeft={4}
+      paddingRight={4}
+    >
+      <Typography
+        fontWeight={FONT_WEIGHT.BOLD}
+        margin={0}
+        variant={TYPOGRAPHY.H7}
+        color={COLORS.ERROR_INVERSE}
       >
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
-          margin={0}
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.ERROR_INVERSE}
-        >
-          {text}
-        </Typography>
-      </Box>
-    </div>
+        {text}
+      </Typography>
+    </Box>
   );
 };
 
