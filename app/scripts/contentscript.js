@@ -134,11 +134,13 @@ function setupPhishingPageStreams() {
     target: PHISHING_WARNING_PAGE,
   });
 
-  phishingPageStream.on('data', ({ data: { method } }) => {
-    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-      runWorkerKeepAliveInterval();
-    }
-  });
+  if (isManifestV3) {
+    phishingPageStream.on('data', ({ data: { method } }) => {
+      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+        runWorkerKeepAliveInterval();
+      }
+    });
+  }
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -238,11 +240,13 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
-  pageStream.on('data', ({ data: { method } }) => {
-    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-      runWorkerKeepAliveInterval();
-    }
-  });
+  if (isManifestV3) {
+    pageStream.on('data', ({ data: { method } }) => {
+      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+        runWorkerKeepAliveInterval();
+      }
+    });
+  }
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -310,11 +314,13 @@ const setupLegacyPageStreams = () => {
     target: LEGACY_INPAGE,
   });
 
-  legacyPageStream.on('data', ({ data: { method } }) => {
-    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-      runWorkerKeepAliveInterval();
-    }
-  });
+  if (isManifestV3) {
+    legacyPageStream.on('data', ({ data: { method } }) => {
+      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+        runWorkerKeepAliveInterval();
+      }
+    });
+  }
 
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
