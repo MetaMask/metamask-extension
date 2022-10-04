@@ -94,3 +94,30 @@ export function pick(object, keys) {
     return destinationObj;
   }, {});
 }
+
+/**
+ * Creates a new object composed of all properties of `object`
+ * that are truthy for `predicate`
+ *
+ * @param {object | Array} object - The origin object
+ * @param {Function?} predicate - Function that returns true or false
+ * @returns {object | Array}
+ */
+export function pickBy(object, predicate) {
+  if (
+    (typeof object !== 'object' && !(object instanceof Array)) ||
+    object === null
+  ) {
+    return {};
+  }
+
+  return Object.keys(object).reduce(
+    (destinationObj, key) => {
+      if (!predicate || predicate(object[key], key)) {
+        destinationObj[key] = cloneDeep(object[key]);
+      }
+      return destinationObj;
+    },
+    object instanceof Array ? [] : {},
+  );
+}

@@ -1,4 +1,4 @@
-import { cloneDeep, omit, pick } from './object.utils';
+import { cloneDeep, omit, pick, pickBy } from './object.utils';
 
 describe('object utils', function () {
   describe('cloneDeep', function () {
@@ -51,6 +51,37 @@ describe('object utils', function () {
       const withPickedKeys = pick(object, ['surname']);
       expect(withPickedKeys.surname).toStrictEqual(object.surname);
       expect(withPickedKeys.name).toBeUndefined();
+    });
+  });
+
+  describe('pickBy', function () {
+    it('should create an object with picked keys', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withPickedKeys = pickBy(object, (value) => value === 'a');
+      expect(withPickedKeys.name).toStrictEqual(object.name);
+      expect(withPickedKeys.surname).toBeUndefined();
+    });
+
+    it('should create an array with picked keys', function () {
+      const array = [{ name: 'a' }, { name: 'b' }];
+      const withPickedObjs = pickBy(array, (obj) => obj.name === 'a');
+      expect(withPickedObjs).toHaveLength(1);
+      expect(withPickedObjs[0].name).toStrictEqual('a');
+    });
+
+    it('should return whole object if predicate is undefined', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withPickedKeys = pickBy(object);
+      expect(withPickedKeys.name).toStrictEqual(object.name);
+      expect(withPickedKeys.surname).toStrictEqual(object.surname);
+    });
+
+    it('should return whole array if predicate is undefined', function () {
+      const array = [{ name: 'a' }, { name: 'b' }];
+      const withPickedObjs = pickBy(array);
+      expect(withPickedObjs).toHaveLength(2);
+      expect(withPickedObjs[0].name).toStrictEqual('a');
+      expect(withPickedObjs[1].name).toStrictEqual('b');
     });
   });
 });
