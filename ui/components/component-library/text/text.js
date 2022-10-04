@@ -29,61 +29,72 @@ export const ValidTags = [
   'strong',
   'ul',
   'label',
+  'input',
 ];
 
-export const Text = ({
-  variant = TEXT.BODY_MD,
-  color = TEXT_COLORS.TEXT_DEFAULT,
-  fontWeight,
-  fontStyle,
-  textTransform,
-  textAlign,
-  overflowWrap,
-  ellipsis,
-  as,
-  className,
-  children,
-  ...props
-}) => {
-  let Tag = as ?? variant;
-  let strongTagFontWeight;
-
-  if (Tag === 'strong') {
-    strongTagFontWeight = FONT_WEIGHT.BOLD;
-  }
-
-  const computedClassName = classnames(
-    'text',
-    className,
-    `text--${variant}`,
-    (strongTagFontWeight || fontWeight) &&
-      `text--font-weight-${strongTagFontWeight || fontWeight}`,
+export const Text = React.forwardRef(
+  (
     {
-      [`text--font-style-${fontStyle}`]: Boolean(fontStyle),
-      [`text--ellipsis`]: Boolean(ellipsis),
-      [`text--text-transform-${textTransform}`]: Boolean(textTransform),
-      [`text--text-align-${textAlign}`]: Boolean(textAlign),
-      [`text--color-${color}`]: Boolean(color),
-      [`text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+      variant = TEXT.BODY_MD,
+      color = TEXT_COLORS.TEXT_DEFAULT,
+      fontWeight,
+      fontStyle,
+      textTransform,
+      textAlign,
+      overflowWrap,
+      ellipsis,
+      as,
+      className,
+      children,
+      ...props
     },
-  );
+    ref,
+  ) => {
+    let Tag = as ?? variant;
+    let strongTagFontWeight;
 
-  // // Set a default tag based on variant
-  const splitTag = Tag.split('-')[0];
-  if (splitTag === 'body') {
-    Tag = 'p';
-  } else if (splitTag === 'heading') {
-    Tag = 'h2';
-  } else if (splitTag === 'display') {
-    Tag = 'h1';
-  }
+    if (Tag === 'strong') {
+      strongTagFontWeight = FONT_WEIGHT.BOLD;
+    }
 
-  return (
-    <Box {...props} className={classnames(computedClassName)} as={Tag}>
-      {children}
-    </Box>
-  );
-};
+    const computedClassName = classnames(
+      'text',
+      className,
+      `text--${variant}`,
+      (strongTagFontWeight || fontWeight) &&
+        `text--font-weight-${strongTagFontWeight || fontWeight}`,
+      {
+        [`text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`text--ellipsis`]: Boolean(ellipsis),
+        [`text--text-transform-${textTransform}`]: Boolean(textTransform),
+        [`text--text-align-${textAlign}`]: Boolean(textAlign),
+        [`text--color-${color}`]: Boolean(color),
+        [`text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+      },
+    );
+
+    // // Set a default tag based on variant
+    const splitTag = Tag.split('-')[0];
+    if (splitTag === 'body') {
+      Tag = 'p';
+    } else if (splitTag === 'heading') {
+      Tag = 'h2';
+    } else if (splitTag === 'display') {
+      Tag = 'h1';
+    }
+
+    return (
+      <Box
+        ref={ref}
+        className={classnames(computedClassName)}
+        as={Tag}
+        {...props}
+      >
+        {children}
+      </Box>
+    );
+  },
+);
 
 Text.propTypes = {
   /**
@@ -141,5 +152,7 @@ Text.propTypes = {
    */
   ...Box.propTypes,
 };
+
+Text.displayName = 'Text'; // Used for React DevTools profiler
 
 export default Text;
