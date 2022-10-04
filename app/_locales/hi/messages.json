@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
   },
-  "airgapVaultTutorial": {
-    "message": " (ट्यूटोरियल्स)"
-  },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (ट्यूटोरियल)"
   },
   "knownAddressRecipient": {
     "message": "ज्ञात अनुबंध पता।"
