@@ -452,6 +452,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
+      isAttemptingLogin: isManifestV3,
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       showUnlockRequest: opts.showUserConfirmation,
@@ -1157,16 +1158,24 @@ export default class MetamaskController extends EventEmitter {
       // Automatic login via storage encryption key
       else if (isManifestV3) {
         console.log('Is MV3, going to try to autologin with loginToken');
+
+        this.appStateController.store.updateState({ isAttemptingLogin: true });
         chrome.storage.session.get(
           ['loginToken', 'loginData'],
-          ({ loginToken, loginData }) => {
+          async ({ loginToken, loginData }) => {
             console.log('Was the login token found? ', loginToken, loginData);
             if (loginToken) {
               console.log(
                 `Attempting to login using loginToken: ${loginToken} / ${loginData}`,
               );
-              this.keyringController.submitEncryptionKey(loginToken, loginData);
+              await this.keyringController.submitEncryptionKey(
+                loginToken,
+                loginData,
+              );
             }
+            this.appStateController.store.updateState({
+              isAttemptingLogin: false,
+            });
           },
         );
       }
