@@ -32,5 +32,17 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   fromAccount: primaryIdentity,
   domain: window.location.host,
+  isSIWEDomainValid: true,
+  subjectMetadata,
+};
+
+export const ErrorStory = (args) => <SignatureRequestSIWEHeader {...args} />;
+
+ErrorStory.storyName = 'Error';
+
+ErrorStory.args = {
+  fromAccount: primaryIdentity,
+  domain: window.location.host,
+  isSIWEDomainValid: false,
   subjectMetadata,
 };

@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Alamat pada permintaan masuk tidak sesuai dengan alamat akun yang Anda gunakan untuk masuk."
   },
-  "SIWEDomainInvalid": {
-    "message": "Situs web yang Anda coba masuki ($1) tidak sesuai dengan domain pada permintaan masuk. Lanjutkan dengan hati-hati.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Situs web ($1) meminta Anda untuk masuk ke domain yang salah. Kemungkinan ini merupakan serangan pengelabuan.",
     "description": "$1 represents the website domain"
