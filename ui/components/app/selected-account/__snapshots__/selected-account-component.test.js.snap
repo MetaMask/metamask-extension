@@ -11,23 +11,24 @@ exports[`SelectedAccount Component should match snapshot 1`] = `
       <div
         aria-describedby="tippy-tooltip-1"
         class=""
-        data-original-title="[copyToClipboard]"
+        data-original-title="Copy to clipboard"
         data-tooltipped=""
         style="display: inline;"
         tabindex="0"
       >
         <button
           class="selected-account__clickable"
+          data-testid="selected-account-click"
         >
           <div
             class="selected-account__name"
           >
-            testName
+            Test Account
           </div>
           <div
             class="selected-account__address"
           >
-            0x1B8...5C9D
+            0x0DC...E7bc
             <div
               class="selected-account__copy"
             >
