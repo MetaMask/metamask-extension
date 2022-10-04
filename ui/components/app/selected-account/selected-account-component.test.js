@@ -1,29 +1,32 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import copyToClipboard from 'copy-to-clipboard';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
 import SelectedAccount from '.';
 
+jest.mock('copy-to-clipboard');
+
 describe('SelectedAccount Component', () => {
-  const props = {
-    selectedIdentity: {
-      name: 'testName',
-      address: '0x1b82543566f41a7db9a9a75fc933c340ffb55c9d',
-    },
-  };
+  const mockStore = configureMockStore()(mockState);
 
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <SelectedAccount.WrappedComponent {...props} />,
-    );
+    const { container } = renderWithProvider(<SelectedAccount />, mockStore);
 
     expect(container).toMatchSnapshot();
   });
 
-  it('should render checksummed address', () => {
-    const { queryByText } = renderWithProvider(
-      <SelectedAccount.WrappedComponent {...props} />,
+  it('should copy checksum address to clipboard when button is clicked', () => {
+    const { queryByTestId } = renderWithProvider(
+      <SelectedAccount />,
+      mockStore,
     );
 
-    expect(queryByText('0x1B8...5C9D')).toBeInTheDocument();
-    expect(queryByText(props.selectedIdentity.name)).toBeInTheDocument();
+    fireEvent.click(queryByTestId('selected-account-click'));
+
+    expect(copyToClipboard).toHaveBeenCalledWith(
+      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+    );
   });
 });
