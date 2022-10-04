@@ -1,0 +1,45 @@
+.mm-button-primary {
+  color: var(--color-primary-inverse);
+  background-color: var(--color-primary-default);
+  transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
+
+  &:hover {
+    color: var(--color-primary-inverse);
+    box-shadow: var(--component-button-primary-shadow);
+  }
+
+  &:active {
+    color: var(--color-primary-inverse);
+    background-color: var(--color-primary-alternative);
+  }
+
+  &--type-danger {
+    color: var(--color-error-inverse);
+    background-color: var(--color-error-default);
+
+    &:hover {
+      color: var(--color-error-inverse);
+      box-shadow: var(--component-button-danger-shadow);
+    }
+
+    &:active {
+      color: var(--color-error-inverse);
+      background-color: var(--color-error-alternative);
+    }
+  }
+}
+
+
+.mm-button-primary.mm-button--disabled {
+  &:hover {
+    box-shadow: none;
+  }
+
+  &:active {
+    background-color: var(--color-primary-default);
+  }
+}
+
+.mm-button-primary--type-danger.mm-button--disabled:active {
+  background-color: var(--color-error-default);
+}
