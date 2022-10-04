@@ -1,33 +1,7 @@
-import log from 'loglevel';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { captureException } from '@sentry/browser';
 import ReadOnlyNetworkStore from './network-store';
 import LocalStore from './local-store';
-
-let dataPersistenceFailing = false;
-
-async function persistData(state, localStore) {
-  if (!state) {
-    throw new Error('MetaMask - updated state is missing');
-  }
-  if (!state.data) {
-    throw new Error('MetaMask - updated state does not have data');
-  }
-  if (localStore.isSupported) {
-    try {
-      await localStore.set(state);
-      if (dataPersistenceFailing) {
-        dataPersistenceFailing = false;
-      }
-    } catch (err) {
-      if (!dataPersistenceFailing) {
-        dataPersistenceFailing = true;
-        captureException(err);
-      }
-      log.error('error setting state in local store:', err);
-    }
-  }
-}
+import persistData from './persistData';
 
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();

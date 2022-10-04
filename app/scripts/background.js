@@ -9,7 +9,6 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
-import { captureException } from '@sentry/browser';
 
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -34,6 +33,7 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_STATE } from './lib/setupSentry';
+import persistData from './lib/persistData';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -373,32 +373,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   function versionifyData(state) {
     versionedData.data = state;
     return versionedData;
-  }
-
-  let dataPersistenceFailing = false;
-
-  async function persistData(state) {
-    if (!state) {
-      throw new Error('MetaMask - updated state is missing');
-    }
-    if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data');
-    }
-    if (localStore.isSupported) {
-      try {
-        await localStore.set(state);
-        if (dataPersistenceFailing) {
-          dataPersistenceFailing = false;
-        }
-      } catch (err) {
-        // log error so we dont break the pipeline
-        if (!dataPersistenceFailing) {
-          dataPersistenceFailing = true;
-          captureException(err);
-        }
-        log.error('error setting state in local store:', err);
-      }
-    }
   }
 
   //
