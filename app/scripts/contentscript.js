@@ -291,6 +291,7 @@ const destroyExtensionStreams = () => {
 
 /**
  * LEGACY STREAM LOGIC
+ * TODO:LegacyProvider: Delete
  */
 
 // TODO:LegacyProvider: Delete
@@ -380,6 +381,14 @@ const destroyLegacyExtensionStreams = () => {
   legacyExtPublicConfigChannel.destroy();
 };
 
+const setupExtensionStreamsAndListeners = () => {
+  setupExtensionStreams();
+  setupLegacyExtensionStreams();
+
+  // eslint-disable-next-line no-use-before-define
+  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
+};
+
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
  * and creates a new event listener to the reestablished extension port.
@@ -390,17 +399,16 @@ const resetStreamAndListeners = () => {
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
 
-  // UPDATED LOGIC
-  const interval = setInterval(() => {
-    if (browser.runtime.id) {
-      clearInterval(interval);
-
-      setupExtensionStreams();
-      setupLegacyExtensionStreams();
-
-      extensionPort.onDisconnect.addListener(resetStreamAndListeners);
-    }
-  }, 3000);
+  if (browser.runtime.id) {
+    setupExtensionStreamsAndListeners();
+  } else {
+    const interval = setInterval(() => {
+      if (browser.runtime.id) {
+        clearInterval(interval);
+        setupExtensionStreamsAndListeners();
+      }
+    }, 3000);
+  }
 };
 
 /**
@@ -410,13 +418,9 @@ const resetStreamAndListeners = () => {
  */
 const initStreams = () => {
   setupPageStreams();
-  setupExtensionStreams();
-
-  // TODO:LegacyProvider: Delete
   setupLegacyPageStreams();
-  setupLegacyExtensionStreams();
 
-  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
+  setupExtensionStreamsAndListeners();
 };
 
 // TODO:LegacyProvider: Delete
