@@ -6,10 +6,12 @@ import { BUTTON_SIZES } from './button-primary.constants';
 
 describe('ButtonPrimary', () => {
   it('should render button element correctly', () => {
-    const { getByTestId, container } = render(
-      <ButtonPrimary data-testid="button-primary" />,
+    const { getByText, getByTestId, container } = render(
+      <ButtonPrimary data-testid="button-primary">
+        Button Primary
+      </ButtonPrimary>,
     );
-    expect(getByTestId('button-primary')).toBeDefined();
+    expect(getByText('Button Primary')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-primary')).toHaveClass('mm-button');
   });
