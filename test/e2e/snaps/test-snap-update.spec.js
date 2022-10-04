@@ -16,7 +16,9 @@ describe('Test Snap update', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToSnapDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -37,26 +39,9 @@ describe('Test Snap update', function () {
         await driver.fill('#snapId7', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement('#connectUpdateOld');
 
-        // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        // approve install of snap
         let windowHandles = await driver.getAllWindowHandles();
         const extensionPage = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
-
-        await driver.delay(1000);
-
-        // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,

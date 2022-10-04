@@ -180,6 +180,62 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerConnectedToSnapDapp() {
+    return this.withPermissionController({
+      subjects: {
+        'https://metamask.github.io': {
+          origin: 'https://metamask.github.io',
+          permissions: {
+            'wallet_snap_npm:@metamask/test-snap-bip44': {
+              id: '8zH-0opWuZhvJew41FMVh',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip44',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-managestate': {
+              id: 'Z6XPdyuCHCf1pyqSiU7nh',
+              parentCapability:
+                'wallet_snap_npm:@metamask/test-snap-managestate',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-error': {
+              id: '5FUZoCyimOWKTbuLCEOWa',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-error',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-notification': {
+              id: '_xfRMXzq0bs8QcXRcvjcP',
+              parentCapability:
+                'wallet_snap_npm:@metamask/test-snap-notification',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-bip32': {
+              id: 'CwdJq0x8N_b9FNxn6dVuP',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip32',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-confirm': {
+              id: 'Wb_1c9toBggBQWfOJwjMg',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-confirm',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
   withPermissionLogController(data) {
     Object.assign(this.fixture.data.PermissionLogController, data);
     return this;
