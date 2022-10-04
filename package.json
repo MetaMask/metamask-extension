@@ -168,7 +168,7 @@
     "eth-json-rpc-filters": "^4.2.1",
     "eth-json-rpc-middleware": "^9.0.0",
     "eth-keyring-controller": "^7.0.2",
-    "eth-lattice-keyring": "^0.12.0",
+    "eth-lattice-keyring": "^0.12.3",
     "eth-method-registry": "^2.0.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
