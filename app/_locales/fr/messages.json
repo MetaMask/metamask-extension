@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "L'adresse figurant dans la demande de connexion ne correspond pas à l'adresse du compte que vous utilisez pour vous connecter."
   },
-  "SIWEDomainInvalid": {
-    "message": "Le nom de domaine du site Web auquel vous tentez de vous connecter ($1) ne correspond pas au nom de domaine indiqué dans la demande de connexion. Procédez avec prudence.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Le site Web ($1) vous demande de vous connecter au mauvais nom domaine. Il peut s'agir d'une tentative d'hameçonnage.",
     "description": "$1 represents the website domain"

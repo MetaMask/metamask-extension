@@ -47,13 +47,18 @@
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
   },
-  "SIWEDomainInvalid": {
-    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
-    "description": "$1 represents the website domain"
+  "SIWEDomainInvalidText": {
+    "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "Deceptive site request."
   },
   "SIWEDomainWarningBody": {
     "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
     "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "Unsafe"
   },
   "SIWELabelChainID": {
     "message": "Chain ID:"

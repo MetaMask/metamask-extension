@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Địa chỉ trong yêu cầu đăng nhập không trùng khớp với địa chỉ của tài khoản bạn đang sử dụng để đăng nhập."
   },
-  "SIWEDomainInvalid": {
-    "message": "Trang web bạn đang cố gắng đăng nhập vào ($1) không trùng khớp với tên miền trong yêu cầu đăng nhập. Hãy thực hiện cẩn thận.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Trang web ($1) đang yêu cầu bạn đăng nhập vào một tên miền không đúng. Đây có thể là một cuộc tấn công lừa đảo.",
     "description": "$1 represents the website domain"

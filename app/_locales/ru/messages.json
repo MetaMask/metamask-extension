@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Адрес в запросе на вход не соответствует адресу счета, который вы используете для входа."
   },
-  "SIWEDomainInvalid": {
-    "message": "Веб-сайт, на который вы пытаетесь войти ($1), не соответствует домену в запросе на вход. Действуйте с осторожностью.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Веб-сайт ($1) просит вас войти в неправильный домен. Это может быть фишинговая атака.",
     "description": "$1 represents the website domain"
