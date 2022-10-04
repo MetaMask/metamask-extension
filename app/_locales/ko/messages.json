@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "에어갭 볼트"
   },
-  "airgapVaultTutorial": {
-    "message": " (튜토리얼)"
-  },
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다."
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (튜토리얼)"
   },
   "knownAddressRecipient": {
     "message": "알려진 계약 주소입니다."

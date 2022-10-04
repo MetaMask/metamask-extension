@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "Coffre-fort AirGap"
   },
-  "airgapVaultTutorial": {
-    "message": " (Tutoriels)"
-  },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Tutoriels)"
   },
   "knownAddressRecipient": {
     "message": "Adresse contractuelle connue."

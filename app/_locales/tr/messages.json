@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap Kasası"
   },
-  "airgapVaultTutorial": {
-    "message": "(Öğreticiler)"
-  },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Ana İlke"
-  },
-  "keystoneTutorial": {
-    "message": " (Öğreticiler)"
   },
   "knownAddressRecipient": {
     "message": "Bilinen sözleşme adresi."

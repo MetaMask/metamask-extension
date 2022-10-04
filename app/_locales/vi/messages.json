@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
-  "airgapVaultTutorial": {
-    "message": " (Hướng dẫn)"
-  },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Hướng dẫn)"
   },
   "knownAddressRecipient": {
     "message": "Địa chỉ hợp đồng đã biết."

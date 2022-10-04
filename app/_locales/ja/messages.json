@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
-  "airgapVaultTutorial": {
-    "message": " (チュートリアル)"
-  },
   "alertDisableTooltip": {
     "message": "これは、[設定 > 警告] で変更できます"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": "(チュートリアル)"
   },
   "knownAddressRecipient": {
     "message": "既知のコントラクトアドレスです。"
