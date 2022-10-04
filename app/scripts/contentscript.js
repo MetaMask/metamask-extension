@@ -5,6 +5,7 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -54,9 +55,6 @@ let legacyExtMux,
   legacyPagePublicConfigChannel,
   notificationTransformStream;
 
-const WORKER_KEEP_ALIVE_INTERVAL = 1000;
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 let phishingExtChannel,
@@ -91,6 +89,40 @@ function injectScript(content) {
     console.error('MetaMask: Provider injection failed.', error);
   }
 }
+
+/**
+ * SERVICE WORKER LOGIC
+ */
+
+const WORKER_KEEP_ALIVE_INTERVAL = 1000;
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
+
+let keepAliveInterval;
+let keepAliveTimer;
+
+/**
+ * Running this method will ensure the service worker is kept alive for 45 minutes
+ */
+const runWorkerKeepAliveInterval = () => {
+  if (keepAliveTimer) {
+    clearTimeout(keepAliveTimer);
+  }
+
+  keepAliveTimer = setTimeout(() => {
+    clearInterval(keepAliveInterval);
+  }, TIME_45_MIN_IN_MS);
+
+  if (keepAliveInterval) {
+    clearInterval(keepAliveInterval);
+  }
+
+  keepAliveInterval = setInterval(() => {
+    if (browser.runtime.id) {
+      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+    }
+  }, WORKER_KEEP_ALIVE_INTERVAL);
+};
 
 /**
  * PHISHING STREAM LOGIC
@@ -213,6 +245,12 @@ const setupPageChannelListeners = () => {
   });
 };
 
+/** Don't run the keep worker alive logic for initial JSON RPC methods. We should not call */
+const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
+  MESSAGE_TYPE.GET_PROVIDER_STATE,
+  MESSAGE_TYPE.SEND_METADATA,
+];
+
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
@@ -220,26 +258,15 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
-  pageStream.on('data', (chunk) => {
-    const { result, method, params } = chunk;
-
+  pageStream.on('data', ({ data: { method } }) => {
     // UPDATED LOGIC
     if (!browser.runtime.id) {
-      console.info('pageStream !browser.runtime.id');
+      console.info('no !browser.runtime.id');
     }
 
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-    console.info(
-      `pageStream > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
-      params,
-    );
-  });
-  pageStream.on('finish', () => {
-    console.log('pageStream finished');
-  });
-  pageStream.on('error', (error) => {
-    console.info('pageStream error', error);
+    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+      runWorkerKeepAliveInterval();
+    }
   });
 
   // create and connect channel muxers
@@ -363,6 +390,12 @@ const setupLegacyPageStreams = () => {
     target: LEGACY_INPAGE,
   });
 
+  legacyPageStream.on('data', ({ data: { method } }) => {
+    if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+      runWorkerKeepAliveInterval();
+    }
+  });
+
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
@@ -440,6 +473,7 @@ const destroyLegacyExtensionStreams = () => {
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
  * and creates a new event listener to the reestablished extension port.
+ *
  *
  * @param test
  * @param test2
@@ -566,12 +600,6 @@ function redirectToPhishingWarning(data = {}) {
   window.location.href = `${baseUrl}#${querystring}`;
 }
 
-const initKeepWorkerAlive = () => {
-  setInterval(() => {
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-  }, WORKER_KEEP_ALIVE_INTERVAL);
-};
-
 const start = () => {
   const isDetectedPhishingSite =
     window.location.origin === phishingPageUrl.origin &&
@@ -583,9 +611,7 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    if (isManifestV3) {
-      // initKeepWorkerAlive();
-    } else {
+    if (!isManifestV3) {
       injectScript(inpageBundle);
     }
     initStreams();
