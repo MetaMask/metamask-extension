@@ -4,7 +4,7 @@ This migration modifies our notices to delete their body after being read.
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 const version = 12;
 

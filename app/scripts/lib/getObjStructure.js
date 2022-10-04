@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 // This will create an object that represents the structure of the given object
 // it replaces all values with the result of their type

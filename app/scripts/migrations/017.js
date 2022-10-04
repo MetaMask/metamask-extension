@@ -4,7 +4,7 @@ This migration sets transactions who were retried and marked as failed to submit
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 const version = 17;

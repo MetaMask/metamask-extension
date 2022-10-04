@@ -1,11 +1,5 @@
-import {
-  cloneDeep,
-  concat,
-  groupBy,
-  keyBy,
-  pickBy,
-  isPlainObject,
-} from 'lodash';
+import { concat, groupBy, keyBy, pickBy, isPlainObject } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 
 const version = 59;

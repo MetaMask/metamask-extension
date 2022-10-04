@@ -4,7 +4,8 @@ This migration breaks out the ShapeShiftController substate
 
 */
 
-import { cloneDeep, merge } from 'lodash';
+import { merge } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 const version = 10;
 

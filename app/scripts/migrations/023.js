@@ -4,7 +4,7 @@ This migration removes transactions that are no longer usefull down to 40 total
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 const version = 23;

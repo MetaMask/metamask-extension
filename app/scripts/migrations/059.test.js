@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   TRANSACTION_TYPES,

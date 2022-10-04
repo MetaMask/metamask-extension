@@ -2,8 +2,8 @@
  * @jest-environment node
  * https://github.com/facebook/jest/issues/7780
  */
-import { cloneDeep } from 'lodash';
 import KeyringController from 'eth-keyring-controller';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import firstTimeState from '../first-time-state';
 import mockEncryptor from '../../../test/lib/mock-encryptor';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';

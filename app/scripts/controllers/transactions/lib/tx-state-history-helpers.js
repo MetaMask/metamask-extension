@@ -1,5 +1,5 @@
 import jsonDiffer from 'fast-json-patch';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../../../shared/modules/object.utils';
 
 /**
  * converts non-initial history entries into diffs

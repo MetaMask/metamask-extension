@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 
 const version = 66;

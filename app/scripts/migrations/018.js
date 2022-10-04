@@ -4,7 +4,7 @@ This migration updates "transaction state history" to diffs style
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import {
   snapshotFromTxMeta,
   migrateFromSnapshotsToDiffs,

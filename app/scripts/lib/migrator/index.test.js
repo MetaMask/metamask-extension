@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import fs from 'fs';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../../shared/modules/object.utils';
 import liveMigrations from '../../migrations';
 import data from '../../first-time-state';
 import Migrator from '.';

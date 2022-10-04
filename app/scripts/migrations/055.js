@@ -1,4 +1,5 @@
-import { cloneDeep, mapKeys } from 'lodash';
+import { mapKeys } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
 
 const version = 55;

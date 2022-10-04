@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 
 const version = 52;

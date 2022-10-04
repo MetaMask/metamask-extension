@@ -4,7 +4,7 @@ This migration removes provider from config and moves it too NetworkController.
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 const version = 14;
 

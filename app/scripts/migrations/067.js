@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import BigNumber from 'bignumber.js';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 

@@ -4,7 +4,7 @@ This migration removes the BlackListController from disk state
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 const version = 21;
 

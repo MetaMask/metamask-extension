@@ -4,7 +4,7 @@
 normalizes txParams on unconfirmed txs
 
 */
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { addHexPrefix } from '../lib/util';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 

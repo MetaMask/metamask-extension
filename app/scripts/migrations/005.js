@@ -4,7 +4,7 @@ This migration moves state from the flat state trie into KeyringController subst
 
 */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 
 const version = 5;
 
