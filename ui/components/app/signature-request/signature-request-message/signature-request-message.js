@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
+import { getMetaMaskIdentities, getAccountName } from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -18,7 +20,7 @@ export default function SignatureRequestMessage({
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
-
+  const identities = useSelector(getMetaMaskIdentities);
   const setMessageIsScrolledAtBottom = () => {
     if (!messageRootRef || messageIsScrolled) {
       return;
@@ -47,7 +49,7 @@ export default function SignatureRequestMessage({
             <span
               className={classnames('signature-request-message--node-label', {
                 'signature-request-message--node-label-bold':
-                  !isValidHexAddress(value, { mixedCaseUseChecksum: true }),
+                  typeof value === 'object',
               })}
             >
               {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
@@ -63,6 +65,7 @@ export default function SignatureRequestMessage({
                     <Address
                       addressOnly
                       checksummedRecipientAddress={toChecksumHexAddress(value)}
+                      recipientName={getAccountName(identities, value)}
                     />
                   </div>
                 ) : (
