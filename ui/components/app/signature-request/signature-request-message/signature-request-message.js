@@ -1,21 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
-import {
-  getMetaMaskIdentities,
-  getAccountName,
-  getMetadataContractName,
-  getAddressBook,
-} from '../../../../selectors';
-import Identicon from '../../../ui/identicon';
+import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-import { shortenAddress } from '../../../../helpers/utils/util';
 
 export default function SignatureRequestMessage({
   data,
@@ -26,14 +18,6 @@ export default function SignatureRequestMessage({
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
-  const addressBook = useSelector(getAddressBook);
-  const identities = useSelector(getMetaMaskIdentities);
-  const getNickName = (address) => {
-    const entry = addressBook.find((contact) => {
-      return address.toLowerCase() === contact.address.toLowerCase();
-    });
-    return (entry && entry.name) || '';
-  };
 
   const setMessageIsScrolledAtBottom = () => {
     if (!messageRootRef || messageIsScrolled) {
@@ -60,7 +44,12 @@ export default function SignatureRequestMessage({
             })}
             key={i}
           >
-            <span className="signature-request-message--node-label">
+            <span
+              className={classnames('signature-request-message--node-label', {
+                'signature-request-message--node-label-bold':
+                  !isValidHexAddress(value, { mixedCaseUseChecksum: true }),
+              })}
+            >
               {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
             </span>
             {typeof value === 'object' && value !== null ? (
@@ -70,19 +59,11 @@ export default function SignatureRequestMessage({
                 {isValidHexAddress(value, {
                   mixedCaseUseChecksum: true,
                 }) ? (
-                  <div className="signature-request-message__party">
-                    <div className="signature-request-message--node-value__icon">
-                      <Identicon
-                        address={toChecksumHexAddress(value)}
-                        diameter={24}
-                      />
-                    </div>
-                    <div className="signature-request-message--node-value__name">
-                      {getAccountName(identities, value) ||
-                        getNickName(value) ||
-                        getMetadataContractName(value) ||
-                        shortenAddress(toChecksumHexAddress(value))}
-                    </div>
+                  <div className="signature-request-message--node-value__address">
+                    <Address
+                      addressOnly
+                      checksummedRecipientAddress={toChecksumHexAddress(value)}
+                    />
                   </div>
                 ) : (
                   `${value}`
