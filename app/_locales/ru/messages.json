@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "Хранилище AirGap"
   },
-  "airgapVaultTutorial": {
-    "message": "(Руководства)"
-  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Предупреждения»"
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Руководства)"
   },
   "knownAddressRecipient": {
     "message": "Известный адрес контракта."

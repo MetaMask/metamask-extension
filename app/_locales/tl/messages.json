@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
-  "airgapVaultTutorial": {
-    "message": " (Mga Tutorial)"
-  },
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Mga Tutorial)"
   },
   "knownAddressRecipient": {
     "message": "Kilalang address ng kontrata."

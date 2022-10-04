@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "Bóveda AirGap"
   },
-  "airgapVaultTutorial": {
-    "message": " (Tutoriales)"
-  },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Tutoriales)"
   },
   "knownAddressRecipient": {
     "message": "Dirección de contrato conocida."
