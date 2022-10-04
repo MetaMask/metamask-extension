@@ -1,10 +1,10 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import ReadOnlyNetworkStore from './network-store';
 import LocalStore from './local-store';
-import persistData from './persist-data';
 
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+localStore.init();
 
 const createMetaRPCHandler = (api, outStream, store) => {
   return async (data) => {
@@ -30,12 +30,7 @@ const createMetaRPCHandler = (api, outStream, store) => {
       error = err;
     } finally {
       if (store && data.method !== 'getState') {
-        // we retrieve the already persisted data from local store to provide the version metadata to this persist call
-        const versionData = await localStore.get();
-        await persistData(
-          { data: store.getState(), meta: versionData?.meta },
-          localStore,
-        );
+        localStore.persistStateToLocalStore({ data: store.getState() });
       }
     }
 

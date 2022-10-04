@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import { checkForError } from './util';
 
 /**
@@ -10,6 +11,38 @@ export default class ExtensionStore {
     this.isSupported = Boolean(browser.storage.local);
     if (!this.isSupported) {
       log.error('Storage local API not available.');
+    }
+    this.dataPersistenceFailing = false;
+  }
+
+  async init() {
+    this.initialStoreState = await this.get();
+  }
+
+  async persistStateToLocalStore(state) {
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing');
+    }
+    if (!state.data) {
+      throw new Error('MetaMask - updated state does not have data');
+    }
+    if (!state.meta) {
+      state.meta = this.initialStoreState?.meta;
+    }
+
+    if (this.isSupported) {
+      try {
+        await this.set(state);
+        if (this.dataPersistenceFailing) {
+          this.dataPersistenceFailing = false;
+        }
+      } catch (err) {
+        if (!this.dataPersistenceFailing) {
+          this.dataPersistenceFailing = true;
+          captureException(err);
+        }
+        log.error('error setting state in local store:', err);
+      }
     }
   }
 

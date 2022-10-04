@@ -33,7 +33,6 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_STATE } from './lib/setupSentry';
-import persistData from './lib/persist-data';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -356,7 +355,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     storeAsStream(controller.store),
     debounce(1000),
     storeTransformStream(versionifyData),
-    createStreamSink(persistData),
+    createStreamSink((data) => localStore.persistStateToLocalStore(data)),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },

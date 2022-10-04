@@ -22,6 +22,10 @@ export default class ReadOnlyNetworkStore {
    */
   isSupported = true;
 
+  async init() {
+    // noop in test
+  }
+
   /**
    * Initializes by loading state from the network
    */
