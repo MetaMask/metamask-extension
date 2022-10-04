@@ -105,20 +105,14 @@ async function start() {
      */
     loadPhishingWarningPage = async function () {
       const currentPlatform = getPlatform();
-      let isSWAlreadyRegistered;
 
-      if (currentPlatform === PLATFORM_FIREFOX) {
-        isSWAlreadyRegistered = window.sessionStorage.getItem(
-          PHISHING_WARNING_SW_STORAGE_KEY,
-        );
-      } else {
-        const phishingSWGet = await browser.storage.session.get(
-          PHISHING_WARNING_SW_STORAGE_KEY,
-        );
-        isSWAlreadyRegistered = phishingSWGet[PHISHING_WARNING_SW_STORAGE_KEY];
-      }
+      // Check session storage for whether we've already initalized the phishing warning
+      // service worker this browser session and do not attempt to re-initialize if so.
+      const phishingSWMemoryFetch = await browser.storage.session.get(
+        PHISHING_WARNING_SW_STORAGE_KEY,
+      );
 
-      if (isSWAlreadyRegistered) {
+      if (phishingSWMemoryFetch[PHISHING_WARNING_SW_STORAGE_KEY]) {
         return;
       }
 
@@ -162,7 +156,11 @@ async function start() {
         // store a flag in sessions storage that we've already loaded the service worker
         // and don't need to try again
         if (currentPlatform === PLATFORM_FIREFOX) {
-          window.sessionStorage.setItem(PHISHING_WARNING_SW_STORAGE_KEY, true);
+          // Firefox does not yet support the storage.session API introduced in MV3
+          // Tracked here: https://bugzilla.mozilla.org/show_bug.cgi?id=1687778
+          console.error(
+            'Firefox does not support required MV3 APIs: Phishing warning page iframe and service worker will reload each page refresh',
+          );
         } else {
           browser.storage.session.set({
             [PHISHING_WARNING_SW_STORAGE_KEY]: true,
