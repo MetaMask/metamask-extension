@@ -121,3 +121,25 @@ export function pickBy(object, predicate) {
     object instanceof Array ? [] : {},
   );
 }
+
+/**
+ * Checks if `value` is a plain object
+ *
+ * @param {*} value - The value to check
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`
+ */
+export function isPlainObject(value) {
+  if (typeof value !== 'object' || !value) {
+    return false;
+  }
+
+  if (value.prototype) {
+    return false;
+  }
+
+  if (value instanceof Array) {
+    return false;
+  }
+
+  return true;
+}

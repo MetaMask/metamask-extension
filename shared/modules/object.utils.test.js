@@ -1,4 +1,4 @@
-import { cloneDeep, omit, pick, pickBy } from './object.utils';
+import { cloneDeep, isPlainObject, omit, pick, pickBy } from './object.utils';
 
 describe('object utils', function () {
   describe('cloneDeep', function () {
@@ -82,6 +82,17 @@ describe('object utils', function () {
       expect(withPickedObjs).toHaveLength(2);
       expect(withPickedObjs[0].name).toStrictEqual('a');
       expect(withPickedObjs[1].name).toStrictEqual('b');
+    });
+  });
+
+  describe('isPlainObject', function () {
+    it('should distinguish between objects, array and functions', function () {
+      const plainObject = { name: 'a' };
+      const arr = [{ name: 'a' }, { name: 'b' }];
+      const notPlainObject = Object;
+      expect(isPlainObject(plainObject)).toStrictEqual(true);
+      expect(isPlainObject(arr)).toStrictEqual(false);
+      expect(isPlainObject(notPlainObject)).toStrictEqual(false);
     });
   });
 });

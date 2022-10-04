@@ -1,5 +1,4 @@
-import { isPlainObject } from 'lodash';
-import { cloneDeep } from '../../../shared/modules/object.utils';
+import { cloneDeep, isPlainObject } from '../../../shared/modules/object.utils';
 
 const version = 60;
 const SUPPORT_NOTIFICATION_KEY = 2;
