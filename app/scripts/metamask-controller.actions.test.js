@@ -178,9 +178,7 @@ describe('MetaMaskController', function () {
         .returns(Promise.resolve(false));
       sinon
         .stub(metamaskController.tokensController, '_createEthersContract')
-        .callsFake(() =>
-          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
-        );
+        .callsFake(() => ({ supportsInterface: supportsInterfaceStub }));
 
       const [token1, token2] = await Promise.all([
         metamaskController.getApi().addToken(address, symbol, decimals),
