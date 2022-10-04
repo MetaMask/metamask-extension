@@ -60,20 +60,4 @@ if (shouldInjectProvider()) {
     logger: log,
     shouldShimWeb3: true,
   });
-
-  metamaskStream.on('data', (chunk) => {
-    const method = chunk.data?.method;
-    console.info(
-      `metamaskStream > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | params: `,
-      chunk.data?.params,
-    );
-  });
-  metamaskStream.on('finish', (msg) => {
-    console.log('metamaskStream received finish:', msg);
-  });
-  metamaskStream.on('error', (msg) => {
-    console.log('metamaskStream received error:', msg);
-  });
 }
-
-console.log('inpage injected');

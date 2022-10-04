@@ -9,16 +9,6 @@ import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
-/**
- * Prerequisites for debugging:
- * - comment out keep alive logic
- * - comment out legacy provider support
- * - add node.js stream listeners
- *
- * New changes:
- * - add retry logic for setupExtensionStreams
- * - see "// UPDATED LOGIC" for other changes
- */
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
@@ -226,25 +216,6 @@ const initPhishingStreams = () => {
  * INPAGE - EXTENSION STREAM LOGIC
  */
 
-const setupPageChannelListeners = () => {
-  pageChannel.on('data', (chunk) => {
-    const { result, method, params } = chunk;
-    if (!browser.runtime.id) {
-      console.info('pageChannel !browser.runtime.id');
-    }
-    console.info(
-      `pageChannel > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
-      params,
-    );
-  });
-  pageChannel.on('finish', () => {
-    console.log('pageChannel finished');
-  });
-  pageChannel.on('error', (error) => {
-    console.info('pageChannel error', error);
-  });
-};
-
 /** Don't run the keep worker alive logic for initial JSON RPC methods. We should not call */
 const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
   MESSAGE_TYPE.GET_PROVIDER_STATE,
@@ -259,11 +230,6 @@ const setupPageStreams = () => {
   });
 
   pageStream.on('data', ({ data: { method } }) => {
-    // UPDATED LOGIC
-    if (!browser.runtime.id) {
-      console.info('no !browser.runtime.id');
-    }
-
     if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
       runWorkerKeepAliveInterval();
     }
@@ -274,30 +240,11 @@ const setupPageStreams = () => {
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
-  pageMux.on('data', (chunk) => {
-    const { result, method, params } = chunk;
-    if (!browser.runtime.id) {
-      console.info('pageMux !browser.runtime.id');
-    }
-    console.info(
-      `pageMux > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
-      params,
-    );
-  });
-  pageMux.on('finish', () => {
-    console.log('pageMux finished');
-  });
-  pageMux.on('error', (error) => {
-    console.info('pageMux error', error);
-  });
-
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
   pageChannel = pageMux.createStream(PROVIDER);
-
-  setupPageChannelListeners();
 };
 
 const setupExtensionStreams = () => {
@@ -324,47 +271,10 @@ const setupExtensionStreams = () => {
     ),
   );
 
-  extensionMux.on('error', (err) => {
-    console.log('extensionMux error ', err);
-  });
-  extensionStream.on('data', (chunk) => {
-    const method = chunk.data?.method;
-    if (!browser.runtime.id) {
-      console.info('extensionStream !browser.runtime.id');
-    }
-    console.info(
-      `extensionStream > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | params: `,
-      chunk.data?.params,
-    );
-  });
-  extensionStream.on('finish', () => {
-    console.log('extensionStream finished');
-  });
-  extensionStream.on('error', (err) => {
-    console.log('extensionStream error ', err);
-  });
-  extensionChannel.on('data', (chunk) => {
-    const { result, method, params } = chunk;
-    if (!browser.runtime.id) {
-      console.info('extensionChannel !browser.runtime.id');
-    }
-    console.info(
-      `extensionChannel > ${chunk.name} > method: ${method} | chunk id: ${chunk.id} | result: ${result} | params: `,
-      params,
-    );
-  });
-  extensionChannel.on('finish', () => {
-    console.log('extensionChannel finished');
-  });
-  extensionChannel.on('error', (err) => {
-    console.log('extensionChannel error ', err);
-  });
-
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
 
-  console.log('extension streams connected');
   notifyInpageOfExtensionStreamConnect();
 };
 
@@ -473,30 +383,24 @@ const destroyLegacyExtensionStreams = () => {
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
  * and creates a new event listener to the reestablished extension port.
- *
- *
- * @param test
- * @param test2
  */
-const resetStreamAndListeners = (test, test2) => {
-  console.info('resetStreamAndListeners: ', test);
+const resetStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   destroyExtensionStreams();
-  setupPageChannelListeners();
+  destroyLegacyExtensionStreams();
 
   // UPDATED LOGIC
   const interval = setInterval(() => {
     if (browser.runtime.id) {
-      setupExtensionStreams();
       clearInterval(interval);
+
+      setupExtensionStreams();
+      setupLegacyExtensionStreams();
 
       extensionPort.onDisconnect.addListener(resetStreamAndListeners);
     }
   }, 3000);
-
-  // destroyLegacyExtensionStreams();
-  // setupLegacyExtensionStreams();
 };
 
 /**
@@ -506,12 +410,11 @@ const resetStreamAndListeners = (test, test2) => {
  */
 const initStreams = () => {
   setupPageStreams();
-
   setupExtensionStreams();
 
   // TODO:LegacyProvider: Delete
-  // setupLegacyPageStreams();
-  // setupLegacyExtensionStreams();
+  setupLegacyPageStreams();
+  setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
