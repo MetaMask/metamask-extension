@@ -3299,6 +3299,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
+"@metamask/eth-sig-util@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-sig-util/-/eth-sig-util-5.0.0.tgz#106364008029d30a231668a7133d6d0dae60adf6"
+  integrity sha512-wBOfkmPJoQG3c6kfxxJxQKfzxqSVtMxRjMD4C6xNtGU+TEuBacC3jIgjUUPlC5MTWu4XFo1Y8VWrmc1AlwAitA==
+  dependencies:
+    "@ethereumjs/util" "^8.0.0"
+    bn.js "4.11.8"
+    ethereum-cryptography "^1.1.2"
+    ethjs-util "^0.1.6"
+    tweetnacl "^1.0.3"
+    tweetnacl-util "^0.15.1"
+
 "@metamask/eth-token-tracker@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-4.0.0.tgz#f3129855873a857ef675d4c28f532be684241b61"
@@ -3555,7 +3567,7 @@
   dependencies:
     fast-deep-equal "^3.1.3"
 
-"@metamask/utils@^3.0.1", "@metamask/utils@^3.1.0":
+"@metamask/utils@^3.0.1", "@metamask/utils@^3.0.3", "@metamask/utils@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-3.1.0.tgz#ecfabe08e807bfcfb9ed1d7e727779a9382bee2c"
   integrity sha512-zBGKgaqdKO9z2CoBSDzeE5KJUr5pM72YsumyUiklSyqMg/xL9vu7Z+E/pkRtwPmyi2YWXvq1rWfjugTt2+38nA==
@@ -7855,6 +7867,11 @@ bn.js@4.11.6:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.6.tgz#53344adb14617a13f6e8dd2ce28905d1c0ba3215"
   integrity sha1-UzRK2xRhehP26N0s4okF0cC6MhU=
 
+bn.js@4.11.8:
+  version "4.11.8"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
+  integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
+
 bn.js@=2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-2.0.4.tgz#220a7cd677f7f1bfa93627ff4193776fe7819480"
@@ -12087,18 +12104,18 @@ eth-json-rpc-middleware@^8.1.0:
     node-fetch "^2.6.7"
     pify "^3.0.0"
 
-eth-json-rpc-middleware@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-9.0.0.tgz#8858713fa009e58758c34f7d8cdeb6179428ffd9"
-  integrity sha512-s/3BFGTjnby2CXAmWPXdNdWwmlygvRPsKRMYA3a5TJKCH8F/lVmVwGtckYRgfY3etpsEO8rMbkp6SQ+Ob1zCiQ==
+eth-json-rpc-middleware@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-9.0.1.tgz#193cb05174739fb736737bbbf992e13010c4b44e"
+  integrity sha512-5yLNjkedXA4LTIBzzU2f7aHFJqANPsc5qCdOZy6T2p7mlDLW+0q0YBQg6Lx4sHdamOWUnJwvm70qzPAqst5zSg==
   dependencies:
+    "@metamask/eth-sig-util" "^5.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"
-    "@metamask/utils" "^3.0.1"
+    "@metamask/utils" "^3.0.3"
     btoa "^1.2.1"
     clone "^2.1.1"
     eth-block-tracker "^5.0.1"
     eth-rpc-errors "^4.0.3"
-    eth-sig-util "^1.4.2"
     json-rpc-engine "^6.1.0"
     json-stable-stringify "^1.0.1"
     node-fetch "^2.6.7"
