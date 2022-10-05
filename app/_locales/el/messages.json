@@ -263,9 +263,6 @@
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
-  "airgapVaultTutorial": {
-    "message": " (Μαθήματα)"
-  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στο \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
@@ -1781,9 +1778,6 @@
   },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Εκμάθηση)"
   },
   "knownAddressRecipient": {
     "message": "Γνωστή διεύθυνση συμβολαίου."
