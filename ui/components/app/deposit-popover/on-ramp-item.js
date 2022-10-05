@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography';
-import { COLORS, FRACTIONS } from '../../../helpers/constants/design-system';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  FLEX_WRAP,
+  BLOCK_SIZES,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 
 const OnRampItem = ({
   logo,
@@ -17,35 +23,49 @@ const OnRampItem = ({
     return null;
   }
   return (
-    <Box paddingRight={6} paddingLeft={6}>
+    <Box className="on-ramp-item" as="li" marginRight={6} marginLeft={6}>
       <Box
         paddingTop={6}
         paddingBottom={6}
-        style={{
-          borderBottomSize: '1px',
-          borderBottomColor: COLORS.BORDER_MUTED,
-        }}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        flexWrap={FLEX_WRAP.WRAP}
       >
-        <Box width={FRACTIONS.HALF}>{logo}</Box>
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          boxProps={{
-            paddingTop: 2,
-            paddingBottom: 2,
-          }}
+        <Box
+          width={[
+            BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_FIFTH,
+          ]}
+          display={DISPLAY.FLEX}
+          justifyContent={[
+            JUSTIFY_CONTENT.FLEX_START,
+            JUSTIFY_CONTENT.FLEX_START,
+            JUSTIFY_CONTENT.CENTER,
+          ]}
+          paddingLeft={[0, 4]}
+          paddingRight={[0, 4]}
+          paddingBottom={[2, 0]}
         >
-          {title}
-        </Typography>
-        <Typography
-          boxProps={{
-            paddingTop: 2,
-            paddingBottom: 2,
-          }}
+          {logo}
+        </Box>
+        <Box
+          width={[BLOCK_SIZES.FULL, BLOCK_SIZES.FULL, BLOCK_SIZES.TWO_FIFTHS]}
+          paddingLeft={[0, 4]}
+          paddingRight={[0, 4]}
+          paddingBottom={[2, 0]}
         >
-          {text}
-        </Typography>
-        <Box marginTop={4}>
+          <Typography variant="h6" fontWeight="bold">
+            {title}
+          </Typography>
+          <Typography>{text}</Typography>
+        </Box>
+        <Box
+          paddingLeft={[0, 4]}
+          paddingRight={[0, 4]}
+          width={[BLOCK_SIZES.FULL, BLOCK_SIZES.FULL, BLOCK_SIZES.TWO_FIFTHS]}
+          paddingBottom={[2, 0]}
+        >
           <Button type="secondary" onClick={onButtonClick}>
             {buttonLabel}
           </Button>

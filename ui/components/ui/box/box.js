@@ -23,6 +23,7 @@ const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const ValidSize = PropTypes.oneOf(Sizes);
+const ValidBlockSize = PropTypes.oneOf(BLOCK_SIZES);
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 export const ValidBackgroundColors = PropTypes.oneOf(
   Object.values(BACKGROUND_COLORS),
@@ -35,6 +36,12 @@ const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
   ValidSize,
   ArrayOfValidSizes,
+]);
+
+const ArrayOfValidBlockSizes = PropTypes.arrayOf(ValidBlockSize);
+export const MultipleBlockSizes = PropTypes.oneOfType([
+  ValidBlockSize,
+  ArrayOfValidBlockSizes,
 ]);
 
 const ArrayOfValidSizesAndAuto = PropTypes.arrayOf(ValidSizeAndAuto);
@@ -311,16 +318,11 @@ Box.propTypes = {
     PropTypes.oneOf(Object.values(DISPLAY)),
     PropTypes.arrayOf(PropTypes.oneOf(Object.values(DISPLAY))),
   ]),
-  width: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
-  ]),
-  height: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
-  ]),
+  width: MultipleBlockSizes,
+  height: MultipleBlockSizes,
   backgroundColor: MultipleBackgroundColors,
   className: PropTypes.string,
+  style: PropTypes.object,
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Box component
    * Defaults to 'div'
