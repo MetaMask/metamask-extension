@@ -1,0 +1,381 @@
+diff --git a/node_modules/@metamask/snap-controllers/LICENSE b/node_modules/@metamask/snap-controllers/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/README.md b/node_modules/@metamask/snap-controllers/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.d.ts b/node_modules/@metamask/snap-controllers/dist/fsm.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.js b/node_modules/@metamask/snap-controllers/dist/fsm.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.js.map b/node_modules/@metamask/snap-controllers/dist/fsm.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.d.ts b/node_modules/@metamask/snap-controllers/dist/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.js b/node_modules/@metamask/snap-controllers/dist/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.js.map b/node_modules/@metamask/snap-controllers/dist/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js
+old mode 100644
+new mode 100755
+index c99409b..3f0d29d
+--- a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js
++++ b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js
+@@ -16,7 +16,6 @@ exports.MultiChainController = void 0;
+ const controllers_1 = require("@metamask/controllers");
+ const snap_utils_1 = require("@metamask/snap-utils");
+ const utils_1 = require("@metamask/utils");
+-const nanoid_1 = require("nanoid");
+ const snaps_1 = require("../snaps");
+ const keyring_1 = require("../snaps/endowments/keyring");
+ const matching_1 = require("./matching");
+@@ -180,11 +179,14 @@ class MultiChainController extends controllers_1.BaseControllerV2 {
+      * requested namespace.
+      */
+     async onRequest(origin, data) {
+-        var _a;
++        var _a, _b;
+         const session = this.getSession(origin);
+         (0, utils_1.assert)(session, `Session for "${origin}" doesn't exist.`);
+         const { namespace } = (0, snap_utils_1.parseChainId)(data.chainId);
++        const sessionNamespace = session.providedNamespaces[namespace];
+         (0, utils_1.assert)((_a = session.providedNamespaces[namespace]) === null || _a === void 0 ? void 0 : _a.chains.includes(data.chainId), `Session for "${origin}" is not connected to "${data.chainId}" chain.`);
++        const { method } = data.request;
++        (0, utils_1.assert)((_b = sessionNamespace === null || sessionNamespace === void 0 ? void 0 : sessionNamespace.methods) === null || _b === void 0 ? void 0 : _b.includes(method), `Session for "${origin}" does not support ${method}`);
+         const snapId = session.handlingSnaps[namespace];
+         (0, utils_1.assert)(snapId !== undefined);
+         const permissionName = (0, snap_utils_1.getSnapPermissionName)(snapId);
+@@ -312,32 +314,7 @@ class MultiChainController extends controllers_1.BaseControllerV2 {
+      * @returns An object containing the Snap ID to use for each namespace.
+      */
+     async resolveConflicts(origin, possibleAccounts) {
+-        // Get user approval for connection.
+-        const id = (0, nanoid_1.nanoid)();
+-        const resolvedAccounts = (await this.messagingSystem.call('ApprovalController:addRequest', {
+-            origin,
+-            id,
+-            type: 'multichain_connect',
+-            requestData: {
+-                possibleAccounts,
+-            },
+-        }, true));
+-        // TODO: In the future, use another permission here to not give full
+-        // permission after handshake.
+-        // Instead we should give origin only a read-only access to list of accounts
+-        // without allowing provider.request() talking to a snap before additional
+-        // user approval. The additional approval would be requested in `onRequest`.
+-        const approvedPermissions = Object.values(resolvedAccounts).reduce((acc, cur) => {
+-            if (cur !== null) {
+-                acc[(0, snap_utils_1.getSnapPermissionName)(cur.snapId)] = {};
+-            }
+-            return acc;
+-        }, {});
+-        await this.messagingSystem.call('PermissionController:grantPermissions', {
+-            approvedPermissions,
+-            subject: { origin },
+-        });
+-        return resolvedAccounts;
++        throw new Error('Conflicts found between requested namespaces and installed snaps');
+     }
+ }
+ exports.MultiChainController = MultiChainController;
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map
+old mode 100644
+new mode 100755
+index 78e2a3f..09cd091
+--- a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map
++++ b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"MultiChainController.js","sourceRoot":"","sources":["../../src/multichain/MultiChainController.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"MultiChainController.js","sourceRoot":"","sources":["../../src/multichain/MultiChainController.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.js b/node_modules/@metamask/snap-controllers/dist/multichain/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/matching.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.js b/node_modules/@metamask/snap-controllers/dist/multichain/matching.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/matching.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.d.ts b/node_modules/@metamask/snap-controllers/dist/services/browser.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.js b/node_modules/@metamask/snap-controllers/dist/services/browser.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.js.map b/node_modules/@metamask/snap-controllers/dist/services/browser.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js b/node_modules/@metamask/snap-controllers/dist/services/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.js b/node_modules/@metamask/snap-controllers/dist/services/node/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.js b/node_modules/@metamask/snap-controllers/dist/test-utils/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.d.ts b/node_modules/@metamask/snap-controllers/dist/utils.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js b/node_modules/@metamask/snap-controllers/dist/utils.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js.map b/node_modules/@metamask/snap-controllers/dist/utils.js.map
+old mode 100644
+new mode 100755
