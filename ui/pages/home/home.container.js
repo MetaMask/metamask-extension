@@ -157,6 +157,7 @@ const mapStateToProps = (state) => {
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
 

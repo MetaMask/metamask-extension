@@ -1392,9 +1392,6 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (Tutoriales)"
-  },
   "knownAddressRecipient": {
     "message": "Dirección de contrato conocida."
   },

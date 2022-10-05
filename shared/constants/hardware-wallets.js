@@ -48,3 +48,28 @@ export const TRANSPORT_STATES = {
   DEVICE_OPEN_FAILURE: 'DEVICE_OPEN_FAILURE',
   UNKNOWN_FAILURE: 'UNKNOWN_FAILURE',
 };
+
+export const AFFILIATE_LINKS = {
+  LEDGER: 'https://shop.ledger.com/?r=17c4991a03fa',
+  GRIDPLUS: 'https://gridplus.io/?afmc=7p',
+  TREZOR:
+    'https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009',
+  KEYSTONE:
+    'https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9',
+  AIRGAP: 'https://airgap.it/',
+  COOLWALLET: 'https://www.coolwallet.io/',
+  DCENT: 'https://dcentwallet.com/',
+};
+
+export const AFFILIATE_TUTORIAL_LINKS = {
+  LEDGER:
+    'https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true',
+  GRIDPLUS: 'https://docs.gridplus.io/setup/metamask',
+  TREZOR: 'https://wiki.trezor.io/Apps:MetaMask',
+  KEYSTONE:
+    'https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone',
+  AIRGAP: 'https://support.airgap.it/guides/metamask/',
+  COOLWALLET: 'https://www.coolwallet.io/metamask-step-by-step-guides/',
+  DCENT:
+    'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
+};

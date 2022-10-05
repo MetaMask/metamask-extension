@@ -23,6 +23,8 @@
 
   height: var(--avatar-size);
   width: var(--avatar-size);
+  max-width: var(--avatar-size);
+  flex: 0 0 var(--avatar-size);
   border-radius: 100%;
   overflow: hidden;
   display: flex;

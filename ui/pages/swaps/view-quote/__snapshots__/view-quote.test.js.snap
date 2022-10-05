@@ -38,6 +38,7 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 2`] = `
     </span>
     <span
       class=""
+      data-testid="exchange-rate-display__base-symbol"
     >
       DAI
     </span>
@@ -54,6 +55,7 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 2`] = `
     </span>
     <div
       class="exchange-rate-display__switch-arrows"
+      data-testid="exchange-rate-display__switch-arrows"
     >
       <svg
         fill="none"
@@ -110,6 +112,7 @@ exports[`ViewQuote renders the component with initial props 2`] = `
     </span>
     <span
       class=""
+      data-testid="exchange-rate-display__base-symbol"
     >
       DAI
     </span>
@@ -126,6 +129,7 @@ exports[`ViewQuote renders the component with initial props 2`] = `
     </span>
     <div
       class="exchange-rate-display__switch-arrows"
+      data-testid="exchange-rate-display__switch-arrows"
     >
       <svg
         fill="none"
