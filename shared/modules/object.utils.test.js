@@ -3,6 +3,7 @@ import {
   isEqual,
   isPlainObject,
   omit,
+  omitBy,
   pick,
   pickBy,
 } from './object.utils';
@@ -89,6 +90,63 @@ describe('object utils', function () {
       expect(withPickedObjs).toHaveLength(2);
       expect(withPickedObjs[0].name).toStrictEqual('a');
       expect(withPickedObjs[1].name).toStrictEqual('b');
+    });
+  });
+
+  describe('omitBy', function () {
+    it('should create an object without omitted keys', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withPickedKeys = omitBy(object, (value) => value === 'a');
+      expect(withPickedKeys.surname).toStrictEqual(object.surname);
+      expect(withPickedKeys.name).toBeUndefined();
+    });
+
+    it('should create an array without omitted keys', function () {
+      const array = [{ name: 'a' }, { name: 'b' }];
+      const withPickedObjs = omitBy(array, (obj) => obj.name === 'a');
+      expect(withPickedObjs).toHaveLength(1);
+      expect(withPickedObjs[0].name).toStrictEqual('b');
+    });
+
+    it('should create an array without omitted deep nested keys', function () {
+      const array = [
+        { name: { firstChar: 'a', secondChar: 'v' } },
+        { name: { firstChar: 'b', secondChar: 'a' } },
+      ];
+      const withPickedObjs = omitBy(array, (obj) => obj.name.firstChar === 'a');
+      expect(withPickedObjs).toHaveLength(1);
+      expect(withPickedObjs[0].name.firstChar).toStrictEqual('b');
+    });
+
+    it('should return whole object if predicate is undefined', function () {
+      const object = { name: 'a', surname: 'b' };
+      const withPickedKeys = omitBy(object);
+      expect(withPickedKeys.name).toStrictEqual(object.name);
+      expect(withPickedKeys.surname).toStrictEqual(object.surname);
+    });
+
+    it('should return whole array if predicate is undefined', function () {
+      const array = [{ name: 'a' }, { name: 'b' }];
+      const withPickedObjs = omitBy(array);
+      expect(withPickedObjs).toHaveLength(2);
+      expect(withPickedObjs[0].name).toStrictEqual('a');
+      expect(withPickedObjs[1].name).toStrictEqual('b');
+    });
+
+    it('should omit keys with deep nested keys equal to true', function () {
+      const obj = {
+        testid1: {
+          id: 'testid1',
+          persist: true,
+        },
+        testid2: {
+          id: 'testid2',
+          persist: false,
+        },
+      };
+      const result = omitBy(obj, 'persist');
+      expect(result).toHaveProperty('testid2');
+      expect(result.testid1).toBeUndefined();
     });
   });
 

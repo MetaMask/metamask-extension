@@ -55,41 +55,28 @@ export function cloneDeep(value) {
 
 /**
  * Creates a new object composed of all properties of `object`
- * that are not included in `keys`
- *
- * @param {object} object - The origin object
- * @param {string[]} keys - Array of object keys to omit
- * @returns {object}
- */
-export function omit(object, keys) {
-  if (!isObjectLike(object)) {
-    return object;
-  }
-
-  return Object.keys(object).reduce((destinationObj, key) => {
-    if (!keys.includes(key)) {
-      destinationObj[key] = cloneDeep(object[key]);
-    }
-    return destinationObj;
-  }, {});
-}
-
-/**
- * Creates a new object composed of all properties of `object`
  * that are included in `keys`
  *
  * @param {object} object - The origin object
  * @param {string[]} keys - Array of object keys to pick
+ * @param {boolean} negate - Wether to negate or not the condition
  * @returns {object}
  */
-export function pick(object, keys) {
+export function pick(object, keys, negate = false) {
   if (!isObjectLike(object)) {
     return object;
   }
 
   return Object.keys(object).reduce((destinationObj, key) => {
-    if (keys.includes(key)) {
-      destinationObj[key] = cloneDeep(object[key]);
+    let condition = keys.includes(key);
+    condition = negate ? !condition : condition;
+
+    if (condition) {
+      if (object instanceof Array) {
+        destinationObj.push(cloneDeep(object[key]));
+      } else {
+        destinationObj[key] = cloneDeep(object[key]);
+      }
     }
     return destinationObj;
   }, {});
@@ -101,25 +88,66 @@ export function pick(object, keys) {
  *
  * @param {object | Array} object - The origin object
  * @param {Function?} predicate - Function that returns true or false
+ * @param {boolean} negate - Wether to negate or not the predicate condition
  * @returns {object | Array}
  */
-export function pickBy(object, predicate) {
-  if (
-    (typeof object !== 'object' && !(object instanceof Array)) ||
-    object === null
-  ) {
+export function pickBy(object, predicate, negate = false) {
+  if (!isObjectLike(object)) {
     return {};
   }
 
+  if (isNullish(predicate)) {
+    return object;
+  }
+
+  const isArray = object instanceof Array;
+  const predicateIsFunction = typeof predicate === 'function';
+
   return Object.keys(object).reduce(
     (destinationObj, key) => {
-      if (!predicate || predicate(object[key], key)) {
-        destinationObj[key] = cloneDeep(object[key]);
+      let condition = predicateIsFunction
+        ? predicate(object[key], key)
+        : !isNullish(object[key]) && object[key][predicate] === true;
+
+      condition = negate ? !condition : condition;
+
+      if (condition) {
+        const leaf = cloneDeep(object[key]);
+
+        if (isArray) {
+          destinationObj.push(leaf);
+        } else {
+          destinationObj[key] = leaf;
+        }
       }
       return destinationObj;
     },
-    object instanceof Array ? [] : {},
+    isArray ? [] : {},
   );
+}
+
+/**
+ * Creates a new object composed of all properties of `object`
+ * that are not included in `keys`
+ *
+ * @param {object} object - The origin object
+ * @param {string[]} keys - Array of object keys to omit
+ * @returns {object}
+ */
+export function omit(object, keys) {
+  return pick(object, keys, true);
+}
+
+/**
+ * Creates a new object composed of all properties of `object`
+ * that are falsy for `predicate`
+ *
+ * @param {object | Array} object - The origin object
+ * @param {Function?} predicate - Function that returns true or false
+ * @returns {object | Array}
+ */
+export function omitBy(object, predicate) {
+  return pickBy(object, predicate, true);
 }
 
 /**
