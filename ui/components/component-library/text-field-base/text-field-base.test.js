@@ -184,7 +184,7 @@ describe('TextFieldBase', () => {
     expect(getByRole('textbox')).toBeDefined();
     expect(textFieldBase.maxLength).toBe(5);
     expect(textFieldBase.value).toBe('12345');
-    expect(textFieldBase.value.length).toBe(5);
+    expect(textFieldBase.value).toHaveLength(5);
   });
   it('should render with readOnly attr when readOnly is true', () => {
     const { getByTestId } = render(
