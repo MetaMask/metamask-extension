@@ -46,13 +46,7 @@ export const TextFieldBase = ({
   ...props
 }) => {
   const internalInputRef = useRef(null);
-
-  const [inputValue, setInputValue] = useState(defaultValue || value || '');
   const [focused, setFocused] = useState(false);
-
-  useEffect(() => {
-    setInputValue(inputValue);
-  }, [inputValue]);
 
   useEffect(() => {
     // The blur won't fire when the disabled state is set on a focused input.
@@ -73,13 +67,6 @@ export const TextFieldBase = ({
     if (onClick) {
       onClick(event);
     }
-  };
-
-  const handleChange = (event) => {
-    // setState handles the use case of an uncontrolled component
-    setInputValue(event.target.value);
-    // onChange will be used for controlled components
-    onChange && onChange(event);
   };
 
   const handleFocus = (event) => {
@@ -130,6 +117,7 @@ export const TextFieldBase = ({
         autoComplete={autoComplete ? 'on' : 'off'}
         autoFocus={autoFocus}
         className="mm-text-field-base__input"
+        defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}
         id={id}
@@ -137,7 +125,7 @@ export const TextFieldBase = ({
         maxLength={maxLength}
         name={name}
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={onChange}
         onFocus={handleFocus}
         padding={0}
         paddingLeft={leftAccessory ? 2 : null}
@@ -146,7 +134,7 @@ export const TextFieldBase = ({
         readOnly={readOnly}
         ref={handleInputRef}
         required={required}
-        value={inputValue}
+        value={value}
         variant={TEXT.BODY_MD}
         {...{
           ...inputProps,
