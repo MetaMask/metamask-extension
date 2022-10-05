@@ -2,13 +2,13 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
 const PHISHFORT_CDN_URL =
-  'https://cdn.jsdelivr.net/gh/phishfort/phishfort-lists@master/blacklists/hotlist.json';
+  'https://static.metafi.codefi.network/api/v1/lists/phishfort_hotlist.json';
 
 describe('Phishing Detection', function () {
   async function mockPhishingDetection(mockServer) {
     await mockServer
       .forGet(
-        'https://cdn.jsdelivr.net/gh/MetaMask/eth-phishing-detect@master/src/config.json',
+        'https://static.metafi.codefi.network/api/v1/lists/eth_phishing_detect_config.json',
       )
       .thenCallback(() => {
         return {
