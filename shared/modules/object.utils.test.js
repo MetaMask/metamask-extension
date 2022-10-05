@@ -1,4 +1,11 @@
-import { cloneDeep, isPlainObject, omit, pick, pickBy } from './object.utils';
+import {
+  cloneDeep,
+  isEqual,
+  isPlainObject,
+  omit,
+  pick,
+  pickBy,
+} from './object.utils';
 
 describe('object utils', function () {
   describe('cloneDeep', function () {
@@ -93,6 +100,22 @@ describe('object utils', function () {
       expect(isPlainObject(plainObject)).toStrictEqual(true);
       expect(isPlainObject(arr)).toStrictEqual(false);
       expect(isPlainObject(notPlainObject)).toStrictEqual(false);
+    });
+  });
+
+  describe('isEqual', function () {
+    it('should distinguish between two cloned equal objects', function () {
+      const value = [{ name: 'a', surname: 'b' }];
+      const other = [{ name: 'a' }];
+      expect(isEqual(value.name, other.name)).toStrictEqual(true);
+      expect(isEqual(value, other)).toStrictEqual(false);
+      expect(isEqual(value[0].surname, other[0].surname)).toStrictEqual(false);
+    });
+
+    it('should distinguish between two equal arrays', function () {
+      const value = ['0x1', '0x5'];
+      const other = ['0x1', '0x5'];
+      expect(isEqual(value, other)).toStrictEqual(true);
     });
   });
 });

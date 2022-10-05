@@ -62,7 +62,7 @@ export function cloneDeep(value) {
  * @returns {object}
  */
 export function omit(object, keys) {
-  if (typeof object !== 'object' || object === null) {
+  if (!isObjectLike(object)) {
     return object;
   }
 
@@ -83,7 +83,7 @@ export function omit(object, keys) {
  * @returns {object}
  */
 export function pick(object, keys) {
-  if (typeof object !== 'object' || object === null) {
+  if (!isObjectLike(object)) {
     return object;
   }
 
@@ -129,7 +129,7 @@ export function pickBy(object, predicate) {
  * @returns {boolean} Returns `true` if `value` is a plain object, else `false`
  */
 export function isPlainObject(value) {
-  if (typeof value !== 'object' || !value) {
+  if (!isObjectLike(value)) {
     return false;
   }
 
@@ -142,4 +142,56 @@ export function isPlainObject(value) {
   }
 
   return true;
+}
+
+/**
+ * Compares `value` with `other` to see if
+ * they are equal in value
+ *
+ * @param {*} value
+ * @param {*} other
+ * @returns {boolean}
+ */
+export function isEqual(value, other) {
+  if (!isObjectLike(value) || !isObjectLike(other)) {
+    return value === other;
+  }
+
+  const valueProps = Object.getOwnPropertyNames(value);
+  const otherProps = Object.getOwnPropertyNames(other);
+
+  if (valueProps.length !== otherProps.length) {
+    return false;
+  }
+
+  for (const prop of valueProps) {
+    const v = value[prop];
+    const o = other[prop];
+    if (!isEqual(v, o)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Checks if `value` has typeof equal to `object` and is
+ * not null
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+export function isObjectLike(value) {
+  return !isNullish(value) && typeof value === 'object';
+}
+
+/**
+ * Checks if a value is null or undefined
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+export function isNullish(value) {
+  return value === undefined || value === null;
 }
