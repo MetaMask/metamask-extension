@@ -120,7 +120,7 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-const currentNetworkId = '42';
+const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';

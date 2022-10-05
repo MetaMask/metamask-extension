@@ -175,22 +175,6 @@
   height: 100%;
 }
 
-.customize-gas-tooltip-container {
-  @include Paragraph;
-
-  position: absolute;
-  bottom: 50px;
-  width: 237px;
-  height: 307px;
-  background-color: var(--color-background-default);
-  opacity: 1;
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-  z-index: 1050;
-  padding: 13px 19px;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
 .gas-tooltip-arrow {
   height: 25px;
   width: 25px;
@@ -201,20 +185,6 @@
   left: 107px;
   top: 294px;
   box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-}
-
-.customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  display: none;
-}
-
-.customize-gas-tooltip-container input[type='number']:hover::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  display: none;
-}
-
-.customize-gas-tooltip {
-  position: relative;
 }
 
 .gas-tooltip {
@@ -239,20 +209,6 @@
 .gas-tooltip-input-label i {
   color: var(--color-icon-muted);
   margin-left: 6px;
-}
-
-.customize-gas-input {
-  @include Paragraph;
-
-  width: 178px;
-  height: 28px;
-  border: 1px solid var(--color-border-muted);
-  color: var(--color-text-default);
-  padding-left: 8px;
-}
-
-.customize-gas-input-wrapper {
-  position: relative;
 }
 
 .gas-tooltip-input-detail {
@@ -860,129 +816,6 @@
     margin: 0 4px;
   }
 
-  &__customize-gas {
-    border: 1px solid var(--color-border-muted);
-    border-radius: 4px;
-    background-color: var(--color-background-default);
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    display: flex;
-    flex-flow: column;
-
-    @include screen-sm-max {
-      width: 100vw;
-      height: 100vh;
-    }
-
-    &__header {
-      @include H3;
-
-      height: 52px;
-      border-bottom: 1px solid var(--color-border-muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      @include screen-sm-max {
-        flex: 0 0 auto;
-      }
-    }
-
-    &__title {
-      margin-left: 19.25px;
-    }
-
-    &__close::after {
-      content: '\00D7';
-      font-size: 1.8em;
-      color: var(--color-icon-default);
-      cursor: pointer;
-      margin-right: 19.25px;
-    }
-
-    &__content {
-      display: flex;
-      flex-flow: column nowrap;
-      height: 100%;
-    }
-
-    &__body {
-      display: flex;
-      margin-bottom: 24px;
-
-      @include screen-sm-max {
-        flex-flow: column;
-        flex: 1 1 auto;
-      }
-    }
-
-    &__footer {
-      @include H3;
-
-      height: 75px;
-      border-top: 1px solid var(--color-border-muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-
-      @include screen-sm-max {
-        flex: 0 0 auto;
-      }
-    }
-
-    &__buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-right: 21.25px;
-    }
-
-    &__revert,
-    &__cancel,
-    &__save,
-    &__save__error {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0 3px;
-      cursor: pointer;
-    }
-
-    &__revert {
-      @include Paragraph;
-
-      color: var(--color-text-muted);
-      margin-left: 21.25px;
-    }
-
-    &__cancel,
-    &__save,
-    &__save__error {
-      width: 85.74px;
-      min-width: initial;
-    }
-
-    &__save__error {
-      opacity: 0.5;
-      cursor: auto;
-    }
-
-    &__error-message {
-      @include H7;
-
-      display: block;
-      position: absolute;
-      top: -18px;
-      right: 0;
-      color: var(--color-error-default);
-      width: 100%;
-      text-align: center;
-    }
-
-    &__cancel {
-      margin-right: 10px;
-    }
-  }
-
   &__gas-modal-card {
     width: 360px;
     display: flex;
@@ -1005,18 +838,6 @@
       width: 314px;
       color: var(--color-text-alternative);
       margin-top: 17px;
-    }
-
-    .customize-gas-input-wrapper {
-      margin-top: 17px;
-    }
-
-    .customize-gas-input {
-      height: 54px;
-      width: 315px;
-      border: 1px solid var(--color-border-muted);
-      background-color: var(--color-background-default);
-      padding-left: 15px;
     }
 
     .gas-tooltip-input-arrows {

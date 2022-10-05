@@ -9,7 +9,7 @@ const initState = {
   activeTab: {},
   metamask: {
     provider: {
-      chainId: CHAIN_IDS.ROPSTEN,
+      chainId: CHAIN_IDS.GOERLI,
     },
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     identities: {
