@@ -62,6 +62,7 @@ export default function reduceApp(state = {}, action) {
     sendInputCurrencySwitched: false,
     newTokensImported: '',
     newCustomNetworkAdded: {},
+    onboardedInThisUISession: false,
     ...state,
   };
 
@@ -406,6 +407,11 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         newCustomNetworkAdded: action.value,
       };
+    case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
+      return {
+        ...appState,
+        onboardedInThisUISession: action.value,
+      };
     default:
       return appState;
   }
@@ -470,4 +476,8 @@ export function toggleCurrencySwitch() {
 
 export function setNewCustomNetworkAdded(value) {
   return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
+}
+
+export function setOnBoardedInThisUISession(value) {
+  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
 }

@@ -2,11 +2,13 @@ import log from 'loglevel';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { stripHexPrefix } from 'ethereumjs-util';
 import copyToClipboard from 'copy-to-clipboard';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../../../../shared/modules/hexstring-utils';
 import {
   EVENT,
   EVENT_NAMES,

@@ -15,7 +15,6 @@ import {
   ethErrors,
 } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
-import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -51,7 +50,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
-import { satisfies as satisfiesSemver } from 'semver';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -78,7 +76,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -154,6 +155,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { checkSnapsBlockList } from './flask/snaps-utilities';
+import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -649,7 +654,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.7.0',
+        'https://metamask.github.io/iframe-execution-environment/0.8.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -683,13 +688,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const SNAP_BLOCKLIST = [
-      {
-        id: 'npm:@consensys/starknet-snap',
-        versionRange: '<0.1.11',
-      },
-    ];
-
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
@@ -699,27 +697,7 @@ export default class MetamaskController extends EventEmitter {
         return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
       },
       checkBlockList: async (snapsToCheck) => {
-        return Object.entries(snapsToCheck).reduce(
-          (acc, [snapId, snapVersion]) => {
-            const blockInfo = SNAP_BLOCKLIST.find(
-              (blocked) =>
-                blocked.id === snapId &&
-                satisfiesSemver(snapVersion, blocked.versionRange, {
-                  includePrerelease: true,
-                }),
-            );
-
-            const cur = blockInfo
-              ? {
-                  blocked: true,
-                  reason: blockInfo.reason,
-                  infoUrl: blockInfo.infoUrl,
-                }
-              : { blocked: false };
-            return { ...acc, [snapId]: cur };
-          },
-          {},
-        );
+        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -1867,6 +1845,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
@@ -2179,8 +2161,8 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const primaryKeyring =
-        keyringController.getKeyringsByType('HD Key Tree')[0];
+      const [primaryKeyring] =
+        keyringController.getKeyringsByType('HD Key Tree');
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2305,8 +2287,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const hdKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [hdKeyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     const simpleKeyPairKeyrings =
       this.keyringController.getKeyringsByType('Simple Key Pair');
     const hdAccounts = await hdKeyring.getAccounts();
@@ -2403,7 +2384,6 @@ export default class MetamaskController extends EventEmitter {
    * @type Identity
    * @property {string} name - The account nickname.
    * @property {string} address - The account's ethereum address, in lower case.
-   * @property {boolean} mayBeFauceting - Whether this account is currently
    * receiving funds from our automatic Ropsten faucet.
    */
 
@@ -2412,7 +2392,7 @@ export default class MetamaskController extends EventEmitter {
    */
   selectFirstIdentity() {
     const { identities } = this.preferencesController.store.getState();
-    const address = Object.keys(identities)[0];
+    const [address] = Object.keys(identities);
     this.preferencesController.setSelectedAddress(address);
   }
 
@@ -2420,7 +2400,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const keyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [keyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
@@ -2451,9 +2431,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
     }
-    let keyring = await this.keyringController.getKeyringsByType(
-      keyringName,
-    )[0];
+    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName);
     }
@@ -2653,8 +2631,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2697,8 +2675,8 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2822,12 +2800,12 @@ export default class MetamaskController extends EventEmitter {
       'Simple Key Pair',
       [privateKey],
     );
-    const accounts = await keyring.getAccounts();
+    const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(allAccounts);
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(accounts[0]);
+    await this.preferencesController.setSelectedAddress(firstAccount);
   }
 
   // ---------------------------------------------------------------------------
@@ -2893,7 +2871,7 @@ export default class MetamaskController extends EventEmitter {
     if (requestedAccount) {
       account = requestedAccount;
     } else {
-      account = (await this.keyringController.getAccounts())[0];
+      [account] = await this.keyringController.getAccounts();
     }
 
     return this.keyringController.exportAppKeyForAddress(account, subject);

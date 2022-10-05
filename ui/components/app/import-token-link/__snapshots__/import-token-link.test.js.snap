@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
+exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
 <div>
   <div
     class="box import-token-link box--flex-direction-row box--text-align-center"
@@ -26,7 +26,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
 </div>
 `;
 
-exports[`Import Token Link should match snapshot for rinkeby chainId 1`] = `
+exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
 <div>
   <div
     class="box import-token-link box--flex-direction-row box--text-align-center"

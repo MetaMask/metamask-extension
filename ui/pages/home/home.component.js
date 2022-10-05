@@ -153,6 +153,7 @@ export default class Home extends PureComponent {
     newCustomNetworkAdded: PropTypes.object,
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    onboardedInThisUISession: PropTypes.bool,
   };
 
   state = {
@@ -612,6 +613,8 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
+      shouldShowSeedPhraseReminder,
+      onboardedInThisUISession,
     } = this.props;
 
     if (forgottenPassword) {
@@ -621,8 +624,8 @@ export default class Home extends PureComponent {
     }
 
     const showWhatsNew =
-      ((completedOnboarding && firstTimeFlowType === 'import') ||
-        !completedOnboarding) &&
+      completedOnboarding &&
+      (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
       showWhatsNewPopup &&
       !showPortfolioTooltip &&
@@ -658,7 +661,11 @@ export default class Home extends PureComponent {
               subHeader={
                 <Tooltip
                   position="bottom"
-                  open={!process.env.IN_TEST && showPortfolioTooltip}
+                  open={
+                    !process.env.IN_TEST &&
+                    !shouldShowSeedPhraseReminder &&
+                    showPortfolioTooltip
+                  }
                   interactive
                   theme="home__subheader-link--tooltip"
                   html={
@@ -710,7 +717,10 @@ export default class Home extends PureComponent {
                     }}
                   >
                     <IconChart />
-                    <div className="home__subheader-link--text">
+                    <div
+                      className="home__subheader-link--text"
+                      data-testid="home__portfolio-site"
+                    >
                       {t('portfolioSite')}
                     </div>
                   </div>
