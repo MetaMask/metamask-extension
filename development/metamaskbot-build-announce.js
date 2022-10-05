@@ -87,6 +87,9 @@ async function start() {
     .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
     .join('')}</ul>`;
 
+  const bundleSizeDataUrl =
+    'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.js';
+
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
   const coverageLink = `<a href="${coverageUrl}">Report</a>`;
 
@@ -241,6 +244,62 @@ async function start() {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  try {
+    const prBundleSizeStats = await (
+      await fetch(bundleSizeStatsUrl, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'metamaskbot',
+          Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
+        },
+      })
+    ).json();
+
+    const devBundleSizeStats = await (
+      await fetch(bundleSizeDataUrl, {
+        method: 'GET',
+      })
+    ).text();
+
+    const prSizes = {
+      background: prBundleSizeStats.background.size,
+      ui: prBundleSizeStats.ui.size,
+      common: prBundleSizeStats.common.size,
+    };
+
+    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
+      const re = new RegExp(`(?<="${part}": )(.*)(?=,)`, 'gu');
+      const history = devBundleSizeStats.match(re);
+      sizes[part] = parseInt(history[history.length - 1], 10);
+      return sizes;
+    }, {});
+
+    const diffs = Object.keys(prSizes).reduce((output, part) => {
+      output[part] = prSizes[part] - devSizes[part];
+      return output;
+    }, {});
+
+    const sizeDiffRows = Object.keys(diffs).reduce((output, part) => {
+      output.push(`${part}: ${diffs[part]}`);
+      return output;
+    }, []);
+
+    const sizeDiffHiddenContent = `<ul>${sizeDiffRows
+      .map((row) => `<li>${row}</li>`)
+      .join('\n')}</ul>`;
+
+    const sizeDiffWarning =
+      diffs.background + diffs.common > 0
+        ? `🚨 Warning! Bundle size has increased! 🚨`
+        : `🚀 Bundle size reduced! 🚀`;
+    const sizeDiffExposedContent = `Bundle size diffs [${sizeDiffWarning}]`;
+    const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
+
+    commentBody += sizeDiffBody;
+  } catch (error) {
+    console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
   try {
