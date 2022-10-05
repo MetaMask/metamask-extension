@@ -3,6 +3,7 @@ import {
   isEqual,
   isPlainObject,
   mapValues,
+  merge,
   omit,
   omitBy,
   pick,
@@ -197,6 +198,29 @@ describe('object utils', function () {
       const result = mapValues(obj, 'name');
       expect(result.user1).toStrictEqual('Mark');
       expect(result.user2).toStrictEqual('Frank');
+    });
+  });
+
+  describe('merge', function () {
+    it('should recursively merge two objects', function () {
+      const original = {
+        a: [{ b: 2 }, { d: 4 }],
+      };
+      const other = {
+        a: [{ c: 3 }, { e: 5 }],
+      };
+      const result = merge(original, other);
+      expect(result.a[0]).toHaveProperty('c');
+      expect(result.a[0].c).toStrictEqual(3);
+    });
+
+    it('should return original if source is undefined', function () {
+      const original = {
+        a: [{ b: 2 }, { d: 4 }],
+      };
+      let other;
+      const result = merge(original, other);
+      expect(result).toStrictEqual(original);
     });
   });
 });

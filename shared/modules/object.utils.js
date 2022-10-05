@@ -176,6 +176,39 @@ export function mapValues(object, iteratee) {
 }
 
 /**
+ * Recursively merges own and
+ * inherited enumerable string keyed properties of source objects into the
+ * destination object. Source properties that resolve to `undefined` are
+ * skipped if a destination value exists. Array and plain object properties
+ * are merged recursively. Other objects and value types are overridden by
+ * assignment. Source objects are applied from left to right. Subsequent
+ * sources overwrite property assignments of previous sources
+ *
+ * @param {object} original - Destination object
+ * @param {object} source - Source object
+ * @returns {object}
+ */
+export function merge(original, source) {
+  if (isNullish(source)) {
+    return original;
+  }
+
+  return Object.keys(source).reduce((destinationObj, key) => {
+    if (isObjectLike(source[key])) {
+      destinationObj[key] = merge(original[key], source[key]);
+    }
+
+    if (isNullish(source[key]) && !isNullish(original[key])) {
+      return destinationObj;
+    }
+
+    destinationObj[key] = source[key];
+
+    return destinationObj;
+  }, original || {});
+}
+
+/**
  * Checks if `value` is a plain object
  *
  * @param {*} value - The value to check
