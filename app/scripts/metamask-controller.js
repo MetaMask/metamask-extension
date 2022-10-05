@@ -3637,6 +3637,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createMultiChainMiddleware({
         onConnect: this.multiChainController.onConnect.bind(
@@ -3647,6 +3648,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       }),
     );
+    ///: END:ONLY_INCLUDE_IN
 
     engine.push(
       createRPCMethodTrackingMiddleware({
