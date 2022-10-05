@@ -102,6 +102,7 @@ let keepAliveTimer;
 
 /**
  * Running this method will ensure the service worker is kept alive for 45 minutes
+ * First message is sent immediately, subsequent messages are sent at interval of WORKER_KEEP_ALIVE_INTERVAL
  */
 const runWorkerKeepAliveInterval = () => {
   if (keepAliveTimer) {
@@ -115,6 +116,8 @@ const runWorkerKeepAliveInterval = () => {
   if (keepAliveInterval) {
     clearInterval(keepAliveInterval);
   }
+
+  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
   keepAliveInterval = setInterval(() => {
     if (browser.runtime.id) {
@@ -288,6 +291,8 @@ const setupExtensionStreams = () => {
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
 
+  // eslint-disable-next-line no-use-before-define
+  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
   notifyInpageOfExtensionStreamConnect();
 };
 
@@ -399,10 +404,16 @@ const destroyLegacyExtensionStreams = () => {
 const setupExtensionStreamsAndListeners = () => {
   setupExtensionStreams();
   setupLegacyExtensionStreams();
-
-  // eslint-disable-next-line no-use-before-define
-  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
+
+// When extension background is loaded it sends message 'METAMASK_EXTENSION_READY' to browser tabs
+// Function below helps to setup streams after service worker in-activity
+const activateStreams = (msg) => {
+  if (msg.name === 'METAMASK_EXTENSION_READY') {
+    setupExtensionStreamsAndListeners();
+  }
+};
+browser.runtime.onMessage.addListener(activateStreams);
 
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
@@ -413,17 +424,6 @@ const resetStreamAndListeners = () => {
 
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
-
-  if (browser.runtime.id) {
-    setupExtensionStreamsAndListeners();
-  } else {
-    const interval = setInterval(() => {
-      if (browser.runtime.id) {
-        clearInterval(interval);
-        setupExtensionStreamsAndListeners();
-      }
-    }, 3000);
-  }
 };
 
 /**

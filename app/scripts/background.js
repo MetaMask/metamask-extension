@@ -102,6 +102,15 @@ const initApp = async (remotePort) => {
 
 if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
+  // Message below signals content script in DAPPS to connect to metamask background as backend is not active
+  // It is required to re-connect DAPPS after service worker re-activation
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { name: 'METAMASK_EXTENSION_READY' },
+      () => undefined,
+    );
+  });
 } else {
   // initialization flow
   initialize().catch(log.error);
