@@ -9,7 +9,6 @@ export const ButtonSecondary = ({
   className,
   danger,
   size = BUTTON_SECONDARY_SIZES.MD,
-
   ...props
 }) => {
   return (
@@ -33,8 +32,8 @@ ButtonSecondary.propTypes = {
    */
   danger: PropTypes.bool,
   /**
-   * The possible size values for ButtonSecondary: 'BUTTON_SECONDARY_SIZES.SM', 'BUTTON_SECONDARY_SIZES.MD', 'BUTTON_SECONDARY_SIZES.LG',
-   * Default value is 'BUTTON_SECONDARY_SIZES.MD'.
+   * The possible size values for ButtonSecondary: 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
+   * Default value is 'SIZES.MD'.
    */
   size: PropTypes.oneOf(Object.values(BUTTON_SECONDARY_SIZES)),
   /**
