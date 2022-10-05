@@ -3,18 +3,20 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60%;
+  max-height: 70%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  z-index: 1050;
 }
 
 .slide-up-modal {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: var(--color-background-default);
   height: 100%;
   border: 1px solid var(--color-border-muted);
   border-radius: 10px;
@@ -29,8 +31,7 @@
 }
 
 .slide-up-modal-overlay .slide-up-modal {
-  max-width: 328px;
-  max-height: 94vh;
+  max-width: 360px;
 }
 
 .slide-up-appear {

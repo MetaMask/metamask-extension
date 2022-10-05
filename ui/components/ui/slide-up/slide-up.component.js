@@ -12,7 +12,7 @@ import {
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 
-const modalRoot = document.querySelector('#custom-root');
+const modalRoot = document.querySelector('#popover-content');
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -66,25 +66,30 @@ const SlideUp = ({
         onClick={handleClick}
       >
         <Box className={classnames('slide-up-modal', className)}>
-          {header ? (
-            <Box
-              className={classnames('slide-up-modal__header', headerClassName)}
-              {...{ ...defaultFooterProps, ...headerProps }}
-            >
-              {header}
-            </Box>
-          ) : null}
-          {children ? (
-            <Box
-              className={classnames(
-                'slide-up-modal__content',
-                contentClassName,
-              )}
-              {...{ ...defaultContentProps, ...contentProps }}
-            >
-              {children}
-            </Box>
-          ) : null}
+          <Box>
+            {header ? (
+              <Box
+                className={classnames(
+                  'slide-up-modal__header',
+                  headerClassName,
+                )}
+                {...{ ...defaultFooterProps, ...headerProps }}
+              >
+                {header}
+              </Box>
+            ) : null}
+            {children ? (
+              <Box
+                className={classnames(
+                  'slide-up-modal__content',
+                  contentClassName,
+                )}
+                {...{ ...defaultContentProps, ...contentProps }}
+              >
+                {children}
+              </Box>
+            ) : null}
+          </Box>
           {footer ? (
             <Box
               className={classnames('slide-up-modal__footer', footerClassName)}
