@@ -194,6 +194,9 @@ const setupPhishingExtStreams = () => {
       error,
     ),
   );
+
+  // eslint-disable-next-line no-use-before-define
+  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 /** Destroys all of the phishing extension streams */
@@ -216,8 +219,6 @@ const resetPhishingStreamAndListeners = () => {
 
   destroyPhishingExtStreams();
   setupPhishingExtStreams();
-
-  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 /**
@@ -228,8 +229,6 @@ const resetPhishingStreamAndListeners = () => {
 const initPhishingStreams = () => {
   setupPhishingPageStreams();
   setupPhishingExtStreams();
-
-  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 /**
