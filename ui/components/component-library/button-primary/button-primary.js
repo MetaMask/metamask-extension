@@ -24,6 +24,15 @@ export const ButtonPrimary = ({
       className={classnames(className, 'mm-button-primary', {
         'mm-button-primary--type-danger': danger,
       })}
+      as={as}
+      block={block}
+      danger={danger}
+      size={size}
+      icon={icon}
+      iconPositionRight={iconPositionRight}
+      loading={loading}
+      disabled={disabled}
+      iconProps={iconProps}
       {...props}
     >
       {children}
