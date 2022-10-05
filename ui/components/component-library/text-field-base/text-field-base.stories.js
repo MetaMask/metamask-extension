@@ -103,9 +103,6 @@ export default {
     rightAccessory: {
       control: 'text',
     },
-    showClear: {
-      control: 'boolean',
-    },
     size: {
       control: 'select',
       options: Object.values(TEXT_FIELD_SIZES),
