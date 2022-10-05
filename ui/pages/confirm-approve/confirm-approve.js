@@ -155,7 +155,7 @@ export default function ConfirmApprove({
 
   const parsedTransactionData =
     parseStandardTokenTransactionData(transactionData);
-  const setApproveForAllArg = getTokenApprovedParam(parsedTransactionData);
+  const isApprovalOrRejection = getTokenApprovedParam(parsedTransactionData);
 
   return tokenSymbol === undefined && assetName === undefined ? (
     <Loading />
@@ -170,13 +170,13 @@ export default function ConfirmApprove({
           customTokenAmount={String(customPermissionAmount)}
           dappProposedTokenAmount={tokenAmount}
           currentTokenBalance={tokenBalance}
-          setApproveForAllArg={setApproveForAllArg}
+          isApprovalOrRejection={isApprovalOrRejection}
           contentComponent={
             <TransactionModalContextProvider>
               <ConfirmApproveContent
                 userAddress={userAddress}
                 isSetApproveForAll={isSetApproveForAll}
-                setApproveForAllArg={setApproveForAllArg}
+                isApprovalOrRejection={isApprovalOrRejection}
                 decimals={decimals}
                 siteImage={siteImage}
                 setCustomAmount={setCustomPermissionAmount}

@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
   },
-  "SIWEDomainInvalid": {
-    "message": "Giriş yapmaya çalıştığınız web sitesi ($1) giriş talebindeki alan ile uyumlu değil. Dikkati olarak ilerleyin.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Web sitesi ($1) yanlış alana giriş yapmanızı istiyor. Bu bir dolandırıcılık saldırısı olabilir.",
     "description": "$1 represents the website domain"

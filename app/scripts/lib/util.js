@@ -152,6 +152,17 @@ function getChainType(chainId) {
   return 'custom';
 }
 
+/**
+ * Checks if the alarmname exists in the list
+ *
+ * @param {Array} alarmList
+ * @param alarmName
+ * @returns
+ */
+function checkAlarmExists(alarmList, alarmName) {
+  return alarmList.some((alarm) => alarm.name === alarmName);
+}
+
 export {
   getPlatform,
   getEnvironmentType,
@@ -161,4 +172,5 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
+  checkAlarmExists,
 };

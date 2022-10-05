@@ -781,4 +781,9 @@ describe('Box', () => {
       );
     });
   });
+  it('should accept a ref prop that is passed down to the html element', () => {
+    const mockRef = jest.fn();
+    render(<Box ref={mockRef} />);
+    expect(mockRef).toHaveBeenCalledTimes(1);
+  });
 });
