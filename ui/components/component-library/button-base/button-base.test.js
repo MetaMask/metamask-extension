@@ -18,9 +18,9 @@ describe('ButtonBase', () => {
     const { getByTestId, container } = render(
       <ButtonBase as="a" data-testid="button-base" />,
     );
-    expect(getByTestId('button-base')).toBeDefined();
-    expect(container.querySelector('a')).toBeDefined();
     expect(getByTestId('button-base')).toHaveClass('mm-button');
+    const anchor = container.getElementsByTagName('a').length;
+    expect(anchor).toBe(1);
   });
 
   it('should render button as block', () => {

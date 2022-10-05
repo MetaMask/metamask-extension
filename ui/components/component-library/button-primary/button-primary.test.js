@@ -20,9 +20,9 @@ describe('ButtonPrimary', () => {
     const { getByTestId, container } = render(
       <ButtonPrimary as="a" data-testid="button-primary" />,
     );
-    expect(getByTestId('button-primary')).toBeDefined();
-    expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-primary')).toHaveClass('mm-button');
+    const anchor = container.getElementsByTagName('a').length;
+    expect(anchor).toBe(1);
   });
 
   it('should render button as block', () => {
