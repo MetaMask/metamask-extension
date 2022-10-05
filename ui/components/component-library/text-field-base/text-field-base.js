@@ -36,8 +36,6 @@ export const TextFieldBase = ({
   onChange,
   onClick,
   onFocus,
-  onKeyDown,
-  onKeyUp,
   placeholder,
   readOnly,
   required,
@@ -94,14 +92,6 @@ export const TextFieldBase = ({
     onBlur && onBlur(event);
   };
 
-  const handleKeyDown = (event) => {
-    onKeyDown && onKeyDown(event);
-  };
-
-  const handleKeyUp = (event) => {
-    onKeyUp && onKeyUp(event);
-  };
-
   const handleInputRef = (ref) => {
     internalInputRef.current = ref;
     if (inputRef && inputRef.current !== undefined) {
@@ -149,8 +139,6 @@ export const TextFieldBase = ({
         onBlur={handleBlur}
         onChange={handleChange}
         onFocus={handleFocus}
-        onKeyDown={handleKeyDown}
-        onKeyUp={handleKeyUp}
         padding={0}
         paddingLeft={leftAccessory ? 2 : null}
         paddingRight={leftAccessory ? 2 : null}
@@ -235,14 +223,6 @@ TextFieldBase.propTypes = {
    * Callback fired on focus
    */
   onFocus: PropTypes.func,
-  /**
-   * Callback fired on key down
-   */
-  onKeyDown: PropTypes.func,
-  /**
-   * Callback fired on key up
-   */
-  onKeyUp: PropTypes.func,
   /**
    * The short hint displayed in the input before the user enters a value.
    */

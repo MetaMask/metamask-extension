@@ -52,23 +52,6 @@ describe('TextFieldBase', () => {
     fireEvent.change(textFieldBase, { target: { value: 'text value' } });
     expect(onChange).toHaveBeenCalledTimes(1);
   });
-  it('should render and fire onKeyDown and onKeyUp events', () => {
-    const onKeyDown = jest.fn();
-    const onKeyUp = jest.fn();
-    const { getByTestId } = render(
-      <TextFieldBase
-        inputProps={{ 'data-testid': 'text-field-base' }}
-        onKeyDown={onKeyDown}
-        onKeyUp={onKeyUp}
-      />,
-    );
-    const textFieldBase = getByTestId('text-field-base');
-
-    fireEvent.keyDown(textFieldBase, { key: 'Enter', code: 'Enter' });
-    expect(onKeyDown).toHaveBeenCalledTimes(1);
-    fireEvent.keyUp(textFieldBase, { key: 'Enter', code: 'Enter' });
-    expect(onKeyUp).toHaveBeenCalledTimes(1);
-  });
   it('should render and fire onClick event', () => {
     const onClick = jest.fn();
     const { getByTestId } = render(

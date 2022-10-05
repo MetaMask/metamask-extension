@@ -91,12 +91,6 @@ export default {
     onFocus: {
       action: 'onFocus',
     },
-    onKeyDown: {
-      action: 'onKeyDown',
-    },
-    onKeyUp: {
-      action: 'onKeyUp',
-    },
     placeholder: {
       control: 'text',
     },
