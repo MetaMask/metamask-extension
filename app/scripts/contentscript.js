@@ -401,16 +401,12 @@ const destroyLegacyExtensionStreams = () => {
   legacyExtPublicConfigChannel.destroy();
 };
 
-const setupExtensionStreamsAndListeners = () => {
-  setupExtensionStreams();
-  setupLegacyExtensionStreams();
-};
-
 // When extension background is loaded it sends message 'METAMASK_EXTENSION_READY' to browser tabs
 // Function below helps to setup streams after service worker in-activity
 const activateStreams = (msg) => {
   if (msg.name === 'METAMASK_EXTENSION_READY') {
-    setupExtensionStreamsAndListeners();
+    setupExtensionStreams();
+    setupLegacyExtensionStreams();
   }
 };
 browser.runtime.onMessage.addListener(activateStreams);
@@ -435,7 +431,8 @@ const initStreams = () => {
   setupPageStreams();
   setupLegacyPageStreams();
 
-  setupExtensionStreamsAndListeners();
+  setupExtensionStreams();
+  setupLegacyExtensionStreams();
 };
 
 // TODO:LegacyProvider: Delete
