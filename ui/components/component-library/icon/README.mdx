@@ -47,6 +47,7 @@ Possible sizes include:
 - `SIZES.MD` 20px
 - `SIZES.LG` 24px
 - `SIZES.XL` 32px
+- `SIZES.AUTO` inherits the font-size from parent element. This is useful for inline icons in text.
 
 <Canvas>
   <Story id="ui-components-component-library-icon-icon-stories-js--size" />
@@ -62,6 +63,10 @@ import { Icon, ICON_NAMES } from '../ui/component-library';
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.MD} />
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.LG} />
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XL} />
+<Text as="p" variant={TEXT.BODY_SM}>
+    <Icon size={SIZES.AUTO} /> Auto also exists and inherits the
+    font-size of the parent element.
+</Text>
 ```
 
 ### Color

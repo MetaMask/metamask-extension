@@ -17,6 +17,7 @@ export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
+    setOnBoardedInThisUISession: PropTypes.func,
   };
 
   static propTypes = {
@@ -26,6 +27,7 @@ export default class EndOfFlowScreen extends PureComponent {
       location: PropTypes.string,
       tabId: PropTypes.number,
     }),
+    setOnBoardedInThisUISession: PropTypes.func,
   };
 
   async _beforeUnload() {
@@ -37,7 +39,8 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   async _onOnboardingComplete() {
-    const { setCompletedOnboarding } = this.props;
+    const { setCompletedOnboarding, setOnBoardedInThisUISession } = this.props;
+    setOnBoardedInThisUISession(true);
     await setCompletedOnboarding();
   }
 

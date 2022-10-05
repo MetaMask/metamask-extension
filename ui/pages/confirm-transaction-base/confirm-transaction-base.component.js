@@ -161,7 +161,7 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
-    setApproveForAllArg: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps: PropTypes.arrayOf(PropTypes.object),
     ///: END:ONLY_INCLUDE_IN
@@ -1127,7 +1127,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       hardwareWalletRequiresConnection,
       image,
-      setApproveForAllArg,
+      isApprovalOrRejection,
       assetStandard,
     } = this.props;
     const {
@@ -1232,7 +1232,7 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
-          setApproveForAllArg={setApproveForAllArg}
+          isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
         />
       </TransactionModalContextProvider>

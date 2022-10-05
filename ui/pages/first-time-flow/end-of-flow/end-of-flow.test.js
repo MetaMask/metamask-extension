@@ -12,6 +12,7 @@ describe('End of Flow Screen', () => {
       push: sinon.stub(),
     },
     setCompletedOnboarding: sinon.stub().resolves(),
+    setOnBoardedInThisUISession: sinon.stub(),
   };
 
   beforeEach(() => {

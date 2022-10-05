@@ -171,7 +171,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [CHAIN_IDS.ROPSTEN]: [
+              '0x3': [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -229,7 +229,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [CHAIN_IDS.ROPSTEN]: [
+            '0x3': [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -289,7 +289,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [CHAIN_IDS.ROPSTEN]: [
+              '0x3': [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: 0,
@@ -347,7 +347,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [CHAIN_IDS.ROPSTEN]: [
+            '0x3': [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -407,7 +407,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [CHAIN_IDS.ROPSTEN]: [
+              '0x3': [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -486,7 +486,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [CHAIN_IDS.ROPSTEN]: [
+            '0x3': [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,
@@ -567,7 +567,7 @@ describe('migration #54', () => {
               ],
             },
             '0x1112': {
-              [CHAIN_IDS.ROPSTEN]: [
+              '0x3': [
                 {
                   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                   decimals: '0',
@@ -641,7 +641,7 @@ describe('migration #54', () => {
             ],
           },
           '0x1112': {
-            [CHAIN_IDS.ROPSTEN]: [
+            '0x3': [
               {
                 address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
                 decimals: 0,

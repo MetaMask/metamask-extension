@@ -47,7 +47,7 @@ exports[`SlippageButtons renders the component with initial props 2`] = `
 </div>
 `;
 
-exports[`SlippageButtons renders the component with the smart transaction opt-in button available 1`] = `
+exports[`SlippageButtons renders the component with the smart transaction opt-in button available, opt into STX 1`] = `
 <button
   class="slippage-buttons__header slippage-buttons__header--open"
 >
@@ -62,7 +62,7 @@ exports[`SlippageButtons renders the component with the smart transaction opt-in
 </button>
 `;
 
-exports[`SlippageButtons renders the component with the smart transaction opt-in button available 2`] = `
+exports[`SlippageButtons renders the component with the smart transaction opt-in button available, opt into STX 2`] = `
 <div
   class="button-group slippage-buttons__button-group radio-button-group"
   role="radiogroup"

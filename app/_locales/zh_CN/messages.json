@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
   },
-  "SIWEDomainInvalid": {
-    "message": "您尝试登录的网站（$1）与登录请求中的域名不匹配。请谨慎行事。",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "网站（$1）要求您登录到错误的域名。这可能是网络钓鱼攻击。",
     "description": "$1 represents the website domain"
@@ -100,9 +96,6 @@
   },
   "about": {
     "message": "关于"
-  },
-  "acceleratingATransaction": {
-    "message": "* 通过使用更高的燃料价格来加速交易，会增加其更快地被网络处理的机会，但这并不总是得到保证。"
   },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意 $1",
@@ -265,9 +258,6 @@
   },
   "airgapVault": {
     "message": "AirGap Vault"
-  },
-  "airgapVaultTutorial": {
-    "message": " （使用教程）"
   },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
@@ -711,17 +701,8 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToKovan": {
-    "message": "正在连接 Kovan 测试网络"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
-  },
-  "connectingToRinkeby": {
-    "message": "正在连接 Rinkeby 测试网络"
-  },
-  "connectingToRopsten": {
-    "message": "正在连接 Ropsten 测试网络"
   },
   "connectingToSepolia": {
     "message": "正在连接Sepolia测试网络"
@@ -852,15 +833,9 @@
   "customContentSearch": {
     "message": "搜索以前添加的网络"
   },
-  "customGas": {
-    "message": "自定义燃料"
-  },
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "提升费用可能会缩短处理时间，但不能保证。"
   },
   "customSpendLimit": {
     "message": "自定义消费限额"
@@ -1300,9 +1275,6 @@
     "message": "栈：",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "预计处理时间"
-  },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
   },
@@ -1347,9 +1319,6 @@
   },
   "fast": {
     "message": "快"
-  },
-  "fastest": {
-    "message": "最快"
   },
   "feeAssociatedRequest": {
     "message": "此请求需要支付一定的费用。"
@@ -1806,17 +1775,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " （使用教程）"
-  },
   "knownAddressRecipient": {
     "message": "已知合约地址。"
   },
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
-  },
-  "kovan": {
-    "message": "Kovan 测试网络"
   },
   "lastConnected": {
     "message": "最后连接"
@@ -2233,12 +2196,6 @@
   },
   "newTokensImportedTitle": {
     "message": "已导入代币"
-  },
-  "newTotal": {
-    "message": "新总额"
-  },
-  "newTransactionFee": {
-    "message": "新交易费用"
   },
   "newValues": {
     "message": "新的值"
@@ -2944,12 +2901,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "本合约将无法再使用您当前或未来的任何代币。"
   },
-  "rinkeby": {
-    "message": "Rinkeby 测试网络"
-  },
-  "ropsten": {
-    "message": "Ropsten 测试网络"
-  },
   "rpcUrl": {
     "message": "新的 RPC URL"
   },
@@ -3061,9 +3012,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "写下您的助记词"
   },
-  "selectAHigherGasFee": {
-    "message": "选择更高的燃料费用，加快交易处理速度。*"
-  },
   "selectAccounts": {
     "message": "选择要在此网站上使用的账户"
   },
@@ -3096,9 +3044,6 @@
   },
   "send": {
     "message": "发送"
-  },
-  "sendAmount": {
-    "message": "发送金额"
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
@@ -3233,9 +3178,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
-  },
-  "slow": {
-    "message": "慢"
   },
   "smartTransaction": {
     "message": "智能交易"

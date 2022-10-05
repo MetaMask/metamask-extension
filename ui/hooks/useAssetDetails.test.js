@@ -16,7 +16,7 @@ const renderUseAssetDetails = ({
     metamask: {
       provider: {
         type: 'test',
-        chainId: '0x3',
+        chainId: '0x5',
       },
       tokenList: {},
     },

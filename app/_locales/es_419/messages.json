@@ -47,9 +47,6 @@
   "about": {
     "message": "Acerca de"
   },
-  "acceleratingATransaction": {
-    "message": "* Usar un precio de gas más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
-  },
   "acceptTermsOfUse": {
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
@@ -514,17 +511,8 @@
   "connectingToGoerli": {
     "message": "Estableciendo conexión a la red de prueba Goerli"
   },
-  "connectingToKovan": {
-    "message": "Estableciendo conexión a la red de prueba Kovan"
-  },
   "connectingToMainnet": {
     "message": "Estableciendo conexión a la red principal de Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Estableciendo conexión a la red de prueba Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Estableciendo conexión a la red de prueba Ropsten"
   },
   "contactUs": {
     "message": "Contáctenos"
@@ -615,12 +603,6 @@
   },
   "custom": {
     "message": "Avanzado"
-  },
-  "customGas": {
-    "message": "Personalizar gas"
-  },
-  "customGasSubTitle": {
-    "message": "Aumentar la tarifa puede disminuir los tiempos de procesamiento, pero no se garantiza esto."
   },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
@@ -1008,9 +990,6 @@
     "message": "Pila:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tiempos de procesamiento estimados"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
@@ -1049,9 +1028,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "fastest": {
-    "message": "El más rápido"
   },
   "feeAssociatedRequest": {
     "message": "Esta solicitud tiene asociada una tarifa."
@@ -1416,17 +1392,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (Tutoriales)"
-  },
   "knownAddressRecipient": {
     "message": "Dirección de contrato conocida."
   },
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens."
-  },
-  "kovan": {
-    "message": "Red de prueba Kovan"
   },
   "lastConnected": {
     "message": "Última conexión"
@@ -1766,12 +1736,6 @@
   },
   "newToMetaMask": {
     "message": "¿Es nuevo en MetaMask?"
-  },
-  "newTotal": {
-    "message": "Total nuevo"
-  },
-  "newTransactionFee": {
-    "message": "Tarifa de transacción nueva"
   },
   "newValues": {
     "message": "nuevos valores"
@@ -2246,12 +2210,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "¡NO comparta esta frase con nadie!"
   },
-  "rinkeby": {
-    "message": "Red de prueba Rinkeby"
-  },
-  "ropsten": {
-    "message": "Red de prueba Ropsten"
-  },
   "rpcUrl": {
     "message": "Nueva dirección URL de RPC"
   },
@@ -2357,9 +2315,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Anote su frase secreta de recuperación"
   },
-  "selectAHigherGasFee": {
-    "message": "Seleccione una tarifa de gas más alta para acelerar el procesamiento de la transacción.*"
-  },
   "selectAccounts": {
     "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
   },
@@ -2392,9 +2347,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAmount": {
-    "message": "Enviar monto"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -2496,9 +2448,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
-  },
-  "slow": {
-    "message": "Lento"
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
