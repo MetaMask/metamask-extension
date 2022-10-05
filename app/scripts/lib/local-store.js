@@ -12,6 +12,9 @@ export default class ExtensionStore {
     if (!this.isSupported) {
       log.error('Storage local API not available.');
     }
+    // we use this flag to avoid flooding sentry with a ton of errors:
+    // once data persistence fails once and it flips true we don't send further
+    // data persistence errors to sentry
     this.dataPersistenceFailing = false;
   }
 
@@ -23,16 +26,12 @@ export default class ExtensionStore {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data');
-    }
-    if (!state.meta) {
-      state.meta = this.metadata;
-    }
-
     if (this.isSupported) {
       try {
-        await this.set(state);
+        // we format the data for storage as an object with the "data" key for the controller state object
+        // and the "meta" key for a metadata object containing a version number that tracks how the data shape
+        // has changed using migrations to adapt to backwards incompatible changes
+        await this._set({ data: state, meta: this.metadata });
         if (this.dataPersistenceFailing) {
           this.dataPersistenceFailing = false;
         }
@@ -62,16 +61,6 @@ export default class ExtensionStore {
       return undefined;
     }
     return result;
-  }
-
-  /**
-   * Sets the key in local state
-   *
-   * @param {object} state - The state to set
-   * @returns {Promise<void>}
-   */
-  async set(state) {
-    return this._set(state);
   }
 
   /**

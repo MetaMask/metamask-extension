@@ -24,9 +24,7 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
       error = err;
     } finally {
       if (store && data.method !== 'getState') {
-        localStoreApiWrapper.persistStateToLocalStore({
-          data: store.getState(),
-        });
+        localStoreApiWrapper.persistStateToLocalStore(store.getState());
       }
     }
 

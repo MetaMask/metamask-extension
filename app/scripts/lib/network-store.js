@@ -22,10 +22,6 @@ export default class ReadOnlyNetworkStore {
    */
   isSupported = true;
 
-  setMetaData() {
-    // noop
-  }
-
   /**
    * Initializes by loading state from the network
    */
@@ -55,15 +51,23 @@ export default class ReadOnlyNetworkStore {
   }
 
   /**
+   * Set metadata/version state
+   *
+   * @param {object} metadata - The metadata/version data to set
+   */
+  setMetaData(metadata) {
+    this._metadata = metadata;
+  }
+
+  /**
    * Set state
    *
    * @param {object} state - The state to set
-   * @returns {Promise<void>}
    */
-  async set(state) {
+  async persistStateToLocalStore(state) {
     if (!this._initialized) {
       await this._initializing;
     }
-    this._state = state;
+    this._state = { data: state, meta: this._metadata };
   }
 }
