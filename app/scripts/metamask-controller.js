@@ -1134,15 +1134,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.localStore.get(['isFirstTime']).then((state) => {
       if (state && state.isFirstTime === true) {
-        resetMethods.forEach((resetMethod) => {
-          try {
-            resetMethod();
-          } catch (err) {
-            console.error(err);
-          }
-        });
-
-        this.localStore.set({ isFirstTime: false });
+        this.resetStates(resetMethods);
       }
     });
 
@@ -1177,6 +1169,18 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+  }
+
+  resetStates(resetMethods) {
+    resetMethods.forEach((resetMethod) => {
+      try {
+        resetMethod();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    this.localStore.set({ isFirstTime: false });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
