@@ -1,6 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
 import { SIZES } from '../../../helpers/constants/design-system';
 
 import { TextFieldBase } from './text-field-base';
@@ -175,17 +177,14 @@ describe('TextFieldBase', () => {
       'mm-text-field-base--error',
     );
   });
-  it('should render with maxLength and not allow more than the set characters', () => {
-    const { getByTestId } = render(
-      <TextFieldBase
-        maxLength={5}
-        inputProps={{ 'data-testid': 'text-field-base-max-length' }}
-      />,
-    );
-    const textFieldBase = getByTestId('text-field-base-max-length');
-    expect(textFieldBase).toHaveAttribute('maxLength', '5');
-    fireEvent.change(textFieldBase, { target: { value: 'five' } });
-    expect(textFieldBase).toHaveAttribute('value', 'five');
+  it('should render with maxLength and not allow more than the set characters', async () => {
+    const { getByRole } = render(<TextFieldBase maxLength={5} />);
+    const textFieldBase = getByRole('textbox');
+    await userEvent.type(textFieldBase, '1234567890');
+    expect(getByRole('textbox')).toBeDefined();
+    expect(textFieldBase.maxLength).toBe(5);
+    expect(textFieldBase.value).toBe('12345');
+    expect(textFieldBase.value.length).toBe(5);
   });
   it('should render with readOnly attr when readOnly is true', () => {
     const { getByTestId } = render(
