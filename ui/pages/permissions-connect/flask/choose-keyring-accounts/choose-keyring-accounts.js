@@ -7,59 +7,46 @@ import PermissionsConnectFooter from '../../../../components/app/permissions-con
 import AccountList from '../../../../components/ui/account-list';
 
 const ChooseKeyringAccounts = ({
-  selectedAccountAddresses,
-  addressLastConnectedMap = {},
-  accounts,
-  selectAccounts,
-  selectNewAccountViaModal,
-  cancelPermissionsRequest,
-  permissionsRequestId,
-  targetSubjectMetadata,
-  nativeCurrency,
+  request,
+  approveMultichainRequest,
+  rejectMultichainRequest,
 }) => {
-  const [selectedAccounts, setSelectedAccounts] = useState(
-    selectedAccountAddresses,
-  );
+  const [selectedAccounts, setSelectedAccounts] = useState(null);
   const t = useI18nContext();
 
-  const handleAccountClick = (address) => {
-    const newSelectedAccounts = new Set(selectedAccounts);
-    if (newSelectedAccounts.has(address)) {
-      newSelectedAccounts.delete(address);
-    } else {
-      newSelectedAccounts.add(address);
-    }
-    setSelectedAccounts(newSelectedAccounts);
-  };
+  // const handleAccountClick = (address) => {
+  //   const newSelectedAccounts = new Set(selectedAccounts);
+  //   if (newSelectedAccounts.has(address)) {
+  //     newSelectedAccounts.delete(address);
+  //   } else {
+  //     newSelectedAccounts.add(address);
+  //   }
+  //   setSelectedAccounts(newSelectedAccounts);
+  // };
 
-  const selectAll = () => {
-    const newSelectedAccounts = new Set(
-      accounts.map((account) => account.address),
-    );
-    setSelectedAccounts(newSelectedAccounts);
-  };
+  // const selectAll = () => {
+  //   const newSelectedAccounts = new Set(
+  //     accounts.map((account) => account.address),
+  //   );
+  //   setSelectedAccounts(newSelectedAccounts);
+  // };
 
-  const deselectAll = () => {
-    setSelectedAccounts(new Set());
-  };
+  // const deselectAll = () => {
+  //   setSelectedAccounts(new Set());
+  // };
 
-  const allAreSelected = () => {
-    return accounts.length === selectedAccounts.size;
-  };
+  // const allAreSelected = () => {
+  //   return accounts.length === selectedAccounts.size;
+  // };
 
   return (
     <>
       <div className="permissions-connect-choose-account__content">
         <PermissionsConnectHeader
-          iconUrl={targetSubjectMetadata?.iconUrl}
-          iconName={targetSubjectMetadata?.name}
+          iconName={request.origin}
           headerTitle={t('connectWithMetaMask')}
-          headerText={
-            accounts.length > 0
-              ? t('selectAccounts')
-              : t('connectAccountOrCreate')
-          }
-          siteOrigin={targetSubjectMetadata?.origin}
+          headerText={t('selectMultichainAccounts')}
+          siteOrigin={request.origin}
         />
         <AccountList
           accounts={accounts}
@@ -97,54 +84,17 @@ const ChooseKeyringAccounts = ({
 
 ChooseKeyringAccounts.propTypes = {
   /**
-   * Array of user account objects
+   * Function to choose multichain accounts
    */
-  accounts: PropTypes.arrayOf(
-    PropTypes.shape({
-      address: PropTypes.string,
-      addressLabel: PropTypes.string,
-      lastConnectedDate: PropTypes.string,
-      balance: PropTypes.string,
-    }),
-  ).isRequired,
+  approveMultichainRequest: PropTypes.func.isRequired,
   /**
-   * Function to select an account
+   * Function to cancel a multichain request
    */
-  selectAccounts: PropTypes.func.isRequired,
+  rejectMultichainRequest: PropTypes.func.isRequired,
   /**
-   * Function to select a new account via modal
+   * Approval request object
    */
-  selectNewAccountViaModal: PropTypes.func.isRequired,
-  /**
-   * Native currency of current chain
-   */
-  nativeCurrency: PropTypes.string.isRequired,
-  /**
-   * A map of the last connected addresses
-   */
-  addressLastConnectedMap: PropTypes.object,
-  /**
-   * Function to cancel permission request
-   */
-  cancelPermissionsRequest: PropTypes.func.isRequired,
-  /**
-   * Permission request Id
-   */
-  permissionsRequestId: PropTypes.string.isRequired,
-  /**
-   * Currently selected account addresses
-   */
-  selectedAccountAddresses: PropTypes.object.isRequired,
-  /**
-   * Domain data used to display site-origin pill
-   */
-  targetSubjectMetadata: PropTypes.shape({
-    extensionId: PropTypes.string,
-    iconUrl: PropTypes.string,
-    name: PropTypes.string,
-    origin: PropTypes.string.isRequired,
-    subjectType: PropTypes.string,
-  }),
+  request: PropTypes.object.isRequired,
 };
 
 export default ChooseKeyringAccounts;

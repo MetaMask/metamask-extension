@@ -3070,6 +3070,10 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
+  "selectMultichainAccounts": {
+    "message": "Select the account(s) to use with $1",
+    "description": "Site that is requesting the multichain accounts",
+  },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
