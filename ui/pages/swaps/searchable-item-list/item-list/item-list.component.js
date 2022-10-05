@@ -89,6 +89,7 @@ export default function ItemList({
                 'searchable-item-list__item--selected': selected,
                 'searchable-item-list__item--disabled': disabled,
               })}
+              data-testid="searchable-item-list__item"
               onClick={onClick}
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
@@ -150,6 +151,7 @@ export default function ItemList({
                 <a
                   key="searchable-item-list__etherscan-link"
                   onClick={() => {
+                    /* istanbul ignore next */
                     trackEvent({
                       event: 'Clicked Block Explorer Link',
                       category: EVENT.CATEGORIES.SWAPS,
