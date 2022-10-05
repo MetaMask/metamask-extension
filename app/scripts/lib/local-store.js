@@ -22,7 +22,7 @@ export default class ExtensionStore {
     this.metadata = initMetaData;
   }
 
-  async persistStateToLocalStore(state) {
+  async set(state) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }

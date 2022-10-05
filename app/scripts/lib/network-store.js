@@ -64,7 +64,7 @@ export default class ReadOnlyNetworkStore {
    *
    * @param {object} state - The state to set
    */
-  async persistStateToLocalStore(state) {
+  async set(state) {
     if (!this._initialized) {
       await this._initializing;
     }

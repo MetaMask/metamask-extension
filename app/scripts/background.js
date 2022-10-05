@@ -291,9 +291,9 @@ async function loadStateFromPersistence() {
 
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetaData(versionedData.meta);
-  
+
   // write to disk
-  localStore.persistStateToLocalStore(versionedData.data);
+  localStore.set(versionedData.data);
 
   // return just the data
   return versionedData.data;
@@ -351,7 +351,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    createStreamSink((state) => localStore.persistStateToLocalStore(state)),
+    createStreamSink((state) => localStore.set(state)),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
