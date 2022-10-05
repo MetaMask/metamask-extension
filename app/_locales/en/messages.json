@@ -2927,6 +2927,9 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "reviewSpendingCap": {
+    "message": "Review your spending cap"
+  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3121,6 +3124,9 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "setSpendingCap": {
+    "message": "Set a spending cap for your"
   },
   "settings": {
     "message": "Settings"
@@ -4230,6 +4236,9 @@
   "userName": {
     "message": "Username"
   },
+  "verifyContractDetails": {
+    "message": "Verify contract details"
+  },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -4250,6 +4259,9 @@
   },
   "viewContact": {
     "message": "View contact"
+  },
+  "viewDetails": {
+    "message": "View details"
   },
   "viewFullTransactionDetails": {
     "message": "View full transaction details"
