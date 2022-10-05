@@ -2,14 +2,13 @@ import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
 import Typography from '../../components/ui/typography/typography';
 import {
   ALIGN_ITEMS,
-  BLOCK_SIZES,
+  BORDER_STYLE,
   COLORS,
   DISPLAY,
   FLEX_DIRECTION,
@@ -24,9 +23,6 @@ import Button from '../../components/ui/button';
 import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
-import GasDetailsItem from '../../components/app/gas-details-item/gas-details-item';
-import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message/multi-layer-fee-message';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import {
   getCurrentAccountWithSendEtherInfo,
   getNetworkIdentifier,
@@ -42,7 +38,7 @@ import {
 } from '../../store/actions';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import EditGasFeeButton from '../../components/app/edit-gas-fee-button/edit-gas-fee-button';
+import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
 
 export default function TokenAllowance({
   origin,
@@ -61,7 +57,7 @@ export default function TokenAllowance({
   tokenAddress,
   data,
   isSetApproveForAll,
-  setApproveForAllArg,
+  isApprovalOrRejection,
   customTxParamsData,
   dappProposedTokenAmount,
   currentTokenBalance,
@@ -143,205 +139,6 @@ export default function TokenAllowance({
     });
   };
 
-  const renderApproveContentCard = ({
-    showHeader = true,
-    symbol,
-    title,
-    showEdit,
-    showAdvanceGasFeeOptions = false,
-    onEditClick,
-    content,
-    footer,
-    noBorder,
-  }) => {
-    return (
-      <Box
-        className={classnames({
-          'token-allowance-container__card': !noBorder,
-          'token-allowance-container__card--no-border': noBorder,
-        })}
-      >
-        {showHeader && (
-          <Box
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.ROW}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            className="token-allowance-container__card-header"
-          >
-            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
-              <>
-                <Box className="token-allowance-container__card-header__symbol">
-                  {symbol}
-                </Box>
-                <Box
-                  marginLeft={4}
-                  className="token-allowance-container__card-header__title"
-                >
-                  <Typography
-                    variant={TYPOGRAPHY.H6}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {title}
-                  </Typography>
-                </Box>
-              </>
-            )}
-            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
-              <Box width={BLOCK_SIZES.ONE_SIXTH}>
-                <Button type="link" onClick={() => onEditClick()}>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    color={COLORS.PRIMARY_DEFAULT}
-                  >
-                    {t('edit')}
-                  </Typography>
-                </Button>
-              </Box>
-            )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
-              <EditGasFeeButton />
-            )}
-          </Box>
-        )}
-        <Box
-          marginTop={1}
-          marginBottom={3}
-          className="token-allowance-container__card-content"
-        >
-          {content}
-        </Box>
-        {footer}
-      </Box>
-    );
-  };
-
-  const renderTransactionDetailsContent = () => {
-    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
-      return <GasDetailsItem />;
-    }
-    return (
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      >
-        {isMultiLayerFeeNetwork ? (
-          <Box
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            className="token-allowance-container__transaction-details-extra-content"
-          >
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            >
-              <Typography
-                variant={TYPOGRAPHY.H6}
-                fontWeight={FONT_WEIGHT.NORMAL}
-                color={COLORS.TEXT_MUTED}
-              >
-                <span>{t('transactionDetailLayer2GasHeading')}</span>
-                {`${ethTransactionTotal} ${nativeCurrency}`}
-              </Typography>
-            </Box>
-            <MultiLayerFeeMessage
-              transaction={fullTxData}
-              layer2fee={hexTransactionTotal}
-              nativeCurrency={nativeCurrency}
-              plainStyle
-            />
-          </Box>
-        ) : (
-          <>
-            <Box>
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.TEXT_ALTERNATIVE}
-              >
-                {t('feeAssociatedRequest')}
-              </Typography>
-            </Box>
-            <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.COLUMN}
-              alignItems={ALIGN_ITEMS.FLEX_END}
-              textAlign={TEXT_ALIGN.RIGHT}
-            >
-              <Box>
-                <Typography
-                  variant={TYPOGRAPHY.H4}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  color={COLORS.TEXT_DEFAULT}
-                >
-                  {formatCurrency(fiatTransactionTotal, currentCurrency)}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography
-                  variant={TYPOGRAPHY.H6}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.TEXT_MUTED}
-                >
-                  {`${ethTransactionTotal} ${nativeCurrency}`}
-                </Typography>
-              </Box>
-            </Box>
-          </>
-        )}
-      </Box>
-    );
-  };
-
-  const renderDataContent = () => {
-    return (
-      <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
-        <Box>
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-            {isSetApproveForAll
-              ? t('functionSetApprovalForAll')
-              : t('functionApprove')}
-          </Typography>
-        </Box>
-        {isSetApproveForAll && setApproveForAllArg !== undefined ? (
-          <Box>
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-              {`${t('parameters')}: ${setApproveForAllArg}`}
-            </Typography>
-          </Box>
-        ) : null}
-        <Box
-          marginRight={4}
-          className="token-allowance-container__data__data-block"
-        >
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-            {data}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  };
-
-  const renderFullDetails = () => {
-    return (
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        alignItems={ALIGN_ITEMS.CENTER}
-        className="token-allowance-container__full-tx-content"
-      >
-        <Box className="token-allowance-container__data">
-          {renderApproveContentCard({
-            symbol: <i className="fa fa-file" />,
-            title: 'Data',
-            content: renderDataContent(),
-            noBorder: true,
-          })}
-        </Box>
-      </Box>
-    );
-  };
-
   return (
     <Box className="token-allowance-container page-container">
       <Box
@@ -398,6 +195,9 @@ export default function TokenAllowance({
           paddingRight={4}
           paddingBottom={2}
           paddingLeft={2}
+          borderColor={COLORS.BORDER_MUTED}
+          borderStyle={BORDER_STYLE.SOLID}
+          borderWidth={1}
           className="token-allowance-container__icon-display-content"
         >
           <UrlIcon
@@ -459,15 +259,23 @@ export default function TokenAllowance({
       </Box>
       {!isFirstPage && (
         <Box className="token-allowance-container__card-wrapper">
-          {renderApproveContentCard({
-            symbol: <i className="fa fa-tag" />,
-            title: t('transactionFee'),
-            showEdit: true,
-            showAdvanceGasFeeOptions: true,
-            onEditClick: showCustomizeGasModal,
-            content: renderTransactionDetailsContent(),
-            noBorder: useNonceField || !showFullTxDetails,
-          })}
+          <ApproveContentCard
+            symbol={<i className="fa fa-tag" />}
+            title={t('transactionFee')}
+            showEdit
+            showAdvanceGasFeeOptions
+            onEditClick={showCustomizeGasModal}
+            renderTransactionDetailsContent
+            noBorder={useNonceField || !showFullTxDetails}
+            supportsEIP1559V2={supportsEIP1559V2}
+            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+            ethTransactionTotal={ethTransactionTotal}
+            nativeCurrency={nativeCurrency}
+            fullTxData={fullTxData}
+            hexTransactionTotal={hexTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            currentCurrency={currentCurrency}
+          />
         </Box>
       )}
       <Box
@@ -494,7 +302,27 @@ export default function TokenAllowance({
           )}
         </Button>
       </Box>
-      {showFullTxDetails ? renderFullDetails() : null}
+      {showFullTxDetails ? (
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          alignItems={ALIGN_ITEMS.CENTER}
+          className="token-allowance-container__full-tx-content"
+        >
+          <Box className="token-allowance-container__data">
+            <ApproveContentCard
+              symbol={<i className="fa fa-file" />}
+              title={t('data')}
+              renderDataContent
+              noBorder
+              supportsEIP1559V2={supportsEIP1559V2}
+              isSetApproveForAll={isSetApproveForAll}
+              isApprovalOrRejection={isApprovalOrRejection}
+              data={data}
+            />
+          </Box>
+        </Box>
+      ) : null}
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
@@ -585,7 +413,7 @@ TokenAllowance.propTypes = {
   /**
    * Whether a current set approval for all transaction will approve or revoke access
    */
-  setApproveForAllArg: PropTypes.bool,
+  isApprovalOrRejection: PropTypes.bool,
   /**
    * Custom transaction parameters data made by the user (fees)
    */

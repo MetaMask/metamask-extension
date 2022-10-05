@@ -182,7 +182,7 @@ export default function ConfirmApprove({
             tokenAddress={tokenAddress}
             data={customData || transactionData}
             isSetApproveForAll={isSetApproveForAll}
-            setApproveForAllArg={setApproveForAllArg}
+            isApprovalOrRejection={isApprovalOrRejection}
             customTxParamsData={customData}
             dappProposedTokenAmount={tokenAmount}
             currentTokenBalance={tokenBalance}
@@ -216,13 +216,13 @@ export default function ConfirmApprove({
         customTokenAmount={String(customPermissionAmount)}
         dappProposedTokenAmount={tokenAmount}
         currentTokenBalance={tokenBalance}
-        setApproveForAllArg={setApproveForAllArg}
+        isApprovalOrRejection={isApprovalOrRejection}
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
               userAddress={userAddress}
               isSetApproveForAll={isSetApproveForAll}
-              setApproveForAllArg={setApproveForAllArg}
+              isApprovalOrRejection={isApprovalOrRejection}
               decimals={decimals}
               siteImage={siteImage}
               setCustomAmount={setCustomPermissionAmount}

@@ -2,7 +2,6 @@
   &__icon-display-content {
     width: fit-content;
     height: 40px;
-    border: 1px solid var(--color-border-muted);
     box-sizing: border-box;
     border-radius: 100px;
     position: relative;
@@ -32,59 +31,11 @@
     width: 100%;
   }
 
-  &__transaction-details-extra-content {
-    width: 100%;
-  }
-
-  &__card,
-  &__card--no-border {
-    display: flex;
-    flex-flow: column;
-    border-bottom: 1px solid var(--color-border-default);
-    position: relative;
-    padding-inline-start: 24px;
-    padding-inline-end: 24px;
-  }
-
-  &__card--no-border {
-    border-bottom: none;
-  }
-
-  &__card-header {
-    position: relative;
-
-    &__symbol {
-      width: auto;
-    }
-
-    &__symbol--aligned {
-      width: 100%;
-    }
-
-    &__title {
-      width: 100%;
-    }
-
-    &__title--aligned {
-      margin-inline-start: 27px;
-      position: absolute;
-      width: auto;
-    }
-  }
-
   &__data {
     width: 100%;
-
-    &__data-block {
-      overflow-wrap: break-word;
-    }
   }
 
   &__full-tx-content {
     max-width: 100%;
-  }
-
-  &__card-content--aligned {
-    margin-inline-start: 42px;
   }
 }
