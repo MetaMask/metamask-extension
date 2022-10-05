@@ -139,8 +139,27 @@ export default class SendContent extends Component {
 
     const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
 
-    const detailText = () => {
-      return (
+    const detailText = (
+      <Box
+        height={BLOCK_SIZES.MAX}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        className="gas-display__total-value"
+      >
+        <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
+        <UserPreferencedCurrencyDisplay
+          type={SECONDARY}
+          key="total-detail-text"
+          value={hexTransactionTotal}
+          hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+        />
+      </Box>
+    );
+
+    let detailTotal, maxAmount;
+
+    if (draftTransaction?.asset.type === 'NATIVE') {
+      detailTotal = (
         <Box
           height={BLOCK_SIZES.MAX}
           display={DISPLAY.FLEX}
@@ -149,57 +168,31 @@ export default class SendContent extends Component {
         >
           <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
           <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
+            type={PRIMARY}
+            key="total-detail-value"
             value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </Box>
       );
-    };
-
-    const detailTotal = () => {
-      if (draftTransaction?.asset.type === 'NATIVE') {
-        return (
-          <Box
-            height={BLOCK_SIZES.MAX}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            className="gas-display__total-value"
-          >
-            <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
-            <UserPreferencedCurrencyDisplay
-              type={PRIMARY}
-              key="total-detail-value"
-              value={hexTransactionTotal}
-              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            />
-          </Box>
-        );
-      }
-      return useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotalTextOverrideMaxAmount
-        : undefined;
-    };
-
-    const maxAmount = () => {
-      if (draftTransaction?.asset.type === 'NATIVE') {
-        return (
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-max-amount"
-            value={addHexes(
-              draftTransaction.amount.value,
-              hexMaximumTransactionFee,
-            )}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
-        );
-      }
-      return useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotalTextOverrideMaxAmount
-        : undefined;
-    };
+      maxAmount = (
+        <UserPreferencedCurrencyDisplay
+          type={PRIMARY}
+          key="total-max-amount"
+          value={addHexes(
+            draftTransaction.amount.value,
+            hexMaximumTransactionFee,
+          )}
+          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+        />
+      );
+    } else if (useNativeCurrencyAsPrimaryCurrency) {
+      detailTotal = primaryTotalTextOverrideMaxAmount;
+      maxAmount = primaryTotalTextOverrideMaxAmount;
+    } else {
+      detailTotal = undefined;
+      maxAmount = undefined;
+    }
 
     return (
       <PageContainerContent>
@@ -222,9 +215,9 @@ export default class SendContent extends Component {
           {showHexData ? <SendHexDataRow /> : null}
           <GasDisplay
             draftTransaction={draftTransaction}
-            detailText={detailText()}
-            detailTotal={detailTotal()}
-            maxAmount={maxAmount()}
+            detailText={detailText}
+            detailTotal={detailTotal}
+            maxAmount={maxAmount}
             hexMaximumTransactionFee={hexMaximumTransactionFee}
             hexMinimumTransactionFee={hexMinimumTransactionFee}
             hexTransactionAmount={hexTransactionAmount}
