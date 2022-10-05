@@ -51,6 +51,13 @@ describe('ButtonBase', () => {
     );
   });
 
+  it('should render with added classname', () => {
+    const { getByTestId } = render(
+      <ButtonBase data-testid="classname" className="mm-button--test" />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-button--test');
+  });
+
   it('should render with different button states', () => {
     const { getByTestId } = render(
       <>

@@ -3,7 +3,7 @@ import { ALIGN_ITEMS, DISPLAY } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
 import { ButtonPrimary } from './button-primary';
-import { BUTTON_SIZES } from './button-primary.constants';
+import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 import README from './README.mdx';
 
 const marginSizeControlOptions = [
@@ -76,7 +76,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_SIZES),
+      options: Object.values(BUTTON_PRIMARY_SIZES),
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -114,13 +114,13 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonPrimary {...args} size={BUTTON_SIZES.SM}>
+    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.SM}>
       Small Button
     </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_SIZES.MD}>
+    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.MD}>
       Medium (Default) Button
     </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_SIZES.LG}>
+    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.LG}>
       Large Button
     </ButtonPrimary>
   </Box>

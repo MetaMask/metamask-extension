@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { ButtonPrimary } from './button-primary';
-import { BUTTON_SIZES } from './button-primary.constants';
+import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 
 describe('ButtonPrimary', () => {
   it('should render button element correctly', () => {
@@ -30,23 +30,39 @@ describe('ButtonPrimary', () => {
     expect(getByTestId('block')).toHaveClass(`mm-button--block`);
   });
 
+  it('should render with added classname', () => {
+    const { getByTestId } = render(
+      <ButtonPrimary data-testid="classname" className="mm-button--test" />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-button--test');
+  });
+
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonPrimary size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM} />
-        <ButtonPrimary size={BUTTON_SIZES.MD} data-testid={BUTTON_SIZES.MD} />
-        <ButtonPrimary size={BUTTON_SIZES.LG} data-testid={BUTTON_SIZES.LG} />
+        <ButtonPrimary
+          size={BUTTON_PRIMARY_SIZES.SM}
+          data-testid={BUTTON_PRIMARY_SIZES.SM}
+        />
+        <ButtonPrimary
+          size={BUTTON_PRIMARY_SIZES.MD}
+          data-testid={BUTTON_PRIMARY_SIZES.MD}
+        />
+        <ButtonPrimary
+          size={BUTTON_PRIMARY_SIZES.LG}
+          data-testid={BUTTON_PRIMARY_SIZES.LG}
+        />
       </>,
     );
 
-    expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.SM}`,
+    expect(getByTestId(BUTTON_PRIMARY_SIZES.SM)).toHaveClass(
+      `mm-button--size-${BUTTON_PRIMARY_SIZES.SM}`,
     );
-    expect(getByTestId(BUTTON_SIZES.MD)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.MD}`,
+    expect(getByTestId(BUTTON_PRIMARY_SIZES.MD)).toHaveClass(
+      `mm-button--size-${BUTTON_PRIMARY_SIZES.MD}`,
     );
-    expect(getByTestId(BUTTON_SIZES.LG)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.LG}`,
+    expect(getByTestId(BUTTON_PRIMARY_SIZES.LG)).toHaveClass(
+      `mm-button--size-${BUTTON_PRIMARY_SIZES.LG}`,
     );
   });
 
