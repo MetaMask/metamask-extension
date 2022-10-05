@@ -151,6 +151,31 @@ export function omitBy(object, predicate) {
 }
 
 /**
+ * Creates an object with the same keys as `object` and values generated
+ * by running each own enumerable string keyed property of `object` thru
+ * `iteratee`
+ *
+ * @param {object} object - The object to iterate over
+ * @param {Function} iteratee - The function invoked per iteration
+ * @returns {object}
+ */
+export function mapValues(object, iteratee) {
+  if (isNullish(object) || !isPlainObject(object)) {
+    return {};
+  }
+
+  const iterateeIsFunction = typeof iteratee === 'function';
+
+  return Object.keys(object).reduce((destinationObj, key) => {
+    destinationObj[key] = iterateeIsFunction
+      ? iteratee(object[key])
+      : object[key][iteratee];
+
+    return destinationObj;
+  }, {});
+}
+
+/**
  * Checks if `value` is a plain object
  *
  * @param {*} value - The value to check

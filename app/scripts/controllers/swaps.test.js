@@ -2,13 +2,13 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
 import { ethers } from 'ethers';
-import { mapValues } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { mapValues } from '../../../shared/modules/object.utils';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,

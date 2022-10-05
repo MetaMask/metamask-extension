@@ -2,9 +2,8 @@ import { ethers } from 'ethers';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
-import { mapValues } from 'lodash';
 import abi from 'human-standard-token-abi';
-import { cloneDeep } from '../../../shared/modules/object.utils';
+import { cloneDeep, mapValues } from '../../../shared/modules/object.utils';
 import {
   conversionUtil,
   decGWEIToHexWEI,

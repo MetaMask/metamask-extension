@@ -2,6 +2,7 @@ import {
   cloneDeep,
   isEqual,
   isPlainObject,
+  mapValues,
   omit,
   omitBy,
   pick,
@@ -174,6 +175,28 @@ describe('object utils', function () {
       const value = ['0x1', '0x5'];
       const other = ['0x1', '0x5'];
       expect(isEqual(value, other)).toStrictEqual(true);
+    });
+  });
+
+  describe('mapValues', function () {
+    it('should correctly map values of an object', function () {
+      const obj = {
+        user1: { name: 'Mark', age: 40 },
+        user2: { name: 'Frank', age: 29 },
+      };
+      const result = mapValues(obj, (val) => val.name);
+      expect(result.user1).toStrictEqual('Mark');
+      expect(result.user2).toStrictEqual('Frank');
+    });
+
+    it('should correctly map values of an object with property shorthand', function () {
+      const obj = {
+        user1: { name: 'Mark', age: 40 },
+        user2: { name: 'Frank', age: 29 },
+      };
+      const result = mapValues(obj, 'name');
+      expect(result.user1).toStrictEqual('Mark');
+      expect(result.user2).toStrictEqual('Frank');
     });
   });
 });
