@@ -55,7 +55,7 @@ export default class ReadOnlyNetworkStore {
    *
    * @param {object} metadata - The metadata/version data to set
    */
-  setMetaData(metadata) {
+  setMetadata(metadata) {
     this._metadata = metadata;
   }
 

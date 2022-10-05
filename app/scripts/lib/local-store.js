@@ -18,30 +18,38 @@ export default class ExtensionStore {
     this.dataPersistenceFailing = false;
   }
 
-  setMetaData(initMetaData) {
+  setMetadata(initMetaData) {
     this.metadata = initMetaData;
   }
 
   async set(state) {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (this.isSupported) {
-      try {
-        // we format the data for storage as an object with the "data" key for the controller state object
-        // and the "meta" key for a metadata object containing a version number that tracks how the data shape
-        // has changed using migrations to adapt to backwards incompatible changes
-        await this._set({ data: state, meta: this.metadata });
-        if (this.dataPersistenceFailing) {
-          this.dataPersistenceFailing = false;
-        }
-      } catch (err) {
-        if (!this.dataPersistenceFailing) {
-          this.dataPersistenceFailing = true;
-          captureException(err);
-        }
-        log.error('error setting state in local store:', err);
+    if (!this.metadata) {
+      throw new Error(
+        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
+      );
+    }
+    try {
+      // we format the data for storage as an object with the "data" key for the controller state object
+      // and the "meta" key for a metadata object containing a version number that tracks how the data shape
+      // has changed using migrations to adapt to backwards incompatible changes
+      await this._set({ data: state, meta: this.metadata });
+      if (this.dataPersistenceFailing) {
+        this.dataPersistenceFailing = false;
       }
+    } catch (err) {
+      if (!this.dataPersistenceFailing) {
+        this.dataPersistenceFailing = true;
+        captureException(err);
+      }
+      log.error('error setting state in local store:', err);
     }
   }
 
