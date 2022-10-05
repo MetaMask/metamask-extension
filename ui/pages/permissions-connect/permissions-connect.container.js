@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
+  getMultichainAccountsRequests,
   getPermissionsRequests,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -30,6 +31,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_MULTICHAIN_ACCOUNTS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import { SUBJECT_TYPES } from '../../../shared/constants/app';
@@ -47,12 +49,13 @@ const mapStateToProps = (state, ownProps) => {
   permissionsRequests = [
     ...permissionsRequests,
     ...getSnapInstallOrUpdateRequests(state),
+    ...getMultichainAccountsRequests(state),
   ];
   ///: END:ONLY_INCLUDE_IN
   const currentAddress = getSelectedAddress(state);
 
   const permissionsRequest = permissionsRequests.find(
-    (req) => req.metadata.id === permissionsRequestId,
+    (req) => req.metadata?.id === permissionsRequestId,
   );
 
   const isRequestingAccounts = Boolean(
@@ -73,6 +76,7 @@ const mapStateToProps = (state, ownProps) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
+  const isMultichainConnect = Boolean(permissionsRequest.possibleAccounts);
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -90,6 +94,7 @@ const mapStateToProps = (state, ownProps) => {
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const multichainConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_MULTICHAIN_ACCOUNTS_ROUTE}`;
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   ///: END:ONLY_INCLUDE_IN
@@ -117,8 +122,10 @@ const mapStateToProps = (state, ownProps) => {
     isRequestingAccounts,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     isSnap,
+    isMultichainConnect,
     snapInstallPath,
     snapUpdatePath,
+    multichainConnectPath,
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
