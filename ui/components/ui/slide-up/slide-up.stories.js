@@ -10,30 +10,35 @@ export default {
   id: __filename,
   component: SlideUp,
   argTypes: {
+    header: { control: 'object' },
     children: { control: 'object' },
+    footer: { control: 'object' },
     className: { control: 'text' },
   },
 };
 
 export const DefaultStory = (args) => {
-  const [isShowingPopover, setIsShowingPopover] = useState(false);
+  const [isShowingSlideUp, setIsShowingSlideUp] = useState(false);
   return (
     <div>
       <Button
         style={{ width: 'auto' }}
-        onClick={() => setIsShowingPopover(true)}
+        onClick={() => setIsShowingSlideUp(true)}
       >
         Show Slide
       </Button>
-      {isShowingPopover && (
+      {isShowingSlideUp && (
         <SlideUp
-          open={isShowingPopover}
-          closeModal={() => setIsShowingPopover(false)}
+          open={isShowingSlideUp}
+          closeModal={() => setIsShowingSlideUp(false)}
+          header={args.header}
+          footer={
+            <Button onClick={() => setIsShowingSlideUp(false)}>
+              Close modal
+            </Button>
+          }
         >
           {args.children}
-          <Button onClick={() => setIsShowingPopover(false)}>
-            Close modal
-          </Button>
         </SlideUp>
       )}
     </div>
@@ -42,9 +47,9 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
+  header: <Typography variant={TYPOGRAPHY.H2}>Slide up title</Typography>,
   children: (
     <Box padding={4}>
-      <Typography variant={TYPOGRAPHY.H2}>Slide up title</Typography>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Semper eget duis at
