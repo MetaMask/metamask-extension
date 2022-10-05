@@ -8,9 +8,6 @@
   "about": {
     "message": "Teave"
   },
-  "acceleratingATransaction": {
-    "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
-  },
   "accessingYourCamera": {
     "message": "Kaamerale ligipääs..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToKovan": {
-    "message": "Ühendamine Kovani testvõrguga"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "connectingToRinkeby": {
-    "message": "Ühendamine Rinkeby testvõrguga"
-  },
-  "connectingToRopsten": {
-    "message": "Ühendamine Ropsteni testvõrguga"
   },
   "continueToWyre": {
     "message": "Ava Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Täpsemad"
-  },
-  "customGas": {
-    "message": "Gaasi kohandamine"
-  },
-  "customGasSubTitle": {
-    "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
   },
   "customToken": {
     "message": "Kohandatud luba"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Eeldatavad töötlemisajad"
   },
   "ethereumPublicAddress": {
     "message": "Ethereumi avalik aadress"
@@ -499,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Teadaolev lepinguaadress."
   },
-  "kovan": {
-    "message": "Kovani testvõrk"
-  },
   "learnMore": {
     "message": "Lisateave"
   },
@@ -593,12 +569,6 @@
   },
   "newToMetaMask": {
     "message": "Pole MetaMaski varem kasutanud?"
-  },
-  "newTotal": {
-    "message": "Uus kogusumma"
-  },
-  "newTransactionFee": {
-    "message": "Uus vahendustasu"
   },
   "next": {
     "message": "Edasi"
@@ -758,12 +728,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
   },
-  "rinkeby": {
-    "message": "Rinkeby katsevõrk"
-  },
-  "ropsten": {
-    "message": "Ropsteni testvõrk"
-  },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
@@ -800,9 +764,6 @@
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"
   },
-  "selectAHigherGasFee": {
-    "message": "Valige suurem gaasihind, et kiirendada tehingu töötlemist.*"
-  },
   "selectAnAccount": {
     "message": "Valige konto"
   },
@@ -820,9 +781,6 @@
   },
   "send": {
     "message": "Saada"
-  },
-  "sendAmount": {
-    "message": "Saatke kogus"
   },
   "sendTokens": {
     "message": "Saada lube"
@@ -865,9 +823,6 @@
   },
   "signed": {
     "message": "Allkirjastatud"
-  },
-  "slow": {
-    "message": "Aeglane"
   },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."

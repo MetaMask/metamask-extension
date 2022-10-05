@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "साइन-इन अनुरोध का पता उस अकाउंट के पते से मेल नहीं खाता जिसका उपयोग आप साइन इन करने के लिए कर रहे हैं।"
   },
-  "SIWEDomainInvalid": {
-    "message": "जिस वेबसाइट में ($1) आप साइन इन करने की कोशिश कर रहे हैं वह साइन-इन अनुरोध के डोमेन से मेल नहीं खाती। सावधानी के साथ आगे बढ़ें।",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "वेबसाइट ($1) आपसे गलत डोमेन में साइन इन करने के लिए कह रही है। यह एक फिशिंग अटैक हो सकता है।",
     "description": "$1 represents the website domain"
@@ -100,9 +96,6 @@
   },
   "about": {
     "message": "इसके बारे में"
-  },
-  "acceleratingATransaction": {
-    "message": "* गैस की उच्च कीमत का उपयोग करके लेनदेन में तेज़ी लाने से नेटवर्क द्वारा तेज़ी से संसाधित होने की संभावना बढ़ जाती है, लेकिन हमेशा इसकी गारंटी नहीं होती है।"
   },
   "acceptTermsOfUse": {
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
@@ -265,9 +258,6 @@
   },
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
-  },
-  "airgapVaultTutorial": {
-    "message": " (ट्यूटोरियल्स)"
   },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
@@ -711,17 +701,8 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToKovan": {
-    "message": "Kovan टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToSepolia": {
     "message": "सेपोलिया टेस्ट नेटवर्क से कनेक्ट कर रहा है"
@@ -852,15 +833,9 @@
   "customContentSearch": {
     "message": "पहले से जुड़े हुए नेटवर्क के लिए खोजें"
   },
-  "customGas": {
-    "message": "गैस अनुकूलित करें"
-  },
   "customGasSettingToolTipMessage": {
     "message": "गैस की कीमत को अनुकूलित करने के लिए $1 का उपयोग करें। यदि आप परिचित नहीं हैं तो ये भ्रामक हो सकता है। अपनी ज़िम्मेदारी पर बातचीत करें।",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
@@ -1300,9 +1275,6 @@
     "message": "स्टैक:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "अनुमानित प्रॉसेसिंग समय"
-  },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
   },
@@ -1347,9 +1319,6 @@
   },
   "fast": {
     "message": "तेज"
-  },
-  "fastest": {
-    "message": "सबसे तेज"
   },
   "feeAssociatedRequest": {
     "message": "इस अनुरोध के साथ एक शुल्क जुड़ा हुआ है।"
@@ -1806,17 +1775,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (ट्यूटोरियल)"
-  },
   "knownAddressRecipient": {
     "message": "ज्ञात अनुबंध पता।"
   },
   "knownTokenWarning": {
     "message": "यह कार्रवाई उन टोकन को संपादित करेगी, जो पहले से ही आपके वॉलेट में सूचीबद्ध हैं, जिसका उपयोग आपको फ़िश करने के लिए किया जा सकता है। केवल तभी अनुमोदित करें, जब आप इस बात को लेकर सुनिश्चित हों कि आप इन टोकन का प्रतिनिधित्व बदलना चाहते हैं। $1 के बारे में और अधिक जानें"
-  },
-  "kovan": {
-    "message": "Kovan टेस्ट नेटवर्क"
   },
   "lastConnected": {
     "message": "अंतिम बार जुड़ा"
@@ -2233,12 +2196,6 @@
   },
   "newTokensImportedTitle": {
     "message": "टोकन इम्पोर्ट हो गया"
-  },
-  "newTotal": {
-    "message": "नया कुलयोग"
-  },
-  "newTransactionFee": {
-    "message": "नया लेनदेन शुल्क"
   },
   "newValues": {
     "message": "नए मान"
@@ -2944,12 +2901,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "यह अनुबंध आपके वर्तमान या भविष्य के और टोकन पर खर्च करने में असमर्थ है।"
   },
-  "rinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क"
-  },
-  "ropsten": {
-    "message": "Ropsten टेस्ट नेटवर्क"
-  },
   "rpcUrl": {
     "message": "नया RPC URL"
   },
@@ -3061,9 +3012,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
-  "selectAHigherGasFee": {
-    "message": "अपने लेनदेन की प्रक्रिया में तेजी लाने के लिए उच्च गैस शुल्क का चयन करें। *"
-  },
   "selectAccounts": {
     "message": "इस साइट पर उपयोग करने के लिए खाते (खातों) का चयन करें"
   },
@@ -3096,9 +3044,6 @@
   },
   "send": {
     "message": "भेजें"
-  },
-  "sendAmount": {
-    "message": "राशि भेजें"
   },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
@@ -3233,9 +3178,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
-  },
-  "slow": {
-    "message": "धीमा"
   },
   "smartTransaction": {
     "message": "स्मार्ट लेनदेन"

@@ -8,9 +8,6 @@
   "about": {
     "message": "O možnostih"
   },
-  "acceleratingATransaction": {
-    "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
-  },
   "accessingYourCamera": {
     "message": "Dostopanje do vaše kamere ..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToKovan": {
-    "message": "Povezovanje na testno omrežje Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
-  },
-  "connectingToRinkeby": {
-    "message": "Povezovanje na testno omrežje Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Povezovanje na testno omrežje Ropsten"
   },
   "continueToWyre": {
     "message": "Nadaljuj na Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Napredno"
-  },
-  "customGas": {
-    "message": "Prilagodi gas"
-  },
-  "customGasSubTitle": {
-    "message": "Povečanje lahko skrajša čas obdelave, vendar ni zagotovljeno."
   },
   "customToken": {
     "message": "Žeton po meri"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Predviden čas obdelave"
   },
   "ethereumPublicAddress": {
     "message": "Javni naslov Ethereum"
@@ -497,9 +476,6 @@
   "knownAddressRecipient": {
     "message": "Znan naslov pogodbe."
   },
-  "kovan": {
-    "message": "Testno omrežje Kovan"
-  },
   "learnMore": {
     "message": "Preberite več"
   },
@@ -591,12 +567,6 @@
   },
   "newToMetaMask": {
     "message": "Ste novi na MetaMask?"
-  },
-  "newTotal": {
-    "message": "Novo skupno"
-  },
-  "newTransactionFee": {
-    "message": "Nova provizija za transakcije"
   },
   "next": {
     "message": "Naprej"
@@ -756,12 +726,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "Tega ne delite z nikomer!"
   },
-  "rinkeby": {
-    "message": "Testno omrežje Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testno omrežje Ropsten"
-  },
   "rpcUrl": {
     "message": "Nov URL RPC"
   },
@@ -798,9 +762,6 @@
   "seedPhraseReq": {
     "message": "Seed phrase mora biti dolg 12 besed"
   },
-  "selectAHigherGasFee": {
-    "message": "Izberite višji gas fee, da pospešite obdelavo vaše transakcije.*"
-  },
   "selectAnAccount": {
     "message": "Izberi račun"
   },
@@ -818,9 +779,6 @@
   },
   "send": {
     "message": "Pošlji"
-  },
-  "sendAmount": {
-    "message": "Pošlji znesek"
   },
   "sendTokens": {
     "message": "Pošlji žetone"
@@ -863,9 +821,6 @@
   },
   "signed": {
     "message": "Podpisano"
-  },
-  "slow": {
-    "message": "Počasen"
   },
   "somethingWentWrong": {
     "message": "Oops! Nekaj je šlo narobe."

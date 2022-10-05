@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Địa chỉ trong yêu cầu đăng nhập không trùng khớp với địa chỉ của tài khoản bạn đang sử dụng để đăng nhập."
   },
-  "SIWEDomainInvalid": {
-    "message": "Trang web bạn đang cố gắng đăng nhập vào ($1) không trùng khớp với tên miền trong yêu cầu đăng nhập. Hãy thực hiện cẩn thận.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Trang web ($1) đang yêu cầu bạn đăng nhập vào một tên miền không đúng. Đây có thể là một cuộc tấn công lừa đảo.",
     "description": "$1 represents the website domain"
@@ -100,9 +96,6 @@
   },
   "about": {
     "message": "Giới thiệu"
-  },
-  "acceleratingATransaction": {
-    "message": "* Việc đẩy nhanh giao dịch bằng cách sử dụng giá gas cao hơn sẽ tăng khả năng được mạng xử lý nhanh hơn, nhưng không phải lúc nào điều này cũng được đảm bảo."
   },
   "acceptTermsOfUse": {
     "message": "Tôi đã đọc và đồng ý với $1",
@@ -265,9 +258,6 @@
   },
   "airgapVault": {
     "message": "AirGap Vault"
-  },
-  "airgapVaultTutorial": {
-    "message": " (Hướng dẫn)"
   },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
@@ -711,17 +701,8 @@
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
-  "connectingToKovan": {
-    "message": "Đang kết nối với mạng thử nghiệm Kovan"
-  },
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Đang kết nối với mạng thử nghiệm Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Đang kết nối với mạng thử nghiệm Ropsten"
   },
   "connectingToSepolia": {
     "message": "Đang kết nối với mạng thử nghiệm Sepolia"
@@ -852,15 +833,9 @@
   "customContentSearch": {
     "message": "Tìm kiếm mạng đã thêm trước đây"
   },
-  "customGas": {
-    "message": "Tùy chỉnh gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để tùy chỉnh giá gas. Việc này có thể gây nhầm lẫn nếu bạn không quen thuộc. Bạn phải tự chịu trách nhiệm nếu thực hiện.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
   },
   "customSpendLimit": {
     "message": "Giới hạn chi tiêu tùy chỉnh"
@@ -1300,9 +1275,6 @@
     "message": "Cụm:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Thời gian xử lý dự kiến"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Giá gas dự phòng được cung cấp vì dịch vụ ước tính giá gas chính hiện không hoạt động."
   },
@@ -1347,9 +1319,6 @@
   },
   "fast": {
     "message": "Nhanh"
-  },
-  "fastest": {
-    "message": "Nhanh nhất"
   },
   "feeAssociatedRequest": {
     "message": "Yêu cầu này có kèm theo một khoản phí."
@@ -1806,17 +1775,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (Hướng dẫn)"
-  },
   "knownAddressRecipient": {
     "message": "Địa chỉ hợp đồng đã biết."
   },
   "knownTokenWarning": {
     "message": "Hành động này sẽ chỉnh sửa các token đã niêm yết trong ví của bạn, kẻ xấu có thể lợi dụng việc này để lừa đảo bạn. Chỉ phê duyệt nếu bạn chắc chắn rằng bạn muốn thay đổi giá trị mà những token này đại diện cho. Tìm hiểu thêm về $1"
-  },
-  "kovan": {
-    "message": "Mạng thử nghiệm Kovan"
   },
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
@@ -2233,12 +2196,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Đã nhập token"
-  },
-  "newTotal": {
-    "message": "Tổng mới"
-  },
-  "newTransactionFee": {
-    "message": "Phí giao dịch mới"
   },
   "newValues": {
     "message": "giá trị mới"
@@ -2944,12 +2901,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "Hợp đồng này sẽ không thể chi tiêu thêm bất kỳ token hiện tại hoặc tương lai nào của bạn."
   },
-  "rinkeby": {
-    "message": "Mạng thử nghiệm Rinkeby"
-  },
-  "ropsten": {
-    "message": "Mạng thử nghiệm Ropsten"
-  },
   "rpcUrl": {
     "message": "URL RPC mới"
   },
@@ -3061,9 +3012,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Viết ra Cụm Mật Khẩu Khôi Phục Bí Mật của bạn"
   },
-  "selectAHigherGasFee": {
-    "message": "Chọn phí gas cao hơn để tăng tốc quá trình xử lý giao dịch của bạn.*"
-  },
   "selectAccounts": {
     "message": "Chọn (các) tài khoản để sử dụng trên trang web này"
   },
@@ -3096,9 +3044,6 @@
   },
   "send": {
     "message": "Gửi"
-  },
-  "sendAmount": {
-    "message": "Gửi khoản tiền"
   },
   "sendBugReport": {
     "message": "Gửi báo cáo lỗi."
@@ -3233,9 +3178,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Tôi hiểu rằng nếu chưa sao lưu Cụm Mật Khẩu Khôi Phục Bí Mật của mình, tôi có thể bị mất tài khoản và toàn bộ tài sản bên trong."
-  },
-  "slow": {
-    "message": "Chậm"
   },
   "smartTransaction": {
     "message": "Giao dịch thông minh"

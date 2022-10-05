@@ -2,9 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "acceleratingATransaction": {
-    "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
-  },
   "accessingYourCamera": {
     "message": "ወደ ካሜራዎ መድረስ..."
   },
@@ -187,17 +184,8 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToKovan": {
-    "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
-  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
-  },
-  "connectingToRinkeby": {
-    "message": "ከ Rinkeby የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
-  "connectingToRopsten": {
-    "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
   },
   "continueToWyre": {
     "message": "ወደ Wyre ይቀጥሉ"
@@ -240,12 +228,6 @@
   },
   "currentLanguage": {
     "message": "ወቅታዊ ቋንቋ"
-  },
-  "customGas": {
-    "message": "ነዳጅን አብጅ"
-  },
-  "customGasSubTitle": {
-    "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
   },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
@@ -330,9 +312,6 @@
   },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "የሚገመት የክወና ጊዜያት"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum ሕዝባዊ አድራሻ"
@@ -494,9 +473,6 @@
   "knownAddressRecipient": {
     "message": "የሚታወቅ የግንኙነት አድራሻ።"
   },
-  "kovan": {
-    "message": "Kovan የሙከራ አውታረ መረብ"
-  },
   "learnMore": {
     "message": "የበለጠ ይወቁ"
   },
@@ -588,12 +564,6 @@
   },
   "newToMetaMask": {
     "message": "ለ MetaMask አዲስ ነዎት?"
-  },
-  "newTotal": {
-    "message": "አዲስ ድምር"
-  },
-  "newTransactionFee": {
-    "message": "አዲስ የግብይት ክፍያ"
   },
   "next": {
     "message": "ቀጣይ"
@@ -753,12 +723,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ይህን ሐረግ ለየትኛውም ሰው አያጋሩ!"
   },
-  "rinkeby": {
-    "message": "Rinkeby የሙከራ አውታረ መረብ"
-  },
-  "ropsten": {
-    "message": "Ropsten የሙከራ አውታረ መረብ "
-  },
   "rpcUrl": {
     "message": "አዲስ የ RPC URL"
   },
@@ -795,9 +759,6 @@
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },
-  "selectAHigherGasFee": {
-    "message": "የግብይትዎን ክዋኔ ለማቀላጠፍ የበለጠ የነዳጅ ዋጋ ይምረጡ።*"
-  },
   "selectAnAccount": {
     "message": "መለያ ይምረጡ"
   },
@@ -815,9 +776,6 @@
   },
   "send": {
     "message": "ላክ"
-  },
-  "sendAmount": {
-    "message": "መጠኑን ላክ"
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
@@ -860,9 +818,6 @@
   },
   "signed": {
     "message": "ተፈርሟል"
-  },
-  "slow": {
-    "message": "ቀስ"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"

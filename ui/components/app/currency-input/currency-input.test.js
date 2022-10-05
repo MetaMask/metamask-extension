@@ -11,7 +11,7 @@ describe('CurrencyInput Component', () => {
       currentCurrency: 'usd',
       conversionRate: 231.06,
       provider: {
-        chainId: '0x4',
+        chainId: '0x5',
       },
       preferences: {
         showFiatInTestnets: true,

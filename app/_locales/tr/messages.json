@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
   },
-  "SIWEDomainInvalid": {
-    "message": "Giriş yapmaya çalıştığınız web sitesi ($1) giriş talebindeki alan ile uyumlu değil. Dikkati olarak ilerleyin.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Web sitesi ($1) yanlış alana giriş yapmanızı istiyor. Bu bir dolandırıcılık saldırısı olabilir.",
     "description": "$1 represents the website domain"
@@ -100,9 +96,6 @@
   },
   "about": {
     "message": "Hakkında"
-  },
-  "acceleratingATransaction": {
-    "message": "* Daha yüksek bir gaz fiyatı kullanarak bir işlemi hızlandırmak ağ tarafından daha hızlı işlenme şansını artırır ancak her zaman garanti etmez."
   },
   "acceptTermsOfUse": {
     "message": "$1 bölümünü okudum ve kabul ediyorum",
@@ -265,9 +258,6 @@
   },
   "airgapVault": {
     "message": "AirGap Kasası"
-  },
-  "airgapVaultTutorial": {
-    "message": "(Öğreticiler)"
   },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
@@ -711,17 +701,8 @@
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
-  "connectingToKovan": {
-    "message": "Kovan Test Ağına bağlanıyor"
-  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet ağına bağlanıyor"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby Test Ağına bağlanıyor"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten Test Ağına bağlanıyor"
   },
   "connectingToSepolia": {
     "message": "Sepolia test ağına bağlanılıyor"
@@ -852,15 +833,9 @@
   "customContentSearch": {
     "message": "Önceden eklenmiş bir ağı ara"
   },
-  "customGas": {
-    "message": "Gazı Özelleştir"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Gaz fiyatını özelleştirmek için $1 kullanın. Bu, bilgi sahibi değilseniz kafa karıştırıcı olabilir. Riski size ait olmak üzere kullanın.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Ücretin artırılması işlem süresini kısaltabilir ancak bu garanti edilmez."
   },
   "customSpendLimit": {
     "message": "Özel Harcama Limiti"
@@ -1300,9 +1275,6 @@
     "message": "Yığın:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tahmini işleme Alınma Süreleri"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ana gaz tahmini hizmeti olarak sunulan yedek gaz fiyatı şu anda kullanılamıyor."
   },
@@ -1347,9 +1319,6 @@
   },
   "fast": {
     "message": "Hızlı"
-  },
-  "fastest": {
-    "message": "En hızlı"
   },
   "feeAssociatedRequest": {
     "message": "Bu talep ile ilişkili bir ücret mevcuttur."
@@ -1806,17 +1775,11 @@
   "keystone": {
     "message": "Ana İlke"
   },
-  "keystoneTutorial": {
-    "message": " (Öğreticiler)"
-  },
   "knownAddressRecipient": {
     "message": "Bilinen sözleşme adresi."
   },
   "knownTokenWarning": {
     "message": "Bu eylem kimlik avı için kullanılabilecek şekilde cüzdanınızda zaten listelenmiş olan tokenleri düzenleyecektir. Sadece bu tokenlerin neyi temsil ettiğini değiştirmek istediğinizden eminseniz onaylayın. $1 hakkında daha fazla bilgi edinin"
-  },
-  "kovan": {
-    "message": "Kovan Test Ağı"
   },
   "lastConnected": {
     "message": "Son Bağlanma"
@@ -2233,12 +2196,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token içe aktarıldı"
-  },
-  "newTotal": {
-    "message": "Yeni Toplam"
-  },
-  "newTransactionFee": {
-    "message": "Yeni İşlem Ücreti"
   },
   "newValues": {
     "message": "yeni değerler"
@@ -2944,12 +2901,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "Bu sözleşme şimdiki ya da gelecekteki tokenlerinizin hiçbirini kullanamayacak."
   },
-  "rinkeby": {
-    "message": "Rinkeby Test Ağı"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Ağı"
-  },
   "rpcUrl": {
     "message": "Yeni RPC URL adresi"
   },
@@ -3061,9 +3012,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Gizli Kurtarma İfadenizi not edin"
   },
-  "selectAHigherGasFee": {
-    "message": "İşleminizin gerçekleşmesini hızlandırmak için daha yüksek bir gaz ücreti seçin.*"
-  },
   "selectAccounts": {
     "message": "Bu sitede kullanılacak hesap veya hesapları seçin"
   },
@@ -3096,9 +3044,6 @@
   },
   "send": {
     "message": "Gönder"
-  },
-  "sendAmount": {
-    "message": "Tutarı Gönder"
   },
   "sendBugReport": {
     "message": "Bize bir hata raporu gönder."
@@ -3233,9 +3178,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Gizli Kurtarma İfademi yedekleyene kadar hesaplarımı ve tüm varlıkları kaybedebileceğimi anlıyorum."
-  },
-  "slow": {
-    "message": "Yavaş"
   },
   "smartTransaction": {
     "message": "Akıllı İşlem"

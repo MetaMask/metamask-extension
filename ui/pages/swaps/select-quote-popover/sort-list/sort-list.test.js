@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider, fireEvent } from '../../../../../test/jest';
 import SortList from './sort-list';
 
 jest.mock(
@@ -85,5 +85,33 @@ describe('SortList', () => {
     expect(
       document.querySelector('.select-quote-popover__row--selected'),
     ).toMatchSnapshot();
+  });
+
+  it('clicks on the "destinationTokenValue" header', () => {
+    const props = createProps();
+    const { getByTestId } = renderWithProvider(<SortList {...props} />);
+    fireEvent.click(getByTestId('select-quote-popover__receiving'));
+    expect(props.setSortColumn).toHaveBeenCalledWith('destinationTokenValue');
+  });
+
+  it('clicks on the "rawNetworkFees" header', () => {
+    const props = createProps();
+    const { getByTestId } = renderWithProvider(<SortList {...props} />);
+    fireEvent.click(getByTestId('select-quote-popover__network-fees-header'));
+    expect(props.setSortColumn).toHaveBeenCalledWith('rawNetworkFees');
+  });
+
+  it('clicks on the first aggregator', () => {
+    const props = createProps();
+    const { getByTestId } = renderWithProvider(<SortList {...props} />);
+    fireEvent.click(getByTestId('select-quote-popover-row-0'));
+    expect(props.onSelect).toHaveBeenCalledWith('Agg1');
+  });
+
+  it('clicks on a caret for the first aggregator', () => {
+    const props = createProps();
+    const { getByTestId } = renderWithProvider(<SortList {...props} />);
+    fireEvent.click(getByTestId('select-quote-popover__caret-right-0'));
+    expect(props.onCaretClick).toHaveBeenCalledWith('Agg1');
   });
 });

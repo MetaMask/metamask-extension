@@ -721,7 +721,7 @@ export function getIsBuyableMoonpayToken(state, symbol) {
   const chainId = getCurrentChainId(state);
   const _symbol = formatMoonpaySymbol(symbol, chainId);
   return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay.showOnlyCurrencies?.includes(
+    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
       _symbol,
     ),
   );

@@ -18,9 +18,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
-  SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
-  SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
-  SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
   SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
   SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
   SINGLE_CALL_BALANCES_ADDRESS_BSC,
@@ -208,27 +205,6 @@ export default class AccountTracker {
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS,
-        );
-        break;
-
-      case CHAIN_IDS.RINKEBY:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
-        );
-        break;
-
-      case CHAIN_IDS.ROPSTEN:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
-        );
-        break;
-
-      case CHAIN_IDS.KOVAN:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
         );
         break;
 

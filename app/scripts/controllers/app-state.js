@@ -42,9 +42,6 @@ export default class AppStateController extends EventEmitter {
       collectiblesDropdownState: {},
       usedNetworks: {
         '0x1': true,
-        '0x2a': true,
-        '0x3': true,
-        '0x4': true,
         '0x5': true,
         '0x539': true,
       },

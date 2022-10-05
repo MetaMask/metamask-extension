@@ -8,9 +8,6 @@
   "about": {
     "message": "Par"
   },
-  "acceleratingATransaction": {
-    "message": "* Darījuma paātrināšana, izmantojot augstāku Gas cenu, palielina iespēju, ka tīkls to apstrādās ātrāk, taču tas nav garantēts."
-  },
   "accessingYourCamera": {
     "message": "Piekļūst kamerai..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToKovan": {
-    "message": "Savienojas ar Kovan testa tīklu"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
-  },
-  "connectingToRinkeby": {
-    "message": "Pieslēdzas Rinkeby testa tīklam"
-  },
-  "connectingToRopsten": {
-    "message": "Pieslēdzas Ropsten testa tīklam"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Papildu"
-  },
-  "customGas": {
-    "message": "Pielāgot Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
   },
   "customToken": {
     "message": "Pielāgots marķieris"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Aprēķinātais apstrādes laiks"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum publiskā adrese"
@@ -499,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Zināmā līguma adrese."
   },
-  "kovan": {
-    "message": "Kovan testa tīkls"
-  },
   "learnMore": {
     "message": "Uzzināt vairāk"
   },
@@ -599,12 +575,6 @@
   },
   "newToMetaMask": {
     "message": "Nepazīstat MetaMask?"
-  },
-  "newTotal": {
-    "message": "Jaunā kopsumma"
-  },
-  "newTransactionFee": {
-    "message": "Jauna darījuma nodeva"
   },
   "next": {
     "message": "Nākamais"
@@ -764,12 +734,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NEDALIETIES ar šo frāzi!"
   },
-  "rinkeby": {
-    "message": "Rinkeby testa tīkls"
-  },
-  "ropsten": {
-    "message": "Ropsten testa tīkls"
-  },
   "rpcUrl": {
     "message": "Jauns RPC URL"
   },
@@ -806,9 +770,6 @@
   "seedPhraseReq": {
     "message": "Atkopšanas frāzes ir 12 vārdus garas"
   },
-  "selectAHigherGasFee": {
-    "message": "Atlasiet lielāku maksu par Gas, lai paātrinātu darījuma apstrādi.*"
-  },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
   },
@@ -826,9 +787,6 @@
   },
   "send": {
     "message": "Sūtīt"
-  },
-  "sendAmount": {
-    "message": "Nosūtītā summa"
   },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
@@ -871,9 +829,6 @@
   },
   "signed": {
     "message": "Parakstīts"
-  },
-  "slow": {
-    "message": "Lēns"
   },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."
