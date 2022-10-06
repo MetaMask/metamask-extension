@@ -117,7 +117,7 @@ ButtonBase.propTypes = {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: Icon.propTypes,
+  iconProps: PropTypes.object,
   /**
    * Boolean to show loading spinner in button
    */
