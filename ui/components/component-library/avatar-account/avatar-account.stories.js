@@ -1,5 +1,10 @@
 import React from 'react';
-import { SIZES } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box/box';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  SIZES,
+} from '../../../helpers/constants/design-system';
 import { AvatarAccount } from './avatar-account';
 import { TYPES } from './avatar-account.constants';
 
@@ -35,3 +40,20 @@ export default {
 export const DefaultStory = (args) => <AvatarAccount {...args} />;
 
 DefaultStory.storyName = 'Default';
+
+export const Size = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarAccount {...args} size={SIZES.XS} />
+    <AvatarAccount {...args} size={SIZES.SM} />
+    <AvatarAccount {...args} size={SIZES.MD} />
+    <AvatarAccount {...args} size={SIZES.LG} />
+    <AvatarAccount {...args} size={SIZES.XL} />
+  </Box>
+);
+
+export const Type = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarAccount {...args} type={TYPES.JAZZICON} />
+    <AvatarAccount {...args} type={TYPES.BLOCKIES} />
+  </Box>
+);
