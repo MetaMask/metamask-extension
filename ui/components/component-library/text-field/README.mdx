@@ -1,0 +1,302 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TextField } from './text-field';
+
+# TextField
+
+The `TextField` component lets users enter and edit text. It functions only as a controlled input.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `TextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={TextField} />
+
+### Size
+
+Use the `size` prop to set the height of the `TextField`.
+
+Possible sizes include:
+
+- `sm` 32px
+- `md` 40px
+- `lg` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--size" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+import { SIZES } from '../../../helpers/constants/design-system';
+
+<TextField size={SIZES.SM} />
+<TextField size={SIZES.MD} />
+<TextField size={SIZES.LG} />
+```
+
+### Type
+
+Use the `type` prop to change the type of input.
+
+Possible types include:
+
+- `text`
+- `number`
+- `password`
+
+Defaults to `text`.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--type" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField type="text" /> // (Default)
+<TextField type="number" />
+<TextField type="password" />
+```
+
+### Show Clear
+
+Use the `showClear` prop to display a clear button when `TextField` has a value. Clicking the button will clear the value.
+You can also attach an `onClear` handler to the `TextField` to perform additional actions when the clear button is clicked.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField showClear />;
+```
+
+### Truncate
+
+Use the `truncate` prop to truncate the text of the the `TextField`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--truncate" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField truncate />;
+```
+
+### Left Accessory Right Accessory
+
+Use the `leftAccessory` and `rightAccessory` props to add components such as icons or buttons to either side of the `TextField`.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--left-accessory-right-accessory" />
+</Canvas>
+
+```jsx
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../ui/component-library/icons';
+
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField
+  placeholder="Search"
+  onChange={handleOnChange}
+  showClear
+  leftAccessory={
+    <Icon
+      color={COLORS.ICON_ALTERNATIVE}
+      name={ICON_NAMES.SEARCH_FILLED}
+    />
+  }
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  rightAccessory={
+    // TODO: replace with ButtonIcon
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      style={{ padding: 0 }}
+      backgroundColor={COLORS.TRANSPARENT}
+    >
+      <Icon
+        color={COLORS.PRIMARY_DEFAULT}
+        name={ICON_NAMES.SCAN_BARCODE_FILLED}
+      />
+    </Box>
+  }
+/>
+
+<TextField
+  placeholder="Enter amount"
+  type="number"
+  truncate
+  leftAccessory={<SelectTokenComponent />}
+  rightAccessory={<TokenValueInUSDComponent />}
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  truncate
+  leftAccessory={<AvatarAccount />}
+  rightAccessory={
+    isAddressValid && (
+      <Icon
+        name={ICON_NAMES.CHECK_OUTLINE}
+        color={COLORS.SUCCESS_DEFAULT}
+      />
+    )
+  }
+/>
+```
+
+### Input Ref
+
+Use the `inputRef` prop to access the ref of the `<input />` html element of `TextField`. This is useful for focusing the input from a button or other component.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--input-ref" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+const inputRef = useRef(null);
+const [value, setValue] = useState('');
+const handleOnClick = () => {
+  inputRef.current.focus();
+};
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+<TextField
+  inputRef={inputRef}
+  value={value}
+  onChange={handleOnChange}
+/>
+// TODO: replace with Button component
+<Box
+  as="button"
+  backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+  color={COLORS.TEXT_DEFAULT}
+  borderColor={COLORS.BORDER_DEFAULT}
+  borderRadius={SIZES.XL}
+  marginLeft={1}
+  paddingLeft={2}
+  paddingRight={2}
+  onClick={handleOnClick}
+>
+  Edit
+</Box>
+```
+
+### Auto Complete
+
+Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--auto-complete" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField type="password" autoComplete />;
+```
+
+### Auto Focus
+
+Use the `autoFocus` prop to focus the `TextField` during the first mount
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--auto-focus" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField autoFocus />;
+```
+
+### Disabled
+
+Use the `disabled` prop to set the disabled state of the `TextField`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--disabled" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField disabled />;
+```
+
+### Error
+
+Use the `error` prop to set the error state of the `TextField`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--error-story" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField error />;
+```
+
+### Max Length
+
+Use the `maxLength` prop to set the maximum allowed input characters for the `TextField`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--max-length" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField maxLength={10} />;
+```
+
+### Read Only
+
+Use the `readOnly` prop to set the `TextField` to read only
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--read-only" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField readOnly />;
+```
+
+### Required
+
+Use the `required` prop to set the `TextField` to required. Currently there is no visual difference to the `TextField` when required.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--required" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+// Currently no visual difference
+<TextField required />;
+```
