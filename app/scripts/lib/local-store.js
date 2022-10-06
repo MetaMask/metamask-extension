@@ -22,7 +22,7 @@ export default class ExtensionStore {
     this.metadata = initMetaData;
   }
 
-  async set(state) {
+  async persist(state) {
     if (!this.isSupported) {
       throw new Error(
         'Metamask- cannot persist state to local store as this browser does not support this action',

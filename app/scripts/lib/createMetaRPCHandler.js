@@ -25,7 +25,7 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
       error = err;
     } finally {
       if (isManifestV3 && store && data.method !== 'getState') {
-        localStoreApiWrapper.set(store.getState());
+        localStoreApiWrapper.persist(store.getState());
       }
     }
 
