@@ -1,18 +1,15 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import { AvatarAccount } from './avatar-account';
 
 describe('AvatarAccount', () => {
+  const args = {
+    address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+  };
   it('should render Jazzicon correctly', () => {
     const { getByTestId } = render(
-      <AvatarAccount data-testid="avatar-account">
-        <Jazzicon
-          address="0x0000000000000000000000000000000000000000"
-          diameter={32}
-        />
-      </AvatarAccount>,
+      <AvatarAccount data-testid="avatar-account" type="Jazzicon" {...args} />,
     );
     expect(getByTestId('avatar-account')).toBeDefined();
   });
