@@ -185,6 +185,15 @@ export const BORDER_STYLE = {
   NONE,
 };
 
+export const BORDER_RADIUS = {
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
+  NONE,
+  FULL: 'full',
+};
+
 const FLEX_END = 'flex-end';
 const FLEX_START = 'flex-start';
 const CENTER = 'center';
