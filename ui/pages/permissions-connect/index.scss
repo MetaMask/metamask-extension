@@ -1,7 +1,8 @@
 @import 'choose-account/index';
 @import 'flask/snap-install/index';
 @import 'flask/snap-update/index';
-@import 'redirect/index';
+@import 'flask/choose-keyring-accounts/index';
+;@import 'redirect/index';
 
 .permissions-connect {
   width: 100%;
