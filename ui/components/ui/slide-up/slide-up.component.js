@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
 
 import classnames from 'classnames';
-import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition } from 'react-transition-group';
 
 import Box from '../box';
 import {
@@ -54,12 +54,7 @@ const SlideUp = ({
   };
 
   const modal = (
-    <ReactCSSTransitionGroup
-      transitionAppear={open}
-      transitionAppearTimeout={500}
-      transitionLeaveTimeout={500}
-      transitionName="slide-up"
-    >
+    <CSSTransition in={open} timeout={1000} classNames="slide-up" unmountOnExit>
       <div
         className="slide-up-modal-overlay"
         id="slide-up-modal-overlay"
@@ -100,7 +95,7 @@ const SlideUp = ({
           ) : null}
         </Box>
       </div>
-    </ReactCSSTransitionGroup>
+    </CSSTransition>
   );
 
   return ReactDOM.createPortal(modal, modalRoot);
@@ -110,7 +105,7 @@ SlideUp.propTypes = {
   /**
    * Boolean prop to render slide up animation
    */
-  open: PropTypes.boolean,
+  open: PropTypes.bool,
   /**
    * Show header content could be react child or text
    */

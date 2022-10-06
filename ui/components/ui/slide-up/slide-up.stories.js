@@ -21,26 +21,27 @@ export const DefaultStory = (args) => {
   const [isShowingSlideUp, setIsShowingSlideUp] = useState(false);
   return (
     <div>
-      <Button
-        style={{ width: 'auto' }}
-        onClick={() => setIsShowingSlideUp(true)}
-      >
-        Show Slide
-      </Button>
-      {isShowingSlideUp && (
-        <SlideUp
-          open={isShowingSlideUp}
-          closeModal={() => setIsShowingSlideUp(false)}
-          header={args.header}
-          footer={
-            <Button onClick={() => setIsShowingSlideUp(false)}>
-              Close modal
-            </Button>
-          }
+      {!isShowingSlideUp && (
+        <Button
+          style={{ width: 'auto' }}
+          onClick={() => setIsShowingSlideUp(true)}
         >
-          {args.children}
-        </SlideUp>
+          Show Slide
+        </Button>
       )}
+
+      <SlideUp
+        open={isShowingSlideUp}
+        closeModal={() => setIsShowingSlideUp(false)}
+        header={args.header}
+        footer={
+          <Button onClick={() => setIsShowingSlideUp(false)}>
+            Close modal
+          </Button>
+        }
+      >
+        {args.children}
+      </SlideUp>
     </div>
   );
 };

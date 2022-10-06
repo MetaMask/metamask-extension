@@ -29,12 +29,13 @@
 }
 
 .slide-up-modal-overlay .slide-up-modal {
-  max-width: 360px;
+  max-width: 410px;
 }
+
 
 .slide-up-appear {
   opacity: 0;
-  transform: translateY(600px);
+  transform: translateY(900px);
 }
 
 .slide-up-appear-active {
@@ -43,11 +44,22 @@
   transition: all 1000ms;
 }
 
-.slide-up-leave {
+.slide-up-enter {
+  opacity: 0;
+  transform: translateY(900px);
+}
+
+.slide-up-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 1000ms;
+}
+
+.slide-up-exit {
   opacity: 1;
 }
 
-.slide-up-leave-active {
+.slide-up-exit-active {
   opacity: 0;
   transform: translateY(600px);
   transition: all 1000ms;
