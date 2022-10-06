@@ -1,0 +1,57 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ButtonPrimary } from './button-primary';
+
+# ButtonPrimary
+
+The `ButtonPrimary` is an extension of `ButtonBase` to support primary styles.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `ButtonPrimary` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) and [ButtonBase](/docs/ui-components-component-library-button-base-button-base-stories-js--default-story#props) component props
+
+<ArgsTable of={ButtonPrimary} />
+
+### Size
+
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonPrimary`. Defaults to `SIZES.MD`
+
+Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `SIZES`.
+
+Possible sizes include:
+
+- `SIZES.SM` 32px
+- `SIZES.MD` 40px
+- `SIZES.LG` 48px
+
+<Canvas>
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--size" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+
+<ButtonPrimary size={SIZES.SM} />
+<ButtonPrimary size={SIZES.MD} />
+<ButtonPrimary size={SIZES.LG} />
+```
+
+### Type
+
+Use the `type` prop and the `BUTTON_TYPES` object from `./ui/helpers/constants/design-system.js` to change the context of `ButtonPrimary`.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--type" />
+</Canvas>
+
+```jsx
+import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+
+<ButtonPrimary>Normal</ButtonPrimary>
+<ButtonPrimary danger>Danger</ButtonPrimary>
+```
