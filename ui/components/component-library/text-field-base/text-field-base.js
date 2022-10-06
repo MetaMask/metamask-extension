@@ -7,6 +7,7 @@ import {
   SIZES,
   ALIGN_ITEMS,
   TEXT,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -90,9 +91,6 @@ export const TextFieldBase = ({
 
   return (
     <Box
-      alignItems={ALIGN_ITEMS.CENTER}
-      borderWidth={1}
-      borderRadius={SIZES.SM}
       className={classnames(
         'mm-text-field-base',
         `mm-text-field-base--size-${size}`,
@@ -105,6 +103,10 @@ export const TextFieldBase = ({
         className,
       )}
       display={DISPLAY.INLINE_FLEX}
+      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      alignItems={ALIGN_ITEMS.CENTER}
+      borderWidth={1}
+      borderRadius={SIZES.SM}
       paddingLeft={4}
       paddingRight={4}
       onClick={handleClick}
