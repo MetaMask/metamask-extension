@@ -297,8 +297,16 @@ export function getFirstSnapInstallOrUpdateRequest(state) {
 export function getMultichainAccountsRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(({ type }) => type === 'multichain_connect')
-    .map(({ requestData, id }) => ({ ...requestData, metadata: id }));
+    .map(({ requestData, id, origin }) => ({
+      ...requestData,
+      metadata: { id, origin },
+    }));
 }
+
+export function getFirstMultiChainAccountsRequest(state) {
+  return getMultichainAccountsRequests(state)?.[0] ?? null;
+}
+
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {

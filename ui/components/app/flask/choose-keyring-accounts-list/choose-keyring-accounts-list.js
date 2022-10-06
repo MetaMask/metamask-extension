@@ -16,8 +16,11 @@ const ChooseKeyringAccountsList = ({
   const checkIfConflict = (accountObj) => {
     if (
       selectedAccounts[accountObj.namespace] &&
-      selectedAccounts[accountObj.namespace][accountObj.snapId].snapId !==
-        accountObj.snapId
+      Object.entries(selectedAccounts[accountObj.namespace]).some(
+        ([snapId, snapAccounts]) =>
+          snapId !== accountObj.snapId &&
+          Object.values(snapAccounts).length > 0,
+      )
     ) {
       return true;
     }
@@ -32,7 +35,7 @@ const ChooseKeyringAccountsList = ({
           {accounts.map((account, index) => {
             const { address, snapId, suggestedChainNames, namespace } = account;
             const isSelectedAccount = Boolean(
-              selectedAccounts[namespace][snapId][address],
+              selectedAccounts[namespace]?.[snapId]?.[address],
             );
             const isConflict = checkIfConflict(account);
             return (

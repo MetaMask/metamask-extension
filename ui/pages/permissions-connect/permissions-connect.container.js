@@ -113,6 +113,8 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
   } else if (pathname === snapInstallPath || pathname === snapUpdatePath) {
     page = isRequestingAccounts ? '3' : '2';
+  } else if (pathname === multichainConnectPath) {
+    page = '1';
     ///: END:ONLY_INCLUDE_IN
   } else {
     throw new Error('Incorrect path for permissions-connect component');

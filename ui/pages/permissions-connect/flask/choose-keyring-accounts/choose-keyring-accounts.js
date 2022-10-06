@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { set } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Button from '../../../../components/ui/button';
 import PermissionsConnectHeader from '../../../../components/app/permissions-connect-header';
@@ -20,24 +21,14 @@ const ChooseKeyringAccounts = ({
   const possibleAccounts = Object.entries(request.possibleAccounts);
 
   const handleAccountClick = (accountObj, isConflict) => {
-    if (isConflict) {
-      return;
-    }
     const newSelectedAccounts = { ...selectedAccounts };
     const { namespace, snapId, address } = accountObj;
-    if (
-      newSelectedAccounts[namespace] &&
-      newSelectedAccounts[namespace][snapId] &&
-      newSelectedAccounts[namespace][snapId][address]
-    ) {
+    if (newSelectedAccounts[namespace]?.[snapId]?.[address]) {
       delete newSelectedAccounts[namespace][snapId][address];
-    } else if (
-      newSelectedAccounts[namespace] &&
-      newSelectedAccounts[namespace][snapId]
-    ) {
-      newSelectedAccounts[namespace][snapId][address] = true;
-    } else if (newSelectedAccounts[namespace]) {
-      newSelectedAccounts[namespace][snapId][address] = true;
+    } else if (isConflict) {
+      return;
+    } else {
+      set(newSelectedAccounts, [namespace, snapId, address], true);
     }
     setSelectedAccounts(newSelectedAccounts);
   };
@@ -47,12 +38,14 @@ const ChooseKeyringAccounts = ({
   // Record<NamespaceId, {snapId: SnapId, accounts: { AccountId: string, suggestedChainName: string }[]}[]>
   const getChainName = (namespace, chainId, snapId) => {
     const snap = snaps[snapId];
+    // TODO: Not safe, we should use the permissions directly!
     const { chains } =
       snap.initialPermissions['endowment:keyring'].namespaces[namespace];
     const matchingChain = chains.find((chain) => chain.id === chainId);
     return matchingChain.name;
   };
 
+  // TODO: Use reduce?
   const constructAccountObjects = (namespaceRecords) => {
     const accountObjects = [];
     namespaceRecords.forEach((namespaceRecord) => {
@@ -77,16 +70,36 @@ const ChooseKeyringAccounts = ({
     return accountObjects;
   };
 
-  // TODO: write function to reshape selectedAccounts into Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
+  const resolvedAccounts = Object.entries(selectedAccounts).reduce(
+    (acc, [namespaceId, snapObject]) => {
+      const result = Object.entries(snapObject)
+        .filter(([_, accountsObject]) => Object.keys(accountsObject).length > 0)
+        .reduce(
+          (_, [snapId, accountsObject]) => ({
+            snapId,
+            accounts: Object.keys(accountsObject),
+          }),
+          undefined,
+        );
+
+      if (result) {
+        acc[namespaceId] = result;
+      }
+      return acc;
+    },
+    {},
+  );
+
+  const hasSelectedAccount = Object.keys(resolvedAccounts).length > 0;
 
   return (
     <>
       <div className="permissions-connect-choose-keyring-accounts__content">
         <PermissionsConnectHeader
-          iconName={request.origin}
+          iconName={request.metadata.origin}
           headerTitle={t('connectWithMetaMask')}
-          headerText={t('selectKeyringAccounts')}
-          siteOrigin={request.origin}
+          headerText={t('selectKeyringAccounts', [request.metadata.origin])}
+          siteOrigin={request.metadata.origin}
         />
         <ChooseKeyringAccountsList
           accounts={constructAccountObjects(possibleAccounts)}
@@ -104,9 +117,11 @@ const ChooseKeyringAccounts = ({
             {t('cancel')}
           </Button>
           <Button
-            onClick={() => approveMultichainRequest(request.metadata.id)}
+            onClick={() =>
+              approveMultichainRequest(request.metadata.id, resolvedAccounts)
+            }
             type="primary"
-            disabled={selectedAccounts.size === 0}
+            disabled={!hasSelectedAccount}
           >
             {t('connect')}
           </Button>
