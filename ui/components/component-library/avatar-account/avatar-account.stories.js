@@ -1,6 +1,7 @@
 import React from 'react';
 import { SIZES } from '../../../helpers/constants/design-system';
 import { AvatarAccount } from './avatar-account';
+import { TYPES } from './avatar-account.constants';
 
 import README from './README.mdx';
 
@@ -21,13 +22,13 @@ export default {
     address: { control: 'text' },
     type: {
       control: 'select',
-      options: ['Jazzicon', 'Blockie'],
+      options: Object.values(TYPES),
     },
   },
   args: {
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
     size: SIZES.MD,
-    type: 'Jazzicon',
+    type: TYPES.JAZZICON,
   },
 };
 

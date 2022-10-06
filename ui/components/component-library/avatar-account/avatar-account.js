@@ -6,23 +6,7 @@ import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdentic
 import { BaseAvatar } from '../base-avatar';
 
 import { SIZES } from '../../../helpers/constants/design-system';
-
-const Diameters = {
-  xs: '16',
-  sm: '24',
-  md: '32',
-  lg: '40',
-  xl: '48',
-};
-
-export const types = ['Jazzicon', 'Blockie'];
-
-const getStyles = (diameter) => ({
-  width: diameter,
-  height: diameter,
-  borderRadius: diameter / 2,
-  display: 'flex',
-});
+import { DIAMETERS, TYPES } from './avatar-account.constants';
 
 export const AvatarAccount = ({ size, address, className, type, ...props }) => {
   return (
@@ -33,14 +17,14 @@ export const AvatarAccount = ({ size, address, className, type, ...props }) => {
     >
       {type === 'Jazzicon' ? (
         <Jazzicon
+          className={classnames('avatar-account__jazzicon')}
           address={address}
-          diameter={Diameters[size]}
-          style={getStyles(Diameters[size])}
+          diameter={DIAMETERS[size]}
         />
       ) : (
         <BlockieIdenticon
           address={address}
-          diameter={Diameters[size]}
+          diameter={DIAMETERS[size]}
           borderRadius="50%"
         />
       )}
@@ -58,7 +42,7 @@ AvatarAccount.propTypes = {
   /**
    * The type of the avatar to be rendered, it can render either a Jazzicon or a Blockie
    */
-  type: PropTypes.oneOf(['Jazzicon', 'Blockie']),
+  type: PropTypes.oneOf(Object.values(TYPES)),
   /**
    * Address used for generating random image
    */
