@@ -8,39 +8,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.21.0]
 ### Added
-- Ability to buy native currency and tokens on Optimism and Arbitrum, using Transak ([#16031](https://github.com/MetaMask/metamask-extension/pull/16031))
-- Ability to buy tokens with Wyre ([#15992](https://github.com/MetaMask/metamask-extension/pull/15992))
-- New Crowdin translations by Github Action ([#15411](https://github.com/MetaMask/metamask-extension/pull/15411))
-- Add changes to support blocking Snaps by source shasum ([#15830](https://github.com/MetaMask/metamask-extension/pull/15830))
-- Ability to buy tokens with Moonpay ([#15924](https://github.com/MetaMask/metamask-extension/pull/15924))
-- Ability to buy tokens with Coinbase Pay and Transak ([#15551](https://github.com/MetaMask/metamask-extension/pull/15551))
+- Add functionality for buying native currency and tokens on Optimism and Arbitrum, using Transak ([#16031](https://github.com/MetaMask/metamask-extension/pull/16031))
+- Add functionality for buying tokens with Wyre ([#15992](https://github.com/MetaMask/metamask-extension/pull/15992))
+- Add functionality for buying tokens with Moonpay ([#15924](https://github.com/MetaMask/metamask-extension/pull/15924))
+- Add functionality for buying tokens with Coinbase Pay and Transak ([#15551](https://github.com/MetaMask/metamask-extension/pull/15551))
+- Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH_CN ([#15411](https://github.com/MetaMask/metamask-extension/pull/15411))
+- [FLASK] Add changes to support blocking Snaps by source shasum ([#15830](https://github.com/MetaMask/metamask-extension/pull/15830))
 - [FLASK] Snaps Insight ([#15814](https://github.com/MetaMask/metamask-extension/pull/15814))
 
 ### Changed
-- Bump @metamask/contract-metadata from 1.35.0 to 1.36.0 ([#15597](https://github.com/MetaMask/metamask-extension/pull/15597))
-- Use "gasEstimateWithRefund" instead of "gasEstimate" ([#15968](https://github.com/MetaMask/metamask-extension/pull/15968))
-- Dark Mode: Elevate the theme dropdown from experimental to regular settings ([#15865](https://github.com/MetaMask/metamask-extension/pull/15865))
+- Dark Mode: elevate the Theme functionality from Experimental to General Settings ([#15865](https://github.com/MetaMask/metamask-extension/pull/15865))
+- Update Arbitrum symbol from `AETH` to `ETH` ([#15747](https://github.com/MetaMask/metamask-extension/pull/15747))
+- Update warning dialog copy on SetApprovalForAll Confirmation page ([#15744](https://github.com/MetaMask/metamask-extension/pull/15744))
+- Update header display on NFT Approval and SetApprovalForAll Confirmation pages ([#15727](https://github.com/MetaMask/metamask-extension/pull/15727))
+- Bump `@metamask/contract-metadata` from `1.35.0` to `1.36.0` ([#15597](https://github.com/MetaMask/metamask-extension/pull/15597))
+  - Add tokens: ZKP, GTON, PRVG, XCHF, XHT, OGV, veOFV, wOUSD and SUSHI
+  - Fix SVG icons for sETH and sUSD tokens
+  - Add the top NFT contracts on Opensea
 - Bump keystone package versions to latest ([#15878](https://github.com/MetaMask/metamask-extension/pull/15878))
-- NFT Approval and SetApprovalForAll confirmation screens header updated ([#15727](https://github.com/MetaMask/metamask-extension/pull/15727))
-- Update Arbitrum symbol ([#15747](https://github.com/MetaMask/metamask-extension/pull/15747))
-- ConfirmPage: update setApprovalForAll dialog copy ([#15744](https://github.com/MetaMask/metamask-extension/pull/15744))
-- Replace Rinkeby with Goerli for dev testing ([#15781](https://github.com/MetaMask/metamask-extension/pull/15781))
-- Only render tooltip component if swap network is disabled ([#15733](https://github.com/MetaMask/metamask-extension/pull/15733))
-- Update reset.scss to revive <b> element font-weight ([#15784](https://github.com/MetaMask/metamask-extension/pull/15784))
+- Swaps: replace Rinkeby with Goerli for performing swaps on a testnet ([#15781](https://github.com/MetaMask/metamask-extension/pull/15781))
+- Swaps: only render tooltip component if swap network is disabled ([#15733](https://github.com/MetaMask/metamask-extension/pull/15733))
+- Swaps: use `gasEstimateWithRefund` instead of `gasEstimate` for more precise estimations ([#15968](https://github.com/MetaMask/metamask-extension/pull/15968))
+- Swaps: improve Build Quote page ([#15758](https://github.com/MetaMask/metamask-extension/pull/15758))
+  - Preserve search query for the `Swap from` and `Swap to` form fields
+  - Update placeholder text on `Swap to` and `Swap from` search fields
+  - Update copy on slippage tolerance tooltip
 - [FLASK] `snaps-skunkworks@0.21.0` ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
 
 ### Fixed
-- Fixes double account creation when using keyboard controls ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
-- Fix broken error message UI on incorrect private key format ([#15940](https://github.com/MetaMask/metamask-extension/pull/15940))
-- Fix display of edit button on confirm screen when sending tx with data to contract ([#15812](https://github.com/MetaMask/metamask-extension/pull/15812))
-- Show correct base asset in Decrypt Request view ([#15885](https://github.com/MetaMask/metamask-extension/pull/15885))
-- [German] Fix some spelling errors and messages that don't make sense ([#15592](https://github.com/MetaMask/metamask-extension/pull/15592))
-- Preserve search query for "Swap from" and "Swap to" form fields, update content ([#15758](https://github.com/MetaMask/metamask-extension/pull/15758))
-- Fix: french typos ([#15735](https://github.com/MetaMask/metamask-extension/pull/15735))
-- Ensuring Blockies Icon is used in nickname popup when enabled ([#15768](https://github.com/MetaMask/metamask-extension/pull/15768))
-- Skip searching 4byte directory if we don't have a full 4 bytes of data ([#15473](https://github.com/MetaMask/metamask-extension/pull/15473))
-- Fixing hex address display bug when editing transaction ([#15873](https://github.com/MetaMask/metamask-extension/pull/15873))
-- Get ether from faucet fix message ([#15875](https://github.com/MetaMask/metamask-extension/pull/15875))
+- Fix double account creation when using keyboard controls on New Account page ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
+- Fix error message getting cut when introducing wrong private key format on Import Account page ([#15940](https://github.com/MetaMask/metamask-extension/pull/15940))
+- Fix edit button not being displayed when sending tx with hex data to a contract on Confirm tx page ([#15812](https://github.com/MetaMask/metamask-extension/pull/15812))
+- Fix incorrect balance asset on Encrypt and Decrypt Request pages ([#15885](https://github.com/MetaMask/metamask-extension/pull/15885))
+- Fix spelling errors and improve grammar for German translation ([#15592](https://github.com/MetaMask/metamask-extension/pull/15592))
+- Fix typos for French translation ([#15735](https://github.com/MetaMask/metamask-extension/pull/15735))
+- Fix incorrect identicon type for Account, by ensuring Blockies is displayed everywhere when enabled instead of Jazzicon ([#15768](https://github.com/MetaMask/metamask-extension/pull/15768))
+- Fix query verification for signatures, by ensuring we skip searching 4byte directory if we don't have a full 4 bytes of data ([#15473](https://github.com/MetaMask/metamask-extension/pull/15473))
+- Fix address resolution to Account name, when editing a tx instead of displaying the hex address ([#15873](https://github.com/MetaMask/metamask-extension/pull/15873))
+- Fix "Get ether from faucet" message, by including the end of the sentence and a full stop ([#15875](https://github.com/MetaMask/metamask-extension/pull/15875))
+- Fix font weight of the `<b>` element, by restoring the `b` style ([#15784](https://github.com/MetaMask/metamask-extension/pull/15784))
 
 ## [10.20.0]
 ### Changed
