@@ -372,20 +372,25 @@ export default class PermissionConnect extends Component {
               path={multichainConnectPath}
               exact
               render={() => (
-                <ChooseKeyringAccounts request={permissionsRequest || {}} />
+                <ChooseKeyringAccounts
+                  request={permissionsRequest || {}}
+                  approveMultichainRequest={(requestId, namespaces) => {
+                    approvePendingApproval(requestId, namespaces);
+                    this.redirect(true);
+                  }}
+                  rejectMultichainRequest={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(ethErrors.provider.userRejectedRequest()),
+                    );
+                    this.redirect(false);
+                  }}
+                />
               )}
-              approveMultichainRequest={(requestId, namespaces) => {
-                approvePendingApproval(requestId, namespaces);
-                this.redirect(true);
-              }}
-              rejectMultichainRequest={(requestId) => {
-                rejectPendingApproval(
-                  requestId,
-                  serializeError(ethErrors.provider.userRejectedRequest()),
-                );
-                this.redirect(false);
-              }}
             />
+            {
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Switch>
         )}
       </div>

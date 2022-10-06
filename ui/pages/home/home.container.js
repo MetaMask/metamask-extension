@@ -6,7 +6,7 @@ import {
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getFirstSnapInstallOrUpdateRequest,
-  getMultichainAccountsRequests,
+  getFirstMultiChainAccountsRequest,
   ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
@@ -104,7 +104,7 @@ const mapStateToProps = (state) => {
   }
 
   if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getMultichainAccountsRequests(state);
+    firstPermissionsRequest = getFirstMultiChainAccountsRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
   ///: END:ONLY_INCLUDE_IN
