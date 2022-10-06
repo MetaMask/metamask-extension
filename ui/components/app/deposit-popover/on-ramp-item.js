@@ -32,27 +32,23 @@ const OnRampItem = ({
         flexWrap={FLEX_WRAP.WRAP}
       >
         <Box
-          width={[
-            BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_FIFTH,
-          ]}
+          width={[BLOCK_SIZES.HALF, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_FIFTH]}
           display={DISPLAY.FLEX}
           justifyContent={[
             JUSTIFY_CONTENT.FLEX_START,
             JUSTIFY_CONTENT.FLEX_START,
             JUSTIFY_CONTENT.CENTER,
           ]}
-          paddingLeft={[0, 4]}
-          paddingRight={[0, 4]}
+          paddingLeft={[0, 0, 4]}
+          paddingRight={[0, 0, 4]}
           paddingBottom={[2, 0]}
         >
           {logo}
         </Box>
         <Box
           width={[BLOCK_SIZES.FULL, BLOCK_SIZES.FULL, BLOCK_SIZES.TWO_FIFTHS]}
-          paddingLeft={[0, 4]}
-          paddingRight={[0, 4]}
+          paddingLeft={[0, 0, 4]}
+          paddingRight={[0, 0, 4]}
           paddingBottom={[2, 0]}
         >
           <Typography variant="h6" fontWeight="bold">
@@ -61,8 +57,8 @@ const OnRampItem = ({
           <Typography>{text}</Typography>
         </Box>
         <Box
-          paddingLeft={[0, 4]}
-          paddingRight={[0, 4]}
+          paddingLeft={[0, 0, 4]}
+          paddingRight={[0, 0, 4]}
           width={[BLOCK_SIZES.FULL, BLOCK_SIZES.FULL, BLOCK_SIZES.TWO_FIFTHS]}
           paddingBottom={[2, 0]}
         >
