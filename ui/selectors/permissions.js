@@ -293,6 +293,12 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
+
+export function getMultichainAccountsRequests(state) {
+  return Object.values(state.metamask.pendingApprovals)
+    .filter(({ type }) => type === 'multichain_connect')
+    .map(({ requestData, id }) => ({ ...requestData, metadata: id }));
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {

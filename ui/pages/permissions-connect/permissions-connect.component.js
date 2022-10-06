@@ -14,6 +14,7 @@ import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapInstall from './flask/snap-install';
 import SnapUpdate from './flask/snap-update';
+import ChooseKeyringAccounts from './flask/choose-keyring-accounts';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
@@ -40,7 +41,9 @@ export default class PermissionConnect extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
+    multichainConnectPath: PropTypes.string.isRequired,
     isSnap: PropTypes.bool.isRequired,
+    isMultichainConnect: PropTypes.bool.isRequired,
     approvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IN
@@ -98,7 +101,9 @@ export default class PermissionConnect extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
       snapUpdatePath,
+      multichainConnectPath,
       isSnap,
+      isMultichainConnect,
       ///: END:ONLY_INCLUDE_IN
       getCurrentWindowTab,
       getRequestAccountTabIds,
@@ -125,6 +130,8 @@ export default class PermissionConnect extends Component {
         history.push(
           permissionsRequest.newPermissions ? snapUpdatePath : snapInstallPath,
         );
+      } else if (isMultichainConnect) {
+        history.push(multichainConnectPath);
       } else {
         ///: END:ONLY_INCLUDE_IN
         history.push(confirmPermissionPath);
@@ -240,6 +247,7 @@ export default class PermissionConnect extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
       snapUpdatePath,
+      multichainConnectPath,
       approvePendingApproval,
       rejectPendingApproval,
       ///: END:ONLY_INCLUDE_IN
@@ -357,6 +365,27 @@ export default class PermissionConnect extends Component {
             {
               ///: END:ONLY_INCLUDE_IN
             }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            }
+            <Route
+              path={multichainConnectPath}
+              exact
+              render={() => (
+                <ChooseKeyringAccounts request={permissionsRequest || {}} />
+              )}
+              approveMultichainRequest={(requestId, namespaces) => {
+                approvePendingApproval(requestId, namespaces);
+                this.redirect(true);
+              }}
+              rejectMultichainRequest={(requestId) => {
+                rejectPendingApproval(
+                  requestId,
+                  serializeError(ethErrors.provider.userRejectedRequest()),
+                );
+                this.redirect(false);
+              }}
+            />
           </Switch>
         )}
       </div>

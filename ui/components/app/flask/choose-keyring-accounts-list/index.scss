@@ -1,0 +1,73 @@
+.choose-keyring-accounts-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    overflow-y: auto;
+  
+    &__wrapper {
+      display: flex;
+      overflow: hidden;
+      width: 100%;
+    }
+  
+    &__list {
+      flex: 2 1 0;
+      width: 100%;
+      max-height: max-content;
+      border: 1px solid var(--color-border-muted);
+      box-sizing: border-box;
+      border-radius: 8px;
+      margin-top: 8px;
+      overflow-y: auto;
+    }
+  
+    &__account {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--color-border-muted);
+      justify-content: space-between;
+  
+      &:last-of-type {
+        border-bottom: none;
+      }
+  
+      &:hover {
+        background: var(--color-background-alternative);
+        cursor: pointer;
+      }
+  
+      &__info {
+        display: flex;
+        flex-direction: column;
+        margin-inline-start: 16px;
+        min-width: 0;
+      }
+  
+      &__label {
+        @include H6;
+  
+        color: var(--color-text-default);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  
+    &__account-info-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      min-width: 0;
+    }
+  
+    &__list-check-box {
+      margin-inline-end: 16px;
+  
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+  
