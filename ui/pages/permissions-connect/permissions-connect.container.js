@@ -76,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
-  const isMultichainConnect = Boolean(permissionsRequest.possibleAccounts);
+  const isMultichainConnect = Boolean(permissionsRequest?.possibleAccounts);
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
