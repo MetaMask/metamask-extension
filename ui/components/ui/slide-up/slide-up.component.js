@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
 
 import classnames from 'classnames';
-import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition } from 'react-transition-group';
 
 import Box from '../box';
 import {
@@ -12,12 +12,12 @@ import {
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 
-const modalRoot = document.querySelector('#custom-root');
+const modalRoot = document.querySelector('#popover-content');
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
   display: 'flex',
-  flexDirection: FLEX_DIRECTION.COLUMN,
+  flexDirection: FLEX_DIRECTION.ROW,
 };
 
 const defaultContentProps = {
@@ -54,37 +54,37 @@ const SlideUp = ({
   };
 
   const modal = (
-    <ReactCSSTransitionGroup
-      transitionAppear={open}
-      transitionAppearTimeout={500}
-      transitionLeaveTimeout={500}
-      transitionName="slide-up"
-    >
+    <CSSTransition in={open} timeout={1000} classNames="slide-up" unmountOnExit>
       <div
         className="slide-up-modal-overlay"
         id="slide-up-modal-overlay"
         onClick={handleClick}
       >
         <Box className={classnames('slide-up-modal', className)}>
-          {header ? (
-            <Box
-              className={classnames('slide-up-modal__header', headerClassName)}
-              {...{ ...defaultFooterProps, ...headerProps }}
-            >
-              {header}
-            </Box>
-          ) : null}
-          {children ? (
-            <Box
-              className={classnames(
-                'slide-up-modal__content',
-                contentClassName,
-              )}
-              {...{ ...defaultContentProps, ...contentProps }}
-            >
-              {children}
-            </Box>
-          ) : null}
+          <Box>
+            {header ? (
+              <Box
+                className={classnames(
+                  'slide-up-modal__header',
+                  headerClassName,
+                )}
+                {...{ ...defaultFooterProps, ...headerProps }}
+              >
+                {header}
+              </Box>
+            ) : null}
+            {children ? (
+              <Box
+                className={classnames(
+                  'slide-up-modal__content',
+                  contentClassName,
+                )}
+                {...{ ...defaultContentProps, ...contentProps }}
+              >
+                {children}
+              </Box>
+            ) : null}
+          </Box>
           {footer ? (
             <Box
               className={classnames('slide-up-modal__footer', footerClassName)}
@@ -95,7 +95,7 @@ const SlideUp = ({
           ) : null}
         </Box>
       </div>
-    </ReactCSSTransitionGroup>
+    </CSSTransition>
   );
 
   return ReactDOM.createPortal(modal, modalRoot);
@@ -105,7 +105,7 @@ SlideUp.propTypes = {
   /**
    * Boolean prop to render slide up animation
    */
-  open: PropTypes.boolean,
+  open: PropTypes.bool,
   /**
    * Show header content could be react child or text
    */
