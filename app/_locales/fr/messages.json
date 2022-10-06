@@ -2799,7 +2799,7 @@
     "message": "Supprimer"
   },
   "removeAccount": {
-    "message": "Suprimer le compte"
+    "message": "Supprimer le compte"
   },
   "removeAccountDescription": {
     "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase secrète de récupération originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes. "
