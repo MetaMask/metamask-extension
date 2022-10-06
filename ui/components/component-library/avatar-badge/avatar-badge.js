@@ -2,8 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
-
-export const badgePositions = ['top', 'bottom'];
+import { BADGE_POSITIONS } from './avatar-badge.constants';
 
 export const AvatarWithBadge = ({
   children,
@@ -35,7 +34,7 @@ AvatarWithBadge.propTypes = {
    * The position of the Badge
    * Possible values could be 'top', 'bottom',
    */
-  badgePosition: PropTypes.oneOf(badgePositions),
+  badgePosition: PropTypes.oneOf(Object.values(BADGE_POSITIONS)),
   /**
    * The children to be rendered inside the AvatarWithBadge
    */

@@ -7,8 +7,9 @@ import {
   DISPLAY,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { BADGE_POSITIONS } from './avatar-badge.constants';
 import README from './README.mdx';
-import { AvatarWithBadge, badgePositions } from './avatar-badge';
+import { AvatarWithBadge } from './avatar-badge';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarWithBadge',
@@ -20,10 +21,13 @@ export default {
     },
   },
   argTypes: {
-    badgePosition: { options: badgePositions, control: 'select' },
+    badgePosition: {
+      options: Object.values(BADGE_POSITIONS),
+      control: 'select',
+    },
   },
   args: {
-    badgePosition: badgePositions.top,
+    badgePosition: BADGE_POSITIONS.top,
   },
 };
 
@@ -41,6 +45,7 @@ export const DefaultStory = (args) => (
     <Jazzicon
       address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
       diameter={32}
+      style={{ height: 32 }}
     />
   </AvatarWithBadge>
 );
@@ -50,7 +55,7 @@ export const BadgePositions = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarWithBadge
       {...args}
-      badgePosition="bottom"
+      badgePosition={BADGE_POSITIONS.BOTTOM}
       badge={
         <AvatarNetwork
           size={SIZES.XS}
@@ -67,7 +72,7 @@ export const BadgePositions = (args) => (
 
     <AvatarWithBadge
       {...args}
-      badgePosition="top"
+      badgePosition={BADGE_POSITIONS.TOP}
       badge={
         <AvatarNetwork
           size={SIZES.XS}
