@@ -305,7 +305,6 @@ export const LeftAccessoryRightAccessory = (args) => {
             display={DISPLAY.FLEX}
             style={{ padding: 0 }}
             backgroundColor={COLORS.TRANSPARENT}
-            onClick={() => alert('Scan QR code')}
           >
             <Icon
               color={COLORS.PRIMARY_DEFAULT}

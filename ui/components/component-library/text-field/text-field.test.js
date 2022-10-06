@@ -1,7 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { SIZES } from '../../../helpers/constants/design-system';
 
 import { TextField } from './text-field';
 

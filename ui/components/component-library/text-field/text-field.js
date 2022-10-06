@@ -2,20 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import {
-  DISPLAY,
-  SIZES,
-  ALIGN_ITEMS,
-  TEXT,
-} from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box';
+import { SIZES, TEXT } from '../../../helpers/constants/design-system';
 
 import { Icon, ICON_NAMES } from '../icon';
 
 import { TextFieldBase } from '../text-field-base';
-
-import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 
 export const TextField = ({
   className,
