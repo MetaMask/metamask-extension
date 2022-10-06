@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { set } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Button from '../../../../components/ui/button';
 import PermissionsConnectHeader from '../../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import ChooseKeyringAccountsList from '../../../../components/app/flask/choose-keyring-accounts-list';
 import { getSnaps } from '../../../../selectors';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
 
 const ChooseKeyringAccounts = ({
   request,
@@ -94,7 +94,7 @@ const ChooseKeyringAccounts = ({
 
   return (
     <>
-      <div className="permissions-connect-choose-keyring-accounts__content">
+      <div className="page-container permissions-connect-choose-keyring-accounts__content">
         <PermissionsConnectHeader
           iconName={request.metadata.origin}
           headerTitle={t('connectWithMetaMask')}
@@ -107,25 +107,18 @@ const ChooseKeyringAccounts = ({
           handleAccountClick={handleAccountClick}
         />
       </div>
-      <div className="permissions-connect-choose-keyring-account__footer-container">
+      <div className="footers permissions-connect-choose-keyring-accounts__footer-container">
         <PermissionsConnectFooter />
-        <div className="permissions-connect-choose-keyring-account__bottom-buttons">
-          <Button
-            onClick={() => rejectMultichainRequest(request.metadata.id)}
-            type="secondary"
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            onClick={() =>
-              approveMultichainRequest(request.metadata.id, resolvedAccounts)
-            }
-            type="primary"
-            disabled={!hasSelectedAccount}
-          >
-            {t('connect')}
-          </Button>
-        </div>
+        <PageContainerFooter
+          cancelButtonType="secondary"
+          onCancel={() => rejectMultichainRequest(request.metadata.id)}
+          cancelText={t('cancel')}
+          onSubmit={() =>
+            approveMultichainRequest(request.metadata.id, resolvedAccounts)
+          }
+          submitText={t('connect')}
+          disabled={!hasSelectedAccount}
+        />
       </div>
     </>
   );
