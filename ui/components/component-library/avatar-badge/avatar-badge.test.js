@@ -2,7 +2,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
-import { AvatarWithBadge, badgePositions } from './avatar-badge';
+import { AvatarWithBadge } from './avatar-badge';
+import { BADGE_POSITIONS } from './avatar-badge.constants';
 
 describe('AvatarWithBadge', () => {
   const args = {
@@ -12,7 +13,7 @@ describe('AvatarWithBadge', () => {
       networkName: 'Arbitrum One',
       networkImageUrl: './images/arbitrum.svg',
     },
-    badgePosition: badgePositions.top,
+    badgePosition: BADGE_POSITIONS.TOP,
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
   };
 
@@ -31,7 +32,7 @@ describe('AvatarWithBadge', () => {
     const { container } = render(
       <AvatarWithBadge
         data-testid="avatar-badge"
-        badgePosition={badgePositions.bottom}
+        badgePosition={BADGE_POSITIONS.BOTTOM}
         badge={<AvatarNetwork {...args.badgeProps} />}
         {...args}
       />,
