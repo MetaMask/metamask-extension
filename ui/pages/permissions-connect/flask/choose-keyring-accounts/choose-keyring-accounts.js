@@ -13,22 +13,38 @@ const ChooseKeyringAccounts = ({
   approveMultichainRequest,
   rejectMultichainRequest,
 }) => {
-  const [selectedAccounts, setSelectedAccounts] = useState(null);
+  const [selectedAccounts, setSelectedAccounts] = useState({});
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
 
   const possibleAccounts = Object.entries(request.possibleAccounts);
 
-  const handleAccountClick = (address) => {
-    const newSelectedAccounts = new Set(selectedAccounts);
-    if (newSelectedAccounts.has(address)) {
-      newSelectedAccounts.delete(address);
-    } else {
-      newSelectedAccounts.add(address);
+  const handleAccountClick = (accountObj, isConflict) => {
+    if (isConflict) {
+      return;
+    }
+    const newSelectedAccounts = { ...selectedAccounts };
+    const { namespace, snapId, address } = accountObj;
+    if (
+      newSelectedAccounts[namespace] &&
+      newSelectedAccounts[namespace][snapId] &&
+      newSelectedAccounts[namespace][snapId][address]
+    ) {
+      delete newSelectedAccounts[namespace][snapId][address];
+    } else if (
+      newSelectedAccounts[namespace] &&
+      newSelectedAccounts[namespace][snapId]
+    ) {
+      newSelectedAccounts[namespace][snapId][address] = true;
+    } else if (newSelectedAccounts[namespace]) {
+      newSelectedAccounts[namespace][snapId][address] = true;
     }
     setSelectedAccounts(newSelectedAccounts);
   };
 
+  // TODO: memoize this based on namespace + chainId
+  // Or we can just define the UI input as
+  // Record<NamespaceId, {snapId: SnapId, accounts: { AccountId: string, suggestedChainName: string }[]}[]>
   const getChainName = (namespace, chainId, snapId) => {
     const snap = snaps[snapId];
     const { chains } =
@@ -53,7 +69,7 @@ const ChooseKeyringAccounts = ({
           const chainId = `${splitId[0]}:${splitId[1]}`;
           accountObj.address = splitId[2];
           const suggestedChainName = getChainName(namespace, chainId, snapId);
-          account.suggestedChainNames.push(suggestedChainName);
+          accountObj.suggestedChainNames.push(suggestedChainName);
         });
         accountObjects.push(accountObj);
       });
