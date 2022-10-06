@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box';
 import Identicon from '../../../ui/identicon';
 
@@ -9,23 +8,36 @@ const ChooseKeyringAccountsList = ({
   selectedAccounts,
   handleAccountClick,
 }) => {
-  //   const t = useI18nContext();
   const selectedAccountScrollRef = useRef(null);
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  const checkIfConflict = (accountObj) => {
+    if (
+      selectedAccounts[accountObj.namespace] &&
+      selectedAccounts[accountObj.namespace][accountObj.snapId].snapId !==
+        accountObj.snapId
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   const List = () => {
     return (
       <div className="choose-keyring-accounts-list__wrapper">
         <div className="choose-keyring-accounts-list__list">
           {accounts.map((account, index) => {
-            const { address, snapName, chains } = account;
-            const isSelectedAccount = selectedAccounts.has(address);
+            const { address, snapId, suggestedChainNames, namespace } = account;
+            const isSelectedAccount = Boolean(
+              selectedAccounts[namespace][snapId][address],
+            );
+            const isConflict = checkIfConflict(account);
             return (
               <div
                 key={`choose-keyring-accounts-list-${index}`}
-                onClick={() => handleAccountClick(address)}
+                onClick={() => handleAccountClick(account, isConflict)}
                 className="choose-keyring-accounts-list__account"
                 ref={isSelectedAccount ? selectedAccountScrollRef : null}
               >
@@ -33,6 +45,7 @@ const ChooseKeyringAccountsList = ({
                   <CheckBox
                     className="choose-keyring-accounts-list__list-check-box"
                     checked={isSelectedAccount}
+                    disabled={isConflict}
                   />
                   <Identicon diameter={34} address={address} />
                   <div className="choose-keyring-accounts-list__account__info">
@@ -63,9 +76,9 @@ ChooseKeyringAccountsList.propTypes = {
   accounts: PropTypes.arrayOf(
     PropTypes.shape({
       address: PropTypes.string,
-      addressLabel: PropTypes.string,
-      lastConnectedDate: PropTypes.string,
-      balance: PropTypes.string,
+      snapId: PropTypes.string,
+      namespace: PropTypes.string,
+      suggestedChainNames: PropTypes.arrayOf(PropTypes.string),
     }),
   ).isRequired,
   /**
