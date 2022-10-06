@@ -221,4 +221,56 @@
       margin-bottom: 16px;
     }
   }
+
+  &__subheader-link {
+    display: flex;
+    padding: 12px 0;
+    justify-content: center;
+    color: var(--color-primary-default);
+    align-items: center;
+    cursor: pointer;
+
+    &--tooltip-content {
+      &-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        &-text {
+          font-size: 18px;
+          line-height: 22.82px;
+          font-weight: 700;
+        }
+
+        &-button {
+          background-color: var(--color-primary-default);
+          color: var(--color-primary-inverse);
+          border: 0;
+        }
+      }
+
+      &-text-bold {
+        font-weight: 700;
+      }
+    }
+
+    &--tooltip-theme {
+      background-color: var(--color-primary-default) !important;
+
+      & .tippy-tooltip-content {
+        color: var(--color-primary-inverse) !important;
+      }
+
+      & .arrow-regular {
+        border-bottom-color: var(--color-primary-default) !important;
+      }
+    }
+
+    &--text {
+      margin-left: 8px;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 140.62%;
+    }
+  }
 }

@@ -8,9 +8,6 @@
   "about": {
     "message": "حول"
   },
-  "acceleratingATransaction": {
-    "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
-  },
   "acceptTermsOfUse": {
     "message": "لقد قرأت دولار واحد وأوافق عليه",
     "description": "$1 is the `terms` message"
@@ -201,17 +198,8 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToKovan": {
-    "message": "الاتصال بشبكة اختبار Kovan"
-  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "connectingToRinkeby": {
-    "message": "جارِ الاتصال بشبكة اختبار Rinkeby "
-  },
-  "connectingToRopsten": {
-    "message": "جارِ الاتصال بشبكة اختبار Ropsten "
   },
   "continueToWyre": {
     "message": "الاستمرار إلى Wyre"
@@ -257,12 +245,6 @@
   },
   "custom": {
     "message": "إعدادات متقدمة"
-  },
-  "customGas": {
-    "message": "تخصيص الغاز"
-  },
-  "customGasSubTitle": {
-    "message": "قد تؤدي زيادة الرسوم إلى تقليل أزمنة المعالجة، ولكن ذلك غير مضمون."
   },
   "customToken": {
     "message": "عملة رمزية مخصصة"
@@ -347,9 +329,6 @@
   },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
-  },
-  "estimatedProcessingTimes": {
-    "message": "أوقات المعالجة المقدرة"
   },
   "ethereumPublicAddress": {
     "message": "عنوان الإيثيريوم العمومي"
@@ -507,9 +486,6 @@
   "knownAddressRecipient": {
     "message": "عنوان العقد المعروف."
   },
-  "kovan": {
-    "message": "شبكة اختبار Kovan "
-  },
   "learnMore": {
     "message": "اكتشف المزيد"
   },
@@ -604,12 +580,6 @@
   },
   "newToMetaMask": {
     "message": "هل انت جديد في MetaMask؟"
-  },
-  "newTotal": {
-    "message": "إجمالي جديد"
-  },
-  "newTransactionFee": {
-    "message": "رسوم المعاملات الجديدة"
   },
   "next": {
     "message": "التالي"
@@ -769,12 +739,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
   },
-  "rinkeby": {
-    "message": "شبكة اختبارات Rinkeby"
-  },
-  "ropsten": {
-    "message": "شبكة اختبار Ropsten"
-  },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
   },
@@ -811,9 +775,6 @@
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },
-  "selectAHigherGasFee": {
-    "message": "حدد رسوم جاس أعلى لتسريع معالجة معاملتك. *"
-  },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
   },
@@ -831,9 +792,6 @@
   },
   "send": {
     "message": "إرسال"
-  },
-  "sendAmount": {
-    "message": "إرسال المبلغ"
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
@@ -876,9 +834,6 @@
   },
   "signed": {
     "message": "مسجل الدخول"
-  },
-  "slow": {
-    "message": "بطيء"
   },
   "somethingWentWrong": {
     "message": "عذراً! حدث خطأ ما."

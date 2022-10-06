@@ -9,7 +9,7 @@ import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
-import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
+import { NETWORK_TYPES } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
   DEVICE_NAMES,
@@ -24,7 +24,7 @@ const firstTimeState = {
   config: {},
   NetworkController: {
     provider: {
-      type: NETWORK_TYPE_RPC,
+      type: NETWORK_TYPES.RPC,
       rpcUrl: 'http://localhost:8545',
       chainId: '0x539',
     },
@@ -120,7 +120,7 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-const currentNetworkId = '42';
+const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';

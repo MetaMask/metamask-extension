@@ -136,21 +136,6 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     <BaseAvatar {...args}>B</BaseAvatar>
     <BaseAvatar
       {...args}
-      backgroundColor={COLORS.KOVAN}
-      borderColor={COLORS.KOVAN}
-      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
-    >
-      K
-    </BaseAvatar>
-    <BaseAvatar
-      {...args}
-      backgroundColor={COLORS.RINKEBY}
-      borderColor={COLORS.RINKEBY}
-    >
-      R
-    </BaseAvatar>
-    <BaseAvatar
-      {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
@@ -159,11 +144,11 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     </BaseAvatar>
     <BaseAvatar
       {...args}
-      backgroundColor={COLORS.ROPSTEN}
-      borderColor={COLORS.ROPSTEN}
+      backgroundColor={COLORS.SEPOLIA}
+      borderColor={COLORS.SEPOLIA}
       color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
     >
-      R
+      S
     </BaseAvatar>
   </Box>
 );

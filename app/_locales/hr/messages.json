@@ -8,9 +8,6 @@
   "about": {
     "message": "O opcijama"
   },
-  "acceleratingATransaction": {
-    "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
-  },
   "accessingYourCamera": {
     "message": "Pristupanje vašoj kameri..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
-  "connectingToKovan": {
-    "message": "Povezivanje na testnu mrežu Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Povezivanje na testnu mrežu Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Povezivanje na testnu mrežu Ropsten"
   },
   "continueToWyre": {
     "message": "Nastavi na uslugu Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Napredno"
-  },
-  "customGas": {
-    "message": "Prilagodi gorivo"
-  },
-  "customGasSubTitle": {
-    "message": "Povećavanjem se naknade može smanjiti vrijeme obrade, ali se ne jamči."
   },
   "customToken": {
     "message": "Prilagođeni token"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Procijenjeno vrijeme obrade"
   },
   "ethereumPublicAddress": {
     "message": "Javna adresa Ethereum"
@@ -499,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Poznata ugovorna adresa."
   },
-  "kovan": {
-    "message": "Testna mreža Kovan"
-  },
   "learnMore": {
     "message": "Saznajte više"
   },
@@ -596,12 +572,6 @@
   },
   "newToMetaMask": {
     "message": "Novi korisnik usluge MetaMask?"
-  },
-  "newTotal": {
-    "message": "Novi ukupni zbroj"
-  },
-  "newTransactionFee": {
-    "message": "Nova naknada za transakciju"
   },
   "next": {
     "message": "Sljedeće"
@@ -761,12 +731,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NE DIJELITE ovu rečenicu ni s kim!"
   },
-  "rinkeby": {
-    "message": "Testna mreža Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testna mreža Ropsten"
-  },
   "rpcUrl": {
     "message": "Novi URL RPC-a"
   },
@@ -803,9 +767,6 @@
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"
   },
-  "selectAHigherGasFee": {
-    "message": "Odaberite višu naknadu za gorivo kako biste ubrzali obrađivanje vaše transakcije.*"
-  },
   "selectAnAccount": {
     "message": "Odaberi račun"
   },
@@ -823,9 +784,6 @@
   },
   "send": {
     "message": "Pošalji"
-  },
-  "sendAmount": {
-    "message": "Odaberi iznos"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
@@ -868,9 +826,6 @@
   },
   "signed": {
     "message": "Potpisano"
-  },
-  "slow": {
-    "message": "Sporo"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."

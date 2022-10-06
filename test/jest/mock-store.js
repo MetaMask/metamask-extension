@@ -1,4 +1,4 @@
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -120,6 +120,13 @@ export const createSwapsMockStore = () => {
         },
       },
       fromToken: 'ETH',
+      toToken: {
+        symbol: 'USDC',
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        occurances: 4,
+      },
+      currentSmartTransactionsErrorMessageDismissed: false,
+      swapsSTXLoading: false,
     },
     metamask: {
       networkDetails: {
@@ -128,10 +135,10 @@ export const createSwapsMockStore = () => {
         },
       },
       provider: {
-        chainId: MAINNET_CHAIN_ID,
+        chainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
-        [MAINNET_CHAIN_ID]: 5,
+        [CHAIN_IDS.MAINNET]: 5,
       },
       preferences: {
         showFiatInTestnets: true,
@@ -314,10 +321,10 @@ export const createSwapsMockStore = () => {
         fetchParams: {
           metaData: {
             sourceTokenInfo: {
-              symbol: 'BAT',
+              symbol: 'ETH',
             },
             destinationTokenInfo: {
-              symbol: 'ETH',
+              symbol: 'USDC',
             },
           },
         },
@@ -326,6 +333,10 @@ export const createSwapsMockStore = () => {
         quotesLastFetched: 1519211809934,
         swapsQuoteRefreshTime: 60000,
         swapsQuotePrefetchingRefreshTime: 60000,
+        swapsStxBatchStatusRefreshTime: 5000,
+        swapsStxGetTransactionsRefreshTime: 5000,
+        swapsStxMaxFeeMultiplier: 1.5,
+        swapsStxStatusDeadline: 150000,
         customMaxGas: '',
         customGasPrice: null,
         selectedAggId: 'TEST_AGG_2',
@@ -408,10 +419,11 @@ export const createSwapsMockStore = () => {
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
-          [MAINNET_CHAIN_ID]: [
+          [CHAIN_IDS.MAINNET]: [
             {
               uuid: 'uuid2',
               status: 'success',
+              cancellable: false,
               statusMetadata: {
                 cancellationFeeWei: 36777567771000,
                 cancellationReason: 'not_cancelled',
@@ -424,6 +436,7 @@ export const createSwapsMockStore = () => {
             {
               uuid: 'uuid2',
               status: 'pending',
+              cancellable: true,
               statusMetadata: {
                 cancellationFeeWei: 36777567771000,
                 cancellationReason: 'not_cancelled',

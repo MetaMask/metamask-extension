@@ -1,4 +1,5 @@
 import { rawEncode } from 'ethereumjs-abi';
+import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 
 import {
   multiplyCurrencies,
@@ -8,7 +9,6 @@ import {
 } from '../../../shared/modules/conversion.utils';
 
 import {
-  calcGasTotal,
   generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -32,9 +32,16 @@ jest.mock('../../../shared/modules/conversion.utils', () => ({
   conversionLessThan: (obj1, obj2) => obj1.value < obj2.value,
 }));
 
-jest.mock('../../helpers/utils/token-util', () => ({
-  calcTokenAmount: (a, d) => `calc:${a}${d}`,
-}));
+jest.mock('../../../shared/lib/transactions-controller-utils', () => {
+  const originalModule = jest.requireActual(
+    '../../../shared/lib/transactions-controller-utils',
+  );
+
+  return {
+    ...originalModule,
+    calcTokenAmount: (a, d) => `calc:${a}${d}`,
+  };
+});
 
 jest.mock('ethereumjs-abi', () => ({
   rawEncode: jest.fn().mockReturnValue(16, 1100),

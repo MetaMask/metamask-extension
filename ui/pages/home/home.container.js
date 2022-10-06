@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   activeTabHasPermissions,
-  getCurrentEthBalance,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getFirstSnapUpdateRequest,
+  getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
@@ -23,6 +22,8 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
+  getShowPortfolioTooltip,
+  getShouldShowSeedPhraseReminder,
 } from '../../selectors';
 
 import {
@@ -30,6 +31,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
+  hidePortfolioTooltip,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
@@ -49,6 +51,8 @@ import {
   setThreeBoxLastUpdated,
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
+  getPortfolioTooltipWasShownInThisSession,
+  setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -68,18 +72,15 @@ const mapStateToProps = (state) => {
   const {
     suggestedAssets,
     seedPhraseBackedUp,
-    tokens,
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-    dismissSeedBackUpReminder,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
@@ -97,7 +98,7 @@ const mapStateToProps = (state) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getFirstSnapUpdateRequest(state);
+    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
   ///: END:ONLY_INCLUDE_IN
@@ -119,10 +120,7 @@ const mapStateToProps = (state) => {
     suggestedAssets,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
-    shouldShowSeedPhraseReminder:
-      seedPhraseBackedUp === false &&
-      (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-      dismissSeedBackUpReminder === false,
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
     threeBoxSynced,
@@ -149,6 +147,9 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showPortfolioTooltip: getShowPortfolioTooltip(state),
+    portfolioTooltipWasShownInThisSession:
+      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
@@ -156,6 +157,7 @@ const mapStateToProps = (state) => {
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
 
@@ -185,6 +187,7 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -204,6 +207,8 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
+  setPortfolioTooltipWasShownInThisSession: () =>
+    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

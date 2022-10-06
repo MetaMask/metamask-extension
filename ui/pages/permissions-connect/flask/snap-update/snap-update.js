@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
@@ -16,6 +16,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
 import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
+import { getSnapInstallWarnings } from '../util';
 
 export default function SnapUpdate({
   request,
@@ -33,20 +34,26 @@ export default function SnapUpdate({
   );
 
   const onSubmit = useCallback(
-    () => approveSnapUpdate(request),
+    () => approveSnapUpdate(request.metadata.id),
     [request, approveSnapUpdate],
   );
 
-  const shouldShowWarning = useMemo(
-    () =>
-      Boolean(
-        request.permissions &&
-          Object.keys(request.permissions).find((v) =>
-            v.startsWith('snap_getBip44Entropy_'),
-          ),
-      ),
-    [request.permissions],
+  const approvedPermissions = request.approvedPermissions ?? {};
+  const revokedPermissions = request.unusedPermissions ?? {};
+  const newPermissions = request.newPermissions ?? {};
+  const hasPermissions =
+    Object.keys(approvedPermissions).length +
+      Object.keys(revokedPermissions).length +
+      Object.keys(newPermissions).length >
+    0;
+
+  const warnings = getSnapInstallWarnings(
+    newPermissions,
+    targetSubjectMetadata,
+    t,
   );
+
+  const shouldShowWarning = warnings.length > 0;
 
   return (
     <Box
@@ -80,20 +87,24 @@ export default function SnapUpdate({
         >
           {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
         </Typography>
-        <Typography
-          boxProps={{
-            padding: [2, 4, 0, 4],
-          }}
-          variant={TYPOGRAPHY.H7}
-          as="span"
-        >
-          {t('snapRequestsPermission')}
-        </Typography>
-        <UpdateSnapPermissionList
-          approvedPermissions={request.approvedPermissions || {}}
-          revokedPermissions={request.unusedPermissions || {}}
-          newPermissions={request.newPermissions || {}}
-        />
+        {hasPermissions && (
+          <>
+            <Typography
+              boxProps={{
+                padding: [2, 4, 0, 4],
+              }}
+              variant={TYPOGRAPHY.H7}
+              as="span"
+            >
+              {t('snapRequestsPermission')}
+            </Typography>
+            <UpdateSnapPermissionList
+              approvedPermissions={approvedPermissions}
+              revokedPermissions={revokedPermissions}
+              newPermissions={newPermissions}
+            />
+          </>
+        )}
       </Box>
       <Box
         className="footers"
@@ -118,6 +129,7 @@ export default function SnapUpdate({
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
           snapName={targetSubjectMetadata.name}
+          warnings={warnings}
         />
       )}
     </Box>

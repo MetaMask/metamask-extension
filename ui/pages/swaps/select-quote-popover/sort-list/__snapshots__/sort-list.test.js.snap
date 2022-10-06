@@ -3,6 +3,7 @@
 exports[`SortList renders the component with initial props 1`] = `
 <div
   class="select-quote-popover__column-header select-quote-popover__receiving"
+  data-testid="select-quote-popover__receiving"
 >
   <span
     class="select-quote-popover__receiving-symbol"
@@ -50,6 +51,7 @@ exports[`SortList renders the component with initial props 1`] = `
 exports[`SortList renders the component with initial props 2`] = `
 <div
   class="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+  data-testid="select-quote-popover__network-fees-header"
 >
   <span>
     Estimated network fees
@@ -88,6 +90,7 @@ exports[`SortList renders the component with initial props 2`] = `
 exports[`SortList renders the component with initial props 3`] = `
 <div
   class="select-quote-popover__row select-quote-popover__row--selected"
+  data-testid="select-quote-popover-row-1"
 >
   <div
     class="select-quote-popover__receiving"
@@ -124,6 +127,7 @@ exports[`SortList renders the component with initial props 3`] = `
   </div>
   <div
     class="select-quote-popover__caret-right"
+    data-testid="select-quote-popover__caret-right-1"
   >
     <i
       class="fa fa-angle-up"

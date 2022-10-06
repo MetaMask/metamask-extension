@@ -18,6 +18,9 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
+import { checkAlarmExists } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -144,16 +147,49 @@ export default class MetaMetricsController {
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
-    setInterval(() => {
-      Object.values(this.store.getState().fragments).forEach((fragment) => {
-        if (
-          fragment.timeout &&
-          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-        ) {
-          this.finalizeEventFragment(fragment.id, { abandoned: true });
+    if (isManifestV3) {
+      /* eslint-disable no-undef */
+      chrome.alarms.getAll((alarms) => {
+        const hasAlarm = checkAlarmExists(
+          alarms,
+          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+        );
+
+        if (!hasAlarm) {
+          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
+            delayInMinutes: 1,
+            periodInMinutes: 1,
+          });
         }
       });
-    }, SECOND * 30);
+      chrome.alarms.onAlarm.addListener(() => {
+        chrome.alarms.getAll((alarms) => {
+          const hasAlarm = checkAlarmExists(
+            alarms,
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+          );
+
+          if (hasAlarm) {
+            this.finalizeAbandonedFragments();
+          }
+        });
+      });
+    } else {
+      setInterval(() => {
+        this.finalizeAbandonedFragments();
+      }, SECOND * 30);
+    }
+  }
+
+  finalizeAbandonedFragments() {
+    Object.values(this.store.getState().fragments).forEach((fragment) => {
+      if (
+        fragment.timeout &&
+        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+      ) {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
+    });
   }
 
   generateMetaMetricsId() {
@@ -188,6 +224,15 @@ export default class MetaMetricsController {
         }`,
       );
     }
+
+    const existingFragment = this.getExistingEventFragment(
+      options.actionId,
+      options.uniqueIdentifier,
+    );
+    if (existingFragment) {
+      return existingFragment;
+    }
+
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
@@ -234,6 +279,26 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
+  }
+
+  /**
+   * Returns the fragment stored in memory with provided id or undefined if it
+   * does not exist.
+   *
+   * @param {string} actionId - actionId passed from UI
+   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
+   * @returns {[MetaMetricsEventFragment]}
+   */
+  getExistingEventFragment(actionId, uniqueIdentifier) {
+    const { fragments } = this.store.getState();
+
+    const existingFragment = Object.values(fragments).find(
+      (fragment) =>
+        fragment.actionId === actionId &&
+        fragment.uniqueIdentifier === uniqueIdentifier,
+    );
+
+    return existingFragment;
   }
 
   /**
