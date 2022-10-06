@@ -226,7 +226,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
+  const filePath = origUrl.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }
