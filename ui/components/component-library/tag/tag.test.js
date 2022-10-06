@@ -4,9 +4,10 @@ import React from 'react';
 
 import { Tag } from './tag';
 
-describe('AvatarToken', () => {
+describe('Tag', () => {
   it('should render the label inside the tag', () => {
-    const { getByText } = render(<Tag>label</Tag>);
-    expect(getByText('label')).toBeDefined();
+    const { getByTestId } = render(<Tag data-testid="tag" label="Imported" />);
+    expect(getByTestId('tag')).toBeDefined();
+    expect(getByTestId('tag')).toHaveTextContent('Imported');
   });
 });
