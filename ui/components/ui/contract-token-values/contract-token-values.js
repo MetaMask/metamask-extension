@@ -6,7 +6,7 @@ import IconBlockExplorer from '../icon/icon-block-explorer';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import Typography from '../typography/typography';
 import {
   FONT_WEIGHT,
