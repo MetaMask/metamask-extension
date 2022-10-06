@@ -33,7 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Preserve search query for the `Swap from` and `Swap to` form fields
   - Update placeholder text on `Swap to` and `Swap from` search fields
   - Update copy on slippage tolerance tooltip
-- [FLASK] `snaps-skunkworks@0.21.0` ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- [FLASK] `Add snap_getBip32PublicKey` RPC method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- **[FLASK] BREAKING:** Remove deprecated snap_getBip44Entropy_* method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- [FLASK] Miscellaneous fixes to the Snaps platform ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
 
 ### Fixed
 - Fix double account creation when using keyboard controls on New Account page ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
