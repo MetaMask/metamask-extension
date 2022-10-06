@@ -9,7 +9,12 @@ import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
+  FLEX_DIRECTION,
+  ALIGN_ITEMS,
+  SIZES,
 } from '../../../../helpers/constants/design-system';
+import Box from '../../../ui/box';
+import { Icon, ICON_NAMES } from '../../../component-library/icon';
 
 const ChooseKeyringAccountsList = ({
   accounts,
@@ -65,19 +70,40 @@ const ChooseKeyringAccountsList = ({
                   />
                   <Identicon diameter={34} address={address} />
                   <div className="choose-keyring-accounts-list__account__info">
-                    <div className="choose-keyring-accounts-list__account__label">
+                    <Typography
+                      variant={TYPOGRAPHY.H6}
+                      color={COLORS.TEXT_DEFAULT}
+                      className="choose-keyring-accounts-list__account__label"
+                    >
                       {address}
-                    </div>
-                    <div>
+                    </Typography>
+                    <Box
+                      flexDirection={FLEX_DIRECTION.ROW}
+                      alignItems={ALIGN_ITEMS.CENTER}
+                    >
+                      <Typography
+                        color={COLORS.TEXT_ALTERNATIVE}
+                        variant={TYPOGRAPHY.H6}
+                        fontWeight={FONT_WEIGHT.NORMAL}
+                      >
+                        via{' '}
+                      </Typography>
+                      <Icon
+                        className="choose-keyring-accounts-list__account__icon"
+                        key="snaps-mobile-filled"
+                        name={ICON_NAMES.SNAPS_MOBILE_FILLED}
+                        size={SIZES.SM}
+                        color={COLORS.ICON_DEFAULT}
+                      />
                       <Typography
                         className="choose-keyring-accounts-list__account__snap"
                         color={COLORS.TEXT_ALTERNATIVE}
                         variant={TYPOGRAPHY.H6}
                         fontWeight={FONT_WEIGHT.NORMAL}
                       >
-                        via {snap.manifest.proposedName}
+                        {snap.manifest.proposedName}
                       </Typography>
-                    </div>
+                    </Box>
                   </div>
                 </div>
               </div>

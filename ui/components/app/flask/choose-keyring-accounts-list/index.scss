@@ -46,12 +46,14 @@
       }
   
       &__label {
-        @include H6;
-  
-        color: var(--color-text-default);
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+      }
+
+      &__icon {
+        margin-left: 5px;
+        margin-right: 3px;
       }
 
       &__snap {
