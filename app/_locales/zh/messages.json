@@ -619,17 +619,8 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToKovan": {
-    "message": "正在连接到 Kovan 测试网络"
-  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
-  },
-  "connectingToRinkeby": {
-    "message": "正在连接到 Rinkeby 测试网络"
-  },
-  "connectingToRopsten": {
-    "message": "正在连接到 Ropsten 测试网络"
   },
   "contactUs": {
     "message": "联系我们"
@@ -1668,9 +1659,6 @@
   },
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
-  },
-  "kovan": {
-    "message": "Kovan 测试网络"
   },
   "lastConnected": {
     "message": "最后连接"
@@ -2731,12 +2719,6 @@
   "revokeApproveForAllDescription": {
     "message": "通过撤销权限，以下$1将无法再访问您的$2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 测试网络"
-  },
-  "ropsten": {
-    "message": "Ropsten 测试网络"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"

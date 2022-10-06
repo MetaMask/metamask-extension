@@ -682,7 +682,7 @@ describe('MetaMetricsController', function () {
       const traits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.ROPSTEN]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allCollectibles: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
@@ -713,7 +713,7 @@ describe('MetaMetricsController', function () {
         allTokens: MOCK_ALL_TOKENS,
         frequentRpcListDetail: [
           { chainId: CHAIN_IDS.MAINNET, ticker: CURRENCY_SYMBOLS.ETH },
-          { chainId: CHAIN_IDS.ROPSTEN, ticker: CURRENCY_SYMBOLS.TEST_ETH },
+          { chainId: CHAIN_IDS.GOERLI, ticker: CURRENCY_SYMBOLS.TEST_ETH },
           { chainId: '0xaf' },
         ],
         identities: [{}, {}],
@@ -729,7 +729,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
         [TRAITS.INSTALL_DATE_EXT]: '',
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
-        [TRAITS.NETWORKS_ADDED]: [CHAIN_IDS.MAINNET, CHAIN_IDS.ROPSTEN, '0xaf'],
+        [TRAITS.NETWORKS_ADDED]: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI, '0xaf'],
         [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
@@ -748,12 +748,12 @@ describe('MetaMetricsController', function () {
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.ROPSTEN]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         frequentRpcListDetail: [
           { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.ROPSTEN },
+          { chainId: CHAIN_IDS.GOERLI },
         ],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -767,14 +767,14 @@ describe('MetaMetricsController', function () {
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }, { address: '0x1' }],
-          [CHAIN_IDS.ROPSTEN]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
           '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
         },
         frequentRpcListDetail: [
           { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.ROPSTEN },
+          { chainId: CHAIN_IDS.GOERLI },
         ],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -798,12 +798,12 @@ describe('MetaMetricsController', function () {
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.ROPSTEN]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         frequentRpcListDetail: [
           { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.ROPSTEN },
+          { chainId: CHAIN_IDS.GOERLI },
         ],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -817,12 +817,12 @@ describe('MetaMetricsController', function () {
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.ROPSTEN]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         frequentRpcListDetail: [
           { chainId: CHAIN_IDS.MAINNET },
-          { chainId: CHAIN_IDS.ROPSTEN },
+          { chainId: CHAIN_IDS.GOERLI },
         ],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,

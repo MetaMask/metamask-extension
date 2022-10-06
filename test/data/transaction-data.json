@@ -864,10 +864,10 @@
         "id": 1441203963845330,
         "time": 1652206763566,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "metamaskNetworkId": "5",
         "originalGasEstimate": "0x118e0",
         "userEditedGasLimit": false,
-        "chainId": "0x4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "dappSuggestedGasFees": {
           "maxPriorityFeePerGas": "0x3B9ACA00",
@@ -884,7 +884,7 @@
           "maxFeePerGas": "0x7be830aec",
           "maxPriorityFeePerGas": "0x3B9ACA00"
         },
-        "origin": "https://rinkeby.etherscan.io",
+        "origin": "https://goerli.etherscan.io",
         "type": "safetransferfrom",
         "userFeeLevel": "dappSuggested",
         "defaultGasEstimates": {
@@ -980,10 +980,10 @@
       "id": 1441203963845330,
       "time": 1652206763566,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "metamaskNetworkId": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
-      "chainId": "0x4",
+      "chainId": "0x5",
       "loadingDefaults": false,
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",
@@ -1000,7 +1000,7 @@
         "maxFeePerGas": "0x7be830aec",
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
-      "origin": "https://rinkeby.etherscan.io",
+      "origin": "https://goerli.etherscan.io",
       "type": "safetransferfrom",
       "userFeeLevel": "dappSuggested",
       "defaultGasEstimates": {
@@ -1095,10 +1095,10 @@
       "id": 1441203963845330,
       "time": 1652206763566,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "metamaskNetworkId": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
-      "chainId": "0x4",
+      "chainId": "0x5",
       "loadingDefaults": false,
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",
@@ -1115,7 +1115,7 @@
         "maxFeePerGas": "0x7be830aec",
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
-      "origin": "https://rinkeby.etherscan.io",
+      "origin": "https://goerli.etherscan.io",
       "type": "safetransferfrom",
       "userFeeLevel": "dappSuggested",
       "defaultGasEstimates": {

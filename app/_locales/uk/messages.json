@@ -8,9 +8,6 @@
   "about": {
     "message": "Про Google Chrome"
   },
-  "acceleratingATransaction": {
-    "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
-  },
   "accessingYourCamera": {
     "message": "Отримуємо доступ до вашої камери..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Підключення до тестової мережі Goerli"
   },
-  "connectingToKovan": {
-    "message": "Підключення до тестової мережі Kovan"
-  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Під'єднуємось до тестової мережі Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Під'єднуємось до Тестової мережі Ropsten"
   },
   "continueToWyre": {
     "message": "Продовжити у Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Розширені"
-  },
-  "customGas": {
-    "message": "Налаштувати пальне"
-  },
-  "customGasSubTitle": {
-    "message": "Збільшення комісії може призвести до зменшення часу обробки, але це не гарантується."
   },
   "customToken": {
     "message": "Користувацький токен"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизні часи обробки"
   },
   "ethereumPublicAddress": {
     "message": "Публічна адреса Ethereum"
@@ -503,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "Відома контрактна адреса."
   },
-  "kovan": {
-    "message": "Тестова мережа Kovan"
-  },
   "learnMore": {
     "message": "Дізнатись більше"
   },
@@ -603,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "Вперше в MetaMask?"
-  },
-  "newTotal": {
-    "message": "Новий підсумок"
-  },
-  "newTransactionFee": {
-    "message": "Нова комісія за транзакцію"
   },
   "next": {
     "message": "Далі"
@@ -768,12 +738,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "НЕ передавайте цю фразу нікому!"
   },
-  "rinkeby": {
-    "message": "Тестова мережа Rinkeby"
-  },
-  "ropsten": {
-    "message": "Тестова мережа Ropsten"
-  },
   "rpcUrl": {
     "message": "Новий RPC URL"
   },
@@ -810,9 +774,6 @@
   "seedPhraseReq": {
     "message": "Початкові фрази мають 12 слів"
   },
-  "selectAHigherGasFee": {
-    "message": "Оберіть вищу вартість пального, щоб пришвидшити обробку вашої транзакції.*"
-  },
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
   },
@@ -830,9 +791,6 @@
   },
   "send": {
     "message": "Надіслати"
-  },
-  "sendAmount": {
-    "message": "Надіслати суму"
   },
   "sendTokens": {
     "message": "Надіслати токени"
@@ -875,9 +833,6 @@
   },
   "signed": {
     "message": "Підписано"
-  },
-  "slow": {
-    "message": "Повільна"
   },
   "somethingWentWrong": {
     "message": "Ой! Щось пішло не так."

@@ -108,17 +108,8 @@
   "connectHardwareWallet": {
     "message": "Konekte Materyèl Wallet"
   },
-  "connectingToKovan": {
-    "message": "Konekte nan Kovan Tès Rezo a"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
-  },
-  "connectingToRinkeby": {
-    "message": "Konekte nan Rinkeby Tès Rezo a"
-  },
-  "connectingToRopsten": {
-    "message": "Konekte ak Ropsten Tès Rezo a"
   },
   "contractDeployment": {
     "message": "Kontra Deplwaman"
@@ -143,9 +134,6 @@
   },
   "currentLanguage": {
     "message": "Lang Aktyèl"
-  },
-  "customGas": {
-    "message": "Koutim Gaz"
   },
   "customToken": {
     "message": "Koutim Token"
@@ -294,9 +282,6 @@
   "jsonFile": {
     "message": "JSON Dosye",
     "description": "format for importing an account"
-  },
-  "kovan": {
-    "message": "Kovan Tès Rezo"
   },
   "learnMore": {
     "message": "Aprann plis"
@@ -490,12 +475,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "PA pataje fraz sa a avèk nenpòt moun!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Tès Rezo"
-  },
-  "ropsten": {
-    "message": "Ropsten Tès Rezo"
   },
   "save": {
     "message": "Sove"

@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "L'adresse figurant dans la demande de connexion ne correspond pas à l'adresse du compte que vous utilisez pour vous connecter."
   },
-  "SIWEDomainInvalid": {
-    "message": "Le nom de domaine du site Web auquel vous tentez de vous connecter ($1) ne correspond pas au nom de domaine indiqué dans la demande de connexion. Procédez avec prudence.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Le site Web ($1) vous demande de vous connecter au mauvais nom domaine. Il peut s'agir d'une tentative d'hameçonnage.",
     "description": "$1 represents the website domain"
@@ -100,9 +96,6 @@
   },
   "about": {
     "message": "À propos"
-  },
-  "acceleratingATransaction": {
-    "message": "* Accélérer une transaction en utilisant un prix de l’essence plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
   },
   "acceptTermsOfUse": {
     "message": "J’ai lu et j’accepte les $1",
@@ -265,9 +258,6 @@
   },
   "airgapVault": {
     "message": "Coffre-fort AirGap"
-  },
-  "airgapVaultTutorial": {
-    "message": " (Tutoriels)"
   },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
@@ -711,17 +701,8 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
-  "connectingToKovan": {
-    "message": "Connexion au testnet Kovan"
-  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Connexion au testnet Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Connexion au testnet Ropsten"
   },
   "connectingToSepolia": {
     "message": "Connexion au réseau de test Sepolia"
@@ -852,15 +833,9 @@
   "customContentSearch": {
     "message": "Chercher un réseau ajouté précédemment"
   },
-  "customGas": {
-    "message": "Personnaliser les frais de transaction"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Utilisez $1 pour personnaliser le prix du carburant. Cela peut porter à confusion si vous n’en avez pas l’habitude. Agissez avec prudence !",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n’est pas garanti."
   },
   "customSpendLimit": {
     "message": "Limite de dépenses personnalisée"
@@ -1300,9 +1275,6 @@
     "message": "Stack :",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Délais de traitement estimés"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
   },
@@ -1347,9 +1319,6 @@
   },
   "fast": {
     "message": "Rapide"
-  },
-  "fastest": {
-    "message": "Plus rapide"
   },
   "feeAssociatedRequest": {
     "message": "Des frais sont associés à cette demande."
@@ -1806,17 +1775,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (Tutoriels)"
-  },
   "knownAddressRecipient": {
     "message": "Adresse contractuelle connue."
   },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
-  },
-  "kovan": {
-    "message": "Testnet Kovan"
   },
   "lastConnected": {
     "message": "Dernière connexion"
@@ -2233,12 +2196,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Jeton importé"
-  },
-  "newTotal": {
-    "message": "Nouveau total"
-  },
-  "newTransactionFee": {
-    "message": "Coût de la nouvelle transaction"
   },
   "newValues": {
     "message": "nouvelles valeurs"
@@ -2842,7 +2799,7 @@
     "message": "Supprimer"
   },
   "removeAccount": {
-    "message": "Suprimer le compte"
+    "message": "Supprimer le compte"
   },
   "removeAccountDescription": {
     "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase secrète de récupération originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes. "
@@ -2943,12 +2900,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "L’autre partie à ce contrat ne pourra plus dépenser vos jetons actuels ou futurs."
-  },
-  "rinkeby": {
-    "message": "Testnet Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testnet Ropsten"
   },
   "rpcUrl": {
     "message": "Nouvelle URL de RPC"
@@ -3061,9 +3012,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Notez votre phrase secrète de récupération"
   },
-  "selectAHigherGasFee": {
-    "message": "Choisissez des frais de carburant plus élevés pour accélérer le traitement de votre transaction*."
-  },
   "selectAccounts": {
     "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
   },
@@ -3096,9 +3044,6 @@
   },
   "send": {
     "message": "Envoyer"
-  },
-  "sendAmount": {
-    "message": "Envoyer le montant"
   },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
@@ -3233,9 +3178,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Je suis conscient(e) que tant que je n’aurai pas sauvegardé ma phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
-  },
-  "slow": {
-    "message": "Lente"
   },
   "smartTransaction": {
     "message": "Transaction intelligente"

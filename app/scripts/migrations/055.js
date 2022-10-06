@@ -19,6 +19,22 @@ export default {
 
 const UNKNOWN_CHAIN_ID_KEY = 'UNKNOWN';
 
+BUILT_IN_NETWORKS.rinkeby = {
+  networkId: '4',
+  chainId: '0x4',
+  ticker: 'ETH',
+};
+BUILT_IN_NETWORKS.ropsten = {
+  networkId: '3',
+  chainId: '0x3',
+  ticker: 'ETH',
+};
+BUILT_IN_NETWORKS.kovan = {
+  networkId: '42',
+  chainId: '0x2a',
+  ticker: 'ETH',
+};
+
 function transformState(state) {
   if (
     state?.IncomingTransactionsController?.incomingTxLastFetchedBlocksByNetwork

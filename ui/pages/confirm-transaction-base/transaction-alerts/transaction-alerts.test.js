@@ -151,15 +151,15 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             nativeCurrency: 'ETH',
-            networkName: 'Ropsten',
+            networkName: 'Goerli',
             showBuyModal: jest.fn(),
-            chainId: '0x1',
+            chainId: '0x5',
             type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
           },
         });
         expect(
           getByText(
-            /You do not have enough ETH in your account to pay for transaction fees on Ropsten network./u,
+            /You do not have enough ETH in your account to pay for transaction fees on Goerli network./u,
           ),
         ).toBeInTheDocument();
       });

@@ -2,11 +2,10 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import AccountListItem from '../../account-list-item';
 import { I18nContext } from '../../../../contexts/i18n';
-import Tooltip from '../../../ui/tooltip';
-import InfoIcon from '../../../ui/icon/info-icon.component';
-import { SEVERITIES } from '../../../../helpers/constants/design-system';
-
 import PermissionsConnectHeader from '../../permissions-connect-header';
+import SignatureRequestSIWEIcon from '../signature-request-siwe-icon';
+import SignatureRequestSIWETag from '../signature-request-siwe-tag';
+import Tooltip from '../../../ui/tooltip';
 
 export default function SignatureRequestSIWEHeader({
   fromAccount,
@@ -25,15 +24,23 @@ export default function SignatureRequestSIWEHeader({
         headerText={t('SIWESiteRequestSubtitle')}
         siteOrigin={domain}
         className={isSIWEDomainValid ? '' : 'bad-domain'}
+        leftIcon={
+          !isSIWEDomainValid && (
+            <Tooltip
+              position="bottom"
+              html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
+            >
+              <SignatureRequestSIWEIcon />
+            </Tooltip>
+          )
+        }
         rightIcon={
           !isSIWEDomainValid && (
             <Tooltip
               position="bottom"
               html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
-              wrapperClassName="signature-request-siwe-header__tooltip"
-              containerClassName="signature-request-siwe-header__tooltip__container"
             >
-              <InfoIcon severity={SEVERITIES.DANGER} />
+              <SignatureRequestSIWETag text={t('SIWEDomainWarningLabel')} />
             </Tooltip>
           )
         }
