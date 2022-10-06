@@ -24,6 +24,7 @@ const ChooseKeyringAccountsList = ({
     return false;
   };
 
+  // TODO: add tooltip to show ChainId, add Icons, add chain count (IF past 3), add extra div to display chain names
   const List = () => {
     return (
       <div className="choose-keyring-accounts-list__wrapper">

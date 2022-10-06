@@ -77,6 +77,8 @@ const ChooseKeyringAccounts = ({
     return accountObjects;
   };
 
+  // TODO: write function to reshape selectedAccounts into Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
+
   return (
     <>
       <div className="permissions-connect-choose-keyring-accounts__content">
