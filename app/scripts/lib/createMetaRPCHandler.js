@@ -1,4 +1,5 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
   return async (data) => {
@@ -23,7 +24,7 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
     } catch (err) {
       error = err;
     } finally {
-      if (store && data.method !== 'getState') {
+      if (isManifestV3 && store && data.method !== 'getState') {
         localStoreApiWrapper.set(store.getState());
       }
     }
