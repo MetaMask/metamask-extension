@@ -116,7 +116,6 @@ export const TextFieldBase = ({
         as="input"
         autoComplete={autoComplete ? 'on' : 'off'}
         autoFocus={autoFocus}
-        className="mm-text-field-base__input"
         defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}
@@ -136,10 +135,12 @@ export const TextFieldBase = ({
         required={required}
         value={value}
         variant={TEXT.BODY_MD}
-        {...{
-          ...inputProps,
-          type,
-        }}
+        type={type}
+        {...inputProps} // before className so input className isn't overridden
+        className={classnames(
+          'mm-text-field-base__input',
+          inputProps?.className,
+        )}
       />
       {rightAccessory}
     </Box>
