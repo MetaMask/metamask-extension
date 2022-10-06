@@ -14,12 +14,13 @@ import {
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography';
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
   accountName,
   accountBalance,
-  tokenName,
+  tokenName, // Derived from nativeCurrency
   accountAddress,
 }) {
   const t = useContext(I18nContext);
@@ -45,13 +46,15 @@ export default function NetworkAccountBalanceHeader({
           alignItems={ALIGN_ITEMS.CENTER}
         >
           <Identicon address={accountAddress} diameter={32} />
-          <Identicon
-            address={accountAddress}
-            diameter={16}
-            imageBorder
-            image="./images/eth_badge.svg"
-            className="network-account-balance-header__network-account__ident-icon-ethereum"
-          />
+          {tokenName === CURRENCY_SYMBOLS.ETH ? (
+            <Identicon
+              address={accountAddress}
+              diameter={16}
+              imageBorder
+              image="./images/eth_badge.svg"
+              className="network-account-balance-header__network-account__ident-icon-ethereum"
+            />
+          ) : null}
         </Box>
         <Box
           display={DISPLAY.FLEX}
