@@ -252,7 +252,6 @@ async function start() {
         method: 'GET',
         headers: {
           'User-Agent': 'metamaskbot',
-          Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
         },
       })
     ).json();
