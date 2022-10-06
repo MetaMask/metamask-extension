@@ -210,6 +210,7 @@ describe('object utils', function () {
         a: [{ c: 3 }, { e: 5 }],
       };
       const result = merge(original, other);
+      expect(result.a).toHaveLength(2);
       expect(result.a[0]).toHaveProperty('c');
       expect(result.a[0].c).toStrictEqual(3);
     });
@@ -221,6 +222,24 @@ describe('object utils', function () {
       let other;
       const result = merge(original, other);
       expect(result).toStrictEqual(original);
+    });
+
+    it('should hold original nested values if not present in source', function () {
+      const original = {
+        test: {
+          from: 'a',
+          to: 'b',
+        },
+      };
+      const other = {
+        test: {
+          gasPrice: '0x005',
+        },
+      };
+      const result = merge(original, other);
+      expect(result.test).toHaveProperty('from');
+      expect(result.test).toHaveProperty('to');
+      expect(result.test).toHaveProperty('gasPrice');
     });
   });
 });

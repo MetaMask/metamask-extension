@@ -8,8 +8,7 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
-import { merge } from 'lodash';
-import { pickBy } from '../../../../shared/modules/object.utils';
+import { merge, pickBy } from '../../../../shared/modules/object.utils';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,

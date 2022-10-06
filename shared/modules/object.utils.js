@@ -196,6 +196,7 @@ export function merge(original, source) {
   return Object.keys(source).reduce((destinationObj, key) => {
     if (isObjectLike(source[key])) {
       destinationObj[key] = merge(original[key], source[key]);
+      return destinationObj;
     }
 
     if (isNullish(source[key]) && !isNullish(original[key])) {
