@@ -25,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add tokens: ZKP, GTON, PRVG, XCHF, XHT, OGV, veOFV, wOUSD and SUSHI
   - Fix SVG icons for sETH and sUSD tokens
   - Add the top NFT contracts on Opensea
-- Bump keystone package versions to latest ([#15878](https://github.com/MetaMask/metamask-extension/pull/15878))
 - Swaps: replace Rinkeby with Goerli for performing swaps on a testnet ([#15781](https://github.com/MetaMask/metamask-extension/pull/15781))
 - Swaps: only render tooltip component if swap network is disabled ([#15733](https://github.com/MetaMask/metamask-extension/pull/15733))
 - Swaps: use `gasEstimateWithRefund` instead of `gasEstimate` for more precise estimations ([#15968](https://github.com/MetaMask/metamask-extension/pull/15968))
