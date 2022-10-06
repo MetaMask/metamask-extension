@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getMultichainAccountsRequests,
   getPermissionsRequests,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnapInstallOrUpdateRequests,
+  getMultichainAccountsRequests,
   ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
