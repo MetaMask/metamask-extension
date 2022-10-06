@@ -12,8 +12,8 @@ import { Icon, ICON_NAMES } from '../icon';
 import { AvatarToken } from '../avatar-token';
 
 import {
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TEXT_FIELD_BASE_SIZES,
+  TEXT_FIELD_BASE_TYPES,
 } from './text-field-base.constants';
 import { TextFieldBase } from './text-field-base';
 import README from './README.mdx';
@@ -105,11 +105,11 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_SIZES),
+      options: Object.values(TEXT_FIELD_BASE_SIZES),
     },
     type: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_TYPES),
+      options: Object.values(TEXT_FIELD_BASE_TYPES),
     },
     value: {
       control: 'text',
@@ -190,12 +190,12 @@ export const Type = (args) => (
     <TextFieldBase {...args} placeholder="Default" />
     <TextFieldBase
       {...args}
-      type={TEXT_FIELD_TYPES.PASSWORD}
+      type={TEXT_FIELD_BASE_TYPES.PASSWORD}
       placeholder="Password"
     />
     <TextFieldBase
       {...args}
-      type={TEXT_FIELD_TYPES.NUMBER}
+      type={TEXT_FIELD_BASE_TYPES.NUMBER}
       placeholder="Number"
     />
   </Box>

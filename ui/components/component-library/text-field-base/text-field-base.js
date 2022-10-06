@@ -14,8 +14,8 @@ import Box from '../../ui/box';
 import { Text } from '../text';
 
 import {
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TEXT_FIELD_BASE_SIZES,
+  TEXT_FIELD_BASE_TYPES,
 } from './text-field-base.constants';
 
 export const TextFieldBase = ({
@@ -228,12 +228,12 @@ TextFieldBase.propTypes = {
    * The size of the text field. Changes the height of the component
    * Accepts SM(32px), MD(40px), LG(48px)
    */
-  size: PropTypes.oneOf(Object.values(TEXT_FIELD_SIZES)),
+  size: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_SIZES)),
   /**
-   * Type of the input element. Can be TEXT_FIELD_TYPES.TEXT, TEXT_FIELD_TYPES.PASSWORD, TEXT_FIELD_TYPES.NUMBER
-   * Defaults to TEXT_FIELD_TYPES.TEXT ('text')
+   * Type of the input element. Can be TEXT_FIELD_BASE_TYPES.TEXT, TEXT_FIELD_BASE_TYPES.PASSWORD, TEXT_FIELD_BASE_TYPES.NUMBER
+   * Defaults to TEXT_FIELD_BASE_TYPES.TEXT ('text')
    */
-  type: PropTypes.oneOf(Object.values(TEXT_FIELD_TYPES)),
+  type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
   /**
    * The input value, required for a controlled component.
    */
