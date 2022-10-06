@@ -118,6 +118,7 @@ export const TextFieldBase = ({
         as="input"
         autoComplete={autoComplete ? 'on' : 'off'}
         autoFocus={autoFocus}
+        backgroundColor={COLORS.TRANSPARENT}
         defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}
