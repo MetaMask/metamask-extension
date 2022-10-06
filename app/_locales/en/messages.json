@@ -4251,6 +4251,9 @@
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "View"
+  },
   "viewAccount": {
     "message": "View account"
   },
