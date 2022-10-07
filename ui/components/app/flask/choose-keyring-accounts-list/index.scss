@@ -70,6 +70,14 @@
     min-width: 0;
   }
 
+  &__account-chain-name-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border-muted);
+    justify-content: space-between;
+  }
+
   &__list-check-box {
     margin-inline-end: 16px;
 

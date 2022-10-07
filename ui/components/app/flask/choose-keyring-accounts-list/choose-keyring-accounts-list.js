@@ -40,6 +40,27 @@ const ChooseKeyringAccountsList = ({
     return false;
   };
 
+  const renderChainNameList = (chainNames) => {
+    const list = chainNames.map((chainName, idx) => {
+      return (
+        <Typography
+          key={`choose-keyring-account-list__account-chain-name-${idx}`}
+          className="choose-keyring-account-list__account-chain-name-text"
+          color={COLORS.TEXT_DEFAULT}
+          variant={TYPOGRAPHY.H6}
+          fontWeight={FONT_WEIGHT.NORMAL}
+        >
+          {chainName}
+        </Typography>
+      );
+    });
+    return (
+      <div className="choose-keyring-acount-list__account-chain-name-wrapper">
+        {list}
+      </div>
+    );
+  };
+
   const snaps = useSelector(getSnaps);
 
   // TODO: add tooltip to show ChainId, add Icons, add chain count (IF past 3), add extra div to display chain names
@@ -48,7 +69,6 @@ const ChooseKeyringAccountsList = ({
       <div className="choose-keyring-accounts-list__wrapper">
         <div className="choose-keyring-accounts-list__list">
           {accounts.map((account, index) => {
-            // eslint-disable-next-line no-unused-vars
             const { address, snapId, suggestedChainNames, namespace } = account;
             const isSelectedAccount = Boolean(
               selectedAccounts[namespace]?.[snapId]?.[address],
@@ -106,6 +126,9 @@ const ChooseKeyringAccountsList = ({
                     </Box>
                   </div>
                 </div>
+                {isSelectedAccount &&
+                  suggestedChainNames &&
+                  renderChainNameList(suggestedChainNames)}
               </div>
             );
           })}
