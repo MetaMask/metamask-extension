@@ -39,14 +39,14 @@ describe('LocalStore', () => {
   describe('set', () => {
     it('should throw an error if called in a browser that does not support local storage', async () => {
       const localStore = setup({ isSupported: false });
-      await expect(() => localStore.set()).rejects.toThrow(
+      await expect(() => localStore.persist()).rejects.toThrow(
         'Metamask- cannot persist state to local store as this browser does not support this action',
       );
     });
 
     it('should throw an error if not passed a truthy value as an argument', async () => {
       const localStore = setup({ isSupported: true });
-      await expect(() => localStore.set()).rejects.toThrow(
+      await expect(() => localStore.persist()).rejects.toThrow(
         'MetaMask - updated state is missing',
       );
     });
@@ -54,7 +54,7 @@ describe('LocalStore', () => {
     it('should throw an error if passed a valid argument but metadata has not yet been set', async () => {
       const localStore = setup({ isSupported: true });
       await expect(() =>
-        localStore.set({ appState: { test: true } }),
+        localStore.persist({ appState: { test: true } }),
       ).rejects.toThrow(
         'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
       );
@@ -64,7 +64,7 @@ describe('LocalStore', () => {
       const localStore = setup({ isSupported: true });
       localStore.setMetadata({ version: 74 });
       await expect(async function () {
-        localStore.set({ appState: { test: true } });
+        localStore.persist({ appState: { test: true } });
       }).not.toThrow();
     });
   });
