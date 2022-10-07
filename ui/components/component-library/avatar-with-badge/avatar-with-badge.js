@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
-import { BADGE_POSITIONS } from './avatar-badge.constants';
+import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 
 export const AvatarWithBadge = ({
   children,

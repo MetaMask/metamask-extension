@@ -2,8 +2,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
-import { AvatarWithBadge } from './avatar-badge';
-import { BADGE_POSITIONS } from './avatar-badge.constants';
+import { AvatarWithBadge } from './avatar-with-badge';
+import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 
 describe('AvatarWithBadge', () => {
   const args = {
@@ -20,18 +20,19 @@ describe('AvatarWithBadge', () => {
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AvatarWithBadge
-        data-testid="avatar-badge"
-        badge={<AvatarNetwork {...args.badgeProps} />}
+        data-testid="avatar-with-badge"
+        badge={<AvatarNetwork {...args.badgeProps} data-testid="badge" />}
         {...args}
       />,
     );
-    expect(getByTestId('avatar-badge')).toBeDefined();
+    expect(getByTestId('avatar-with-badge')).toBeDefined();
+    expect(getByTestId('badge')).toBeTruthy();
   });
 
   it('should render badge network with bottom right position correctly', () => {
     const { container } = render(
       <AvatarWithBadge
-        data-testid="avatar-badge"
+        data-testid="avatar-with-badge"
         badgePosition={BADGE_POSITIONS.BOTTOM}
         badge={<AvatarNetwork {...args.badgeProps} />}
         {...args}
@@ -39,7 +40,7 @@ describe('AvatarWithBadge', () => {
     );
 
     const badge = container.getElementsByClassName(
-      'avatar-badge-token-position-bottom',
+      'avatar-with-badge-token-position-bottom',
     );
     expect(badge).toBeDefined();
   });
@@ -47,13 +48,13 @@ describe('AvatarWithBadge', () => {
   it('should render badge network with top right position correctly', () => {
     const { container } = render(
       <AvatarWithBadge
-        data-testid="avatar-badge"
+        data-testid="avatar-with-badge"
         badge={<AvatarNetwork {...args.badgeProps} />}
         {...args}
       />,
     );
     const badge = container.getElementsByClassName(
-      'avatar-badge-token-position-top',
+      'avatar-with-badge-token-position-top',
     );
     expect(badge).toBeDefined();
   });

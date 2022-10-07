@@ -7,9 +7,9 @@ import {
   DISPLAY,
   SIZES,
 } from '../../../helpers/constants/design-system';
-import { BADGE_POSITIONS } from './avatar-badge.constants';
+import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 import README from './README.mdx';
-import { AvatarWithBadge } from './avatar-badge';
+import { AvatarWithBadge } from './avatar-with-badge';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarWithBadge',
