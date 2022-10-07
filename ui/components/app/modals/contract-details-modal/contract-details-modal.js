@@ -9,7 +9,7 @@ import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Identicon from '../../../ui/identicon/identicon.component';
+import Identicon from '../../../ui/identicon';
 import { ellipsify } from '../../../../pages/send/send.utils';
 import Popover from '../../../ui/popover';
 import Typography from '../../../ui/typography';
