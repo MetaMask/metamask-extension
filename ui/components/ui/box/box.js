@@ -23,7 +23,7 @@ const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const ValidSize = PropTypes.oneOf(Sizes);
-const ValidBlockSize = PropTypes.oneOf(BLOCK_SIZES);
+const ValidBlockSize = PropTypes.oneOf(Object.values(BLOCK_SIZES));
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 export const ValidBackgroundColors = PropTypes.oneOf(
   Object.values(BACKGROUND_COLORS),
@@ -31,8 +31,8 @@ export const ValidBackgroundColors = PropTypes.oneOf(
 export const ValidBorderColors = PropTypes.oneOf(Object.values(BORDER_COLORS));
 export const ValidTextColors = PropTypes.oneOf(Object.values(TEXT_COLORS));
 export const ValidIconColors = PropTypes.oneOf(Object.values(ICON_COLORS));
-const ValidAlignItem = PropTypes.oneOf(ALIGN_ITEMS);
-const ValidJustifyContent = PropTypes.oneOf(JUSTIFY_CONTENT);
+const ValidAlignItem = PropTypes.oneOf(Object.values(ALIGN_ITEMS));
+const ValidJustifyContent = PropTypes.oneOf(Object.values(JUSTIFY_CONTENT));
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
