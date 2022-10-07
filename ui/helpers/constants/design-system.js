@@ -186,6 +186,7 @@ export const BORDER_STYLE = {
 };
 
 export const BORDER_RADIUS = {
+  XS: SIZES.XS,
   SM: SIZES.SM,
   MD: SIZES.MD,
   LG: SIZES.LG,

@@ -482,7 +482,6 @@ export const BorderColor = () => {
 };
 
 export const BorderRadius = () => {
-  console.log('BORDER_RADIUS', BORDER_RADIUS);
   return (
     <Box
       display={DISPLAY.GRID}
