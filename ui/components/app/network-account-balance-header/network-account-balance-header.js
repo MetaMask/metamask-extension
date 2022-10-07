@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon/identicon.component';
+import Identicon from '../../ui/identicon';
 import {
   DISPLAY,
   FLEX_DIRECTION,
