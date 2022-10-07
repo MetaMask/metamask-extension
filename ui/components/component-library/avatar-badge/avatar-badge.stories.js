@@ -1,15 +1,14 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
   COLORS,
   DISPLAY,
   SIZES,
 } from '../../../helpers/constants/design-system';
 import { ValidBackgroundColors, ValidBorderColors } from '../../ui/box';
-import Box from '../../ui/box/box';
 
+import { AvatarToken } from '../avatar-token';
 import README from './README.mdx';
-import { AvatarBadge } from './avatar-badge';
+import { AvatarBadge, badgePosition } from './avatar-badge';
 
 const marginSizeKnobOptions = [
   0,
@@ -42,6 +41,10 @@ export default {
       control: 'select',
       options: Object.values(SIZES),
     },
+    tokenList: { control: 'object' },
+    address: { control: 'text' },
+    diameter: { control: 'number' },
+    badgePosition: { options: badgePosition, control: 'select' },
     backgroundColor: {
       options: ValidBackgroundColors,
       control: 'select',
@@ -76,83 +79,29 @@ export default {
       control: 'select',
       table: { category: 'box props' },
     },
+    tokenName: {
+      control: 'text',
+    },
+    tokenImageUrl: {
+      control: 'text',
+    },
   },
   args: {
     size: SIZES.MD,
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderColor: COLORS.BORDER_DEFAULT,
+    address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+    diameter: 32,
+    tokenName: 'ast',
+    tokenImageUrl: './AST.png',
+    badgePosition: badgePosition.top,
   },
 };
 
-export const DefaultStory = (args) => <AvatarBadge {...args}>B</AvatarBadge>;
+export const DefaultStory = (args) => (
+  <AvatarBadge {...args} size={SIZES.MD}>
+    <AvatarToken {...args} />
+  </AvatarBadge>
+);
 
 DefaultStory.storyName = 'Default';
-
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarBadge {...args} marginBottom={2} size={SIZES.XS} />
-    <AvatarBadge {...args} marginBottom={2} size={SIZES.SM} />
-    <AvatarBadge {...args} marginBottom={2} size={SIZES.MD} />
-    <AvatarBadge {...args} marginBottom={2} size={SIZES.LG} />
-    <AvatarBadge {...args} marginBottom={2} size={SIZES.XL} />
-  </Box>
-);
-
-export const Children = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
-    <AvatarBadge {...args}>
-      <img src="./images/eth_logo.svg" />
-    </AvatarBadge>
-    <AvatarBadge {...args}>
-      <img width="100%" src="./images/arbitrum.svg" />
-    </AvatarBadge>
-    <AvatarBadge {...args}>
-      <img width="100%" src="./images/avax-token.png" />
-    </AvatarBadge>
-    <AvatarBadge {...args}>A</AvatarBadge>
-    <AvatarBadge
-      {...args}
-      backgroundColor={COLORS.INFO_MUTED}
-      borderColor={COLORS.INFO_MUTED}
-    >
-      <i
-        className="fa fa-user"
-        style={{ color: 'var(--color-info-default)' }}
-      />
-    </AvatarBadge>
-  </Box>
-);
-
-export const BackgroundAndBorderColor = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
-    <AvatarBadge {...args}>B</AvatarBadge>
-    <AvatarBadge
-      {...args}
-      backgroundColor={COLORS.KOVAN}
-      borderColor={COLORS.KOVAN}
-    >
-      K
-    </AvatarBadge>
-    <AvatarBadge
-      {...args}
-      backgroundColor={COLORS.RINKEBY}
-      borderColor={COLORS.RINKEBY}
-    >
-      R
-    </AvatarBadge>
-    <AvatarBadge
-      {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
-    >
-      G
-    </AvatarBadge>
-    <AvatarBadge
-      {...args}
-      backgroundColor={COLORS.ROPSTEN}
-      borderColor={COLORS.ROPSTEN}
-    >
-      R
-    </AvatarBadge>
-  </Box>
-);

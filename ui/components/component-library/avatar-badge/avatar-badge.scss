@@ -1,0 +1,22 @@
+.avatar-badge {
+  &__conatiner {
+    position: relative;
+    width: fit-content;
+  }
+
+  &-token-position-top {
+    position: absolute;
+    height: 50% !important;
+    width: 50% !important;
+    top: -4px;
+    right: -4px;
+  }
+
+  &-token-position-bottom {
+    position: absolute;
+    height: 50% !important;
+    width: 50% !important;
+    bottom: -4px;
+    right: -4px;
+  }
+}
