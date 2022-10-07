@@ -32,7 +32,6 @@ export const DefaultStory = (args) => {
 
       <SlideUp
         open={isShowingSlideUp}
-        closeModal={() => setIsShowingSlideUp(false)}
         header={args.header}
         footer={
           <Button onClick={() => setIsShowingSlideUp(false)}>
