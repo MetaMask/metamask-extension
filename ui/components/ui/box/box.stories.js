@@ -546,9 +546,9 @@ export const BorderRadius = () => {
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_DEFAULT}
         borderWidth={2}
-        borderRadius={BORDER_RADIUS.FULL}
+        borderRadius={BORDER_RADIUS.PILL}
       >
-        BORDER_RADIUS.FULL 9999px
+        BORDER_RADIUS.PILL 9999px
       </Box>
     </Box>
   );

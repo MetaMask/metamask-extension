@@ -286,7 +286,7 @@ describe('Box', () => {
           <Box borderRadius={BORDER_RADIUS.MD}>border radius md</Box>
           <Box borderRadius={BORDER_RADIUS.LG}>border radius lg</Box>
           <Box borderRadius={BORDER_RADIUS.XL}>border radius xl</Box>
-          <Box borderRadius={BORDER_RADIUS.FULL}>border radius full</Box>
+          <Box borderRadius={BORDER_RADIUS.PILL}>border radius pill</Box>
           <Box borderRadius={BORDER_RADIUS.NONE}>border radius none</Box>
         </>,
       );
@@ -296,7 +296,7 @@ describe('Box', () => {
       expect(getByText('border radius md')).toHaveClass('box--rounded-md');
       expect(getByText('border radius lg')).toHaveClass('box--rounded-lg');
       expect(getByText('border radius xl')).toHaveClass('box--rounded-xl');
-      expect(getByText('border radius full')).toHaveClass('box--rounded-full');
+      expect(getByText('border radius pill')).toHaveClass('box--rounded-pill');
       expect(getByText('border radius none')).toHaveClass('box--rounded-none');
     });
     it('should render the Box with the responsive borderRadius classes', () => {
@@ -315,7 +315,7 @@ describe('Box', () => {
           <Box
             borderRadius={[
               BORDER_RADIUS.XL,
-              BORDER_RADIUS.FULL,
+              BORDER_RADIUS.PILL,
               BORDER_RADIUS.NONE,
             ]}
           >
@@ -336,7 +336,7 @@ describe('Box', () => {
       );
       expect(getByText('Border radius set 2')).toHaveClass('box--rounded-xl');
       expect(getByText('Border radius set 2')).toHaveClass(
-        'box--sm:rounded-full',
+        'box--sm:rounded-pill',
       );
       expect(getByText('Border radius set 2')).toHaveClass(
         'box--md:rounded-none',
