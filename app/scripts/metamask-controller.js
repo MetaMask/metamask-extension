@@ -3777,7 +3777,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getPermittedSnaps',
+          'SnapController:getPermitted',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
