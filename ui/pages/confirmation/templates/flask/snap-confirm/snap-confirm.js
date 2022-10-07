@@ -5,14 +5,14 @@ import {
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
 function getValues(pendingApproval, t, actions) {
-  const { prompt, description, textAreaContent } = pendingApproval.requestData;
+  const { title, description, textAreaContent } = pendingApproval.requestData;
 
   return {
     content: [
       {
         element: 'Typography',
         key: 'title',
-        children: prompt,
+        children: title,
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',

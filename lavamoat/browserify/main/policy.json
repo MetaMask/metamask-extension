@@ -682,11 +682,11 @@
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-batch": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-first": true,
         "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": true,
+        "3box>ipfs>ipfs-unixfs-importer>superstruct": true,
         "3box>ipfs>ipld-dag-pb": true,
         "3box>ipfs>ipld-raw>multihashing-async": true,
         "3box>ipfs>multicodec": true,
         "3box>ipfs>multihashes": true,
-        "3box>ipfs>superstruct": true,
         "browserify>buffer": true,
         "madge>rc>deep-extend": true
       }
@@ -841,11 +841,11 @@
         "3box>ipfs>libp2p>libp2p-floodsub": true,
         "3box>ipfs>libp2p>libp2p-ping": true,
         "3box>ipfs>libp2p>libp2p-switch": true,
+        "3box>ipfs>libp2p>superstruct": true,
         "3box>ipfs>multiaddr": true,
         "3box>ipfs>peer-book": true,
         "3box>ipfs>peer-id": true,
         "3box>ipfs>peer-info": true,
-        "3box>ipfs>superstruct": true,
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "browserify>process": true,
@@ -3091,18 +3091,11 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-infura>@metamask/utils": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "node-fetch": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>@metamask/utils": {
-      "packages": {
-        "@metamask/eth-json-rpc-infura>@metamask/utils>superstruct": true,
-        "eslint>fast-deep-equal": true,
-        "nock>debug": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
@@ -4539,9 +4532,13 @@
       }
     },
     "eth-block-tracker>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
+        "@metamask/snap-utils>superstruct": true,
         "eslint>fast-deep-equal": true,
-        "eth-block-tracker>@metamask/utils>superstruct": true,
         "nock>debug": true
       }
     },
@@ -4598,7 +4595,7 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
-        "eth-json-rpc-middleware>@metamask/utils": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>eth-sig-util": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
@@ -4606,13 +4603,6 @@
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "lavamoat>json-stable-stringify": true,
         "vinyl>clone": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true,
-        "eth-json-rpc-middleware>@metamask/utils>superstruct": true,
-        "nock>debug": true
       }
     },
     "eth-json-rpc-middleware>eth-sig-util": {
