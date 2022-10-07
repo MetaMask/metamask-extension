@@ -646,6 +646,47 @@ describe('MetaMetricsController', function () {
       assert(stubCreateEvent.calledOnce);
       assert(spyFinalizeEvent.calledOnce);
     });
+
+    it('should call createEventFragment, finalizeEventFragment if actionId is provided', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: false,
+      });
+      const spyTrackEvent = sinon.spy();
+      metaMetricsController._trackEvent = spyTrackEvent;
+
+      const stubCreateEvent = sinon.stub();
+      stubCreateEvent.returns({ id: DUMMY_ID });
+      metaMetricsController.createEventFragment = stubCreateEvent;
+
+      const spyFinalizeEvent = sinon.spy();
+      metaMetricsController.finalizeEventFragment = spyFinalizeEvent;
+
+      metaMetricsController.trackEvent({}, { actionId: DUMMY_ID });
+
+      assert(spyTrackEvent.notCalled);
+      assert(stubCreateEvent.calledOnce);
+      assert(spyFinalizeEvent.calledOnce);
+    });
+
+    it.only('should create only once fragments if 2 requests have same actionId', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: false,
+      });
+
+      const fragmentCount = Object.keys(fragments).length;
+
+      metaMetricsController.trackEvent(
+        { event: 'successEvent', category: 'success' },
+        { actionId: DUMMY_ID },
+      );
+      metaMetricsController.trackEvent(
+        { event: 'successEvent', category: 'success' },
+        { actionId: DUMMY_ID },
+      );
+
+      const fragments = metaMetricsController.store.getState().fragments;
+      assert.deepEqual(Object.keys(fragments).length, fragmentCount + 1);
+    });
   });
 
   describe('_buildUserTraitsObject', function () {

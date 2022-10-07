@@ -488,8 +488,10 @@ export default class MetaMetricsController {
       const fragment = this.createEventFragment({
         ...payload,
         ...options,
+        actionId: options?.actionId,
         successEvent: payload.event,
       });
+      fragment.timeout = 20000;
       this.finalizeEventFragment(fragment.id);
     } else {
       this._trackEvent(payload, options);
