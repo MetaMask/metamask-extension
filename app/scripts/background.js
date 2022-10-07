@@ -288,12 +288,11 @@ async function loadStateFromPersistence() {
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   }
-
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetadata(versionedData.meta);
 
   // write to disk
-  localStore.persist(versionedData.data);
+  localStore.set(versionedData.data);
 
   // return just the data
   return versionedData.data;
@@ -351,7 +350,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    createStreamSink((state) => localStore.persist(state)),
+    createStreamSink((state) => localStore.set(state)),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },

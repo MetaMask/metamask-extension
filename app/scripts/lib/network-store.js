@@ -56,7 +56,7 @@ export default class ReadOnlyNetworkStore {
    * @param {object} metadata - The metadata/version data to set
    */
   setMetadata(metadata) {
-    this._metadata = metadata;
+    this.metadata = metadata;
   }
 
   /**
@@ -64,7 +64,7 @@ export default class ReadOnlyNetworkStore {
    *
    * @param {object} state - The state to set
    */
-  async persist(state) {
+  async set(state) {
     if (!this.isSupported) {
       throw new Error(
         'Metamask- cannot persist state to local store as this browser does not support this action',
