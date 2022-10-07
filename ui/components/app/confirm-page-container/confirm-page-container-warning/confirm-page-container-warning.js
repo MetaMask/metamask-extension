@@ -12,6 +12,7 @@ import {
   FONT_WEIGHT,
   JUSTIFY_CONTENT,
   TYPOGRAPHY,
+  COLORS,
 } from '../../../../helpers/constants/design-system';
 import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -58,7 +59,7 @@ const ConfirmPageContainerWarning = ({
       className="confirm-page-container-warning-slide-up__header"
     >
       <i className="fa fa-exclamation-triangle confirm-page-container-warning-slide-up__header__warning-icon" />
-      <Typography variant={TYPOGRAPHY.H3} fontWeight={FONT_WEIGHT.BOLD}>
+      <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
         {t('yourNFTmayBeAtRisk')}
       </Typography>
     </Box>
@@ -90,17 +91,20 @@ const ConfirmPageContainerWarning = ({
         <Typography>{`${t('total')}: ${total}`}</Typography>
       </Box>
 
-      <Typography margin={4} marginTop={4} marginBottom={4}>
+      <Typography
+        color={COLORS.TEXT_ALTERNATIVE}
+        margin={4}
+        marginTop={4}
+        marginBottom={4}
+      >
         {t('nftWarningContent', [
-          <b key="non_custodial_bold">
+          <b
+            key="non_custodial_bold"
+            className="confirm-page-container-warning-slide-up__content__bold"
+          >
             {t('nftWarningContentBold', [collectionName])}
           </b>,
-          <span
-            key="non_custodial_grey"
-            className="confirm-page-container-warning-slide-up__content__span"
-          >
-            {t('nftWarningContentGrey')}
-          </span>,
+          <b key="non_custodial_grey">{t('nftWarningContentGrey')}</b>,
         ])}
       </Typography>
     </SlideUp>
