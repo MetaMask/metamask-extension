@@ -616,14 +616,10 @@ describe('MetaMetricsController', function () {
       const spyCreateEvent = sinon.spy();
       metaMetricsController.createEventFragment = spyCreateEvent;
 
-      const spyFinalizeEvent = sinon.spy();
-      metaMetricsController.finalizeEventFragment = spyFinalizeEvent;
-
       metaMetricsController.trackEvent({}, {});
 
       assert(spyTrackEvent.calledOnce);
       assert(spyCreateEvent.notCalled);
-      assert(spyFinalizeEvent.notCalled);
     });
 
     it('should call createEventFragment, finalizeEventFragment if actionId is provided', function () {
@@ -637,14 +633,10 @@ describe('MetaMetricsController', function () {
       stubCreateEvent.returns({ id: DUMMY_ID });
       metaMetricsController.createEventFragment = stubCreateEvent;
 
-      const spyFinalizeEvent = sinon.spy();
-      metaMetricsController.finalizeEventFragment = spyFinalizeEvent;
-
       metaMetricsController.trackEvent({}, { actionId: DUMMY_ID });
 
       assert(spyTrackEvent.notCalled);
       assert(stubCreateEvent.calledOnce);
-      assert(spyFinalizeEvent.calledOnce);
     });
 
     it('should create only once fragments if 2 requests have same actionId', function () {
