@@ -9,7 +9,6 @@ import {
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
   TEXT_ALIGN,
-  SIZES,
   BLOCK_SIZES,
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
