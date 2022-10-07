@@ -2537,12 +2537,12 @@
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
         "@material-ui/core>popper.js": true,
-        "@material-ui/core>react-transition-group": true,
         "prop-types": true,
         "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
-        "react-redux>hoist-non-react-statics": true
+        "react-redux>hoist-non-react-statics": true,
+        "react-transition-group": true
       }
     },
     "@material-ui/core>@material-ui/styles": {
@@ -2666,18 +2666,6 @@
         "navigator": true,
         "requestAnimationFrame": true,
         "setTimeout": true
-      }
-    },
-    "@material-ui/core>react-transition-group": {
-      "globals": {
-        "Element": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-transition-group>dom-helpers": true
       }
     },
     "@metamask/controllers": {
@@ -7313,6 +7301,18 @@
       },
       "packages": {
         "react": true
+      }
+    },
+    "react-transition-group": {
+      "globals": {
+        "Element": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true,
+        "react-dom": true,
+        "react-transition-group>dom-helpers": true
       }
     },
     "react-transition-group>dom-helpers": {
