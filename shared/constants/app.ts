@@ -58,7 +58,7 @@ export const MESSAGE_TYPE = {
 } as const;
 
 /**
- * Custom message names to send and be received by the extension
+ * Custom messages to send and be received by the extension
  */
 export const EXTENSION_MESSAGES = {
   READY: 'METAMASK_EXTENSION_READY',
