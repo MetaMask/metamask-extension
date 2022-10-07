@@ -91,6 +91,7 @@ import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -1228,23 +1229,17 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getSnapState',
         ),
-        showAlert: (origin, alertData) =>
-          this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-            requestData: alertData,
-          }),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
           }),
-        showPrompt: (origin, promptData) =>
+        showDialog: (origin, type, requestData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
-            type: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-            requestData: promptData,
+            type: SNAP_DIALOG_TYPES[type],
+            requestData,
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(

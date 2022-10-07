@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { DialogType } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -58,6 +61,14 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
 } as const;
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export const SNAP_DIALOG_TYPES = {
+  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
+  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+};
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Custom messages to send and be received by the extension
