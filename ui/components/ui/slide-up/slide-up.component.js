@@ -15,7 +15,7 @@ import {
 const modalRoot = document.querySelector('#popover-content');
 
 const defaultHeaderProps = {
-  padding: [6, 4, 4],
+  padding: [4, 4, 4],
   display: 'flex',
   flexDirection: FLEX_DIRECTION.ROW,
 };
