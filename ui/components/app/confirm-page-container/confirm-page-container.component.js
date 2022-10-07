@@ -28,6 +28,7 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+import ConfirmPageContainerWarning from './confirm-page-container-warning';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -97,6 +98,8 @@ export default class ConfirmPageContainer extends Component {
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    onApprove: PropTypes.func,
+    showWarningModal: PropTypes.bool,
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
@@ -137,6 +140,8 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
+      onApprove,
+      showWarningModal,
       tokenAddress,
       nonce,
       unapprovedTxCount,
@@ -365,7 +370,7 @@ export default class ConfirmPageContainer extends Component {
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={onSubmit}
+              onSubmit={onApprove}
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
@@ -386,6 +391,15 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
+          <ConfirmPageContainerWarning
+            collectionName={title}
+            senderAddress={fromAddress}
+            name={fromName}
+            total="6"
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            showWarningModal={showWarningModal}
+          />
           {supportsEIP1559V2 && (
             <>
               <EditGasFeePopover />

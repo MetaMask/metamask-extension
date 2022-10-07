@@ -1,0 +1,24 @@
+.confirm-page-container-warning-slide-up {
+  &__header {
+    &__warning-icon {
+      padding-top: 7px;
+      margin-right: 10px;
+      color: var(--color-error-default);
+    }
+  }
+
+  &__content {
+    &__account {
+      border-bottom: 1px solid var(--color-border-muted);
+    }
+
+    &__span {
+      color: var(--color-text-alternative);
+    }
+  }
+
+  &__footer {
+    width: 100%;
+    height: 100px;
+  }
+}

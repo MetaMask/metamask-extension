@@ -2239,6 +2239,15 @@
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
+  "nftWarningContent": {
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2"
+  },
+  "nftWarningContentBold": {
+    "message": "all your $1 NFTs"
+  },
+  "nftWarningContentGrey": {
+    "message": "Proceed with caution."
+  },
   "nfts": {
     "message": "NFTs"
   },
@@ -4365,6 +4374,9 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"
