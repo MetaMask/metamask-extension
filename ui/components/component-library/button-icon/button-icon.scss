@@ -1,0 +1,47 @@
+.mm-button-icon {
+  position: relative;
+  height: 24px;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-default);
+  background-color: var(--brand-colors-grey-grey100);
+  vertical-align: middle;
+  user-select: none;
+
+  &:active,
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &--block {
+    display: block;
+    width: 100%;
+  }
+
+  &__content {
+    height: 100%;
+  }
+
+
+  &--size-sm {
+    height: 16px;
+  }
+
+  &--size-md {
+    height: 24px;
+  }
+
+  &--size-lg {
+    height: 32px;
+  }
+
+
+
+  &--disabled,
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
