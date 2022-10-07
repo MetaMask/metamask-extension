@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SIZES, TEXT } from '../../../helpers/constants/design-system';
+import { SIZES } from '../../../helpers/constants/design-system';
 
 import { Icon, ICON_NAMES } from '../icon';
 
