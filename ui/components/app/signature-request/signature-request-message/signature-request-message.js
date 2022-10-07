@@ -10,6 +10,16 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import Box from '../../../ui/box';
+import Typography from '../../../ui/typography';
+import {
+  DISPLAY,
+  ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
+  COLORS,
+  FONT_WEIGHT,
+  FLEX_DIRECTION,
+} from '../../../../helpers/constants/design-system';
 
 export default function SignatureRequestMessage({
   data,
@@ -37,51 +47,67 @@ export default function SignatureRequestMessage({
 
   const renderNode = (renderData) => {
     return (
-      <div className="signature-request-message--node">
+      <Box className="signature-request-message__node">
         {Object.entries(renderData).map(([label, value], i) => (
-          <div
-            className={classnames('signature-request-message--node', {
-              'signature-request-message--node-leaf':
+          <Box
+            className={classnames('signature-request-message__node', {
+              'signature-request-message__node-leaf':
                 typeof value !== 'object' || value === null,
             })}
             key={i}
           >
-            <span
-              className={classnames('signature-request-message--node-label', {
-                'signature-request-message--node-label-bold':
-                  typeof value === 'object',
-              })}
+            <Typography
+              as="span"
+              color={COLORS.TEXT_DEFAULT}
+              marginLeft={4}
+              fontWeight={
+                typeof value === 'object'
+                  ? FONT_WEIGHT.BOLD
+                  : FONT_WEIGHT.NORMAL
+              }
             >
               {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
-            </span>
+            </Typography>
             {typeof value === 'object' && value !== null ? (
               renderNode(value)
             ) : (
-              <span className="signature-request-message--node-value">
+              <Typography
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
+                marginLeft={4}
+                className="signature-request-message__node__value"
+              >
                 {isValidHexAddress(value, {
                   mixedCaseUseChecksum: true,
                 }) ? (
-                  <div className="signature-request-message--node-value__address">
+                  <Box
+                    color={COLORS.INFO_DEFAULT}
+                    className="signature-request-message__node__value__address"
+                  >
                     <Address
                       addressOnly
                       checksummedRecipientAddress={toChecksumHexAddress(value)}
                       recipientName={getAccountName(identities, value)}
                     />
-                  </div>
+                  </Box>
                 ) : (
                   `${value}`
                 )}
-              </span>
+              </Typography>
             )}
-          </div>
+          </Box>
         ))}
-      </div>
+      </Box>
     );
   };
 
   const renderScrollButton = () => {
     return (
-      <div
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        color={COLORS.ICON_DEFAULT}
         onClick={() => {
           setMessageIsScrolled(true);
           onMessageScrolled();
@@ -91,23 +117,29 @@ export default function SignatureRequestMessage({
         data-testid="signature-request-scroll-button"
       >
         <i className="fa fa-arrow-down" title={t('scrollDown')} />
-      </div>
+      </Box>
     );
   };
 
   return (
-    <div
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
       onScroll={debounce(setMessageIsScrolledAtBottom, 25)}
       className="signature-request-message"
     >
       {messageIsScrollable ? renderScrollButton() : null}
-      <div className="signature-request-message--root" ref={setMessageRootRef}>
-        <div className="signature-request-message__title">
+      <div className="signature-request-message__root" ref={setMessageRootRef}>
+        <Box
+          color={COLORS.TEXT_DEFAULT}
+          marginLeft={4}
+          className="signature-request-message__title"
+        >
           {t('signatureRequest1')}
-        </div>
+        </Box>
         {renderNode(data)}
       </div>
-    </div>
+    </Box>
   );
 }
 
