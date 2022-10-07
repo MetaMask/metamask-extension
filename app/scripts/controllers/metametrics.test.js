@@ -673,6 +673,7 @@ describe('MetaMetricsController', function () {
         participateInMetaMetrics: false,
       });
 
+      let fragments = metaMetricsController.store.getState().fragments;
       const fragmentCount = Object.keys(fragments).length;
 
       metaMetricsController.trackEvent(
@@ -684,7 +685,7 @@ describe('MetaMetricsController', function () {
         { actionId: DUMMY_ID },
       );
 
-      const fragments = metaMetricsController.store.getState().fragments;
+      fragments = metaMetricsController.store.getState().fragments;
       assert.deepEqual(Object.keys(fragments).length, fragmentCount + 1);
     });
   });
