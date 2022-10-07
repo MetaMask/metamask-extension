@@ -386,7 +386,7 @@ jobs:
             - builds-test
 
   prep-build-storybook:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -644,7 +644,7 @@ jobs:
           root: .
           paths:
             - test-artifacts
-    
+
   user-actions-benchmark:
     executor: node-browsers-medium-plus
     steps:
