@@ -1130,6 +1130,7 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear,
+      // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
     this.localStore.get(['isFirstTime']).then((state) => {
