@@ -12,6 +12,7 @@ import {
   FLEX_DIRECTION,
   ALIGN_ITEMS,
   SIZES,
+  BLOCK_SIZES,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import { Icon, ICON_NAMES } from '../../../component-library/icon';
@@ -41,21 +42,29 @@ const ChooseKeyringAccountsList = ({
   };
 
   const renderChainNameList = (chainNames) => {
+    // address is essentially a seed for a blockie icon, in future iterations
+    // the blockie will be replaced with the logos of various chains
     const list = chainNames.map((chainName, idx) => {
       return (
-        <Typography
-          key={`choose-keyring-account-list__account-chain-name-${idx}`}
-          className="choose-keyring-account-list__account-chain-name-text"
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
+        <div
+          key={`choose-keyring-accounts-list__account-chain-name-${idx}`}
+          className="choose-keyring-accounts-list__account-chain-name-entry"
         >
-          {chainName}
-        </Typography>
+          <Identicon diameter={20} address={`${chainName}-${idx}`} />
+          <Typography
+            className="choose-keyring-accounts-list__account-chain-name-text"
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.NORMAL}
+            boxProps={{ paddingLeft: 2 }}
+          >
+            {chainName}
+          </Typography>
+        </div>
       );
     });
     return (
-      <div className="choose-keyring-acount-list__account-chain-name-wrapper">
+      <div className="choose-keyring-accounts-list__account-chain-names-wrapper">
         {list}
       </div>
     );
@@ -76,60 +85,64 @@ const ChooseKeyringAccountsList = ({
             const isConflict = checkIfConflict(account);
             const snap = snaps[snapId];
             return (
-              <div
-                key={`choose-keyring-accounts-list-${index}`}
-                onClick={() => handleAccountClick(account, isConflict)}
-                className="choose-keyring-accounts-list__account"
-                ref={isSelectedAccount ? selectedAccountScrollRef : null}
-              >
-                <div className="choose-keyring-accounts-list__account-info-wrapper">
-                  <CheckBox
-                    className="choose-keyring-accounts-list__list-check-box"
-                    checked={isSelectedAccount}
-                    disabled={isConflict}
-                  />
-                  <Identicon diameter={34} address={address} />
-                  <div className="choose-keyring-accounts-list__account__info">
-                    <Typography
-                      variant={TYPOGRAPHY.H6}
-                      color={COLORS.TEXT_DEFAULT}
-                      className="choose-keyring-accounts-list__account__label"
-                    >
-                      {address}
-                    </Typography>
-                    <Box
-                      flexDirection={FLEX_DIRECTION.ROW}
-                      alignItems={ALIGN_ITEMS.CENTER}
-                    >
+              <>
+                <div
+                  key={`choose-keyring-accounts-list-${index}`}
+                  onClick={() => handleAccountClick(account, isConflict)}
+                  className="choose-keyring-accounts-list__account"
+                  ref={isSelectedAccount ? selectedAccountScrollRef : null}
+                >
+                  <div className="choose-keyring-accounts-list__account-info-wrapper">
+                    <CheckBox
+                      className="choose-keyring-accounts-list__list-check-box"
+                      checked={isSelectedAccount}
+                      disabled={isConflict}
+                    />
+                    <Identicon diameter={34} address={address} />
+                    <div className="choose-keyring-accounts-list__account__info">
                       <Typography
-                        color={COLORS.TEXT_ALTERNATIVE}
                         variant={TYPOGRAPHY.H6}
-                        fontWeight={FONT_WEIGHT.NORMAL}
+                        color={COLORS.TEXT_DEFAULT}
+                        className="choose-keyring-accounts-list__account__label"
+                        boxProps={{ width: BLOCK_SIZES.HALF }}
                       >
-                        via{' '}
+                        {address}
                       </Typography>
-                      <Icon
-                        className="choose-keyring-accounts-list__account__icon"
-                        key="snaps-mobile-filled"
-                        name={ICON_NAMES.SNAPS_MOBILE_FILLED}
-                        size={SIZES.SM}
-                        color={COLORS.ICON_DEFAULT}
-                      />
-                      <Typography
-                        className="choose-keyring-accounts-list__account__snap"
-                        color={COLORS.TEXT_ALTERNATIVE}
-                        variant={TYPOGRAPHY.H6}
-                        fontWeight={FONT_WEIGHT.NORMAL}
+                      <Box
+                        flexDirection={FLEX_DIRECTION.ROW}
+                        alignItems={ALIGN_ITEMS.CENTER}
                       >
-                        {snap.manifest.proposedName}
-                      </Typography>
-                    </Box>
+                        <Typography
+                          color={COLORS.TEXT_ALTERNATIVE}
+                          variant={TYPOGRAPHY.H6}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          via{' '}
+                        </Typography>
+                        <Icon
+                          className="choose-keyring-accounts-list__account__icon"
+                          key="snaps-mobile-filled"
+                          name={ICON_NAMES.SNAPS_MOBILE_FILLED}
+                          size={SIZES.SM}
+                          color={COLORS.ICON_DEFAULT}
+                        />
+                        <Typography
+                          className="choose-keyring-accounts-list__account__snap"
+                          color={COLORS.TEXT_ALTERNATIVE}
+                          variant={TYPOGRAPHY.H6}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                          boxProps={{ width: BLOCK_SIZES.HALF }}
+                        >
+                          {snap.manifest.proposedName}
+                        </Typography>
+                      </Box>
+                    </div>
                   </div>
                 </div>
                 {isSelectedAccount &&
                   suggestedChainNames &&
                   renderChainNameList(suggestedChainNames)}
-              </div>
+              </>
             );
           })}
         </div>

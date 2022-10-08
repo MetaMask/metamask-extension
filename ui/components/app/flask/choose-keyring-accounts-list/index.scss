@@ -68,14 +68,27 @@
     justify-content: flex-start;
     align-items: center;
     min-width: 0;
+    max-width: 100%;
   }
 
-  &__account-chain-name-wrapper {
+  &__account-chain-names-wrapper {
     display: flex;
-    align-items: center;
     padding: 16px;
     border-bottom: 1px solid var(--color-border-muted);
-    justify-content: space-between;
+    justify-content: left;
+    flex-direction: column;
+  }
+
+  &__account-chain-name-entry {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 8px;
+
+    &:last-of-type {
+      padding-bottom: 4px;
+    }
   }
 
   &__list-check-box {
