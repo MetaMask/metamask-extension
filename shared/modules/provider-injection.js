@@ -8,7 +8,7 @@ export default function shouldInjectProvider() {
     doctypeCheck() &&
     suffixCheck() &&
     documentElementCheck() &&
-    !blockedDomainCheck()
+    !blockedDomainCheck(window.location.href)
   );
 }
 
@@ -61,9 +61,10 @@ function documentElementCheck() {
 /**
  * Checks if the current domain is blocked
  *
+ * @param currentUrl
  * @returns {boolean} {@code true} if the current domain is blocked
  */
-function blockedDomainCheck() {
+export function blockedDomainCheck(currentUrl) {
   const blockedDomains = [
     'uscourts.gov',
     'dropbox.com',
@@ -77,15 +78,11 @@ function blockedDomainCheck() {
     'blueskybooking.com',
     'sharefile.com',
   ];
-  const currentUrl = window.location.href;
   let currentRegex;
   for (let i = 0; i < blockedDomains.length; i++) {
     const blockedDomain = blockedDomains[i].replace('.', '\\.');
-    currentRegex = new RegExp(
-      `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
-      'u',
-    );
-    if (!currentRegex.test(currentUrl)) {
+    currentRegex = new RegExp(`(?:https?:\\/\\/)${blockedDomain}.*$`, 'u');
+    if (currentRegex.test(currentUrl)) {
       return true;
     }
   }
