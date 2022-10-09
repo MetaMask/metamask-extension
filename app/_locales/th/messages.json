@@ -81,9 +81,6 @@
   "connectingToMainnet": {
     "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
   },
-  "connectingToRopsten": {
-    "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
-  },
   "continueToWyre": {
     "message": "ไปที่ Wyre"
   },
@@ -110,12 +107,6 @@
   },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
-  },
-  "customGas": {
-    "message": "กำหนดค่าแก็สเอง"
-  },
-  "customGasSubTitle": {
-    "message": "การเพิ่มค่าธรรมเนียมอาจลดเวลาดำเนินการ แต่ก็ไม่แน่เสมอไป"
   },
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
@@ -253,9 +244,6 @@
     "message": "ไฟล์ JSON",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "เครือข่ายทดสอบ Kovan"
-  },
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
   },
@@ -318,9 +306,6 @@
   "newToMetaMask": {
     "message": "เพิ่งเริ่มใช้ MetaMask?"
   },
-  "newTransactionFee": {
-    "message": "ค่าธรรมเนียมธุรกรรมใหม่"
-  },
   "next": {
     "message": "ถัดไป"
   },
@@ -380,12 +365,6 @@
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
   },
-  "rinkeby": {
-    "message": "เครือข่ายทดสอบ Rinkeby"
-  },
-  "ropsten": {
-    "message": "เครือข่ายทดสอบ Ropsten"
-  },
   "save": {
     "message": "บันทึก"
   },
@@ -406,9 +385,6 @@
   },
   "send": {
     "message": "ส่ง"
-  },
-  "sendAmount": {
-    "message": "ส่งจำนวนเงินนี้"
   },
   "sendTokens": {
     "message": "ส่งโทเค็น"

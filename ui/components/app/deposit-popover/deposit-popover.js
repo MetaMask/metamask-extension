@@ -29,6 +29,7 @@ import {
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
   getIsBuyableMoonpayToken,
+  getIsBuyableWyreToken,
 } from '../../../selectors/selectors';
 
 import OnRampItem from './on-ramp-item';
@@ -56,6 +57,9 @@ const DepositPopover = ({ onClose, token }) => {
   );
   const isTokenBuyableMoonpay = useSelector((state) =>
     getIsBuyableMoonpayToken(state, token?.symbol),
+  );
+  const isTokenBuyableWyre = useSelector((state) =>
+    getIsBuyableWyreToken(state, token?.symbol),
   );
 
   const networkName = NETWORK_TO_NAME_MAP[chainId];
@@ -86,7 +90,7 @@ const DepositPopover = ({ onClose, token }) => {
     );
   };
   const toWyre = () => {
-    dispatch(buy({ service: 'wyre', address, chainId }));
+    dispatch(buy({ service: 'wyre', address, chainId, symbol: token?.symbol }));
   };
   const toFaucet = () => dispatch(buy({ chainId }));
 
@@ -165,7 +169,6 @@ const DepositPopover = ({ onClose, token }) => {
             : !isBuyableMoonPayChain
         }
       />
-
       <OnRampItem
         logo={<LogoWyre />}
         title={t('buyWithWyre', [symbol])}
@@ -181,7 +184,11 @@ const DepositPopover = ({ onClose, token }) => {
           });
           toWyre();
         }}
-        hide={isTokenDeposit || !isBuyableWyreChain}
+        hide={
+          isTokenDeposit
+            ? !isBuyableWyreChain || !isTokenBuyableWyre
+            : !isBuyableWyreChain
+        }
       />
 
       <OnRampItem

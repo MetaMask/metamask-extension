@@ -31,6 +31,7 @@ export default function FeeCard({
 }) {
   const t = useContext(I18nContext);
 
+  /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
     switch (chainId) {
       case CHAIN_IDS.MAINNET:
@@ -84,6 +85,7 @@ export default function FeeCard({
                           <a
                             className="fee-card__link"
                             onClick={() => {
+                              /* istanbul ignore next */
                               trackEvent({
                                 event: 'Clicked "Gas Fees: Learn More" Link',
                                 category: EVENT.CATEGORIES.SWAPS,

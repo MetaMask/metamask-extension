@@ -2,9 +2,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
-  },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
@@ -355,17 +352,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -435,12 +423,6 @@
   },
   "currentLanguage": {
     "message": "Kasalukuyang Wika"
-  },
-  "customGas": {
-    "message": "I-customize ang Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
@@ -641,9 +623,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Mga Tinatantyang Tagal ng Pagproseso"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ibinibigay ang backup na presyo ng gas dahil hindi available ang pangunahing serbisyo sa pagtatantya ng gas sa ngayon."
   },
@@ -676,9 +655,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "fastest": {
-    "message": "Pinakamabilis"
   },
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
@@ -924,9 +900,6 @@
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito."
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "lastConnected": {
     "message": "Huling Kumonekta"
   },
@@ -1120,12 +1093,6 @@
   },
   "newToMetaMask": {
     "message": "Bago ka ba sa MetaMask?"
-  },
-  "newTotal": {
-    "message": "Bagong Kabuuan"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Bayarin sa Transaksyon"
   },
   "next": {
     "message": "Susunod"
@@ -1435,12 +1402,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "Huwag ibahagi ang phrase na ito sa kahit sino!"
   },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
-  },
   "rpcUrl": {
     "message": "Bagong RPC URL"
   },
@@ -1522,9 +1483,6 @@
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAccounts": {
     "message": "Pumili ng (mga) account"
   },
@@ -1554,9 +1512,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendAmount": {
-    "message": "Halaga ng Ipapadala"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -1615,9 +1570,6 @@
   },
   "signed": {
     "message": "Nilagdaan"
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."

@@ -12,11 +12,11 @@ import {
   ICON_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  SIZES,
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
   BREAKPOINTS,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
 const BASE_CLASS_NAME = 'box';
@@ -163,37 +163,40 @@ const generateClassNames = memoize(
   (type, value) => [type, value],
 );
 
-export default function Box({
-  padding,
-  paddingTop,
-  paddingRight,
-  paddingBottom,
-  paddingLeft,
-  margin,
-  marginTop,
-  marginRight,
-  marginBottom,
-  marginLeft,
-  borderColor,
-  borderWidth,
-  borderRadius,
-  borderStyle,
-  alignItems,
-  justifyContent,
-  textAlign,
-  flexDirection = FLEX_DIRECTION.ROW,
-  flexWrap,
-  gap,
-  display,
-  width,
-  height,
-  children,
-  className,
-  backgroundColor,
-  color,
-  as = 'div',
-  ...props
-}) {
+const Box = React.forwardRef(function Box(
+  {
+    padding,
+    paddingTop,
+    paddingRight,
+    paddingBottom,
+    paddingLeft,
+    margin,
+    marginTop,
+    marginRight,
+    marginBottom,
+    marginLeft,
+    borderColor,
+    borderWidth,
+    borderRadius,
+    borderStyle,
+    alignItems,
+    justifyContent,
+    textAlign,
+    flexDirection = FLEX_DIRECTION.ROW,
+    flexWrap,
+    gap,
+    display,
+    width,
+    height,
+    children,
+    className,
+    backgroundColor,
+    color,
+    as = 'div',
+    ...props
+  },
+  ref,
+) {
   const boxClassName = classnames(
     BASE_CLASS_NAME,
     className,
@@ -252,11 +255,11 @@ export default function Box({
   }
   const Component = as;
   return (
-    <Component className={boxClassName} {...props}>
+    <Component className={boxClassName} ref={ref} {...props}>
       {children}
     </Component>
   );
-}
+});
 
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -285,8 +288,8 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.number),
   ]),
   borderRadius: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(SIZES)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(SIZES))),
+    PropTypes.oneOf(Object.values(BORDER_RADIUS)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BORDER_RADIUS))),
   ]),
   borderStyle: PropTypes.oneOfType([
     PropTypes.oneOf(Object.values(BORDER_STYLE)),
@@ -329,3 +332,5 @@ Box.propTypes = {
    */
   color: MultipleTextColors,
 };
+
+export default Box;

@@ -8,9 +8,6 @@
   "about": {
     "message": "Kuhusu"
   },
-  "acceleratingATransaction": {
-    "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
-  },
   "accessingYourCamera": {
     "message": "Kufikia kamera yako..."
   },
@@ -187,17 +184,8 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToKovan": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"
@@ -243,12 +231,6 @@
   },
   "custom": {
     "message": "Mipangilio ya kina"
-  },
-  "customGas": {
-    "message": "Weka Mipangilio ya Gesi Upendavyo"
-  },
-  "customGasSubTitle": {
-    "message": "Ada iliyoongezeka inaweza kupunguza muda wa uchakataji, lakini haihakikishwi."
   },
   "customToken": {
     "message": "Kianzio Maalumu"
@@ -333,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Muda wa Kuchakata Uliokadiriwa"
   },
   "ethereumPublicAddress": {
     "message": "Anwani ya Umma ya Ethereum"
@@ -490,9 +469,6 @@
   "knownAddressRecipient": {
     "message": "Anwani za mkataba zinazofahamika."
   },
-  "kovan": {
-    "message": "Mtandao wa Majaribio wa Kovan"
-  },
   "learnMore": {
     "message": "Jifunze zaidi"
   },
@@ -581,12 +557,6 @@
   },
   "newToMetaMask": {
     "message": "MetaMask mpya?"
-  },
-  "newTotal": {
-    "message": "Jumla Mpya"
-  },
-  "newTransactionFee": {
-    "message": "Ada Mpya ya Muamala"
   },
   "next": {
     "message": "Inayofuata"
@@ -746,12 +716,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "USISHIRIKI kirai hiki na mtu yeyote!"
   },
-  "rinkeby": {
-    "message": "Mtandao wa Majaribio wa Rinkeby"
-  },
-  "ropsten": {
-    "message": "Mtandao wa Majaribio wa Ropsten"
-  },
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
@@ -788,9 +752,6 @@
   "seedPhraseReq": {
     "message": "Virai vianzio vina urefu wa maneno 12"
   },
-  "selectAHigherGasFee": {
-    "message": "Chagua ada ya juu ya gesi ili kuharakisha uchakataji wa muamala wako.*"
-  },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
   },
@@ -808,9 +769,6 @@
   },
   "send": {
     "message": "Tuma"
-  },
-  "sendAmount": {
-    "message": "Tuma Kiasi"
   },
   "sendTokens": {
     "message": "Tuma Vianzio"
@@ -853,9 +811,6 @@
   },
   "signed": {
     "message": "Imesainiwa"
-  },
-  "slow": {
-    "message": "Polepole"
   },
   "somethingWentWrong": {
     "message": "Ayaa! Hitilafu fulani imetokea."

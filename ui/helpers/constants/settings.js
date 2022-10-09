@@ -213,20 +213,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('ropsten'),
-    descriptionMessage: (t) => t('ropsten'),
-    route: `${NETWORKS_ROUTE}#networks-ropsten`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('rinkeby'),
-    descriptionMessage: (t) => t('rinkeby'),
-    route: `${NETWORKS_ROUTE}#networks-rinkeby`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('goerli'),
     descriptionMessage: (t) => t('goerli'),
     route: `${NETWORKS_ROUTE}#networks-goerli`,
@@ -237,13 +223,6 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('sepolia'),
     descriptionMessage: (t) => t('sepolia'),
     route: `${NETWORKS_ROUTE}#networks-sepolia`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('kovan'),
-    descriptionMessage: (t) => t('kovan'),
-    route: `${NETWORKS_ROUTE}#networks-kovan`,
     icon: 'fa fa-plug',
   },
   {
