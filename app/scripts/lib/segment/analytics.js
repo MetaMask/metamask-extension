@@ -120,11 +120,11 @@ export default class Analytics {
 
     // Specifying library here helps segment to understand structure of request.
     // Currently segment seems to support these source libraries only.
-    message.context = Object.assign({
+    message.context = {
       library: {
         name: 'analytics-node',
       },
-    });
+    };
 
     if (!message.timestamp) {
       message.timestamp = new Date();
@@ -216,25 +216,26 @@ export default class Analytics {
       done,
       0,
     );
+    return;
   }
 
-  _sendRequest(url, body, callback, retryNo) {
+  _sendRequest(url, body, done, retryNo) {
     fetch(url, body)
       .then(async (res) => {
         const response = await res.json();
         if (res.ok) {
-          callback();
+          done();
         } else {
           const error = new Error(res.statusText);
-          callback(error);
+          done(error);
         }
         return Promise.resolve(response);
       })
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
-          this._sendRequest(url, body, callback, retryNo + 1);
+          this._sendRequest(url, body, done, retryNo + 1);
         }
-        callback(error);
+        done(error);
       });
   }
 
