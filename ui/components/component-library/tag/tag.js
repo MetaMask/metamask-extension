@@ -8,6 +8,7 @@ import {
   COLORS,
   JUSTIFY_CONTENT,
   SIZES,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
 export const Tag = ({ label, className, ...props }) => {
@@ -19,9 +20,9 @@ export const Tag = ({ label, className, ...props }) => {
       borderWidth={1}
       justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
-      borderRadius={SIZES.XL}
       paddingLeft={1}
       paddingRight={1}
+      borderRadius={BORDER_RADIUS.PILL}
       {...props}
     >
       <Text variant="body-sm">{label}</Text>
