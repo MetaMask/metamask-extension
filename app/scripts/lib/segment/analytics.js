@@ -17,6 +17,7 @@ const generateRandomId = () => {
   return result;
 };
 
+// Method below is inspired from axios-retry https://github.com/softonic/axios-retry
 function isNetworkError(error) {
   return (
     !error.response &&
