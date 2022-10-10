@@ -605,7 +605,7 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('trackEvent', function () {
+  describe.only('trackEvent', function () {
     it('should call only metricsController._trackEvent if actionId is not provided', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
@@ -623,6 +623,7 @@ describe('MetaMetricsController', function () {
     });
 
     it('should call createEventFragment, finalizeEventFragment if actionId is provided', function () {
+      this.timeout(7000);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
@@ -633,10 +634,16 @@ describe('MetaMetricsController', function () {
       stubCreateEvent.returns({ id: DUMMY_ID });
       metaMetricsController.createEventFragment = stubCreateEvent;
 
+      const stubFinalizeEvent = sinon.stub();
+      metaMetricsController.finalizeEventFragment = stubFinalizeEvent;
+
       metaMetricsController.trackEvent({}, { actionId: DUMMY_ID });
 
       assert(spyTrackEvent.notCalled);
       assert(stubCreateEvent.calledOnce);
+      setTimeout(function () {
+        assert(stubFinalizeEvent.calledOnce);
+      }, 5000);
     });
 
     it('should create only once fragments if 2 requests have same actionId', function () {
