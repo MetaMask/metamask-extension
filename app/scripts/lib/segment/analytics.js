@@ -1,6 +1,7 @@
 import removeSlash from 'remove-trailing-slash';
 import looselyValidate from '@segment/loosely-validate-event';
 import { isString } from 'lodash';
+import isRetryAllowed from 'is-retry-allowed';
 
 const noop = () => ({});
 
@@ -15,6 +16,15 @@ const generateRandomId = () => {
   }
   return result;
 };
+
+function isNetworkError(error) {
+  return (
+    !error.response &&
+    Boolean(error.code) && // Prevents retrying cancelled requests
+    error.code !== 'ECONNABORTED' && // Prevents retrying timed out requests
+    isRetryAllowed(error)
+  ); // Prevents retrying unsafe errors
+}
 
 export default class Analytics {
   /**
@@ -38,6 +48,7 @@ export default class Analytics {
     this.path = '/v1/batch';
     this.maxQueueSize = 1024 * 450;
     this.flushed = false;
+    this.retryCount = 3;
 
     Object.defineProperty(this, 'enable', {
       configurable: false,
@@ -106,6 +117,8 @@ export default class Analytics {
 
     const message = { ...msg, type };
 
+    // Specifying library here helps segment to understand structure of request.
+    // Currently segment seems to support these source libraries only.
     message.context = Object.assign({
       library: {
         name: 'analytics-node',
@@ -192,23 +205,59 @@ export default class Analytics {
       )}`,
     };
 
-    return fetch(`${this.host}${this.path}`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers,
-    })
+    this._sendRequest(
+      `${this.host}${this.path}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers,
+      },
+      done,
+      0,
+    );
+  }
+
+  _sendRequest(url, body, callback, retryNo) {
+    fetch(url, body)
       .then(async (res) => {
         const response = await res.json();
         if (res.ok) {
-          done();
+          callback();
         } else {
           const error = new Error(res.statusText);
-          done(error);
+          callback(error);
         }
         return Promise.resolve(response);
       })
       .catch((error) => {
-        done(error);
+        if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
+          this._sendRequest(url, body, callback, retryNo + 1);
+        }
+        callback(error);
       });
+  }
+
+  _isErrorRetryable(error) {
+    // Retry Network Errors.
+    if (isNetworkError(error)) {
+      return true;
+    }
+
+    if (!error.response) {
+      // Cannot determine if the request can be retried
+      return false;
+    }
+
+    // Retry Server Errors (5xx).
+    if (error.response.status >= 500 && error.response.status <= 599) {
+      return true;
+    }
+
+    // Retry if rate limited.
+    if (error.response.status === 429) {
+      return true;
+    }
+
+    return false;
   }
 }
