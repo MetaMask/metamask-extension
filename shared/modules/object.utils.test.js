@@ -1,5 +1,6 @@
 import {
   cloneDeep,
+  fill,
   isEqual,
   isPlainObject,
   mapValues,
@@ -240,6 +241,26 @@ describe('object utils', function () {
       expect(result.test).toHaveProperty('from');
       expect(result.test).toHaveProperty('to');
       expect(result.test).toHaveProperty('gasPrice');
+    });
+  });
+
+  describe('fill', function () {
+    it('should correctly fill whole array with value', function () {
+      const array = [1, 2, 3];
+      const result = fill(array, 'test');
+      expect(result[0]).toStrictEqual('test');
+      expect(result[1]).toStrictEqual('test');
+      expect(result[2]).toStrictEqual('test');
+      expect(result).toHaveLength(3);
+    });
+
+    it('should partially fill array with value if start and end are provided', function () {
+      const array = [1, 2, 3];
+      const result = fill(array, 'test', 1, 2);
+      expect(result[0]).toStrictEqual(1);
+      expect(result[1]).toStrictEqual('test');
+      expect(result[2]).toStrictEqual(3);
+      expect(result).toHaveLength(3);
     });
   });
 });

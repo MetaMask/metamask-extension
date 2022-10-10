@@ -210,6 +210,26 @@ export function merge(original, source) {
 }
 
 /**
+ * Fills `array` with `value` provided from index `start`
+ * to index `end`.
+ * If `start` is not provided, 0 is used.
+ * If `end is not provided, end of array is used.
+ *
+ * @param {Array} array - The array to fill
+ * @param {*} value - The value used to fill the array
+ * @param {number?} start - Start index, default to 0
+ * @param {number?} end - Start index, default to end of array
+ * @returns
+ */
+export function fill(array, value, start, end) {
+  if (isNullish(array) || array.length === 0) {
+    return [];
+  }
+
+  return array.fill(value, start, end);
+}
+
+/**
  * Checks if `value` is a plain object
  *
  * @param {*} value - The value to check

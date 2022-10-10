@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export, jest/no-identical-title */
 
-import { fill } from 'lodash';
+import { fill } from '../../../../../shared/modules/object.utils';
 import {
   withMockedCommunications,
   withNetworkClient,
