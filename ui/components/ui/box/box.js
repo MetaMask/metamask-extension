@@ -12,11 +12,11 @@ import {
   ICON_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  SIZES,
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
   BREAKPOINTS,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
 const BASE_CLASS_NAME = 'box';
@@ -288,8 +288,8 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.number),
   ]),
   borderRadius: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(SIZES)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(SIZES))),
+    PropTypes.oneOf(Object.values(BORDER_RADIUS)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(BORDER_RADIUS))),
   ]),
   borderStyle: PropTypes.oneOfType([
     PropTypes.oneOf(Object.values(BORDER_STYLE)),
