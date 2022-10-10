@@ -170,7 +170,7 @@ export default class Analytics {
   flush(callback = noop) {
     if (!this.enable) {
       setImmediate(callback);
-      return Promise.resolve();
+      return;
     }
 
     if (this.timer) {
@@ -180,7 +180,7 @@ export default class Analytics {
 
     if (!this.queue.length) {
       setImmediate(callback);
-      return Promise.resolve();
+      return;
     }
 
     const items = this.queue.splice(0, this.flushAt);
