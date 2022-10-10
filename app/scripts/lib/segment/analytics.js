@@ -106,6 +106,12 @@ export default class Analytics {
 
     const message = { ...msg, type };
 
+    message.context = Object.assign({
+      library: {
+        name: 'analytics-node',
+      },
+    });
+
     if (!message.timestamp) {
       message.timestamp = new Date();
     }
@@ -180,16 +186,16 @@ export default class Analytics {
       });
     };
 
-    const req = {
-      auth: {
-        username: this.writeKey,
-      },
+    const headers = {
+      Authorization: `Basic ${Buffer.from(this.writeKey, 'utf8').toString(
+        'base64',
+      )}`,
     };
 
     return fetch(`${this.host}${this.path}`, {
       method: 'POST',
       body: JSON.stringify(data),
-      ...req,
+      headers,
     })
       .then(async (res) => {
         const response = await res.json();
