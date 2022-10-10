@@ -3,20 +3,9 @@
   max-height: 231px;
   position: relative;
 
-  &__title {
-    font-weight: 700;
-  }
-
   &__root {
     flex: 1 100%;
-    background-color: var(--color-background-default);
-    padding-bottom: 12px;
-    padding-top: 12px;
     overflow: auto;
-    padding-right: 12px;
-    margin: 10px;
-    border: 1px solid var(--color-border-muted);
-    border-radius: 12px;
 
     @include screen-sm-min {
       width: auto;
@@ -24,20 +13,12 @@
   }
 
   &__node {
-    padding-left: 8px;
-
-    &__label-bold {
-      font-weight: 700;
-    }
-
     &__value {
       white-space: pre-line;
       overflow: hidden;
       word-wrap: break-word;
 
       &__address {
-        @include H7;
-
         [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
@@ -56,18 +37,13 @@
     }
   }
 
-  &__node-leaf {
-    padding-left: 8px;
-    display: flex;
-  }
-
   &__scroll-button {
-    border: 1px solid var(--color-border-default);
-    background: var(--color-background-alternative);
     position: absolute;
     right: 28px;
     bottom: 12px;
     border-radius: 50%;
+    height: 24px;
+    width: 24px;
     cursor: pointer;
   }
 }
