@@ -2,8 +2,8 @@ import React from 'react';
 import { ALIGN_ITEMS, DISPLAY } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-import { ButtonPrimary } from './button-primary';
-import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
+import { ButtonSecondary } from './button-secondary';
+import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
 import README from './README.mdx';
 
 const marginSizeControlOptions = [
@@ -25,9 +25,9 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonPrimary',
+  title: 'Components/ComponentLibrary/ButtonSecondary',
   id: __filename,
-  component: ButtonPrimary,
+  component: ButtonSecondary,
   parameters: {
     docs: {
       page: README,
@@ -76,7 +76,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_PRIMARY_SIZES),
+      options: Object.values(BUTTON_SECONDARY_SIZES),
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -100,34 +100,34 @@ export default {
     },
   },
   args: {
-    children: 'Button Primary',
+    children: 'Button Secondary',
   },
 };
 
-export const DefaultStory = (args) => <ButtonPrimary {...args} />;
+export const DefaultStory = (args) => <ButtonSecondary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.SM}>
+    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.SM}>
       Small Button
-    </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.MD}>
+    </ButtonSecondary>
+    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.MD}>
       Medium (Default) Button
-    </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.LG}>
+    </ButtonSecondary>
+    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.LG}>
       Large Button
-    </ButtonPrimary>
+    </ButtonSecondary>
   </Box>
 );
 
 export const Type = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <ButtonPrimary {...args}>Normal</ButtonPrimary>
+    <ButtonSecondary {...args}>Normal</ButtonSecondary>
     {/* Test Anchor tag to match exactly as button */}
-    <ButtonPrimary as="a" {...args} href="#" danger>
+    <ButtonSecondary as="a" {...args} href="#" danger>
       Danger
-    </ButtonPrimary>
+    </ButtonSecondary>
   </Box>
 );
