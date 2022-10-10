@@ -2254,7 +2254,8 @@
     "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2"
   },
   "nftWarningContentBold": {
-    "message": "all your $1 NFTs"
+    "message": "all your $1 NFTs",
+    "description": "$1 is name of the collection"
   },
   "nftWarningContentGrey": {
     "message": "Proceed with caution."

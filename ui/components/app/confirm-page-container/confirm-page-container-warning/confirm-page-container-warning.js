@@ -98,13 +98,15 @@ const ConfirmPageContainerWarning = ({
         marginBottom={4}
       >
         {t('nftWarningContent', [
-          <b
+          <strong
             key="non_custodial_bold"
             className="confirm-page-container-warning-slide-up__content__bold"
           >
             {t('nftWarningContentBold', [collectionName])}
-          </b>,
-          <b key="non_custodial_grey">{t('nftWarningContentGrey')}</b>,
+          </strong>,
+          <strong key="non_custodial_grey">
+            {t('nftWarningContentGrey')}
+          </strong>,
         ])}
       </Typography>
     </SlideUp>

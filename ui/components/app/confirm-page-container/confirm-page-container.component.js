@@ -366,11 +366,22 @@ export default class ConfirmPageContainer extends Component {
               ])}
             </Dialog>
           )}
+          {isSetApproveForAll && (
+            <ConfirmPageContainerWarning
+              collectionName={title}
+              senderAddress={fromAddress}
+              name={fromName}
+              total="6"
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              showWarningModal={showWarningModal}
+            />
+          )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={onApprove}
+              onSubmit={isSetApproveForAll ? onApprove : onSubmit}
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
@@ -391,15 +402,6 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
-          <ConfirmPageContainerWarning
-            collectionName={title}
-            senderAddress={fromAddress}
-            name={fromName}
-            total="6"
-            onSubmit={onSubmit}
-            onCancel={onCancel}
-            showWarningModal={showWarningModal}
-          />
           {supportsEIP1559V2 && (
             <>
               <EditGasFeePopover />
