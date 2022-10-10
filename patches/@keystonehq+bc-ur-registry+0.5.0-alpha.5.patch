@@ -40,14 +40,15 @@ index a5f9f7d..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoAccount.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoAccount.ts
 deleted file mode 100644
-index 753e535..0000000
+index e6efeeb..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoAccount.ts
 +++ /dev/null
-@@ -1,57 +0,0 @@
+@@ -1,58 +0,0 @@
 -import { CryptoOutput } from '.';
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
 -
 -enum Keys {
 -  masterFingerprint = 1,
@@ -70,7 +71,7 @@ index 753e535..0000000
 -  public getOutputDescriptors = () => this.outputDescriptors;
 -
 -  public toDataItem = () => {
--    const map = {};
+-    const map: DataItemMap = {};
 -    if (this.masterFingerprint) {
 -      map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE(0);
 -    }
@@ -103,13 +104,14 @@ index 753e535..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoCoinInfo.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoCoinInfo.ts
 deleted file mode 100644
-index 0201682..0000000
+index 843b50c..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoCoinInfo.ts
 +++ /dev/null
-@@ -1,58 +0,0 @@
+@@ -1,59 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
 -
 -enum Keys {
 -  type = '1',
@@ -143,7 +145,7 @@ index 0201682..0000000
 -  };
 -
 -  public toDataItem = () => {
--    const map = {};
+-    const map: DataItemMap = {};
 -    if (this.type) {
 -      map[Keys.type] = this.type;
 -    }
@@ -167,13 +169,14 @@ index 0201682..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoECKey.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoECKey.ts
 deleted file mode 100644
-index 1e964fc..0000000
+index 54c3c4b..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoECKey.ts
 +++ /dev/null
-@@ -1,59 +0,0 @@
+@@ -1,68 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes } from './RegistryType';
+-import { DataItemMap, ICryptoKey } from './types';
 -
 -enum Keys {
 -  curve = 1,
@@ -181,16 +184,20 @@ index 1e964fc..0000000
 -  data,
 -}
 -
--export class CryptoECKey extends RegistryItem {
+-export class CryptoECKey extends RegistryItem implements ICryptoKey {
 -  private data: Buffer;
--  private curve: number;
--  private privateKey: boolean;
+-  private curve: number | undefined;
+-  private privateKey: boolean | undefined;
 -  constructor(args: { data: Buffer; curve?: number; privateKey?: boolean }) {
 -    super();
 -    this.data = args.data;
 -    this.curve = args.curve;
--    this.privateKey = args.privateKey;
+-    this.privateKey = args.privateKey || undefined;
 -  }
+-
+-  isECKey = () => {
+-    return true;
+-  };
 -
 -  public getCurve = () => this.curve || 0;
 -  public isPrivateKey = () => this.privateKey || false;
@@ -201,7 +208,7 @@ index 1e964fc..0000000
 -  };
 -
 -  toDataItem = () => {
--    const map = {};
+-    const map: DataItemMap = {};
 -    if (this.curve) {
 -      map[Keys.curve] = this.curve;
 -    }
@@ -211,6 +218,10 @@ index 1e964fc..0000000
 -    map[Keys.data] = this.data;
 -    return new DataItem(map);
 -  };
+-
+-  getOutputDescriptorContent = () => {
+-    return this.data.toString('hex');
+-  }
 -
 -  static fromDataItem = (dataItem: DataItem) => {
 -    const map = dataItem.getData();
@@ -232,16 +243,20 @@ index 1e964fc..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoHDKey.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoHDKey.ts
 deleted file mode 100644
-index bbfd331..0000000
+index 8fc2a82..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoHDKey.ts
 +++ /dev/null
-@@ -1,210 +0,0 @@
+@@ -1,237 +0,0 @@
+-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-// @ts-ignore
 -import { encode } from 'bs58check';
 -import { CryptoCoinInfo } from './CryptoCoinInfo';
 -import { CryptoKeypath } from './CryptoKeypath';
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes } from './RegistryType';
+-import { DataItemMap, ICryptoKey } from './types';
+-import { PathComponent } from './PathComponent';
 -
 -enum Keys {
 -  is_master = 1,
@@ -274,17 +289,22 @@ index bbfd331..0000000
 -  name?: string;
 -  note?: string;
 -};
--export class CryptoHDKey extends RegistryItem {
--  private master: boolean;
--  private privateKey: boolean;
--  private key: Buffer;
--  private chainCode: Buffer;
--  private useInfo: CryptoCoinInfo;
--  private origin: CryptoKeypath;
--  private children: CryptoKeypath;
--  private parentFingerprint: Buffer;
--  private name: string;
--  private note: string;
+-
+-export class CryptoHDKey extends RegistryItem implements ICryptoKey {
+-  private master?: boolean;
+-  private privateKey?: boolean;
+-  private key?: Buffer;
+-  private chainCode?: Buffer;
+-  private useInfo?: CryptoCoinInfo;
+-  private origin?: CryptoKeypath;
+-  private children?: CryptoKeypath;
+-  private parentFingerprint?: Buffer;
+-  private name?: string;
+-  private note?: string;
+-
+-  isECKey = () => {
+-    return false;
+-  };
 -
 -  public getKey = () => this.key;
 -  public getChainCode = () => this.chainCode;
@@ -299,22 +319,24 @@ index bbfd331..0000000
 -  public getBip32Key = () => {
 -    let version: Buffer;
 -    let depth: number;
--    let index: number;
+-    let index = 0;
 -    let parentFingerprint: Buffer = Buffer.alloc(4).fill(0);
--    if(this.isMaster()) {
+-    if (this.isMaster()) {
 -      // version bytes defined on https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#serialization-format
--      version = Buffer.from("0488ADE4", "hex")
+-      version = Buffer.from('0488ADE4', 'hex');
 -      depth = 0;
 -      index = 0;
 -    } else {
--      depth = this.getOrigin().getComponents().length || this.getOrigin().getDepth();
--      const paths = this.getOrigin().getComponents();
+-      depth = this.getOrigin()?.getComponents().length || this.getOrigin()?.getDepth() as number;
+-      const paths = this.getOrigin()?.getComponents() as PathComponent[];
 -      const lastPath = paths[paths.length - 1];
--      if(lastPath) {
+-      if (lastPath) {
 -        index = lastPath.isHardened() ? lastPath.getIndex()! + 0x80000000 : lastPath.getIndex()!;
--        parentFingerprint = this.getParentFingerprint();
+-        if (this.getParentFingerprint()) {
+-          parentFingerprint = this.getParentFingerprint() as Buffer;
+-        }
 -      }
--      if(this.isPrivateKey()) {
+-      if (this.isPrivateKey()) {
 -        version = Buffer.from('0488ADE4', 'hex');
 -      } else {
 -        version = Buffer.from('0488B21E', 'hex');
@@ -326,11 +348,27 @@ index bbfd331..0000000
 -    indexBuffer.writeUInt32BE(index, 0);
 -    const chainCode = this.getChainCode();
 -    const key = this.getKey();
--    return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode, key]));
--  }
+-    return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode as Buffer, key as Buffer]));
+-  };
 -
 -  public getRegistryType = () => {
 -    return RegistryTypes.CRYPTO_HDKEY;
+-  };
+-
+-  public getOutputDescriptorContent = () => {
+-    let result = '';
+-    if (this.getOrigin()) {
+-      if (this.getOrigin()?.getSourceFingerprint() && this.getOrigin()?.getPath()) {
+-        result += `${this.getOrigin()?.getSourceFingerprint()?.toString('hex')}/${this.getOrigin()?.getPath()}`;
+-      }
+-    }
+-    result += this.getBip32Key();
+-    if (this.getChildren()) {
+-      if (this.getChildren()?.getPath()) {
+-        result += `/${this.getChildren()?.getPath()}`;
+-      }
+-    }
+-    return result;
 -  };
 -
 -  constructor(args: DeriveKeyProps | MasterKeyProps) {
@@ -362,7 +400,7 @@ index bbfd331..0000000
 -  };
 -
 -  public toDataItem = () => {
--    const map = {};
+-    const map: DataItemMap = {};
 -    if (this.master) {
 -      map[Keys.is_master] = true;
 -      map[Keys.key_data] = this.key;
@@ -418,8 +456,8 @@ index bbfd331..0000000
 -    const children = map[Keys.children]
 -      ? CryptoKeypath.fromDataItem(map[Keys.children])
 -      : undefined;
--    let _parentFingerprint = map[Keys.parent_fingerprint];
--    let parentFingerprint: Buffer;
+-    const _parentFingerprint = map[Keys.parent_fingerprint];
+-    let parentFingerprint: Buffer | undefined = undefined;
 -    if (_parentFingerprint) {
 -      parentFingerprint = Buffer.alloc(4);
 -      parentFingerprint.writeUInt32BE(_parentFingerprint, 0);
@@ -448,14 +486,15 @@ index bbfd331..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoKeypath.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoKeypath.ts
 deleted file mode 100644
-index 4babe91..0000000
+index 00146ce..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoKeypath.ts
 +++ /dev/null
-@@ -1,95 +0,0 @@
+@@ -1,96 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { PathComponent } from './PathComponent';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
 -
 -enum Keys {
 -  components = 1,
@@ -494,16 +533,16 @@ index 4babe91..0000000
 -  public getDepth = () => this.depth;
 -
 -  toDataItem = () => {
--    const map: Record<string, any> = {};
--    const components = [];
+-    const map: DataItemMap = {};
+-    const components: (number | boolean | any[])[] = [];
 -    this.components &&
 -      this.components.forEach((component) => {
 -        if (component.isWildcard()) {
 -          components.push([]);
 -        } else {
--          components.push(component.getIndex());
+-          components.push(component.getIndex() as number);
 -        }
--        components.push(component.isHardened() ? true : false);
+-        components.push(component.isHardened());
 -      });
 -    map[Keys.components] = components;
 -    if (this.sourceFingerprint) {
@@ -533,7 +572,7 @@ index 4babe91..0000000
 -      }
 -    }
 -    const _sourceFingerprint = map[Keys.source_fingerprint];
--    let sourceFingerprint: Buffer;
+-    let sourceFingerprint: Buffer | undefined;
 -    if (_sourceFingerprint) {
 -      sourceFingerprint = Buffer.alloc(4);
 -      sourceFingerprint.writeUInt32BE(_sourceFingerprint, 0);
@@ -549,10 +588,10 @@ index 4babe91..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/CryptoOutput.ts b/node_modules/@keystonehq/bc-ur-registry/src/CryptoOutput.ts
 deleted file mode 100644
-index cd3009c..0000000
+index 90abf6f..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/CryptoOutput.ts
 +++ /dev/null
-@@ -1,114 +0,0 @@
+@@ -1,127 +0,0 @@
 -import { CryptoECKey } from './CryptoECKey';
 -import { CryptoHDKey } from './CryptoHDKey';
 -import { decodeToDataItem, DataItem } from './lib';
@@ -599,6 +638,18 @@ index cd3009c..0000000
 -
 -  public getScriptExpressions = () => this.scriptExpressions;
 -
+-  private _toOutputDescriptor = (seIndex: number): string => {
+-    if (seIndex >= this.scriptExpressions.length) {
+-      return this.cryptoKey.getOutputDescriptorContent();
+-    } else {
+-      return `${this.scriptExpressions[seIndex].getExpression()}(${this._toOutputDescriptor(seIndex + 1)})`;
+-    }
+-  };
+-
+-  public toString = () => {
+-    return this._toOutputDescriptor(0);
+-  };
+-
 -  toDataItem = () => {
 -    let dataItem = this.cryptoKey.toDataItem();
 -    if (
@@ -625,9 +676,10 @@ index cd3009c..0000000
 -  public static fromDataItem = (dataItem: DataItem) => {
 -    const scriptExpressions: ScriptExpression[] = [];
 -    let _dataItem = dataItem;
+-    // eslint-disable-next-line no-constant-condition
 -    while (true) {
--      let _tag = _dataItem.getTag() || undefined;
--      const se = ScriptExpression.fromTag(_tag);
+-      let _tag = _dataItem.getTag();
+-      const se = ScriptExpression.fromTag(_tag as number);
 -      if (se) {
 -        scriptExpressions.push(se);
 -        if (_dataItem.getData() instanceof DataItem) {
@@ -646,7 +698,7 @@ index cd3009c..0000000
 -      (scriptExpressions[seLength - 1].getExpression() ===
 -        ScriptExpressions.MULTISIG.getExpression() ||
 -        scriptExpressions[seLength - 1].getExpression() ===
--          ScriptExpressions.SORTED_MULTISIG.getExpression());
+-        ScriptExpressions.SORTED_MULTISIG.getExpression());
 -    //TODO: judge is multi key by scriptExpressions
 -    if (isMultiKey) {
 -      const multiKey = MultiKey.fromDataItem(_dataItem);
@@ -707,10 +759,10 @@ index 626b647..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/Decoder/index.ts b/node_modules/@keystonehq/bc-ur-registry/src/Decoder/index.ts
 deleted file mode 100644
-index 0460694..0000000
+index 5d7e3fe..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/Decoder/index.ts
 +++ /dev/null
-@@ -1,40 +0,0 @@
+@@ -1,41 +0,0 @@
 -import { URDecoder } from '@ngraveio/bc-ur';
 -import {
 -  Bytes,
@@ -723,6 +775,7 @@ index 0460694..0000000
 -  CryptoPSBT,
 -} from '..';
 -import { RegistryTypes } from '../RegistryType';
+-import { UnknownURTypeError } from '../errors';
 -
 -export class URRegistryDecoder extends URDecoder {
 -  public resultRegistryType = () => {
@@ -745,7 +798,7 @@ index 0460694..0000000
 -      case RegistryTypes.CRYPTO_ACCOUNT.getType():
 -        return CryptoAccount.fromCBOR(ur.cbor);
 -      default:
--        throw new Error(
+-        throw new UnknownURTypeError(
 -          `#[ur-registry][Decoder][fn.resultRegistryType]: registry type ${ur.type} is not supported now`,
 -        );
 -    }
@@ -753,15 +806,16 @@ index 0460694..0000000
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/MultiKey.ts b/node_modules/@keystonehq/bc-ur-registry/src/MultiKey.ts
 deleted file mode 100644
-index 0522fbd..0000000
+index ced19dc..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/MultiKey.ts
 +++ /dev/null
-@@ -1,54 +0,0 @@
+@@ -1,60 +0,0 @@
 -import { CryptoECKey } from './CryptoECKey';
 -import { CryptoHDKey } from './CryptoHDKey';
 -import { DataItem } from './lib/DataItem';
 -import { RegistryItem } from './RegistryItem';
 -import { RegistryType, RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
 -
 -enum Keys {
 -  threshold = 1,
@@ -769,24 +823,24 @@ index 0522fbd..0000000
 -}
 -
 -export class MultiKey extends RegistryItem {
+-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-  // @ts-ignore
 -  getRegistryType: () => RegistryType;
 -
 -  constructor(
 -    private threshold: number,
--    private ecKeys: CryptoECKey[],
--    private hdKeys: CryptoHDKey[],
+-    private keys: (CryptoECKey | CryptoHDKey)[],
 -  ) {
 -    super();
 -  }
 -
 -  getThreshold = () => this.threshold;
--  getEcKeys = () => this.ecKeys as CryptoECKey[];
--  getHdKeys = () => this.hdKeys as CryptoHDKey[];
+-  getKeys = () => this.keys;
 -
 -  toDataItem = () => {
--    const map = {};
+-    const map: DataItemMap = {};
 -    map[Keys.threshold] = this.threshold;
--    const keys: DataItem[] = [...this.ecKeys, ...this.hdKeys].map((k) => {
+-    const keys: DataItem[] = this.keys.map((k) => {
 -      const dataItem = k.toDataItem();
 -      dataItem.setTag(k.getRegistryType().getTag());
 -      return dataItem;
@@ -795,20 +849,25 @@ index 0522fbd..0000000
 -    return new DataItem(map);
 -  };
 -
+-  getOutputDescriptorContent = () => {
+-    return [this.getThreshold(),
+-      this.keys.map(k => k.getOutputDescriptorContent()).join(','),
+-    ].join(',');
+-  };
+-
 -  static fromDataItem = (dataItem: DataItem) => {
 -    const map = dataItem.getData();
 -    const threshold = map[Keys.threshold];
--    const keys = map[Keys.keys] as DataItem[];
--    const ecKeys = [];
--    const hdKeys = [];
--    keys.forEach((k) => {
+-    const _keys = map[Keys.keys] as DataItem[];
+-    const keys: (CryptoECKey | CryptoHDKey)[] = [];
+-    _keys.forEach((k) => {
 -      if (k.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
--        hdKeys.push(CryptoHDKey.fromDataItem(k));
+-        keys.push(CryptoHDKey.fromDataItem(k));
 -      } else if (k.getTag() === RegistryTypes.CRYPTO_ECKEY.getTag()) {
--        ecKeys.push(CryptoECKey.fromDataItem(k));
+-        keys.push(CryptoECKey.fromDataItem(k));
 -      }
 -    });
--    return new MultiKey(threshold, ecKeys, hdKeys);
+-    return new MultiKey(threshold, keys);
 -  };
 -}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/PathComponent.ts b/node_modules/@keystonehq/bc-ur-registry/src/PathComponent.ts
@@ -914,7 +973,7 @@ index 64637bc..0000000
 -};
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/ScriptExpression.ts b/node_modules/@keystonehq/bc-ur-registry/src/ScriptExpression.ts
 deleted file mode 100644
-index fdd3f05..0000000
+index 8fbf0db..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/ScriptExpression.ts
 +++ /dev/null
 @@ -1,26 +0,0 @@
@@ -940,16 +999,27 @@ index fdd3f05..0000000
 -  WITNESS_PUBLIC_KEY_HASH: new ScriptExpression(404, 'wpkh'),
 -  COMBO: new ScriptExpression(405, 'combo'),
 -  MULTISIG: new ScriptExpression(406, 'multi'),
--  SORTED_MULTISIG: new ScriptExpression(407, 'sorted'),
+-  SORTED_MULTISIG: new ScriptExpression(407, 'sortedmulti'),
 -  ADDRESS: new ScriptExpression(307, 'addr'),
 -  RAW_SCRIPT: new ScriptExpression(408, 'raw'),
 -};
+diff --git a/node_modules/@keystonehq/bc-ur-registry/src/errors/index.ts b/node_modules/@keystonehq/bc-ur-registry/src/errors/index.ts
+deleted file mode 100644
+index dd2b0bd..0000000
+--- a/node_modules/@keystonehq/bc-ur-registry/src/errors/index.ts
++++ /dev/null
+@@ -1,5 +0,0 @@
+-export class UnknownURTypeError extends Error {
+-  constructor(message: string) {
+-    super(message);
+-  }
+-}
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/index.ts b/node_modules/@keystonehq/bc-ur-registry/src/index.ts
 deleted file mode 100644
-index 172a1e5..0000000
+index bb07bc8..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/index.ts
 +++ /dev/null
-@@ -1,89 +0,0 @@
+@@ -1,110 +0,0 @@
 -import './patchCBOR';
 -
 -import { CryptoHDKey } from './CryptoHDKey';
@@ -971,6 +1041,7 @@ index 172a1e5..0000000
 -import { ScriptExpressions } from './ScriptExpression';
 -import { PathComponent } from './PathComponent';
 -
+-import { RegistryItem } from './RegistryItem';
 -import { RegistryTypes, RegistryType } from './RegistryType';
 -
 -import {
@@ -983,7 +1054,6 @@ index 172a1e5..0000000
 -} from './lib';
 -
 -export { DataItem } from './lib';
--export { RegistryItem } from './RegistryItem';
 -
 -import { patchTags } from './utils';
 -
@@ -1014,9 +1084,12 @@ index 172a1e5..0000000
 -
 -const extend = {
 -  RegistryTypes,
+-  RegistryItem,
 -  RegistryType,
+-
 -  decodeToDataItem,
 -  encodeDataItem,
+-
 -  cbor,
 -};
 -
@@ -1037,6 +1110,24 @@ index 172a1e5..0000000
 -  PathComponent,
 -  extend,
 -};
+-
+-export * from './errors';
+-export * from './Decoder';
+-export * from './lib';
+-export * from './CryptoAccount'
+-export * from './CryptoPSBT'
+-export * from './CryptoHDKey'
+-export * from './CryptoOutput'
+-export * from './CryptoCoinInfo'
+-export * from './CryptoECKey'
+-export * from './MultiKey'
+-export * from './CryptoKeypath'
+-export * from './patchCBOR'
+-export * from './PathComponent'
+-export * from './RegistryItem'
+-export * from './RegistryType'
+-export * from './types'
+-export * from './utils'
 -
 -export default URlib;
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/lib/DataItem.ts b/node_modules/@keystonehq/bc-ur-registry/src/lib/DataItem.ts
@@ -1070,12 +1161,54 @@ index 9727f7e..0000000
 -    return this.data;
 -  };
 -}
+diff --git a/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.d.ts b/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.d.ts
+deleted file mode 100644
+index 6374ba7..0000000
+--- a/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.d.ts
++++ /dev/null
+@@ -1,36 +0,0 @@
+-export namespace config {
+-    const useToJSON: boolean;
+-}
+-export function addWriter(format: any, writerFunction: any): void;
+-export function addReader(format: any, readerFunction: any): void;
+-export function encode(data: any, format: any): any;
+-export function encodeDataItem(data: any, format?: any): any;
+-export function decode(data: any, format: any): any;
+-export function decodeToDataItem(data: any, format?: any): import("./DataItem").DataItem;
+-export function addSemanticEncode(tag: any, fn: any): {
+-    config: {
+-        useToJSON: boolean;
+-    };
+-    addWriter: (format: any, writerFunction: any) => void;
+-    addReader: (format: any, readerFunction: any) => void;
+-    encode: (data: any, format: any) => any;
+-    encodeDataItem: (data: any, format: any) => any;
+-    decode: (data: any, format: any) => any;
+-    decodeToDataItem: (data: any, format: any) => import("./DataItem").DataItem;
+-    addSemanticEncode: (tag: any, fn: any) => any;
+-    addSemanticDecode: (tag: any, fn: any) => any;
+-};
+-export function addSemanticDecode(tag: any, fn: any): {
+-    config: {
+-        useToJSON: boolean;
+-    };
+-    addWriter: (format: any, writerFunction: any) => void;
+-    addReader: (format: any, readerFunction: any) => void;
+-    encode: (data: any, format: any) => any;
+-    encodeDataItem: (data: any, format: any) => any;
+-    decode: (data: any, format: any) => any;
+-    decodeToDataItem: (data: any, format: any) => import("./DataItem").DataItem;
+-    addSemanticEncode: (tag: any, fn: any) => any;
+-    addSemanticDecode: (tag: any, fn: any) => any;
+-};
+-//# sourceMappingURL=cbor-sync.d.ts.map
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.js b/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.js
 deleted file mode 100644
-index 63e5b3a..0000000
+index df8db90..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/lib/cbor-sync.js
 +++ /dev/null
-@@ -1,695 +0,0 @@
+@@ -1,693 +0,0 @@
 -(function (global, factory) {
 -  if (typeof define === 'function' && define.amd) {
 -    define([], factory);
@@ -1531,8 +1664,6 @@ index 63e5b3a..0000000
 -        semanticDecoders[tag] = fn;
 -        return this;
 -      },
--      Reader: Reader,
--      Writer: Writer,
 -    };
 -
 -    /** Node.js Buffers **/
@@ -1788,7 +1919,7 @@ index deb0156..0000000
 -export { DataItem } from './DataItem';
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/patchCBOR.ts b/node_modules/@keystonehq/bc-ur-registry/src/patchCBOR.ts
 deleted file mode 100644
-index b9909a7..0000000
+index 218e912..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/patchCBOR.ts
 +++ /dev/null
 @@ -1,11 +0,0 @@
@@ -1802,17 +1933,29 @@ index b9909a7..0000000
 -const scriptExpressionTags = Object.values(ScriptExpressions).map((se) =>
 -  se.getTag(),
 -);
--patchTags(registryTags.concat(scriptExpressionTags));
+-patchTags(registryTags.concat(scriptExpressionTags) as number[]);
+diff --git a/node_modules/@keystonehq/bc-ur-registry/src/types.ts b/node_modules/@keystonehq/bc-ur-registry/src/types.ts
+deleted file mode 100644
+index 29aa370..0000000
+--- a/node_modules/@keystonehq/bc-ur-registry/src/types.ts
++++ /dev/null
+@@ -1,6 +0,0 @@
+-export interface ICryptoKey {
+-  isECKey: () => boolean;
+-  getOutputDescriptorContent: () => string;
+-}
+-
+-export type DataItemMap = Record<string, any>;
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/utils.ts b/node_modules/@keystonehq/bc-ur-registry/src/utils.ts
 deleted file mode 100644
-index ee39b78..0000000
+index e38112b..0000000
 --- a/node_modules/@keystonehq/bc-ur-registry/src/utils.ts
 +++ /dev/null
 @@ -1,19 +0,0 @@
 -import { addSemanticDecode, addSemanticEncode, DataItem } from './lib';
 -
--const alreadyPatchedTag = [];
--export const patchTags = (tags: number[]) => {
+-const alreadyPatchedTag: number[] = [];
+-export const patchTags = (tags: number[]): void => {
 -  tags.forEach((tag) => {
 -    if (alreadyPatchedTag.find((i) => i === tag)) return;
 -    addSemanticEncode(tag, (data: any) => {
