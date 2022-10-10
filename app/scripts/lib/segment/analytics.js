@@ -165,7 +165,6 @@ export default class Analytics {
    * Flush the current queue
    *
    * @param {Function} [callback] - (optional)
-   * @returns {Analytics}
    */
   flush(callback = noop) {
     if (!this.enable) {
@@ -216,7 +215,6 @@ export default class Analytics {
       done,
       0,
     );
-    return;
   }
 
   _sendRequest(url, body, done, retryNo) {
