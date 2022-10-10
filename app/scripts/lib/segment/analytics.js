@@ -96,9 +96,9 @@ export default class Analytics {
    *
    * @param {string} type
    * @param {object} msg
-   * @param {Function} [cb] - (optional)
+   * @param {Function} [callback] - (optional)
    */
-  enqueue(type, msg, cb = noop) {
+  enqueue(type, msg, callback = noop) {
     if (!this.enable) {
       setImmediate(callback);
       return;
