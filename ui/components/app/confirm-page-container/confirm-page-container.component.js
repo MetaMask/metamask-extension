@@ -28,12 +28,12 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import ConfirmPageContainerWarning from './confirm-page-container-warning';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
+  ConfirmPageContainerWarning,
 } from '.';
 
 export default class ConfirmPageContainer extends Component {
