@@ -29,6 +29,7 @@ import {
   transactionFeeSelector,
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
+  getCustomTokenAmount,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -39,6 +40,10 @@ import {
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
+import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
+import Dialog from '../../components/ui/dialog';
+import { useGasFeeContext } from '../../contexts/gasFee';
+import { setCustomTokenAmount } from '../../ducks/app/app';
 
 export default function TokenAllowance({
   origin,
@@ -71,11 +76,15 @@ export default function TokenAllowance({
 
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
-  const [isFirstPage, setIsFirstPage] = useState(false);
+  const [isFirstPage, setIsFirstPage] = useState(true);
+  const [customTokenAmountInputValue, setCustomTokenAmountInputValue] =
+    useState('');
+  const [errorText, setErrorText] = useState('');
 
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const customTokenAmount = useSelector(getCustomTokenAmount);
 
   let fullTxData = { ...txData };
 
@@ -92,6 +101,13 @@ export default function TokenAllowance({
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
   const methodData = useSelector((state) => getKnownMethodData(state, data));
 
+  const { balanceError } = useGasFeeContext();
+
+  const disableNextButton =
+    isFirstPage && (customTokenAmountInputValue === '' || errorText !== '');
+
+  const disableApproveButton = !isFirstPage && balanceError;
+
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
@@ -105,9 +121,10 @@ export default function TokenAllowance({
       : transactionData;
 
   const handleReject = () => {
+    dispatch(updateCustomNonce(''));
+
     dispatch(cancelTx(fullTxData)).then(() => {
       dispatch(clearConfirmTransaction());
-      dispatch(updateCustomNonce(''));
       history.push(mostRecentOverviewPage);
     });
   };
@@ -128,15 +145,34 @@ export default function TokenAllowance({
       fullTxData.originalApprovalAmount = dappProposedTokenAmount;
     }
 
+    if (customTokenAmount) {
+      txData.customTokenAmount = customTokenAmount;
+      txData.finalApprovalAmount = customTokenAmount;
+    } else if (dappProposedTokenAmount !== undefined) {
+      txData.finalApprovalAmount = dappProposedTokenAmount;
+    }
+
     if (currentTokenBalance) {
       fullTxData.currentTokenBalance = currentTokenBalance;
     }
 
+    dispatch(updateCustomNonce(''));
+
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       dispatch(clearConfirmTransaction());
-      dispatch(updateCustomNonce(''));
       history.push(mostRecentOverviewPage);
     });
+  };
+
+  const handleNextClick = () => {
+    dispatch(setCustomTokenAmount(customTokenAmountInputValue));
+    setShowFullTxDetails(false);
+    setIsFirstPage(false);
+  };
+
+  const handleBackClick = () => {
+    setShowFullTxDetails(false);
+    setIsFirstPage(true);
   };
 
   return (
@@ -151,7 +187,7 @@ export default function TokenAllowance({
       >
         <Box>
           {!isFirstPage && (
-            <Button type="inline" onClick={() => setIsFirstPage(true)}>
+            <Button type="inline" onClick={() => handleBackClick()}>
               <Typography
                 variant={TYPOGRAPHY.H6}
                 color={COLORS.TEXT_MUTED}
@@ -216,13 +252,17 @@ export default function TokenAllowance({
           </Typography>
         </Box>
       </Box>
-      <Box marginBottom={5}>
+      <Box marginBottom={5} marginLeft={4} marginRight={4}>
         <Typography
           variant={TYPOGRAPHY.H3}
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {isFirstPage ? t('setSpendingCap') : t('reviewSpendingCap')}
+          {isFirstPage && t('setSpendingCap')}
+          {!isFirstPage &&
+            (customTokenAmount === 0
+              ? t('revokeSpendingCap')
+              : t('reviewSpendingCap'))}
         </Typography>
       </Box>
       <Box>
@@ -250,13 +290,31 @@ export default function TokenAllowance({
         </Button>
       </Box>
       <Box margin={[4, 4, 3, 4]}>
-        <ReviewSpendingCap
-          tokenName={tokenSymbol}
-          currentTokenBalance={parseFloat(currentTokenBalance)}
-          tokenValue={10}
-          onEdit={() => setIsFirstPage(true)}
-        />
+        {isFirstPage ? (
+          <CustomSpendingCap
+            tokenName={tokenSymbol}
+            currentTokenBalance={parseFloat(currentTokenBalance)}
+            dappProposedValue={parseFloat(dappProposedTokenAmount)}
+            siteOrigin={origin}
+            passTheCurrentValue={(inputValue) =>
+              setCustomTokenAmountInputValue(inputValue)
+            }
+            passTheErrorText={(value) => setErrorText(value)}
+          />
+        ) : (
+          <ReviewSpendingCap
+            tokenName={tokenSymbol}
+            currentTokenBalance={parseFloat(currentTokenBalance)}
+            tokenValue={parseFloat(customTokenAmount)}
+            onEdit={() => handleBackClick()}
+          />
+        )}
       </Box>
+      {!isFirstPage && balanceError && (
+        <Dialog type="error" className="send__error-dialog">
+          {t('insufficientFundsForGas')}
+        </Dialog>
+      )}
       {!isFirstPage && (
         <Box className="token-allowance-container__card-wrapper">
           <ApproveContentCard
@@ -327,7 +385,8 @@ export default function TokenAllowance({
         cancelText={t('reject')}
         submitText={isFirstPage ? t('next') : t('approveButtonText')}
         onCancel={() => handleReject()}
-        onSubmit={() => (isFirstPage ? setIsFirstPage(false) : handleApprove())}
+        onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
+        disabled={disableNextButton || disableApproveButton}
       />
       {showContractDetails && (
         <ContractDetailsModal

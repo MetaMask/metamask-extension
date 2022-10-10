@@ -17,8 +17,11 @@ export default {
     siteOrigin: {
       control: { type: 'text' },
     },
-    onEdit: {
-      action: 'onEdit',
+    passTheCurrentValue: {
+      action: 'passTheCurrentValue',
+    },
+    passTheErrorText: {
+      action: 'passTheErrorText',
     },
   },
   args: {
