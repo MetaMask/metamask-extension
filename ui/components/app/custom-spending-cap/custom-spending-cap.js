@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -15,6 +16,7 @@ import {
   JUSTIFY_CONTENT,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { getCustomTokenAmount } from '../../../selectors';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -22,12 +24,16 @@ export default function CustomSpendingCap({
   currentTokenBalance,
   dappProposedValue,
   siteOrigin,
-  onEdit,
+  passTheCurrentValue,
+  passTheErrorText,
 }) {
   const t = useContext(I18nContext);
-  const [value, setValue] = useState('');
-  const [customSpendingCapText, setCustomSpendingCapText] = useState('');
+
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+
+  const [value, setValue] = useState(customTokenAmount);
   const [error, setError] = useState('');
+  const [showUseDefaultButton, setShowUseDefaultButton] = useState(true);
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const getInputTextLogic = (inputNumber) => {
@@ -57,6 +63,10 @@ export default function CustomSpendingCap({
     };
   };
 
+  const [customSpendingCapText, setCustomSpendingCapText] = useState(
+    getInputTextLogic(customTokenAmount).description,
+  );
+
   const handleChange = (valueInput) => {
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
@@ -72,7 +82,18 @@ export default function CustomSpendingCap({
     }
 
     setValue(valueInput);
+    passTheCurrentValue(valueInput);
   };
+
+  useEffect(() => {
+    if (value !== dappProposedValue) {
+      setShowUseDefaultButton(true);
+    }
+  }, [value, dappProposedValue]);
+
+  useEffect(() => {
+    passTheErrorText(error);
+  }, [error, passTheErrorText]);
 
   const chooseTooltipContentText =
     value > currentTokenBalance
@@ -131,6 +152,7 @@ export default function CustomSpendingCap({
             }
           >
             <FormField
+              numeric
               dataTestId="custom-spending-cap-input"
               autoFocus
               wrappingLabelProps={{ as: 'div' }}
@@ -151,21 +173,19 @@ export default function CustomSpendingCap({
               error={error}
               value={value}
               titleDetail={
-                <button
-                  className="custom-spending-cap__input--button"
-                  type="link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (value <= currentTokenBalance || error) {
+                showUseDefaultButton && (
+                  <button
+                    className="custom-spending-cap__input--button"
+                    type="link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowUseDefaultButton(false);
                       handleChange(dappProposedValue);
-                      setValue(dappProposedValue);
-                    } else {
-                      onEdit();
-                    }
-                  }}
-                >
-                  {value > currentTokenBalance ? t('edit') : t('useDefault')}
-                </button>
+                    }}
+                  >
+                    {t('useDefault')}
+                  </button>
+                )
               }
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
               allowDecimals
@@ -202,7 +222,11 @@ CustomSpendingCap.propTypes = {
    */
   siteOrigin: PropTypes.string,
   /**
-   * onClick handler for the Edit link
+   * Parent component's callback function passed in order to get the input value
    */
-  onEdit: PropTypes.func,
+  passTheCurrentValue: PropTypes.func,
+  /**
+   * Parent component's callback function passed in order to get the error text
+   */
+  passTheErrorText: PropTypes.func,
 };
