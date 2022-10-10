@@ -5377,7 +5377,7 @@
       "packages": {
         "browserify>browser-resolve": true,
         "eth-block-tracker>@metamask/utils": true,
-        "eth-json-rpc-middleware>eth-sig-util": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -5386,45 +5386,32 @@
         "vinyl>clone": true
       }
     },
-    "eth-json-rpc-middleware>eth-sig-util": {
+    "eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
-        "eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": true,
-        "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": true
-      }
-    },
-    "eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": {
-      "packages": {
-        "bn.js": true,
+        "3box>tweetnacl": true,
+        "3box>tweetnacl-util": true,
         "browserify>buffer": true,
-        "eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
+        "eth-lattice-keyring>@ethereumjs/util": true
       }
     },
-    "eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": {
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
       "packages": {
-        "3box>ethers>elliptic": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true
+        "browserify>browser-resolve": true
       }
     },
-    "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": {
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
       "packages": {
-        "3box>ethers>elliptic": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true
       }
     },
-    "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": {
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
       "packages": {
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
