@@ -98,9 +98,7 @@ export default class Analytics {
    * @param {object} msg
    * @param {Function} [cb] - (optional)
    */
-  enqueue(type, msg, cb) {
-    const callback = cb || noop;
-
+  enqueue(type, msg, cb = noop) {
     if (!this.enable) {
       setImmediate(callback);
       return;
@@ -146,12 +144,10 @@ export default class Analytics {
   /**
    * Flush the current queue
    *
-   * @param {Function} [cb] - (optional)
+   * @param {Function} [callback] - (optional)
    * @returns {Analytics}
    */
-  flush(cb) {
-    const callback = cb || noop;
-
+  flush(callback = noop) {
     if (!this.enable) {
       setImmediate(callback);
       return Promise.resolve();
