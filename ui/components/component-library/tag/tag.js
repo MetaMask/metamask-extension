@@ -7,7 +7,6 @@ import {
   ALIGN_ITEMS,
   COLORS,
   JUSTIFY_CONTENT,
-  SIZES,
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
