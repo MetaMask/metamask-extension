@@ -673,12 +673,6 @@ export function testsForRpcMethodSupportingBlockParam(
           ),
           response: { result: mockResults[0] },
         });
-        // Note that the block-ref middleware will still allow the original
-        // request to go through.
-        comms.mockInfuraRpcCall({
-          request: requests[0],
-          response: { result: mockResults[0] },
-        });
 
         const results = await withInfuraClient(({ makeRpcCallsInSeries }) =>
           makeRpcCallsInSeries(requests),
@@ -713,29 +707,13 @@ export function testsForRpcMethodSupportingBlockParam(
           ),
           response: { result: mockResults[0] },
         });
-        // Note that the block-ref middleware will still allow the original
-        // request to go through.
-        comms.mockInfuraRpcCall({
-          request: requests[0],
-          response: { result: mockResults[0] },
-        });
         comms.mockNextBlockTrackerRequest({ blockNumber: '0x200' });
         comms.mockInfuraRpcCall({
-          request: requests[1],
-          response: { result: mockResults[1] },
-        });
-        // The previous two requests will happen again, with a different block
-        // number, in the same order.
-        comms.mockInfuraRpcCall({
           request: buildRequestWithReplacedBlockParam(
-            requests[0],
+            requests[1],
             blockParamIndex,
             '0x200',
           ),
-          response: { result: mockResults[1] },
-        });
-        comms.mockInfuraRpcCall({
-          request: requests[0],
           response: { result: mockResults[1] },
         });
 
@@ -780,23 +758,12 @@ export function testsForRpcMethodSupportingBlockParam(
             ),
             response: { result: mockResults[0] },
           });
-          // Note that the block-ref middleware will still allow the original
-          // request to go through.
-          comms.mockInfuraRpcCall({
-            request: requests[0],
-            response: { result: mockResults[0] },
-          });
-          // The previous two requests will happen again, in the same order.
           comms.mockInfuraRpcCall({
             request: buildRequestWithReplacedBlockParam(
-              requests[0],
+              requests[1],
               blockParamIndex,
               '0x100',
             ),
-            response: { result: mockResults[1] },
-          });
-          comms.mockInfuraRpcCall({
-            request: requests[0],
             response: { result: mockResults[1] },
           });
 
@@ -823,21 +790,15 @@ export function testsForRpcMethodSupportingBlockParam(
         comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
         // The block-ref middleware will make the request as specified
         // except that the block param is replaced with the latest block
-        // number.
+        // number, and we delay it.
         comms.mockInfuraRpcCall({
+          delay: 100,
           request: buildRequestWithReplacedBlockParam(
             requests[0],
             blockParamIndex,
             '0x100',
           ),
           response: { result: mockResults[0] },
-        });
-        // This is the original request as below, which the block-ref
-        // middleware will allow through, except that we delay it.
-        comms.mockInfuraRpcCall({
-          request: requests[0],
-          response: { result: mockResults[0] },
-          delay: 100,
         });
         // The previous two requests will happen again, in the same order.
         comms.mockInfuraRpcCall({
@@ -849,19 +810,11 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[1] },
         });
         comms.mockInfuraRpcCall({
-          request: requests[1],
-          response: { result: mockResults[1] },
-        });
-        comms.mockInfuraRpcCall({
           request: buildRequestWithReplacedBlockParam(
             requests[2],
             blockParamIndex,
             '0x100',
           ),
-          response: { result: mockResults[2] },
-        });
-        comms.mockInfuraRpcCall({
-          request: requests[2],
           response: { result: mockResults[2] },
         });
 
@@ -902,10 +855,6 @@ export function testsForRpcMethodSupportingBlockParam(
           // The block-ref middleware will make the request as specified
           // except that the block param is replaced with the latest block
           // number.
-          //
-          // Note, however, that the block-ref middleware doesn't run the
-          // original request, as it fails before it gets to that point, so
-          // there is no need to mock the request again.
           comms.mockInfuraRpcCall({
             request: buildRequestWithReplacedBlockParam(
               request,
@@ -940,10 +889,6 @@ export function testsForRpcMethodSupportingBlockParam(
           // The block-ref middleware will make the request as specified
           // except that the block param is replaced with the latest block
           // number.
-          //
-          // Note, however, that the block-ref middleware doesn't run the
-          // original request, as it fails before it gets to that point, so
-          // there is no need to mock the request again.
           comms.mockInfuraRpcCall({
             request: buildRequestWithReplacedBlockParam(
               request,
@@ -978,10 +923,6 @@ export function testsForRpcMethodSupportingBlockParam(
           // The block-ref middleware will make the request as specified
           // except that the block param is replaced with the latest block
           // number.
-          //
-          // Note, however, that the block-ref middleware doesn't run the
-          // original request, as it fails before it gets to that point, so
-          // there is no need to mock the request again.
           comms.mockInfuraRpcCall({
             request: buildRequestWithReplacedBlockParam(
               request,
@@ -1046,15 +987,6 @@ export function testsForRpcMethodSupportingBlockParam(
                 httpStatus: 200,
               },
             });
-            // Note that the block-ref middleware will still allow the original
-            // request to go through.
-            comms.mockInfuraRpcCall({
-              request,
-              response: {
-                result: 'the result',
-                httpStatus: 200,
-              },
-            });
             const result = await withInfuraClient(
               async ({ makeRpcCall, clock }) => {
                 return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1082,10 +1014,6 @@ export function testsForRpcMethodSupportingBlockParam(
             // The block-ref middleware will make the request as specified
             // except that the block param is replaced with the latest block
             // number.
-            //
-            // Note, however, that the block-ref middleware doesn't run the
-            // original request, as it fails before it gets to that point, so
-            // there is no need to mock the request again.
             comms.mockInfuraRpcCall({
               request: buildRequestWithReplacedBlockParam(
                 request,
@@ -1153,15 +1081,6 @@ export function testsForRpcMethodSupportingBlockParam(
                   httpStatus: 200,
                 },
               });
-              // Note that the block-ref middleware will still allow the
-              // original request to go through.
-              comms.mockInfuraRpcCall({
-                request,
-                response: {
-                  result: 'the result',
-                  httpStatus: 200,
-                },
-              });
               const result = await withInfuraClient(
                 async ({ makeRpcCall, clock }) => {
                   return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1189,10 +1108,6 @@ export function testsForRpcMethodSupportingBlockParam(
               // The block-ref middleware will make the request as specified
               // except that the block param is replaced with the latest block
               // number.
-              //
-              // Note, however, that the block-ref middleware doesn't run the
-              // original request, as it fails before it gets to that point, so
-              // there is no need to mock the request again.
               comms.mockInfuraRpcCall({
                 request: buildRequestWithReplacedBlockParam(
                   request,
@@ -1408,23 +1323,16 @@ export function testsForRpcMethodSupportingBlockParam(
           // also happens within the retry-on-empty middleware (although the
           // latest block is cached by now).
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          // The retry-on-empty middleware will make an explicit request.
           comms.mockInfuraRpcCall({
             request,
-            response: { result: 'this result gets overwritten' },
-          });
-          // Note that the retry-on-empty middleware will still allow the
-          // original request to go through.
-          comms.mockInfuraRpcCall({
-            request,
-            response: { result: 'the actual result' },
+            response: { result: 'the result' },
           });
 
           const result = await withInfuraClient(({ makeRpcCall }) =>
             makeRpcCall(request),
           );
 
-          expect(result).toStrictEqual('the actual result');
+          expect(result).toStrictEqual('the result');
         });
       });
 
@@ -1440,23 +1348,16 @@ export function testsForRpcMethodSupportingBlockParam(
           // also happens within the retry-on-empty middleware (although the
           // latest block is cached by now).
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          // The retry-on-empty middleware will make an explicit request.
           comms.mockInfuraRpcCall({
             request,
-            response: { result: 'this result gets overwritten' },
-          });
-          // Note that the retry-on-empty middleware will still allow the
-          // original request to go through.
-          comms.mockInfuraRpcCall({
-            request,
-            response: { result: 'the actual result' },
+            response: { result: 'the result' },
           });
 
           const result = await withInfuraClient(({ makeRpcCall }) =>
             makeRpcCall(request),
           );
 
-          expect(result).toStrictEqual('the actual result');
+          expect(result).toStrictEqual('the result');
         });
       });
     }
