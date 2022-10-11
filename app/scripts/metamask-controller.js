@@ -201,6 +201,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = new ControllerMessenger();
 
+    // instance of a class that wraps the extension's storage local API.
+    this.localStoreApiWrapper = opts.localStore;
+
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -654,7 +657,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.8.0',
+        'https://metamask.github.io/iframe-execution-environment/0.9.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -3480,7 +3483,15 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
+    outStream.on(
+      'data',
+      createMetaRPCHandler(
+        api,
+        outStream,
+        this.store,
+        this.localStoreApiWrapper,
+      ),
+    );
     const handleUpdate = (update) => {
       if (outStream._writableState.ended) {
         return;
@@ -3744,7 +3755,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getSnaps',
+          'SnapController:getPermitted',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
