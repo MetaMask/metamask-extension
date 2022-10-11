@@ -86,16 +86,134 @@ class Fixture {
       TokenListController: {},
       TokensController: {},
       TransactionController: {},
+      config: {},
+      firstTimeInfo: {
+        date: 1665507600000,
+        version: '10.21.0',
+      },
     };
-    this.meta = {
-      version: 73,
+  }
+}
+
+class OnboardingFixture {
+  constructor() {
+    this.data = {
+      AppStateController: {
+        browserEnvironment: {
+          browser: 'chrome',
+          os: 'mac',
+        },
+        collectiblesDetectionNoticeDismissed: false,
+        collectiblesDropdownState: {},
+        connectedStatusPopoverHasBeenShown: true,
+        defaultHomeActiveTabName: null,
+        enableEIP1559V2NoticeDismissed: false,
+        fullScreenGasPollTokens: [],
+        notificationGasPollTokens: [],
+        popupGasPollTokens: [],
+        qrHardware: {},
+        recoveryPhraseReminderHasBeenShown: false,
+        recoveryPhraseReminderLastShown: 1665507600000,
+        showPortfolioTooltip: true,
+        showTestnetMessageInDropdown: true,
+        trezorModel: null,
+        usedNetworks: {
+          '0x1': true,
+          '0x5': true,
+          '0x539': true,
+        },
+      },
+      NetworkController: {
+        network: '1337',
+        networkDetails: {
+          EIPS: {
+            1559: false,
+          },
+        },
+        previousProviderStore: {
+          ticker: 'ETH',
+          type: 'rpc',
+          rpcUrl: 'http://localhost:8545',
+          chainId: '0x539',
+          nickname: 'Localhost 8545',
+        },
+        provider: {
+          ticker: 'ETH',
+          type: 'rpc',
+          rpcUrl: 'http://localhost:8545',
+          chainId: '0x539',
+          nickname: 'Localhost 8545',
+        },
+      },
+      PreferencesController: {
+        advancedGasFee: null,
+        currentLocale: 'en',
+        customNetworkListEnabled: false,
+        dismissSeedBackUpReminder: false,
+        featureFlags: {
+          showIncomingTransactions: true,
+        },
+        forgottenPassword: false,
+        frequentRpcListDetail: [
+          {
+            chainId: '0x539',
+            nickname: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+          },
+        ],
+        identities: {},
+        infuraBlocked: false,
+        ipfsGateway: 'dweb.link',
+        knownMethodData: {},
+        ledgerTransportType: 'webhid',
+        lostIdentities: {},
+        openSeaEnabled: false,
+        preferences: {
+          hideZeroBalanceTokens: false,
+          showFiatInTestnets: false,
+          showTestNetworks: false,
+          useNativeCurrencyAsPrimaryCurrency: true,
+        },
+        theme: 'light',
+        useBlockie: false,
+        useCollectibleDetection: false,
+        useNonceField: false,
+        usePhishDetect: true,
+        useTokenDetection: false,
+      },
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          fees: {},
+          liveness: true,
+          smartTransactions: {
+            '0x1': [],
+          },
+        },
+      },
+      TokensController: {
+        allDetectedTokens: {},
+        allIgnoredTokens: {},
+        allTokens: {},
+        detectedTokens: [],
+        ignoredTokens: [],
+        suggestedAssets: [],
+        tokens: [],
+      },
+      config: {},
+      firstTimeInfo: {
+        date: 1665507600000,
+        version: '10.21.0',
+      },
     };
   }
 }
 
 class FixtureBuilder {
-  constructor() {
-    this.fixture = new Fixture();
+  constructor({ onboarding = false } = {}) {
+    this.fixture =
+      onboarding === true ? new OnboardingFixture() : new Fixture();
   }
 
   withAddressBookController(data) {
@@ -652,6 +770,9 @@ class FixtureBuilder {
   }
 
   build() {
+    this.fixture.meta = {
+      version: 74,
+    };
     return this.fixture;
   }
 }
