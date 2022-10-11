@@ -28,16 +28,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringController({ vault: undefined })
-          .withMetaMetricsController({
-            metaMetricsId: undefined,
-            participateInMetaMetrics: undefined,
-          })
-          .withOnboardingController({
-            completedOnboarding: undefined,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -155,16 +146,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringController({ vault: undefined })
-          .withMetaMetricsController({
-            metaMetricsId: undefined,
-            participateInMetaMetrics: undefined,
-          })
-          .withOnboardingController({
-            completedOnboarding: undefined,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

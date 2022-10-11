@@ -51,16 +51,7 @@ describe('Add account', function () {
   it('should add the same account addresses when a secret recovery phrase is imported, the account is locked, and the same secret recovery phrase is imported again', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringController({ vault: undefined })
-          .withMetaMetricsController({
-            metaMetricsId: undefined,
-            participateInMetaMetrics: undefined,
-          })
-          .withOnboardingController({
-            completedOnboarding: undefined,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

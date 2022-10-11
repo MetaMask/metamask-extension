@@ -9,16 +9,7 @@ describe('MetaMask Responsive UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringController({ vault: undefined })
-          .withMetaMetricsController({
-            metaMetricsId: undefined,
-            participateInMetaMetrics: undefined,
-          })
-          .withOnboardingController({
-            completedOnboarding: undefined,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
         title: this.test.title,
         failOnConsoleError: false,
