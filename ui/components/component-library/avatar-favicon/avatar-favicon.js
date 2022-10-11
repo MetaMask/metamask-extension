@@ -39,7 +39,7 @@ export const AvatarFavicon = ({
           color={COLORS.ICON_DEFAULT}
           size={size}
           aria-label={imgAlt}
-          fallbackIconProps={fallbackIconProps}
+          {...fallbackIconProps}
         />
       )}
     </BaseAvatar>
@@ -55,6 +55,10 @@ AvatarFavicon.propTypes = {
    * The alt text for the favicon avatar to be rendered
    */
   imgAlt: PropTypes.string,
+  /**
+   * Props for the fallback icon. All Icon props can be used
+   */
+  fallbackIconProps: Icon.PropTypes,
   /**
    * The size of the AvatarFavicon
    * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
