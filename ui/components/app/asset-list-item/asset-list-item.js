@@ -111,6 +111,7 @@ const AssetListItem = ({
       title={
         <button
           className="asset-list-item__token-button"
+          data-testid="token-button"
           onClick={onClick}
           title={`${primary} ${tokenSymbol}`}
         >

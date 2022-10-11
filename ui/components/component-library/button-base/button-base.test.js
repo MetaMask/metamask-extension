@@ -18,9 +18,9 @@ describe('ButtonBase', () => {
     const { getByTestId, container } = render(
       <ButtonBase as="a" data-testid="button-base" />,
     );
-    expect(getByTestId('button-base')).toBeDefined();
-    expect(container.querySelector('a')).toBeDefined();
     expect(getByTestId('button-base')).toHaveClass('mm-button');
+    const anchor = container.getElementsByTagName('a').length;
+    expect(anchor).toBe(1);
   });
 
   it('should render button as block', () => {
@@ -49,6 +49,13 @@ describe('ButtonBase', () => {
     expect(getByTestId(BUTTON_SIZES.LG)).toHaveClass(
       `mm-button--size-${BUTTON_SIZES.LG}`,
     );
+  });
+
+  it('should render with added classname', () => {
+    const { getByTestId } = render(
+      <ButtonBase data-testid="classname" className="mm-button--test" />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-button--test');
   });
 
   it('should render with different button states', () => {
