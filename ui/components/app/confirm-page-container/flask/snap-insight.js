@@ -64,7 +64,22 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
                     >
                       {key}
                     </Typography>
-                    <Typography variant={TYPOGRAPHY.H6}>{data[key]}</Typography>
+
+                    {typeof data[key] === 'string' ? (
+                      <Typography variant={TYPOGRAPHY.H6}>
+                        {data[key]}
+                      </Typography>
+                    ) : (
+                      <Box
+                        className="snap-insight__container__data__json"
+                        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+                        padding={3}
+                      >
+                        <Typography variant={TYPOGRAPHY.H7}>
+                          <pre>{JSON.stringify(data[key], null, 2)}</pre>
+                        </Typography>
+                      </Box>
+                    )}
                   </div>
                 ))}
               </Box>
