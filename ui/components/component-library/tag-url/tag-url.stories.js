@@ -15,9 +15,13 @@ export default {
     label: {
       control: 'text',
     },
+    imageSource: {
+      control: 'text',
+    },
   },
   args: {
     label: 'Imported',
+    imageSource: 'https://uniswap.org/favicon.ico',
   },
 };
 
