@@ -250,7 +250,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      preventPollingOnNetworkRestart: true,
+      preventPollingOnNetworkRestart: initState.TokenListController
+        ? initState.TokenListController.preventPollingOnNetworkRestart
+        : true,
       onNetworkStateChange: (cb) => {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
