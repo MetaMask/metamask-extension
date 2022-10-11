@@ -218,24 +218,35 @@ export default class Analytics {
     );
   }
 
+  _retryRequest(url, body, done, retryNo) {
+    const delay = Math.pow(2, retryNo) * 100;
+    setTimeout(() => {
+      this._sendRequest(url, body, done, retryNo + 1);
+    }, delay);
+  }
+
   async _sendRequest(url, body, done, retryNo) {
     return fetch(url, body)
-      .then(async (res) => {
-        const response = await res.json();
-        if (res.ok) {
+      .then(async (response) => {
+        const result = await response.json();
+        if (response.ok) {
           done();
+          return Promise.resolve(result);
         } else {
-          const error = new Error(res.statusText);
-          done(error);
+          if (
+            this._isErrorRetryable({ response }) &&
+            retryNo <= this.retryCount
+          ) {
+            _retryRequest(url, body, done, retryNo);
+          } else {
+            const error = new Error(res.statusText);
+            done(error);
+          }
         }
-        return Promise.resolve(response);
       })
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
-          const delay = Math.pow(2, retryNo) * 100;
-          setTimeout(() => {
-            this._sendRequest(url, body, done, retryNo + 1);
-          }, delay);
+          _retryRequest(url, body, done, retryNo);
         } else {
           done(error);
         }
