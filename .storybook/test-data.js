@@ -518,7 +518,7 @@ const state = {
       editingTransactionId: null,
       toNickname: 'Account 2',
       domainResolution: null,
-      ensResolutionError: '',
+      domainResolutionError: '',
       token: {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
         symbol: 'DAI',
