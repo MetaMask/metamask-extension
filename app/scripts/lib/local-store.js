@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import { checkForError } from './util';
 
 /**
@@ -10,6 +11,45 @@ export default class ExtensionStore {
     this.isSupported = Boolean(browser.storage.local);
     if (!this.isSupported) {
       log.error('Storage local API not available.');
+    }
+    // we use this flag to avoid flooding sentry with a ton of errors:
+    // once data persistence fails once and it flips true we don't send further
+    // data persistence errors to sentry
+    this.dataPersistenceFailing = false;
+  }
+
+  setMetadata(initMetaData) {
+    this.metadata = initMetaData;
+  }
+
+  async set(state) {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing');
+    }
+    if (!this.metadata) {
+      throw new Error(
+        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
+      );
+    }
+    try {
+      // we format the data for storage as an object with the "data" key for the controller state object
+      // and the "meta" key for a metadata object containing a version number that tracks how the data shape
+      // has changed using migrations to adapt to backwards incompatible changes
+      await this._set({ data: state, meta: this.metadata });
+      if (this.dataPersistenceFailing) {
+        this.dataPersistenceFailing = false;
+      }
+    } catch (err) {
+      if (!this.dataPersistenceFailing) {
+        this.dataPersistenceFailing = true;
+        captureException(err);
+      }
+      log.error('error setting state in local store:', err);
     }
   }
 
@@ -29,16 +69,6 @@ export default class ExtensionStore {
       return undefined;
     }
     return result;
-  }
-
-  /**
-   * Sets the key in local state
-   *
-   * @param {object} state - The state to set
-   * @returns {Promise<void>}
-   */
-  async set(state) {
-    return this._set(state);
   }
 
   /**
