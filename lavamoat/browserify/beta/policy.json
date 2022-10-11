@@ -1430,8 +1430,8 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
-        "browserify>process": true
+        "browserify>process": true,
+        "gulp-livereload>debug>ms": true
       }
     },
     "3box>ipfs>libp2p-websocket-star-multi>libp2p-websocket-star>socket.io-pull-stream>uuid": {
@@ -1859,7 +1859,7 @@
         "setTimeout": true
       },
       "packages": {
-        "analytics-node>ms": true
+        "gulp-livereload>debug>ms": true
       }
     },
     "3box>ipfs>stream-to-pull-stream": {
@@ -3540,6 +3540,14 @@
         "redux-thunk": true
       }
     },
+    "@segment/loosely-validate-event": {
+      "packages": {
+        "@segment/loosely-validate-event>component-type": true,
+        "@segment/loosely-validate-event>join-component": true,
+        "browserify>assert": true,
+        "browserify>buffer": true
+      }
+    },
     "@sentry/browser": {
       "globals": {
         "XMLHttpRequest": true,
@@ -3969,71 +3977,6 @@
       "packages": {
         "ethereumjs-wallet>safe-buffer": true,
         "pumpify>inherits": true
-      }
-    },
-    "analytics-node": {
-      "globals": {
-        "clearTimeout": true,
-        "console.log": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "analytics-node>@segment/loosely-validate-event": true,
-        "analytics-node>axios": true,
-        "analytics-node>axios-retry": true,
-        "analytics-node>lodash.isstring": true,
-        "analytics-node>md5": true,
-        "analytics-node>ms": true,
-        "analytics-node>remove-trailing-slash": true,
-        "analytics-node>uuid": true,
-        "browserify>assert": true,
-        "browserify>process": true
-      }
-    },
-    "analytics-node>@segment/loosely-validate-event": {
-      "packages": {
-        "analytics-node>@segment/loosely-validate-event>component-type": true,
-        "analytics-node>@segment/loosely-validate-event>join-component": true,
-        "browserify>assert": true,
-        "browserify>buffer": true
-      }
-    },
-    "analytics-node>axios": {
-      "globals": {
-        "FormData": true,
-        "URLSearchParams": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "console.warn": true,
-        "document": true,
-        "location.href": true,
-        "navigator": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "analytics-node>axios-retry": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "geckodriver>got>is-retry-allowed": true
-      }
-    },
-    "analytics-node>md5": {
-      "packages": {
-        "analytics-node>md5>charenc": true,
-        "analytics-node>md5>crypt": true,
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "analytics-node>uuid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
       }
     },
     "await-semaphore": {
