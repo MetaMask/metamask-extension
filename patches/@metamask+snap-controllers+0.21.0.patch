@@ -1,0 +1,85 @@
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+index cc6857b..c2eeb0a 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+@@ -797,7 +797,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+         const newSnap = await this._fetchSnap(snapId, newVersionRange);
+         const newVersion = newSnap.manifest.version;
+         if (!(0, snap_utils_1.gtVersion)(newVersion, snap.version)) {
+-            console.warn(`Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`);
++            console.warn(`Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`);
+             return null;
+         }
+         await this._assertIsUnblocked(snapId, {
+@@ -807,7 +807,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+         const processedPermissions = this.processSnapPermissions(newSnap.manifest.initialPermissions);
+         const { newPermissions, unusedPermissions, approvedPermissions } = await this.calculatePermissionsChange(snapId, processedPermissions);
+         const id = (0, nanoid_1.nanoid)();
+-        const isApproved = await this.messagingSystem.call('ApprovalController:addRequest', {
++        const _a = (await this.messagingSystem.call('ApprovalController:addRequest', {
+             origin,
+             id,
+             type: exports.SNAP_APPROVAL_UPDATE,
+@@ -821,10 +821,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+                 approvedPermissions,
+                 unusedPermissions,
+             },
+-        }, true);
+-        if (!isApproved) {
+-            return null;
+-        }
++        }, true)), { permissions: approvedNewPermissions } = _a, requestData = __rest(_a, ["permissions"]);
+         if (this.isRunning(snapId)) {
+             await this.stopSnap(snapId, snap_utils_1.SnapStatusEvents.Stop);
+         }
+@@ -842,10 +839,11 @@ class SnapController extends controllers_1.BaseControllerV2 {
+                 [snapId]: unusedPermissionsKeys,
+             });
+         }
+-        if ((0, utils_1.isNonEmptyArray)(Object.keys(newPermissions))) {
++        if ((0, utils_1.isNonEmptyArray)(Object.keys(approvedNewPermissions))) {
+             await this.messagingSystem.call('PermissionController:grantPermissions', {
+-                approvedPermissions: newPermissions,
++                approvedPermissions: approvedNewPermissions,
+                 subject: { origin: snapId },
++                requestData,
+             });
+         }
+         await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
+@@ -1098,7 +1096,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+      * @param snapId - The id of the Snap.
+      * @returns The snap's approvedPermissions.
+      */
+-    async authorize(origin, snapId) {
++     async authorize(origin, snapId) {
+         console.info(`Authorizing snap: ${snapId}`);
+         const snapsState = this.state.snaps;
+         const snap = snapsState[snapId];
+@@ -1106,7 +1104,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+         try {
+             const processedPermissions = this.processSnapPermissions(initialPermissions);
+             const id = (0, nanoid_1.nanoid)();
+-            const isApproved = await this.messagingSystem.call('ApprovalController:addRequest', {
++            const _a = (await this.messagingSystem.call('ApprovalController:addRequest', {
+                 origin,
+                 id,
+                 type: exports.SNAP_APPROVAL_INSTALL,
+@@ -1116,14 +1114,12 @@ class SnapController extends controllers_1.BaseControllerV2 {
+                     permissions: processedPermissions,
+                     snapId,
+                 },
+-            }, true);
+-            if (!isApproved) {
+-                throw eth_rpc_errors_1.ethErrors.provider.userRejectedRequest();
+-            }
+-            if ((0, utils_1.isNonEmptyArray)(Object.keys(processedPermissions))) {
++            }, true)), { permissions: approvedPermissions } = _a, requestData = __rest(_a, ["permissions"]);
++            if ((0, utils_1.isNonEmptyArray)(Object.keys(approvedPermissions))) {
+                 await this.messagingSystem.call('PermissionController:grantPermissions', {
+-                    approvedPermissions: processedPermissions,
++                    approvedPermissions,
+                     subject: { origin: snapId },
++                    requestData,
+                 });
+             }
+         }
