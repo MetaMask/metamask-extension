@@ -219,7 +219,6 @@ export default class Analytics {
   }
 
   async _sendRequest(url, body, done, retryNo) {
-    console.log('---- into _sendRequest ----');
     return fetch(url, body)
       .then(async (res) => {
         const response = await res.json();
@@ -233,7 +232,10 @@ export default class Analytics {
       })
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
-          this._sendRequest(url, body, done, retryNo + 1);
+          var delay = Math.pow(2, retryNumber) * 100;
+          setTimeout(() => {
+            this._sendRequest(url, body, done, retryNo + 1);
+          }, delay);
         } else {
           done(error);
         }
