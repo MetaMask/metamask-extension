@@ -230,16 +230,14 @@ export default class Analytics {
       .then(async (response) => {
         if (response.ok) {
           done();
+        } else if (
+          this._isErrorRetryable({ response }) &&
+          retryNo <= this.retryCount
+        ) {
+          this._retryRequest(url, body, done, retryNo);
         } else {
-          if (
-            this._isErrorRetryable({ response }) &&
-            retryNo <= this.retryCount
-          ) {
-            this._retryRequest(url, body, done, retryNo);
-          } else {
-            const error = new Error(response.statusText);
-            done(error);
-          }
+          const error = new Error(response.statusText);
+          done(error);
         }
       })
       .catch((error) => {
