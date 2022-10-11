@@ -3376,8 +3376,13 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
+
+      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
+      if (phishingListsAreOutOfDate){
+        await this.phishingController.updatePhishingLists();
+      }
       // Check if new connection is blocked if phishing detection is on
-      const phishingTestResponse = await this.phishingController.test(hostname);
+      const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
         this.sendPhishingWarning(
           connectionStream,
