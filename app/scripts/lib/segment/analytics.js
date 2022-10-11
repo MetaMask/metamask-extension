@@ -230,7 +230,7 @@ export default class Analytics {
       .then(async (response) => {
         const result = await response.json();
         if (response.ok) {
-          done();
+          done(result);
         } else {
           if (
             this._isErrorRetryable({ response }) &&
@@ -238,7 +238,7 @@ export default class Analytics {
           ) {
             this._retryRequest(url, body, done, retryNo);
           } else {
-            const error = new Error(res.statusText);
+            const error = new Error(response.statusText);
             done(error);
           }
         }
