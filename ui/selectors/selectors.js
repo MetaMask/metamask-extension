@@ -872,7 +872,7 @@ function getAllowedAnnouncementIds(state) {
     10: true,
     11: true,
     12: false,
-    13: true,
+    13: false,
     14: threeBoxSyncingAllowed,
     15: true,
   };
@@ -1166,16 +1166,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsCustomNetworkListEnabled(state) {
-  return state.metamask.customNetworkListEnabled;
 }
 
 export function getIsCustomNetwork(state) {
