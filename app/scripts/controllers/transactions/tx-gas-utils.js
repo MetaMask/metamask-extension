@@ -2,7 +2,11 @@ import EthQuery from 'ethjs-query';
 import log from 'loglevel';
 import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
+import {
+  hexToBigNumber,
+  bigNumberMultiplyByFraction,
+  bigNumberToHex,
+} from '../../lib/util';
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
@@ -35,9 +39,13 @@ export default class TxGasUtil {
     const block = await this.query.getBlockByNumber('latest', false);
 
     // fallback to block gasLimit
-    const blockGasLimitBN = hexToBn(block.gasLimit);
-    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20);
-    let estimatedGasHex = bnToHex(saferGasLimitBN);
+    const blockGasLimitBN = hexToBigNumber(block.gasLimit);
+    const saferGasLimitBN = bigNumberMultiplyByFraction(
+      blockGasLimitBN,
+      19,
+      20,
+    );
+    let estimatedGasHex = bigNumberToHex(saferGasLimitBN);
     let simulationFails;
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta);
@@ -88,21 +96,21 @@ export default class TxGasUtil {
    * @returns {string} the buffered gas limit as a hex string
    */
   addGasBuffer(initialGasLimitHex, blockGasLimitHex, multiplier = 1.5) {
-    const initialGasLimitBn = hexToBn(initialGasLimitHex);
-    const blockGasLimitBn = hexToBn(blockGasLimitHex);
-    const upperGasLimitBn = blockGasLimitBn.muln(0.9);
-    const bufferedGasLimitBn = initialGasLimitBn.muln(multiplier);
+    const initialGasLimitBn = hexToBigNumber(initialGasLimitHex);
+    const blockGasLimitBn = hexToBigNumber(blockGasLimitHex);
+    const upperGasLimitBn = blockGasLimitBn.mul(0.9);
+    const bufferedGasLimitBn = initialGasLimitBn.mul(multiplier);
 
     // if initialGasLimit is above blockGasLimit, dont modify it
     if (initialGasLimitBn.gt(upperGasLimitBn)) {
-      return bnToHex(initialGasLimitBn);
+      return bigNumberToHex(initialGasLimitBn);
     }
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
     if (bufferedGasLimitBn.lt(upperGasLimitBn)) {
-      return bnToHex(bufferedGasLimitBn);
+      return bigNumberToHex(bufferedGasLimitBn);
     }
     // otherwise use blockGasLimit
-    return bnToHex(upperGasLimitBn);
+    return bigNumberToHex(upperGasLimitBn);
   }
 
   async getBufferedGasLimit(txMeta, multiplier) {

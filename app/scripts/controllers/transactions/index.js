@@ -11,9 +11,9 @@ import BigNumber from 'bignumber.js';
 import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
-  hexToBn,
-  bnToHex,
-  BnMultiplyByFraction,
+  hexToBigNumber,
+  bigNumberToHex,
+  bigNumberMultiplyByFraction,
   addHexPrefix,
   getChainType,
 } from '../../lib/util';
@@ -1127,18 +1127,18 @@ export default class TransactionController extends EventEmitter {
       previousGasParams.maxPriorityFeePerGas = txParams.maxPriorityFeePerGas;
       newGasParams.maxFeePerGas =
         customGasSettings?.maxFeePerGas ||
-        bnToHex(
-          BnMultiplyByFraction(
-            hexToBn(txParams.maxFeePerGas),
+        bigNumberToHex(
+          bigNumberMultiplyByFraction(
+            hexToBigNumber(txParams.maxFeePerGas),
             incrementNumerator,
             10,
           ),
         );
       newGasParams.maxPriorityFeePerGas =
         customGasSettings?.maxPriorityFeePerGas ||
-        bnToHex(
-          BnMultiplyByFraction(
-            hexToBn(txParams.maxPriorityFeePerGas),
+        bigNumberToHex(
+          bigNumberMultiplyByFraction(
+            hexToBigNumber(txParams.maxPriorityFeePerGas),
             incrementNumerator,
             10,
           ),
@@ -1147,9 +1147,9 @@ export default class TransactionController extends EventEmitter {
       previousGasParams.gasPrice = txParams.gasPrice;
       newGasParams.gasPrice =
         customGasSettings?.gasPrice ||
-        bnToHex(
-          BnMultiplyByFraction(
-            hexToBn(txParams.gasPrice),
+        bigNumberToHex(
+          bigNumberMultiplyByFraction(
+            hexToBigNumber(txParams.gasPrice),
             incrementNumerator,
             10,
           ),

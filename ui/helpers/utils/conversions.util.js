@@ -7,7 +7,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from './confirm-tx.util';
 
-export function bnToHex(inputBn) {
+export function bigNumberToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
 

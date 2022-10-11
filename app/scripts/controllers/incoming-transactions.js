@@ -1,8 +1,8 @@
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex } from '../lib/util';
+import { bigNumberToHex } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
@@ -263,20 +263,22 @@ export default class IncomingTransactionsController {
         : TRANSACTION_STATUSES.FAILED;
     const txParams = {
       from: etherscanTransaction.from,
-      gas: bnToHex(new BN(etherscanTransaction.gas)),
-      nonce: bnToHex(new BN(etherscanTransaction.nonce)),
+      gas: bigNumberToHex(new BigNumber(etherscanTransaction.gas)),
+      nonce: bigNumberToHex(new BigNumber(etherscanTransaction.nonce)),
       to: etherscanTransaction.to,
-      value: bnToHex(new BN(etherscanTransaction.value)),
+      value: bigNumberToHex(new BigNumber(etherscanTransaction.value)),
     };
 
     if (etherscanTransaction.gasPrice) {
-      txParams.gasPrice = bnToHex(new BN(etherscanTransaction.gasPrice));
-    } else if (etherscanTransaction.maxFeePerGas) {
-      txParams.maxFeePerGas = bnToHex(
-        new BN(etherscanTransaction.maxFeePerGas),
+      txParams.gasPrice = bigNumberToHex(
+        new BigNumber(etherscanTransaction.gasPrice),
       );
-      txParams.maxPriorityFeePerGas = bnToHex(
-        new BN(etherscanTransaction.maxPriorityFeePerGas),
+    } else if (etherscanTransaction.maxFeePerGas) {
+      txParams.maxFeePerGas = bigNumberToHex(
+        new BigNumber(etherscanTransaction.maxFeePerGas),
+      );
+      txParams.maxPriorityFeePerGas = bigNumberToHex(
+        new BigNumber(etherscanTransaction.maxPriorityFeePerGas),
       );
     }
 

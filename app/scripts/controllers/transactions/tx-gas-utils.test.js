@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { TransactionFactory } from '@ethereumjs/tx';
 import Common from '@ethereumjs/common';
-import { hexToBn, bnToHex } from '../../lib/util';
+import { hexToBigNumber, bigNumberToHex } from '../../lib/util';
 import TxUtils from './tx-gas-utils';
 
 describe('txUtils', function () {
@@ -50,9 +50,9 @@ describe('txUtils', function () {
       // dummy gas limit: 0x3d4c52 (4 mil)
       const blockGasLimitHex = '0x3d4c52';
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex);
-      const inputBn = hexToBn(inputHex);
-      const outputBn = hexToBn(output);
-      const expectedBn = inputBn.muln(1.5);
+      const inputBn = hexToBigNumber(inputHex);
+      const outputBn = hexToBigNumber(output);
+      const expectedBn = inputBn.mul(1.5);
       assert.ok(outputBn.eq(expectedBn), 'returns 1.5 the input value');
     });
 
@@ -62,9 +62,9 @@ describe('txUtils', function () {
       // dummy gas limit: 0x0f4240 (1 mil)
       const blockGasLimitHex = '0x0f4240';
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex);
-      // const inputBn = hexToBn(inputHex)
-      const outputBn = hexToBn(output);
-      const expectedBn = hexToBn(inputHex);
+      // const inputBn = hexToBigNumber(inputHex)
+      const outputBn = hexToBigNumber(output);
+      const expectedBn = hexToBigNumber(inputHex);
       assert.ok(
         outputBn.eq(expectedBn),
         'returns the original estimatedGas value',
@@ -76,12 +76,12 @@ describe('txUtils', function () {
       const inputHex = '0x16e360';
       // dummy gas limit: 0x1e8480 (2 mil)
       const blockGasLimitHex = '0x1e8480';
-      const blockGasLimitBn = hexToBn(blockGasLimitHex);
-      const ceilGasLimitBn = blockGasLimitBn.muln(0.9);
+      const blockGasLimitBn = hexToBigNumber(blockGasLimitHex);
+      const ceilGasLimitBn = blockGasLimitBn.mul(0.9);
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex);
-      // const inputBn = hexToBn(inputHex)
-      // const outputBn = hexToBn(output)
-      const expectedHex = bnToHex(ceilGasLimitBn);
+      // const inputBn = hexToBigNumber(inputHex)
+      // const outputBn = hexToBigNumber(output)
+      const expectedHex = bigNumberToHex(ceilGasLimitBn);
       assert.equal(
         output,
         expectedHex,

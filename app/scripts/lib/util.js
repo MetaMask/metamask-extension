@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
-import BN from 'bn.js';
+
+import BigNumber from 'bignumber.js';
 import { memoize } from 'lodash';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -69,27 +70,27 @@ const getPlatform = () => {
 };
 
 /**
- * Converts a hex string to a BN object
+ * Converts a hex string to a BigNumber object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {object} A BN object
+ * @returns {object} A BigNumber object
  */
-function hexToBn(inputHex) {
-  return new BN(stripHexPrefix(inputHex), 16);
+function hexToBigNumber(inputHex) {
+  return new BigNumber(stripHexPrefix(inputHex || '0x0'), 16);
 }
 
 /**
- * Used to multiply a BN by a fraction
+ * Used to multiply a BigNumber by a fraction
  *
- * @param {BN} targetBN - The number to multiply by a fraction
+ * @param {BigNumber} targetBigNumber - The number to multiply by a fraction
  * @param {number|string} numerator - The numerator of the fraction multiplier
  * @param {number|string} denominator - The denominator of the fraction multiplier
- * @returns {BN} The product of the multiplication
+ * @returns {BigNumber} The product of the multiplication
  */
-function BnMultiplyByFraction(targetBN, numerator, denominator) {
-  const numBN = new BN(numerator);
-  const denomBN = new BN(denominator);
-  return targetBN.mul(numBN).div(denomBN);
+function bigNumberMultiplyByFraction(targetBigNumber, numerator, denominator) {
+  const numBigNumber = new BigNumber(numerator);
+  const denomBigNumber = new BigNumber(denominator);
+  return targetBigNumber.mul(numBigNumber).div(denomBigNumber);
 }
 
 /**
@@ -134,13 +135,13 @@ const addHexPrefix = (str) => {
 };
 
 /**
- * Converts a BN object to a hex string with a '0x' prefix
+ * Converts a BigNumber object to a hex string with a '0x' prefix
  *
- * @param {BN} inputBn - The BN to convert to a hex string
+ * @param {BigNumber} inputBigNumber - The BigNumber to convert to a hex string
  * @returns {string} A '0x' prefixed hex string
  */
-function bnToHex(inputBn) {
-  return addHexPrefix(inputBn.toString(16));
+function bigNumberToHex(inputBigNumber) {
+  return addHexPrefix(inputBigNumber.toString(16));
 }
 
 function getChainType(chainId) {
@@ -166,11 +167,11 @@ function checkAlarmExists(alarmList, alarmName) {
 export {
   getPlatform,
   getEnvironmentType,
-  hexToBn,
-  BnMultiplyByFraction,
+  hexToBigNumber,
+  bigNumberMultiplyByFraction,
   checkForError,
   addHexPrefix,
-  bnToHex,
+  bigNumberToHex,
   getChainType,
   checkAlarmExists,
 };
