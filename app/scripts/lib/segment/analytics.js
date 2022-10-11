@@ -228,9 +228,8 @@ export default class Analytics {
   async _sendRequest(url, body, done, retryNo) {
     return fetch(url, body)
       .then(async (response) => {
-        const result = await response.json();
         if (response.ok) {
-          done(result);
+          done();
         } else {
           if (
             this._isErrorRetryable({ response }) &&
