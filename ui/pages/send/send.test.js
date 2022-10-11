@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
-import { ensInitialState } from '../../ducks/ens';
+import { domainInitialState } from '../../ducks/domains';
 import { renderWithProvider } from '../../../test/jest';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
@@ -53,7 +53,7 @@ jest.mock('ethers', () => {
 });
 const baseStore = {
   send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  ENS: ensInitialState,
+  domainState: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
   },
@@ -131,7 +131,7 @@ describe('Send Page', () => {
       expect(actions).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'ENS/enableEnsLookup',
+            type: 'domainState/enabledomainLookup',
           }),
         ]),
       );
@@ -145,7 +145,7 @@ describe('Send Page', () => {
       expect(actions).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'ENS/enableEnsLookup',
+            type: 'domainState/enabledomainLookup',
           }),
           expect.objectContaining({
             type: 'UI_MODAL_OPEN',
@@ -164,7 +164,7 @@ describe('Send Page', () => {
       expect(getByText('Send to')).toBeTruthy();
     });
 
-    it('should render the EnsInput field', () => {
+    it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
@@ -208,7 +208,7 @@ describe('Send Page', () => {
       expect(getByText('Send')).toBeTruthy();
     });
 
-    it('should render the EnsInput field', () => {
+    it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(

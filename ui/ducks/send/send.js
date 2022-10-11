@@ -74,7 +74,7 @@ import {
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
+  isValidEnsDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -82,7 +82,7 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetEnsResolution } from '../ens';
+import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -1363,7 +1363,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
-              !isValidDomainName(state.recipientInput))
+              !isValidEnsDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
@@ -2199,7 +2199,7 @@ export function resetRecipientInput() {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetEnsResolution());
+    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }
