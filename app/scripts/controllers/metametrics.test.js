@@ -646,7 +646,7 @@ describe('MetaMetricsController', function () {
       }, 5000);
     });
 
-    it('should create only once fragments if 2 requests have same actionId', function () {
+    it('should create only one fragments if 2 requests have same actionId', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
