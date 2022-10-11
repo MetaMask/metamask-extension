@@ -232,7 +232,7 @@ export default class Analytics {
       })
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
-          var delay = Math.pow(2, retryNumber) * 100;
+          let delay = Math.pow(2, retryNo) * 100;
           setTimeout(() => {
             this._sendRequest(url, body, done, retryNo + 1);
           }, delay);
