@@ -65,7 +65,7 @@ const exceptionsToFilter = {
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
    * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
