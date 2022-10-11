@@ -24,12 +24,9 @@ describe('AvatarFavicon', () => {
   });
 
   it('should render fallback image if no ImageSource is provided', () => {
-    render(<AvatarFavicon data-testid="avatar-favicon" />);
-    const image = screen.getByRole('img');
-    expect(image).toBeDefined();
-    expect(image).toHaveAttribute(
-      'src',
-      './images/icons/icon-global-filled.svg',
+    const { container } = render(
+      <AvatarFavicon data-testid="avatar-favicon" />,
     );
+    expect(container.getElementsByClassName('icon')).toHaveLength(1);
   });
 });
