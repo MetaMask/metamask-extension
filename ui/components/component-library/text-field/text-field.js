@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import {
+  SIZES,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
 
 import { Icon, ICON_NAMES } from '../icon';
 
@@ -23,12 +28,12 @@ export const TextField = ({
   const [value, setValue] = useState(valueProp || '');
   const handleOnChange = (e) => {
     setValue(e.target.value);
-    onChange && onChange(e);
+    onChange?.(e);
   };
   const handleClear = (e) => {
     setValue('');
-    clearButtonProps?.onClick && clearButtonProps.onClick(e);
-    onClear && onClear(e);
+    clearButtonProps?.onClick(e);
+    onClear?.(e);
   };
   return (
     <TextFieldBase
@@ -39,19 +44,24 @@ export const TextField = ({
         value && showClear ? (
           <>
             {/* replace with ButtonIcon */}
-            <button
+            <Box
               className="mm-text-field__button-clear"
-              {...clearButtonProps}
+              as="button"
+              display={DISPLAY.FLEX}
+              alignItems={ALIGN_ITEMS.CENTER}
+              justifyContent={JUSTIFY_CONTENTS.CENTER}
+              backgroundColor={COLORS.TRANSPARENT}
+              padding={0}
+              {...clearButtonProps} // don't override onClick
               onClick={handleClear}
             >
               <Icon
-                className="mm-text-field__button-clear__icon"
                 name={ICON_NAMES.CLOSE_OUTLINE}
                 size={SIZES.SM}
-                aria-label="Clear"
+                aria-label="Clear" // TODO: i18n
                 {...clearIconProps}
               />
-            </button>
+            </Box>
             {rightAccessory}
           </>
         ) : (
