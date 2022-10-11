@@ -49,9 +49,9 @@ describe('add-recipient container', () => {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         addressBookEntryName: undefined,
         contacts: [{ name: 'mockAddressBook:mockState' }],
-        domainResolution: 'mockSendEnsResolution:mockState',
-        domainError: 'mockSendEnsResolutionError:mockState',
-        domainWarning: 'mockSendEnsResolutionWarning:mockState',
+        domainResolution: 'mockSendDomainResolution:mockState',
+        domainError: 'mockSendDomainResolutionError:mockState',
+        domainWarning: 'mockSendDomainResolutionWarning:mockState',
         nonContacts: [],
         ownedAccounts: [
           { name: 'account1:mockState' },
