@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { isValidDomainName } from '../../../../helpers/utils/util';
+import { isValidEnsDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 
-export default class EnsInput extends Component {
+export default class DomainInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -27,12 +27,12 @@ export default class EnsInput extends Component {
     onChange: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
     lookupEnsName: PropTypes.func.isRequired,
-    initializeEnsSlice: PropTypes.func.isRequired,
-    resetEnsResolution: PropTypes.func.isRequired,
+    initializeDomainSlice: PropTypes.func.isRequired,
+    resetDomainResolution: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
-    this.props.initializeEnsSlice();
+    this.props.initializeDomainSlice();
   }
 
   onPaste = (event) => {
@@ -56,7 +56,7 @@ export default class EnsInput extends Component {
       internalSearch,
       onChange,
       lookupEnsName,
-      resetEnsResolution,
+      resetDomainResolution,
     } = this.props;
     const input = value.trim();
 
@@ -66,10 +66,10 @@ export default class EnsInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidDomainName(input)) {
+    if (isValidEnsDomainName(input)) {
       lookupEnsName(input);
     } else {
-      resetEnsResolution();
+      resetDomainResolution();
       if (
         onValidAddressTyped &&
         !isBurnAddress(input) &&

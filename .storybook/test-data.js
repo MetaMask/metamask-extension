@@ -517,7 +517,7 @@ const state = {
       maxModeOn: false,
       editingTransactionId: null,
       toNickname: 'Account 2',
-      ensResolution: null,
+      domainResolution: null,
       ensResolutionError: '',
       token: {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
