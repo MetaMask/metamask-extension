@@ -52,6 +52,7 @@ function mapStateToProps(state) {
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
+    forgottenPassword: state.metamask.forgottenPassword,
   };
 }
 
