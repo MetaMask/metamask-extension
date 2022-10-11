@@ -3389,10 +3389,9 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
+    "@metamask/rpc-methods>nanoid": {
       "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4525,7 +4524,13 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
@@ -4681,8 +4686,14 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": {
