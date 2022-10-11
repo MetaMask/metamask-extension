@@ -28,6 +28,7 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -39,6 +40,7 @@ import {
 export default class ConfirmPageContainer extends Component {
   state = {
     showNicknamePopovers: false,
+    collectionBalance: 0,
   };
 
   static contextTypes = {
@@ -113,6 +115,12 @@ export default class ConfirmPageContainer extends Component {
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
   };
+
+  async componentDidMount() {
+    const { tokenAddress, fromAddress } = this.props;
+    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    this.setState({ collectionBalance: tokenBalance.balance.words[0] });
+  }
 
   render() {
     const {
@@ -371,7 +379,7 @@ export default class ConfirmPageContainer extends Component {
               collectionName={title}
               senderAddress={fromAddress}
               name={fromName}
-              total="6"
+              total={this.state.collectionBalance}
               onSubmit={onSubmit}
               onCancel={onCancel}
               showWarningModal={showWarningModal}

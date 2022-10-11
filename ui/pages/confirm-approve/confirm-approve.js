@@ -213,6 +213,7 @@ export default function ConfirmApprove({
         identiconAddress={toAddress}
         showAccountInHeader
         title={tokensText}
+        tokenAddress={tokenAddress}
         customTokenAmount={String(customPermissionAmount)}
         dappProposedTokenAmount={tokenAmount}
         currentTokenBalance={tokenBalance}
