@@ -3453,22 +3453,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@ethersproject/bignumber": true,
-        "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@ethersproject/bignumber>@ethersproject/logger": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
-        "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
-        "ethers>@ethersproject/wallet>@ethersproject/properties": true
-      }
-    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
