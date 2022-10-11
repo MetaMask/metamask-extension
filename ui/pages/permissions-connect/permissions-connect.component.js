@@ -315,7 +315,6 @@ export default class PermissionConnect extends Component {
                   approveSnapInstall={(requestId) => {
                     approvePendingApproval(requestId, {
                       ...permissionsRequest,
-                      permissions: { ...permissionsRequest.permissions },
                       approvedAccounts: selectedAccountAddresses,
                     });
                     this.redirect(true);
@@ -346,7 +345,6 @@ export default class PermissionConnect extends Component {
                   approveSnapUpdate={(requestId) => {
                     approvePendingApproval(requestId, {
                       ...permissionsRequest,
-                      permissions: { ...permissionsRequest.permissions },
                       approvedAccounts: selectedAccountAddresses,
                     });
                     this.redirect(true);
