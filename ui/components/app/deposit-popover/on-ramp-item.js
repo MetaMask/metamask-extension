@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Button from '../../ui/button';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography';
@@ -12,6 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 const OnRampItem = ({
+  className,
   logo,
   title,
   text,
@@ -24,7 +26,7 @@ const OnRampItem = ({
   }
   return (
     <Box
-      className="deposit-popover__on-ramp-item"
+      className={classnames('deposit-popover__on-ramp-item', className)}
       as="li"
       marginRight={6}
       marginLeft={6}
@@ -77,6 +79,7 @@ const OnRampItem = ({
 };
 
 OnRampItem.propTypes = {
+  className: PropTypes.string,
   logo: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
