@@ -121,6 +121,7 @@ export default class Analytics {
     // Specifying library here helps segment to understand structure of request.
     // Currently segment seems to support these source libraries only.
     message.context = {
+      ...message.context,
       library: {
         name: 'analytics-node',
       },
