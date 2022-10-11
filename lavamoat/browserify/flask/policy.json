@@ -3551,6 +3551,7 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>nanoid": true,
         "@metamask/snap-utils": true,
         "@metamask/snap-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
@@ -3586,7 +3587,7 @@
         "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": true,
         "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": true,
-        "@metamask/rpc-methods>@metamask/controllers>nanoid": true,
+        "@metamask/rpc-methods>nanoid": true,
         "@metamask/smart-transactions-controller>@ethersproject/providers": true,
         "browserify>buffer": true,
         "browserify>events": true,
@@ -3714,8 +3715,8 @@
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/snap-utils>@scure/base": true,
         "browserify>buffer": true
       }
     },
@@ -3741,16 +3742,10 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
     "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
+        "@metamask/snap-utils>@scure/base": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4259,6 +4254,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/types": true,
+        "@metamask/snap-utils>@noble/hashes": true,
+        "@metamask/snap-utils>@scure/base": true,
         "@metamask/snap-utils>ajv": true,
         "@metamask/snap-utils>rfdc": true,
         "@metamask/snap-utils>superstruct": true,
@@ -4270,6 +4267,18 @@
         "eslint>fast-deep-equal": true,
         "eth-block-tracker>@metamask/utils": true,
         "semver": true
+      }
+    },
+    "@metamask/snap-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snap-utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/snap-utils>rfdc": {
@@ -5376,8 +5385,8 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -5416,6 +5425,13 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/utils": {
+      "packages": {
+        "@metamask/snap-utils>superstruct": true,
+        "eslint>fast-deep-equal": true,
+        "nock>debug": true
       }
     },
     "eth-keyring-controller": {
@@ -5539,9 +5555,17 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
         "ethereumjs-util": true
       }
     },
