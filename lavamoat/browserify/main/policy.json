@@ -2431,8 +2431,14 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/secp256k1": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -3412,18 +3418,9 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
+    "@metamask/rpc-methods>nanoid": {
       "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4609,11 +4606,11 @@
       "packages": {
         "3box>tweetnacl": true,
         "3box>tweetnacl-util": true,
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
         "browserify>buffer": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
-        "eth-lattice-keyring>@ethereumjs/util": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
@@ -4627,7 +4624,21 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {

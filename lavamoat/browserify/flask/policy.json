@@ -2592,8 +2592,14 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/secp256k1": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -3574,6 +3580,7 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>nanoid": true,
         "@metamask/snap-utils": true,
         "@metamask/snap-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
@@ -3609,7 +3616,7 @@
         "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": true,
         "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": true,
-        "@metamask/rpc-methods>@metamask/controllers>nanoid": true,
+        "@metamask/rpc-methods>nanoid": true,
         "@metamask/smart-transactions-controller>@ethersproject/providers": true,
         "browserify>buffer": true,
         "browserify>events": true,
@@ -3735,10 +3742,10 @@
     "@metamask/rpc-methods>@metamask/key-tree": {
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/snap-utils>@noble/hashes": true,
+        "@metamask/snap-utils>@scure/base": true,
         "browserify>buffer": true
       }
     },
@@ -3750,12 +3757,6 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
       "globals": {
         "crypto": true
@@ -3764,16 +3765,15 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
     "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
+        "@metamask/snap-utils>@noble/hashes": true,
+        "@metamask/snap-utils>@scure/base": true
+      }
+    },
+    "@metamask/rpc-methods>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4282,6 +4282,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/types": true,
+        "@metamask/snap-utils>@noble/hashes": true,
+        "@metamask/snap-utils>@scure/base": true,
         "@metamask/snap-utils>ajv": true,
         "@metamask/snap-utils>rfdc": true,
         "@metamask/snap-utils>superstruct": true,
@@ -4293,6 +4295,18 @@
         "eslint>fast-deep-equal": true,
         "eth-block-tracker>@metamask/utils": true,
         "semver": true
+      }
+    },
+    "@metamask/snap-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snap-utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/snap-utils>rfdc": {
@@ -5427,11 +5441,11 @@
       "packages": {
         "3box>tweetnacl": true,
         "3box>tweetnacl-util": true,
+        "@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
         "browserify>buffer": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
-        "eth-lattice-keyring>@ethereumjs/util": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
@@ -5445,7 +5459,21 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
