@@ -1,5 +1,6 @@
 import React from 'react';
-import Jazzicon from '../../ui/jazzicon/jazzicon.component';
+import { AvatarAccount } from '../avatar-account';
+import { TYPES } from '../avatar-account/avatar-account.constants';
 import { AvatarNetwork } from '../avatar-network';
 import Box from '../../ui/box/box';
 import {
@@ -33,7 +34,6 @@ export default {
 
 export const DefaultStory = (args) => (
   <AvatarWithBadge
-    {...args}
     badge={
       <AvatarNetwork
         size={SIZES.XS}
@@ -41,20 +41,20 @@ export const DefaultStory = (args) => (
         networkImageUrl="./images/arbitrum.svg"
       />
     }
+    {...args}
   >
-    <Jazzicon
+    <AvatarAccount
       address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-      diameter={32}
-      style={{ height: 32 }}
+      size={SIZES.MD}
+      type={TYPES.JAZZICON}
     />
   </AvatarWithBadge>
 );
 DefaultStory.storyName = 'Default';
 
-export const BadgePositions = (args) => (
+export const BadgePositions = () => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarWithBadge
-      {...args}
       badgePosition={BADGE_POSITIONS.BOTTOM}
       badge={
         <AvatarNetwork
@@ -64,14 +64,14 @@ export const BadgePositions = (args) => (
         />
       }
     >
-      <Jazzicon
+      <AvatarAccount
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-        diameter={32}
+        size={SIZES.MD}
+        type={TYPES.JAZZICON}
       />
     </AvatarWithBadge>
 
     <AvatarWithBadge
-      {...args}
       badgePosition={BADGE_POSITIONS.TOP}
       badge={
         <AvatarNetwork
@@ -81,9 +81,10 @@ export const BadgePositions = (args) => (
         />
       }
     >
-      <Jazzicon
+      <AvatarAccount
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-        diameter={32}
+        size={SIZES.MD}
+        type={TYPES.JAZZICON}
       />
     </AvatarWithBadge>
   </Box>

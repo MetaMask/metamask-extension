@@ -6,27 +6,22 @@ import { AvatarWithBadge } from './avatar-with-badge';
 import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 
 describe('AvatarWithBadge', () => {
-  const args = {
-    badgeProps: {
-      tokenName: 'ast',
-      tokenImageUrl: './AST.png',
-      networkName: 'Arbitrum One',
-      networkImageUrl: './images/arbitrum.svg',
-    },
-    badgePosition: BADGE_POSITIONS.TOP,
-    address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-  };
-
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AvatarWithBadge
+        badgePosition={BADGE_POSITIONS.BOTTOM}
         data-testid="avatar-with-badge"
-        badge={<AvatarNetwork {...args.badgeProps} data-testid="badge" />}
-        {...args}
+        badge={
+          <AvatarNetwork
+            networkName="Arbitrum One"
+            networkImageUrl="./images/arbitrum.svg"
+            data-testid="badge"
+          />
+        }
       />,
     );
     expect(getByTestId('avatar-with-badge')).toBeDefined();
-    expect(getByTestId('badge')).toBeTruthy();
+    expect(getByTestId('badge')).toBeDefined();
   });
 
   it('should render badge network with bottom right position correctly', () => {
@@ -34,28 +29,42 @@ describe('AvatarWithBadge', () => {
       <AvatarWithBadge
         data-testid="avatar-with-badge"
         badgePosition={BADGE_POSITIONS.BOTTOM}
-        badge={<AvatarNetwork {...args.badgeProps} />}
-        {...args}
+        badge={
+          <AvatarNetwork
+            networkName="Arbitrum One"
+            networkImageUrl="./images/arbitrum.svg"
+            data-testid="badge"
+          />
+        }
       />,
     );
 
-    const badge = container.getElementsByClassName(
-      'avatar-with-badge-token-position-bottom',
-    );
-    expect(badge).toBeDefined();
+    expect(
+      container.getElementsByClassName(
+        'avatar-with-badge__badge-wrapper--position-bottom',
+      ),
+    ).toHaveLength(1);
   });
 
   it('should render badge network with top right position correctly', () => {
     const { container } = render(
       <AvatarWithBadge
         data-testid="avatar-with-badge"
-        badge={<AvatarNetwork {...args.badgeProps} />}
-        {...args}
+        badgePosition={BADGE_POSITIONS.TOP}
+        badge={
+          <AvatarNetwork
+            networkName="Arbitrum One"
+            networkImageUrl="./images/arbitrum.svg"
+            data-testid="badge"
+          />
+        }
       />,
     );
-    const badge = container.getElementsByClassName(
-      'avatar-with-badge-token-position-top',
-    );
-    expect(badge).toBeDefined();
+
+    expect(
+      container.getElementsByClassName(
+        'avatar-with-badge__badge-wrapper--position-top',
+      ),
+    ).toHaveLength(1);
   });
 });

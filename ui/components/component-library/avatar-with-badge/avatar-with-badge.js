@@ -9,6 +9,7 @@ export const AvatarWithBadge = ({
   badgePosition,
   className,
   badge,
+  badgeWrapperProps,
   ...props
 }) => {
   return (
@@ -18,9 +19,10 @@ export const AvatarWithBadge = ({
       <Box
         className={
           badgePosition === 'top'
-            ? 'avatar-with-badge__token--position-top'
-            : 'avatar-with-badge__token--position-bottom'
+            ? 'avatar-with-badge__badge-wrapper--position-top'
+            : 'avatar-with-badge__badge-wrapper--position-bottom'
         }
+        {...badgeWrapperProps}
       >
         {/* Generally the AvatarNetwork at SIZES.XS */}
         {badge}
@@ -35,6 +37,10 @@ AvatarWithBadge.propTypes = {
    * Possible values could be 'top', 'bottom',
    */
   badgePosition: PropTypes.oneOf(Object.values(BADGE_POSITIONS)),
+  /**
+   * The Badge Wrapper props of the component. All Box props can be used
+   */
+  badgeWrapperProps: Box.PropTypes,
   /**
    * The children to be rendered inside the AvatarWithBadge
    */

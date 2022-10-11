@@ -2,13 +2,13 @@
   position: relative;
   width: fit-content;
 
-  &__token--position-top {
+  &__badge-wrapper--position-top {
     position: absolute;
     top: -4px;
     right: -4px;
   }
 
-  &__token--position-bottom {
+  &__badge-wrapper--position-bottom {
     position: absolute;
     bottom: -4px;
     right: -4px;
