@@ -23,7 +23,12 @@ const OnRampItem = ({
     return null;
   }
   return (
-    <Box className="on-ramp-item" as="li" marginRight={6} marginLeft={6}>
+    <Box
+      className="deposit-popover__on-ramp-item"
+      as="li"
+      marginRight={6}
+      marginLeft={6}
+    >
       <Box
         paddingTop={6}
         paddingBottom={6}

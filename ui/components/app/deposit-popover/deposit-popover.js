@@ -105,7 +105,7 @@ const DepositPopover = ({ onClose, token }) => {
       title={t('depositCrypto', [symbol])}
       subtitle={isTokenDeposit ? '' : t('needCryptoInWallet', [symbol])}
       onClose={onClose}
-      className="popover--deposit"
+      className="deposit-popover"
     >
       <ul>
         <OnRampItem
