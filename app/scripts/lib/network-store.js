@@ -51,15 +51,36 @@ export default class ReadOnlyNetworkStore {
   }
 
   /**
+   * Set metadata/version state
+   *
+   * @param {object} metadata - The metadata/version data to set
+   */
+  setMetadata(metadata) {
+    this.metadata = metadata;
+  }
+
+  /**
    * Set state
    *
    * @param {object} state - The state to set
-   * @returns {Promise<void>}
    */
   async set(state) {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing');
+    }
+    if (!this.metadata) {
+      throw new Error(
+        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
+      );
+    }
     if (!this._initialized) {
       await this._initializing;
     }
-    this._state = state;
+    this._state = { data: state, meta: this._metadata };
   }
 }
