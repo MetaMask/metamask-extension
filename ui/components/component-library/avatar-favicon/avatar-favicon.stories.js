@@ -34,7 +34,7 @@ export default {
     },
   },
   args: {
-    imageSource: './images/arbitrum.svg',
+    imageSource: 'https://uniswap.org/favicon.ico',
     size: SIZES.MD,
   },
 };
