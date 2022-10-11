@@ -244,7 +244,7 @@ export default class Analytics {
       })
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
-          _retryRequest(url, body, done, retryNo);
+          this._retryRequest(url, body, done, retryNo);
         } else {
           done(error);
         }
