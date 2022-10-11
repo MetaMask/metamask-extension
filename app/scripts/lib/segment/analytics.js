@@ -169,7 +169,7 @@ export default class Analytics {
   flush(callback = noop) {
     if (!this.enable) {
       setImmediate(callback);
-      return;
+      return Promise.resolve();
     }
 
     if (this.timer) {
@@ -179,7 +179,7 @@ export default class Analytics {
 
     if (!this.queue.length) {
       setImmediate(callback);
-      return;
+      return Promise.resolve();
     }
 
     const items = this.queue.splice(0, this.flushAt);
@@ -205,7 +205,7 @@ export default class Analytics {
       )}`,
     };
 
-    this._sendRequest(
+    return this._sendRequest(
       `${this.host}${this.path}`,
       {
         method: 'POST',
@@ -217,8 +217,9 @@ export default class Analytics {
     );
   }
 
-  _sendRequest(url, body, done, retryNo) {
-    fetch(url, body)
+  async _sendRequest(url, body, done, retryNo) {
+    console.log('---- into _sendRequest ----');
+    return fetch(url, body)
       .then(async (res) => {
         const response = await res.json();
         if (res.ok) {
@@ -232,8 +233,9 @@ export default class Analytics {
       .catch((error) => {
         if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
           this._sendRequest(url, body, done, retryNo + 1);
+        } else {
+          done(error);
         }
-        done(error);
       });
   }
 
