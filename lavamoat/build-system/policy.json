@@ -2286,7 +2286,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2399,7 +2399,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -3463,8 +3463,8 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
-        "gulp-livereload>chalk>supports-color": true
+        "gulp-livereload>chalk>supports-color": true,
+        "gulp-livereload>debug>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3590,7 +3590,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -3915,7 +3915,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
