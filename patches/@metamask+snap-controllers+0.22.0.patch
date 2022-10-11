@@ -1,160 +1,5 @@
-diff --git a/node_modules/@metamask/snap-controllers/LICENSE b/node_modules/@metamask/snap-controllers/LICENSE
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/README.md b/node_modules/@metamask/snap-controllers/README.md
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.d.ts b/node_modules/@metamask/snap-controllers/dist/fsm.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.js b/node_modules/@metamask/snap-controllers/dist/fsm.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/fsm.js.map b/node_modules/@metamask/snap-controllers/dist/fsm.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/index.d.ts b/node_modules/@metamask/snap-controllers/dist/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/index.js b/node_modules/@metamask/snap-controllers/dist/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/index.js.map b/node_modules/@metamask/snap-controllers/dist/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/MultiChainController.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.js b/node_modules/@metamask/snap-controllers/dist/multichain/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/index.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/matching.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.js b/node_modules/@metamask/snap-controllers/dist/multichain/matching.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/matching.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/matching.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.d.ts b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js.map b/node_modules/@metamask/snap-controllers/dist/multichain/middleware.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.d.ts b/node_modules/@metamask/snap-controllers/dist/services/browser.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.js b/node_modules/@metamask/snap-controllers/dist/services/browser.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/browser.js.map b/node_modules/@metamask/snap-controllers/dist/services/browser.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js b/node_modules/@metamask/snap-controllers/dist/services/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/NodeProcessExecutionService.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/NodeThreadExecutionService.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/node/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.js b/node_modules/@metamask/snap-controllers/dist/services/node/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/services/node/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/node/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts
-old mode 100644
-new mode 100755
 diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
-old mode 100644
-new mode 100755
-index aef2a42..00b80ea
+index aef2a42..b752ac4 100644
 --- a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
 +++ b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
 @@ -822,7 +822,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
@@ -166,6 +11,15 @@ index aef2a42..00b80ea
          const snap = this.getExpect(snapId);
          if (!(0, snap_utils_1.isValidSnapVersionRange)(newVersionRange)) {
              throw new Error(`Received invalid snap version range: "${newVersionRange}".`);
+@@ -830,7 +830,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+         const newSnap = await this._fetchSnap(snapId, newVersionRange);
+         const newVersion = newSnap.manifest.version;
+         if (!(0, snap_utils_1.gtVersion)(newVersion, snap.version)) {
+-            console.warn(`Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`);
++            console.warn(`Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`);
+             return null;
+         }
+         await this._assertIsUnblocked(snapId, {
 @@ -840,7 +840,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
          const processedPermissions = this.processSnapPermissions(newSnap.manifest.initialPermissions);
          const { newPermissions, unusedPermissions, approvedPermissions } = await this.calculatePermissionsChange(snapId, processedPermissions);
@@ -201,6 +55,15 @@ index aef2a42..00b80ea
              });
          }
          await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
+@@ -1137,7 +1135,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+      * @param snapId - The id of the Snap.
+      * @returns The snap's approvedPermissions.
+      */
+-    async authorize(origin, snapId) {
++     async authorize(origin, snapId) {
+         console.info(`Authorizing snap: ${snapId}`);
+         const snapsState = this.state.snaps;
+         const snap = snapsState[snapId];
 @@ -1145,7 +1143,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
          try {
              const processedPermissions = this.processSnapPermissions(initialPermissions);
@@ -229,159 +92,3 @@ index aef2a42..00b80ea
                  });
              }
          }
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/Timer.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/enum.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/keyring.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/transaction-insight.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/selectors.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/npm.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils/stream.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/controller.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/execution-environment.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/index.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.js b/node_modules/@metamask/snap-controllers/dist/test-utils/index.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/index.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/index.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.d.ts b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js.map b/node_modules/@metamask/snap-controllers/dist/test-utils/multichain.js.map
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/utils.d.ts b/node_modules/@metamask/snap-controllers/dist/utils.d.ts
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js b/node_modules/@metamask/snap-controllers/dist/utils.js
-old mode 100644
-new mode 100755
-diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js.map b/node_modules/@metamask/snap-controllers/dist/utils.js.map
-old mode 100644
-new mode 100755
