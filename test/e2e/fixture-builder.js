@@ -1,219 +1,214 @@
-class Fixture {
-  constructor() {
-    this.data = {
-      AddressBookController: {},
-      AlertController: {},
-      AnnouncementController: {
-        announcements: {
-          1: {
-            isShown: true,
-          },
-          3: {
-            isShown: true,
-          },
-          4: {
-            isShown: true,
-          },
-          5: {
-            isShown: true,
-          },
-          6: {
-            isShown: true,
-          },
-          7: {
-            isShown: false,
-          },
-          8: {
-            isShown: false,
-          },
-          9: {
-            isShown: true,
-          },
-          10: {
-            isShown: true,
-          },
-          11: {
-            isShown: true,
-          },
-          12: {
-            isShown: true,
-          },
-          13: {
-            isShown: true,
-          },
-          14: {
-            isShown: true,
-          },
-          15: {
-            isShown: true,
-          },
+const fixture = {
+  data: {
+    AddressBookController: {},
+    AlertController: {},
+    AnnouncementController: {
+      announcements: {
+        1: {
+          isShown: true,
+        },
+        3: {
+          isShown: true,
+        },
+        4: {
+          isShown: true,
+        },
+        5: {
+          isShown: true,
+        },
+        6: {
+          isShown: true,
+        },
+        7: {
+          isShown: false,
+        },
+        8: {
+          isShown: false,
+        },
+        9: {
+          isShown: true,
+        },
+        10: {
+          isShown: true,
+        },
+        11: {
+          isShown: true,
+        },
+        12: {
+          isShown: true,
+        },
+        13: {
+          isShown: true,
+        },
+        14: {
+          isShown: true,
+        },
+        15: {
+          isShown: true,
         },
       },
-      AppStateController: {},
-      CachedBalancesController: {},
-      CollectiblesController: {},
-      CurrencyController: {},
-      GasFeeController: {},
-      IncomingTransactionsController: {},
-      KeyringController: {
-        vault:
-          '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+    },
+    AppStateController: {},
+    CachedBalancesController: {},
+    CollectiblesController: {},
+    CurrencyController: {},
+    GasFeeController: {},
+    IncomingTransactionsController: {},
+    KeyringController: {
+      vault:
+        '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+    },
+    MetaMetricsController: {
+      metaMetricsId: null,
+      participateInMetaMetrics: false,
+    },
+    NetworkController: {
+      network: '1337',
+      provider: {
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+        rpcPrefs: {},
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
+        type: 'rpc',
       },
-      MetaMetricsController: {
-        metaMetricsId: null,
-        participateInMetaMetrics: false,
+    },
+    OnboardingController: {
+      completedOnboarding: true,
+    },
+    PermissionController: {},
+    PermissionLogController: {},
+    PreferencesController: {},
+    SmartTransactionsController: {},
+    SubjectMetadataController: {},
+    ThreeBoxController: {},
+    TokenListController: {},
+    TokensController: {},
+    TransactionController: {},
+    config: {},
+    firstTimeInfo: {
+      date: 1665507600000,
+      version: '10.21.0',
+    },
+  },
+};
+
+const onboardingFixture = {
+  data: {
+    AppStateController: {
+      browserEnvironment: {
+        browser: 'chrome',
+        os: 'mac',
       },
-      NetworkController: {
-        network: '1337',
-        provider: {
+      collectiblesDetectionNoticeDismissed: false,
+      collectiblesDropdownState: {},
+      connectedStatusPopoverHasBeenShown: true,
+      defaultHomeActiveTabName: null,
+      enableEIP1559V2NoticeDismissed: false,
+      fullScreenGasPollTokens: [],
+      notificationGasPollTokens: [],
+      popupGasPollTokens: [],
+      qrHardware: {},
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: 1665507600000,
+      showPortfolioTooltip: true,
+      showTestnetMessageInDropdown: true,
+      trezorModel: null,
+      usedNetworks: {
+        '0x1': true,
+        '0x5': true,
+        '0x539': true,
+      },
+    },
+    NetworkController: {
+      network: '1337',
+      networkDetails: {
+        EIPS: {
+          1559: false,
+        },
+      },
+      previousProviderStore: {
+        ticker: 'ETH',
+        type: 'rpc',
+        rpcUrl: 'http://localhost:8545',
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+      },
+      provider: {
+        ticker: 'ETH',
+        type: 'rpc',
+        rpcUrl: 'http://localhost:8545',
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+      },
+    },
+    PreferencesController: {
+      advancedGasFee: null,
+      currentLocale: 'en',
+      customNetworkListEnabled: false,
+      dismissSeedBackUpReminder: false,
+      featureFlags: {
+        showIncomingTransactions: true,
+      },
+      forgottenPassword: false,
+      frequentRpcListDetail: [
+        {
           chainId: '0x539',
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
-          type: 'rpc',
+        },
+      ],
+      identities: {},
+      infuraBlocked: false,
+      ipfsGateway: 'dweb.link',
+      knownMethodData: {},
+      ledgerTransportType: 'webhid',
+      lostIdentities: {},
+      openSeaEnabled: false,
+      preferences: {
+        hideZeroBalanceTokens: false,
+        showFiatInTestnets: false,
+        showTestNetworks: false,
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+      theme: 'light',
+      useBlockie: false,
+      useCollectibleDetection: false,
+      useNonceField: false,
+      usePhishDetect: true,
+      useTokenDetection: false,
+    },
+    SmartTransactionsController: {
+      smartTransactionsState: {
+        fees: {},
+        liveness: true,
+        smartTransactions: {
+          '0x1': [],
         },
       },
-      OnboardingController: {
-        completedOnboarding: true,
-      },
-      PermissionController: {},
-      PermissionLogController: {},
-      PreferencesController: {},
-      SmartTransactionsController: {},
-      SubjectMetadataController: {},
-      ThreeBoxController: {},
-      TokenListController: {},
-      TokensController: {},
-      TransactionController: {},
-      config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
-    };
-  }
-}
-
-class OnboardingFixture {
-  constructor() {
-    this.data = {
-      AppStateController: {
-        browserEnvironment: {
-          browser: 'chrome',
-          os: 'mac',
-        },
-        collectiblesDetectionNoticeDismissed: false,
-        collectiblesDropdownState: {},
-        connectedStatusPopoverHasBeenShown: true,
-        defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
-        fullScreenGasPollTokens: [],
-        notificationGasPollTokens: [],
-        popupGasPollTokens: [],
-        qrHardware: {},
-        recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown: 1665507600000,
-        showPortfolioTooltip: true,
-        showTestnetMessageInDropdown: true,
-        trezorModel: null,
-        usedNetworks: {
-          '0x1': true,
-          '0x5': true,
-          '0x539': true,
-        },
-      },
-      NetworkController: {
-        network: '1337',
-        networkDetails: {
-          EIPS: {
-            1559: false,
-          },
-        },
-        previousProviderStore: {
-          ticker: 'ETH',
-          type: 'rpc',
-          rpcUrl: 'http://localhost:8545',
-          chainId: '0x539',
-          nickname: 'Localhost 8545',
-        },
-        provider: {
-          ticker: 'ETH',
-          type: 'rpc',
-          rpcUrl: 'http://localhost:8545',
-          chainId: '0x539',
-          nickname: 'Localhost 8545',
-        },
-      },
-      PreferencesController: {
-        advancedGasFee: null,
-        currentLocale: 'en',
-        customNetworkListEnabled: false,
-        dismissSeedBackUpReminder: false,
-        featureFlags: {
-          showIncomingTransactions: true,
-        },
-        forgottenPassword: false,
-        frequentRpcListDetail: [
-          {
-            chainId: '0x539',
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-          },
-        ],
-        identities: {},
-        infuraBlocked: false,
-        ipfsGateway: 'dweb.link',
-        knownMethodData: {},
-        ledgerTransportType: 'webhid',
-        lostIdentities: {},
-        openSeaEnabled: false,
-        preferences: {
-          hideZeroBalanceTokens: false,
-          showFiatInTestnets: false,
-          showTestNetworks: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
-        theme: 'light',
-        useBlockie: false,
-        useCollectibleDetection: false,
-        useNonceField: false,
-        usePhishDetect: true,
-        useTokenDetection: false,
-      },
-      SmartTransactionsController: {
-        smartTransactionsState: {
-          fees: {},
-          liveness: true,
-          smartTransactions: {
-            '0x1': [],
-          },
-        },
-      },
-      TokensController: {
-        allDetectedTokens: {},
-        allIgnoredTokens: {},
-        allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        suggestedAssets: [],
-        tokens: [],
-      },
-      config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
-    };
-  }
-}
+    },
+    TokensController: {
+      allDetectedTokens: {},
+      allIgnoredTokens: {},
+      allTokens: {},
+      detectedTokens: [],
+      ignoredTokens: [],
+      suggestedAssets: [],
+      tokens: [],
+    },
+    config: {},
+    firstTimeInfo: {
+      date: 1665507600000,
+      version: '10.21.0',
+    },
+  },
+};
 
 class FixtureBuilder {
   constructor({ onboarding = false } = {}) {
-    this.fixture =
-      onboarding === true ? new OnboardingFixture() : new Fixture();
+    this.fixture = onboarding === true ? onboardingFixture : fixture;
   }
 
   withAddressBookController(data) {
