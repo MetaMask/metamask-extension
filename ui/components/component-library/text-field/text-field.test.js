@@ -85,7 +85,7 @@ describe('TextField', () => {
     );
     expect(getByText('right-accessory')).toBeDefined();
   });
-  it('should render with the rightAccessory when showClear is true', () => {
+  it('should still render with the rightAccessory when showClear is true', () => {
     const { getByRole, getByTestId, getByText } = render(
       <TextField
         clearButtonProps={{ 'data-testid': 'clear-button' }}
@@ -124,7 +124,6 @@ describe('TextField', () => {
         onClear={onClear}
         clearButtonProps={{ 'data-testid': 'clear-button' }}
         clearIconProps={{ 'data-testid': 'clear-button-icon' }}
-        rightAccessory={<div>right-accessory</div>}
         showClear
       />,
     );
@@ -133,6 +132,24 @@ describe('TextField', () => {
     expect(textField.value).toBe('text value');
     fireEvent.click(getByTestId('clear-button'));
     expect(onClear).toHaveBeenCalledTimes(1);
+  });
+  it('should fire clearButtonProps.onClick event when passed to clearButtonProps.onClick prop', () => {
+    const onClear = jest.fn();
+    const onClick = jest.fn();
+    const { getByRole, getByTestId } = render(
+      <TextField
+        onClear={onClear}
+        clearButtonProps={{ 'data-testid': 'clear-button', onClick: onClick }}
+        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        showClear
+      />,
+    );
+    const textField = getByRole('textbox');
+    fireEvent.change(textField, { target: { value: 'text value' } });
+    expect(textField.value).toBe('text value');
+    fireEvent.click(getByTestId('clear-button'));
+    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
   it('should be able to accept inputProps', () => {
     const { getByRole } = render(

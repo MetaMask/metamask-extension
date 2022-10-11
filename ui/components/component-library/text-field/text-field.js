@@ -7,7 +7,10 @@ import {
   DISPLAY,
   JUSTIFY_CONTENT,
   ALIGN_ITEMS,
+  COLORS,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
 
 import { Icon, ICON_NAMES } from '../icon';
 
@@ -32,7 +35,7 @@ export const TextField = ({
   };
   const handleClear = (e) => {
     setValue('');
-    clearButtonProps?.onClick(e);
+    clearButtonProps?.onClick?.(e);
     onClear?.(e);
   };
   return (
@@ -49,7 +52,7 @@ export const TextField = ({
               as="button"
               display={DISPLAY.FLEX}
               alignItems={ALIGN_ITEMS.CENTER}
-              justifyContent={JUSTIFY_CONTENTS.CENTER}
+              justifyContent={JUSTIFY_CONTENT.CENTER}
               backgroundColor={COLORS.TRANSPARENT}
               padding={0}
               {...clearButtonProps} // don't override onClick
