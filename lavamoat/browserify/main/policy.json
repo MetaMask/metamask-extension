@@ -3389,12 +3389,6 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -4550,8 +4544,8 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
-        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -4582,7 +4576,13 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
@@ -4590,13 +4590,6 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/utils": {
-      "packages": {
-        "@metamask/snap-utils>superstruct": true,
-        "eslint>fast-deep-equal": true,
-        "nock>debug": true
       }
     },
     "eth-keyring-controller": {
@@ -4720,17 +4713,9 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
+        "@ethereumjs/common": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": true,
-        "ethereumjs-util": true
-      }
-    },
-    "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/common>crc-32": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
         "ethereumjs-util": true
       }
     },
@@ -4753,8 +4738,14 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": {
