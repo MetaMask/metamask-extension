@@ -231,13 +231,12 @@ export default class Analytics {
         const result = await response.json();
         if (response.ok) {
           done();
-          return Promise.resolve(result);
         } else {
           if (
             this._isErrorRetryable({ response }) &&
             retryNo <= this.retryCount
           ) {
-            _retryRequest(url, body, done, retryNo);
+            this._retryRequest(url, body, done, retryNo);
           } else {
             const error = new Error(res.statusText);
             done(error);
