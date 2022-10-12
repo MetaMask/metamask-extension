@@ -58,7 +58,7 @@ AvatarFavicon.propTypes = {
   /**
    * Props for the fallback icon. All Icon props can be used
    */
-  fallbackIconProps: Icon.PropTypes,
+  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The size of the AvatarFavicon
    * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'

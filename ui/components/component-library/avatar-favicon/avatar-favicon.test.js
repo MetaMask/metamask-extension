@@ -29,4 +29,18 @@ describe('AvatarFavicon', () => {
     );
     expect(container.getElementsByClassName('icon')).toHaveLength(1);
   });
+
+  it('should render fallback image with custom fallbackIconProps if no ImageSource is provided', () => {
+    const container = (
+      <AvatarFavicon
+        data-testid="avatar-favicon"
+        fallbackIconProps={{
+          'data-testid': 'fallback-icon',
+        }}
+      />
+    );
+    expect(container.props.fallbackIconProps['data-testid']).toStrictEqual(
+      'fallback-icon',
+    );
+  });
 });
