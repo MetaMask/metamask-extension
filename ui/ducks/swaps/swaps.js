@@ -606,8 +606,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   };
 };
 
-const isTokenAlreadyAdded = (tokenAddress, state) => {
-  const tokens = getTokens(state);
+const isTokenAlreadyAdded = (tokenAddress, tokens) => {
   if (!Array.isArray(tokens)) {
     return false;
   }
@@ -683,7 +682,7 @@ export const fetchQuotesAndSetQuoteState = (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
       contractExchangeRates[toTokenAddress] === undefined &&
-      !isTokenAlreadyAdded(toTokenAddress, state)
+      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
     ) {
       destinationTokenAddedForSwap = true;
       await dispatch(
