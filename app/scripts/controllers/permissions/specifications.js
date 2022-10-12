@@ -1,5 +1,6 @@
 import { constructPermission, PermissionType } from '@metamask/controllers';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snap-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -69,6 +70,7 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     ...snapsCaveatsSpecifications,
+    ...snapsEndowmentCaveatSpecifications,
     ///: END:ONLY_INCLUDE_IN
   };
 };

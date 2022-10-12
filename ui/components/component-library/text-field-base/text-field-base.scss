@@ -1,0 +1,52 @@
+.mm-text-field-base {
+  --text-field-base-height: var(--size, 40px);
+
+  &--size-sm {
+    --size: 32px;
+  }
+
+  &--size-md {
+    --size: 40px;
+  }
+
+  &--size-lg {
+    --size: 48px;
+  }
+
+  height: var(--text-field-base-height);
+  border-color: var(--color-border-default);
+
+  &--focused {
+    border-color: var(--color-primary-default);
+  }
+
+  &--error {
+    border-color: var(--color-error-default);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    border-color: var(--color-border-default);
+  }
+
+  // truncates text with ellipsis
+  &--truncate .mm-text-field-base__input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__input {
+    border: none;
+    height: 100%;
+    flex-grow: 1;
+    box-sizing: content-box;
+    margin: 0;
+    padding: 0;
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+}

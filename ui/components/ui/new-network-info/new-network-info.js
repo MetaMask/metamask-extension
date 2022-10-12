@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import Box from '../box';
 import {
   ALIGN_ITEMS,
