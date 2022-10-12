@@ -610,7 +610,9 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
   if (!Array.isArray(tokens)) {
     return false;
   }
-  return tokens.find((token) => token.address.toLowerCase() === tokenAddress);
+  return tokens.find(
+    (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+  );
 };
 
 export const fetchQuotesAndSetQuoteState = (
