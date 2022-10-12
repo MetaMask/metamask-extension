@@ -102,7 +102,6 @@ describe('Test Snap onOff', function () {
 
         // click OK on the popup
         await driver.delay(1000);
-        // driver.switchTo().alert().accept();
         await driver.closeAlertPopup();
         await driver.delay(1000);
 
