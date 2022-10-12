@@ -487,8 +487,8 @@ export default class MetaMetricsController {
    * this is to achieve idempotent behaviour.
    * If actionid is not provided this._trackEvent is used to track the event.
    *
-   * @param {*} payload: payload for event tracking
-   * @param {*} options: options for event tracking
+   * @param {*} payload - payload for event tracking
+   * @param {*} options - options for event tracking
    */
   trackEvent(payload, options) {
     if (options?.actionId) {
