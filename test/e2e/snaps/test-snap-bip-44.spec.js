@@ -31,8 +31,7 @@ describe('Test Snap bip-44', function () {
         await driver.delay(1000);
         await driver.fill('#snapId3', 'npm:@metamask/test-snap-bip44');
 
-        // reveal snapId3 by finding and scrolling to #snapId4
-        const snapButton = await driver.findElement('#snapId4');
+        const snapButton = await driver.findElement('#snapId3');
         await driver.scrollToElement(snapButton);
         await driver.delay(500);
 
@@ -88,7 +87,7 @@ describe('Test Snap bip-44', function () {
         const bip44Result = await driver.findElement('#bip44Result');
         assert.equal(
           await bip44Result.getText(),
-          'Public key: "0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e8d1"',
+          'Public key: "0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"',
         );
       },
     );
