@@ -94,5 +94,3 @@ TextField.propTypes = {
    */
   ...TextFieldBase.propTypes,
 };
-
-TextField.displayName = 'TextField';

@@ -179,9 +179,7 @@ export default {
   },
 };
 
-const Template = (args) => <TextField {...args} />;
-
-export const DefaultStory = Template.bind({});
+export const DefaultStory = (args) => <TextField {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const ShowClear = (args) => {
