@@ -606,23 +606,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('trackEvent', function () {
-    it('should call only metricsController._trackEvent if actionId is not provided', function () {
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
-      });
-      const spyTrackEvent = sinon.spy();
-      metaMetricsController._trackEvent = spyTrackEvent;
-
-      const spyCreateEvent = sinon.spy();
-      metaMetricsController.createEventFragment = spyCreateEvent;
-
-      metaMetricsController.trackEvent({}, {});
-
-      assert(spyTrackEvent.calledOnce);
-      assert(spyCreateEvent.notCalled);
-    });
-
-    it('should call createEventFragment, finalizeEventFragment if actionId is provided', function () {
+    it('should call idempotent method createEventFragment, and finalizeEventFragment if actionId is provided', function () {
       this.timeout(7000);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
@@ -644,6 +628,22 @@ describe('MetaMetricsController', function () {
       setTimeout(function () {
         assert(stubFinalizeEvent.calledOnce);
       }, 5000);
+    });
+
+    it('should call non-idempotent method metricsController._trackEvent if actionId is not provided', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: false,
+      });
+      const spyTrackEvent = sinon.spy();
+      metaMetricsController._trackEvent = spyTrackEvent;
+
+      const spyCreateEvent = sinon.spy();
+      metaMetricsController.createEventFragment = spyCreateEvent;
+
+      metaMetricsController.trackEvent({}, {});
+
+      assert(spyTrackEvent.calledOnce);
+      assert(spyCreateEvent.notCalled);
     });
 
     it('should create only one fragments if 2 requests have same actionId', function () {
