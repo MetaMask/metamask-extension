@@ -23,6 +23,7 @@ import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/const
 import { checkAlarmExists } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+const ONE_MINUTE_IN_MS = 60000;
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -479,10 +480,16 @@ export default class MetaMetricsController {
     }
   }
 
-  // Method to track metrics event
-  // If an actionId is provided createEventFragment, finalizeEventFragment are used to track event,
-  // this is to achieve idempotent behaviour.
-  // If actionid is not provided this._trackEvent is used to track the event.
+  /**
+   * Method to track metrics event
+   *
+   * If an actionId is provided createEventFragment, finalizeEventFragment are used to track event,
+   * this is to achieve idempotent behaviour.
+   * If actionid is not provided this._trackEvent is used to track the event.
+   *
+   * @param {*} payload: payload for event tracking
+   * @param {*} options: options for event tracking
+   */
   trackEvent(payload, options) {
     if (options?.actionId) {
       const fragment = this.createEventFragment({
@@ -491,9 +498,12 @@ export default class MetaMetricsController {
         actionId: options.actionId,
         successEvent: payload.event,
       });
+      // The delay below is added to ensure that event is not finalised immediately after it is created
+      // When event is finalised its fragment is deleted. Thus it is not possible to ensure idempotent
+      // behaviour by comparing actionId
       setTimeout(() => {
         this.finalizeEventFragment(fragment.id);
-      }, 5000);
+      }, ONE_MINUTE_IN_MS);
     } else {
       this._trackEvent(payload, options);
     }
