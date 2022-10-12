@@ -9,11 +9,13 @@ import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import Typography from '../../../components/ui/typography';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { THEME_TYPE } from './settings-tab.constant';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -37,6 +39,7 @@ export default class SettingsTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -55,6 +58,8 @@ export default class SettingsTab extends PureComponent {
     lastFetchedConversionDate: PropTypes.number,
     selectedAddress: PropTypes.string,
     tokenList: PropTypes.object,
+    theme: PropTypes.string,
+    setTheme: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -144,7 +149,7 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         id="toggle-zero-balance"
       >
@@ -179,7 +184,7 @@ export default class SettingsTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         id="blockie-optin"
       >
@@ -320,6 +325,58 @@ export default class SettingsTab extends PureComponent {
     );
   }
 
+  renderTheme() {
+    const { t } = this.context;
+    const { theme, setTheme } = this.props;
+
+    const themesOptions = [
+      {
+        name: t('lightTheme'),
+        value: THEME_TYPE.LIGHT,
+      },
+      {
+        name: t('darkTheme'),
+        value: THEME_TYPE.DARK,
+      },
+      {
+        name: t('osTheme'),
+        value: THEME_TYPE.OS,
+      },
+    ];
+
+    const onChange = (newTheme) => {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.SETTINGS,
+        event: 'Theme Changed',
+        properties: {
+          theme_selected: newTheme,
+        },
+      });
+      setTheme(newTheme);
+    };
+
+    return (
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{this.context.t('theme')}</span>
+          <div className="settings-page__content-description">
+            {this.context.t('themeDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Dropdown
+              id="select-theme"
+              options={themesOptions}
+              selectedOption={theme}
+              onChange={onChange}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -329,6 +386,7 @@ export default class SettingsTab extends PureComponent {
         {this.renderCurrentConversion()}
         {this.renderUsePrimaryCurrencyOptions()}
         {this.renderCurrentLocale()}
+        {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
       </div>

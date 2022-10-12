@@ -49,6 +49,7 @@ class EditableLabel extends Component {
           }
         }}
         onChange={(event) => this.setState({ value: event.target.value })}
+        data-testid="editable-input"
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error':
             value === '' || accountsNames.includes(value),
@@ -73,6 +74,7 @@ class EditableLabel extends Component {
       <button
         key={2}
         className="editable-label__icon-button"
+        data-testid="editable-label-button"
         onClick={() => this.setState({ isEditing: true })}
       >
         <i className="fas fa-pencil-alt editable-label__icon" />

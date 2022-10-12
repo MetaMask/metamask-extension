@@ -16,7 +16,6 @@ import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import {
   PRIMARY,
-  SUPPORT_LINK,
   ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
   SUPPORT_REQUEST_LINK,
   ///: END:ONLY_INCLUDE_IN
@@ -41,6 +40,7 @@ import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {

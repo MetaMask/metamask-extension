@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { stripHexPrefix } from 'ethereumjs-util';
+///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
-import {
-  addHexes,
-  hexToDecimal,
-  hexWEIToDecGWEI,
-} from '../../helpers/utils/conversions.util';
+import { addHexes } from '../../helpers/utils/conversions.util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -46,7 +45,7 @@ import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
-
+import Typography from '../../components/ui/typography/typography';
 import {
   COLORS,
   FONT_STYLE,
@@ -59,10 +58,21 @@ import {
   removePollingTokenFromAppState,
 } from '../../store/actions';
 
-import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
+import { DropdownTab, Tab } from '../../components/ui/tabs';
+///: END:ONLY_INCLUDE_IN
+
+import {
+  NETWORK_TO_NAME_MAP,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  CHAIN_ID_TO_NETWORK_ID_MAP,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../shared/constants/network';
 import TransactionAlerts from './transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
@@ -151,6 +161,11 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightSnaps: PropTypes.arrayOf(PropTypes.object),
+    ///: END:ONLY_INCLUDE_IN
+    assetStandard: PropTypes.string,
   };
 
   state = {
@@ -160,6 +175,9 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    selectedInsightSnapId: this.props.insightSnaps[0]?.id,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   componentDidUpdate(prevProps) {
@@ -302,6 +320,12 @@ export default class ConfirmTransactionBase extends Component {
   handleCloseEditGas() {
     this.setState({ editingGas: false });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  handleSnapSelected(snapId) {
+    this.setState({ selectedInsightSnapId: snapId });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   setUserAcknowledgedGasMissing() {
     this.setState({ userAcknowledgedGasMissing: true });
@@ -730,6 +754,61 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  renderInsight() {
+    const { txData, insightSnaps } = this.props;
+    const { selectedInsightSnapId } = this.state;
+    const { txParams, chainId } = txData;
+
+    const selectedSnap = insightSnaps.find(
+      ({ id }) => id === selectedInsightSnapId,
+    );
+
+    const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+    const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+
+    if (
+      txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+      !insightSnaps.length
+    ) {
+      return null;
+    }
+
+    const dropdownOptions = insightSnaps.map(
+      ({ id, manifest: { proposedName } }) => ({
+        value: id,
+        name: proposedName,
+      }),
+    );
+
+    return insightSnaps.length > 1 ? (
+      <DropdownTab
+        className="confirm-page-container-content__tab"
+        options={dropdownOptions}
+        selectedOption={selectedInsightSnapId}
+        onChange={(snapId) => this.handleSnapSelected(snapId)}
+      >
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          selectedSnap={selectedSnap}
+        />
+      </DropdownTab>
+    ) : (
+      <Tab
+        className="confirm-page-container-content__tab"
+        name={selectedSnap.manifest.proposedName}
+      >
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          selectedSnap={selectedSnap}
+        />
+      </Tab>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   handleEdit() {
     const {
       txData,
@@ -1048,6 +1127,8 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       hardwareWalletRequiresConnection,
       image,
+      isApprovalOrRejection,
+      assetStandard,
     } = this.props;
     const {
       submitting,
@@ -1111,6 +1192,9 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          insightComponent={this.renderInsight()}
+          ///: END:ONLY_INCLUDE_IN
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
@@ -1148,6 +1232,8 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
+          isApprovalOrRejection={isApprovalOrRejection}
+          assetStandard={assetStandard}
         />
       </TransactionModalContextProvider>
     );

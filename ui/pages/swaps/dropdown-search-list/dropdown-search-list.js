@@ -91,6 +91,7 @@ export default function DropdownSearchList({
     setIsImportTokenModalOpen(true);
   };
 
+  /* istanbul ignore next */
   const onImportTokenClick = () => {
     trackEvent({
       event: 'Token Imported',
@@ -167,6 +168,7 @@ export default function DropdownSearchList({
   return (
     <div
       className={classnames('dropdown-search-list', className)}
+      data-testid="dropdown-search-list"
       onClick={onClickSelector}
       onKeyUp={onKeyUp}
       tabIndex="0"
@@ -216,6 +218,7 @@ export default function DropdownSearchList({
           <SearchableItemList
             itemsToSearch={loading ? [] : itemsToSearch}
             Placeholder={() =>
+              /* istanbul ignore next */
               loading ? (
                 <div className="dropdown-search-list__loading-item">
                   <PulseLoader />
@@ -286,6 +289,7 @@ export default function DropdownSearchList({
           />
           <div
             className="dropdown-search-list__close-area"
+            data-testid="dropdown-search-list__close-area"
             onClick={(event) => {
               event.stopPropagation();
               setIsOpen(false);

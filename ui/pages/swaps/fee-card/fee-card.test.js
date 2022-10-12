@@ -8,8 +8,9 @@ import {
   createSwapsMockStore,
   setBackgroundConnection,
   MOCKS,
+  fireEvent,
 } from '../../../../test/jest';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import {
@@ -82,7 +83,7 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     supportsEIP1559V2: false,
     ...customProps,
@@ -104,6 +105,8 @@ describe('FeeCard', () => {
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
+    expect(document.querySelector('.info-tooltip')).toMatchSnapshot();
+    expect(getByText('Edit limit')).toBeInTheDocument();
   });
 
   it('renders the component with EIP-1559 enabled', () => {
@@ -144,5 +147,24 @@ describe('FeeCard', () => {
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
     expect(queryByTestId('fee-card__edit-link')).not.toBeInTheDocument();
+  });
+
+  it('renders the component with hidden token approval row', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const props = createProps({
+      hideTokenApprovalRow: true,
+    });
+    const { queryByText } = renderWithProvider(<FeeCard {...props} />, store);
+    expect(queryByText('Edit limit')).not.toBeInTheDocument();
+  });
+
+  it('approves a token', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const props = createProps({
+      onTokenApprovalClick: jest.fn(),
+    });
+    const { queryByText } = renderWithProvider(<FeeCard {...props} />, store);
+    fireEvent.click(queryByText('Edit limit'));
+    expect(props.onTokenApprovalClick).toHaveBeenCalled();
   });
 });

@@ -1,6 +1,6 @@
 import { warn } from 'loglevel';
 import { MINUTE } from '../../../shared/constants/time';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -96,14 +96,14 @@ export default class DetectTokensController {
     }
     if (
       !this.useTokenDetection &&
-      this.getChainIdFromNetworkStore(this._network) !== MAINNET_CHAIN_ID
+      this.getChainIdFromNetworkStore(this._network) !== CHAIN_IDS.MAINNET
     ) {
       return;
     }
 
     const isTokenDetectionInactiveInMainnet =
       !this.useTokenDetection &&
-      this.getChainIdFromNetworkStore(this._network) === MAINNET_CHAIN_ID;
+      this.getChainIdFromNetworkStore(this._network) === CHAIN_IDS.MAINNET;
     const { tokenList } = this._tokenList.state;
 
     const tokenListUsed = isTokenDetectionInactiveInMainnet
@@ -150,7 +150,7 @@ export default class DetectTokensController {
       if (result) {
         const nonZeroTokenAddresses = Object.keys(result);
         for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-          const { address, symbol, decimals, aggregators } =
+          const { address, symbol, decimals } =
             tokenListUsed[nonZeroTokenAddress];
 
           eventTokensDetails.push(`${symbol} - ${address}`);
@@ -159,7 +159,6 @@ export default class DetectTokensController {
             address,
             symbol,
             decimals,
-            aggregators,
           });
         }
 
