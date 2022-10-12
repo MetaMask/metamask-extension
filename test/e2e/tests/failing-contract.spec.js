@@ -20,7 +20,17 @@ describe('Failing contract interaction ', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withNetworkController({
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+          })
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            eip1559V2Enabled: true,
+          })
           .build(),
         ganacheOptions,
         smartContract,
