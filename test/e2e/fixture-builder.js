@@ -256,8 +256,6 @@ function defaultFixture() {
           },
         },
       },
-
-      TokenListController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
@@ -399,7 +397,12 @@ class FixtureBuilder {
   }
 
   withAddressBookController(data) {
-    Object.assign(this.fixture.data.AddressBookController, data);
+    Object.assign(
+      this.fixture.data.AddressBookController
+        ? this.fixture.data.AddressBookController
+        : (this.fixture.data.AddressBookController = {}),
+      data,
+    );
     return this;
   }
 
@@ -424,7 +427,12 @@ class FixtureBuilder {
   }
 
   withCollectiblesController(data) {
-    Object.assign(this.fixture.data.CollectiblesController, data);
+    Object.assign(
+      this.fixture.data.CollectiblesController
+        ? this.fixture.data.CollectiblesController
+        : (this.fixture.data.CollectiblesController = {}),
+      data,
+    );
     return this;
   }
 
@@ -439,7 +447,12 @@ class FixtureBuilder {
   }
 
   withIncomingTransactionsController(data) {
-    Object.assign(this.fixture.data.IncomingTransactionsController, data);
+    Object.assign(
+      this.fixture.data.IncomingTransactionsController
+        ? this.fixture.data.IncomingTransactionsController
+        : (this.fixture.data.IncomingTransactionsController = {}),
+      data,
+    );
     return this;
   }
 
@@ -556,7 +569,12 @@ class FixtureBuilder {
   }
 
   withPermissionLogController(data) {
-    Object.assign(this.fixture.data.PermissionLogController, data);
+    Object.assign(
+      this.fixture.data.PermissionLogController
+        ? this.fixture.data.PermissionLogController
+        : (this.fixture.data.PermissionLogController = {}),
+      data,
+    );
     return this;
   }
 
@@ -576,12 +594,22 @@ class FixtureBuilder {
   }
 
   withThreeBoxController(data) {
-    Object.assign(this.fixture.data.ThreeBoxController, data);
+    Object.assign(
+      this.fixture.data.ThreeBoxController
+        ? this.fixture.data.ThreeBoxController
+        : (this.fixture.data.ThreeBoxController = {}),
+      data,
+    );
     return this;
   }
 
   withTokenListController(data) {
-    Object.assign(this.fixture.data.TokenListController, data);
+    Object.assign(
+      this.fixture.data.TokenListController
+        ? this.fixture.data.TokenListController
+        : (this.fixture.data.TokenListController = {}),
+      data,
+    );
     return this;
   }
 
@@ -591,7 +619,12 @@ class FixtureBuilder {
   }
 
   withTransactionController(data) {
-    Object.assign(this.fixture.data.TransactionController, data);
+    Object.assign(
+      this.fixture.data.TransactionController
+        ? this.fixture.data.TransactionController
+        : (this.fixture.data.TransactionController = {}),
+      data,
+    );
     return this;
   }
 
