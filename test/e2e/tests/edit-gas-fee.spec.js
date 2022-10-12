@@ -21,6 +21,13 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withNetworkController({
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+          })
           .withPreferencesController({
             eip1559V2Enabled: true,
           })
@@ -104,6 +111,13 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withNetworkController({
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+          })
           .withPreferencesController({
             eip1559V2Enabled: true,
           })
@@ -192,6 +206,13 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withNetworkController({
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+          })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             eip1559V2Enabled: true,
