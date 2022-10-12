@@ -108,17 +108,13 @@ let keepAliveTimer;
  * First message is sent immediately, subsequent messages are sent at interval of WORKER_KEEP_ALIVE_INTERVAL
  */
 const runWorkerKeepAliveInterval = () => {
-  if (keepAliveTimer) {
-    clearTimeout(keepAliveTimer);
-  }
+  clearTimeout(keepAliveTimer);
 
   keepAliveTimer = setTimeout(() => {
     clearInterval(keepAliveInterval);
   }, TIME_45_MIN_IN_MS);
 
-  if (keepAliveInterval) {
-    clearInterval(keepAliveInterval);
-  }
+  clearInterval(keepAliveInterval);
 
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
