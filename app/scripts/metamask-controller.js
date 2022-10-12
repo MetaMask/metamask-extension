@@ -1161,16 +1161,16 @@ export default class MetamaskController extends EventEmitter {
 
         this.appStateController.store.updateState({ isAttemptingLogin: true });
         chrome.storage.session.get(
-          ['loginToken', 'loginData'],
-          async ({ loginToken, loginData }) => {
-            console.log('Was the login token found? ', loginToken, loginData);
+          ['loginToken'],
+          async ({ loginToken }) => {
+            console.log('Was the login token found? ', loginToken);
             if (loginToken) {
               console.log(
-                `Attempting to login using loginToken: ${loginToken} / ${loginData}`,
+                `Attempting to login using loginToken: ${loginToken}`,
               );
               await this.keyringController.submitEncryptionKey(
                 loginToken,
-                loginData,
+                this.keyringController.store.getState().vault,
               );
             }
             this.appStateController.store.updateState({
@@ -2396,16 +2396,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<object>} The keyringController update.
    */
   async submitPassword(password) {
-    console.log('Attempting to submit password: ', password);
-
     await this.keyringController.submitPassword(password);
-    const loginToken = this.keyringController.encryptionKey;
-    const loginData = this.keyringController.encryptionData;
-
-    if (isManifestV3) {
-      console.log(`Trying to set login data: ${loginToken} / ${loginData}`);
-      await chrome.storage.session.set({ loginToken, loginData });
-    }
 
     try {
       await this.blockTracker.checkForLatestBlock();
@@ -4006,11 +3997,16 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const { keyrings } = state;
+    const { keyrings, encryptionKey: loginToken } = state;
     const addresses = keyrings.reduce(
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
+
+    if (isManifestV3) {
+      console.log(`[MV3] Setting login token: ${loginToken}`);
+      await chrome.storage.session.set({ loginToken });
+    }
 
     if (!addresses.length) {
       return;
