@@ -119,7 +119,9 @@ export default class ConfirmPageContainer extends Component {
   async componentDidMount() {
     const { tokenAddress, fromAddress } = this.props;
     const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
-    this.setState({ collectionBalance: tokenBalance.balance.words[0] });
+    this.setState({
+      collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+    });
   }
 
   render() {

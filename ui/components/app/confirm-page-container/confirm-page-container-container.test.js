@@ -15,6 +15,14 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
+jest.mock('../../../pages/swaps/swaps.util', () => {
+  const actual = jest.requireActual('../../../pages/swaps/swaps.util');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+  };
+});
+
 describe('Confirm Page Container Container Test', () => {
   const props = {
     title: 'Title',
