@@ -1113,13 +1113,13 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    if (!this.isUnlocked()) {
+    if (
+      !this.isUnlocked() &&
+      this.onboardingController.store.getState().completedOnboarding
+    ) {
       // Automatic login via config password
       const password = process.env.CONF?.PASSWORD;
-      if (
-        password &&
-        this.onboardingController.store.getState().completedOnboarding
-      ) {
+      if (password) {
         this.submitPassword(password);
       }
       // Automatic login via storage encryption key
@@ -1127,24 +1127,19 @@ export default class MetamaskController extends EventEmitter {
         console.log('Is MV3, going to try to autologin with loginToken');
 
         this.appStateController.store.updateState({ isAttemptingLogin: true });
-        chrome.storage.session.get(
-          ['loginToken'],
-          async ({ loginToken }) => {
-            console.log('Was the login token found? ', loginToken);
-            if (loginToken) {
-              console.log(
-                `Attempting to login using loginToken: ${loginToken}`,
-              );
-              await this.keyringController.submitEncryptionKey(
-                loginToken,
-                this.keyringController.store.getState().vault,
-              );
-            }
-            this.appStateController.store.updateState({
-              isAttemptingLogin: false,
-            });
-          },
-        );
+        chrome.storage.session.get(['loginToken'], async ({ loginToken }) => {
+          console.log('Was the login token found? ', loginToken);
+          if (loginToken) {
+            console.log(`Attempting to login using loginToken: ${loginToken}`);
+            await this.keyringController.submitEncryptionKey(
+              loginToken,
+              this.keyringController.store.getState().vault,
+            );
+          }
+          this.appStateController.store.updateState({
+            isAttemptingLogin: false,
+          });
+        });
       }
     }
 
