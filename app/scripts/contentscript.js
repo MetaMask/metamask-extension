@@ -89,8 +89,11 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
 
 /**
- * Don't run the keep worker alive logic for initial JSON RPC methods.
- * We should not run keep-alive logic for non-dapp pages.
+ * Don't run the keep worker alive logic for JSON RPC methods called on initial load.
+ * If accounts are connected to the dapp, additional JSON RPC methods will be called on
+ * initial load that are not included in this list. This is to prevent the service worker
+ * from being kept alive when accounts are not connected to the dapp or when the user is not
+ * interacting with the extension. The keep-alive logic should not work for non-dapp pages.
  */
 const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
   MESSAGE_TYPE.GET_PROVIDER_STATE,
