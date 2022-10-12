@@ -1,70 +1,178 @@
-function fixture() {
+function defaultFixture() {
   return {
     data: {
-      AddressBookController: {},
-      AlertController: {},
+      AlertController: {
+        alertEnabledness: {
+          unconnectedAccount: true,
+          web3ShimUsage: true,
+        },
+        unconnectedAccountAlertShownOrigins: {},
+        web3ShimUsageOrigins: {},
+      },
       AnnouncementController: {
         announcements: {
           1: {
-            isShown: true,
+            date: '2021-03-17',
+            id: 1,
+            image: {
+              height: '230px',
+              placeImageBelowDescription: true,
+              src: 'images/mobile-link-qr.svg',
+              width: '230px',
+            },
+            isShown: false,
           },
           3: {
-            isShown: true,
+            date: '2021-03-08',
+            id: 3,
+            isShown: false,
           },
           4: {
-            isShown: true,
+            date: '2021-05-11',
+            id: 4,
+            image: {
+              src: 'images/source-logos-bsc.svg',
+              width: '100%',
+            },
+            isShown: false,
           },
           5: {
-            isShown: true,
+            date: '2021-06-09',
+            id: 5,
+            isShown: false,
           },
           6: {
-            isShown: true,
+            date: '2021-05-26',
+            id: 6,
+            isShown: false,
           },
           7: {
+            date: '2021-09-17',
+            id: 7,
             isShown: false,
           },
           8: {
+            date: '2021-11-01',
+            id: 8,
             isShown: false,
           },
           9: {
-            isShown: true,
+            date: '2021-12-07',
+            id: 9,
+            image: {
+              src: 'images/txinsights.png',
+              width: '80%',
+            },
+            isShown: false,
           },
           10: {
+            date: '2022-09-15',
+            id: 10,
+            image: {
+              src: 'images/token-detection.svg',
+              width: '100%',
+            },
             isShown: true,
           },
           11: {
+            date: '2022-09-15',
+            id: 11,
             isShown: true,
           },
           12: {
-            isShown: true,
+            date: '2022-05-18',
+            id: 12,
+            image: {
+              src: 'images/darkmode-banner.png',
+              width: '100%',
+            },
+            isShown: false,
           },
           13: {
+            date: '2022-09-15',
+            id: 13,
             isShown: true,
           },
           14: {
-            isShown: true,
+            date: '2022-09-15',
+            id: 14,
+            isShown: false,
           },
           15: {
+            date: '2022-09-15',
+            id: 15,
             isShown: true,
           },
         },
       },
-      AppStateController: {},
-      CachedBalancesController: {},
-      CollectiblesController: {},
-      CurrencyController: {},
-      GasFeeController: {},
-      IncomingTransactionsController: {},
+      AppStateController: {
+        browserEnvironment: {
+          browser: 'chrome',
+          os: 'mac',
+        },
+        collectiblesDetectionNoticeDismissed: false,
+        collectiblesDropdownState: {},
+        connectedStatusPopoverHasBeenShown: true,
+        defaultHomeActiveTabName: null,
+        enableEIP1559V2NoticeDismissed: false,
+        fullScreenGasPollTokens: [],
+        notificationGasPollTokens: [],
+        popupGasPollTokens: [],
+        qrHardware: {},
+        recoveryPhraseReminderHasBeenShown: false,
+        recoveryPhraseReminderLastShown: 1665507600000,
+        showPortfolioTooltip: false,
+        showTestnetMessageInDropdown: true,
+        trezorModel: null,
+        usedNetworks: {
+          '0x1': true,
+          '0x5': true,
+          '0x539': true,
+        },
+      },
+      CachedBalancesController: {
+        cachedBalances: {
+          '0x539': {},
+        },
+      },
+      CurrencyController: {
+        conversionDate: 1665507600.0,
+        conversionRate: 1300.0,
+        currentCurrency: 'usd',
+        nativeCurrency: 'ETH',
+        usdConversionRate: 1300.0,
+      },
+      GasFeeController: {
+        estimatedGasFeeTimeBounds: {},
+        gasEstimateType: 'none',
+        gasFeeEstimates: {},
+      },
+      IncomingTransactionsController: {
+        incomingTransactions: {},
+        incomingTxLastFetchedBlockByChainId: {
+          '0x1': null,
+          '0x5': null,
+          '0xaa36a7': null,
+        },
+      },
       KeyringController: {
         vault:
           '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
       },
       MetaMetricsController: {
+        eventsBeforeMetricsOptIn: [],
+        fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
+        traits: {},
       },
       NetworkController: {
         network: '1337',
+        networkDetails: {
+          EIPS: {
+            1559: false,
+          },
+        },
         provider: {
           chainId: '0x539',
           nickname: 'Localhost 8545',
@@ -76,16 +184,92 @@ function fixture() {
       },
       OnboardingController: {
         completedOnboarding: true,
+        firstTimeFlowType: 'import',
+        onboardingTabs: {},
+        seedPhraseBackedUp: true,
       },
-      PermissionController: {},
-      PermissionLogController: {},
-      PreferencesController: {},
-      SmartTransactionsController: {},
-      SubjectMetadataController: {},
-      ThreeBoxController: {},
+      PermissionController: {
+        subjects: {},
+      },
+      PreferencesController: {
+        advancedGasFee: null,
+        currentLocale: 'en',
+        customNetworkListEnabled: false,
+        dismissSeedBackUpReminder: false,
+        featureFlags: {
+          showIncomingTransactions: true,
+        },
+        forgottenPassword: false,
+        frequentRpcListDetail: [
+          {
+            chainId: '0x539',
+            nickname: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+          },
+        ],
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+        },
+        infuraBlocked: false,
+        ipfsGateway: 'dweb.link',
+        knownMethodData: {},
+        ledgerTransportType: 'webhid',
+        lostIdentities: {},
+        openSeaEnabled: false,
+        preferences: {
+          hideZeroBalanceTokens: false,
+          showFiatInTestnets: false,
+          showTestNetworks: false,
+          useNativeCurrencyAsPrimaryCurrency: true,
+        },
+        selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        theme: 'light',
+        useBlockie: false,
+        useCollectibleDetection: false,
+        useNonceField: false,
+        usePhishDetect: true,
+        useTokenDetection: false,
+      },
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          fees: {},
+          liveness: true,
+          smartTransactions: {
+            '0x1': [],
+          },
+        },
+      },
+      SubjectMetadataController: {
+        subjectMetadata: {
+          'https://metamask.github.io': {
+            extensionId: null,
+            iconUrl: null,
+            name: 'MetaMask < = > Ledger Bridge',
+            origin: 'https://metamask.github.io',
+            subjectType: 'website',
+          },
+        },
+      },
+
       TokenListController: {},
-      TokensController: {},
-      TransactionController: {},
+      TokensController: {
+        allDetectedTokens: {},
+        allIgnoredTokens: {},
+        allTokens: {},
+        detectedTokens: [],
+        ignoredTokens: [],
+        suggestedAssets: [],
+        tokens: [],
+      },
+      TransactionController: {
+        transactions: {},
+      },
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
@@ -211,7 +395,7 @@ function onboardingFixture() {
 
 class FixtureBuilder {
   constructor({ onboarding = false } = {}) {
-    this.fixture = onboarding === true ? onboardingFixture() : fixture();
+    this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
   }
 
   withAddressBookController(data) {
