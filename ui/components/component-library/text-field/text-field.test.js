@@ -139,7 +139,7 @@ describe('TextField', () => {
     const { getByRole, getByTestId } = render(
       <TextField
         onClear={onClear}
-        clearButtonProps={{ 'data-testid': 'clear-button', onClick: onClick }}
+        clearButtonProps={{ 'data-testid': 'clear-button', onClick }}
         clearIconProps={{ 'data-testid': 'clear-button-icon' }}
         showClear
       />,
