@@ -31,14 +31,14 @@ describe('Gas API fallback', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-        .withNetworkController({
-          networkDetails: {
-            EIPS: {
-              1559: true,
+          .withNetworkController({
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
             },
-          },
-        })
-        .build(),
+          })
+          .build(),
         testSpecificMock: mockGasApiDown,
         ganacheOptions,
         title: this.test.title,

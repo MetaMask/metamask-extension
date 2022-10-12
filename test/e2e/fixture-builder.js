@@ -96,7 +96,7 @@ function defaultFixture() {
           14: {
             date: '2022-09-15',
             id: 14,
-            isShown: false,
+            isShown: true,
           },
           15: {
             date: '2022-09-15',
