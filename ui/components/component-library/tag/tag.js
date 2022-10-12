@@ -4,11 +4,12 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import {
-  TEXT,
   ALIGN_ITEMS,
-  COLORS,
-  JUSTIFY_CONTENT,
   BORDER_RADIUS,
+  COLORS,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 
 export const Tag = ({ label, className, labelProps, ...props }) => {
@@ -23,6 +24,7 @@ export const Tag = ({ label, className, labelProps, ...props }) => {
       paddingLeft={1}
       paddingRight={1}
       borderRadius={BORDER_RADIUS.PILL}
+      display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
       <Text variant={TEXT.BODY_SM} {...labelProps}>
@@ -38,7 +40,7 @@ Tag.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * The label props of the component. Most Typography props can be used
+   * The label props of the component. Most Text component props can be used
    */
   labelProps: Text.propTypes,
   /**
