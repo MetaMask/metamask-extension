@@ -62,6 +62,9 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
+    href: {
+      control: 'text',
+    },
     icon: {
       control: 'select',
       options: Object.values(ICON_NAMES),
@@ -145,3 +148,9 @@ export const Type = (args) => (
     </ButtonLink>
   </Box>
 );
+
+export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+
+Href.args = {
+  href: '/metamask',
+};
