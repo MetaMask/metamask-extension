@@ -514,6 +514,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         });
       }
       connectExternal(remotePort);
+      remotePort.postMessage({ name: 'CONNECTION_READY' });
     }
   }
 

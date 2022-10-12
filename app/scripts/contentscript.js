@@ -263,6 +263,7 @@ const setupPageStreams = () => {
 
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionPort.onMessage.addListener(notifyInpageOfExtensionStreamConnect);
   extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
@@ -291,7 +292,6 @@ const setupExtensionStreams = () => {
 
   // eslint-disable-next-line no-use-before-define
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
-  notifyInpageOfExtensionStreamConnect();
 };
 
 /** Destroys all of the extension streams */
@@ -464,20 +464,25 @@ function logStreamDisconnectWarning(remoteLabel, error) {
  * The function send message to inpage to notify it of extension stream connection
  */
 function notifyInpageOfExtensionStreamConnect() {
-  window.postMessage(
-    {
-      target: INPAGE, // the post-message-stream "target"
-      data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
+  if (msg.name === 'CONNECTION_READY') {
+    window.postMessage(
+      {
+        target: INPAGE, // the post-message-stream "target"
         data: {
-          jsonrpc: '2.0',
-          method: 'METAMASK_EXTENSION_STREAM_CONNECT',
+          // this object gets passed to obj-multiplex
+          name: PROVIDER, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'METAMASK_EXTENSION_STREAM_CONNECT',
+          },
         },
       },
-    },
-    window.location.origin,
-  );
+      window.location.origin,
+    );
+    extensionPort.onMessage.removeListener(
+      notifyInpageOfExtensionStreamConnect,
+    );
+  }
 }
 
 /**
