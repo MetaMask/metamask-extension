@@ -30,11 +30,7 @@
     padding-inline-end: 60px;
   }
 
-  input[type='number']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    display: none;
-  }
-
+  input[type='number']::-webkit-inner-spin-button,
   input[type='number']:hover::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
