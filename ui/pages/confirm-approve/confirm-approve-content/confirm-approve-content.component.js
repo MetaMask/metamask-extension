@@ -75,7 +75,7 @@ export default class ConfirmApproveContent extends Component {
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
     isSetApproveForAll: PropTypes.bool,
-    setApproveForAllArg: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
   };
 
@@ -307,7 +307,7 @@ export default class ConfirmApproveContent extends Component {
 
   renderDataContent() {
     const { t } = this.context;
-    const { data, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -315,9 +315,9 @@ export default class ConfirmApproveContent extends Component {
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
         </div>
-        {isSetApproveForAll && setApproveForAllArg !== undefined ? (
+        {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
-            {`${t('parameters')}: ${setApproveForAllArg}`}
+            {`${t('parameters')}: ${isApprovalOrRejection}`}
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
@@ -531,14 +531,14 @@ export default class ConfirmApproveContent extends Component {
 
   renderTitle() {
     const { t } = this.context;
-    const { isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { isSetApproveForAll, isApprovalOrRejection } = this.props;
     const titleTokenDescription = this.getTitleTokenDescription();
 
     let title;
 
     if (isSetApproveForAll) {
       title = t('approveAllTokensTitle', [titleTokenDescription]);
-      if (setApproveForAllArg === false) {
+      if (isApprovalOrRejection === false) {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
     }
@@ -547,14 +547,15 @@ export default class ConfirmApproveContent extends Component {
 
   renderDescription() {
     const { t } = this.context;
-    const { isContract, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { isContract, isSetApproveForAll, isApprovalOrRejection } =
+      this.props;
     const grantee = isContract
       ? t('contract').toLowerCase()
       : t('account').toLowerCase();
 
     let description = t('trustSiteApprovePermission', [grantee]);
 
-    if (isSetApproveForAll && setApproveForAllArg === false) {
+    if (isSetApproveForAll && isApprovalOrRejection === false) {
       description = t('revokeApproveForAllDescription', [
         grantee,
         this.getTitleTokenDescription(),

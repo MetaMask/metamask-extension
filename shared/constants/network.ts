@@ -210,6 +210,7 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
+  AURORA: '0x4e454152',
 } as const;
 
 /**
@@ -232,6 +233,7 @@ export const OPTIMISM_DISPLAY_NAME = 'Optimism';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
+export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -257,6 +259,7 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
+  AURORA: 'Aurora ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -410,6 +413,7 @@ export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
 export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
+export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -505,6 +509,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -861,6 +866,11 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.USDS,
     ],
   },
+  [CHAIN_IDS.AURORA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA,
+    network: 'aurora',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AURORA],
+  },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
@@ -872,6 +882,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://explorer.arbitrum.io',
       imageUrl: AETH_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.AURORA,
+    nickname: AURORA_DISPLAY_NAME,
+    rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
+    ticker: CURRENCY_SYMBOLS.AURORA,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://aurorascan.dev/',
+      imageUrl: AURORA_TOKEN_IMAGE_URL,
     },
   },
   {

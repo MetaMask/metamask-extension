@@ -1,23 +1,44 @@
-import React, { useState } from 'react';
-import Button from '../../../ui/button';
+import React from 'react';
 import ContractDetailsModal from './contract-details-modal';
 
 export default {
   title: 'Components/App/Modals/ContractDetailsModal',
   id: __filename,
   argTypes: {
-    onClosePopover: {
-      action: 'Close Contract Details',
-    },
-    onOpenPopover: {
-      action: 'Open Contract Details',
+    onClose: {
+      action: 'onClose',
     },
     tokenName: {
       control: {
         type: 'text',
       },
     },
-    address: {
+    tokenAddress: {
+      control: {
+        type: 'text',
+      },
+    },
+    toAddress: {
+      control: {
+        type: 'text',
+      },
+    },
+    chainId: {
+      control: {
+        type: 'text',
+      },
+    },
+    rpcPrefs: {
+      control: {
+        type: 'object',
+      },
+    },
+    origin: {
+      control: {
+        type: 'text',
+      },
+    },
+    siteImage: {
       control: {
         type: 'text',
       },
@@ -25,33 +46,17 @@ export default {
   },
   args: {
     tokenName: 'DAI',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    tokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
+    chainId: '0x3',
+    rpcPrefs: {},
+    origin: 'https://metamask.github.io',
+    siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   },
 };
 
 export const DefaultStory = (args) => {
-  const [showContractDetails, setshowContractDetails] = useState(false);
-  return (
-    <>
-      <Button
-        onClick={() => {
-          args.onOpenPopover();
-          setshowContractDetails(true);
-        }}
-      >
-        Verify contract details
-      </Button>
-      {showContractDetails && (
-        <ContractDetailsModal
-          onClose={() => {
-            args.onClosePopover();
-            setshowContractDetails(false);
-          }}
-          {...args}
-        />
-      )}
-    </>
-  );
+  return <ContractDetailsModal {...args} />;
 };
 
 DefaultStory.storyName = 'Default';

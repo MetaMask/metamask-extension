@@ -2286,7 +2286,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2399,7 +2399,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2880,7 +2880,21 @@
       },
       "packages": {
         "eslint>file-entry-cache>flat-cache>flatted": true,
-        "nyc>rimraf": true
+        "eslint>file-entry-cache>flat-cache>rimraf": true
+      }
+    },
+    "eslint>file-entry-cache>flat-cache>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "eslint>glob-parent": {
@@ -3449,8 +3463,8 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
-        "gulp-livereload>chalk>supports-color": true
+        "gulp-livereload>chalk>supports-color": true,
+        "gulp-livereload>debug>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3576,7 +3590,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -3901,7 +3915,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -6630,20 +6644,6 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
-      }
-    },
-    "nyc>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
       }
     },
     "nyc>signal-exit": {
