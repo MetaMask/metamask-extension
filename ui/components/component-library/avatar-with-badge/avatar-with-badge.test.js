@@ -2,6 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { AvatarWithBadge } from './avatar-with-badge';
 import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 
@@ -66,5 +67,24 @@ describe('AvatarWithBadge', () => {
         'avatar-with-badge__badge-wrapper--position-top',
       ),
     ).toHaveLength(1);
+  });
+  it('should render badge network with badgeWrapperProps', () => {
+    const container = (
+      <AvatarWithBadge
+        data-testid="avatar-with-badge"
+        badgePosition={BADGE_POSITIONS.TOP}
+        badgeWrapperProps={{ borderColor: COLORS.ERROR_DEFAULT }}
+        badge={
+          <AvatarNetwork
+            networkName="Arbitrum One"
+            networkImageUrl="./images/arbitrum.svg"
+            data-testid="badge"
+          />
+        }
+      />
+    );
+    expect(container.props.badgeWrapperProps.borderColor).toStrictEqual(
+      'error-default',
+    );
   });
 });

@@ -40,7 +40,7 @@ AvatarWithBadge.propTypes = {
   /**
    * The Badge Wrapper props of the component. All Box props can be used
    */
-  badgeWrapperProps: Box.PropTypes,
+  badgeWrapperProps: PropTypes.shape(Box.PropTypes),
   /**
    * The children to be rendered inside the AvatarWithBadge
    */

@@ -52,7 +52,7 @@ export const DefaultStory = (args) => (
 );
 DefaultStory.storyName = 'Default';
 
-export const BadgePositions = () => (
+export const BadgePosition = () => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarWithBadge
       badgePosition={BADGE_POSITIONS.BOTTOM}
