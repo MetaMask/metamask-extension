@@ -111,11 +111,12 @@ export default function ContractDetailsModal({
           )}
           <Box data-testid="recipient">
             <Typography
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TYPOGRAPHY.H5}
+              variant={TYPOGRAPHY.H6}
+              display={DISPLAY.FLEX}
               marginTop={4}
+              marginBottom={2}
             >
-              {tokenName || ellipsify(tokenAddress)}
+              {t('contractToken')}
             </Typography>
             {tokenName && (
               <Typography
@@ -149,39 +150,73 @@ export default function ContractDetailsModal({
                     handleCopyTokenAddress(tokenAddress);
                   }}
                 >
-                  <IconCopy color="var(--color-icon-muted)" />
-                </Button>
-              </Tooltip>
+                  {tokenName || ellipsify(tokenAddress)}
+                </Typography>
+                {tokenName && (
+                  <Typography
+                    variant={TYPOGRAPHY.H6}
+                    display={DISPLAY.FLEX}
+                    color={COLORS.TEXT_ALTERNATIVE}
+                  >
+                    {ellipsify(tokenAddress)}
+                  </Typography>
+                )}
+              </Box>
+              <Box
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+                className="contract-details-modal__content__contract__buttons"
+              >
+                <Box marginTop={4} marginRight={5}>
+                  <Tooltip
+                    position="top"
+                    title={
+                      copiedTokenAddress
+                        ? t('copiedExclamation')
+                        : t('copyToClipboard')
+                    }
+                  >
+                    <Button
+                      className="contract-details-modal__content__contract__buttons__copy"
+                      type="link"
+                      onClick={() => {
+                        handleCopyTokenAddress(tokenAddress);
+                      }}
+                    >
+                      <IconCopy color="var(--color-icon-muted)" />
+                    </Button>
+                  </Tooltip>
+                </Box>
+                <Box marginTop={5} marginRight={5}>
+                  <Tooltip position="top" title={t('openInBlockExplorer')}>
+                    <Button
+                      className="contract-details-modal__content__contract__buttons__block-explorer"
+                      type="link"
+                      onClick={() => {
+                        const blockExplorerTokenLink = getAccountLink(
+                          tokenAddress,
+                          chainId,
+                          {
+                            blockExplorerUrl:
+                              rpcPrefs?.blockExplorerUrl ?? null,
+                          },
+                          null,
+                        );
+                        global.platform.openTab({
+                          url: blockExplorerTokenLink,
+                        });
+                      }}
+                    >
+                      <IconBlockExplorer
+                        size={16}
+                        color="var(--color-icon-muted)"
+                      />
+                    </Button>
+                  </Tooltip>
+                </Box>
+              </Box>
             </Box>
-            <Box marginTop={5} marginRight={5}>
-              <Tooltip position="top" title={t('openInBlockExplorer')}>
-                <Button
-                  className="contract-details-modal__content__contract__buttons__block-explorer"
-                  type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      tokenAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
-                >
-                  <IconBlockExplorer
-                    size={16}
-                    color="var(--color-icon-muted)"
-                  />
-                </Button>
-              </Tooltip>
-            </Box>
-          </Box>
-        </Box>
-
+          </>
+        )}
         <Typography
           variant={TYPOGRAPHY.H6}
           display={DISPLAY.FLEX}
