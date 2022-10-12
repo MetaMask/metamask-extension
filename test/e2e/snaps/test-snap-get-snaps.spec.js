@@ -103,14 +103,19 @@ describe('Test Snap Confirm', function () {
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        const getInstalledSnapsButton = await driver.findElement('#getInstalledSnapsButton');
+        const getInstalledSnapsButton = await driver.findElement(
+          '#getInstalledSnapsButton',
+        );
         await driver.scrollToElement(getInstalledSnapsButton);
         await driver.delay(1000);
         await driver.clickElement('#getInstalledSnapsButton');
         await driver.delay(1000);
 
         const result = await driver.findElement('#getInstalledSnapsResult');
-        assert.equal(await result.getText(), 'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error');
+        assert.equal(
+          await result.getText(),
+          'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
+        );
       },
     );
   });
