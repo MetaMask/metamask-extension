@@ -1,8 +1,5 @@
 .slide-up-modal-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -41,6 +38,7 @@
   opacity: 1;
   transform: translateY(0);
   transition: all 1000ms;
+  background: var(--color-overlay-alternative);
 }
 
 .slide-up-enter-done {
@@ -55,4 +53,5 @@
   opacity: 0;
   transform: translateY(600px);
   transition: all 1000ms;
+  background: var(--color-overlay-alternative);
 }

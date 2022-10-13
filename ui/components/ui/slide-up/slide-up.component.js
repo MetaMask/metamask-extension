@@ -35,6 +35,7 @@ const defaultFooterProps = {
 
 const SlideUp = ({
   open,
+  onClose,
   children,
   footer,
   header,
@@ -46,12 +47,21 @@ const SlideUp = ({
   contentProps = defaultContentProps,
   footerProps = defaultFooterProps,
 }) => {
+  const handleClick = (e) => {
+    if (e.target.id === 'slide-up-modal-overlay') {
+      onClose();
+    }
+  };
   const modal = (
     <CSSTransition in={open} timeout={1000} classNames="slide-up" unmountOnExit>
-      <div className="slide-up-modal-overlay" id="slide-up-modal-overlay">
+      <div
+        className="slide-up-modal-overlay"
+        id="slide-up-modal-overlay"
+        onClick={handleClick}
+      >
         <Box className={classnames('slide-up-modal', className)}>
           <Box>
-            {header ? (
+            {header && (
               <Box
                 className={classnames(
                   'slide-up-modal__header',
@@ -61,8 +71,8 @@ const SlideUp = ({
               >
                 {header}
               </Box>
-            ) : null}
-            {children ? (
+            )}
+            {children && (
               <Box
                 className={classnames(
                   'slide-up-modal__content',
@@ -72,16 +82,16 @@ const SlideUp = ({
               >
                 {children}
               </Box>
-            ) : null}
+            )}
           </Box>
-          {footer ? (
+          {footer && (
             <Box
               className={classnames('slide-up-modal__footer', footerClassName)}
               {...{ ...defaultFooterProps, ...footerProps }}
             >
               {footer}
             </Box>
-          ) : null}
+          )}
         </Box>
       </div>
     </CSSTransition>
