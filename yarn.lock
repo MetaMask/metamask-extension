@@ -3226,10 +3226,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^32.0.1":
-  version "32.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-32.0.1.tgz#883ea90df1afc89d4b02598b4e41a97a34a24769"
-  integrity sha512-Fguf6797gIfTF/eK+zEdNyUcgv3dFgogAR2d0uLrR6MGI3+4AK8/tF0VZp7MBM+cWldo/tJeeu4fDjdadwVjbg==
+"@metamask/controllers@^32.0.2":
+  version "32.0.2"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-32.0.2.tgz#4841e4b8622c0e9a2cc948ef5f7e8a00473055e8"
+  integrity sha512-cnbOgJbZzUOGTiK7PaxBHiFcGmXFQwuduMRRilY5NpiAKBZ/A08T5D66Ceql+3hmSeUNWzdARLG1bEsQPavogw==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
