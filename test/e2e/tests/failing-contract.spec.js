@@ -28,9 +28,6 @@ describe('Failing contract interaction ', function () {
             },
           })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
           .build(),
         ganacheOptions,
         smartContract,
