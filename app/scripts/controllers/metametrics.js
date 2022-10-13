@@ -21,7 +21,6 @@ import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { checkAlarmExists, generateRandomId } from '../lib/util';
-import { message } from '@truffle/codec/dist/lib/format/utils/exception';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -986,6 +985,7 @@ export default class MetaMetricsController {
           events,
         });
         callback?.(result);
+        return;
       };
       this.segment[eventType](modifiedPayload, modifiedCallback);
     } else {
