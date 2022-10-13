@@ -1,19 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { BaseAvatar } from '../base-avatar';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import {
   ALIGN_ITEMS,
   COLORS,
-  DISPLAY,
   JUSTIFY_CONTENT,
-  BORDER_COLORS,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { AvatarFavicon } from '../avatar-favicon';
+import { ButtonBase } from '../button-base';
 
-export const TagUrl = ({ label, className, imageSource, cta, ...props }) => {
+export const TagUrl = ({
+  label,
+  className,
+  imageSource,
+  cta,
+  buttonProps,
+  ...props
+}) => {
   return (
     <Box
       className={classnames('tag-url', className)}
@@ -23,27 +29,21 @@ export const TagUrl = ({ label, className, imageSource, cta, ...props }) => {
       justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
       borderRadius={SIZES.XL}
-      paddingLeft={1}
-      paddingRight={1}
       {...props}
     >
-      {/* Going to replace this when AvatarFavicon will be merged */}
-      <BaseAvatar
-        size={SIZES.MD}
-        display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        borderColor={BORDER_COLORS.TRANSPARENT}
-        className={classnames('avatar-favicon', className)}
-        {...props}
-      >
-        <img
-          className="avatar-favicon__image"
-          src={imageSource}
-          alt="avatar favicon"
-        />
-      </BaseAvatar>
-      <Text variant="body-sm">{label}</Text>
+      <AvatarFavicon className="tag-url__favicon" imageSource={imageSource} />
+      <Text variant="body-md">{label}</Text>
+      {/* Going to replace this when ButtonLink will be merged */}
+      {cta && Object.keys(cta).length > 0 && (
+        <ButtonBase
+          className="tag-url__button-link"
+          as="a"
+          href="#"
+          {...buttonProps}
+        >
+          {cta.label}
+        </ButtonBase>
+      )}
     </Box>
   );
 };
@@ -57,6 +57,14 @@ TagUrl.propTypes = {
    * The text content of the TagUrl component
    */
   label: PropTypes.string,
+  /**
+   * If we want a button in out Tag Url component.
+   */
+  cta: PropTypes.object,
+  /**
+   * It accepts all the props from ButtonBase
+   */
+  buttonProps: PropTypes.shape(ButtonBase.PropTypes),
   /**
    * Additional classNames to be added to the TagUrl component
    */

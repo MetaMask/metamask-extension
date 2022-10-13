@@ -18,13 +18,24 @@ export default {
     imageSource: {
       control: 'text',
     },
+    cta: {
+      control: 'object',
+    },
   },
   args: {
-    label: 'Imported',
+    label: 'https://app.uniswap.org',
     imageSource: 'https://uniswap.org/favicon.ico',
+    cta: {
+      label: '',
+    },
   },
 };
 
-export const DefaultStory = (args) => <TagUrl {...args} />;
+const Template = (args) => {
+  return <TagUrl {...args} />;
+};
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
+
+export const WithCta = (args) => <TagUrl {...args} cta={{ label: 'Action' }} />;
