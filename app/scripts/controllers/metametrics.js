@@ -501,6 +501,8 @@ export default class MetaMetricsController {
       // The delay below is added to ensure that event is not finalised immediately after it is created
       // When event is finalised its fragment is deleted. Thus it is not possible to ensure by looking at controller
       // store that this event is already tracked.
+      // The reason of 1 minute wait here is to ensure that old fragment stays in store long enough so that
+      // any following requests with same actionId are handled appropriately.
       setTimeout(() => {
         this.finalizeEventFragment(fragment.id);
       }, ONE_MINUTE_IN_MS);
