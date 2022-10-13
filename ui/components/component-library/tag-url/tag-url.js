@@ -61,7 +61,7 @@ TagUrl.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * If we want a button in out Tag Url component.
+   * If we want a button in TagUrl component.
    */
   cta: PropTypes.object,
   /**
