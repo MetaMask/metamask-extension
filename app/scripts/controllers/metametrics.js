@@ -20,7 +20,8 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists } from '../lib/util';
+import { checkAlarmExists, generateRandomId } from '../lib/util';
+import { message } from '@truffle/codec/dist/lib/format/utils/exception';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -110,15 +111,19 @@ export default class MetaMetricsController {
     this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
+    const events = initState?.events || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: null,
+      participateInMetaMetrics: true,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
+      },
+      events: {
+        ...events,
       },
     });
 
@@ -141,6 +146,12 @@ export default class MetaMetricsController {
     Object.values(abandonedFragments).forEach((fragment) => {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
+
+    if (isManifestV3) {
+      Object.values(events).forEach(({ eventType, payload, callback }) => {
+        this._submitSegmentEvent(eventType, payload, callback);
+      });
+    }
 
     // Close out event fragments that were created but not progressed. An
     // interval is used to routinely check if a fragment has not been updated
@@ -462,7 +473,7 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this.segment.page({
+      this._submitSegmentEvent('page', {
         [idTrait]: idValue,
         name,
         properties: {
@@ -815,7 +826,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this.segment.identify({
+      this._submitSegmentEvent('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -944,10 +955,35 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this.segment.track(payload, callback);
+      this._submitSegmentEvent('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
     });
+  }
+
+  _submitSegmentEvent(eventType, payload, callback) {
+    if (isManifestV3) {
+      const messageId = payload.messageId || generateRandomId();
+      const timestamp = payload.timestamp || new Date();
+      const modifiedPayload = { ...payload, messageId, timestamp };
+      this.store.updateState({
+        events: {
+          ...this.store.getState().events,
+          [messageId]: { eventType, payload: modifiedPayload, callback },
+        },
+      });
+      const modifiedCallback = (result) => {
+        const { events } = this.store.getState();
+        delete events[messageId];
+        this.store.updateState({
+          events,
+        });
+        callback?.(result);
+      };
+      this.segment[eventType](modifiedPayload, modifiedCallback);
+    } else {
+      this.segment[eventType](payload, callback);
+    }
   }
 }
