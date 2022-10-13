@@ -5,11 +5,15 @@ import {
   DISPLAY,
   COLORS,
   FLEX_DIRECTION,
+  ALIGN_ITEMS,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
 import { Icon, ICON_NAMES } from '../icon';
 import { AvatarToken } from '../avatar-token';
+import { AvatarAccount } from '../avatar-account';
+import { Text } from '../text';
 
 import {
   TEXT_FIELD_BASE_SIZES,
@@ -212,10 +216,16 @@ Truncate.args = {
 export const LeftAccessoryRightAccessory = (args) => {
   const [value, setValue] = useState({
     search: '',
-    metaMask: '',
-    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+    address: '',
     amount: 1,
+    accountAddress: '0x514910771af9ca656af840dff83e8264ecf986ca',
   });
+  const handleOnChange = (e) => {
+    setValue({ ...value, [e.target.name]: e.target.value });
+  };
+  const handleTokenPrice = (tokenAmount, priceUSD) => {
+    return tokenAmount * priceUSD;
+  };
   return (
     <Box
       display={DISPLAY.INLINE_FLEX}
@@ -226,7 +236,9 @@ export const LeftAccessoryRightAccessory = (args) => {
         {...args}
         placeholder="Search"
         value={value.search}
-        onChange={(e) => setValue({ ...value, search: e.target.value })}
+        name="search"
+        onChange={handleOnChange}
+        showClear
         leftAccessory={
           <Icon
             color={COLORS.ICON_ALTERNATIVE}
@@ -236,61 +248,79 @@ export const LeftAccessoryRightAccessory = (args) => {
       />
       <TextFieldBase
         {...args}
-        value={value.metaMask}
-        onChange={(e) => setValue({ ...value, metaMask: e.target.value })}
-        placeholder="MetaMask"
-        rightAccessory={
-          <button
-            style={{
-              padding: 0,
-              background: 'transparent',
-              margin: 0,
-              display: 'flex',
-            }}
-            onClick={() => setValue({ ...value, metaMask: '' })}
-          >
-            <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-          </button>
-        }
-      />
-      <TextFieldBase
-        {...args}
-        placeholder="Enter address"
+        placeholder="Public address (0x), or ENS"
         value={value.address}
-        onChange={(e) => setValue({ ...value, address: e.target.value })}
-        truncate
-        leftAccessory={<AvatarToken tokenName="ast" size={SIZES.SM} />}
+        name="address"
+        onChange={handleOnChange}
         rightAccessory={
-          <button
-            style={{
-              padding: 0,
-              background: 'transparent',
-              margin: 0,
-              display: 'flex',
-            }}
-            onClick={() => setValue({ ...value, address: '' })}
+          <Box
+            as="button"
+            display={DISPLAY.FLEX}
+            style={{ padding: 0 }}
+            backgroundColor={COLORS.TRANSPARENT}
           >
-            <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-          </button>
+            <Icon
+              color={COLORS.PRIMARY_DEFAULT}
+              name={ICON_NAMES.SCAN_BARCODE_FILLED}
+            />
+          </Box>
         }
       />
       <TextFieldBase
         {...args}
         placeholder="Enter amount"
         value={value.amount}
-        onChange={(e) => setValue({ ...value, amount: e.target.value })}
+        name="amount"
+        onChange={handleOnChange}
         type="number"
+        truncate
         leftAccessory={
-          <AvatarToken
-            tokenName="ast"
-            tokenImageUrl="./AST.png"
-            size={SIZES.SM}
-          />
+          <Box
+            as="button"
+            style={{ padding: 0 }}
+            backgroundColor={COLORS.TRANSPARENT}
+            gap={1}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            <AvatarToken
+              tokenName="ast"
+              tokenImageUrl="./AST.png"
+              size={SIZES.SM}
+            />
+            <Text>AST</Text>
+            <Icon
+              name={ICON_NAMES.ARROW_DOWN}
+              color={COLORS.ICON_DEFAULT}
+              size={SIZES.SM}
+            />
+          </Box>
         }
         rightAccessory={
-          <button onClick={() => setValue({ ...value, amount: 100000 })}>
-            Max
-          </button>
+          <Text variant={TEXT.BODY_SM} color={COLORS.TEXT_ALTERNATIVE}>
+            = ${handleTokenPrice(value.amount, 0.11)}
+          </Text>
+        }
+      />
+      <TextFieldBase
+        {...args}
+        placeholder="Public address (0x), or ENS"
+        value={value.accountAddress}
+        name="accountAddress"
+        onChange={handleOnChange}
+        truncate
+        leftAccessory={
+          value.accountAddress && (
+            <AvatarAccount size={SIZES.SM} address={value.accountAddress} />
+          )
+        }
+        rightAccessory={
+          value.accountAddress.length === 42 && (
+            <Icon
+              name={ICON_NAMES.CHECK_OUTLINE}
+              color={COLORS.SUCCESS_DEFAULT}
+            />
+          )
         }
       />
     </Box>
