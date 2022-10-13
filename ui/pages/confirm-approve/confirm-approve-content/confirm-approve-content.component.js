@@ -32,6 +32,8 @@ import {
   Icon,
   Text,
 } from '../../../components/component-library';
+import { fetchTokenBalance } from '../../swaps/swaps.util';
+import NftInfoSetApprovalForAll from '../../../components/ui/nft-info-setApprovalForAll';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -81,6 +83,7 @@ export default class ConfirmApproveContent extends Component {
     showFullTxDetails: false,
     copied: false,
     setShowContractDetails: false,
+    collectionBalance: 0,
   };
 
   renderApproveContentCard({
@@ -501,6 +504,14 @@ export default class ConfirmApproveContent extends Component {
     return description;
   }
 
+  async componentDidMount() {
+    const { tokenAddress, userAddress } = this.props;
+    const tokenBalance = await fetchTokenBalance(tokenAddress, userAddress);
+    this.setState({
+      collectionBalance: tokenBalance?.balance?.words?.[0],
+    });
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -519,6 +530,8 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
+      userAddress,
+      isSetApproveForAll,
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
       renderSimulationFailureWarning,
@@ -588,6 +601,17 @@ export default class ConfirmApproveContent extends Component {
             />
           )}
         </Box>
+        {isSetApproveForAll ? (
+          <Box padding={4} width={BLOCK_SIZES.FULL}>
+            <NftInfoSetApprovalForAll
+              assetName={assetName}
+              tokenAddress={tokenAddress}
+              userAddress={userAddress}
+              collections={collections}
+              total={this.state.collectionBalance}
+            />
+          </Box>
+        ) : null}
         <div className="confirm-approve-content__card-wrapper">
           {renderSimulationFailureWarning && (
             <Box

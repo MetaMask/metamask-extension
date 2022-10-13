@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Typography from '../typography';
@@ -8,17 +9,49 @@ import {
   DISPLAY,
   FONT_WEIGHT,
   TYPOGRAPHY,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import Tooltip from '../tooltip/tooltip';
 import Button from '../button';
+import { getTokenList } from '../../../selectors';
 
 export default function NftInfoSetApprovalForAll({
-  tokenName,
+  assetName,
   tokenAddress,
-  nftNumber,
+  total,
+  collections = {},
 }) {
   const t = useContext(I18nContext);
+  const tokenList = useSelector(getTokenList);
+
+  const nftCollectionImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
+  const collectionsKeys = Object.keys(collections);
+  const collectionName = collectionsKeys.map((key) => {
+    const { nameCollection } = collections[key];
+    return nameCollection;
+  });
+
+  const collectionImage = collectionsKeys.map((key) => {
+    const { imageCollection } = collections[key];
+    return imageCollection;
+  });
+
+  const renderCollectionImage = (imageCollection, nameCollection, key) => {
+    if (imageCollection) {
+      return <Identicon diameter={24} image={imageCollection} />;
+    }
+    return (
+      <Box
+        key={key}
+        color={COLORS.OVERLAY_INVERSE}
+        textAlign={TEXT_ALIGN.CENTER}
+        className="nft-info-setApproveForAll__collection-image-alt"
+      >
+        {nameCollection?.[0]?.toUpperCase() ?? null}
+      </Box>
+    );
+  };
 
   return (
     <Box
@@ -26,7 +59,10 @@ export default function NftInfoSetApprovalForAll({
       className="nft-info"
       backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
     >
-      <Box display={DISPLAY.FLEX} className="nft-info__content">
+      <Box
+        display={DISPLAY.FLEX}
+        className="nft-info-setApproveForAll__content"
+      >
         <Box marginTop={4} marginBottom={4} marginLeft={4}>
           <Typography
             fontWeight={FONT_WEIGHT.BOLD}
@@ -37,7 +73,10 @@ export default function NftInfoSetApprovalForAll({
           </Typography>
           <Box display={DISPLAY.FLEX}>
             <Box marginBottom={4}>
-              <Identicon address={tokenAddress} diameter={24} />
+              {Object.keys(collections).length > 0 &&
+              collectionName === assetName
+                ? renderCollectionImage(collectionName, collectionImage)
+                : renderCollectionImage(nftCollectionImage, assetName)}
             </Box>
             <Typography
               variant={TYPOGRAPHY.H5}
@@ -46,7 +85,7 @@ export default function NftInfoSetApprovalForAll({
               marginLeft={2}
               marginTop={0}
             >
-              {tokenName}
+              {assetName}
             </Typography>
           </Box>
           <Typography
@@ -63,7 +102,7 @@ export default function NftInfoSetApprovalForAll({
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   color={COLORS.TEXT_ALTERNATIVE}
-                  className="nft-info__content__tooltip"
+                  className="nft-info-setApproveForAll__content__tooltip"
                 >
                   <Typography
                     variant={TYPOGRAPHY.H7}
@@ -77,7 +116,7 @@ export default function NftInfoSetApprovalForAll({
                 </Typography>
               }
             >
-              <i className="fa fa-exclamation-triangle nft-info__content__tooltip__icon" />
+              <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__content__tooltip__icon" />
             </Tooltip>
             <Typography
               variant={TYPOGRAPHY.H5}
@@ -86,13 +125,13 @@ export default function NftInfoSetApprovalForAll({
               marginTop={0}
               marginLeft={2}
             >
-              {t('numberOfNFTsFromCollection', [nftNumber])}
+              {t('numberOfNFTsFromCollection', [total])}
             </Typography>
           </Box>
         </Box>
       </Box>
       <Box marginTop={4} marginRight={4}>
-        <Button className="nft-info__button" type="link">
+        <Button className="nft-info-setApproveForAll__button" type="link">
           <Typography
             variant={TYPOGRAPHY.H6}
             marginTop={0}
@@ -107,7 +146,28 @@ export default function NftInfoSetApprovalForAll({
 }
 
 NftInfoSetApprovalForAll.propTypes = {
-  tokenName: PropTypes.string,
+  collections: PropTypes.shape({
+    collectibles: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string.isRequired,
+        tokenId: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        image: PropTypes.string,
+        standard: PropTypes.string,
+        imageThumbnail: PropTypes.string,
+        imagePreview: PropTypes.string,
+        creator: PropTypes.shape({
+          address: PropTypes.string,
+          config: PropTypes.string,
+          profile_img_url: PropTypes.string,
+        }),
+      }),
+    ),
+    collectionImage: PropTypes.string,
+    collectionName: PropTypes.string,
+  }),
+  assetName: PropTypes.string,
   tokenAddress: PropTypes.string,
-  nftNumber: PropTypes.number,
+  total: PropTypes.number,
 };
