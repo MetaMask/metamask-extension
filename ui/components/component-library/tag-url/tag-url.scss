@@ -1,6 +1,8 @@
 .tag-url {
   width: max-content;
   padding: 8px 16px 8px 8px;
+  max-width: 326px;
+  max-height: 48px;
   &__favicon {
     margin-right: 8px;
   }
@@ -51,5 +53,10 @@
         color: var(--color-error-default);
       }
     }
+  }
+  &__label {
+    overflow: hidden;
+    height: 22px;
+    text-overflow: ellipsis;
   }
 }
