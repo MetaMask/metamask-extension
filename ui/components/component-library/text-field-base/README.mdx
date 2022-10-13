@@ -90,10 +90,10 @@ Use the `leftAccessory` and `rightAccessory` props to add components such as ico
 </Canvas>
 
 ```jsx
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { COLORS, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../ui/component-library/icons';
 
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/component-library/text-field';
 
 <TextFieldBase
   placeholder="Search"
@@ -106,39 +106,42 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 />
 
 <TextFieldBase
-  placeholder="MetaMask"
+  placeholder="Public address (0x), or ENS"
   rightAccessory={
     // TODO: replace with ButtonIcon
-    <button>
-      <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-    </button>
-  }
-/>
-
-<TextFieldBase
-  truncate
-  leftAccessory={<AvatarToken tokenName="ast" size={SIZES.SM} />}
-  rightAccessory={
-    // TODO: replace with ButtonIcon
-    <button>
-      <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-    </button>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      style={{ padding: 0 }}
+      backgroundColor={COLORS.TRANSPARENT}
+    >
+      <Icon
+        color={COLORS.PRIMARY_DEFAULT}
+        name={ICON_NAMES.SCAN_BARCODE_FILLED}
+      />
+    </Box>
   }
 />
 
 <TextFieldBase
   placeholder="Enter amount"
   type="number"
-  leftAccessory={
-    <AvatarToken
-      tokenName="ast"
-      tokenImageUrl="./AST.png"
-      size={SIZES.SM}
-    />
-  }
+  truncate
+  leftAccessory={<SelectTokenComponent />}
+  rightAccessory={<TokenValueInUSDComponent />}
+/>
+
+<TextFieldBase
+  placeholder="Public address (0x), or ENS"
+  truncate
+  leftAccessory={<AvatarAccount />}
   rightAccessory={
-    // TODO: replace with ButtonLink
-    <button>Max</button>
+    isAddressValid && (
+      <Icon
+        name={ICON_NAMES.CHECK_OUTLINE}
+        color={COLORS.SUCCESS_DEFAULT}
+      />
+    )
   }
 />
 ```

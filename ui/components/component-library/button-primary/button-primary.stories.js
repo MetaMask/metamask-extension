@@ -104,11 +104,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <>
-    <ButtonPrimary {...args} />
-  </>
-);
+export const DefaultStory = (args) => <ButtonPrimary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
