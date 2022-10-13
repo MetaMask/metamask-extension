@@ -19,7 +19,7 @@ import { TextFieldBase } from '../text-field-base';
 export const TextField = ({
   className,
   showClear,
-  clearIconProps,
+  clearButtonIconProps,
   clearButtonProps,
   rightAccessory,
   value: valueProp,
@@ -62,7 +62,7 @@ export const TextField = ({
                 name={ICON_NAMES.CLOSE_OUTLINE}
                 size={SIZES.SM}
                 aria-label="Clear" // TODO: i18n
-                {...clearIconProps}
+                {...clearButtonIconProps}
               />
             </Box>
             {rightAccessory}
@@ -89,6 +89,18 @@ TextField.propTypes = {
    * Show a clear button to clear the input
    */
   showClear: PropTypes.bool,
+  /**
+   * The event handler for when the clear button is clicked
+   */
+  onClear: PropTypes.func,
+  /**
+   * The props to pass to the clear button
+   */
+  clearButtonProps: PropTypes.shape(Box.PropTypes),
+  /**
+   * The props to pass to the icon inside of the close button
+   */
+  clearButtonIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * TextField accepts all the props from TextFieldBase and Box
    */

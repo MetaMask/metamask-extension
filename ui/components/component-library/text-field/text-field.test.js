@@ -68,7 +68,7 @@ describe('TextField', () => {
     const { getByRole, getByTestId } = render(
       <TextField
         clearButtonProps={{ 'data-testid': 'clear-button' }}
-        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        clearButtonIconProps={{ 'data-testid': 'clear-button-icon' }}
         showClear
       />,
     );
@@ -89,7 +89,7 @@ describe('TextField', () => {
     const { getByRole, getByTestId, getByText } = render(
       <TextField
         clearButtonProps={{ 'data-testid': 'clear-button' }}
-        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        clearButtonIconProps={{ 'data-testid': 'clear-button-icon' }}
         rightAccessory={<div>right-accessory</div>}
         showClear
       />,
@@ -106,7 +106,7 @@ describe('TextField', () => {
     const { getByRole, getByTestId } = render(
       <TextField
         clearButtonProps={{ 'data-testid': 'clear-button' }}
-        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        clearButtonIconProps={{ 'data-testid': 'clear-button-icon' }}
         rightAccessory={<div>right-accessory</div>}
         showClear
       />,
@@ -123,7 +123,7 @@ describe('TextField', () => {
       <TextField
         onClear={onClear}
         clearButtonProps={{ 'data-testid': 'clear-button' }}
-        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        clearButtonIconProps={{ 'data-testid': 'clear-button-icon' }}
         showClear
       />,
     );
@@ -140,7 +140,7 @@ describe('TextField', () => {
       <TextField
         onClear={onClear}
         clearButtonProps={{ 'data-testid': 'clear-button', onClick }}
-        clearIconProps={{ 'data-testid': 'clear-button-icon' }}
+        clearButtonIconProps={{ 'data-testid': 'clear-button-icon' }}
         showClear
       />,
     );

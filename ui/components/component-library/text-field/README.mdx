@@ -30,3 +30,36 @@ import { TextField } from '../../ui/component-library/text-field';
 
 <TextField showClear />;
 ```
+
+### On Clear
+
+Use the `onClear` prop to perform additional actions when the clear button is clicked.
+
+```jsx
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField showClear onClear={() => console.log('cleared input')} />;
+```
+
+### Clear Button Props and Clear Button Icon Props
+
+Use the `clearButtonProps` and `clearButtonIconProps` props to pass props to the clear button and clear button icon respectively.
+
+```jsx
+import {
+  SIZES,
+  COLORS,
+  BORDER_RADIUS,
+} from '../../../helpers/constants/design-system';
+import { TextField } from '../../ui/component-library/text-field';
+
+<TextField
+  showClear
+  clearButtonProps={{
+    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
+    borderRadius: BORDER_RADIUS.XS,
+    'data-testid': 'clear-button',
+  }}
+  clearButtonIconProps={{ size: SIZES.MD }}
+/>;
+```

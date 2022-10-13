@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import {
+  SIZES,
+  COLORS,
+  BORDER_RADIUS,
+} from '../../../helpers/constants/design-system';
+
+import { Text } from '../text';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 import { TextField } from './text-field';
+
 import README from './README.mdx';
 
 const marginSizeControlOptions = [
@@ -47,7 +54,7 @@ export default {
     onClear: {
       action: 'onClear',
     },
-    clearIconProps: {
+    clearButtonIconProps: {
       control: 'object',
     },
     clearButtonProps: {
@@ -179,7 +186,9 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <TextField {...args} />;
+const Template = (args) => <TextField {...args} />;
+
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const ShowClear = (args) => {
@@ -196,4 +205,43 @@ export const ShowClear = (args) => {
       showClear
     />
   );
+};
+
+export const OnClear = (args) => {
+  const [value, setValue] = useState('onClear example');
+  const [showOnClearMessage, setShowOnClearMessage] = useState(false);
+  const handleOnChange = (e) => {
+    setValue(e.target.value);
+    showOnClearMessage && setShowOnClearMessage(false);
+  };
+  const handleOnClear = () => {
+    setShowOnClearMessage(true);
+  };
+  return (
+    <>
+      <TextField
+        {...args}
+        placeholder="Clear text to show onClear message"
+        value={value}
+        onChange={handleOnChange}
+        onClear={handleOnClear}
+        showClear
+      />
+      {showOnClearMessage && <Text marginTop={4}>onClear called</Text>}
+    </>
+  );
+};
+
+export const ClearButtonPropsClearButtonIconProps = Template.bind({});
+ClearButtonPropsClearButtonIconProps.args = {
+  value: 'clear button props',
+  size: SIZES.LG,
+  showClear: true,
+  clearButtonProps: {
+    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
+    borderRadius: BORDER_RADIUS.XS,
+  },
+  clearButtonIconProps: {
+    size: SIZES.MD,
+  },
 };
