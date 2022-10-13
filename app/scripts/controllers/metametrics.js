@@ -147,6 +147,7 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
+    // Code below will submit to segment pending events as vontroller is re-instantiated
     if (isManifestV3) {
       Object.values(events).forEach(({ eventType, payload, callback }) => {
         this._submitSegmentEvent(eventType, payload, callback);
@@ -962,6 +963,11 @@ export default class MetaMetricsController {
     });
   }
 
+  // Method below submits the request to segment.
+  // For MV3 it will also add event to controller store
+  // and pass a callback to remove it from store once request is submitted to segment
+  // Saving events in controller store in MV3 ensures that events are tracked
+  // even if service worker terminates before events are submiteed to segment.
   _submitSegmentEvent(eventType, payload, callback) {
     if (isManifestV3) {
       const messageId = payload.messageId || generateRandomId();
