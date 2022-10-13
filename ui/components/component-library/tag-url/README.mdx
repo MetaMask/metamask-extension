@@ -1,0 +1,29 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TagUrl } from './tag-url';
+
+# Tag
+
+The `TagUrl` is a component used to display Dapp information within a container.
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `Tag` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+
+<ArgsTable of={TagUrl} />
+
+### Image Source
+
+The image url of the `AvatarFavicon` to be rendered.
+
+### Label
+
+The text content of the `TagUrl` component
+
+### cta
+
+If we want to have a button in `TagUrl`, cta is an object that contains the `label` and callback of the `Button`.

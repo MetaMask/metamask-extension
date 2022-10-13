@@ -1,3 +1,55 @@
-.tag-url{
+.tag-url {
   width: max-content;
+  padding: 8px 16px 8px 8px;
+  &__favicon {
+    margin-right: 8px;
+  }
+
+  /* Going to replace this when ButtonLink will be merged */
+
+  &__button-link {
+    color: var(--color-primary-default);
+    padding-right: 0px !important;
+
+    background-color: transparent;
+
+    &:hover {
+      color: var(--color-primary-default);
+      opacity: 0.5;
+    }
+
+    &:active {
+      color: var(--color-primary-default);
+      opacity: 0.5;
+    }
+
+    &.mm-button--disabled {
+      &:hover {
+        color: var(--color-primary-default);
+        opacity: 0.3;
+      }
+
+      &:active {
+        opacity: 0.3;
+      }
+    }
+
+    &--type-danger {
+      color: var(--color-error-default);
+
+      &:hover {
+        color: var(--color-error-default);
+        opacity: 0.5;
+      }
+
+      &:active {
+        color: var(--color-error-default);
+        opacity: 0.5;
+      }
+
+      &.mm-button--disabled:hover {
+        color: var(--color-error-default);
+      }
+    }
+  }
 }
