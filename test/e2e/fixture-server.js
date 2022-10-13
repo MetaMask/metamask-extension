@@ -55,7 +55,6 @@ class FixtureServer {
   constructor() {
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
-    this._initialStateCache = new Map();
 
     this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
@@ -92,15 +91,8 @@ class FixtureServer {
     });
   }
 
-  async loadJsonState(statePath, rawState) {
-    let state;
-    if (this._initialStateCache.has(statePath)) {
-      state = this._initialStateCache.get(statePath);
-    } else {
-      state = performStateSubstitutions(rawState);
-      this._initialStateCache.set(statePath, state);
-    }
-
+  async loadJsonState(rawState) {
+    const state = performStateSubstitutions(rawState);
     this._stateMap.set(CURRENT_STATE_KEY, state);
   }
 
