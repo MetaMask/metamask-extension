@@ -91,7 +91,7 @@ class FixtureServer {
     });
   }
 
-  async loadJsonState(rawState) {
+  loadJsonState(rawState) {
     const state = performStateSubstitutions(rawState);
     this._stateMap.set(CURRENT_STATE_KEY, state);
   }
