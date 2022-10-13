@@ -481,11 +481,11 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Method to track metrics event
+   * Method to track metrics event. The menthod uses options.actionId to ensure that multiple requests
+   * with same actionId is tracked only once. If options.actionId is present in the request createEventFragment
+   * function is called which does not create a new fragment if fragment with the actionId already exists.
    *
-   * If an actionId is provided createEventFragment, finalizeEventFragment are used to track event,
-   * this is to achieve idempotent behaviour.
-   * If actionid is not provided this._trackEvent is used to track the event.
+   * If actionid is not provided _trackEvent is used to track the event. It tracks every event passed to it.
    *
    * @param {*} payload - payload for event tracking
    * @param {*} options - options for event tracking
@@ -499,8 +499,8 @@ export default class MetaMetricsController {
         successEvent: payload.event,
       });
       // The delay below is added to ensure that event is not finalised immediately after it is created
-      // When event is finalised its fragment is deleted. Thus it is not possible to ensure idempotent
-      // behaviour by comparing actionId
+      // When event is finalised its fragment is deleted. Thus it is not possible to ensure by looking at controller
+      // store that this event is already tracked.
       setTimeout(() => {
         this.finalizeEventFragment(fragment.id);
       }, ONE_MINUTE_IN_MS);
