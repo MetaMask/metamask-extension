@@ -186,7 +186,7 @@ export default class SignatureRequest extends PureComponent {
         />
         {this.state.showContractDetails && (
           <ContractDetailsModal
-            toAddress={fromAddress}
+            toAddress={domain.verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             origin={origin}
