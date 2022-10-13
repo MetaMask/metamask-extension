@@ -124,9 +124,10 @@ function getMetaMetricsController({
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
+  segmentInstance,
 } = {}) {
   return new MetaMetricsController({
-    segment,
+    segment: segmentInstance || segment,
     getNetworkIdentifier:
       networkController.getNetworkIdentifier.bind(networkController),
     getCurrentChainId:
@@ -792,6 +793,18 @@ describe('MetaMetricsController', function () {
       assert.equal(updatedTraits, null);
     });
   });
+
+  // describe('submitting events to segment', function () {
+  //   it('should add event to store when submitting', function () {
+  //     const segmentInstance = createSegmentMock(2, 10000);
+  //     const trackSpy = sinon.mock().returns(undefined);
+  //     segmentInstance.track = trackSpy;
+  //     const metaMetricsController = getMetaMetricsController({
+  //       segmentInstance,
+  //     });
+
+  //   });
+  // });
 
   afterEach(function () {
     // flush the queues manually after each test

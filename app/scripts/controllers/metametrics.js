@@ -984,8 +984,7 @@ export default class MetaMetricsController {
         this.store.updateState({
           events,
         });
-        callback?.(result);
-        return;
+        return callback?.(result);
       };
       this.segment[eventType](modifiedPayload, modifiedCallback);
     } else {
