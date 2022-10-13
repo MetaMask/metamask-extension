@@ -15,7 +15,6 @@ import {
   DEVICE_NAMES,
 } from '../../shared/constants/hardware-wallets';
 import { addHexPrefix } from './lib/util';
-import LocalStore from './lib/local-store';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -111,17 +110,11 @@ describe('MetaMaskController', function () {
 
   before(async function () {
     await ganacheServer.start();
-
-    sinon
-      .stub(LocalStore.prototype, 'get')
-      .returns(Promise.resolve({ isFirstTime: true }));
-    sinon.stub(LocalStore.prototype, 'set').returns(Promise.resolve());
-    sinon
-      .stub(MetaMaskController.prototype, 'resetStates')
-      .returns(Promise.resolve());
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     nock('https://min-api.cryptocompare.com')
       .persist()
       .get(/.*/u)
@@ -175,6 +168,7 @@ describe('MetaMaskController', function () {
   describe('should reset state on first time profile load', function () {
     it('should reset state', function () {
       assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
     });
   });
 

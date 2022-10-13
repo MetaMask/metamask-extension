@@ -128,7 +128,7 @@ chrome.runtime.onMessage.addListener(() => {
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  chrome.storage.local.set({ isFirstTime: true });
+  globalThis.isFirstTimeProfileLoaded = true;
 });
 
 /*

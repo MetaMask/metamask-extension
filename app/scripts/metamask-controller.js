@@ -1133,11 +1133,9 @@ export default class MetamaskController extends EventEmitter {
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
-    this.localStore.get(['isFirstTime']).then((state) => {
-      if (state && state.isFirstTime === true) {
-        this.resetStates(resetMethods);
-      }
-    });
+    if (globalThis.isFirstTimeProfileLoaded === true) {
+      this.resetStates(resetMethods);
+    }
 
     const password = process.env.CONF?.PASSWORD;
     if (
@@ -1181,7 +1179,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.localStore.set({ isFirstTime: false });
+    globalThis.isFirstTimeProfileLoaded = false;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
