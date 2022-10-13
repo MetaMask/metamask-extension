@@ -31,10 +31,8 @@ export default class Analytics {
     this.writeKey = writeKey;
 
     this.host = removeSlash(options.host || 'https://api.segment.io');
-    // this.flushInterval = options.flushInterval || 10000;
-    // this.flushAt = options.flushAt || Math.max(options.flushAt, 1) || 20;
-    this.flushInterval = 10000;
-    this.flushAt = 20;
+    this.flushInterval = options.flushInterval || 10000;
+    this.flushAt = options.flushAt || Math.max(options.flushAt, 1) || 20;
 
     this.queue = [];
     this.path = '/v1/batch';
