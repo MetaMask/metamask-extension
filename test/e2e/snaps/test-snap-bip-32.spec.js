@@ -9,7 +9,6 @@ describe('Test Snap bip-32', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
         },
       ],
     };
