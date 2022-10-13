@@ -13,7 +13,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import Tooltip from '../tooltip/tooltip';
-import Button from '../button';
 import { getTokenList } from '../../../selectors';
 
 export default function NftInfoSetApprovalForAll({
@@ -56,90 +55,72 @@ export default function NftInfoSetApprovalForAll({
   return (
     <Box
       display={DISPLAY.FLEX}
-      className="nft-info"
+      className="nft-info-setApproveForAll"
       backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
     >
-      <Box
-        display={DISPLAY.FLEX}
-        className="nft-info-setApproveForAll__content"
-      >
-        <Box marginTop={4} marginBottom={4} marginLeft={4}>
-          <Typography
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TYPOGRAPHY.H6}
-            marginTop={0}
-          >
-            {t('nftCollectionName')}:
-          </Typography>
-          <Box display={DISPLAY.FLEX}>
-            <Box marginBottom={4}>
-              {Object.keys(collections).length > 0 &&
-              collectionName === assetName
-                ? renderCollectionImage(collectionName, collectionImage)
-                : renderCollectionImage(nftCollectionImage, assetName)}
-            </Box>
-            <Typography
-              variant={TYPOGRAPHY.H5}
-              display={DISPLAY.FLEX}
-              color={COLORS.TEXT_ALTERNATIVE}
-              marginLeft={2}
-              marginTop={0}
-            >
-              {assetName}
-            </Typography>
+      <Box marginTop={4} marginBottom={4} marginLeft={4}>
+        <Typography
+          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TYPOGRAPHY.H6}
+          marginTop={0}
+        >
+          {t('nftCollectionName')}:
+        </Typography>
+        <Box display={DISPLAY.FLEX}>
+          <Box marginBottom={4}>
+            {Object.keys(collections).length > 0 && collectionName === assetName
+              ? renderCollectionImage(collectionName, collectionImage)
+              : renderCollectionImage(nftCollectionImage, assetName)}
           </Box>
           <Typography
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TYPOGRAPHY.H6}
+            variant={TYPOGRAPHY.H5}
+            display={DISPLAY.FLEX}
+            color={COLORS.TEXT_ALTERNATIVE}
+            marginLeft={2}
             marginTop={0}
           >
-            {t('numberOfNfts')}:
+            {assetName}
           </Typography>
-          <Box display={DISPLAY.FLEX}>
-            <Tooltip
-              position="top"
-              html={
+        </Box>
+        <Typography
+          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TYPOGRAPHY.H6}
+          marginTop={0}
+        >
+          {t('numberOfNfts')}:
+        </Typography>
+        <Box display={DISPLAY.FLEX}>
+          <Tooltip
+            position="top"
+            html={
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.TEXT_ALTERNATIVE}
+                className="nft-info-setApproveForAll__tooltip"
+              >
                 <Typography
                   variant={TYPOGRAPHY.H7}
-                  color={COLORS.TEXT_ALTERNATIVE}
-                  className="nft-info-setApproveForAll__content__tooltip"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  color={COLORS.ERROR_DEFAULT}
                 >
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    color={COLORS.ERROR_DEFAULT}
-                  >
-                    <i className="fa fa-exclamation-triangle" />{' '}
-                    {t('beCareful')}
-                  </Typography>
-                  {t('nftInfoTooltipText')}
+                  <i className="fa fa-exclamation-triangle" /> {t('beCareful')}
                 </Typography>
-              }
-            >
-              <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__content__tooltip__icon" />
-            </Tooltip>
-            <Typography
-              variant={TYPOGRAPHY.H5}
-              display={DISPLAY.FLEX}
-              color={COLORS.TEXT_ALTERNATIVE}
-              marginTop={0}
-              marginLeft={2}
-            >
-              {t('numberOfNFTsFromCollection', [total])}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-      <Box marginTop={4} marginRight={4}>
-        <Button className="nft-info-setApproveForAll__button" type="link">
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            marginTop={0}
-            color={COLORS.PRIMARY_DEFAULT}
+                {t('nftInfoTooltipText')}
+              </Typography>
+            }
           >
-            {t('view')}
+            <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__tooltip__icon" />
+          </Tooltip>
+          <Typography
+            variant={TYPOGRAPHY.H5}
+            display={DISPLAY.FLEX}
+            color={COLORS.TEXT_ALTERNATIVE}
+            marginTop={0}
+            marginLeft={2}
+          >
+            {t('numberOfNFTsFromCollection', [total])}
           </Typography>
-        </Button>
+        </Box>
       </Box>
     </Box>
   );
