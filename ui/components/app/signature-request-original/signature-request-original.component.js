@@ -291,7 +291,7 @@ export default class SignatureRequestOriginal extends Component {
             history.push(mostRecentOverviewPage);
           }}
         >
-          {t('cancel')}
+          {t('reject')}
         </Button>
         <Button
           data-testid="request-signature__sign"
@@ -344,7 +344,7 @@ export default class SignatureRequestOriginal extends Component {
   render = () => {
     const { messagesCount } = this.props;
     const { t } = this.context;
-    const rejectNText = t('rejectTxsN', [messagesCount]);
+    const rejectNText = t('rejectRequestsN', [messagesCount]);
     return (
       <div className="request-signature__container">
         {this.renderHeader()}
