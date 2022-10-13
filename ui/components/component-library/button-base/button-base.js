@@ -30,9 +30,10 @@ export const ButtonBase = ({
   iconProps,
   ...props
 }) => {
+  const Tag = props?.href ? 'a' : as;
   return (
     <Box
-      as={as}
+      as={Tag}
       paddingLeft={size === BUTTON_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_SIZES.AUTO ? 0 : 4}
       className={classnames(
