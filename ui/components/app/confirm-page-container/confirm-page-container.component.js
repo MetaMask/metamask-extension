@@ -376,7 +376,7 @@ export default class ConfirmPageContainer extends Component {
               ])}
             </Dialog>
           )}
-          {isSetApproveForAll && (
+          {showWarningModal && (
             <ConfirmPageContainerWarning
               collectionName={title}
               senderAddress={fromAddress}
