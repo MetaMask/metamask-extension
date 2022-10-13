@@ -8,6 +8,7 @@ import {
   COLORS,
   JUSTIFY_CONTENT,
   SIZES,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonBase } from '../button-base';
@@ -32,7 +33,9 @@ export const TagUrl = ({
       {...props}
     >
       <AvatarFavicon className="tag-url__favicon" imageSource={imageSource} />
-      <Text variant="body-md">{label}</Text>
+      <Text className="tag-url__label" variant={TEXT.BODY_MD}>
+        {label}
+      </Text>
       {/* Going to replace this when ButtonLink will be merged */}
       {cta && Object.keys(cta).length > 0 && (
         <ButtonBase
