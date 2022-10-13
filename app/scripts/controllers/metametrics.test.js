@@ -606,7 +606,7 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe.only('trackEvent', function () {
+  describe('trackEvent', function () {
     it('should track each successive event if actionId is not passed', function () {
       const segmentInstance = createSegmentMock(2, 10000);
       const trackSpy = sinon.spy();
