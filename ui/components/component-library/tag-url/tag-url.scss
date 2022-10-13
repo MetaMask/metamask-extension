@@ -3,6 +3,7 @@
   padding: 8px 16px 8px 8px;
   max-width: 326px;
   max-height: 48px;
+
   &__favicon {
     margin-right: 8px;
   }
@@ -11,8 +12,7 @@
 
   &__button-link {
     color: var(--color-primary-default);
-    padding-right: 0px !important;
-
+    padding-right: 0 !important;
     background-color: transparent;
 
     &:hover {
@@ -54,6 +54,7 @@
       }
     }
   }
+
   &__label {
     overflow: hidden;
     height: 22px;
