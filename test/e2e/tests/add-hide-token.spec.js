@@ -91,9 +91,6 @@ describe('Add existing token using search', function () {
           .build(),
         ganacheOptions,
         title: this.test.title,
-        driverOptions: {
-          timeOut: 20000,
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
