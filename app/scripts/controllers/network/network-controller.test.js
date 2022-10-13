@@ -34,8 +34,8 @@ describe('NetworkController', () => {
     describe('#provider', () => {
       it('provider should be updatable without reassignment', () => {
         networkController.initializeProvider(networkControllerProviderConfig);
-        const providerProxy = networkController.getProviderAndBlockTracker()
-          .provider;
+        const providerProxy =
+          networkController.getProviderAndBlockTracker().provider;
         expect(providerProxy.test).toBeUndefined();
         providerProxy.setTarget({ test: true });
         expect(providerProxy.test).toStrictEqual(true);
@@ -79,7 +79,8 @@ describe('NetworkController', () => {
     describe('#getEIP1559Compatibility', () => {
       it('should return false when baseFeePerGas is not in the block header', async () => {
         networkController.initializeProvider(networkControllerProviderConfig);
-        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        const supportsEIP1559 =
+          await networkController.getEIP1559Compatibility();
         expect(supportsEIP1559).toStrictEqual(false);
       });
 
@@ -88,7 +89,8 @@ describe('NetworkController', () => {
         getLatestBlockStub.callsFake(() =>
           Promise.resolve({ baseFeePerGas: '0xa ' }),
         );
-        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        const supportsEIP1559 =
+          await networkController.getEIP1559Compatibility();
         expect(supportsEIP1559).toStrictEqual(true);
       });
 
@@ -98,7 +100,8 @@ describe('NetworkController', () => {
           Promise.resolve({ baseFeePerGas: '0xa ' }),
         );
         await networkController.getEIP1559Compatibility();
-        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        const supportsEIP1559 =
+          await networkController.getEIP1559Compatibility();
         expect(getLatestBlockStub.calledOnce).toStrictEqual(true);
         expect(supportsEIP1559).toStrictEqual(true);
       });
@@ -131,48 +134,16 @@ describe('NetworkController', () => {
     it('getNetworkDisplayName should return the correct network name', () => {
       const tests = [
         {
-          input: '3',
-          expected: 'Ropsten',
-        },
-        {
-          input: '4',
-          expected: 'Rinkeby',
-        },
-        {
-          input: '42',
-          expected: 'Kovan',
-        },
-        {
-          input: '0x3',
-          expected: 'Ropsten',
-        },
-        {
-          input: '0x4',
-          expected: 'Rinkeby',
-        },
-        {
-          input: '0x2a',
-          expected: 'Kovan',
-        },
-        {
-          input: 'ropsten',
-          expected: 'Ropsten',
-        },
-        {
-          input: 'rinkeby',
-          expected: 'Rinkeby',
-        },
-        {
-          input: 'kovan',
-          expected: 'Kovan',
-        },
-        {
           input: 'mainnet',
           expected: 'Ethereum Mainnet',
         },
         {
           input: 'goerli',
           expected: 'Goerli',
+        },
+        {
+          input: 'sepolia',
+          expected: 'Sepolia',
         },
       ];
 

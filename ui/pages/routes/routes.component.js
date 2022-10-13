@@ -34,6 +34,9 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import Notifications from '../notifications';
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -59,17 +62,24 @@ import {
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   TOKEN_DETAILS,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
+import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
+import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
+import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -97,6 +107,13 @@ export default class Routes extends Component {
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
     sendStage: PropTypes.string,
+    isNetworkUsed: PropTypes.bool,
+    allAccountsOnNetworkAreEmpty: PropTypes.bool,
+    isTestNet: PropTypes.bool,
+    currentChainId: PropTypes.string,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
+    portfolioTooltipIsBeingShown: PropTypes.bool,
+    forgottenPassword: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -104,10 +121,23 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  handleOsTheme() {
+    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+      ? THEME_TYPE.DARK
+      : THEME_TYPE.LIGHT;
+
+    document.documentElement.setAttribute('data-theme', osTheme);
+  }
+
   componentDidUpdate(prevProps) {
     const { theme } = this.props;
+
     if (theme !== prevProps.theme) {
-      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === THEME_TYPE.OS) {
+        this.handleOsTheme();
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
     }
   }
 
@@ -128,11 +158,18 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === THEME_TYPE.OS) {
+      this.handleOsTheme();
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
   }
 
   renderRoutes() {
-    const { autoLockTimeLimit, setLastActiveTime } = this.props;
+    const { autoLockTimeLimit, setLastActiveTime, forgottenPassword } =
+      this.props;
+    const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
+
     const routes = (
       <Switch>
         {process.env.ONBOARDING_V2 && (
@@ -141,7 +178,7 @@ export default class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized
+        <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
           component={RestoreVaultPage}
           exact
@@ -157,6 +194,11 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
@@ -329,11 +371,33 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      isNetworkUsed,
+      allAccountsOnNetworkAreEmpty,
+      isTestNet,
+      currentChainId,
+      shouldShowSeedPhraseReminder,
+      portfolioTooltipIsBeingShown,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
+
+    const shouldShowNetworkInfo =
+      isUnlocked &&
+      currentChainId &&
+      !isTestNet &&
+      !isNetworkUsed &&
+      allAccountsOnNetworkAreEmpty;
+
+    const windowType = getEnvironmentType();
+
+    const shouldShowNetworkDeprecationWarning =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      isUnlocked &&
+      !shouldShowSeedPhraseReminder &&
+      !portfolioTooltipIsBeingShown;
+
     return (
       <div
         className={classnames('app', {
@@ -349,6 +413,8 @@ export default class Routes extends Component {
           }
         }}
       >
+        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
+        {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
@@ -398,20 +464,17 @@ export default class Routes extends Component {
       return loadingMessage;
     }
     const { providerType, providerId } = this.props;
+    const { t } = this.context;
 
     switch (providerType) {
-      case 'mainnet':
-        return this.context.t('connectingToMainnet');
-      case 'ropsten':
-        return this.context.t('connectingToRopsten');
-      case 'kovan':
-        return this.context.t('connectingToKovan');
-      case 'rinkeby':
-        return this.context.t('connectingToRinkeby');
-      case 'goerli':
-        return this.context.t('connectingToGoerli');
+      case NETWORK_TYPES.MAINNET:
+        return t('connectingToMainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('connectingToGoerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('connectingToSepolia');
       default:
-        return this.context.t('connectingTo', [providerId]);
+        return t('connectingTo', [providerId]);
     }
   }
 }

@@ -10,16 +10,13 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import {
-  RINKEBY,
-  MAINNET,
   INFURA_PROVIDER_TYPES,
-  NETWORK_TYPE_RPC,
-  NETWORK_TYPE_TO_ID_MAP,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  BUILT_IN_NETWORKS,
   INFURA_BLOCKED_KEY,
+  TEST_NETWORK_TICKER_MAP,
+  CHAIN_IDS,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
-import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -30,20 +27,27 @@ import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST) {
   defaultProviderConfigOpts = {
-    type: NETWORK_TYPE_RPC,
+    type: NETWORK_TYPES.RPC,
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
     nickname: 'Localhost 8545',
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: NETWORK_TYPES.GOERLI,
+    chainId: CHAIN_IDS.GOERLI,
+    ticker: TEST_NETWORK_TICKER_MAP.GOERLI,
+  };
 } else {
-  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: NETWORK_TYPES.MAINNET,
+    chainId: CHAIN_IDS.MAINNET,
+  };
 }
 
 const defaultProviderConfig = {
@@ -137,7 +141,7 @@ export default class NetworkController extends EventEmitter {
   /**
    * Method to return the latest block for the current network
    *
-   * @returns {Object} Block header
+   * @returns {object} Block header
    */
   getLatestBlock() {
     return new Promise((resolve, reject) => {
@@ -264,7 +268,12 @@ export default class NetworkController extends EventEmitter {
 
   getCurrentChainId() {
     const { type, chainId: configChainId } = this.getProviderConfig();
-    return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId;
+    return BUILT_IN_NETWORKS[type]?.chainId || configChainId;
+  }
+
+  getCurrentRpcUrl() {
+    const { rpcUrl } = this.getProviderConfig();
+    return rpcUrl;
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
@@ -277,7 +286,7 @@ export default class NetworkController extends EventEmitter {
       `Invalid chain ID "${chainId}": numerical value greater than max safe value.`,
     );
     this.setProviderConfig({
-      type: NETWORK_TYPE_RPC,
+      type: NETWORK_TYPES.RPC,
       rpcUrl,
       chainId,
       ticker,
@@ -289,19 +298,19 @@ export default class NetworkController extends EventEmitter {
   async setProviderType(type) {
     assert.notStrictEqual(
       type,
-      NETWORK_TYPE_RPC,
-      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPE_RPC}". Use "setRpcTarget"`,
+      NETWORK_TYPES.RPC,
+      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setRpcTarget"`,
     );
     assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),
       `Unknown Infura provider type "${type}".`,
     );
-    const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
+    const { chainId, ticker } = BUILT_IN_NETWORKS[type];
     this.setProviderConfig({
       type,
       rpcUrl: '',
       chainId,
-      ticker: 'ETH',
+      ticker: ticker ?? 'ETH',
       nickname: '',
     });
   }
@@ -333,7 +342,9 @@ export default class NetworkController extends EventEmitter {
 
   getNetworkIdentifier() {
     const provider = this.providerStore.getState();
-    return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type;
+    return provider.type === NETWORK_TYPES.RPC
+      ? provider.rpcUrl
+      : provider.type;
   }
 
   //
@@ -398,7 +409,7 @@ export default class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
-    } else if (type === NETWORK_TYPE_RPC) {
+    } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
     } else {
       throw new Error(

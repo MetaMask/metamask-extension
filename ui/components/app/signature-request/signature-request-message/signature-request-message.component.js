@@ -26,7 +26,7 @@ export default class SignatureRequestMessage extends PureComponent {
     }
 
     const { scrollTop, offsetHeight, scrollHeight } = this.props.messageRootRef;
-    const isAtBottom = scrollTop + offsetHeight >= scrollHeight;
+    const isAtBottom = Math.round(scrollTop) + offsetHeight >= scrollHeight;
 
     if (isAtBottom) {
       this.setState({ messageIsScrolled: true });

@@ -32,12 +32,12 @@
     min-width: 0;
   }
 
+  &__subject-icon {
+    flex-shrink: 0;
+  }
+
   &__subject-name {
     max-width: 215px;
-    white-space: nowrap;
-    overflow: hidden;
-    direction: rtl;
-    text-overflow: ellipsis;
     margin-left: 6px;
   }
 }

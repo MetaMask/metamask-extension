@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
@@ -10,6 +13,7 @@ import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapInstall from './flask/snap-install';
+import SnapUpdate from './flask/snap-update';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
@@ -35,7 +39,10 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapInstallPath: PropTypes.string.isRequired,
+    snapUpdatePath: PropTypes.string.isRequired,
     isSnap: PropTypes.bool.isRequired,
+    approvePendingApproval: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IN
     totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
@@ -90,6 +97,7 @@ export default class PermissionConnect extends Component {
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
+      snapUpdatePath,
       isSnap,
       ///: END:ONLY_INCLUDE_IN
       getCurrentWindowTab,
@@ -114,7 +122,9 @@ export default class PermissionConnect extends Component {
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       if (isSnap) {
-        history.push(snapInstallPath);
+        history.push(
+          permissionsRequest.newPermissions ? snapUpdatePath : snapInstallPath,
+        );
       } else {
         ///: END:ONLY_INCLUDE_IN
         history.push(confirmPermissionPath);
@@ -229,6 +239,9 @@ export default class PermissionConnect extends Component {
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
+      snapUpdatePath,
+      approvePendingApproval,
+      rejectPendingApproval,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
@@ -299,13 +312,50 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapInstall
                   request={permissionsRequest || {}}
-                  approveSnapInstall={(...args) => {
-                    approvePermissionsRequest(...args);
+                  approveSnapInstall={(requestId) => {
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      approvedAccounts: selectedAccountAddresses,
+                    });
                     this.redirect(true);
                   }}
-                  rejectSnapInstall={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
-                  }
+                  rejectSnapInstall={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(ethErrors.provider.userRejectedRequest()),
+                    );
+                    this.redirect(false);
+                  }}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              )}
+            />
+            {
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            }
+            <Route
+              path={snapUpdatePath}
+              exact
+              render={() => (
+                <SnapUpdate
+                  request={permissionsRequest || {}}
+                  approveSnapUpdate={(requestId) => {
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      approvedAccounts: selectedAccountAddresses,
+                    });
+                    this.redirect(true);
+                  }}
+                  rejectSnapUpdate={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(ethErrors.provider.userRejectedRequest()),
+                    );
+                    this.redirect(false);
+                  }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}

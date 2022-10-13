@@ -14,6 +14,9 @@ export default {
       options: Object.keys(imageHash),
     },
   },
+  args: {
+    eventKey: Object.keys(imageHash)[0],
+  },
 };
 
 export const DefaultStory = (args) => <TransactionActivityLogIcon {...args} />;

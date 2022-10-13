@@ -1,4 +1,4 @@
-import { MAX_SAFE_CHAIN_ID } from '../constants/network';
+import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -27,4 +27,22 @@ export function isPrefixedFormattedHexString(value) {
     return false;
   }
   return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value);
+}
+
+/**
+ * Check if token detection is enabled for certain networks
+ *
+ * @param chainId - ChainID of network
+ * @returns Whether the current network supports token detection
+ */
+export function isTokenDetectionEnabledForNetwork(chainId) {
+  switch (chainId) {
+    case CHAIN_IDS.MAINNET:
+    case CHAIN_IDS.BSC:
+    case CHAIN_IDS.POLYGON:
+    case CHAIN_IDS.AVALANCHE:
+      return true;
+    default:
+      return false;
+  }
 }

@@ -15,7 +15,7 @@ jest.mock('../../../../ducks/send', () => ({
   updateSendAmount: jest.fn(),
 }));
 
-require('./send-amount-row.container.js');
+require('./send-amount-row.container');
 
 describe('send-amount-row container', () => {
   describe('mapDispatchToProps()', () => {

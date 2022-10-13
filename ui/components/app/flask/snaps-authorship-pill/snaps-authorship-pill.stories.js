@@ -6,10 +6,7 @@ export default {
   id: __filename,
   component: SnapsAuthorshipPill,
   argTypes: {
-    packageName: {
-      control: 'text',
-    },
-    url: {
+    snapId: {
       control: 'text',
     },
   },
@@ -20,6 +17,5 @@ export const DefaultStory = (args) => <SnapsAuthorshipPill {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  packageName: 'npm-package-name',
-  url: 'https://www.npmjs.com/package/@airswap/protocols',
+  snapId: 'npm:@metamask/test-snap-bip44',
 };

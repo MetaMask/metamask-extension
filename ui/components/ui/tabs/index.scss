@@ -1,4 +1,5 @@
 @import 'tab/index';
+@import 'dropdown-tab/index';
 
 .tabs {
   flex-grow: 1;
@@ -12,6 +13,6 @@
     background-color: var(--color-background-default);
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
   }
 }

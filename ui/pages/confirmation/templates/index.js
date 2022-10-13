@@ -3,6 +3,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  addCustomNetwork,
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -18,9 +19,8 @@ const APPROVAL_TEMPLATES = {
   ///: END:ONLY_INCLUDE_IN
 };
 
-export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES = Object.keys(
-  APPROVAL_TEMPLATES,
-);
+export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES =
+  Object.keys(APPROVAL_TEMPLATES);
 
 const ALLOWED_TEMPLATE_KEYS = [
   'content',
@@ -32,12 +32,12 @@ const ALLOWED_TEMPLATE_KEYS = [
 ];
 
 /**
- * @typedef {Object} PendingApproval
+ * @typedef {object} PendingApproval
  * @property {string} id - The randomly generated id of the approval
  * @property {string} origin - The origin of the site requesting this approval
  * @property {number} time - The time the approval was requested
  * @property {string} type - The type of approval being requested
- * @property {Object} requestData - The data submitted with the request
+ * @property {object} requestData - The data submitted with the request
  */
 
 /**
@@ -46,7 +46,7 @@ const ALLOWED_TEMPLATE_KEYS = [
  * page the alerts returned from the getAlerts method will be set into the
  * alertState state object.
  *
- * @param {Object} pendingApproval - the object representing the confirmation
+ * @param {object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateAlerts(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
@@ -78,7 +78,7 @@ async function emptyState() {
  * confirmationState state object. Note, this state is not consumed by the page
  * itself.
  *
- * @param {Object} pendingApproval - the object representing the confirmation
+ * @param {object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateState(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getState ?? emptyState;
@@ -106,17 +106,19 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
+    addCustomNetwork: (...args) => dispatch(addCustomNetwork(...args)),
   };
 }
 
 /**
  * Returns the templated values to be consumed in the confirmation page
  *
- * @param {Object} pendingApproval - The pending confirmation object
+ * @param {object} pendingApproval - The pending confirmation object
  * @param {Function} t - Translation function
  * @param {Function} dispatch - Redux dispatch function
+ * @param history
  */
-export function getTemplateValues(pendingApproval, t, dispatch) {
+export function getTemplateValues(pendingApproval, t, dispatch, history) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -125,7 +127,7 @@ export function getTemplateValues(pendingApproval, t, dispatch) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions);
+  const values = fn(pendingApproval, t, safeActions, history);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

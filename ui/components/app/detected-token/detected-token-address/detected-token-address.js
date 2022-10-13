@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../../contexts/i18n';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
 import Box from '../../../ui/box';
@@ -16,8 +17,8 @@ import {
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-const DetectedTokenAddress = ({ address }) => {
-  const t = useContext(I18nContext);
+const DetectedTokenAddress = ({ tokenAddress }) => {
+  const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
@@ -28,9 +29,10 @@ const DetectedTokenAddress = ({ address }) => {
       <Typography
         variant={TYPOGRAPHY.H7}
         color={COLORS.PRIMARY_DEFAULT}
-        margin={[1, 2]}
+        marginLeft={2}
+        marginRight={2}
       >
-        {shortenAddress(address)}
+        {shortenAddress(tokenAddress)}
       </Typography>
       <Tooltip
         position="bottom"
@@ -40,7 +42,7 @@ const DetectedTokenAddress = ({ address }) => {
           type="link"
           className="detected-token-address__copy-link"
           onClick={() => {
-            handleCopy(address);
+            handleCopy(tokenAddress);
           }}
         >
           <i className="fa fa-copy" />
@@ -51,7 +53,7 @@ const DetectedTokenAddress = ({ address }) => {
 };
 
 DetectedTokenAddress.propTypes = {
-  address: PropTypes.string,
+  tokenAddress: PropTypes.string,
 };
 
 export default DetectedTokenAddress;

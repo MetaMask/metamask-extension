@@ -1,0 +1,44 @@
+.critical-error {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__alert {
+    color: var(--color-text-default);
+    background-color: var(--color-error-muted);
+    border: 1px solid var(--color-error-default);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+
+    &__message {
+      margin-bottom: 16px;
+    }
+
+    &__button {
+      height: 40px;
+      border-radius: 20px;
+      padding-left: 16px;
+      padding-right: 16px;
+      background-color: var(--color-primary-default);
+      color: var(--color-primary-inverse);
+      border: 1px solid var(--color-primary-default);
+      margin: 0 auto;
+    }
+  }
+
+  &__paragraph {
+    color: var(--color-text-default);
+    text-align: center;
+
+    &__link {
+      color: var(--color-primary-default);
+
+      &:hover {
+        color: var(--color-primary-alternative);
+      }
+    }
+  }
+}

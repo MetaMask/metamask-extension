@@ -26,6 +26,7 @@ const renderComponent = (props) => {
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
+  isATestNetwork: true,
 }));
 
 const props = {
@@ -40,25 +41,25 @@ const props = {
     blockExplorerUrl: '',
     viewOnly: false,
     rpcPrefs: {},
+    isATestNetwork: true,
   },
   shouldRenderNetworkForm: true,
 };
 
 describe('NetworksTabContent Component', () => {
   it('should render networks tab content correctly', async () => {
-    const { queryByText, getByDisplayValue } = renderComponent(props);
+    const { queryByText, getByDisplayValue, getAllByText } =
+      renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Ropsten Test Network')).toBeInTheDocument();
-    expect(queryByText('Rinkeby Test Network')).toBeInTheDocument();
-    expect(queryByText('Goerli Test Network')).toBeInTheDocument();
-    expect(queryByText('Kovan Test Network')).toBeInTheDocument();
+    expect(queryByText('Goerli test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia test network')).toBeInTheDocument();
 
-    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('Network name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency Symbol')).toBeInTheDocument();
-    expect(queryByText('Block Explorer URL')).toBeInTheDocument();
+    expect(queryByText('Currency symbol')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
 
@@ -68,9 +69,7 @@ describe('NetworksTabContent Component', () => {
       getByDisplayValue(props.selectedNetwork.chainId),
     ).toBeInTheDocument();
     expect(getByDisplayValue(props.selectedNetwork.ticker)).toBeInTheDocument();
-    expect(
-      getByDisplayValue(props.selectedNetwork.blockExplorerUrl),
-    ).toBeInTheDocument();
+    expect(getAllByText(props.selectedNetwork.blockExplorerUrl)).toBeDefined();
 
     fireEvent.change(getByDisplayValue(props.selectedNetwork.label), {
       target: { value: 'LocalHost 8545' },

@@ -178,7 +178,7 @@ export default function OnboardingFlow() {
           target="_blank"
         >
           <span>{t('followUsOnTwitter')}</span>
-          <img src="images/twitter-icon.png" />
+          <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
         </Button>
       )}
     </div>

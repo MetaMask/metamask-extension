@@ -1,16 +1,6 @@
 import React from 'react';
 import CollectibleDetails from './collectible-details';
 
-export default {
-  title: 'Components/App/CollectiblesDetail',
-  id: __filename,
-  argTypes: {
-    collectible: {
-      control: 'object',
-    },
-  },
-};
-
 const collectible = {
   name: 'Catnip Spicywright',
   tokenId: '1124157',
@@ -20,12 +10,32 @@ const collectible = {
     "Good day. My name is Catnip Spicywight, which got me teased a lot in high school. If I want to put low fat mayo all over my hamburgers, I shouldn't have to answer to anyone about it, am I right? One time I beat Arlene in an arm wrestle.",
 };
 
-export const DefaultStory = () => {
-  return <CollectibleDetails collectible={collectible} />;
+export default {
+  title: 'Components/App/CollectiblesDetail',
+  id: __filename,
+  argTypes: {
+    collectible: {
+      control: 'object',
+    },
+  },
+  args: {
+    collectible,
+  },
+};
+
+export const DefaultStory = (args) => {
+  return <CollectibleDetails {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
-DefaultStory.args = {
-  collectible,
+export const NoImage = (args) => {
+  return <CollectibleDetails {...args} />;
+};
+
+NoImage.args = {
+  collectible: {
+    ...collectible,
+    image: undefined,
+  },
 };

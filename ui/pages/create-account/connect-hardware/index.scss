@@ -25,6 +25,13 @@
     }
   }
 
+  &__QR-subtitle {
+    @include H5;
+
+    margin-top: 10px;
+    color: var(--color-text-default);
+  }
+
   &__btn-wrapper {
     flex: 1;
     flex-direction: row;
@@ -39,6 +46,25 @@
   &__connect-btn.disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  &__external-btn-first {
+    @include H7;
+
+    padding: 5px 10px;
+    width: auto;
+    display: inline;
+    margin-top: 10px;
+    margin-right: 20px;
+  }
+
+  &__external-btn {
+    @include H7;
+
+    padding: 5px 10px;
+    width: auto;
+    display: inline;
+    margin-top: 10px;
   }
 
   &__btn {
@@ -124,7 +150,7 @@
   }
 
   &__error {
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
     margin: 20px 20px 10px;
     display: block;
     text-align: center;
@@ -175,18 +201,12 @@
     display: flex;
     padding-left: 10px;
     padding-right: 10px;
-  }
-
-  &__item:nth-of-type(even) {
+    border-bottom: 1px solid var(--color-border-muted);
     background-color: var(--color-background-default);
   }
 
-  &__item:nth-of-type(odd) {
-    background: var(--color-background-alternative);
-  }
-
   &__item:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: var(--color-background-alternative);
   }
 
   &__item__index {

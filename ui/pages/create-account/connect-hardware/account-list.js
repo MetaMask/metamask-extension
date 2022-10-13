@@ -9,6 +9,7 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {
@@ -136,7 +137,7 @@ class AccountList extends Component {
                     rpcPrefs,
                   );
                   this.context.trackEvent({
-                    category: 'Account',
+                    category: EVENT.CATEGORIES.ACCOUNTS,
                     event: 'Clicked Block Explorer Link',
                     properties: {
                       actions: 'Hardware Connect',

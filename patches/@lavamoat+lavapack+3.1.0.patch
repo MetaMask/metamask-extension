@@ -1,0 +1,15 @@
+diff --git a/node_modules/@lavamoat/lavapack/src/pack.js b/node_modules/@lavamoat/lavapack/src/pack.js
+index eb41a0a..3f891ea 100644
+--- a/node_modules/@lavamoat/lavapack/src/pack.js
++++ b/node_modules/@lavamoat/lavapack/src/pack.js
+@@ -203,7 +203,9 @@ function createPacker({
+     const jsonSerializeableData = {
+       // id,
+       package: packageName,
+-      file,
++      // Omit this absolute filename from bundle so that builds are reproducible between environments
++      // TODO: update lavapack with an option to omit this, and/or make this filepath relative to the current working directory
++      // file,
+       // deps,
+       // source: sourceMeta.code
+     }

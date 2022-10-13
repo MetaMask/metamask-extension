@@ -29,7 +29,8 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default function CreatePassword({
   createNewAccount,
@@ -139,8 +140,8 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         trackEvent({
-          event: 'Submit Password',
-          category: 'Onboarding',
+          event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
+          category: EVENT.CATEGORIES.ONBOARDING,
         });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
@@ -150,28 +151,26 @@ export default function CreatePassword({
   };
 
   return (
-    <div className="create-password__wrapper">
+    <div className="create-password__wrapper" data-testid="create-password">
       {secretRecoveryPhrase &&
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
-        <TwoStepProgressBar stage={twoStepStages.PASSWORD_CREATE} />
+        <TwoStepProgressBar
+          stage={twoStepStages.PASSWORD_CREATE}
+          marginBottom={4}
+        />
       ) : (
-        <ThreeStepProgressBar stage={threeStepStages.PASSWORD_CREATE} />
+        <ThreeStepProgressBar
+          stage={threeStepStages.PASSWORD_CREATE}
+          marginBottom={4}
+        />
       )}
       <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
-      <Typography
-        variant={TYPOGRAPHY.H4}
-        align={TEXT_ALIGN.CENTER}
-        boxProps={{ margin: 5 }}
-      >
+      <Typography variant={TYPOGRAPHY.H4} align={TEXT_ALIGN.CENTER}>
         {t('passwordSetupDetails')}
       </Typography>
-      <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        marginTop={3}
-        padding={[0, 12]}
-      >
+      <Box justifyContent={JUSTIFY_CONTENT.CENTER} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
             dataTestId="create-password-new"
@@ -246,6 +245,7 @@ export default function CreatePassword({
                 : 'create-password-wallet'
             }
             type="primary"
+            large
             className="create-password__form--submit-button"
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}

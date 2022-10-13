@@ -1,8 +1,10 @@
+$progress-bar-width: calc(100% - 34px); // 100% - (circle size + (circle border size * 2))
+$progress-bar-position-left: calc(-50% + 17px); // -50% + ((circle size / 2) + circle border size)
+
 .progressbar {
   counter-reset: step;
   display: flex;
-  justify-content: space-evenly;
-  width: 500px;
+  justify-content: space-between;
   margin: 0 auto;
 }
 
@@ -11,14 +13,17 @@ ul.two-steps {
 }
 
 .progressbar li {
+  @include H7;
+
   list-style-type: none;
-  width: 25%;
-  float: left;
-  font-size: 12px;
   position: relative;
   text-align: center;
   color: var(--color-text-alternative);
   z-index: 2;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .progressbar li::before {
@@ -28,32 +33,30 @@ ul.two-steps {
   counter-increment: step;
   line-height: 30px;
   border: 2px solid var(--color-border-muted);
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin: 0 auto 10px auto;
   border-radius: 50%;
   background-color: var(--color-background-default);
-  z-index: -1;
 }
 
 .progressbar li::after {
-  width: 100%;
+  width: $progress-bar-width;
   height: 2px;
   content: '';
   position: absolute;
   background-color: var(--color-background-alternative);
   top: 15px;
-  right: 77px;
-  z-index: -1;
+  left: $progress-bar-position-left;
 
   [dir='rtl'] & {
-    width: 100%;
+    width: $progress-bar-width;
     height: 2px;
     content: '';
     position: absolute;
     background-color: var(--color-background-alternative);
-    right: 77px;
-    z-index: -1;
   }
 }
 
@@ -104,13 +107,11 @@ ul.two-steps {
 }
 
 .progressbar li.two-steps::after {
-  width: 180px;
   height: 2px;
   content: '';
   position: absolute;
   background-color: var(--color-background-alternative);
   top: 15px;
-  right: 75px;
   z-index: -1;
 
   [dir='rtl'] & {
@@ -119,7 +120,6 @@ ul.two-steps {
     content: '';
     position: absolute;
     background-color: var(--color-background-alternative);
-    right: 75px;
     z-index: -1;
   }
 }

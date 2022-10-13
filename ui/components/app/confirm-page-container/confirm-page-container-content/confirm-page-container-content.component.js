@@ -23,9 +23,11 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -41,16 +43,14 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
-    setUserAcknowledgedGasMissing: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
-    currentTransaction: PropTypes.string,
+    currentTransaction: PropTypes.object,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
     showBuyModal: PropTypes.func,
@@ -62,15 +62,37 @@ export default class ConfirmPageContainerContent extends Component {
   renderContent() {
     const { detailsComponent, dataComponent } = this.props;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    const { insightComponent } = this.props;
+
+    if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     if (detailsComponent && dataComponent) {
       return this.renderTabs();
     }
-    return detailsComponent || dataComponent;
+
+    return (
+      detailsComponent ||
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent ||
+      ///: END:ONLY_INCLUDE_IN
+      dataComponent
+    );
   }
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const {
+      detailsComponent,
+      dataComponent,
+      dataHexComponent,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
 
     return (
       <Tabs>
@@ -91,6 +113,12 @@ export default class ConfirmPageContainerContent extends Component {
             {dataHexComponent}
           </Tab>
         )}
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          insightComponent
+          ///: END:ONLY_INCLUDE_IN
+        }
       </Tabs>
     );
   }
@@ -100,7 +128,6 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      hasSimulationError,
       title,
       image,
       titleComponent,
@@ -122,8 +149,6 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      setUserAcknowledgedGasMissing,
-      hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
       hasTopBorder,
       currentTransaction,
@@ -135,17 +160,10 @@ export default class ConfirmPageContainerContent extends Component {
       isBuyableChain,
     } = this.props;
 
-    const primaryAction = hideUserAcknowledgedGasMissing
-      ? null
-      : {
-          label: this.context.t('tryAnywayOption'),
-          onClick: setUserAcknowledgedGasMissing,
-        };
     const { t } = this.context;
 
     const showInsuffienctFundsError =
       supportsEIP1559V2 &&
-      !hasSimulationError &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
@@ -158,15 +176,6 @@ export default class ConfirmPageContainerContent extends Component {
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
-        )}
-        {hasSimulationError && (
-          <div className="confirm-page-container-content__error-container">
-            <ActionableMessage
-              type="danger"
-              primaryAction={primaryAction}
-              message={t('simulationErrorMessage')}
-            />
-          </div>
         )}
         <ConfirmPageContainerSummary
           className={classnames({
@@ -188,7 +197,6 @@ export default class ConfirmPageContainerContent extends Component {
         />
         {this.renderContent()}
         {!supportsEIP1559V2 &&
-          !hasSimulationError &&
           (errorKey || errorMessage) &&
           currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
             <div className="confirm-page-container-content__error-container">

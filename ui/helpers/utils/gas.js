@@ -1,14 +1,17 @@
 import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
-import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
+import {
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
+} from '../../../shared/constants/gas';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import {
   bnGreaterThan,
   isNullish,
   roundToDecimalPlacesRemovingExtraZeroes,
 } from './util';
-import { hexWEIToDecGWEI } from './conversions.util';
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   gasUsed,
@@ -105,4 +108,17 @@ export function formatGasFeeOrFeeRange(
   ).join(' - ');
 
   return `${formattedRange} GWEI`;
+}
+
+/**
+ * Helper method for determining whether an edit gas mode is either a speed up or cancel transaction
+ *
+ * @param {string | undefined} editGasMode - One of 'speed-up', 'cancel', 'modify-in-place', or 'swaps'
+ * @returns boolean
+ */
+export function editGasModeIsSpeedUpOrCancel(editGasMode) {
+  return (
+    editGasMode === EDIT_GAS_MODES.CANCEL ||
+    editGasMode === EDIT_GAS_MODES.SPEED_UP
+  );
 }

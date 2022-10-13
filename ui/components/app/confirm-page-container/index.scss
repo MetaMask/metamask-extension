@@ -2,6 +2,15 @@
 @import 'confirm-page-container-header/index';
 @import 'confirm-detail-row/index';
 @import 'confirm-page-container-navigation/index';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+@import 'flask/index';
+///: END:ONLY_INCLUDE_IN
+
+.confirm-page-container {
+  &__dialog {
+    margin: 12px 16px;
+  }
+}
 
 .page-container {
   &__content-component-wrapper {

@@ -1,21 +1,21 @@
 .view-snap {
   padding: 12px 18px;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     padding: 12px;
   }
 
   &__subheader {
     padding: 16px 4px;
     border-bottom: 1px solid var(--color-border-muted);
-    margin-right: 24px;
+    margin-inline-end: 24px;
     height: 72px;
     align-items: center;
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: $break-small) {
-      margin-right: 0;
+    @include screen-sm-max {
+      margin-inline-end: 0;
       padding: 0 0 16px;
       flex-direction: column;
       align-items: center;
@@ -24,8 +24,21 @@
     }
   }
 
+  &__install-details {
+    border-bottom: 1px solid var(--color-border-muted);
+    margin-inline-end: 24px;
+
+    @include screen-sm-max {
+      margin-inline-end: 0;
+    }
+  }
+
+  &__version {
+    font-family: monospace;
+  }
+
   &__title {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-bottom: 16px;
     }
   }
@@ -35,14 +48,14 @@
     display: flex;
     flex-grow: 1;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       justify-content: space-between;
     }
   }
 
   &__pill-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
@@ -51,7 +64,7 @@
   &__toggle-container {
     margin-left: auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
@@ -62,7 +75,7 @@
   }
 
   &__content-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
     }
   }
@@ -76,7 +89,7 @@
     padding-bottom: 16px;
     margin-bottom: 16px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: initial;
       padding: 5px 0 16px;
     }
@@ -111,7 +124,7 @@
   &__remove-button {
     max-width: 175px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       align-self: center;
     }
   }

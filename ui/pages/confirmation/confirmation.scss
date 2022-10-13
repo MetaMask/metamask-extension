@@ -1,4 +1,5 @@
 @import 'components/confirmation-footer/confirmation-footer';
+@import 'components/confirmation-network-switch/index';
 @import 'templates/flask/snap-confirm/index';
 
 .confirmation-page {
@@ -63,6 +64,7 @@
 
   .chip {
     max-width: 100%;
+    height: 40px;
 
     &__label {
       word-break: break-all;

@@ -7,7 +7,7 @@ import FormField from '../../ui/form-field';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
-import { getNetworkSupportsSettingGasPrice } from '../../../selectors';
+import { getNetworkSupportsSettingGasFees } from '../../../selectors';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -35,8 +35,8 @@ export default function AdvancedGasControls({
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
       isGasEstimatesLoading);
 
-  const networkSupportsSettingGasPrice = useSelector(
-    getNetworkSupportsSettingGasPrice,
+  const networkSupportsSettingGasFees = useSelector(
+    getNetworkSupportsSettingGasFees,
   );
 
   return (
@@ -55,6 +55,7 @@ export default function AdvancedGasControls({
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         allowDecimals={false}
+        disabled={!networkSupportsSettingGasFees}
         numeric
       />
       {showFeeMarketFields ? (
@@ -111,7 +112,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
                 : null
             }
-            disabled={!networkSupportsSettingGasPrice}
+            disabled={!networkSupportsSettingGasFees}
           />
         </>
       )}
@@ -123,12 +124,12 @@ AdvancedGasControls.propTypes = {
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES)),
   setMaxPriorityFee: PropTypes.func,
   setMaxFee: PropTypes.func,
-  maxPriorityFee: PropTypes.number,
-  maxFee: PropTypes.number,
+  maxPriorityFee: PropTypes.string,
+  maxFee: PropTypes.string,
   onManualChange: PropTypes.func,
   gasLimit: PropTypes.number,
   setGasLimit: PropTypes.func,
-  gasPrice: PropTypes.number,
+  gasPrice: PropTypes.string,
   setGasPrice: PropTypes.func,
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,

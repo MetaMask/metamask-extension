@@ -47,3 +47,10 @@
     }
   }
 }
+
+
+// Overrides react-tippy
+
+.tippy-tooltip .tippy-tooltip-content .edit-gas-fee-button__tooltip {
+  min-width: 170px;
+}

@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import EditContact from './edit-contact';
@@ -32,7 +32,7 @@ export default class ContactListTab extends Component {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('contacts')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('contacts')),
   )
     .fill(undefined)
     .map(() => {

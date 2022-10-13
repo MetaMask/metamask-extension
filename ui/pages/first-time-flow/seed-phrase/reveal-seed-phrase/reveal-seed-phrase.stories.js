@@ -2,7 +2,7 @@ import React from 'react';
 import RevealSeedPhrase from '.';
 
 export default {
-  title: 'Components/Pages/FirstTimeFlow/RevealSeedPhrase',
+  title: 'Pages/FirstTimeFlow/RevealSeedPhrase',
   id: __filename,
 };
 

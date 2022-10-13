@@ -10,8 +10,9 @@ import {
 } from '../../../../test/jest';
 import ViewQuote from '.';
 
-jest.mock('../../../components/ui/info-tooltip/info-tooltip-icon', () => () =>
-  '<InfoTooltipIcon />',
+jest.mock(
+  '../../../components/ui/info-tooltip/info-tooltip-icon',
+  () => () => '<InfoTooltipIcon />',
 );
 
 jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
@@ -64,6 +65,7 @@ describe('ViewQuote', () => {
       getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
+    expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
@@ -87,7 +89,7 @@ describe('ViewQuote', () => {
       getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('0.00544 ETH')).toBeInTheDocument();
+    expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });

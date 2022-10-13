@@ -47,6 +47,9 @@ export default {
     fiatNumberOfDecimals: {
       control: 'number',
     },
+    showFiat: {
+      control: 'boolean',
+    },
   },
   args: {
     type: ETH,

@@ -1,16 +1,15 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/react';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
-import { ROPSTEN_CHAIN_ID } from '../../../../shared/constants/network';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import MenuBar from './menu-bar';
 
 const initState = {
   activeTab: {},
   metamask: {
     provider: {
-      chainId: ROPSTEN_CHAIN_ID,
+      chainId: CHAIN_IDS.GOERLI,
     },
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     identities: {
@@ -32,41 +31,36 @@ const mockStore = configureStore();
 
 describe('MenuBar', () => {
   it('opens account detail menu when account options is clicked', async () => {
+    let accountOptionsMenu;
+
     const store = mockStore(initState);
-    const wrapper = mountWithRouter(
-      <Provider store={store}>
-        <MenuBar />
-      </Provider>,
-    );
-    await waitFor(() =>
-      expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
-    );
-    const accountOptions = wrapper.find('.menu-bar__account-options');
-    accountOptions.simulate('click');
-    wrapper.update();
-    await waitFor(() =>
-      expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
-    );
+    renderWithProvider(<MenuBar />, store);
+
+    accountOptionsMenu = screen.queryByTestId('account-options-menu');
+    expect(accountOptionsMenu).not.toBeInTheDocument();
+
+    const accountOptions = screen.queryByTestId('account-options-menu-button');
+    fireEvent.click(accountOptions);
+
+    await waitFor(() => {
+      accountOptionsMenu = screen.queryByTestId('account-options-menu');
+      expect(accountOptionsMenu).toBeInTheDocument();
+    });
   });
 
-  it('sets accountDetailsMenuOpen to false when closed', async () => {
+  it('shouldnt open the account options menu when clicked twice', async () => {
     const store = mockStore(initState);
-    const wrapper = mountWithRouter(
-      <Provider store={store}>
-        <MenuBar />
-      </Provider>,
+    renderWithProvider(<MenuBar />, store);
+
+    const accountOptionsMenu = screen.queryByTestId('account-options-menu');
+    expect(accountOptionsMenu).not.toBeInTheDocument();
+
+    const accountOptionsButton = screen.queryByTestId(
+      'account-options-menu-button',
     );
-    const accountOptions = wrapper.find('.menu-bar__account-options');
-    accountOptions.simulate('click');
-    wrapper.update();
-    await waitFor(() =>
-      expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
-    );
-    const accountDetailsMenu = wrapper.find('AccountOptionsMenu');
-    await waitFor(() => {
-      accountDetailsMenu.prop('onClose')();
-      wrapper.update();
-      expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
-    });
+    // Couldnt fireEvent multiple/seperate times, this is the workaround.
+    fireEvent.doubleClick(accountOptionsButton);
+
+    expect(accountOptionsMenu).not.toBeInTheDocument();
   });
 });

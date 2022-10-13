@@ -12,12 +12,15 @@ export default function UserPreferencedCurrencyDisplay({
   numberOfDecimals: propsNumberOfDecimals,
   showEthLogo,
   type,
+  showFiat,
+  showCurrencySuffix,
   ...restProps
 }) {
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
     ethNumberOfDecimals,
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
+    showFiatOverride: showFiat,
   });
   const prefixComponent = useMemo(() => {
     return (
@@ -41,6 +44,7 @@ export default function UserPreferencedCurrencyDisplay({
       data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
+      suffix={showCurrencySuffix && !showEthLogo && currency}
     />
   );
 }
@@ -65,4 +69,6 @@ UserPreferencedCurrencyDisplay.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  showFiat: PropTypes.bool,
+  showCurrencySuffix: PropTypes.bool,
 };

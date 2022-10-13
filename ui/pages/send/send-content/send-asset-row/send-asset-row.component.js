@@ -5,9 +5,14 @@ import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
 import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
+import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  ASSET_TYPES,
+  ERC20,
+  ERC721,
+} from '../../../../../shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -46,7 +51,7 @@ export default class SendAssetRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   state = {
@@ -87,13 +92,12 @@ export default class SendAssetRow extends Component {
         isShowingDropdown: false,
       },
       () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.TRANSACTIONS,
+          event: 'User clicks "Assets" dropdown',
+          properties: {
             action: 'Send Screen',
-            name: 'User clicks "Assets" dropdown',
-          },
-          customVariables: {
+            legacy_event: true,
             assetSelected: this.getAssetSelected(type, token),
           },
         });
@@ -180,12 +184,8 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const {
-      accounts,
-      selectedAddress,
-      nativeCurrency,
-      nativeCurrencyImage,
-    } = this.props;
+    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
+      this.props;
 
     const { sendableTokens, sendableCollectibles } = this.state;
 

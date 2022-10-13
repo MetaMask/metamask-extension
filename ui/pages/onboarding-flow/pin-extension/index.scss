@@ -1,6 +1,4 @@
 .onboarding-pin-extension {
-  max-width: 800px;
-
   .control-dots .dot {
     background: var(--color-icon-muted);
     box-shadow: none;
@@ -12,7 +10,7 @@
 
   &__diagram {
     margin: 24px auto;
-    width: 799px;
+    max-width: 799px;
     height: 320px;
   }
 

@@ -78,11 +78,11 @@
 
   &__time-estimate-low,
   &__fee-estimate-high {
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
   }
 
   &__time-estimate-medium,
   &__time-estimate-high {
-    color: var(--color-success-muted);
+    color: var(--color-success-default);
   }
 }

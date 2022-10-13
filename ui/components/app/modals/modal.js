@@ -3,15 +3,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
-import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
-import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
-import DepositEtherModal from './deposit-ether-modal';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
@@ -36,7 +32,7 @@ const modalContainerBaseStyle = {
   border: '1px solid var(--color-border-default)',
   borderRadius: '8px',
   backgroundColor: 'var(--color-background-default)',
-  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+  boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
 };
 
 const modalContainerLaptopStyle = {
@@ -55,7 +51,7 @@ const accountModalStyle = {
   mobileModalStyle: {
     width: '95%',
     // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -66,7 +62,7 @@ const accountModalStyle = {
   laptopModalStyle: {
     width: '335px',
     // top: 'calc(33% + 45px)',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -80,45 +76,12 @@ const accountModalStyle = {
 };
 
 const MODALS = {
-  DEPOSIT_ETHER: {
-    contents: <DepositEtherModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      width: '100%',
-      height: '100%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      top: '0',
-      display: 'flex',
-    },
-    laptopModalStyle: {
-      width: 'initial',
-      maxWidth: '850px',
-      top: 'calc(10% + 10px)',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 6px 0 rgba(0,0,0,0.3)',
-      borderRadius: '7px',
-      transform: 'none',
-      height: 'calc(80% - 20px)',
-      overflowY: 'hidden',
-    },
-    contentStyle: {
-      borderRadius: '7px',
-      height: '100%',
-    },
-  },
-
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {
       width: '95%',
       top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
       transform: 'none',
       left: '0',
       right: '0',
@@ -128,7 +91,7 @@ const MODALS = {
     laptopModalStyle: {
       width: '375px',
       top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
       transform: 'none',
       left: '0',
       right: '0',
@@ -236,60 +199,6 @@ const MODALS = {
     },
   },
 
-  LEGACY_CUSTOMIZE_GAS: {
-    contents: <ConfirmCustomizeGasModal />,
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
-      top: '80px',
-      left: '0px',
-      transform: 'none',
-      margin: '0 auto',
-      position: 'relative',
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-    customOnHideOpts: {
-      action: resetCustomGasData,
-      args: [],
-    },
-  },
-
-  CUSTOMIZE_METASWAP_GAS: {
-    contents: <SwapsGasCustomizationModal />,
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
-      top: '80px',
-      left: '0px',
-      transform: 'none',
-      margin: '0 auto',
-      position: 'relative',
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
   EDIT_APPROVAL_PERMISSION: {
     contents: <EditApprovalPermission />,
     mobileModalStyle: {
@@ -389,7 +298,7 @@ const MODALS = {
 };
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'var(--color-overlay-default)',
 };
 
 function mapStateToProps(state) {

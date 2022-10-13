@@ -14,17 +14,15 @@ import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
 } from '../../selectors';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 /**
- * @typedef {Object} GasEstimatesReturnType
+ * @typedef {object} GasEstimatesReturnType
  * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
  *  based on current network conditions. Expressed in user's preferred currency.
  * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be paid if current
@@ -66,10 +64,8 @@ export function useGasEstimates({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 

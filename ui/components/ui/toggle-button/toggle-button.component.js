@@ -31,18 +31,18 @@ const thumbStyle = {
 
 const colors = {
   activeThumb: {
-    base: 'var(--color-primary-default)',
+    base: '#037DD6',
   },
   inactiveThumb: {
-    base: 'var(--color-icon-default)',
+    base: '#6A737D',
   },
   active: {
-    base: 'var(--color-background-default)',
-    hover: 'var(--color-background-default)',
+    base: '#F2F4F6',
+    hover: '#F2F4F6',
   },
   inactive: {
-    base: 'var(--color-background-alternative)',
-    hover: 'var(color-background-alternative)',
+    base: '#F2F4F6',
+    hover: '#F2F4F6',
   },
 };
 

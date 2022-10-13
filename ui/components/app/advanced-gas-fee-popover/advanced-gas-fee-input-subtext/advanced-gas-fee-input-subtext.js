@@ -25,7 +25,7 @@ function determineTrendInfo(trend, t) {
     case 'level':
       return {
         className: 'fa-arrow-right advanced-gas-fee-input-subtext__level',
-        color: 'var(--color-icon-default)',
+        color: 'var(--color-icon-alternative)',
         title: t('levelArrow'),
       };
     default:

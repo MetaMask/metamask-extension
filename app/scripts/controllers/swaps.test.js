@@ -4,15 +4,15 @@ import sinon from 'sinon';
 import { ethers } from 'ethers';
 import { mapValues } from 'lodash';
 import BigNumber from 'bignumber.js';
-import {
-  ROPSTEN_NETWORK_ID,
-  MAINNET_NETWORK_ID,
-  MAINNET_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -38,8 +38,7 @@ const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
-  data:
-    '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+  data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
   to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   amount: '0',
   from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
@@ -79,7 +78,7 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
-  chainId: MAINNET_CHAIN_ID,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
@@ -101,7 +100,7 @@ function getMockNetworkController() {
     store: {
       getState: () => {
         return {
-          network: ROPSTEN_NETWORK_ID,
+          network: NETWORK_IDS.GOERLI,
         };
       },
     },
@@ -134,8 +133,10 @@ const EMPTY_INIT_STATE = {
     swapsFeatureFlags: {},
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
-    swapsStxBatchStatusRefreshTime: 10000,
-    swapsStxGetTransactionsRefreshTime: 10000,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
@@ -144,7 +145,7 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
+getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -220,7 +221,7 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(MAINNET_NETWORK_ID);
+      onNetworkDidChange(NETWORK_IDS.MAINNET);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -268,7 +269,7 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      onNetworkDidChange(ROPSTEN_NETWORK_ID);
+      onNetworkDidChange(NETWORK_IDS.GOERLI);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -365,13 +366,10 @@ describe('SwapsController', function () {
           baseGasEstimate,
         );
 
-        const {
-          gasLimit: bufferedGasLimit,
-        } = await swapsController.getBufferedGasLimit();
-        const {
-          gasEstimate,
-          gasEstimateWithRefund,
-        } = swapsController.store.getState().swapsState.quotes[initialAggId];
+        const { gasLimit: bufferedGasLimit } =
+          await swapsController.getBufferedGasLimit();
+        const { gasEstimate, gasEstimateWithRefund } =
+          swapsController.store.getState().swapsState.quotes[initialAggId];
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
@@ -411,12 +409,10 @@ describe('SwapsController', function () {
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(
-          getTopQuoteAndSavingsMockQuotes(),
-        );
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(
+            getTopQuoteAndSavingsMockQuotes(),
+          );
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(
           resultQuotes,
@@ -430,17 +426,15 @@ describe('SwapsController', function () {
         const expectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         delete expectedResultQuotes[TEST_AGG_ID_6];
         expectedResultQuotes[TEST_AGG_ID_1].savings = {
-          total: '0.0292',
+          total: '0.0092',
           performance: '0.0297',
-          fee: '0.02',
+          fee: '0',
           metaMaskFee: '0.0205',
           medianMetaMaskFee: '0.0202',
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -456,34 +450,32 @@ describe('SwapsController', function () {
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...testInput[TEST_AGG_ID_1],
-            ethFee: '0.01',
+            ethFee: '0.25',
           },
           [TEST_AGG_ID_2]: {
             ...testInput[TEST_AGG_ID_2],
-            ethFee: '0.02',
+            ethFee: '0.25',
           },
           [TEST_AGG_ID_3]: {
             ...testInput[TEST_AGG_ID_3],
-            ethFee: '0.03',
+            ethFee: '0.25',
           },
           [TEST_AGG_ID_4]: {
             ...testInput[TEST_AGG_ID_4],
-            ethFee: '0.04',
+            ethFee: '0.25',
           },
           [TEST_AGG_ID_5]: {
             ...testInput[TEST_AGG_ID_5],
-            ethFee: '0.05',
+            ethFee: '0.25',
           },
           [TEST_AGG_ID_6]: {
             ...testInput[TEST_AGG_ID_6],
-            ethFee: '0.06',
+            ethFee: '0.25',
           },
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -498,56 +490,55 @@ describe('SwapsController', function () {
             trade: { value: '0x8ac7230489e80000' },
           }),
         );
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '2.0195',
+            overallValueOfQuote: '1.7795',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9996',
+            overallValueOfQuote: '1.7696',
           },
           [TEST_AGG_ID_3]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_3],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9698',
+            overallValueOfQuote: '1.7498',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.94',
+            overallValueOfQuote: '1.73',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9102',
+            overallValueOfQuote: '1.7102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.8705',
+            overallValueOfQuote: '1.6805',
           },
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -564,29 +555,30 @@ describe('SwapsController', function () {
         );
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8b553ece48ec0000' },
-            overallValueOfQuote: '1.9795',
-            ethFee: '0.05',
+            overallValueOfQuote: '1.7395',
+            ethFee: '0.29',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9996',
+            overallValueOfQuote: '1.7696',
             isBestQuote: true,
             savings: {
-              total: '0.0243',
-              performance: '0.0297',
-              fee: '0.015',
+              total: '0.01445',
+              performance: '0.01485',
+              fee: '0.02',
               metaMaskFee: '0.0204',
-              medianMetaMaskFee: '0.0201',
+              medianMetaMaskFee: '0.02025',
             },
           },
           [TEST_AGG_ID_3]: {
@@ -594,37 +586,35 @@ describe('SwapsController', function () {
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9698',
+            overallValueOfQuote: '1.7498',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.94',
+            overallValueOfQuote: '1.73',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.9102',
+            overallValueOfQuote: '1.7102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.8705',
+            overallValueOfQuote: '1.6805',
           },
         };
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -633,34 +623,33 @@ describe('SwapsController', function () {
         const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000';
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           ...baseExpectedResultQuotes,
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             trade: { value: '0x8e1bc9bf040000' },
-            overallValueOfQuote: '1.9795',
-            ethFee: '0.05',
+            overallValueOfQuote: '1.7395',
+            ethFee: '0.29',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             isBestQuote: true,
             savings: {
-              total: '0.0243',
-              performance: '0.0297',
-              fee: '0.015',
+              total: '0.01445',
+              performance: '0.01485',
+              fee: '0.02',
               metaMaskFee: '0.0204',
-              medianMetaMaskFee: '0.0201',
+              medianMetaMaskFee: '0.02025',
             },
           },
         };
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -697,14 +686,14 @@ describe('SwapsController', function () {
           gasEstimate: 2000000,
           gasEstimateWithRefund: '0xb8cae',
           savings: {
-            fee: '0',
+            fee: '-0.061067',
             metaMaskFee: '0.5050505050505050505',
             performance: '6',
-            total: '5.4949494949494949495',
+            total: '5.4338824949494949495',
             medianMetaMaskFee: '0.44444444444444444444',
           },
-          ethFee: '5.033165',
-          overallValueOfQuote: '44.966835',
+          ethFee: '0.113536',
+          overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
@@ -733,7 +722,7 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
-            MAINNET_CHAIN_ID,
+            CHAIN_IDS.MAINNET,
           ),
           true,
         );
@@ -1348,50 +1337,50 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
     [TEST_AGG_ID_1]: {
       ...baseTestInput[TEST_AGG_ID_1],
       isBestQuote: true,
-      ethFee: '0.01',
-      overallValueOfQuote: '2.0195',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.7795',
       metaMaskFeeInEth: '0.0205',
       ethValueOfTokens: '2.0295',
       savings: {
-        total: '0.0441',
+        total: '0.0191',
         performance: '0.0396',
-        fee: '0.025',
+        fee: '0',
         metaMaskFee: '0.0205',
         medianMetaMaskFee: '0.0201',
       },
     },
     [TEST_AGG_ID_2]: {
       ...baseTestInput[TEST_AGG_ID_2],
-      ethFee: '0.02',
-      overallValueOfQuote: '1.9996',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.7696',
       metaMaskFeeInEth: '0.0204',
       ethValueOfTokens: '2.0196',
     },
     [TEST_AGG_ID_3]: {
       ...baseTestInput[TEST_AGG_ID_3],
-      ethFee: '0.03',
-      overallValueOfQuote: '1.9698',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.7498',
       metaMaskFeeInEth: '0.0202',
       ethValueOfTokens: '1.9998',
     },
     [TEST_AGG_ID_4]: {
       ...baseTestInput[TEST_AGG_ID_4],
-      ethFee: '0.04',
-      overallValueOfQuote: '1.94',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.73',
       metaMaskFeeInEth: '0.02',
       ethValueOfTokens: '1.98',
     },
     [TEST_AGG_ID_5]: {
       ...baseTestInput[TEST_AGG_ID_5],
-      ethFee: '0.05',
-      overallValueOfQuote: '1.9102',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.7102',
       metaMaskFeeInEth: '0.0198',
       ethValueOfTokens: '1.9602',
     },
     [TEST_AGG_ID_6]: {
       ...baseTestInput[TEST_AGG_ID_6],
-      ethFee: '0.06',
-      overallValueOfQuote: '1.8705',
+      ethFee: '0.25',
+      overallValueOfQuote: '1.6805',
       metaMaskFeeInEth: '0.0195',
       ethValueOfTokens: '1.9305',
     },

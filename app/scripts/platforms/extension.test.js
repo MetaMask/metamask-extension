@@ -25,6 +25,15 @@ describe('extension platform', () => {
       expect(version).toBe('1.2.3');
     });
 
+    it('should return rollback version', () => {
+      browser.runtime.getManifest.mockReturnValue({ version: '1.2.3.1' });
+      const extensionPlatform = new ExtensionPlatform();
+
+      const version = extensionPlatform.getVersion();
+
+      expect(version).toBe('1.2.3.1');
+    });
+
     it('should return SemVer-formatted version for Chrome style manifest of prerelease', () => {
       browser.runtime.getManifest.mockReturnValue({
         version: '1.2.3.0',
@@ -58,24 +67,6 @@ describe('extension platform', () => {
       expect(() => extensionPlatform.getVersion()).toThrow(
         'Version missing build number:',
       );
-    });
-
-    it('should throw error if version name is missing from Chrome style prerelease manifest', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3.0',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      expect(() => extensionPlatform.getVersion()).toThrow('Invalid version:');
-    });
-
-    it('should throw error if version includes four parts in a Firefox style manifest', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3.4',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      expect(() => extensionPlatform.getVersion()).toThrow('Invalid version:');
     });
 
     it('should throw error if build version is missing from Firefox style prerelease manifest', () => {

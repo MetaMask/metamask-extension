@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Delete Network should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="modal-content"
+      >
+        <div
+          class="modal-content__title"
+        >
+          Delete network?
+        </div>
+        <div
+          class="modal-content__description"
+        >
+          Are you sure you want to delete this network?
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-danger-primary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+`;

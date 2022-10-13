@@ -194,7 +194,7 @@
 .btn-raised {
   color: var(--color-primary-default);
   background-color: var(--color-background-default);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
   padding: 6px;
   height: initial;
   min-height: initial;
@@ -214,11 +214,15 @@ input[type="submit"][disabled] {
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
   &:hover {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
   }
 
   &.btn-secondary {
     border: 1px solid var(--color-primary-default);
+
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
+    }
 
     &--disabled,
     &[disabled] {
@@ -234,6 +238,10 @@ input[type="submit"][disabled] {
   &.btn-default {
     border: 1px solid var(--color-icon-default);
 
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    }
+
     &--disabled,
     &[disabled] {
       border-color: var(--color-border-muted);
@@ -247,6 +255,10 @@ input[type="submit"][disabled] {
 
   &.btn-danger {
     border: 1px solid var(--color-error-default);
+
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-error-shadow);
+    }
 
     &--disabled,
     &[disabled] {
@@ -262,6 +274,10 @@ input[type="submit"][disabled] {
   &.btn-warning {
     border: 1px solid var(--color-warning-default);
 
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    }
+
     &--disabled,
     &[disabled] {
       border-color: var(--color-warning-alternative);
@@ -276,6 +292,10 @@ input[type="submit"][disabled] {
   &.btn-primary {
     background-color: var(--color-primary-default);
 
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
+    }
+
     &--disabled,
     &[disabled] {
       background-color: var(--color-primary-disabled);
@@ -288,6 +308,10 @@ input[type="submit"][disabled] {
 
   &.btn-danger-primary {
     background-color: var(--color-error-default);
+
+    &:hover {
+      box-shadow: var(--shadow-size-sm) var(--color-error-shadow);
+    }
 
     &--disabled,
     &[disabled] {

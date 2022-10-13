@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
@@ -7,19 +7,35 @@ import Button from '../../ui/button';
 import Box from '../../ui/box/box';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  getIsTokenDetectionSupported,
+  getIsTokenDetectionInactiveOnMainnet,
+} from '../../../selectors';
 
-export default function ImportTokenLink({ isMainnet }) {
+export default function ImportTokenLink() {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
 
+  const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+
+  const isTokenDetectionAvailable =
+    isTokenDetectionSupported ||
+    isTokenDetectionInactiveOnMainnet ||
+    Boolean(process.env.IN_TEST);
+
   return (
     <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
-      {isMainnet && (
+      {isTokenDetectionAvailable && (
         <>
           <Button
             className="import-token-link__link"
+            data-testid="refresh-list-button"
             type="link"
             onClick={() => detectNewTokens()}
           >
@@ -30,20 +46,20 @@ export default function ImportTokenLink({ isMainnet }) {
       )}
       <Button
         className="import-token-link__link"
+        data-testid="import-token-button"
         type="link"
         onClick={() => {
           history.push(IMPORT_TOKEN_ROUTE);
           trackEvent({
-            event: 'Clicked "Add Token"',
-            category: 'Navigation',
+            event: EVENT_NAMES.TOKEN_IMPORT_BUTTON_CLICKED,
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Token Menu',
-              legacy_event: true,
+              location: 'Home',
             },
           });
         }}
       >
-        {isMainnet
+        {isTokenDetectionAvailable
           ? t('importTokens')
           : t('importTokens').charAt(0).toUpperCase() +
             t('importTokens').slice(1)}
@@ -51,7 +67,3 @@ export default function ImportTokenLink({ isMainnet }) {
     </Box>
   );
 }
-
-ImportTokenLink.propTypes = {
-  isMainnet: PropTypes.bool,
-};

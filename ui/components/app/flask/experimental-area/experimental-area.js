@@ -15,7 +15,8 @@ function lineBreaksToBr(source) {
   });
 }
 
-const METAMASK_LOGO = lineBreaksToBr(`MMm*mmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmm*mMM
+const METAMASK_LOGO =
+  lineBreaksToBr(`MMm*mmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmm*mMM
 MM*./***mMMMMMMMMMMMMMMMMMMMMMMMMMMm***/.*MM
 MM/...///*mMMMMMMMMMMMMMMMMMMMMMMm*///.../MM
 Mm.....//../*mMMMMMMMMMMMMMMMMm*/..//.....mM
@@ -57,7 +58,8 @@ MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
 /* eslint-disable no-irregular-whitespace */
-const EXPERIMENTAL_AREA = lineBreaksToBr(`█▄█ █▀█ █░█ ▀ █▀█ █▀▀   █▀▀ █▄░█ ▀█▀ █▀▀ █▀█ █ █▄░█ █▀▀   ▄▀█ █▄░█
+const EXPERIMENTAL_AREA =
+  lineBreaksToBr(`█▄█ █▀█ █░█ ▀ █▀█ █▀▀   █▀▀ █▄░█ ▀█▀ █▀▀ █▀█ █ █▄░█ █▀▀   ▄▀█ █▄░█
 ░█░ █▄█ █▄█ ░ █▀▄ ██▄   ██▄ █░▀█ ░█░ ██▄ █▀▄ █ █░▀█ █▄█   █▀█ █░▀█
 
 █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░   ▄▀█ █▀█ █▀▀ ▄▀█
@@ -73,7 +75,7 @@ export default function ExperimentalArea({ redirectTo }) {
   };
 
   return (
-    <div className="experimental-area">
+    <div className="experimental-area" data-testid="experimental-area">
       <div className="logo">{METAMASK_LOGO}</div>
       <div className="experimental-text">{EXPERIMENTAL_AREA}</div>
       <div className="text">
@@ -86,6 +88,8 @@ export default function ExperimentalArea({ redirectTo }) {
         <p>{t('flaskWelcomeWarning2')}</p>
         <br />
         <p>{t('flaskWelcomeWarning3')}</p>
+        <br />
+        <p>{t('flaskWelcomeWarning4')}</p>
       </div>
       <Button type="primary" onClick={onClick}>
         {t('flaskWelcomeWarningAcceptButton')}

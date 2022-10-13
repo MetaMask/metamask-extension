@@ -1,21 +1,34 @@
 .recovery-phrase {
-  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    max-width: 420px;
+  }
 
   &__tips {
     flex-direction: column;
+    max-width: 420px;
+    margin: 0 auto;
 
     ul {
       list-style: disc;
       margin-left: 20px;
+      margin-bottom: 24px;
     }
   }
 
   &__chips {
     display: grid;
-    grid-template-columns: 190px 190px 190px;
     justify-items: center;
     align-items: center;
     row-gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+    @include screen-sm-min {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
 
     &--hidden {
       filter: blur(5px);
@@ -24,6 +37,7 @@
 
   &__secret {
     position: relative;
+    width: 100%;
   }
 
   &__secret-blocker {
@@ -62,11 +76,38 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+
+    @include screen-sm-max {
+      margin-inline-start: 40px;
+      margin-inline-end: 40px;
+      margin-bottom: 40px;
+    }
+
+    &__confirm {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      @include screen-md-min {
+        margin-top: 20px;
+      }
+
+      &--button {
+        align-self: center;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
 
     &--button {
-      width: 50%;
-      padding: 20px;
       align-self: center;
+
+      @include screen-sm-min {
+        max-width: 300px;
+      }
     }
 
     &__copy-and-hide {
@@ -78,6 +119,10 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        @include screen-sm-min {
+          justify-content: space-around;
+        }
       }
 
       &__button {
@@ -98,6 +143,11 @@
 
         &__copy-to-clipboard {
           justify-content: flex-end;
+        }
+
+        @include screen-sm-max {
+          justify-content: center;
+          width: 100%;
         }
 
         svg {
@@ -122,10 +172,18 @@
 
     &--with-input {
       width: 120px;
-      box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
       border-width: 2px;
       border-radius: 13px;
       height: 32px;
+    }
+  }
+
+  &__confirm {
+    @include screen-sm-min {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   }
 }

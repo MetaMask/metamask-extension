@@ -8,7 +8,7 @@ import {
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
+import { getTokenApprovedParam } from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
@@ -33,7 +33,10 @@ import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
-import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -52,10 +55,12 @@ export default function ConfirmApprove({
   tokenId,
   userAddress,
   toAddress,
+  tokenAddress,
   transaction,
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
   const { txParams: { data: transactionData } = {} } = transaction;
@@ -149,18 +154,75 @@ export default function ConfirmApprove({
       })
     : null;
 
-  return tokenSymbol === undefined && assetName === undefined ? (
-    <Loading />
-  ) : (
+  const parsedTransactionData =
+    parseStandardTokenTransactionData(transactionData);
+  const isApprovalOrRejection = getTokenApprovedParam(parsedTransactionData);
+
+  if (tokenSymbol === undefined && assetName === undefined) {
+    return <Loading />;
+  }
+  if (process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20) {
+    return (
+      <GasFeeContextProvider transaction={transaction}>
+        <TransactionModalContextProvider>
+          <TokenAllowance
+            origin={formattedOrigin}
+            siteImage={siteImage}
+            showCustomizeGasModal={approveTransaction}
+            useNonceField={useNonceField}
+            currentCurrency={currentCurrency}
+            nativeCurrency={nativeCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
+            txData={transaction}
+            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+            supportsEIP1559V2={supportsEIP1559V2}
+            userAddress={userAddress}
+            tokenAddress={tokenAddress}
+            data={customData || transactionData}
+            isSetApproveForAll={isSetApproveForAll}
+            isApprovalOrRejection={isApprovalOrRejection}
+            customTxParamsData={customData}
+            dappProposedTokenAmount={tokenAmount}
+            currentTokenBalance={tokenBalance}
+            toAddress={toAddress}
+            tokenSymbol={tokenSymbol}
+          />
+          {showCustomizeGasPopover && !supportsEIP1559V2 && (
+            <EditGasPopover
+              onClose={closeCustomizeGasPopover}
+              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              transaction={transaction}
+            />
+          )}
+          {supportsEIP1559V2 && (
+            <>
+              <EditGasFeePopover />
+              <AdvancedGasFeePopover />
+            </>
+          )}
+        </TransactionModalContextProvider>
+      </GasFeeContextProvider>
+    );
+  }
+  return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={toAddress}
         showAccountInHeader
         title={tokensText}
+        customTokenAmount={String(customPermissionAmount)}
+        dappProposedTokenAmount={tokenAmount}
+        currentTokenBalance={tokenBalance}
+        isApprovalOrRejection={isApprovalOrRejection}
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
+              userAddress={userAddress}
+              isSetApproveForAll={isSetApproveForAll}
+              isApprovalOrRejection={isApprovalOrRejection}
               decimals={decimals}
               siteImage={siteImage}
               setCustomAmount={setCustomPermissionAmount}
@@ -173,6 +235,7 @@ export default function ConfirmApprove({
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
+              tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
               showEditApprovalPermissionModal={({
                 /* eslint-disable no-shadow */
@@ -260,6 +323,7 @@ export default function ConfirmApprove({
         }
         hideSenderToRecipient
         customTxParamsData={customData}
+        assetStandard={assetStandard}
       />
     </GasFeeContextProvider>
   );
@@ -268,6 +332,7 @@ export default function ConfirmApprove({
 ConfirmApprove.propTypes = {
   assetStandard: PropTypes.string,
   assetName: PropTypes.string,
+  tokenAddress: PropTypes.string,
   userBalance: PropTypes.string,
   tokenSymbol: PropTypes.string,
   decimals: PropTypes.string,
@@ -287,4 +352,5 @@ ConfirmApprove.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
+  isSetApproveForAll: PropTypes.bool,
 };

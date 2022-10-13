@@ -1,11 +1,11 @@
-import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import {
   GAS_ESTIMATE_TYPES,
   NETWORK_CONGESTION_THRESHOLDS,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -17,6 +17,7 @@ import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -65,7 +66,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: NETWORK_TYPE_RPC,
+          type: NETWORK_TYPES.RPC,
           rpcUrl: action.value,
         },
       };
@@ -355,9 +356,8 @@ export function getEstimatedGasFeeTimeBounds(state) {
 }
 
 export function getIsGasEstimatesLoading(state) {
-  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const networkAndAccountSupports1559 =
+    checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
 
   // We consider the gas estimate to be loading if the gasEstimateType is
@@ -400,9 +400,9 @@ export function getSeedPhraseBackedUp(state) {
 /**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @param {string} address - the address to search for among the keyring addresses
- * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
 export function findKeyringForAddress(state, address) {
   const keyring = state.metamask.keyrings.find((kr) => {
@@ -420,7 +420,7 @@ export function findKeyringForAddress(state, address) {
 /**
  * Given the redux state object, returns the users preferred ledger transport type
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
  */
 export function getLedgerTransportType(state) {
@@ -430,7 +430,7 @@ export function getLedgerTransportType(state) {
 /**
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @param {string} address - the address to search for among all keyring addresses
  * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
  */
@@ -444,7 +444,7 @@ export function isAddressLedger(state, address) {
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {boolean} true if the user has a Ledger account and false otherwise
  */
 export function doesUserHaveALedgerAccount(state) {

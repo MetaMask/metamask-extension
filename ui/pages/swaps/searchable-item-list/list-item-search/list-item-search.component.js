@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
@@ -9,13 +9,11 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
+import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
-    <i
-      className="fa fa-search fa-lg"
-      style={{ color: 'var(--color-icon-muted)' }}
-    />
+    <SearchIcon size={20} color="var(--color-icon-muted)" />
   </InputAdornment>
 );
 
@@ -27,9 +25,10 @@ export default function ListItemSearch({
   searchPlaceholderText,
   defaultToAll,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const fuseRef = useRef();
-  const [searchQuery, setSearchQuery] = useState('');
   const chainId = useSelector(getCurrentChainId);
 
   /**
@@ -129,4 +128,6 @@ ListItemSearch.propTypes = {
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.func,
+  setSearchQuery: PropTypes.func,
 };

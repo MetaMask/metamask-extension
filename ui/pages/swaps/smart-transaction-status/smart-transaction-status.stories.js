@@ -2,7 +2,7 @@ import React from 'react';
 import SmartTransactionStatus from './smart-transaction-status';
 
 export default {
-  title: 'SmartTransactionStatus',
+  title: 'Pages/Swaps/SmartTransactionStatus',
 };
 
 export const SmartTransactionStatusComponent = () => {

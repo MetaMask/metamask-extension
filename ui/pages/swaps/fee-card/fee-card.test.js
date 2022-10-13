@@ -8,24 +8,17 @@ import {
   createSwapsMockStore,
   setBackgroundConnection,
   MOCKS,
+  fireEvent,
 } from '../../../../test/jest';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-import {
-  checkNetworkAndAccountSupports1559,
-  getEIP1559V2Enabled,
-  getPreferences,
-  getSelectedAccount,
-} from '../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../../../ducks/metamask/metamask';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 import FeeCard from '.';
 
@@ -90,7 +83,7 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     supportsEIP1559V2: false,
     ...customProps,
@@ -112,6 +105,8 @@ describe('FeeCard', () => {
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
+    expect(document.querySelector('.info-tooltip')).toMatchSnapshot();
+    expect(getByText('Edit limit')).toBeInTheDocument();
   });
 
   it('renders the component with EIP-1559 enabled', () => {
@@ -134,7 +129,7 @@ describe('FeeCard', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders the component with Smart Transactions enabled and user opted in', () => {
+  it('renders the component with smart transactions enabled and user opted in', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
       smartTransactionsOptInStatus: true,
@@ -154,55 +149,22 @@ describe('FeeCard', () => {
     expect(queryByTestId('fee-card__edit-link')).not.toBeInTheDocument();
   });
 
-  it('renders the component with EIP-1559 V2 enabled', () => {
-    useGasFeeEstimates.mockImplementation(() => ({ gasFeeEstimates: {} }));
-    useSelector.mockImplementation((selector) => {
-      if (selector === getPreferences) {
-        return {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        };
-      }
-      if (selector === getEIP1559V2Enabled) {
-        return true;
-      }
-      if (selector === getSelectedAccount) {
-        return {
-          balance: '0x440aa47cc2556',
-        };
-      }
-      if (selector === checkNetworkAndAccountSupports1559) {
-        return true;
-      }
-      return undefined;
-    });
-
+  it('renders the component with hidden token approval row', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
-      networkAndAccountSupports1559: true,
-      maxPriorityFeePerGasDecGWEI: '3',
-      maxFeePerGasDecGWEI: '4',
-      supportsEIP1559V2: true,
+      hideTokenApprovalRow: true,
     });
-    const { getByText } = renderWithProvider(
-      <GasFeeContextProvider
-        transaction={{ txParams: {}, userFeeLevel: 'high' }}
-        editGasMode={EDIT_GAS_MODES.SWAPS}
-      >
-        <FeeCard {...props} />
-      </GasFeeContextProvider>,
-      store,
-    );
-    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
-    expect(getByText('Gas')).toBeInTheDocument();
-    expect(getByText('(estimated)')).toBeInTheDocument();
-    expect(getByText('Swap suggested')).toBeInTheDocument();
-    expect(getByText('Max fee')).toBeInTheDocument();
-    expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
-    expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
-    expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
-    expect(
-      document.querySelector('.fee-card__top-bordered-row'),
-    ).toMatchSnapshot();
+    const { queryByText } = renderWithProvider(<FeeCard {...props} />, store);
+    expect(queryByText('Edit limit')).not.toBeInTheDocument();
+  });
+
+  it('approves a token', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const props = createProps({
+      onTokenApprovalClick: jest.fn(),
+    });
+    const { queryByText } = renderWithProvider(<FeeCard {...props} />, store);
+    fireEvent.click(queryByText('Edit limit'));
+    expect(props.onTokenApprovalClick).toHaveBeenCalled();
   });
 });

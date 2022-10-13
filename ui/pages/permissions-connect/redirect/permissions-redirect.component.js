@@ -1,8 +1,14 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import SiteIcon from '../../../components/ui/site-icon';
+import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
@@ -21,9 +27,15 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             size={64}
             className="permissions-redirect__site-icon"
           />
-          <div className="permissions-redirect__line">
-            <i className="fa fa-check-circle fa-2x permissions-redirect__check" />
-          </div>
+          <Box
+            className="permissions-redirect__center-icon"
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            <i className="fa fa-check fa-lg permissions-redirect__check" />
+            <div className="permissions-redirect__dashed-line" />
+          </Box>
           <SiteIcon
             icon="/images/logo/metamask-fox.svg"
             size={64}
