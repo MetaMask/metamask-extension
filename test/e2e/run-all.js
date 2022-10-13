@@ -25,12 +25,16 @@ async function main() {
             description:
               'Set how many times the test should be retried upon failure.',
             type: 'number',
+          })
+          .option('resume', {
+            description: `Continue running testcases after failure.`,
+            type: 'boolean',
           }),
     )
     .strict()
     .help('help');
 
-  const { browser, retries, snaps } = argv;
+  const { browser, retries, snaps, resume } = argv;
 
   let testDir = path.join(__dirname, 'tests');
 
@@ -56,9 +60,20 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
+  if (resume) {
+    args.push('--resume', resume);
+  }
 
   for (const testPath of testPaths) {
-    await runInShell('node', [...args, testPath]);
+    try {
+      await runInShell('node', [...args, testPath]);
+    } catch (e) {
+      if (resume) {
+        continue;
+      } else {
+        break;
+      }
+    }
   }
 }
 

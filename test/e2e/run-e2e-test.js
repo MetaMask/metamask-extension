@@ -34,6 +34,10 @@ async function main() {
             describe: 'The path for the E2E test to run.',
             type: 'string',
             normalize: true,
+          })
+          .option('resume', {
+            description: `Continue running testcases after failure.`,
+            type: 'boolean',
           }),
     )
     .strict()
