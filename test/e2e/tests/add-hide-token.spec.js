@@ -87,19 +87,7 @@ describe('Add existing token using search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTokenListController({
-            tokenList: {
-              '0x0D8775F648430679A709E98d2b0Cb6250d2887EF': {
-                address: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF',
-                decimals: 18,
-                iconUrl:
-                  'https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png',
-                name: 'Basic Attention Token',
-                occurrences: null,
-                symbol: 'BAT',
-              },
-            },
-          })
+          .withPreferencesController({ useTokenDetection: true })
           .build(),
         ganacheOptions,
         title: this.test.title,
