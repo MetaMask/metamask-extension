@@ -103,11 +103,17 @@ describe('TextFieldBase', () => {
       'password',
     );
   });
-  it('should render with truncate class', () => {
+  it('should render with truncate class as true by default and remove it when truncate is false', () => {
     const { getByTestId } = render(
-      <TextFieldBase truncate data-testid="truncate" />,
+      <>
+        <TextFieldBase data-testid="truncate" />
+        <TextFieldBase truncate={false} data-testid="no-truncate" />
+      </>,
     );
     expect(getByTestId('truncate')).toHaveClass('mm-text-field-base--truncate');
+    expect(getByTestId('no-truncate')).not.toHaveClass(
+      'mm-text-field-base--truncate',
+    );
   });
   it('should render with right and left accessories', () => {
     const { getByRole, getByText } = render(
