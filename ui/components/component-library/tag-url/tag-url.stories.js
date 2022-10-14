@@ -41,8 +41,5 @@ DefaultStory.storyName = 'Default';
 export const WithCta = (args) => <TagUrl {...args} cta={{ label: 'Action' }} />;
 
 export const TextOverflow = (args) => (
-  <TagUrl
-    {...args}
-    label="https://aohfioahonrfrishparhpahrigpahvgbjnbhgvbjnkhb"
-  />
+  <TagUrl {...args} label="aohfioahonrfrishparhpahrigpahvgbjnbhgvbjnkhb" />
 );
