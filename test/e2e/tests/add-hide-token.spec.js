@@ -30,6 +30,15 @@ describe('Hide token', function () {
                 ],
               },
             },
+            tokens: [
+              {
+                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                decimals: 4,
+                image: null,
+                isERC721: false,
+                symbol: 'TST',
+              },
+            ],
           })
           .build(),
         ganacheOptions,
