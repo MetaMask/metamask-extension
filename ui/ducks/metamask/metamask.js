@@ -1,5 +1,5 @@
+import { createSlice } from '@reduxjs/toolkit';
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
-import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import {
   GAS_ESTIMATE_TYPES,
@@ -19,99 +19,97 @@ import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
-export default function reduceMetamask(state = {}, action) {
-  const metamaskState = {
-    isInitialized: false,
-    isUnlocked: false,
-    isAccountMenuOpen: false,
-    identities: {},
-    unapprovedTxs: {},
-    frequentRpcList: [],
-    addressBook: [],
-    contractExchangeRates: {},
-    pendingTokens: {},
-    customNonceValue: '',
-    useBlockie: false,
-    featureFlags: {},
-    welcomeScreenSeen: false,
-    currentLocale: '',
-    currentBlockGasLimit: '',
-    preferences: {
-      autoLockTimeLimit: undefined,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
+const name = 'metamask';
+
+const initialState = {
+  isInitialized: false,
+  isUnlocked: false,
+  isAccountMenuOpen: false,
+  identities: {},
+  unapprovedTxs: {},
+  frequentRpcList: [],
+  addressBook: [],
+  contractExchangeRates: {},
+  pendingTokens: {},
+  customNonceValue: '',
+  useBlockie: false,
+  featureFlags: {},
+  welcomeScreenSeen: false,
+  currentLocale: '',
+  currentBlockGasLimit: '',
+  preferences: {
+    autoLockTimeLimit: undefined,
+    showFiatInTestnets: false,
+    showTestNetworks: false,
+    useNativeCurrencyAsPrimaryCurrency: true,
+  },
+  firstTimeFlowType: null,
+  completedOnboarding: false,
+  knownMethodData: {},
+  participateInMetaMetrics: null,
+  nextNonce: null,
+  conversionRate: null,
+  nativeCurrency: 'ETH',
+};
+
+// Slice (reducer plus auto-generated actions and action creators)
+
+const slice = createSlice({
+  name,
+  initialState,
+  reducers: {
+    updateMetaMaskState: (state, action) => {
+      return { ...state, ...action.payload };
     },
-    firstTimeFlowType: null,
-    completedOnboarding: false,
-    knownMethodData: {},
-    participateInMetaMetrics: null,
-    nextNonce: null,
-    conversionRate: null,
-    nativeCurrency: 'ETH',
-    ...state,
-  };
-
-  switch (action.type) {
-    case actionConstants.UPDATE_METAMASK_STATE:
-      return { ...metamaskState, ...action.value };
-
-    case actionConstants.LOCK_METAMASK:
+    lockMetaMask: (state) => {
       return {
-        ...metamaskState,
+        ...state,
         isUnlocked: false,
       };
-
-    case actionConstants.SET_RPC_TARGET:
+    },
+    setRpcTarget: (state, action) => {
       return {
-        ...metamaskState,
+        ...state,
         provider: {
           type: NETWORK_TYPES.RPC,
-          rpcUrl: action.value,
+          rpcUrl: action.payload,
         },
       };
-
-    case actionConstants.SET_PROVIDER_TYPE:
+    },
+    setProviderType: (state, action) => {
       return {
-        ...metamaskState,
+        ...state,
         provider: {
-          type: action.value,
+          type: action.payload,
         },
       };
-
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
+    },
+    showAccountDetail: (state, action) => {
       return {
-        ...metamaskState,
+        ...state,
         isUnlocked: true,
         isInitialized: true,
-        selectedAddress: action.value,
+        selectedAddress: action.payload,
       };
-
-    case actionConstants.SET_ACCOUNT_LABEL: {
-      const { account } = action.value;
-      const name = action.value.label;
+    },
+    setAccountLabel: (state, action) => {
+      const { account } = action.payload;
       const id = {};
-      id[account] = { ...metamaskState.identities[account], name };
-      const identities = { ...metamaskState.identities, ...id };
-      return Object.assign(metamaskState, { identities });
-    }
-
-    case actionConstants.UPDATE_CUSTOM_NONCE:
-      return {
-        ...metamaskState,
-        customNonceValue: action.value,
+      id[account] = {
+        ...state.identities[account],
+        name: action.payload.label,
       };
-
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...metamaskState,
-        isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
-      };
-
-    case actionConstants.UPDATE_TRANSACTION_PARAMS: {
-      const { id: txId, value } = action;
-      let { currentNetworkTxList } = metamaskState;
-      currentNetworkTxList = currentNetworkTxList.map((tx) => {
+      state.identities = { ...state.identities, ...id };
+    },
+    updateCustomNonce: (state, action) => {
+      state.customNonceValue = action.payload;
+    },
+    toggleAccountMenu: (state) => {
+      state.isAccountMenuOpen = !state.isAccountMenuOpen;
+    },
+    updateTransactionParams: (state, action) => {
+      const { id: txId, value } = action.payload;
+      state.currentNetworkTxList = state.currentNetworkTxList.map((tx) => {
         if (tx.id === txId) {
           const newTx = { ...tx };
           newTx.txParams = value;
@@ -119,97 +117,99 @@ export default function reduceMetamask(state = {}, action) {
         }
         return tx;
       });
+    },
+    setParticipateInMetaMetrics: (state, action) => {
+      state.participateInMetaMetrics = action.payload;
+    },
+    setUseBlockie: (state, action) => {
+      state.useBlockie = action.payload;
+    },
+    updateFeatureFlags: (state, action) => {
+      state.featureFlags = action.payload;
+    },
+    closeWelcomeScreen: (state) => {
+      state.welcomeScreenSeen = true;
+    },
+    setCurrentLocale: (state, action) => {
+      state.currentLocale = action.payload.locale;
+    },
+    setPendingTokens: (state, action) => {
+      state.pendingTokens = action.payload;
+    },
+    clearPendingTokens: (state) => {
+      state.pendingTokens = {};
+    },
+    updatePreferences: (state, action) => {
+      state.preferences = { ...state.preferences, ...action.payload };
+    },
+    completeOnboarding: (state) => {
+      state.completedOnboarding = true;
+    },
+    setFirstTimeFlowType: (state, action) => {
+      state.firstTimeFlowType = action.payload;
+    },
+    setNextNonce: (state, action) => {
+      state.nextNonce = action.payload;
+    },
+  },
+});
 
-      return {
-        ...metamaskState,
-        currentNetworkTxList,
-      };
-    }
+const { actions, reducer } = slice;
 
-    case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
-      return {
-        ...metamaskState,
-        participateInMetaMetrics: action.value,
-      };
+export default reducer;
 
-    case actionConstants.SET_USE_BLOCKIE:
-      return {
-        ...metamaskState,
-        useBlockie: action.value,
-      };
+// Action Creators
 
-    case actionConstants.UPDATE_FEATURE_FLAGS:
-      return {
-        ...metamaskState,
-        featureFlags: action.value,
-      };
+const {
+  updateMetaMaskState,
+  lockMetaMask,
+  setRpcTarget,
+  setProviderType,
+  showAccountDetail,
+  setAccountLabel,
+  updateCustomNonce,
+  toggleAccountMenu,
+  updateTransactionParams,
+  setParticipateInMetaMetrics,
+  setUseBlockie,
+  updateFeatureFlags,
+  closeWelcomeScreen,
+  setCurrentLocale,
+  setPendingTokens,
+  clearPendingTokens,
+  updatePreferences,
+  completeOnboarding,
+  setFirstTimeFlowType,
+  setNextNonce,
+} = actions;
 
-    case actionConstants.CLOSE_WELCOME_SCREEN:
-      return {
-        ...metamaskState,
-        welcomeScreenSeen: true,
-      };
-
-    case actionConstants.SET_CURRENT_LOCALE:
-      return {
-        ...metamaskState,
-        currentLocale: action.value.locale,
-      };
-
-    case actionConstants.SET_PENDING_TOKENS:
-      return {
-        ...metamaskState,
-        pendingTokens: { ...action.payload },
-      };
-
-    case actionConstants.CLEAR_PENDING_TOKENS: {
-      return {
-        ...metamaskState,
-        pendingTokens: {},
-      };
-    }
-
-    case actionConstants.UPDATE_PREFERENCES: {
-      return {
-        ...metamaskState,
-        preferences: {
-          ...metamaskState.preferences,
-          ...action.payload,
-        },
-      };
-    }
-
-    case actionConstants.COMPLETE_ONBOARDING: {
-      return {
-        ...metamaskState,
-        completedOnboarding: true,
-      };
-    }
-
-    case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
-      return {
-        ...metamaskState,
-        firstTimeFlowType: action.value,
-      };
-    }
-
-    case actionConstants.SET_NEXT_NONCE: {
-      return {
-        ...metamaskState,
-        nextNonce: action.value,
-      };
-    }
-
-    default:
-      return metamaskState;
-  }
-}
+export {
+  updateMetaMaskState,
+  lockMetaMask,
+  setRpcTarget,
+  setProviderType,
+  showAccountDetail,
+  setAccountLabel,
+  updateCustomNonce,
+  toggleAccountMenu,
+  updateTransactionParams,
+  setParticipateInMetaMetrics,
+  setUseBlockie,
+  updateFeatureFlags,
+  closeWelcomeScreen,
+  setCurrentLocale,
+  setPendingTokens,
+  clearPendingTokens,
+  updatePreferences,
+  completeOnboarding,
+  setFirstTimeFlowType,
+  setNextNonce,
+};
 
 const toHexWei = (value, expectHexWei) => {
   return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
 };
 
-// Action Creators
 export function updateGasFees({
   gasPrice,
   gasLimit,

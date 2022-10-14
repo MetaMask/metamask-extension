@@ -1,6 +1,18 @@
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
-import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
+  lockMetaMask,
+  setRpcTarget,
+  setProviderType,
+  showAccountDetail,
+  setAccountLabel,
+  toggleAccountMenu,
+  updateTransactionParams,
+  setUseBlockie,
+  updateFeatureFlags,
+  closeWelcomeScreen,
+  setCurrentLocale,
+  setPendingTokens,
+  clearPendingTokens,
   getBlockGasLimit,
   getConversionRate,
   getIsNetworkBusy,
@@ -119,44 +131,25 @@ describe('MetaMask Reducers', () => {
       isUnlocked: true,
       selectedAddress: 'test address',
     };
-    const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
-      type: actionConstants.LOCK_METAMASK,
-    });
+    const state = reduceMetamask(unlockMetaMaskState, lockMetaMask());
 
-    expect(lockMetaMask.isUnlocked).toStrictEqual(false);
+    expect(state.isUnlocked).toStrictEqual(false);
   });
 
   it('sets rpc target', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_RPC_TARGET,
-        value: 'https://custom.rpc',
-      },
-    );
+    const state = reduceMetamask({}, setRpcTarget('https://custom.rpc'));
 
     expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
   });
 
   it('sets provider type', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PROVIDER_TYPE,
-        value: 'provider type',
-      },
-    );
+    const state = reduceMetamask({}, setProviderType('provider type'));
 
     expect(state.provider.type).toStrictEqual('provider type');
   });
 
   it('shows account detail', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      },
-    );
+    const state = reduceMetamask({}, showAccountDetail());
 
     expect(state.isUnlocked).toStrictEqual(true);
     expect(state.isInitialized).toStrictEqual(true);
@@ -164,14 +157,11 @@ describe('MetaMask Reducers', () => {
 
   it('sets account label', () => {
     const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_ACCOUNT_LABEL,
-        value: {
-          account: 'test account',
-          label: 'test label',
-        },
-      },
+      { identities: {} },
+      setAccountLabel({
+        account: 'test account',
+        label: 'test label',
+      }),
     );
 
     expect(state.identities).toStrictEqual({
@@ -180,12 +170,7 @@ describe('MetaMask Reducers', () => {
   });
 
   it('toggles account menu', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.TOGGLE_ACCOUNT_MENU,
-      },
-    );
+    const state = reduceMetamask({}, toggleAccountMenu());
 
     expect(state.isAccountMenuOpen).toStrictEqual(true);
   });
@@ -200,23 +185,19 @@ describe('MetaMask Reducers', () => {
       ],
     };
 
-    const state = reduceMetamask(oldState, {
-      type: actionConstants.UPDATE_TRANSACTION_PARAMS,
-      id: 1,
-      value: 'bar',
-    });
+    const state = reduceMetamask(
+      oldState,
+      updateTransactionParams({
+        id: 1,
+        value: 'bar',
+      }),
+    );
 
     expect(state.currentNetworkTxList[0].txParams).toStrictEqual('bar');
   });
 
   it('sets blockies', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_USE_BLOCKIE,
-        value: true,
-      },
-    );
+    const state = reduceMetamask({}, setUseBlockie(true));
 
     expect(state.useBlockie).toStrictEqual(true);
   });
@@ -224,36 +205,22 @@ describe('MetaMask Reducers', () => {
   it('updates an arbitrary feature flag', () => {
     const state = reduceMetamask(
       {},
-      {
-        type: actionConstants.UPDATE_FEATURE_FLAGS,
-        value: {
-          foo: true,
-        },
-      },
+      updateFeatureFlags({
+        foo: true,
+      }),
     );
 
     expect(state.featureFlags.foo).toStrictEqual(true);
   });
 
   it('close welcome screen', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.CLOSE_WELCOME_SCREEN,
-      },
-    );
+    const state = reduceMetamask({}, closeWelcomeScreen());
 
     expect(state.welcomeScreenSeen).toStrictEqual(true);
   });
 
   it('sets current locale', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_LOCALE,
-        value: { locale: 'ge' },
-      },
-    );
+    const state = reduceMetamask({}, setCurrentLocale({ locale: 'ge' }));
 
     expect(state.currentLocale).toStrictEqual('ge');
   });
@@ -265,13 +232,7 @@ describe('MetaMask Reducers', () => {
       symbol: 'META',
     };
 
-    const pendingTokensState = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PENDING_TOKENS,
-        payload,
-      },
-    );
+    const pendingTokensState = reduceMetamask({}, setPendingTokens(payload));
 
     expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
   });
@@ -287,9 +248,7 @@ describe('MetaMask Reducers', () => {
       pendingTokens: payload,
     };
 
-    const state = reduceMetamask(pendingTokensState, {
-      type: actionConstants.CLEAR_PENDING_TOKENS,
-    });
+    const state = reduceMetamask(pendingTokensState, clearPendingTokens());
 
     expect(state.pendingTokens).toStrictEqual({});
   });

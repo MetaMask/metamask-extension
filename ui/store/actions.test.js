@@ -1543,7 +1543,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         {
-          type: 'SET_CURRENT_LOCALE',
+          type: 'metamask/setCurrentLocale',
           value: { locale: 'test', messages: enLocale },
         },
         { type: 'HIDE_LOADING_INDICATION' },

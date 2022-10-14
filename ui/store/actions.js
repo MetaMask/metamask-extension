@@ -27,7 +27,24 @@ import {
   resetSendState,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  showAccountDetail as showAccountDetailAction,
+  updateCustomNonce,
+  updateTransactionParams,
+  setParticipateInMetaMetrics as setParticipateInMetaMetricsAction,
+  updateFeatureFlags,
+  updatePreferences,
+  setRpcTarget as setRpcTargetAction,
+  setNextNonce,
+  setCurrentLocale,
+  setFirstTimeFlowType as setFirstTimeFlowTypeAction,
+  setPendingTokens as setPendingTokensAction,
+  setUseBlockie as setUseBlockieAction,
+  completeOnboarding,
+  setProviderType as setProviderTypeAction,
+  setAccountLabel as setAccountLabelAction,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   DEVICE_NAMES,
@@ -52,6 +69,20 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from './action-queue';
+
+// Export MetaMask actions created in slice
+export {
+  closeWelcomeScreen,
+  updateCustomNonce,
+  updateTransactionParams,
+  toggleAccountMenu,
+  updatePreferences,
+  updateFeatureFlags,
+  setNextNonce,
+  setCurrentLocale,
+  completeOnboarding,
+  clearPendingTokens,
+} from '../ducks/metamask/metamask';
 
 export function goHome() {
   return {
@@ -336,10 +367,7 @@ export function importNewAccount(strategy, args) {
 
     dispatch(updateMetamaskState(newState));
     if (newState.selectedAddress) {
-      dispatch({
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAddress,
-      });
+      dispatch(showAccountDetailAction(newState.selectedAddress));
     }
     return newState;
   };
@@ -682,13 +710,6 @@ export function signTypedMsg(msgData) {
   };
 }
 
-export function updateCustomNonce(value) {
-  return {
-    type: actionConstants.UPDATE_CUSTOM_NONCE,
-    value,
-  };
-}
-
 const updateMetamaskStateFromBackground = () => {
   log.debug(`background.getState`);
 
@@ -1012,14 +1033,6 @@ export function completedTx(id) {
         unconfirmedActionsCount: otherUnconfirmedActions.length,
       },
     });
-  };
-}
-
-export function updateTransactionParams(id, txParams) {
-  return {
-    type: actionConstants.UPDATE_TRANSACTION_PARAMS,
-    id,
-    value: txParams,
   };
 }
 
@@ -1413,12 +1426,6 @@ export function forgotPassword(forgotPasswordState = true) {
   };
 }
 
-export function closeWelcomeScreen() {
-  return {
-    type: actionConstants.CLOSE_WELCOME_SCREEN,
-  };
-}
-
 //
 // unlock screen
 //
@@ -1612,10 +1619,7 @@ export function showAccountDetail(address) {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch({
-      type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      value: address,
-    });
+    dispatch(showAccountDetailAction(address));
     if (
       unconnectedAccountAccountAlertIsEnabled &&
       switchingToUnconnectedAddress
@@ -1984,12 +1988,6 @@ export function acceptWatchAsset(suggestedAssetID) {
   };
 }
 
-export function clearPendingTokens() {
-  return {
-    type: actionConstants.CLEAR_PENDING_TOKENS,
-  };
-}
-
 export function createCancelTransaction(txId, customGasSettings, options) {
   log.debug('background.cancelTransaction');
   let newTxId;
@@ -2096,10 +2094,7 @@ export function setProviderType(type) {
 }
 
 export function updateProviderType(type) {
-  return {
-    type: actionConstants.SET_PROVIDER_TYPE,
-    value: type,
-  };
+  return setProviderTypeAction(type);
 }
 
 export function updateAndSetCustomRpc(
@@ -2128,10 +2123,7 @@ export function updateAndSetCustomRpc(
       return;
     }
 
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
+    dispatch(setRpcTargetAction(newRpc));
   };
 }
 
@@ -2167,10 +2159,7 @@ export function editRpc(
       return;
     }
 
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
+    dispatch(setRpcTargetAction(newRpc));
   };
 }
 
@@ -2471,10 +2460,7 @@ export function setAccountLabel(account, label) {
           return;
         }
 
-        dispatch({
-          type: actionConstants.SET_ACCOUNT_LABEL,
-          value: { account, label },
-        });
+        dispatch(setAccountLabelAction({ account, label }));
         resolve(account);
       });
     });
@@ -2528,13 +2514,6 @@ export function setFeatureFlag(feature, activated, notificationType) {
   };
 }
 
-export function updateFeatureFlags(updatedFeatureFlags) {
-  return {
-    type: actionConstants.UPDATE_FEATURE_FLAGS,
-    value: updatedFeatureFlags,
-  };
-}
-
 export function setPreference(preference, value) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2556,13 +2535,6 @@ export function setPreference(preference, value) {
         },
       );
     });
-  };
-}
-
-export function updatePreferences(value) {
-  return {
-    type: actionConstants.UPDATE_PREFERENCES,
-    value,
   };
 }
 
@@ -2609,12 +2581,6 @@ export function setCompletedOnboarding() {
   };
 }
 
-export function completeOnboarding() {
-  return {
-    type: actionConstants.COMPLETE_ONBOARDING,
-  };
-}
-
 export function setMouseUserState(isMouseUser) {
   return {
     type: actionConstants.SET_MOUSE_USER_STATE,
@@ -2637,12 +2603,6 @@ export async function forceUpdateMetamaskState(dispatch) {
   return newState;
 }
 
-export function toggleAccountMenu() {
-  return {
-    type: actionConstants.TOGGLE_ACCOUNT_MENU,
-  };
-}
-
 export function setParticipateInMetaMetrics(val) {
   return (dispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
@@ -2658,10 +2618,7 @@ export function setParticipateInMetaMetrics(val) {
             return;
           }
 
-          dispatch({
-            type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
-            value: val,
-          });
+          dispatch(setParticipateInMetaMetricsAction(val));
           resolve([val, metaMetricsId]);
         },
       );
@@ -2679,10 +2636,7 @@ export function setUseBlockie(val) {
         dispatch(displayWarning(err.message));
       }
     });
-    dispatch({
-      type: actionConstants.SET_USE_BLOCKIE,
-      value: val,
-    });
+    dispatch(setUseBlockieAction(val));
   };
 }
 
@@ -2832,23 +2786,13 @@ export function updateCurrentLocale(key) {
         [key],
       );
       await switchDirection(textDirection);
-      dispatch(setCurrentLocale(key, localeMessages));
+      dispatch(setCurrentLocale({ locale: key, messages: localeMessages }));
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
     } finally {
       dispatch(hideLoadingIndication());
     }
-  };
-}
-
-export function setCurrentLocale(locale, messages) {
-  return {
-    type: actionConstants.SET_CURRENT_LOCALE,
-    value: {
-      locale,
-      messages,
-    },
   };
 }
 
@@ -2876,10 +2820,7 @@ export function setPendingTokens(pendingTokens) {
     );
   });
 
-  return {
-    type: actionConstants.SET_PENDING_TOKENS,
-    payload: tokens,
-  };
+  return setPendingTokensAction(tokens);
 }
 
 // Swaps
@@ -3171,10 +3112,7 @@ export function setFirstTimeFlowType(type) {
         dispatch(displayWarning(err.message));
       }
     });
-    dispatch({
-      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
-      value: type,
-    });
+    dispatch(setFirstTimeFlowTypeAction(type));
   };
 }
 
@@ -3436,13 +3374,6 @@ export function turnThreeBoxSyncingOnAndInitialize() {
     await dispatch(setThreeBoxSyncingPermission(true));
     await dispatch(turnThreeBoxSyncingOn());
     await dispatch(initializeThreeBox(true));
-  };
-}
-
-export function setNextNonce(nextNonce) {
-  return {
-    type: actionConstants.SET_NEXT_NONCE,
-    value: nextNonce,
   };
 }
 
