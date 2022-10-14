@@ -11,14 +11,16 @@ import {
   TEXT,
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
-import { ButtonBase } from '../button-base';
+import { ButtonLink } from '../button-link';
 
 export const TagUrl = ({
   label,
   className,
   imageSource,
   cta,
+  faviconProps,
   buttonProps,
+  textProps,
   ...props
 }) => {
   return (
@@ -32,20 +34,23 @@ export const TagUrl = ({
       borderRadius={SIZES.XL}
       {...props}
     >
-      <AvatarFavicon className="tag-url__favicon" imageSource={imageSource} />
-      <Text className="tag-url__label" variant={TEXT.BODY_MD}>
+      <AvatarFavicon
+        className="tag-url__favicon"
+        imageSource={imageSource}
+        {...faviconProps}
+      />
+      <Text className="tag-url__label" variant={TEXT.BODY_MD} {...textProps}>
         {label}
       </Text>
-      {/* Going to replace this when ButtonLink will be merged */}
-      {cta && Object.keys(cta).length > 0 && (
-        <ButtonBase
-          className="tag-url__button-link"
+      {cta?.label && (
+        <ButtonLink
           as="a"
+          className="tag-url__button-link"
           href="#"
           {...buttonProps}
         >
           {cta.label}
-        </ButtonBase>
+        </ButtonLink>
       )}
     </Box>
   );
@@ -65,9 +70,17 @@ TagUrl.propTypes = {
    */
   cta: PropTypes.object,
   /**
-   * It accepts all the props from ButtonBase
+   * It accepts all the props from ButtonLink
    */
-  buttonProps: PropTypes.shape(ButtonBase.PropTypes),
+  buttonProps: PropTypes.shape(ButtonLink.PropTypes),
+  /**
+   * It accepts all the props from Avatar Favicon
+   */
+  faviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
+  /**
+   * It accepts all the props from Text Component
+   */
+  textProps: PropTypes.shape(Text.PropTypes),
   /**
    * Additional classNames to be added to the TagUrl component
    */
