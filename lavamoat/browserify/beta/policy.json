@@ -2693,6 +2693,7 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-keyring-controller": true,
         "eth-query": true,
@@ -2701,7 +2702,6 @@
         "ethereumjs-util": true,
         "ethers": true,
         "ethjs>ethjs-unit": true,
-        "fast-deep-equal": true,
         "immer": true,
         "json-rpc-engine": true,
         "jsonschema": true,
@@ -4435,7 +4435,7 @@
       },
       "packages": {
         "@metamask/snap-utils>superstruct": true,
-        "fast-deep-equal": true,
+        "eslint>fast-deep-equal": true,
         "nock>debug": true
       }
     },

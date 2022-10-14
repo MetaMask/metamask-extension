@@ -2240,6 +2240,7 @@
         "eslint>espree": true,
         "eslint>esquery": true,
         "eslint>esutils": true,
+        "eslint>fast-deep-equal": true,
         "eslint>file-entry-cache": true,
         "eslint>functional-red-black-tree": true,
         "eslint>glob-parent": true,
@@ -2252,7 +2253,6 @@
         "eslint>minimatch": true,
         "eslint>natural-compare": true,
         "eslint>regexpp": true,
-        "fast-deep-equal": true,
         "globby>ignore": true,
         "nock>debug": true
       }
@@ -2796,7 +2796,7 @@
         "eslint>ajv>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "eslint>ajv>uri-js": true,
-        "fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "eslint>ajv>uri-js": {

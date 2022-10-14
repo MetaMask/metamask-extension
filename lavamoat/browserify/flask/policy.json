@@ -2854,6 +2854,7 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-keyring-controller": true,
         "eth-query": true,
@@ -2862,7 +2863,6 @@
         "ethereumjs-util": true,
         "ethers": true,
         "ethjs>ethjs-unit": true,
-        "fast-deep-equal": true,
         "immer": true,
         "json-rpc-engine": true,
         "jsonschema": true,
@@ -3592,6 +3592,7 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-keyring-controller": true,
         "eth-query": true,
@@ -3599,7 +3600,6 @@
         "eth-sig-util": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
-        "fast-deep-equal": true,
         "immer": true,
         "json-rpc-engine": true,
         "jsonschema": true,
@@ -3913,6 +3913,7 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-keyring-controller": true,
         "eth-query": true,
@@ -3920,7 +3921,6 @@
         "eth-sig-util": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
-        "fast-deep-equal": true,
         "immer": true,
         "json-rpc-engine": true,
         "jsonschema": true,
@@ -4031,7 +4031,7 @@
     },
     "@metamask/snap-controllers>@metamask/post-message-stream>@metamask/utils": {
       "packages": {
-        "fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
@@ -4263,8 +4263,8 @@
         "browserify>crypto-browserify": true,
         "browserify>events": true,
         "browserify>path-browserify": true,
+        "eslint>fast-deep-equal": true,
         "eth-block-tracker>@metamask/utils": true,
-        "fast-deep-equal": true,
         "semver": true
       }
     },
@@ -5270,7 +5270,7 @@
       },
       "packages": {
         "@metamask/snap-utils>superstruct": true,
-        "fast-deep-equal": true,
+        "eslint>fast-deep-equal": true,
         "nock>debug": true
       }
     },
