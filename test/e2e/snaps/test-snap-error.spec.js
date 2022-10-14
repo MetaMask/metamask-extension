@@ -30,6 +30,11 @@ describe('Test Snap Error', function () {
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
+
+        const snapButton = await driver.findElement('#connectError');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
+
         await driver.clickElement('#connectError');
 
         // switch to metamask extension and click connect
