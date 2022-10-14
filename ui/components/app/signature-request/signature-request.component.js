@@ -192,7 +192,7 @@ export default class SignatureRequest extends PureComponent {
             origin={origin}
             siteImage={siteImage}
             onClose={() => this.setState({ showContractDetails: false })}
-            contractRequestingSignature
+            isContractRequestingSignature
           />
         )}
       </div>
