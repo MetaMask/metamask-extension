@@ -606,7 +606,6 @@ export default class ConfirmApproveContent extends Component {
             <NftInfoSetApprovalForAll
               assetName={assetName}
               tokenAddress={tokenAddress}
-              userAddress={userAddress}
               collections={collections}
               total={this.state.collectionBalance}
             />
