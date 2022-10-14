@@ -170,7 +170,7 @@ if (isManifestV3) {
 async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode, remotePort);
+  setupController(initState, initLangCode, remotePort);
   if (!isManifestV3) {
     await loadPhishingWarningPage();
   }
@@ -309,7 +309,7 @@ async function loadStateFromPersistence() {
  * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-async function setupController(initState, initLangCode, remoteSourcePort) {
+function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // MetaMask Controller
   //
@@ -362,7 +362,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   // connect to other contexts
   //
   if (isManifestV3 && remoteSourcePort) {
-    await connectRemote(remoteSourcePort);
+    connectRemote(remoteSourcePort);
   }
 
   browser.runtime.onConnect.addListener(connectRemote);
@@ -408,7 +408,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  async function connectRemote(remotePort) {
+  function connectRemote(remotePort) {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -501,14 +501,14 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
           }
         });
       }
-      await connectExternal(remotePort);
+      connectExternal(remotePort);
     }
   }
 
   // communication with page or other extension
-  async function connectExternal(remotePort) {
+  function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
-    await controller.setupUntrustedCommunication({
+    controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
