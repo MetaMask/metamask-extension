@@ -95,7 +95,7 @@ export const TextFieldBase = ({
         'mm-text-field-base',
         `mm-text-field-base--size-${size}`,
         {
-          'mm-text-field-base--focused': focused && !disabled,
+          'mm-text-field-base--focused': focused && !disabled && !readOnly,
           'mm-text-field-base--error': error,
           'mm-text-field-base--disabled': disabled,
           'mm-text-field-base--truncate': truncate,
