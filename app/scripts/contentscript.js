@@ -118,11 +118,11 @@ const runWorkerKeepAliveInterval = () => {
 
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
-  keepAliveInterval = setInterval(() => {
-    if (browser.runtime.id) {
-      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-    }
-  }, WORKER_KEEP_ALIVE_INTERVAL);
+  // keepAliveInterval = setInterval(() => {
+  //   if (browser.runtime.id) {
+  //     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+  //   }
+  // }, WORKER_KEEP_ALIVE_INTERVAL);
 };
 
 /**
@@ -464,7 +464,7 @@ function logStreamDisconnectWarning(remoteLabel, error) {
  * The function send message to inpage to notify it of extension stream connection
  * This is used as notification to replay any pending messages in MV3
  */
-function extensionStreamMessageListener() {
+function extensionStreamMessageListener(msg) {
   if (isManifestV3 && msg.name === 'CONNECTION_READY') {
     window.postMessage(
       {
@@ -480,9 +480,7 @@ function extensionStreamMessageListener() {
       },
       window.location.origin,
     );
-    extensionPort.onMessage.removeListener(
-      notifyInpageOfExtensionStreamConnect,
-    );
+    extensionPort.onMessage.removeListener(extensionStreamMessageListener);
   }
 }
 
