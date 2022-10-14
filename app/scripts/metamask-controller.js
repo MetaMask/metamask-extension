@@ -3,7 +3,7 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { debounce, throttle } from 'lodash';
+import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
@@ -80,7 +80,7 @@ import {
   toChecksumHexAddress,
   stripHexPrefix,
 } from '../../shared/modules/hexstring-utils';
-import { MILLISECOND, HOUR, MINUTE } from '../../shared/constants/time';
+import { MILLISECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -3376,7 +3376,10 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      this.throttledUpdatePhishingLists();
+      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
+      if (phishingListsAreOutOfDate) {
+        this.phishingController.updatePhishingLists();
+      }
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
@@ -3405,13 +3408,6 @@ export default class MetamaskController extends EventEmitter {
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
   }
-
-  // Throttle the call to update phishing lists in order to constrain # of requests
-  /// while maintaining non-blocking updates every hour while users are actively browsing
-  throttledUpdatePhishingLists = throttle(
-    () => this.phishingController.updatePhishingLists(),
-    HOUR,
-  );
 
   /**
    * Used to create a multiplexed stream for connecting to a trusted context,
