@@ -36,6 +36,12 @@ describe('Swaps - notifications', function () {
     await driver.clickElement(
       '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
     );
+    await driver.wait(async () => {
+      const tokens = await driver.findElements('.searchable-item-list__item');
+      return tokens.length > 1;
+    }, 10000);
+    await driver.clickElement('.searchable-item-list__labels');
+    await driver.clickElement('.dropdown-input-pair__to');
     await driver.clickElement('[placeholder="Search name or paste address"]');
     await driver.fill(
       '[placeholder="Search name or paste address"]',
