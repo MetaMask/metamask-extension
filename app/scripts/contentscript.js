@@ -118,11 +118,11 @@ const runWorkerKeepAliveInterval = () => {
 
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
-  // keepAliveInterval = setInterval(() => {
-  //   if (browser.runtime.id) {
-  //     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-  //   }
-  // }, WORKER_KEEP_ALIVE_INTERVAL);
+  keepAliveInterval = setInterval(() => {
+    if (browser.runtime.id) {
+      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+    }
+  }, WORKER_KEEP_ALIVE_INTERVAL);
 };
 
 /**
