@@ -1,3 +1,5 @@
+const { merge } = require('lodash');
+
 function defaultFixture() {
   return {
     data: {
@@ -106,10 +108,7 @@ function defaultFixture() {
         },
       },
       AppStateController: {
-        browserEnvironment: {
-          browser: 'chrome',
-          os: 'mac',
-        },
+        browserEnvironment: {},
         collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
@@ -119,8 +118,9 @@ function defaultFixture() {
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         qrHardware: {},
-        recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown: 1665507600000,
+        recoveryPhraseReminderHasBeenShown: true,
+        recoveryPhraseReminderLastShown:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showPortfolioTooltip: false,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
@@ -168,11 +168,6 @@ function defaultFixture() {
       },
       NetworkController: {
         network: '1337',
-        networkDetails: {
-          EIPS: {
-            1559: false,
-          },
-        },
         provider: {
           chainId: '0x539',
           nickname: 'Localhost 8545',
@@ -195,7 +190,7 @@ function defaultFixture() {
         advancedGasFee: null,
         currentLocale: 'en',
         customNetworkListEnabled: false,
-        dismissSeedBackUpReminder: false,
+        dismissSeedBackUpReminder: true,
         featureFlags: {
           showIncomingTransactions: true,
         },
@@ -280,10 +275,7 @@ function onboardingFixture() {
   return {
     data: {
       AppStateController: {
-        browserEnvironment: {
-          browser: 'chrome',
-          os: 'mac',
-        },
+        browserEnvironment: {},
         collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
@@ -294,7 +286,8 @@ function onboardingFixture() {
         popupGasPollTokens: [],
         qrHardware: {},
         recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown: 1665507600000,
+        recoveryPhraseReminderLastShown:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showPortfolioTooltip: true,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
@@ -306,18 +299,6 @@ function onboardingFixture() {
       },
       NetworkController: {
         network: '1337',
-        networkDetails: {
-          EIPS: {
-            1559: false,
-          },
-        },
-        previousProviderStore: {
-          ticker: 'ETH',
-          type: 'rpc',
-          rpcUrl: 'http://localhost:8545',
-          chainId: '0x539',
-          nickname: 'Localhost 8545',
-        },
         provider: {
           ticker: 'ETH',
           type: 'rpc',
@@ -397,7 +378,7 @@ class FixtureBuilder {
   }
 
   withAddressBookController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.AddressBookController
         ? this.fixture.data.AddressBookController
         : (this.fixture.data.AddressBookController = {}),
@@ -407,27 +388,27 @@ class FixtureBuilder {
   }
 
   withAlertController(data) {
-    Object.assign(this.fixture.data.AlertController, data);
+    merge(this.fixture.data.AlertController, data);
     return this;
   }
 
   withAnnouncementController(data) {
-    Object.assign(this.fixture.data.AnnouncementController, data);
+    merge(this.fixture.data.AnnouncementController, data);
     return this;
   }
 
   withAppStateController(data) {
-    Object.assign(this.fixture.data.AppStateController, data);
+    merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
   withCachedBalancesController(data) {
-    Object.assign(this.fixture.data.CachedBalancesController, data);
+    merge(this.fixture.data.CachedBalancesController, data);
     return this;
   }
 
   withCollectiblesController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.CollectiblesController
         ? this.fixture.data.CollectiblesController
         : (this.fixture.data.CollectiblesController = {}),
@@ -437,17 +418,17 @@ class FixtureBuilder {
   }
 
   withCurrencyController(data) {
-    Object.assign(this.fixture.data.CurrencyController, data);
+    merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
   withGasFeeController(data) {
-    Object.assign(this.fixture.data.GasFeeController, data);
+    merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 
   withIncomingTransactionsController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.IncomingTransactionsController
         ? this.fixture.data.IncomingTransactionsController
         : (this.fixture.data.IncomingTransactionsController = {}),
@@ -457,7 +438,7 @@ class FixtureBuilder {
   }
 
   withKeyringController(data) {
-    Object.assign(this.fixture.data.KeyringController, data);
+    merge(this.fixture.data.KeyringController, data);
     return this;
   }
 
@@ -469,22 +450,22 @@ class FixtureBuilder {
   }
 
   withMetaMetricsController(data) {
-    Object.assign(this.fixture.data.MetaMetricsController, data);
+    merge(this.fixture.data.MetaMetricsController, data);
     return this;
   }
 
   withNetworkController(data) {
-    Object.assign(this.fixture.data.NetworkController, data);
+    merge(this.fixture.data.NetworkController, data);
     return this;
   }
 
   withOnboardingController(data) {
-    Object.assign(this.fixture.data.OnboardingController, data);
+    merge(this.fixture.data.OnboardingController, data);
     return this;
   }
 
   withPermissionController(data) {
-    Object.assign(this.fixture.data.PermissionController, data);
+    merge(this.fixture.data.PermissionController, data);
     return this;
   }
 
@@ -569,7 +550,7 @@ class FixtureBuilder {
   }
 
   withPermissionLogController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.PermissionLogController
         ? this.fixture.data.PermissionLogController
         : (this.fixture.data.PermissionLogController = {}),
@@ -579,22 +560,43 @@ class FixtureBuilder {
   }
 
   withPreferencesController(data) {
-    Object.assign(this.fixture.data.PreferencesController, data);
+    merge(this.fixture.data.PreferencesController, data);
     return this;
   }
 
+  withPreferencesControllerImportedAccountIdentities() {
+    return this.withPreferencesController({
+      identities: {
+        '0x0cc5261ab8ce458dc977078a3623e2badd27afd3': {
+          name: 'Account 1',
+          address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+          lastSelected: 1665507600000,
+        },
+        '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59': {
+          name: 'Account 2',
+          address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+        },
+        '0xd38d853771fb546bd8b18b2f3638491bc0b0e906': {
+          name: 'Account 3',
+          address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+        },
+      },
+      selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
   withSmartTransactionsController(data) {
-    Object.assign(this.fixture.data.SmartTransactionsController, data);
+    merge(this.fixture.data.SmartTransactionsController, data);
     return this;
   }
 
   withSubjectMetadataController(data) {
-    Object.assign(this.fixture.data.SubjectMetadataController, data);
+    merge(this.fixture.data.SubjectMetadataController, data);
     return this;
   }
 
   withThreeBoxController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.ThreeBoxController
         ? this.fixture.data.ThreeBoxController
         : (this.fixture.data.ThreeBoxController = {}),
@@ -604,7 +606,7 @@ class FixtureBuilder {
   }
 
   withTokenListController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.TokenListController
         ? this.fixture.data.TokenListController
         : (this.fixture.data.TokenListController = {}),
@@ -614,12 +616,12 @@ class FixtureBuilder {
   }
 
   withTokensController(data) {
-    Object.assign(this.fixture.data.TokensController, data);
+    merge(this.fixture.data.TokensController, data);
     return this;
   }
 
   withTransactionController(data) {
-    Object.assign(
+    merge(
       this.fixture.data.TransactionController
         ? this.fixture.data.TransactionController
         : (this.fixture.data.TransactionController = {}),
