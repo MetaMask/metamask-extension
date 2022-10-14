@@ -23,7 +23,7 @@ export default {
     },
   },
   args: {
-    label: 'https://app.uniswap.org',
+    label: 'app.uniswap.org',
     imageSource: 'https://uniswap.org/favicon.ico',
     cta: {
       label: '',

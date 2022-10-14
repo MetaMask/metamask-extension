@@ -12,6 +12,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';
+import { Icon, ICON_NAMES } from '../icon';
 
 export const TagUrl = ({
   label,
@@ -21,6 +22,7 @@ export const TagUrl = ({
   faviconProps,
   buttonProps,
   textProps,
+  fallbackIconProps,
   ...props
 }) => {
   return (
@@ -38,6 +40,14 @@ export const TagUrl = ({
         className="tag-url__favicon"
         imageSource={imageSource}
         {...faviconProps}
+      />
+      <Icon
+        className="tag-url__lock-icon"
+        name={ICON_NAMES.LOCK_FILLED}
+        color={COLORS.ICON_DEFAULT}
+        size={SIZES.SM}
+        aria-label="https://"
+        {...fallbackIconProps}
       />
       <Text className="tag-url__label" variant={TEXT.BODY_MD} {...textProps}>
         {label}
@@ -77,6 +87,10 @@ TagUrl.propTypes = {
    * It accepts all the props from Avatar Favicon
    */
   faviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
+  /**
+   * It accepts all the props from Icon
+   */
+  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * It accepts all the props from Text Component
    */
