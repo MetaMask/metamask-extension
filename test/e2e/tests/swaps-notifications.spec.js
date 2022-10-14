@@ -47,10 +47,7 @@ describe('Swaps - notifications', function () {
       '[placeholder="Search name or paste address"]',
       options.swapTo,
     );
-    await driver.waitForSelector(
-      '[class="searchable-item-list__primary-label"]',
-    );
-    await driver.clickElement('[class="searchable-item-list__primary-label"]');
+    await driver.clickElement('.searchable-item-list__primary-label');
   };
 
   it('tests notifications for verified token on 1 source and price difference', async function () {
