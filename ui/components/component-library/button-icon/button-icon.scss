@@ -1,8 +1,9 @@
 .mm-button-icon {
   position: relative;
-  height: 24px;
+  height: 32px;
+  width: 32px;
   padding: 0;
-  border-radius: 999px;
+  border-radius: 8px;
   cursor: pointer;
   color: var(--color-text-default);
   background-color: var(--brand-colors-grey-grey100);
@@ -25,15 +26,13 @@
 
 
   &--size-sm {
-    height: 16px;
-  }
-
-  &--size-md {
     height: 24px;
+    width: 24px;
   }
 
   &--size-lg {
     height: 32px;
+    width: 32px;
   }
 
 

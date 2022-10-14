@@ -9,15 +9,13 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  SIZES,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
 export const ButtonIcon = ({
   as = 'button',
-  // children,
   className,
-  size = BUTTON_ICON_SIZES.MD,
+  size = BUTTON_ICON_SIZES.LG,
   icon,
   disabled,
   ...props
@@ -25,8 +23,7 @@ export const ButtonIcon = ({
   return (
     <Box
       as={as}
-      paddingLeft={size === BUTTON_ICON_SIZES.AUTO ? 0 : 4}
-      paddingRight={size === BUTTON_ICON_SIZES.AUTO ? 0 : 4}
+      padding={1}
       className={classnames(
         'mm-button-icon',
         `mm-button-icon--size-${size}`,
@@ -41,10 +38,7 @@ export const ButtonIcon = ({
       alignItems={ALIGN_ITEMS.CENTER}
       {...props}
     >
-      <Icon
-        name={icon}
-        size={size === BUTTON_ICON_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
-      />
+      <Icon name={icon} size={size} />
     </Box>
   );
 };
@@ -54,14 +48,6 @@ ButtonIcon.propTypes = {
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    */
   as: PropTypes.string,
-  /**
-   * Boolean prop to quickly activate box prop display block
-   */
-  block: PropTypes.bool,
-  /**
-   * The children to be rendered inside the ButtonIcon
-   */
-  children: PropTypes.node,
   /**
    * An additional className to apply to the ButtonIcon.
    */

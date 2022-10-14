@@ -81,13 +81,11 @@ export default {
       table: { category: 'box props' },
     },
   },
-  args: {
-    // children: 'Button Icon',
-  },
+  args: {},
 };
 
 export const DefaultStory = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+  <ButtonIcon {...args} icon={ICON_NAMES.FULL_CIRCLE_FILLED} />
 );
 
 DefaultStory.storyName = 'Default';
@@ -100,7 +98,6 @@ export const Size = (args) => (
     marginBottom={2}
   >
     <ButtonIcon {...args} size={SIZES.SM} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
-    <ButtonIcon {...args} size={SIZES.MD} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
     <ButtonIcon {...args} size={SIZES.LG} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
   </Box>
 );
