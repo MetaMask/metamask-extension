@@ -17,16 +17,11 @@ describe('Localization', function () {
       {
         fixtures: new FixtureBuilder()
           .withCurrencyController({
-            conversionDate: 1664383189.726,
-            conversionRate: 1233.01,
             currentCurrency: 'php',
-            nativeCurrency: 'ETH',
-            usdConversionRate: 1332.01,
           })
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
-              useNativeCurrencyAsPrimaryCurrency: true,
             },
           })
           .build(),
