@@ -263,7 +263,7 @@ const setupPageStreams = () => {
 
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  extensionPort.onMessage.addListener(notifyInpageOfExtensionStreamConnect);
+  extensionPort.onMessage.addListener(extensionStreamMessageListener);
   extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
@@ -463,8 +463,8 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 /**
  * The function send message to inpage to notify it of extension stream connection
  */
-function notifyInpageOfExtensionStreamConnect() {
-  if (msg.name === 'CONNECTION_READY') {
+function extensionStreamMessageListener() {
+  if (isManifestV3 && msg.name === 'CONNECTION_READY') {
     window.postMessage(
       {
         target: INPAGE, // the post-message-stream "target"
