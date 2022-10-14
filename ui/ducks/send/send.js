@@ -2608,7 +2608,8 @@ export function getRecipient(state) {
       ...draft.recipient,
       nickname:
         draft.recipient.nickname ||
-        getEnsResolutionByAddress(state, checksummedAddress),
+        getEnsResolutionByAddress(state, checksummedAddress) ||
+        getAddressBookEntryOrAccountName(state, checksummedAddress),
     };
   }
   return draft.recipient;
