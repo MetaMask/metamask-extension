@@ -462,6 +462,7 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 
 /**
  * The function send message to inpage to notify it of extension stream connection
+ * This is used as notification to replay any pending messages in MV3
  */
 function extensionStreamMessageListener() {
   if (isManifestV3 && msg.name === 'CONNECTION_READY') {
