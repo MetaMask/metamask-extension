@@ -794,11 +794,11 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe.only('submitting events to segment SDK', function () {
+  describe('submitting events to segment SDK', function () {
     it('should add event to store when submitting to SDK', function () {
       const metaMetricsController = getMetaMetricsController({});
       metaMetricsController.trackPage({}, { isOptIn: true });
-      let { events } = metaMetricsController.store.getState();
+      const { events } = metaMetricsController.store.getState();
       assert(Object.keys(events).length > 0);
     });
 
@@ -814,7 +814,7 @@ describe('MetaMetricsController', function () {
         segmentInstance,
       });
       metaMetricsController.trackPage({}, { isOptIn: true });
-      let { events } = metaMetricsController.store.getState();
+      const { events } = metaMetricsController.store.getState();
       assert(Object.keys(events).length === 0);
     });
   });
