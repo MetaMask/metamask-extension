@@ -794,17 +794,30 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  // describe('submitting events to segment', function () {
-  //   it('should add event to store when submitting', function () {
-  //     const segmentInstance = createSegmentMock(2, 10000);
-  //     const trackSpy = sinon.mock().returns(undefined);
-  //     segmentInstance.track = trackSpy;
-  //     const metaMetricsController = getMetaMetricsController({
-  //       segmentInstance,
-  //     });
+  describe.only('submitting events to segment SDK', function () {
+    it('should add event to store when submitting to SDK', function () {
+      const metaMetricsController = getMetaMetricsController({});
+      metaMetricsController.trackPage({}, { isOptIn: true });
+      let { events } = metaMetricsController.store.getState();
+      assert(Object.keys(events).length > 0);
+    });
 
-  //   });
-  // });
+    it('should remove event from store when callback is invoked', function () {
+      const segmentInstance = createSegmentMock(2, 10000);
+      const stubFn = (_, cb) => {
+        cb();
+      };
+      sinon.stub(segmentInstance, 'track').callsFake(stubFn);
+      sinon.stub(segmentInstance, 'page').callsFake(stubFn);
+
+      const metaMetricsController = getMetaMetricsController({
+        segmentInstance,
+      });
+      metaMetricsController.trackPage({}, { isOptIn: true });
+      let { events } = metaMetricsController.store.getState();
+      assert(Object.keys(events).length === 0);
+    });
+  });
 
   afterEach(function () {
     // flush the queues manually after each test

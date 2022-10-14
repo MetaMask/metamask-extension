@@ -962,33 +962,29 @@ export default class MetaMetricsController {
     });
   }
 
-  // Method below submits the request to segment.
+  // Method below submits the request to analytics SDK.
   // For MV3 it will also add event to controller store
   // and pass a callback to remove it from store once request is submitted to segment
   // Saving events in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentEvent(eventType, payload, callback) {
-    if (isManifestV3) {
-      const messageId = payload.messageId || generateRandomId();
-      const timestamp = payload.timestamp || new Date();
-      const modifiedPayload = { ...payload, messageId, timestamp };
+    const messageId = payload.messageId || generateRandomId();
+    const timestamp = payload.timestamp || new Date();
+    const modifiedPayload = { ...payload, messageId, timestamp };
+    this.store.updateState({
+      events: {
+        ...this.store.getState().events,
+        [messageId]: { eventType, payload: modifiedPayload, callback },
+      },
+    });
+    const modifiedCallback = (result) => {
+      const { events } = this.store.getState();
+      delete events[messageId];
       this.store.updateState({
-        events: {
-          ...this.store.getState().events,
-          [messageId]: { eventType, payload: modifiedPayload, callback },
-        },
+        events,
       });
-      const modifiedCallback = (result) => {
-        const { events } = this.store.getState();
-        delete events[messageId];
-        this.store.updateState({
-          events,
-        });
-        return callback?.(result);
-      };
-      this.segment[eventType](modifiedPayload, modifiedCallback);
-    } else {
-      this.segment[eventType](payload, callback);
-    }
+      return callback?.(result);
+    };
+    this.segment[eventType](modifiedPayload, modifiedCallback);
   }
 }
