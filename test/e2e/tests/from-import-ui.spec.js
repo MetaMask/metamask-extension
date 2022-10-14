@@ -195,6 +195,7 @@ describe('MetaMask Import UI', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -300,6 +301,7 @@ describe('MetaMask Import UI', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -374,6 +376,7 @@ describe('MetaMask Import UI', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
         title: this.test.title,
