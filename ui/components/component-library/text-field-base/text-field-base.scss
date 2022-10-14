@@ -17,7 +17,18 @@
   border-color: var(--color-border-default);
 
   &--focused {
-    border-color: var(--color-primary-default);
+    position: relative;
+
+    &::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      outline: 5px auto Highlight; // firefox
+      outline: 5px auto -webkit-focus-ring-color; // chrome
+    }
   }
 
   &--error {
