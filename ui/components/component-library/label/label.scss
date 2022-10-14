@@ -1,0 +1,9 @@
+.mm-label {
+  &--html-for {
+    cursor: pointer;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+  }
+}
