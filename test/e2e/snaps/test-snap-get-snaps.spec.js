@@ -65,30 +65,57 @@ describe('Test Snap Confirm', function () {
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        const snapButton = await driver.findElement('#sendConfirmButton');
-        await driver.scrollToElement(snapButton);
-
+        const errorButton = await driver.findElement('#connectError');
+        await driver.scrollToElement(errorButton);
         await driver.delay(1000);
-        await driver.clickElement('#sendConfirmButton');
+        await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
+        await driver.clickElement('#connectError');
 
-        // hit 'approve' on the custom confirm
+        // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
+
+        await driver.delay(2000);
+
+        // approve install of snap
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
         await driver.clickElement({
-          text: 'Approve',
+          text: 'Approve & install',
           tag: 'button',
         });
 
-        // check the results of the custom confirm
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const confirmResult = await driver.findElement('#confirmResult');
-        assert.equal(await confirmResult.getText(), 'true');
+
+        const getInstalledSnapsButton = await driver.findElement(
+          '#getInstalledSnapsButton',
+        );
+        await driver.scrollToElement(getInstalledSnapsButton);
+        await driver.delay(1000);
+        await driver.clickElement('#getInstalledSnapsButton');
+        await driver.delay(1000);
+
+        const result = await driver.findElement('#getInstalledSnapsResult');
+        assert.equal(
+          await result.getText(),
+          'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
+        );
       },
     );
   });
