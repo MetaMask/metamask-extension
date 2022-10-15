@@ -1,0 +1,32 @@
+{
+    "name": "amaznettcoin",
+    "website": "https://www.amaznettcoin.com",
+    "description": "Decentralaised Token on Binance Smart Chain Amaznettcoin is on a mission to bring popular cryptocurrency concepts to the mainstream in one. We believe in the blockchain technology and support the idea of cryptocurrency as made of borderless payment medium.",
+    "explorer": "https://bscscan.com/",
+    "research": "https://amaznettcoin.com/#economy",
+    "symbol": "AMZT",
+    "type": "Token",
+    "decimals": 18,
+    "status": "active",
+    "tags": [
+        "staking-native"
+    ],
+    "links": [
+        {
+            "name": "github",
+            "url": "https://github.com/amaznett/amaznettcoin"
+        },
+        {
+            "name": "twitter",
+            "url": "https://twitter.com/amaznettcoin1"
+        },
+        {
+            "name": "reddit",
+            "url": "https://www.reddit.com/user/amaznettcoin/"
+        },
+        {
+            "name": "whitepaper",
+            "url": "https://amaznettcoin.com/#document"
+        }
+    ]
+}
