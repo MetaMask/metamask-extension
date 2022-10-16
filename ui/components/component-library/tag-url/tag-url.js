@@ -5,7 +5,9 @@ import Box from '../../ui/box/box';
 import { Text } from '../text';
 import {
   ALIGN_ITEMS,
+  BORDER_RADIUS,
   COLORS,
+  DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
   TEXT,
@@ -15,41 +17,46 @@ import { ButtonLink } from '../button-link';
 
 export const TagUrl = ({
   label,
+  labelProps,
+  actionButtonLabel,
+  actionButtonProps,
+  avatarFaviconImageSource,
+  avatarFaviconProps,
   className,
-  imageSource,
-  cta,
-  faviconProps,
-  buttonProps,
-  textProps,
   ...props
 }) => {
   return (
     <Box
-      className={classnames('tag-url', className)}
+      className={classnames('mm-tag-url', className)}
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderColor={COLORS.BORDER_DEFAULT}
       borderWidth={1}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
-      borderRadius={SIZES.XL}
+      paddingLeft={2}
+      paddingRight={4}
+      gap={2}
+      borderRadius={BORDER_RADIUS.PILL}
+      display={DISPLAY.INLINE_FLEX}
       {...props}
     >
       <AvatarFavicon
-        className="tag-url__favicon"
-        imageSource={imageSource}
-        {...faviconProps}
+        imageSource={avatarFaviconImageSource}
+        {...avatarFaviconProps}
       />
-      <Text className="tag-url__label" variant={TEXT.BODY_MD} {...textProps}>
+      <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
         {label}
       </Text>
-      {cta?.label && (
+      {actionButtonLabel && (
         <ButtonLink
           as="a"
-          className="tag-url__button-link"
-          href="#"
-          {...buttonProps}
+          size={SIZES.SM}
+          paddingLeft={0}
+          paddingRight={0}
+          marginLeft={2}
+          marginRight={2}
+          {...actionButtonProps}
         >
-          {cta.label}
+          {actionButtonLabel}
         </ButtonLink>
       )}
     </Box>
@@ -58,29 +65,29 @@ export const TagUrl = ({
 
 TagUrl.propTypes = {
   /**
-   * The imageSource accepts the string of the image to be rendered
+   * The avatarFaviconImageSource accepts the string of the image to be rendered
    */
-  imageSource: PropTypes.string,
+  avatarFaviconImageSource: PropTypes.string,
+  /**
+   * It accepts all the props from Avatar Favicon
+   */
+  avatarFaviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
   /**
    * The text content of the TagUrl component
    */
   label: PropTypes.string,
   /**
+   * It accepts all the props from Text Component
+   */
+  labelProps: PropTypes.shape(Text.PropTypes),
+  /**
    * If we want a button in TagUrl component.
    */
-  cta: PropTypes.object,
+  actionButtonLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
    * It accepts all the props from ButtonLink
    */
-  buttonProps: PropTypes.shape(ButtonLink.PropTypes),
-  /**
-   * It accepts all the props from Avatar Favicon
-   */
-  faviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
-  /**
-   * It accepts all the props from Text Component
-   */
-  textProps: PropTypes.shape(Text.PropTypes),
+  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
   /**
    * Additional classNames to be added to the TagUrl component
    */

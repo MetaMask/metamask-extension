@@ -15,7 +15,7 @@ export default {
     label: {
       control: 'text',
     },
-    imageSource: {
+    avatarFaviconImageSource: {
       control: 'text',
     },
     cta: {
@@ -23,26 +23,18 @@ export default {
     },
   },
   args: {
-    label: 'https://app.uniswap.org',
-    imageSource: 'https://uniswap.org/favicon.ico',
-    cta: {
-      label: '',
-    },
+    label:
+      'https://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.org',
+    avatarFaviconImageSource: 'https://uniswap.org/favicon.ico',
   },
 };
 
-const Template = (args) => {
-  return <TagUrl {...args} />;
-};
+const Template = (args) => <TagUrl {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const WithCta = (args) => <TagUrl {...args} cta={{ label: 'Action' }} />;
-
-export const TextOverflow = (args) => (
-  <TagUrl
-    {...args}
-    label="https://aohfioahonrfrishparhpahrigpahvgbjnbhgvbjnkhb"
-  />
-);
+export const ActionButtonLabel = Template.bind({});
+ActionButtonLabel.args = {
+  actionButtonLabel: 'Permissions',
+};
