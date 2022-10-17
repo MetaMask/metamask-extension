@@ -1,6 +1,7 @@
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { detectSIWE } from '../../../shared/modules/siwe';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -11,6 +12,14 @@ const RATE_LIMIT_TYPES = {
   RATE_LIMITED: 'rate_limited',
   BLOCKED: 'blocked',
   NON_RATE_LIMITED: 'non_rate_limited',
+};
+
+/**
+ * These types correspond to the UI Customization presented to the user. Right now
+ * there is only one UI customization option, but more could be added in the future.
+ */
+const UI_CUSTOMIZATION_TYPES = {
+  SIWE: 'sign_in_with_ethereum',
 };
 
 /**
@@ -160,6 +169,13 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const { isSIWEMessage } = detectSIWE({ data: req.params[0] });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [UI_CUSTOMIZATION_TYPES.SIWE];
+        }
+      }
+
       trackEvent({
         event,
         category: EVENT.CATEGORIES.INPAGE_PROVIDER,
@@ -190,6 +206,14 @@ export default function createRPCMethodTrackingMiddleware({
         properties.signature_type = method;
       } else {
         properties.method = method;
+      }
+
+      // check if personal sign
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const { isSIWEMessage } = detectSIWE({ data: req.params[0] });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [UI_CUSTOMIZATION_TYPES.SIWE];
+        }
       }
 
       trackEvent({
