@@ -198,7 +198,8 @@ export default class ConfirmPageContainerContent extends Component {
         {this.renderContent()}
         {!supportsEIP1559V2 &&
           (errorKey || errorMessage) &&
-          currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
+          (currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND ||
+            currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND) && (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
             </div>
