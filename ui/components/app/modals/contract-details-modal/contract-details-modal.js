@@ -56,16 +56,6 @@ export default function ContractDetailsModal({
     (assetName && tokenId) ||
     (tokenName && tokenId);
 
-  let contractTitle;
-  let contractRequesting;
-  if (nft) {
-    contractTitle = t('contractNFT');
-    contractRequesting = t('contractRequestingAccess');
-  } else {
-    contractTitle = t('contractToken');
-    contractRequesting = t('contractRequestingSpendingCap');
-  }
-
   const tokenList = useSelector(getTokenList);
 
   const nftTokenListImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
@@ -133,7 +123,7 @@ export default function ContractDetailsModal({
           marginTop={4}
           marginBottom={2}
         >
-          {contractTitle}
+          {nft ? t('contractNFT') : t('contractToken')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
@@ -237,7 +227,9 @@ export default function ContractDetailsModal({
           marginTop={4}
           marginBottom={2}
         >
-          {contractRequesting}
+          {nft
+            ? t('contractRequestingAccess')
+            : t('contractRequestingSpendingCap')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
