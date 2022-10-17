@@ -15,8 +15,9 @@ const RATE_LIMIT_TYPES = {
 };
 
 /**
- * These types correspond to the UI Customization presented to the user. Right now
- * there is only one UI customization option, but more could be added in the future.
+ * These types correspond to the UI Customization presented to the user. Right
+ * now there is only one UI customization option, but more could be added in
+ * the future.
  */
 const UI_CUSTOMIZATION_TYPES = {
   SIWE: 'sign_in_with_ethereum',
@@ -208,7 +209,6 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
-      // check if personal sign
       if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const { isSIWEMessage } = detectSIWE({ data: req.params[0] });
         if (process.env.SIWE_V1 && isSIWEMessage) {
