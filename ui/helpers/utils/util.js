@@ -82,8 +82,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-      checked.length - lastSegLength,
-    )}`
+        checked.length - lastSegLength,
+      )}`
     : '...';
 }
 
