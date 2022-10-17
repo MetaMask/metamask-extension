@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { isValidEnsDomainName } from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -66,7 +66,7 @@ export default class DomainInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidEnsDomainName(input)) {
+    if (isValidDomainName(input)) {
       lookupEnsName(input);
     } else {
       resetDomainResolution();

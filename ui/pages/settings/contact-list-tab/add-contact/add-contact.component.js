@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { isValidEnsDomainName } from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import DomainInput from '../../../send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -63,7 +63,7 @@ export default class AddContact extends PureComponent {
     const valid =
       !isBurnAddress(address) &&
       isValidHexAddress(address, { mixedCaseUseChecksum: true });
-    const validEnsAddress = isValidEnsDomainName(address);
+    const validEnsAddress = isValidDomainName(address);
 
     if (valid || validEnsAddress || address === '') {
       this.setState({ error: '', ethAddress: address });
