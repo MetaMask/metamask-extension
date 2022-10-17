@@ -845,9 +845,11 @@ describe('Actions', () => {
       const resultantActions = store.getActions();
       expect(updateTransactionStub.callCount).toStrictEqual(1);
       expect(resultantActions[1]).toStrictEqual({
-        type: 'UPDATE_TRANSACTION_PARAMS',
-        id: txData.id,
-        value: txParams,
+        type: 'metamask/updateTransactionParams',
+        payload: {
+          id: txData.id,
+          value: txParams,
+        }
       });
     });
 
@@ -871,15 +873,17 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         {
-          type: 'UPDATE_TRANSACTION_PARAMS',
-          id: '1',
-          value: {
-            from: '0x1',
-            gas: GAS_LIMITS.SIMPLE,
-            gasPrice: '0x3b9aca00',
-            to: '0x2',
-            value: '0x0',
-          },
+          type: 'metamask/updateTransactionParams',
+          payload: {
+            id: '1',
+            value: {
+              from: '0x1',
+              gas: GAS_LIMITS.SIMPLE,
+              gasPrice: '0x3b9aca00',
+              to: '0x2',
+              value: '0x0',
+            },
+          }
         },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'TRANSACTION_ERROR', message: 'error' },
@@ -1514,7 +1518,7 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'SET_USE_BLOCKIE', value: undefined },
+        { type: 'metamask/setUseBlockie', payload: undefined },
       ];
 
       await store.dispatch(actions.setUseBlockie());
@@ -1544,7 +1548,7 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         {
           type: 'metamask/setCurrentLocale',
-          value: { locale: 'test', messages: enLocale },
+          payload: { locale: 'test', messages: enLocale },
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];

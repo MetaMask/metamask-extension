@@ -876,7 +876,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
     try {
       await submitRequestToBackground('updateTransaction', [txData]);
     } catch (error) {
-      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      dispatch(updateTransactionParams({ id: txData.id, value: txData.txParams}));
       dispatch(hideLoadingIndication());
       dispatch(txError(error));
       dispatch(goHome());
@@ -885,7 +885,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
     }
 
     try {
-      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      dispatch(updateTransactionParams({ id: txData.id, value: txData.txParams }));
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
       dispatch(showConfTxPage({ id: txData.id }));

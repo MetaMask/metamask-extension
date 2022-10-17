@@ -72,6 +72,9 @@ const renderComponent = ({
         maxBaseFee: '100',
         priorityFee: '2',
       },
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
     },
   });
 

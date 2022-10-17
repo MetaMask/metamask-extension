@@ -13,6 +13,8 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
         chainId: '0x5',
       },
       tokenList: {},
+      addressBook: {},
+      identities: {},
       ...stateVariables,
     },
   };

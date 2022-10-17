@@ -43,6 +43,9 @@ const renderComponent = (componentProps) => {
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
     },
   };
 
