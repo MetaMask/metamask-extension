@@ -849,7 +849,7 @@ describe('Actions', () => {
         payload: {
           id: txData.id,
           value: txParams,
-        }
+        },
       });
     });
 
@@ -883,7 +883,7 @@ describe('Actions', () => {
               to: '0x2',
               value: '0x0',
             },
-          }
+          },
         },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'TRANSACTION_ERROR', message: 'error' },
