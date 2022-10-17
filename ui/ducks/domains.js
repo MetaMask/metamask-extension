@@ -20,7 +20,7 @@ import {
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
-import { isValidEnsDomainName } from '../helpers/utils/util';
+import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
@@ -63,7 +63,7 @@ const slice = createSlice({
       if (state.domainType === ENS) {
         if (error) {
           if (
-            isValidEnsDomainName(domainName) &&
+            isValidDomainName(domainName) &&
             error.message === 'ENS name not defined.'
           ) {
             state.error =
@@ -84,7 +84,7 @@ const slice = createSlice({
           } else {
             state.resolution = address;
           }
-          if (isValidEnsDomainName(address) && isConfusing(address)) {
+          if (isValidDomainName(address) && isConfusing(address)) {
             state.warning = CONFUSING_ENS_ERROR;
           }
         } else {

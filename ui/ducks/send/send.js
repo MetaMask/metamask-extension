@@ -74,7 +74,7 @@ import {
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidEnsDomainName,
+  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -1363,7 +1363,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
-              !isValidEnsDomainName(state.recipientInput))
+              !isValidDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
