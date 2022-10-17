@@ -27,7 +27,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), or Domain Name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -124,7 +124,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), or Domain Name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
@@ -173,7 +173,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), or Domain Name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
