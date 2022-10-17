@@ -1124,22 +1124,7 @@ export default class MetamaskController extends EventEmitter {
       }
       // Automatic login via storage encryption key
       else if (isManifestV3) {
-        console.log('Is MV3, going to try to autologin with loginToken');
-
-        this.appStateController.store.updateState({ isAttemptingLogin: true });
-        chrome.storage.session.get(['loginToken'], async ({ loginToken }) => {
-          console.log('Was the login token found? ', loginToken);
-          if (loginToken) {
-            console.log(`Attempting to login using loginToken: ${loginToken}`);
-            await this.keyringController.submitEncryptionKey(
-              loginToken,
-              this.keyringController.store.getState().vault,
-            );
-          }
-          this.appStateController.store.updateState({
-            isAttemptingLogin: false,
-          });
-        });
+        this.submitEncryptionKey();
       }
     }
 
@@ -2368,6 +2353,21 @@ export default class MetamaskController extends EventEmitter {
     this.setLedgerTransportPreference(transportPreference);
 
     return this.keyringController.fullUpdate();
+  }
+
+  /**
+   * Submits a user's encryption key to log the user in via login token
+   */
+  async submitEncryptionKey() {
+    this.appStateController.store.updateState({ isAttemptingLogin: true });
+    const { loginToken } = await chrome.storage.session.get(['loginToken']);
+    if (loginToken) {
+      const { vault } = this.keyringController.store.getState();
+      await this.keyringController.submitEncryptionKey(loginToken, vault);
+    }
+    this.appStateController.store.updateState({
+      isAttemptingLogin: false,
+    });
   }
 
   /**
@@ -3954,7 +3954,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (isManifestV3) {
-      console.log(`[MV3] Setting login token: ${loginToken}`);
       await chrome.storage.session.set({ loginToken });
     }
 
@@ -4350,10 +4349,9 @@ export default class MetamaskController extends EventEmitter {
     ledgerKeyring?.destroy?.();
 
     if (isManifestV3) {
-      chrome.storage.session.clear();
+      chrome.storage.session.remove(['loginToken']);
     }
 
-    console.log('Setting the keyring controller locked!');
     return this.keyringController.setLocked();
   }
 
