@@ -3,13 +3,13 @@ const mockKey = Buffer.alloc(32);
 let cacheVal;
 
 const mockEncryptor = {
-  encrypt(_, dataObj) {
+  async encrypt(_, dataObj) {
     cacheVal = dataObj;
-    return Promise.resolve(mockHex);
+    return mockHex;
   },
 
-  decrypt() {
-    return Promise.resolve(cacheVal || {});
+  async decrypt() {
+    return cacheVal || {};
   },
 
   encryptWithDetail(_, dataObj) {
@@ -26,8 +26,8 @@ const mockEncryptor = {
     return this.decrypt(key, text);
   },
 
-  keyFromPassword() {
-    return Promise.resolve(mockKey);
+  async keyFromPassword() {
+    return mockKey;
   },
 
   generateSalt() {

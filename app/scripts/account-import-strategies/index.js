@@ -6,14 +6,10 @@ import { addHexPrefix } from '../lib/util';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 const accountImporter = {
-  importAccount(strategy, args) {
-    try {
-      const importer = this.strategies[strategy];
-      const privateKeyHex = importer(...args);
-      return Promise.resolve(privateKeyHex);
-    } catch (e) {
-      return Promise.reject(e);
-    }
+  async importAccount(strategy, args) {
+    const importer = this.strategies[strategy];
+    const privateKeyHex = importer(...args);
+    return privateKeyHex;
   },
 
   strategies: {

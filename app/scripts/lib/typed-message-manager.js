@@ -295,10 +295,10 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForSigning(msgParams) {
+  async prepMsgForSigning(msgParams) {
     delete msgParams.metamaskId;
     delete msgParams.version;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**

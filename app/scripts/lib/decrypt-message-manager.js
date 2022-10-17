@@ -222,9 +222,9 @@ export default class DecryptMessageManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForDecryption(msgParams) {
+  async prepMsgForDecryption(msgParams) {
     delete msgParams.metamaskId;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**
