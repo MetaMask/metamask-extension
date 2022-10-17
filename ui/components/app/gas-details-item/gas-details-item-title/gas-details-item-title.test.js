@@ -29,6 +29,10 @@ const render = () => {
         },
       },
       selectedAddress: '0xAddress',
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+      featureFlags: {},
     },
   });
 
