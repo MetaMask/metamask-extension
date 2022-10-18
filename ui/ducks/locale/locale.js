@@ -1,8 +1,8 @@
-import * as actionConstants from '../../store/actionConstants';
+const SET_CURRENT_LOCALE = 'metamask/setCurrentLocale';
 
 export default function reduceLocaleMessages(state = {}, { type, value }) {
   switch (type) {
-    case actionConstants.SET_CURRENT_LOCALE:
+    case SET_CURRENT_LOCALE:
       return {
         ...state,
         current: value.messages,

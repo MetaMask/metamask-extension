@@ -6,6 +6,7 @@ import * as actionConstants from '../../store/actionConstants';
 
 // actionConstants
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED';
+const SHOW_ACCOUNT_DETAIL = 'metamask/showAccountDetail';
 
 export default function reduceApp(state = {}, action) {
   // default state
@@ -180,7 +181,7 @@ export default function reduceApp(state = {}, action) {
         warning: null,
       };
 
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
+    case SHOW_ACCOUNT_DETAIL:
       return {
         ...appState,
         forgottenPassword: appState.forgottenPassword
