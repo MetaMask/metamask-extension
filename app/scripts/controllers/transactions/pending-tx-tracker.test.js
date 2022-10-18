@@ -811,5 +811,56 @@ describe('PendingTransactionTracker', function () {
       assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
       assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
     });
+    it("should emit 'tx:dropped' if receipt status equals 0x2", async function () {
+      const tx = {
+        status: TRANSACTION_STATUSES.SUBMITTED,
+        history: [{}],
+        txParams: { nonce: '0x1' },
+        id: '1',
+        value: '0x01',
+        hash: '0xshouldbedropped',
+      };
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub().returns({
+            blockNumber: '0xblocknumber',
+            blockHash: '0xblockhash',
+            status: '0x2',
+          }),
+          getBlockByHash: sinon
+            .stub()
+            .returns({ baseFeePerGas: '0x0', timestamp: null }),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions: sinon.stub().returns([tx]),
+        getCompletedTransactions: sinon.stub().returns([]),
+        publishTransaction: sinon.spy(),
+        confirmTransaction: sinon.spy(),
+      });
+      const listeners = {
+        confirmed: sinon.spy(),
+        dropped: sinon.spy(),
+        failed: sinon.spy(),
+        warning: sinon.spy(),
+      };
+
+      pendingTxTracker.once('tx:confirmed', listeners.confirmed);
+      pendingTxTracker.once('tx:dropped', listeners.dropped);
+      pendingTxTracker.once('tx:failed', listeners.failed);
+      pendingTxTracker.once('tx:warning', listeners.warning);
+      await pendingTxTracker._checkPendingTx(tx);
+
+      assert.ok(listeners.dropped.calledOnceWithExactly('1'));
+      assert.ok(
+        listeners.confirmed.notCalled,
+        "should not emit 'tx:confirmed'",
+      );
+      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'");
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'");
+    });
   });
 });
