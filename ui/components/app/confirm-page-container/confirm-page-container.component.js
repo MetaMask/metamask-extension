@@ -378,7 +378,13 @@ export default class ConfirmPageContainer extends Component {
               onCancel={onCancel}
               cancelText={t('reject')}
               onSubmit={onSubmit}
-              submitText={t('approveButtonText')}
+              submitText={
+                isSetApproveForAll ||
+                assetStandard === ERC721 ||
+                assetStandard === ERC1155
+                  ? t('approveButtonText')
+                  : t('confirm')
+              }
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
               }
