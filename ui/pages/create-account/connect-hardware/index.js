@@ -232,7 +232,7 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = (device, path) => {
+  onUnlockAccounts = async (device, path) => {
     const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
       this.props;
     const { selectedAccounts } = this.state;
@@ -242,7 +242,7 @@ class ConnectHardwareForm extends Component {
     }
 
     if (device === DEVICE_NAMES.TREZOR) {
-      this.props.analyzeForOneKey(device);
+      await this.props.analyzeForOneKey(device);
     }
 
     const description =

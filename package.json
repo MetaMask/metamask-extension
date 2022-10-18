@@ -174,7 +174,7 @@
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
-    "eth-trezor-keyring": "github:originalix/eth-trezor-keyring#768bff1c8a5b40a63908d0a206262b93a4baabf3",
+    "eth-trezor-keyring": "github:MetaMask/eth-trezor-keyring#463bc786f3a913102067d64198ad9d9ed1aeff41",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",

@@ -391,7 +391,7 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.16.4", "@babel/parser@^7.12.5":
+"@babel/parser@7.16.4":
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
@@ -12230,9 +12230,9 @@ eth-simple-keyring@^4.2.0:
     ethereumjs-wallet "^1.0.1"
     events "^1.1.1"
 
-"eth-trezor-keyring@github:originalix/eth-trezor-keyring#768bff1c8a5b40a63908d0a206262b93a4baabf3":
+"eth-trezor-keyring@github:MetaMask/eth-trezor-keyring#463bc786f3a913102067d64198ad9d9ed1aeff41":
   version "0.10.0"
-  resolved "https://codeload.github.com/originalix/eth-trezor-keyring/tar.gz/768bff1c8a5b40a63908d0a206262b93a4baabf3"
+  resolved "https://codeload.github.com/MetaMask/eth-trezor-keyring/tar.gz/463bc786f3a913102067d64198ad9d9ed1aeff41"
   dependencies:
     "@ethereumjs/tx" "^3.2.1"
     "@metamask/eth-sig-util" "^4.0.0"

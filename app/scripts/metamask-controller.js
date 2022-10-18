@@ -2473,7 +2473,7 @@ export default class MetamaskController extends EventEmitter {
     if (!keyring) {
       return;
     }
-    const vendor = keyring.getVendor && keyring.getVendor();
+    const vendor = keyring.getVendor && (await keyring.getVendor());
     // We added the getVendor function to trezor's keyring to differentiate between vendors.
     // When the hardware wallet is unlocked, calling this method will get the vendor name: trezor or onekey.
     // When the device is not unlocked, the default value is undefined.

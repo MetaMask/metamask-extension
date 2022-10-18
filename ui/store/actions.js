@@ -513,12 +513,13 @@ export function analyzeForOneKey(deviceName) {
   log.debug(`background.analyzeForOneKey`, deviceName);
   return async () => {
     try {
-      await promisifiedBackground.analyzeForOneKey(deviceName);
+      await submitRequestToBackground('analyzeForOneKey', [deviceName]);
     } catch (e) {
       log.error(e);
       throw e;
     }
-  };
+    return undefined
+  }
 }
 
 export function showQrScanner() {
