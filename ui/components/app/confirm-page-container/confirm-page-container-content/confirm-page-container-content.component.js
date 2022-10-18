@@ -9,7 +9,6 @@ import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
-import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -50,7 +49,6 @@ export default class ConfirmPageContainerContent extends Component {
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
-    currentTransaction: PropTypes.object,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
     showBuyModal: PropTypes.func,
@@ -151,7 +149,6 @@ export default class ConfirmPageContainerContent extends Component {
       hideTitle,
       supportsEIP1559V2,
       hasTopBorder,
-      currentTransaction,
       nativeCurrency,
       networkName,
       showBuyModal,
@@ -196,14 +193,11 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559V2 &&
-          (errorKey || errorMessage) &&
-          (currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND ||
-            currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND) && (
-            <div className="confirm-page-container-content__error-container">
-              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-            </div>
-          )}
+        {!supportsEIP1559V2 && (errorKey || errorMessage) && (
+          <div className="confirm-page-container-content__error-container">
+            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+          </div>
+        )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
