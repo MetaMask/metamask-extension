@@ -475,6 +475,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
+    if (this.phishingController.isOutOfDate()) {
+      this.phishingController.updatePhishingLists();
+    }
 
     this.announcementController = new AnnouncementController(
       { allAnnouncements: UI_NOTIFICATIONS },
