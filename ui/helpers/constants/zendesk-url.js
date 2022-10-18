@@ -22,6 +22,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
   SECRET_RECOVERY_PHRASE:
     'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
+  SET_APPROVAL_FOR_ALL:
+    'https://metamask.zendesk.com/hc/en-us/articles/6174898326683-What-is-a-token-approval-#h_01GA1DZF6GH7EAJV86X6D839H6:~:text=setApprovalForAll%3A%20Making%20it%20easier%20to%20know%20what%20you%27re%20approving%20in%20MetaMask',
   SPEEDUP_CANCEL:
     'https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction',
   TOKEN_SAFETY_PRACTICES:

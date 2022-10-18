@@ -39,6 +39,14 @@ const props = {
   isContract: true,
 };
 
+jest.mock('../../swaps/swaps.util', () => {
+  const actual = jest.requireActual('../../swaps/swaps.util');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+  };
+});
+
 describe('ConfirmApproveContent Component', () => {
   it('should render Confirm approve page correctly', () => {
     const { queryByText, getByText, getAllByText, getByTestId } =

@@ -32,6 +32,9 @@ import {
   ERC721,
 } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import NftInfo from '../../../components/ui/nft-info/nft-info';
+import NftsModal from '../../../components/ui/nfts-modal/nfts-modal';
+import { fetchTokenBalance } from '../../swaps/swaps.util';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -39,6 +42,29 @@ export default class ConfirmApproveContent extends Component {
   };
 
   static propTypes = {
+    collections: PropTypes.shape({
+      collectibles: PropTypes.arrayOf(
+        PropTypes.shape({
+          address: PropTypes.string.isRequired,
+          tokenId: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          description: PropTypes.string,
+          image: PropTypes.string,
+          standard: PropTypes.string,
+          imageThumbnail: PropTypes.string,
+          imagePreview: PropTypes.string,
+          creator: PropTypes.shape({
+            address: PropTypes.string,
+            config: PropTypes.string,
+            profile_img_url: PropTypes.string,
+          }),
+        }),
+      ),
+      collectionImage: PropTypes.string,
+      collectionName: PropTypes.string,
+    }),
+    fromName: PropTypes.string,
+    fromAddress: PropTypes.string,
     decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
@@ -81,6 +107,8 @@ export default class ConfirmApproveContent extends Component {
 
   state = {
     showFullTxDetails: false,
+    showViewNftModal: false,
+    collectionBalance: 0,
     copied: false,
   };
 
@@ -565,6 +593,14 @@ export default class ConfirmApproveContent extends Component {
     return description;
   }
 
+  async componentDidMount() {
+    const { tokenAddress, fromAddress } = this.props;
+    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    this.setState({
+      collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+    });
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -588,8 +624,16 @@ export default class ConfirmApproveContent extends Component {
       isContract,
       assetStandard,
       userAddress,
+      isSetApproveForAll,
+      collections,
+      assetName,
+      tokenId,
+      tokenAddress,
+      fromName,
+      fromAddress,
     } = this.props;
-    const { showFullTxDetails } = this.state;
+    const { showFullTxDetails, showViewNftModal, collectionBalance } =
+      this.state;
 
     return (
       <div
@@ -698,6 +742,18 @@ export default class ConfirmApproveContent extends Component {
             </Button>
           </Box>
         </Box>
+        {!isSetApproveForAll &&
+        (assetStandard === ERC1155 || assetStandard === ERC721) ? (
+          <Box padding={4} width={BLOCK_SIZES.FULL}>
+            <NftInfo
+              tokenAddress={tokenAddress}
+              collections={collections}
+              assetName={assetName}
+              tokenId={tokenId}
+              onView={() => this.setState({ showViewNftModal: true })}
+            />
+          </Box>
+        ) : null}
         {assetStandard === ERC20 ? (
           <div className="confirm-approve-content__edit-submission-button-container">
             <div
@@ -794,6 +850,18 @@ export default class ConfirmApproveContent extends Component {
         ) : null}
 
         {showFullTxDetails ? this.renderFullDetails() : null}
+
+        {showViewNftModal && (
+          <NftsModal
+            collections={collections}
+            senderAddress={fromAddress}
+            accountName={fromName}
+            total={collectionBalance}
+            assetName={assetName}
+            isSetApproveForAll={isSetApproveForAll}
+            onClose={() => this.setState({ showViewNftModal: false })}
+          />
+        )}
       </div>
     );
   }

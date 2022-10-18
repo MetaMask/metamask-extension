@@ -2274,6 +2274,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nftsBeingAccessed": {
+    "message": "NFTs being accessed"
+  },
   "nickname": {
     "message": "Nickname"
   },
@@ -2291,6 +2294,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
+  },
+  "noGivenAccessToAllNfts": {
+    "message": "When should I not give access to all my NFTs?"
   },
   "noNFTs": {
     "message": "No NFTs yet"
