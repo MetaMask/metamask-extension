@@ -55,7 +55,9 @@ describe('Eth sign', function () {
         assert.equal(personalMessage, expectedPersonalMessage);
 
         await driver.clickElement('[data-testid="request-signature__sign"]');
-
+        await driver.clickElement(
+          '.signature-request-warning__footer__sign-button',
+        );
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();

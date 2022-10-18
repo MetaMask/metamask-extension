@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Tanda tangan"
   },
-  "signNotice": {
-    "message": "Menandatangani pesan ini bisa berakibat fatal. Tanda tangan ini berpotensi melakukan operasi atas nama akun Anda, termasuk memberikan kendali penuh atas akun Anda dan semua asetnya ke situs yang meminta tindakan ini. Hanya tanda tangani pesan ini jika Anda tahu apa yang Anda lakukan atau sepenuhnya memercayai situs yang meminta."
-  },
   "signatureRequest": {
     "message": "Permintaan tanda tangan"
   },
