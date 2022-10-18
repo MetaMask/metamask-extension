@@ -9,8 +9,8 @@ import {
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
   TEXT_ALIGN,
-  SIZES,
   BLOCK_SIZES,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 import Box from '.';
 
@@ -280,22 +280,67 @@ describe('Box', () => {
     });
     it('should render the Box with the borderRadius class', () => {
       const { getByText } = render(
-        <Box borderRadius={SIZES.XS}>Box content</Box>,
+        <>
+          <Box borderRadius={BORDER_RADIUS.XS}>border radius xs</Box>
+          <Box borderRadius={BORDER_RADIUS.SM}>border radius sm</Box>
+          <Box borderRadius={BORDER_RADIUS.MD}>border radius md</Box>
+          <Box borderRadius={BORDER_RADIUS.LG}>border radius lg</Box>
+          <Box borderRadius={BORDER_RADIUS.XL}>border radius xl</Box>
+          <Box borderRadius={BORDER_RADIUS.PILL}>border radius pill</Box>
+          <Box borderRadius={BORDER_RADIUS.NONE}>border radius none</Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--rounded-xs');
+      expect(getByText('border radius xs')).toHaveClass('box--rounded-xs');
+      expect(getByText('border radius sm')).toHaveClass('box--rounded-sm');
+      expect(getByText('border radius md')).toHaveClass('box--rounded-md');
+      expect(getByText('border radius lg')).toHaveClass('box--rounded-lg');
+      expect(getByText('border radius xl')).toHaveClass('box--rounded-xl');
+      expect(getByText('border radius pill')).toHaveClass('box--rounded-pill');
+      expect(getByText('border radius none')).toHaveClass('box--rounded-none');
     });
     it('should render the Box with the responsive borderRadius classes', () => {
       const { getByText } = render(
-        <Box borderRadius={[SIZES.XS, SIZES.SM, SIZES.MD, SIZES.LG]}>
-          Box content
-        </Box>,
+        <>
+          <Box
+            borderRadius={[
+              BORDER_RADIUS.XS,
+              BORDER_RADIUS.SM,
+              BORDER_RADIUS.MD,
+              BORDER_RADIUS.LG,
+            ]}
+          >
+            Border radius set 1
+          </Box>
+          <Box
+            borderRadius={[
+              BORDER_RADIUS.XL,
+              BORDER_RADIUS.PILL,
+              BORDER_RADIUS.NONE,
+            ]}
+          >
+            Border radius set 2
+          </Box>
+        </>,
       );
 
-      expect(getByText('Box content')).toHaveClass('box--rounded-xs');
-      expect(getByText('Box content')).toHaveClass('box--sm:rounded-sm');
-      expect(getByText('Box content')).toHaveClass('box--md:rounded-md');
-      expect(getByText('Box content')).toHaveClass('box--lg:rounded-lg');
+      expect(getByText('Border radius set 1')).toHaveClass('box--rounded-xs');
+      expect(getByText('Border radius set 1')).toHaveClass(
+        'box--sm:rounded-sm',
+      );
+      expect(getByText('Border radius set 1')).toHaveClass(
+        'box--md:rounded-md',
+      );
+      expect(getByText('Border radius set 1')).toHaveClass(
+        'box--lg:rounded-lg',
+      );
+      expect(getByText('Border radius set 2')).toHaveClass('box--rounded-xl');
+      expect(getByText('Border radius set 2')).toHaveClass(
+        'box--sm:rounded-pill',
+      );
+      expect(getByText('Border radius set 2')).toHaveClass(
+        'box--md:rounded-none',
+      );
     });
   });
   describe('display, gap, flexDirection, flexWrap, alignItems, justifyContent', () => {
@@ -780,5 +825,10 @@ describe('Box', () => {
         'Box as button',
       );
     });
+  });
+  it('should accept a ref prop that is passed down to the html element', () => {
+    const mockRef = jest.fn();
+    render(<Box ref={mockRef} />);
+    expect(mockRef).toHaveBeenCalledTimes(1);
   });
 });

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import Loading from '../../components/ui/loading-screen';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
-import ConfirmTransactionBase from '../confirm-transaction-base';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
 import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
@@ -180,7 +180,7 @@ export default class ConfirmTransaction extends Component {
         <Route
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
-          component={ConfirmTransactionBase}
+          component={ConfirmContractInteraction}
         />
         <Route
           exact

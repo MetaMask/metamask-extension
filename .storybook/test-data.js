@@ -27,28 +27,6 @@ const state = {
       viewOnly: true,
     },
     {
-      blockExplorerUrl: 'https://ropsten.etherscan.io',
-      chainId: '0x3',
-      iconColor: 'var(--ropsten)',
-      isATestNetwork: true,
-      labelKey: 'ropsten',
-      providerType: 'ropsten',
-      rpcUrl: 'https://ropsten.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://rinkeby.etherscan.io',
-      chainId: '0x4',
-      iconColor: 'var(--rinkeby)',
-      isATestNetwork: true,
-      labelKey: 'rinkeby',
-      providerType: 'rinkeby',
-      rpcUrl: 'https://rinkeby.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
       blockExplorerUrl: 'https://goerli.etherscan.io',
       chainId: '0x5',
       iconColor: 'var(--goerli)',
@@ -60,13 +38,13 @@ const state = {
       viewOnly: true,
     },
     {
-      blockExplorerUrl: 'https://kovan.etherscan.io',
-      chainId: '0x2a',
-      iconColor: 'var(--kovan)',
+      blockExplorerUrl: 'https://sepolia.etherscan.io',
+      chainId: '0xaa36a7',
+      iconColor: 'var(--sepolia)',
       isATestNetwork: true,
-      labelKey: 'kovan',
-      providerType: 'kovan',
-      rpcUrl: 'https://kovan.infura.io/v3/',
+      labelKey: 'sepolia',
+      providerType: 'sepolia',
+      rpcUrl: 'https://sepolia.infura.io/v3/',
       ticker: 'ETH',
       viewOnly: true,
     },
@@ -163,8 +141,8 @@ const state = {
         name: 'Falconswap',
         iconUrl:
           'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: ['CoinGecko', '1inch', 'Paraswap', 'Zapper', 'Zerion'],
-        occurrences: 12,
+        aggregators: ['CoinGecko', '1inch', 'Lifi'],
+        occurrences:3,
         unlisted: false,
       },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
@@ -395,9 +373,9 @@ const state = {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
-        metamaskNetworkId: '3',
+        metamaskNetworkId: '5',
         msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x3',
+        chainId: '0x5',
         loadingDefaults: false,
         txParams: {
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -416,8 +394,8 @@ const state = {
             id: 7786962153682822,
             time: 1620710815484,
             status: 'unapproved',
-            metamaskNetworkId: '3',
-            chainId: '0x3',
+            metamaskNetworkId: '5',
+            chainId: '0x5',
             loadingDefaults: true,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -570,20 +548,20 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
     previousProviderStore: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
-    network: '3',
+    network: '5',
     accounts: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -1121,7 +1099,7 @@ const state = {
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
       },
-      '0x3': {
+      5: {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x176e5b6f173ebe66',
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
@@ -1185,7 +1163,7 @@ const state = {
             decimals: 18,
           },
         ],
-        '0x3': [
+        '0x5': [
           {
             address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
             symbol: 'DAI',
@@ -1198,7 +1176,7 @@ const state = {
     },
     accountHiddenTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        '0x3': [],
+        '0x5': [],
       },
     },
     assetImages: {
@@ -1306,10 +1284,8 @@ const state = {
       },
     },
     incomingTxLastFetchedBlocksByNetwork: {
-      ropsten: 8872820,
-      rinkeby: null,
-      kovan: null,
       goerli: null,
+      sepolia: null,
       mainnet: 10902989,
     },
     subjects: {
@@ -1537,8 +1513,8 @@ const state = {
       id: 3111025347726181,
       time: 1620723786838,
       status: 'unapproved',
-      metamaskNetworkId: '3',
-      chainId: '0x3',
+      metamaskNetworkId: '5',
+      chainId: '0x5',
       loadingDefaults: false,
       txParams: {
         from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -1557,8 +1533,8 @@ const state = {
           id: 3111025347726181,
           time: 1620723786838,
           status: 'unapproved',
-          metamaskNetworkId: '3',
-          chainId: '0x3',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
           loadingDefaults: true,
           txParams: {
             from: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',

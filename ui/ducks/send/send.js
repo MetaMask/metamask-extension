@@ -22,7 +22,6 @@ import {
 } from '../../pages/send/send.constants';
 
 import {
-  calcGasTotal,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
@@ -67,9 +66,7 @@ import {
   GAS_FEE_ESTIMATES_UPDATED,
 } from '../../store/actionConstants';
 import {
-  calcTokenAmount,
   getTokenAddressParam,
-  getTokenValueParam,
   getTokenMetadata,
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
@@ -108,6 +105,11 @@ import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -381,6 +383,7 @@ export const draftTransactionInitialState = {
     gasTotal: '0x0',
     maxFeePerGas: '0x0',
     maxPriorityFeePerGas: '0x0',
+    wasManuallyEdited: false,
   },
   history: [],
   id: null,
@@ -1057,19 +1060,15 @@ const slice = createSlice({
           draftTransaction.transactionType =
             TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
         } else {
-          // Until we remove the old UI we don't want to automatically update
-          // gasPrice if the user has already manually changed the field value.
-          // When receiving a new estimate the isAutomaticUpdate property will be
-          // on the payload (and set to true). If isAutomaticUpdate is true,
-          // then we check if the previous estimate was '0x0' or if the previous
-          // gasPrice equals the previous gasEstimate. if either of those cases
-          // are true then we update the gasPrice otherwise we skip it because
-          // it indicates the user has ejected from the estimates by modifying
-          // the field.
+          if (action.payload.manuallyEdited) {
+            draftTransaction.gas.wasManuallyEdited = true;
+          }
+
+          // Update the gas price if it has not been manually edited,
+          // or if this current action is a manual edit.
           if (
-            action.payload.isAutomaticUpdate !== true ||
-            state.gasPriceEstimate === '0x0' ||
-            draftTransaction.gas.gasPrice === state.gasPriceEstimate
+            !draftTransaction.gas.wasManuallyEdited ||
+            action.payload.manuallyEdited
           ) {
             draftTransaction.gas.gasPrice = addHexPrefix(
               action.payload.gasPrice,
@@ -1715,8 +1714,10 @@ export function editExistingTransaction(assetType, transactionId) {
             ...draftTransactionInitialState.recipient,
             address: transaction.txParams.to,
             nickname:
-              getAddressBookEntryOrAccountName(state, transaction.txParams.to)
-                ?.name ?? '',
+              getAddressBookEntryOrAccountName(
+                state,
+                transaction.txParams.to,
+              ) ?? '',
           },
           amount: {
             ...draftTransactionInitialState.amount,
@@ -1740,8 +1741,7 @@ export function editExistingTransaction(assetType, transactionId) {
       const tokenAmountInDec =
         assetType === ASSET_TYPES.TOKEN ? getTokenValueParam(tokenData) : '1';
       const address = getTokenAddressParam(tokenData);
-      const nickname =
-        getAddressBookEntryOrAccountName(state, address)?.name ?? '';
+      const nickname = getAddressBookEntryOrAccountName(state, address) ?? '';
 
       const tokenAmountInHex = addHexPrefix(
         conversionUtil(tokenAmountInDec, {
@@ -1821,6 +1821,7 @@ export function updateGasPrice(gasPrice) {
       actions.updateGasFees({
         gasPrice,
         transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        manuallyEdited: true,
       }),
     );
   };
@@ -2192,12 +2193,14 @@ export function useMyAccountsForRecipientSearch() {
  * @returns {ThunkAction<void>}
  */
 export function resetRecipientInput() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetEnsResolution());
-    await dispatch(validateRecipientUserInput());
+    await dispatch(validateRecipientUserInput({ chainId }));
   };
 }
 
@@ -2271,6 +2274,7 @@ export function signTransaction() {
       await dispatch(
         updateTransactionSendFlowHistory(
           draftTransaction.id,
+          unapprovedTx.sendFlowHistory?.length || 0,
           draftTransaction.history,
         ),
       );

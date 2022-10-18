@@ -66,8 +66,6 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
-
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
@@ -84,19 +82,11 @@ import {
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  calcTokenAmount,
-  calcTokenValue,
-  getTokenValueParam,
-} from '../../../helpers/utils/token-util';
-import {
-  decimalToHex,
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
   addHexes,
   decWEIToDecETH,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
-import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
@@ -114,6 +104,15 @@ import Box from '../../../components/ui/box';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
+import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  decimalToHex,
+  hexWEIToDecGWEI,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../shared/lib/transactions-controller-utils';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -660,6 +659,7 @@ export default function ViewQuote() {
 
   const metaMaskFee = usedQuote.fee;
 
+  /* istanbul ignore next */
   const onFeeCardTokenApprovalClick = () => {
     trackEditSpendLimitOpened();
     dispatch(
@@ -892,19 +892,22 @@ export default function ViewQuote() {
           'view-quote__content_modal': disableSubmissionDueToPriceWarning,
         })}
       >
-        {selectQuotePopoverShown && (
-          <SelectQuotePopover
-            quoteDataRows={renderablePopoverData}
-            onClose={() => setSelectQuotePopoverShown(false)}
-            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
-            swapToSymbol={destinationTokenSymbol}
-            initialAggId={usedQuote.aggregator}
-            onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
-            hideEstimatedGasFee={
-              smartTransactionsEnabled && smartTransactionsOptInStatus
-            }
-          />
-        )}
+        {
+          /* istanbul ignore next */
+          selectQuotePopoverShown && (
+            <SelectQuotePopover
+              quoteDataRows={renderablePopoverData}
+              onClose={() => setSelectQuotePopoverShown(false)}
+              onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
+              swapToSymbol={destinationTokenSymbol}
+              initialAggId={usedQuote.aggregator}
+              onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
+              hideEstimatedGasFee={
+                smartTransactionsEnabled && smartTransactionsOptInStatus
+              }
+            />
+          )
+        }
 
         <div
           className={classnames('view-quote__warning-wrapper', {
@@ -915,7 +918,10 @@ export default function ViewQuote() {
           {(showInsufficientWarning || tokenBalanceUnavailable) && (
             <ActionableMessage
               message={actionableBalanceErrorMessage}
-              onClose={() => setWarningHidden(true)}
+              onClose={
+                /* istanbul ignore next */
+                () => setWarningHidden(true)
+              }
             />
           )}
         </div>
@@ -972,10 +978,13 @@ export default function ViewQuote() {
               onTokenApprovalClick={onFeeCardTokenApprovalClick}
               metaMaskFee={String(metaMaskFee)}
               numberOfQuotes={Object.values(quotes).length}
-              onQuotesClick={() => {
-                trackAllAvailableQuotesOpened();
-                setSelectQuotePopoverShown(true);
-              }}
+              onQuotesClick={
+                /* istanbul ignore next */
+                () => {
+                  trackAllAvailableQuotesOpened();
+                  setSelectQuotePopoverShown(true);
+                }
+              }
               chainId={chainId}
               isBestQuote={isBestQuote}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
@@ -987,37 +996,39 @@ export default function ViewQuote() {
         )}
       </div>
       <SwapsFooter
-        onSubmit={() => {
-          setSubmitClicked(true);
-          if (!balanceError) {
-            if (
-              currentSmartTransactionsEnabled &&
-              smartTransactionsOptInStatus &&
-              smartTransactionFees?.tradeTxFees
-            ) {
-              dispatch(
-                signAndSendSwapsSmartTransaction({
-                  unsignedTransaction,
-                  trackEvent,
-                  history,
-                  additionalTrackingParams,
-                }),
-              );
+        onSubmit={
+          /* istanbul ignore next */ () => {
+            setSubmitClicked(true);
+            if (!balanceError) {
+              if (
+                currentSmartTransactionsEnabled &&
+                smartTransactionsOptInStatus &&
+                smartTransactionFees?.tradeTxFees
+              ) {
+                dispatch(
+                  signAndSendSwapsSmartTransaction({
+                    unsignedTransaction,
+                    trackEvent,
+                    history,
+                    additionalTrackingParams,
+                  }),
+                );
+              } else {
+                dispatch(
+                  signAndSendTransactions(
+                    history,
+                    trackEvent,
+                    additionalTrackingParams,
+                  ),
+                );
+              }
+            } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
+              history.push(DEFAULT_ROUTE);
             } else {
-              dispatch(
-                signAndSendTransactions(
-                  history,
-                  trackEvent,
-                  additionalTrackingParams,
-                ),
-              );
+              history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
             }
-          } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-            history.push(DEFAULT_ROUTE);
-          } else {
-            history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
           }
-        }}
+        }
         submitText={
           currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&

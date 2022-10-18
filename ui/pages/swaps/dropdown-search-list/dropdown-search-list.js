@@ -56,6 +56,7 @@ export default function DropdownSearchList({
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(startingItem);
   const [tokenForImport, setTokenForImport] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -90,6 +91,7 @@ export default function DropdownSearchList({
     setIsImportTokenModalOpen(true);
   };
 
+  /* istanbul ignore next */
   const onImportTokenClick = () => {
     trackEvent({
       event: 'Token Imported',
@@ -166,6 +168,7 @@ export default function DropdownSearchList({
   return (
     <div
       className={classnames('dropdown-search-list', className)}
+      data-testid="dropdown-search-list"
       onClick={onClickSelector}
       onKeyUp={onKeyUp}
       tabIndex="0"
@@ -214,7 +217,8 @@ export default function DropdownSearchList({
         <>
           <SearchableItemList
             itemsToSearch={loading ? [] : itemsToSearch}
-            Placeholder={({ searchQuery }) =>
+            Placeholder={() =>
+              /* istanbul ignore next */
               loading ? (
                 <div className="dropdown-search-list__loading-item">
                   <PulseLoader />
@@ -263,7 +267,7 @@ export default function DropdownSearchList({
                 </div>
               )
             }
-            searchPlaceholderText={t('swapSearchForAToken')}
+            searchPlaceholderText={t('swapSearchNameOrAddress')}
             fuseSearchKeys={fuseSearchKeys}
             defaultToAll={defaultToAll}
             onClickItem={onClickItem}
@@ -280,9 +284,12 @@ export default function DropdownSearchList({
             hideItemIf={hideItemIf}
             listContainerClassName={listContainerClassName}
             shouldSearchForImports={shouldSearchForImports}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
           <div
             className="dropdown-search-list__close-area"
+            data-testid="dropdown-search-list__close-area"
             onClick={(event) => {
               event.stopPropagation();
               setIsOpen(false);

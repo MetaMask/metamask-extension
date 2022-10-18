@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   EVENT,
@@ -51,14 +50,18 @@ import {
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { stopPollingForQuotes } from '../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  stopPollingForQuotes,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -280,6 +283,7 @@ export default function AwaitingSwap({
       ) : null}
       <SwapsFooter
         onSubmit={async () => {
+          /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
             history.push(DEFAULT_ROUTE);
@@ -301,7 +305,8 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}

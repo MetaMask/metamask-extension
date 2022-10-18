@@ -47,7 +47,12 @@ notes.txt
 
 .nyc_output
 
+# MetaMask configuration
 .metamaskrc
+.metamaskprodrc
 
 # TypeScript
 tsout/
+
+# Test results
+test-results/

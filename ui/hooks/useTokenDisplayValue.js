@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-import {
-  getTokenValueParam,
-  calcTokenAmount,
-} from '../helpers/utils/token-util';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useTokenData } from './useTokenData';
 
 /**
@@ -56,7 +54,7 @@ export function useTokenDisplayValue(
     }
 
     return calcTokenAmount(tokenValue, token.decimals).toString(10);
-  }, [shouldCalculateTokenValue, tokenData, token]);
+  }, [shouldCalculateTokenValue, tokenValue, token]);
 
   return displayValue;
 }

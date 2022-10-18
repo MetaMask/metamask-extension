@@ -1,11 +1,11 @@
-import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import {
   GAS_ESTIMATE_TYPES,
   NETWORK_CONGESTION_THRESHOLDS,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -17,6 +17,7 @@ import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -65,7 +66,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: NETWORK_TYPE_RPC,
+          type: NETWORK_TYPES.RPC,
           rpcUrl: action.value,
         },
       };

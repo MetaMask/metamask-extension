@@ -52,7 +52,7 @@
         "@babel/preset-typescript": true,
         "depcheck>@babel/traverse": true,
         "depcheck>json5": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>convert-source-map": true
       }
     },
@@ -62,7 +62,7 @@
       },
       "packages": {
         "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
@@ -70,22 +70,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -93,31 +79,9 @@
         "console.error": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "@babel/core>@babel/generator>jsesc": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+        "@babel/core>@babel/types": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -193,6 +157,7 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
         "@babel/core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
@@ -218,7 +183,8 @@
         "@babel/eslint-parser>semver": true,
         "@babel/parser": true,
         "depcheck>@babel/parser": true,
-        "eslint": true
+        "eslint": true,
+        "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
     "@babel/eslint-parser>eslint-scope": {
@@ -1080,17 +1046,17 @@
         "pumpify>inherits": true
       }
     },
+    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true
+      }
+    },
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@sentry/browser>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@storybook/addon-essentials>@storybook/addon-docs>acorn-walk": {
+    "@sentry/utils>tslib": {
       "globals": {
         "define": true
       }
@@ -1115,47 +1081,25 @@
         "util.deprecate": true
       }
     },
-    "@storybook/components>react-syntax-highlighter>refractor>parse-entities": {
+    "@storybook/components>qs": {
       "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-reference-invalid": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
+        "string.prototype.matchall>side-channel": true
       }
     },
-    "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
+    "@storybook/react>acorn-walk": {
+      "globals": {
+        "define": true
       }
     },
-    "@storybook/react>@storybook/core-common>glob-base": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "packages": {
-        "@storybook/react>@storybook/core-common>glob-base>glob-parent": true,
-        "@storybook/react>@storybook/core-common>glob-base>is-glob": true
-      }
-    },
-    "@storybook/react>@storybook/core-common>glob-base>glob-parent": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "packages": {
-        "@storybook/react>@storybook/core-common>glob-base>is-glob": true
-      }
-    },
-    "@storybook/react>@storybook/core-common>glob-base>is-glob": {
-      "packages": {
-        "gulp-watch>anymatch>micromatch>is-extglob": true
+    "@storybook/react>webpack>json-parse-even-better-errors": {
+      "globals": {
+        "Buffer.isBuffer": true
       }
     },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint": true,
@@ -1170,10 +1114,12 @@
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
         "madge>debug": true,
+        "nock>debug": true,
         "typescript": true
       }
     },
@@ -1186,9 +1132,22 @@
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug>ms": true
       }
     },
+    "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@babel/eslint-parser>eslint-scope": true,
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
+        "@typescript-eslint/utils": true,
+        "eslint": true,
+        "eslint>eslint-utils": true
+      }
+    },
     "@typescript-eslint/eslint-plugin>tsutils": {
       "packages": {
-        "@sentry/browser>tslib": true,
+        "@sentry/utils>tslib": true,
         "typescript": true
       }
     },
@@ -1196,7 +1155,7 @@
       "packages": {
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "typescript": true
       }
     },
@@ -1229,7 +1188,7 @@
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint>is-glob": true,
         "globby": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "semver": true,
         "typescript": true
       }
@@ -1384,7 +1343,7 @@
     },
     "brfs>static-module>acorn-node": {
       "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>acorn-walk": true,
+        "@storybook/react>acorn-walk": true,
         "brfs>static-module>acorn-node>acorn": true,
         "watchify>xtend": true
       }
@@ -2050,12 +2009,13 @@
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true,
+        "babel/preset-env>b@babel/types": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "depcheck>@babel/traverse>globals": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
@@ -2077,9 +2037,9 @@
     "depcheck>cosmiconfig>parse-json": {
       "packages": {
         "@babel/code-frame": true,
+        "@storybook/react>webpack>json-parse-even-better-errors": true,
         "depcheck>cosmiconfig>parse-json>error-ex": true,
-        "depcheck>cosmiconfig>parse-json>lines-and-columns": true,
-        "webpack>json-parse-better-errors": true
+        "depcheck>cosmiconfig>parse-json>lines-and-columns": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -2206,18 +2166,13 @@
     },
     "enzyme>is-regex": {
       "packages": {
-        "enzyme>is-regex>has-tostringtag": true,
+        "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true
-      }
-    },
-    "enzyme>is-regex>has-tostringtag": {
-      "packages": {
-        "string.prototype.matchall>has-symbols": true
       }
     },
     "enzyme>is-string": {
       "packages": {
-        "enzyme>is-regex>has-tostringtag": true
+        "koa>is-generator-function>has-tostringtag": true
       }
     },
     "enzyme>object-inspect": {
@@ -2232,7 +2187,7 @@
     "enzyme>object.assign": {
       "packages": {
         "globalthis>define-properties": true,
-        "nock>deep-equal>object-keys": true,
+        "mocha>object.assign>object-keys": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
@@ -2299,7 +2254,7 @@
         "eslint>natural-compare": true,
         "eslint>regexpp": true,
         "globby>ignore": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint-config-prettier": {
@@ -2331,7 +2286,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2347,7 +2302,7 @@
         "brfs>resolve": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint>is-glob": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>glob": true
       }
     },
@@ -2444,7 +2399,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2556,9 +2511,28 @@
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint>eslint-scope": true,
         "eslint>eslint-utils": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "eslint>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
@@ -2574,7 +2548,7 @@
         "eslint-plugin-jsdoc>escape-string-regexp": true,
         "eslint-plugin-jsdoc>spdx-expression-parse": true,
         "eslint>esquery": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "semver": true
       }
     },
@@ -2624,8 +2598,13 @@
     },
     "eslint-plugin-node>eslint-plugin-es": {
       "packages": {
-        "eslint-plugin-node>eslint-utils": true,
+        "eslint-plugin-node>eslint-plugin-es>eslint-utils": true,
         "eslint>regexpp": true
+      }
+    },
+    "eslint-plugin-node>eslint-plugin-es>eslint-utils": {
+      "packages": {
+        "eslint-plugin-node>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-node>eslint-utils": {
@@ -2791,12 +2770,12 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>strip-json-comments": true,
         "eslint>ajv": true,
         "eslint>globals": true,
         "eslint>minimatch": true,
+        "eslint>strip-json-comments": true,
         "globby>ignore": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint>@humanwhocodes/config-array": {
@@ -2806,7 +2785,7 @@
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
         "eslint>minimatch": true,
-        "madge>debug": true
+        "nock>debug": true
       }
     },
     "eslint>ajv": {
@@ -2856,7 +2835,7 @@
       "packages": {
         "eslint>eslint-visitor-keys": true,
         "eslint>espree>acorn-jsx": true,
-        "ts-node>acorn": true
+        "terser>acorn": true
       }
     },
     "eslint>espree>acorn-jsx": {
@@ -2901,7 +2880,21 @@
       },
       "packages": {
         "eslint>file-entry-cache>flat-cache>flatted": true,
-        "nyc>rimraf": true
+        "eslint>file-entry-cache>flat-cache>rimraf": true
+      }
+    },
+    "eslint>file-entry-cache>flat-cache>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "eslint>glob-parent": {
@@ -3154,7 +3147,7 @@
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
-        "nock>deep-equal>object-keys": true
+        "mocha>object.assign>object-keys": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3470,8 +3463,8 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
-        "gulp-livereload>chalk>supports-color": true
+        "gulp-livereload>chalk>supports-color": true,
+        "gulp-livereload>debug>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3542,10 +3535,10 @@
         "console.error": true
       },
       "packages": {
+        "@storybook/components>qs": true,
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
-        "nock>qs": true,
         "react>object-assign": true
       }
     },
@@ -3597,7 +3590,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -3678,7 +3671,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>@choojs/findup": true,
         "gulp-rtlcss>rtlcss>postcss": true,
-        "mocha>strip-json-comments": true
+        "gulp-rtlcss>rtlcss>strip-json-comments": true
       }
     },
     "gulp-rtlcss>rtlcss>@choojs/findup": {
@@ -3922,7 +3915,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -4181,10 +4174,32 @@
     },
     "gulp-watch>anymatch>micromatch>parse-glob": {
       "packages": {
-        "@storybook/react>@storybook/core-common>glob-base": true,
         "gulp-watch>anymatch>micromatch>is-extglob": true,
+        "gulp-watch>anymatch>micromatch>parse-glob>glob-base": true,
         "gulp-watch>anymatch>micromatch>parse-glob>is-dotfile": true,
         "gulp-watch>anymatch>micromatch>parse-glob>is-glob": true
+      }
+    },
+    "gulp-watch>anymatch>micromatch>parse-glob>glob-base": {
+      "builtin": {
+        "path.dirname": true
+      },
+      "packages": {
+        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": true,
+        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
+      }
+    },
+    "gulp-watch>anymatch>micromatch>parse-glob>glob-base>glob-parent": {
+      "builtin": {
+        "path.dirname": true
+      },
+      "packages": {
+        "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": true
+      }
+    },
+    "gulp-watch>anymatch>micromatch>parse-glob>glob-base>is-glob": {
+      "packages": {
+        "gulp-watch>anymatch>micromatch>is-extglob": true
       }
     },
     "gulp-watch>anymatch>micromatch>parse-glob>is-glob": {
@@ -6192,6 +6207,11 @@
         "jsdom>escodegen>source-map": true
       }
     },
+    "koa>is-generator-function>has-tostringtag": {
+      "packages": {
+        "string.prototype.matchall>has-symbols": true
+      }
+    },
     "labeled-stream-splicer": {
       "packages": {
         "labeled-stream-splicer>stream-splicer": true,
@@ -6457,25 +6477,6 @@
         "loose-envify>js-tokens": true
       }
     },
-    "madge>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "madge>debug>ms": true,
-        "sinon>supports-color": true
-      }
-    },
     "madge>detective-scss>gonzales-pe": {
       "globals": {
         "console.error": true,
@@ -6501,6 +6502,13 @@
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
         "stylelint>balanced-match": true
+      }
+    },
+    "mocha>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "mocha>supports-color>has-flag": {
@@ -6535,21 +6543,23 @@
         "process.platform": true
       }
     },
-    "nock>deep-equal>is-date-object": {
-      "packages": {
-        "enzyme>is-regex>has-tostringtag": true
-      }
-    },
-    "nock>mkdirp": {
+    "nock>debug": {
       "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
-      }
-    },
-    "nock>qs": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
       "packages": {
-        "string.prototype.matchall>side-channel": true
+        "nock>debug>ms": true,
+        "sinon>supports-color": true
       }
     },
     "node-sass": {
@@ -6634,20 +6644,6 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
-      }
-    },
-    "nyc>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
       }
     },
     "nyc>signal-exit": {
@@ -6965,9 +6961,9 @@
     },
     "string.prototype.matchall>es-abstract>es-to-primitive": {
       "packages": {
+        "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@storybook/api>telejson>is-symbol": true,
-        "enzyme>is-callable": true,
-        "nock>deep-equal>is-date-object": true
+        "enzyme>is-callable": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
@@ -7034,7 +7030,7 @@
         "globby>ignore": true,
         "globby>slash": true,
         "lodash": true,
-        "madge>debug": true,
+        "nock>debug": true,
         "nyc>resolve-from": true,
         "stylelint>@stylelint/postcss-css-in-js": true,
         "stylelint>@stylelint/postcss-markdown": true,
@@ -7102,7 +7098,6 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
       "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>collapse-white-space": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
@@ -7110,6 +7105,7 @@
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-word-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>trim": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>trim-trailing-lines": true,
@@ -7118,6 +7114,22 @@
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>vfile-location": true,
         "watchify>xtend": true,
         "webpack>micromatch>braces>fill-range>repeat-string": true
+      }
+    },
+    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": {
+      "packages": {
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities-legacy": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-reference-invalid": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-hexadecimal": true
+      }
+    },
+    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": {
+      "packages": {
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": {
@@ -7133,11 +7145,11 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": {
       "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>is-alphanumeric": true,
@@ -7161,10 +7173,10 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": {
       "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities-legacy": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
       }
     },
@@ -7332,7 +7344,7 @@
         "path.dirname": true
       },
       "packages": {
-        "nock>mkdirp": true
+        "mocha>mkdirp": true
       }
     },
     "stylelint>global-modules": {
@@ -7634,17 +7646,60 @@
         "console.log": true,
         "console.warn": true,
         "define": true,
-        "process.argv": true,
-        "process.exit": true,
-        "process.platform": true,
-        "process.stderr.write": true,
-        "process.stdin.on": true,
-        "process.stdin.resume": true,
-        "process.stdin.setEncoding": true
+        "process": true
       },
       "packages": {
-        "source-map": true,
-        "ts-node>acorn": true
+        "terser>@jridgewell/source-map": true,
+        "terser>acorn": true
+      }
+    },
+    "terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "terser>source-map-support": {
@@ -7690,12 +7745,6 @@
         "@storybook/api>util-deprecate": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "ts-node>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
       }
     },
     "tsutils": {

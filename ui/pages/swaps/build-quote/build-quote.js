@@ -66,16 +66,12 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getUseTokenDetection,
+  getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors';
 
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../../helpers/utils/conversions.util';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -86,7 +82,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -106,10 +102,12 @@ import {
   countDecimals,
   fetchTokenPrice,
   fetchTokenBalance,
-  shouldEnableDirectWrapping,
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -150,7 +148,7 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const useTokenDetection = useSelector(getUseTokenDetection);
+  const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
 
@@ -212,8 +210,7 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
-    shuffledTokensList,
-    useTokenDetection,
+    tokenList,
   );
 
   const tokensToSearchSwapFrom = useTokensToSearch({
@@ -484,13 +481,14 @@ export default function BuildQuote({
         className="build-quote__token-etherscan-link build-quote__underline"
         key="build-quote-etherscan-link"
         onClick={() => {
+          /* istanbul ignore next */
           trackEvent({
-            event: 'Clicked Block Explorer Link',
+            event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
             category: EVENT.CATEGORIES.SWAPS,
             properties: {
-              link_type: 'Token Tracker',
-              action: 'Swaps Confirmation',
-              block_explorer_domain: getURLHostName(blockExplorerTokenLink),
+              link_type: EVENT.EXTERNAL_LINK_TYPES.TOKEN_TRACKER,
+              location: 'Swaps Confirmation',
+              url_domain: getURLHostName(blockExplorerTokenLink),
             },
           });
           global.platform.openTab({
@@ -681,6 +679,7 @@ export default function BuildQuote({
           onSelect={onFromSelect}
           itemsToSearch={tokensToSearchSwapFrom}
           onInputChange={(value) => {
+            /* istanbul ignore next */
             onInputChange(value, fromTokenBalance);
           }}
           inputValue={fromTokenInputValue}
@@ -735,6 +734,7 @@ export default function BuildQuote({
         <div className="build-quote__swap-arrows-row">
           <button
             className="build-quote__swap-arrows"
+            data-testid="build-quote__swap-arrows"
             onClick={() => {
               onToSelect(selectedFromToken);
               onFromSelect(selectedToToken);
@@ -751,7 +751,6 @@ export default function BuildQuote({
           <DropdownSearchList
             startingItem={selectedToToken}
             itemsToSearch={tokensToSearchSwapTo}
-            searchPlaceholderText={t('swapSearchForAToken')}
             fuseSearchKeys={fuseSearchKeys}
             selectPlaceHolderText={t('swapSelectAToken')}
             maxListItems={30}
@@ -785,6 +784,7 @@ export default function BuildQuote({
                 </div>
               }
               primaryAction={
+                /* istanbul ignore next */
                 verificationClicked
                   ? null
                   : {
@@ -813,6 +813,7 @@ export default function BuildQuote({
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
+                        /* istanbul ignore next */
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
                           category: EVENT.CATEGORIES.SWAPS,
@@ -865,30 +866,33 @@ export default function BuildQuote({
         )}
       </div>
       <SwapsFooter
-        onSubmit={async () => {
-          // We need this to know how long it took to go from clicking on the Review swap button to rendered View Quote page.
-          dispatch(setReviewSwapClickedTimestamp(Date.now()));
-          // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
-          // we want to cancel it and fetch quotes from here.
-          if (timeoutIdForQuotesPrefetching) {
-            clearTimeout(timeoutIdForQuotesPrefetching);
-            dispatch(
-              fetchQuotesAndSetQuoteState(
-                history,
-                fromTokenInputValue,
-                maxSlippage,
-                trackEvent,
-              ),
-            );
-          } else if (areQuotesPresent) {
-            // If there are prefetched quotes already, go directly to the View Quote page.
-            history.push(VIEW_QUOTE_ROUTE);
-          } else {
-            // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
-            await dispatch(setBackgroundSwapRouteState('loading'));
-            history.push(LOADING_QUOTES_ROUTE);
+        onSubmit={
+          /* istanbul ignore next */
+          async () => {
+            // We need this to know how long it took to go from clicking on the Review swap button to rendered View Quote page.
+            dispatch(setReviewSwapClickedTimestamp(Date.now()));
+            // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
+            // we want to cancel it and fetch quotes from here.
+            if (timeoutIdForQuotesPrefetching) {
+              clearTimeout(timeoutIdForQuotesPrefetching);
+              dispatch(
+                fetchQuotesAndSetQuoteState(
+                  history,
+                  fromTokenInputValue,
+                  maxSlippage,
+                  trackEvent,
+                ),
+              );
+            } else if (areQuotesPresent) {
+              // If there are prefetched quotes already, go directly to the View Quote page.
+              history.push(VIEW_QUOTE_ROUTE);
+            } else {
+              // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
+              await dispatch(setBackgroundSwapRouteState('loading'));
+              history.push(LOADING_QUOTES_ROUTE);
+            }
           }
-        }}
+        }
         submitText={t('swapReviewSwap')}
         disabled={isReviewSwapButtonDisabled}
         hideCancel

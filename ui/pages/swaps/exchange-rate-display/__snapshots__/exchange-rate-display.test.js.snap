@@ -10,6 +10,7 @@ exports[`ExchangeRateDisplay renders the component with initial props 1`] = `
     </span>
     <span
       class="exchange-rate-display__bold"
+      data-testid="exchange-rate-display__base-symbol"
     >
       ETH
     </span>
@@ -26,6 +27,7 @@ exports[`ExchangeRateDisplay renders the component with initial props 1`] = `
     </span>
     <div
       class="exchange-rate-display__switch-arrows"
+      data-testid="exchange-rate-display__switch-arrows"
     >
       <svg
         fill="none"

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $fa-font-path: 'fonts/fontawesome';
 
 @import '../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
@@ -48,27 +50,34 @@ $fa-font-path: 'fonts/fontawesome';
 }
 
 @font-face {
-  font-family: 'Euclid';
+  font-family: 'Euclid Circular B';
   font-style: normal;
   font-weight: 400;
   src: url('fonts/Euclid/EuclidCircularB-Regular-WebXL.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'Euclid';
+  font-family: 'Euclid Circular B';
   font-style: italic;
   font-weight: 400;
   src: url('fonts/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'Euclid';
+  font-family: 'Euclid Circular B';
+  font-style: normal;
+  font-weight: 500;
+  src: url('fonts/Euclid/EuclidCircularB-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid Circular B';
   font-style: normal;
   font-weight: 700;
   src: url('fonts/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
 }
 
-$font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
+$font-family: 'Euclid Circular B', Roboto, Helvetica, Arial, sans-serif;
 
 $typography-variants: (
   'h1': 2.5rem,

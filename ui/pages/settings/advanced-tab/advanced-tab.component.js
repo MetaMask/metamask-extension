@@ -20,9 +20,12 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
-import { exportAsFile } from '../../../../shared/modules/export-utils';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+
+const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -71,6 +74,7 @@ export default class AdvancedTab extends PureComponent {
     showLedgerTransportWarning: false,
     showResultMessage: false,
     restoreSuccessful: true,
+    restoreMessage: null,
   };
 
   settingsRefs = Array(
@@ -151,24 +155,41 @@ export default class AdvancedTab extends PureComponent {
     /**
      * so that we can restore same file again if we want to.
      * chrome blocks uploading same file twice.
-     *
      */
     event.target.value = '';
-    const result = await this.props.restoreUserData(jsonString);
-    this.setState({
-      showResultMessage: true,
-      restoreSuccessful: result,
-    });
+    try {
+      const result = await this.props.restoreUserData(jsonString);
+      this.setState({
+        showResultMessage: true,
+        restoreSuccessful: result,
+        restoreMessage: null,
+      });
+    } catch (e) {
+      if (e.message.match(/Unexpected.+JSON/iu)) {
+        this.setState({
+          showResultMessage: true,
+          restoreSuccessful: false,
+          restoreMessage: CORRUPT_JSON_FILE,
+        });
+      }
+    }
   }
 
   renderRestoreUserData() {
     const { t } = this.context;
-    const { showResultMessage, restoreSuccessful } = this.state;
+    const { showResultMessage, restoreSuccessful, restoreMessage } = this.state;
 
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 14;
+    const defaultRestoreMessage = restoreSuccessful
+      ? t('restoreSuccessful')
+      : t('restoreFailed');
+    const restoreMessageToRender =
+      restoreMessage === CORRUPT_JSON_FILE
+        ? t('dataBackupSeemsCorrupt')
+        : defaultRestoreMessage;
+
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[15]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
       >
@@ -197,9 +218,17 @@ export default class AdvancedTab extends PureComponent {
           {showResultMessage && (
             <ActionableMessage
               type={restoreSuccessful ? 'success' : 'danger'}
-              message={
-                restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')
-              }
+              message={restoreMessageToRender}
+              primaryActionV2={{
+                label: t('dismiss'),
+                onClick: () => {
+                  this.setState({
+                    showResultMessage: false,
+                    restoreSuccessful: true,
+                    restoreMessage: null,
+                  });
+                },
+              }}
             />
           )}
         </div>
@@ -207,12 +236,22 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  backupUserData = async () => {
+    const { fileName, data } = await this.props.backupUserData();
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'User Data Exported',
+      category: 'Backup',
+      properties: {},
+    });
+  };
+
   renderUserDataBackup() {
     const { t } = this.context;
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 13;
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
       >
@@ -227,9 +266,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={() => {
-                this.props.backupUserData();
-              }}
+              onClick={() => this.backupUserData()}
             >
               {t('backup')}
             </Button>
@@ -304,11 +341,8 @@ export default class AdvancedTab extends PureComponent {
                 event.preventDefault();
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Reset Account',
-                  properties: {
-                    action: 'Reset Account',
-                    legacy_event: true,
-                  },
+                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  properties: {},
                 });
                 showResetAccountConfirmationModal();
               }}
@@ -633,7 +667,7 @@ export default class AdvancedTab extends PureComponent {
               <Button
                 key="ledger-connection-settings-learn-more"
                 type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                href={ZENDESK_URLS.HARDWARE_CONNECTION}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="settings-page__inline-link"
@@ -801,9 +835,9 @@ export default class AdvancedTab extends PureComponent {
         data-testid="advanced-setting-token-detection"
       >
         <div className="settings-page__content-item">
-          <span>{t('tokenDetection')}</span>
+          <span>{t('enhancedTokenDetection')}</span>
           <div className="settings-page__content-description">
-            {t('tokenDetectionDescription')}
+            {t('enhancedTokenDetectionDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">

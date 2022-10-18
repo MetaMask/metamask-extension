@@ -36,6 +36,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${GENERAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
+    tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
@@ -206,20 +213,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('ropsten'),
-    descriptionMessage: (t) => t('ropsten'),
-    route: `${NETWORKS_ROUTE}#networks-ropsten`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('rinkeby'),
-    descriptionMessage: (t) => t('rinkeby'),
-    route: `${NETWORKS_ROUTE}#networks-rinkeby`,
-    icon: 'fa fa-plug',
-  },
-  {
-    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('goerli'),
     descriptionMessage: (t) => t('goerli'),
     route: `${NETWORKS_ROUTE}#networks-goerli`,
@@ -227,9 +220,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('kovan'),
-    descriptionMessage: (t) => t('kovan'),
-    route: `${NETWORKS_ROUTE}#networks-kovan`,
+    sectionMessage: (t) => t('sepolia'),
+    descriptionMessage: (t) => t('sepolia'),
+    route: `${NETWORKS_ROUTE}#networks-sepolia`,
     icon: 'fa fa-plug',
   },
   {
@@ -307,16 +300,9 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('theme'),
-    descriptionMessage: (t) => t('themeDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#theme`,
-    icon: 'fa fa-flask',
-  },
-  {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('tokenDetection'),
-    descriptionMessage: (t) => t('tokenDetectionDescription'),
+    sectionMessage: (t) => t('enhancedTokenDetection'),
+    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
     route: `${ADVANCED_ROUTE}#token-description`,
     icon: 'fas fa-sliders-h',
   },

@@ -18,6 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -38,7 +39,7 @@ function getActionFunctionById(id, history) {
     5: () => {
       updateViewedNotifications({ 5: true });
       global.platform.openTab({
-        url: 'https://metamask.zendesk.com/hc/en-us/articles/360060826432',
+        url: ZENDESK_URLS.SECRET_RECOVERY_PHRASE,
       });
     },
     8: () => {
@@ -56,6 +57,10 @@ function getActionFunctionById(id, history) {
     13: () => {
       updateViewedNotifications({ 13: true });
       history.push(`${EXPERIMENTAL_ROUTE}#show-custom-network`);
+    },
+    14: () => {
+      updateViewedNotifications({ 14: true });
+      history.push(`${ADVANCED_ROUTE}#backup-userdata`);
     },
   };
 

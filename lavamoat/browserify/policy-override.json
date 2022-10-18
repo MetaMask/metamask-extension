@@ -58,6 +58,11 @@
         "XMLHttpRequest": true
       }
     },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
     "react-dom": {
       "globals": {
         "HTMLIFrameElement": true
@@ -88,6 +93,11 @@
       }
     },
     "@metamask/snap-controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

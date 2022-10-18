@@ -58,9 +58,11 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    portfolioTooltipWasShownInThisSession: false,
     sendInputCurrencySwitched: false,
     newTokensImported: '',
     newCustomNetworkAdded: {},
+    onboardedInThisUISession: false,
     ...state,
   };
 
@@ -321,6 +323,12 @@ export default function reduceApp(state = {}, action) {
         newCollectibleAddedMessage: action.value,
       };
 
+    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
+      return {
+        ...appState,
+        portfolioTooltipWasShownInThisSession: true,
+      };
+
     case actionConstants.LOADING_METHOD_DATA_STARTED:
       return {
         ...appState,
@@ -399,6 +407,11 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         newCustomNetworkAdded: action.value,
       };
+    case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
+      return {
+        ...appState,
+        onboardedInThisUISession: action.value,
+      };
     default:
       return appState;
   }
@@ -415,6 +428,12 @@ export function setThreeBoxLastUpdated(lastUpdated) {
 export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function setPortfolioTooltipWasShownInThisSession() {
+  return {
+    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
   };
 }
 
@@ -447,10 +466,18 @@ export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
 }
 
+export function getPortfolioTooltipWasShownInThisSession(state) {
+  return state.appState.portfolioTooltipWasShownInThisSession;
+}
+
 export function toggleCurrencySwitch() {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
 }
 
 export function setNewCustomNetworkAdded(value) {
   return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
+}
+
+export function setOnBoardedInThisUISession(value) {
+  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
 }

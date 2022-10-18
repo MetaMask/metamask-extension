@@ -46,10 +46,8 @@ export const COLORS = {
   INFO_INVERSE: 'info-inverse',
   INFO_DISABLED: 'info-disabled',
   MAINNET: 'mainnet',
-  ROPSTEN: 'ropsten',
-  KOVAN: 'kovan',
-  RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
+  SEPOLIA: 'sepolia',
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
@@ -74,10 +72,8 @@ export const BACKGROUND_COLORS = pick(COLORS, [
   'INFO_ALTERNATIVE',
   'INFO_MUTED',
   'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);
@@ -101,10 +97,8 @@ export const BORDER_COLORS = pick(COLORS, [
   'INFO_ALTERNATIVE',
   'INFO_MUTED',
   'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);
@@ -126,6 +120,25 @@ export const TEXT_COLORS = pick(COLORS, [
   'INFO_INVERSE',
   'INHERIT',
 ]);
+
+export const ICON_COLORS = pick(COLORS, [
+  'ICON_DEFAULT',
+  'ICON_ALTERNATIVE',
+  'ICON_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
+
 export const TYPOGRAPHY = {
   H1: 'h1',
   H2: 'h2',
@@ -139,6 +152,18 @@ export const TYPOGRAPHY = {
   Paragraph: 'p',
 };
 
+export const TEXT = {
+  DISPLAY_MD: 'display-md',
+  HEADING_LG: 'heading-lg',
+  HEADING_MD: 'heading-md',
+  HEADING_SM: 'heading-sm',
+  BODY_LG: 'body-lg-medium',
+  BODY_MD: 'body-md',
+  BODY_SM: 'body-sm',
+  BODY_XS: 'body-xs',
+  INHERIT: 'inherit',
+};
+
 const NONE = 'none';
 
 export const SIZES = {
@@ -148,6 +173,7 @@ export const SIZES = {
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
+  AUTO: 'auto', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   NONE,
 };
 
@@ -157,6 +183,16 @@ export const BORDER_STYLE = {
   DOTTED: 'dotted',
   DOUBLE: 'double',
   NONE,
+};
+
+export const BORDER_RADIUS = {
+  XS: SIZES.XS,
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
+  NONE,
+  PILL: 'pill',
 };
 
 const FLEX_END = 'flex-end';
@@ -250,8 +286,15 @@ export const TEXT_ALIGN = {
   END: 'end',
 };
 
+export const TEXT_TRANSFORM = {
+  UPPERCASE: 'uppercase',
+  LOWERCASE: 'lowercase',
+  CAPITALIZE: 'capitalize',
+};
+
 export const FONT_WEIGHT = {
   BOLD: 'bold',
+  MEDIUM: 'medium',
   NORMAL: 'normal',
 };
 

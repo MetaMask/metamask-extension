@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import log from 'loglevel';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
-  NETWORK_TYPE_TO_ID_MAP,
+  BUILT_IN_NETWORKS,
 } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
@@ -263,7 +263,7 @@ export default class PreferencesController {
     // If the selected account is no longer valid,
     // select an arbitrary other account:
     if (address === this.getSelectedAddress()) {
-      const selected = Object.keys(identities)[0];
+      const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
     return address;
@@ -326,7 +326,7 @@ export default class PreferencesController {
     // select an arbitrary other account:
     let selected = this.getSelectedAddress();
     if (!addresses.includes(selected)) {
-      selected = addresses[0];
+      [selected] = addresses;
       this.setSelectedAddress(selected);
     }
 
@@ -424,9 +424,9 @@ export default class PreferencesController {
         // on both networks, since we don't know which network each contact is intended for.
 
         let duplicate = false;
-        const builtInProviderNetworkIds = Object.values(
-          NETWORK_TYPE_TO_ID_MAP,
-        ).map((ids) => ids.networkId);
+        const builtInProviderNetworkIds = Object.values(BUILT_IN_NETWORKS).map(
+          (ids) => ids.networkId,
+        );
         const otherRpcEntries = rpcList.filter(
           (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
         );

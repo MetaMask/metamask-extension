@@ -11,15 +11,15 @@ describe('Confirm Page Container Content', () => {
     metamask: {
       provider: {
         type: 'test',
-        chainId: '0x3',
+        chainId: '0x5',
       },
       eip1559V2Enabled: false,
       addressBook: {
-        '0x3': {
+        '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {
             address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x3',
+            chainId: '0x5',
           },
         },
       },

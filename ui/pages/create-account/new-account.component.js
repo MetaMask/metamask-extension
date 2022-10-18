@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -21,15 +21,15 @@ export default class NewAccountCreateForm extends Component {
     const { history, createAccount, mostRecentOverviewPage, accounts } =
       this.props;
 
-    const createClick = (_) => {
+    const createClick = (event) => {
+      event.preventDefault();
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Added New Account',
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
-              action: 'Add New Account',
-              legacy_event: true,
+              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
             },
           });
           history.push(mostRecentOverviewPage);
@@ -37,20 +37,17 @@ export default class NewAccountCreateForm extends Component {
         .catch((e) => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Error',
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
-              action: 'Add New Account',
-              legacy_event: true,
-              errorMessage: e.message,
+              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+              error: e.message,
             },
           });
         });
     };
 
     const accountNameExists = (allAccounts, accountName) => {
-      const accountsNames = allAccounts.map((item) => item.name);
-
-      return accountsNames.includes(accountName);
+      return Boolean(allAccounts.find((item) => item.name === accountName));
     };
 
     const existingAccountName = accountNameExists(accounts, newAccountName);

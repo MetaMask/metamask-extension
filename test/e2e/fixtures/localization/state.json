@@ -1,7 +1,8 @@
 {
   "data": {
     "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+      "mkrMigrationReminderTimestamp": null,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -18,9 +19,8 @@
       "incomingTransactions": {},
       "incomingTxLastFetchedBlocksByNetwork": {
         "goerli": null,
-        "kovan": null,
         "mainnet": null,
-        "rinkeby": 5570536
+        "sepolia": null
       }
     },
     "KeyringController": {
@@ -64,6 +64,12 @@
         },
         "13": {
           "isShown": true
+        },
+        "14": {
+          "isShown": true
+        },
+        "15": {
+          "isShown": true
         }
       }
     },
@@ -106,8 +112,8 @@
     "PreferencesController": {
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "rinkeby": [],
-          "ropsten": []
+          "goerli": [],
+          "sepolia": []
         }
       },
       "assetImages": {},

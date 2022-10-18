@@ -52,7 +52,6 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import {
   showRemainingTimeInMinAndSec,
   getFeeForSmartTransaction,
@@ -60,6 +59,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -133,7 +133,6 @@ export default function SmartTransactionStatus() {
     custom_slippage: fetchParams?.slippage === 2,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_uuid: latestSmartTransactionUuid,
     stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,

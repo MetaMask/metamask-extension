@@ -11,7 +11,7 @@ module.exports = {
   coverageThreshold: {
     global: {
       branches: 44,
-      functions: 42,
+      functions: 46,
       lines: 52,
       statements: 52,
     },
@@ -28,6 +28,16 @@ module.exports = {
       statements: 100,
     },
   },
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'test/test-results/',
+        outputName: 'junit.xml',
+      },
+    ],
+  ],
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
@@ -39,13 +49,20 @@ module.exports = {
     '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
-    '<rootDir>app/scripts/controllers/network/**/*.test.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
+    '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
+    '<rootDir>/app/scripts/constants/error-utils.test.js',
   ],
   testTimeout: 2500,
-  transform: {
-    '^.+\\.[tj]sx?$': 'babel-jest',
-    '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
+  // We have to specify the environment we are running in, which is jsdom. The
+  // default is 'node'. This can be modified *per file* using a comment at the
+  // head of the file. So it may be worthwhile to switch to 'node' in any
+  // background tests.
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
   },
+  workerIdleMemoryLimit: '500MB',
 };

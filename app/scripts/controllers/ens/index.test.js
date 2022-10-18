@@ -10,7 +10,7 @@ describe('EnsController', function () {
   let getCurrentChainId;
   let onNetworkDidChange;
   beforeEach(function () {
-    currentChainId = '0x3';
+    currentChainId = '0x5';
     getCurrentChainId = () => currentChainId;
     onNetworkDidChange = sinon.spy();
   });

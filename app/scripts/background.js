@@ -7,9 +7,8 @@ import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
+import { storeAsStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
-import { captureException } from '@sentry/browser';
 
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -100,7 +99,7 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
-if (isManifestV3()) {
+if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
 } else {
   // initialization flow
@@ -172,7 +171,9 @@ async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode, remotePort);
-  await loadPhishingWarningPage();
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
   log.info('MetaMask initialization complete.');
 }
 
@@ -287,16 +288,11 @@ async function loadStateFromPersistence() {
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   }
+  // this initializes the meta/version data as a class variable to be used for future writes
+  localStore.setMetadata(versionedData.meta);
 
   // write to disk
-  if (localStore.isSupported) {
-    localStore.set(versionedData);
-  } else {
-    // throw in setTimeout so as to not block boot
-    setTimeout(() => {
-      throw new Error('MetaMask - Localstore not supported');
-    });
-  }
+  localStore.set(versionedData.data);
 
   // return just the data
   return versionedData.data;
@@ -337,6 +333,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
+    localStore,
   });
 
   setupEnsIpfsResolver({
@@ -353,56 +350,18 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    storeTransformStream(versionifyData),
-    createStreamSink(persistData),
+    createStreamSink((state) => localStore.set(state)),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
   );
 
-  setupSentryGetStateGlobal(controller.store);
-
-  /**
-   * Assigns the given state to the versioned object (with metadata), and returns that.
-   *
-   * @param {object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
-   */
-  function versionifyData(state) {
-    versionedData.data = state;
-    return versionedData;
-  }
-
-  let dataPersistenceFailing = false;
-
-  async function persistData(state) {
-    if (!state) {
-      throw new Error('MetaMask - updated state is missing');
-    }
-    if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data');
-    }
-    if (localStore.isSupported) {
-      try {
-        await localStore.set(state);
-        if (dataPersistenceFailing) {
-          dataPersistenceFailing = false;
-        }
-      } catch (err) {
-        // log error so we dont break the pipeline
-        if (!dataPersistenceFailing) {
-          dataPersistenceFailing = true;
-          captureException(err);
-        }
-        log.error('error setting state in local store:', err);
-      }
-    }
-  }
+  setupSentryGetStateGlobal(controller);
 
   //
   // connect to other contexts
   //
-  if (isManifestV3() && remoteSourcePort) {
+  if (isManifestV3 && remoteSourcePort) {
     connectRemote(remoteSourcePort);
   }
 
@@ -476,7 +435,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3()) {
+      if (isManifestV3) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
@@ -605,7 +564,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       label = String(count);
     }
     // browserAction has been replaced by action in MV3
-    if (isManifestV3()) {
+    if (isManifestV3) {
       browser.action.setBadgeText({ text: label });
       browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
     } else {
@@ -786,13 +745,13 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.getSentryState = function () {
+  global.sentryHooks.getSentryState = function () {
     const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
+    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {
       browser: window.navigator.userAgent,
       store: debugState,
-      version: global.platform.getVersion(),
+      version: platform.getVersion(),
     };
   };
 }
