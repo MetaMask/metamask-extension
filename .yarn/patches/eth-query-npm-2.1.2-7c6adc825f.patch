@@ -1,0 +1,16 @@
+diff --git a/index.js b/index.js
+index 13e9f3c25e7d3bee6a4ec3c2c5e1eea31e86a377..0105284c71dd6795869d2bd11639d82a07e97506 100644
+--- a/index.js
++++ b/index.js
+@@ -63,7 +63,10 @@ EthQuery.prototype.submitHashrate =                      generateFnFor('eth_subm
+ 
+ EthQuery.prototype.sendAsync = function(opts, cb){
+   const self = this
+-  self.currentProvider.sendAsync(createPayload(opts), function(err, response){
++  const payload = createPayload(opts)
++  debug('making request %o', payload)
++  self.currentProvider.sendAsync(payload, function(err, response){
++    debug('got err = %o, response = %o', err, response)
+     if (!err && response.error) err = new Error('EthQuery - RPC Error - '+response.error.message)
+     if (err) return cb(err)
+     cb(null, response.result)
