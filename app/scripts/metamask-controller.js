@@ -1236,10 +1236,10 @@ export default class MetamaskController extends EventEmitter {
           params:
             newAccounts.length < 2
               ? // If the length is 1 or 0, the accounts are sorted by definition.
-              newAccounts
+                newAccounts
               : // If the length is 2 or greater, we have to execute
-              // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+                // `eth_accounts` vi this method.
+                await this.getPermittedAccounts(origin),
         });
       }
 
@@ -1991,8 +1991,8 @@ export default class MetamaskController extends EventEmitter {
       // DetectCollectibleController
       detectCollectibles: process.env.COLLECTIBLES_V1
         ? collectibleDetectionController.detectCollectibles.bind(
-          collectibleDetectionController,
-        )
+            collectibleDetectionController,
+          )
         : null,
 
       /** Token Detection V2 */
@@ -2254,7 +2254,7 @@ export default class MetamaskController extends EventEmitter {
     const isTokenDetectionInactiveInMainnet =
       !useTokenDetection &&
       this.networkController.store.getState().provider.chainId ===
-      CHAIN_IDS.MAINNET;
+        CHAIN_IDS.MAINNET;
     const { tokenList } = this.tokenListController.state;
     const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
       ? STATIC_MAINNET_TOKEN_LIST
@@ -2585,8 +2585,9 @@ export default class MetamaskController extends EventEmitter {
    */
 
   getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${parseInt(index, 10) + 1
-      } ${hdPathDescription || ''}`.trim();
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      parseInt(index, 10) + 1
+    } ${hdPathDescription || ''}`.trim();
   }
 
   /**
