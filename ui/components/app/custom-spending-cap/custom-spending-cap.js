@@ -18,20 +18,19 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
+import { setCustomTokenAmount } from '../../../ducks/app/app';
+
 
 export default function CustomSpendingCap({
   tokenName,
   currentTokenBalance,
   dappProposedValue,
   siteOrigin,
-  passTheCurrentValue,
   passTheErrorText,
 }) {
   const t = useContext(I18nContext);
 
-  const customTokenAmount = useSelector(getCustomTokenAmount);
-
-  const [value, setValue] = useState(customTokenAmount);
+  const value = useSelector(getCustomTokenAmount);
   const [error, setError] = useState('');
   const [showUseDefaultButton, setShowUseDefaultButton] = useState(true);
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
@@ -64,7 +63,7 @@ export default function CustomSpendingCap({
   };
 
   const [customSpendingCapText, setCustomSpendingCapText] = useState(
-    getInputTextLogic(customTokenAmount).description,
+    getInputTextLogic(value).description,
   );
 
   const handleChange = (valueInput) => {
@@ -81,8 +80,7 @@ export default function CustomSpendingCap({
       setError('');
     }
 
-    setValue(valueInput);
-    passTheCurrentValue(valueInput);
+    setCustomTokenAmount(valueInput);
   };
 
   useEffect(() => {
@@ -121,7 +119,7 @@ export default function CustomSpendingCap({
           onClick={(e) => {
             e.preventDefault();
             handleChange(currentTokenBalance);
-            setValue(currentTokenBalance);
+            setCustomTokenAmount(currentTokenBalance);
           }}
         >
           {t('max')}

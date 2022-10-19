@@ -43,7 +43,6 @@ import ApproveContentCard from '../../components/app/approve-content-card/approv
 import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
 import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
-import { setCustomTokenAmount } from '../../ducks/app/app';
 
 export default function TokenAllowance({
   origin,
@@ -73,18 +72,15 @@ export default function TokenAllowance({
   const dispatch = useDispatch();
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-
+  const customTokenAmount = useSelector(getCustomTokenAmount);
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(true);
-  const [customTokenAmountInputValue, setCustomTokenAmountInputValue] =
-    useState('');
   const [errorText, setErrorText] = useState('');
 
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const customTokenAmount = useSelector(getCustomTokenAmount);
 
   let fullTxData = { ...txData };
 
@@ -104,7 +100,7 @@ export default function TokenAllowance({
   const { balanceError } = useGasFeeContext();
 
   const disableNextButton =
-    isFirstPage && (customTokenAmountInputValue === '' || errorText !== '');
+    isFirstPage && (customTokenAmount === '' || errorText !== '');
 
   const disableApproveButton = !isFirstPage && balanceError;
 
@@ -165,7 +161,6 @@ export default function TokenAllowance({
   };
 
   const handleNextClick = () => {
-    dispatch(setCustomTokenAmount(customTokenAmountInputValue));
     setShowFullTxDetails(false);
     setIsFirstPage(false);
   };
@@ -296,9 +291,6 @@ export default function TokenAllowance({
             currentTokenBalance={parseFloat(currentTokenBalance)}
             dappProposedValue={parseFloat(dappProposedTokenAmount)}
             siteOrigin={origin}
-            passTheCurrentValue={(inputValue) =>
-              setCustomTokenAmountInputValue(inputValue)
-            }
             passTheErrorText={(value) => setErrorText(value)}
           />
         ) : (
