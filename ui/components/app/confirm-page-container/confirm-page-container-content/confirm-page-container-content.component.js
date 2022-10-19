@@ -9,6 +9,7 @@ import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import DepositPopover from '../../deposit-popover/deposit-popover';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -51,10 +52,13 @@ export default class ConfirmPageContainerContent extends Component {
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
-    showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+  };
+
+  state = {
+    setShowDepositPopover: false,
   };
 
   renderContent() {
@@ -151,7 +155,6 @@ export default class ConfirmPageContainerContent extends Component {
       hasTopBorder,
       nativeCurrency,
       networkName,
-      showBuyModal,
       toAddress,
       transactionType,
       isBuyableChain,
@@ -163,6 +166,8 @@ export default class ConfirmPageContainerContent extends Component {
       supportsEIP1559V2 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+
+    const { setShowDepositPopover } = this.state;
 
     return (
       <div
@@ -212,7 +217,9 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={showBuyModal}
+                        onClick={() =>
+                          this.setState({ setShowDepositPopover: true })
+                        }
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -234,7 +241,11 @@ export default class ConfirmPageContainerContent extends Component {
             />
           </div>
         )}
-
+        {setShowDepositPopover && (
+          <DepositPopover
+            onClose={() => this.setState({ setShowDepositPopover: false })}
+          />
+        )}
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}
