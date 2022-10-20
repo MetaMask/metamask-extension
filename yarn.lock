@@ -18843,12 +18843,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"improved-yarn-audit@npm:^3.0.0":
+"improved-yarn-audit@npm:3.0.0":
   version: 3.0.0
   resolution: "improved-yarn-audit@npm:3.0.0"
   bin:
     improved-yarn-audit: bin/improved-yarn-audit
   checksum: 5ca18647f138f435203b88b0f57334e088cc64567d51f9eff069026fcb4aebd0486e96d59f44ed91ed9f2df9f8b6cce683adba5e9e734bc37f11b9c11b8b64f2
+  languageName: node
+  linkType: hard
+
+"improved-yarn-audit@patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.0.0
+  resolution: "improved-yarn-audit@patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch::version=3.0.0&hash=1e7141&locator=metamask-crx%40workspace%3A."
+  bin:
+    improved-yarn-audit: bin/improved-yarn-audit
+  checksum: 688411fc37bdb417a23fb203968ca3db8f68bbffd8af4f3817c963d256bfb1675bfbb4d389bf4410a57e95dd55c98b7b6767c37a046c80b0c69b7dad279db915
   languageName: node
   linkType: hard
 
