@@ -1,25 +1,47 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Confusable from './confusable.component';
+import { screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import Confusable from '.';
 
 describe('Confusable component', () => {
   it('should detect zero-width unicode', () => {
-    const wrapper = shallow(<Confusable input="vita‍lik.eth" />);
-    expect(wrapper.find('.confusable__point')).toHaveLength(1);
+    const props = {
+      input: 'vitalik.eth',
+    };
+
+    const { container } = renderWithProvider(<Confusable {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should detect homoglyphic unicode points', () => {
-    const wrapper = shallow(<Confusable input="faceboоk.eth" />);
-    expect(wrapper.find('.confusable__point')).toHaveLength(1);
+    const props = {
+      input: 'facebook.eth',
+    };
+
+    const { container } = renderWithProvider(<Confusable {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should detect multiple homoglyphic unicode points', () => {
-    const wrapper = shallow(<Confusable input="ѕсоре.eth" />);
-    expect(wrapper.find('.confusable__point')).toHaveLength(5);
+    const props = {
+      input: 'scope.eth',
+    };
+
+    const { container } = renderWithProvider(<Confusable {...props} />);
+    screen.debug();
+    expect(container).toMatchSnapshot();
   });
 
   it('should not detect emoji', () => {
-    const wrapper = shallow(<Confusable input="👻.eth" />);
-    expect(wrapper.find('.confusable__point')).toHaveLength(0);
+    const props = {
+      input: '👻.eth',
+    };
+
+    const { container } = renderWithProvider(<Confusable {...props} />);
+
+    expect(container).toMatchSnapshot();
+    screen.debug();
   });
 });
