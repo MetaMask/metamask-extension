@@ -1,0 +1,34 @@
+diff --git a/lib/js/ecpointg.js b/lib/js/ecpointg.js
+index 0144364c58853b0025c1da2957815ae1055888f4..72ce62e85ffc59b585d7d3301b84636a054d2b4e 100644
+--- a/lib/js/ecpointg.js
++++ b/lib/js/ecpointg.js
+@@ -9,10 +9,12 @@ function ECPointG () {
+   this.y = BN.fromBuffer(Buffer.from('483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8', 'hex'))
+   this.inf = false
+ 
+-  this._precompute()
++  this.precomputed = undefined
+ }
+ 
+ ECPointG.prototype._precompute = function () {
++  if (this.precomputed !== undefined) return
++
+   var ecpoint = new ECPoint(this.x, this.y)
+ 
+   var dstep = 4
+@@ -34,6 +36,7 @@ ECPointG.prototype._precompute = function () {
+ }
+ 
+ ECPointG.prototype.mul = function (num) {
++  this._precompute()
+   // Algorithm 3.42 Fixed-base NAF windowing method for point multiplication
+   var step = this.precomputed.doubles.step
+   var points = this.precomputed.doubles.points
+@@ -68,6 +71,7 @@ ECPointG.prototype.mul = function (num) {
+ }
+ 
+ ECPointG.prototype.mulAdd = function (k1, p2, k2) {
++  this._precompute()
+   var nafPointsP1 = this.precomputed.naf
+   var nafPointsP2 = p2._getNAFPoints1()
+   var wnd = [nafPointsP1.points, nafPointsP2.points]
