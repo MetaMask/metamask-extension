@@ -1672,12 +1672,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.0, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.4.5, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:7.18.9":
   version: 7.18.9
   resolution: "@babel/runtime@npm:7.18.9"
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: 36dd736baba7164e82b3cc9d43e081f0cb2d05ff867ad39cac515d99546cee75b7f782018b02a3dcf5f2ef3d27f319faa68965fdfec49d4912c60c6002353a2e
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch::locator=metamask-crx%40workspace%3A.":
+  version: 7.18.9
+  resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch::version=7.18.9&hash=918bda&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 8608792d99a8fdccecd8bbab07553aeed78105ad4b21c745631417cb7da93a263e5d5596deb086fb26b42d0680a5ee063874060efe0d77e76a64f43ef8ba94fb
   languageName: node
   linkType: hard
 
@@ -1960,7 +1969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^1.2.2, @eslint/eslintrc@npm:^1.3.0":
+"@eslint/eslintrc@npm:1.3.0":
   version: 1.3.0
   resolution: "@eslint/eslintrc@npm:1.3.0"
   dependencies:
@@ -1974,6 +1983,23 @@ __metadata:
     minimatch: ^3.1.2
     strip-json-comments: ^3.1.1
   checksum: a1e734ad31a8b5328dce9f479f185fd4fc83dd7f06c538e1fa457fd8226b89602a55cc6458cd52b29573b01cdfaf42331be8cfc1fec732570086b591f4ed6515
+  languageName: node
+  linkType: hard
+
+"@eslint/eslintrc@patch:@eslint/eslintrc@npm%3A1.3.0#./.yarn/patches/@eslint-eslintrc-npm-1.3.0-1f3c51be25.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.3.0
+  resolution: "@eslint/eslintrc@patch:@eslint/eslintrc@npm%3A1.3.0#./.yarn/patches/@eslint-eslintrc-npm-1.3.0-1f3c51be25.patch::version=1.3.0&hash=b3d187&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    ajv: ^6.12.4
+    debug: ^4.3.2
+    espree: ^9.3.2
+    globals: ^13.15.0
+    ignore: ^5.2.0
+    import-fresh: ^3.2.1
+    js-yaml: ^4.1.0
+    minimatch: ^3.1.2
+    strip-json-comments: ^3.1.1
+  checksum: 934453070775fe09f7814c7f6d07d6cbbb56ec8e3c160ab2114b7291202d6f1c848b98f062ba5161f3938ff61bb178f757d6e21cf9028809aa95abb962be8c02
   languageName: node
   linkType: hard
 
@@ -2789,7 +2815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/intl-utils@npm:^3.3.1":
+"@formatjs/intl-utils@npm:3.3.1":
   version: 3.3.1
   resolution: "@formatjs/intl-utils@npm:3.3.1"
   dependencies:
@@ -2798,10 +2824,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^5.13.0":
+"@formatjs/intl-utils@patch:@formatjs/intl-utils@npm%3A3.3.1#./.yarn/patches/@formatjs-intl-utils-npm-3.3.1-08510c16ad.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.3.1
+  resolution: "@formatjs/intl-utils@patch:@formatjs/intl-utils@npm%3A3.3.1#./.yarn/patches/@formatjs-intl-utils-npm-3.3.1-08510c16ad.patch::version=3.3.1&hash=0b1781&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    emojis-list: ^3.0.0
+  checksum: a24f9405ab93031791298a1ea574ff1a10506e98d85706fc0d0f8b7c6019202c61b0490e9cfc3c6fadb6bc71b9545544124ad639e197c1983fb474152f326de7
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-free@npm:5.13.0":
   version: 5.13.0
   resolution: "@fortawesome/fontawesome-free@npm:5.13.0"
   checksum: 873193fbd9e25657e9fec10e321ea6946ec469a1ae5edb5e853991f01ab613fb00d06b48d11f35299cdfa949cfab57ec693ff79926e182544da09a002e85582c
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-free@patch:@fortawesome/fontawesome-free@npm%3A5.13.0#./.yarn/patches/@fortawesome-fontawesome-free-npm-5.13.0-f20fc0388d.patch::locator=metamask-crx%40workspace%3A.":
+  version: 5.13.0
+  resolution: "@fortawesome/fontawesome-free@patch:@fortawesome/fontawesome-free@npm%3A5.13.0#./.yarn/patches/@fortawesome-fontawesome-free-npm-5.13.0-f20fc0388d.patch::version=5.13.0&hash=0a655c&locator=metamask-crx%40workspace%3A."
+  checksum: 4bc2281e3349f67217717621e30005b98fe24171287438f3dce088c70681da49909003c0e1cf6613c8690b01760977cd74c73816ed0f4f5a175b7ac465b318e7
   languageName: node
   linkType: hard
 
@@ -3731,7 +3773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/bc-ur-registry@npm:^0.5.0-alpha.5":
+"@keystonehq/bc-ur-registry@npm:0.5.0-alpha.5":
   version: 0.5.0-alpha.5
   resolution: "@keystonehq/bc-ur-registry@npm:0.5.0-alpha.5"
   dependencies:
@@ -3739,6 +3781,17 @@ __metadata:
     base58check: ^2.0.0
     tslib: ^2.3.0
   checksum: 9d0a028db36494f5d28281ed67fc17c191c4b9e72ee5088f79ed5a874cc0d958018aeafa4dc9997e10425afa5b59f0e75e8760297056d9b756837ac7b69460aa
+  languageName: node
+  linkType: hard
+
+"@keystonehq/bc-ur-registry@patch:@keystonehq/bc-ur-registry@npm%3A0.5.0-alpha.5#./.yarn/patches/@keystonehq-bc-ur-registry-npm-0.5.0-alpha.5-b95c7992a6.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.5.0-alpha.5
+  resolution: "@keystonehq/bc-ur-registry@patch:@keystonehq/bc-ur-registry@npm%3A0.5.0-alpha.5#./.yarn/patches/@keystonehq-bc-ur-registry-npm-0.5.0-alpha.5-b95c7992a6.patch::version=0.5.0-alpha.5&hash=2b9ed1&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ngraveio/bc-ur": ^1.1.5
+    base58check: ^2.0.0
+    tslib: ^2.3.0
+  checksum: b215552f10c34a92c8651fae8b0d2794ea92f0a1261a40c4370a63fdb88945ee650e333f516ad368c1ebe84c41246337bf7579064471769f19869f8b4e7a88b2
   languageName: node
   linkType: hard
 
@@ -3794,7 +3847,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^3.1.0":
+"@lavamoat/lavapack@npm:3.1.0":
   version: 3.1.0
   resolution: "@lavamoat/lavapack@npm:3.1.0"
   dependencies:
@@ -3807,6 +3860,22 @@ __metadata:
     through2: ^4.0.2
     umd: ^3.0.3
   checksum: 01d87fe76194591e3542171c6f7eccd0efadcbe27213af5d251480a5ca3cc95a77724de103995ee7c96a4b7e7a269c8dfe446a0a3028f8cf4952d7168817fa4a
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.1.0
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch::version=3.1.0&hash=8c39c8&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    JSONStream: ^1.3.5
+    combine-source-map: ^0.8.0
+    convert-source-map: ^1.7.0
+    json-stable-stringify: ^1.0.1
+    lavamoat-core: ^12.2.0
+    readable-stream: ^3.6.0
+    through2: ^4.0.2
+    umd: ^3.0.3
+  checksum: cef044f3dfba68455ed1b17b80d58fa3fcbd42e5d576c0ed0fad126f27e15592ae69c213b4537626a053c8a2f5a0f6bcf80bbb3e7e7ab6722ea6743d4e54820c
   languageName: node
   linkType: hard
 
@@ -4956,7 +5025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:^1.6.2":
+"@reduxjs/toolkit@npm:1.6.2":
   version: 1.6.2
   resolution: "@reduxjs/toolkit@npm:1.6.2"
   dependencies:
@@ -4973,6 +5042,26 @@ __metadata:
     react-redux:
       optional: true
   checksum: 895e30518dd1552c115c8a06091856f1f60394a971d214eba5c6d7fc2053c5bc2730bc172ba88aead25d240e99a25c94c3621159823bbc0d0109dc9365db456d
+  languageName: node
+  linkType: hard
+
+"@reduxjs/toolkit@patch:@reduxjs/toolkit@npm%3A1.6.2#./.yarn/patches/@reduxjs-toolkit-npm-1.6.2-67af09515f.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.6.2
+  resolution: "@reduxjs/toolkit@patch:@reduxjs/toolkit@npm%3A1.6.2#./.yarn/patches/@reduxjs-toolkit-npm-1.6.2-67af09515f.patch::version=1.6.2&hash=ce9769&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    immer: ^9.0.6
+    redux: ^4.1.0
+    redux-thunk: ^2.3.0
+    reselect: ^4.0.0
+  peerDependencies:
+    react: ^16.14.0 || ^17.0.0
+    react-redux: ^7.2.1
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-redux:
+      optional: true
+  checksum: 091b1a21328f2788e6f4e177cd9c8b81cc27766eae2e098e004d1eb81d74153cd1dbbee34e7355e96e7e4b9d15bee7edb2a92624d08e738827fd46c0e7179c94
   languageName: node
   linkType: hard
 
@@ -7150,12 +7239,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/madge@npm:^5.0.0":
+"@types/madge@npm:5.0.0":
   version: 5.0.0
   resolution: "@types/madge@npm:5.0.0"
   dependencies:
     "@types/node": "*"
   checksum: 57b0327b85487c900c4ee4f79eff725d85b6dce0226c703831df20e28e3f10e0c86abdeadbfe9fc4de682473538079e74b114869489bd93b7db430f0460e2dbf
+  languageName: node
+  linkType: hard
+
+"@types/madge@patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch::locator=metamask-crx%40workspace%3A.":
+  version: 5.0.0
+  resolution: "@types/madge@patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch::version=5.0.0&hash=59a150&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@types/node": "*"
+  checksum: b307226550057eba48a6a4482cbd00aa4cfb30e8346ff3bc022107e78de1cfa84c09cdf4727b55e5ab73a08e4237c49e716734d8735b18e9a70d4b494e1f265a
   languageName: node
   linkType: hard
 
@@ -8322,12 +8420,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abort-controller@npm:^3.0.0":
+"abort-controller@npm:3.0.0":
   version: 3.0.0
   resolution: "abort-controller@npm:3.0.0"
   dependencies:
     event-target-shim: ^5.0.0
   checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
+  languageName: node
+  linkType: hard
+
+"abort-controller@patch:abort-controller@npm%3A3.0.0#./.yarn/patches/abort-controller-npm-3.0.0-2f3a9a2bcb.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.0.0
+  resolution: "abort-controller@patch:abort-controller@npm%3A3.0.0#./.yarn/patches/abort-controller-npm-3.0.0-2f3a9a2bcb.patch::version=3.0.0&hash=37c28b&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    event-target-shim: ^5.0.0
+  checksum: 8c719ccadd3ed11d78626d9c4f0bdb5b534fe464124146ea0180877f86605bb4829a4545ce5652ac96665b00adcddd3f7bf28ff1d78ebb0391d4c9ba5fc43e28
   languageName: node
   linkType: hard
 
@@ -8507,6 +8614,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"acorn@npm:7.4.1":
+  version: 7.4.1
+  resolution: "acorn@npm:7.4.1"
+  bin:
+    acorn: bin/acorn
+  checksum: 1860f23c2107c910c6177b7b7be71be350db9e1080d814493fae143ae37605189504152d1ba8743ba3178d0b37269ce1ffc42b101547fdc1827078f82671e407
+  languageName: node
+  linkType: hard
+
 "acorn@npm:^5.1.2":
   version: 5.7.4
   resolution: "acorn@npm:5.7.4"
@@ -8525,21 +8641,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^7.0.0, acorn@npm:^7.1.1, acorn@npm:^7.4.1":
-  version: 7.4.1
-  resolution: "acorn@npm:7.4.1"
-  bin:
-    acorn: bin/acorn
-  checksum: 1860f23c2107c910c6177b7b7be71be350db9e1080d814493fae143ae37605189504152d1ba8743ba3178d0b37269ce1ffc42b101547fdc1827078f82671e407
-  languageName: node
-  linkType: hard
-
 "acorn@npm:^8.4.1, acorn@npm:^8.5.0, acorn@npm:^8.7.0, acorn@npm:^8.7.1":
   version: 8.8.0
   resolution: "acorn@npm:8.8.0"
   bin:
     acorn: bin/acorn
   checksum: 7270ca82b242eafe5687a11fea6e088c960af712683756abf0791b68855ea9cace3057bd5e998ffcef50c944810c1e0ca1da526d02b32110e13c722aa959afdc
+  languageName: node
+  linkType: hard
+
+"acorn@patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch::locator=metamask-crx%40workspace%3A.":
+  version: 7.4.1
+  resolution: "acorn@patch:acorn@npm%3A7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch::version=7.4.1&hash=9c9719&locator=metamask-crx%40workspace%3A."
+  bin:
+    acorn: bin/acorn
+  checksum: a8df57381e2865fd9f026c9a30c1bc7c34379c06f4805b143038f896622273d14fb7292e2ac6565b5750ea9993894c7ff6a29dbbe0a6c771ecdd1f3f6e7825e4
   languageName: node
   linkType: hard
 
@@ -9708,10 +9824,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"await-semaphore@npm:^0.1.1, await-semaphore@npm:^0.1.3":
+"await-semaphore@npm:0.1.3":
   version: 0.1.3
   resolution: "await-semaphore@npm:0.1.3"
   checksum: 334c86541e446378dd832168de431327a77146f70cd80b57c99cd483ce5996e3bfdadea9d795e36f0b4faacb5121f5f7a99d94297ac2bdafbc690e5b0aa5cc32
+  languageName: node
+  linkType: hard
+
+"await-semaphore@patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.3
+  resolution: "await-semaphore@patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch::version=0.1.3&hash=311267&locator=metamask-crx%40workspace%3A."
+  checksum: 142417fc562106c9e424b97bfd5ab404e01a7921e0576d5f7f597f1ac41c6cf578b740aebd2eba515a965c800d0b0f20d0ec5f279ca7d9bccc4f61b9ecd08f80
   languageName: node
   linkType: hard
 
@@ -10556,7 +10679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"borc@npm:^2.1.0, borc@npm:^2.1.2":
+"borc@npm:2.1.2":
   version: 2.1.2
   resolution: "borc@npm:2.1.2"
   dependencies:
@@ -10568,6 +10691,21 @@ __metadata:
     json-text-sequence: ~0.1.0
     readable-stream: ^3.6.0
   checksum: 1914720baf2dd980edc82a957d1901b8cc80746c0482892fe747558c47c452127a1359104f01b3df9510ae8bb7954273c52796329f8f1445ca04415e05c8e9e2
+  languageName: node
+  linkType: hard
+
+"borc@patch:borc@npm%3A2.1.2#./.yarn/patches/borc-npm-2.1.2-8ffcc2dd81.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.1.2
+  resolution: "borc@patch:borc@npm%3A2.1.2#./.yarn/patches/borc-npm-2.1.2-8ffcc2dd81.patch::version=2.1.2&hash=3f4df4&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    bignumber.js: ^9.0.0
+    buffer: ^5.5.0
+    commander: ^2.15.0
+    ieee754: ^1.1.13
+    iso-url: ~0.4.7
+    json-text-sequence: ~0.1.0
+    readable-stream: ^3.6.0
+  checksum: 9ee521e16f2629fab4d340fed536d2776171d5cf67562e8bd643a10e1dae03698b15ede92ca3b47a028f1fad6116ba41c24f805d82fecf9b984691ffb17ba48b
   languageName: node
   linkType: hard
 
@@ -12360,17 +12498,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colors@npm:0.5.x":
-  version: 0.5.1
-  resolution: "colors@npm:0.5.1"
-  checksum: ef0533f715066999335270424800907dcedfe6fa11127ff700bffab8466ef058446d00ef37c728f3e4cfa60b4695fbe10d194e4646dd57d110496f2adaefeefe
-  languageName: node
-  linkType: hard
-
-"colors@npm:^1.4.0":
+"colors@npm:1.4.0":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
   checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
+  languageName: node
+  linkType: hard
+
+"colors@patch:colors@npm%3A1.4.0#./.yarn/patches/colors-npm-1.4.0-7e2cf12234.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.4.0
+  resolution: "colors@patch:colors@npm%3A1.4.0#./.yarn/patches/colors-npm-1.4.0-7e2cf12234.patch::version=1.4.0&hash=075f40&locator=metamask-crx%40workspace%3A."
+  checksum: 96b231a7f42e19893f9851458b4a13567b22cc36dd02e06e42bf8c94d726e74b24b37e17518f2d47483ec4996c845c2073f4424155b4d89e26d89c4025450fb1
   languageName: node
   linkType: hard
 
@@ -12720,35 +12858,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"convert-source-map@npm:1.7.0":
-  version: 1.7.0
-  resolution: "convert-source-map@npm:1.7.0"
-  dependencies:
-    safe-buffer: ~5.1.1
-  checksum: bcd2e3ea7d37f96b85a6e362c8a89402ccc73757256e3ee53aa2c22fe915adb854c66b1f81111be815a3a6a6ce3c58e8001858e883c9d5b4fe08a853fa865967
-  languageName: node
-  linkType: hard
-
-"convert-source-map@npm:^0.3.3":
-  version: 0.3.5
-  resolution: "convert-source-map@npm:0.3.5"
-  checksum: 33b209aa8f33bcaa9a22f2dbf6bfb71f4a429d8e948068d61b6087304e3194c30016d1e02e842184e653b74442c7e2dd2e7db97532b67f556aded3d8b4377a2c
-  languageName: node
-  linkType: hard
-
-"convert-source-map@npm:^1.0.0, convert-source-map@npm:^1.4.0, convert-source-map@npm:^1.5.0, convert-source-map@npm:^1.5.1, convert-source-map@npm:^1.6.0, convert-source-map@npm:^1.7.0, convert-source-map@npm:^1.8.0":
-  version: 1.8.0
-  resolution: "convert-source-map@npm:1.8.0"
-  dependencies:
-    safe-buffer: ~5.1.1
-  checksum: 985d974a2d33e1a2543ada51c93e1ba2f73eaed608dc39f229afc78f71dcc4c8b7d7c684aa647e3c6a3a204027444d69e53e169ce94e8d1fa8d7dee80c9c8fed
-  languageName: node
-  linkType: hard
-
-"convert-source-map@npm:~1.1.0":
+"convert-source-map@npm:1.1.3":
   version: 1.1.3
   resolution: "convert-source-map@npm:1.1.3"
   checksum: 0ed6bdecd330fd05941b417b63ebc9001b438f6d6681cd9a068617c3d4b649794dc35c95ba239d0a01f0b9499912b9e0d0d1b7c612e3669c57c65ce4bbc8fdd8
+  languageName: node
+  linkType: hard
+
+"convert-source-map@patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.1.3
+  resolution: "convert-source-map@patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch::version=1.1.3&hash=1551e3&locator=metamask-crx%40workspace%3A."
+  checksum: 47e0b9bd505126c8b5a1499013c50e53d5ada0593fa29ad3b42615c29a8712f61ffbff745198ca38d49175104bccc8b03535a56a6be917e2e6d44d9c78b9e335
   languageName: node
   linkType: hard
 
@@ -13062,7 +13182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^6.0.0, cross-spawn@npm:^6.0.5":
+"cross-spawn@npm:^6.0.0":
   version: 6.0.5
   resolution: "cross-spawn@npm:6.0.5"
   dependencies:
@@ -15075,13 +15195,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"error@npm:^7.0.0":
+"error@npm:7.0.2":
   version: 7.0.2
   resolution: "error@npm:7.0.2"
   dependencies:
     string-template: ~0.2.1
     xtend: ~4.0.0
   checksum: 407ff5faa73f5da3424a81d0160a1d3c6b5144e87cb1266334e7a4c2c7a69ae653e1b544032d7dbd8b210006858eea909ea0f46694b0484cd7555ba3086be0a8
+  languageName: node
+  linkType: hard
+
+"error@patch:error@npm%3A7.0.2#./.yarn/patches/error-npm-7.0.2-6dfbeab4da.patch::locator=metamask-crx%40workspace%3A.":
+  version: 7.0.2
+  resolution: "error@patch:error@npm%3A7.0.2#./.yarn/patches/error-npm-7.0.2-6dfbeab4da.patch::version=7.0.2&hash=341590&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    string-template: ~0.2.1
+    xtend: ~4.0.0
+  checksum: 721c02e1a8caed79f6af9899efc323d4af8d6d846629003fd0d136b029f0082aa0c8702713fff9461204e910a80335b8591d4d500e032196f51688752861f88d
   languageName: node
   linkType: hard
 
@@ -15343,7 +15473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:^2.5.0":
+"eslint-import-resolver-typescript@npm:2.5.0":
   version: 2.5.0
   resolution: "eslint-import-resolver-typescript@npm:2.5.0"
   dependencies:
@@ -15356,6 +15486,22 @@ __metadata:
     eslint: "*"
     eslint-plugin-import: "*"
   checksum: e507a0cb46a05f136b1416664c7cbe1b1178001417421ce5621f147e88c8973b5c9ee1554dbf0b79ae93f760d69f2796e1a880d562356a080e9e4ac1058206a3
+  languageName: node
+  linkType: hard
+
+"eslint-import-resolver-typescript@patch:eslint-import-resolver-typescript@npm%3A2.5.0#./.yarn/patches/eslint-import-resolver-typescript-npm-2.5.0-3b8adf0d03.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.5.0
+  resolution: "eslint-import-resolver-typescript@patch:eslint-import-resolver-typescript@npm%3A2.5.0#./.yarn/patches/eslint-import-resolver-typescript-npm-2.5.0-3b8adf0d03.patch::version=2.5.0&hash=2f7c59&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    debug: ^4.3.1
+    glob: ^7.1.7
+    is-glob: ^4.0.1
+    resolve: ^1.20.0
+    tsconfig-paths: ^3.9.0
+  peerDependencies:
+    eslint: "*"
+    eslint-plugin-import: "*"
+  checksum: 5ec0f6121e8782039bc8bfb4d952c50d827bf86f000869eb8dac98f523111d1479ef13ec4ab6f1f0edb177d3dc1f440a7108b42684678d240a987349080621d4
   languageName: node
   linkType: hard
 
@@ -15615,52 +15761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.14.0":
-  version: 8.14.0
-  resolution: "eslint@npm:8.14.0"
-  dependencies:
-    "@eslint/eslintrc": ^1.2.2
-    "@humanwhocodes/config-array": ^0.9.2
-    ajv: ^6.10.0
-    chalk: ^4.0.0
-    cross-spawn: ^7.0.2
-    debug: ^4.3.2
-    doctrine: ^3.0.0
-    escape-string-regexp: ^4.0.0
-    eslint-scope: ^7.1.1
-    eslint-utils: ^3.0.0
-    eslint-visitor-keys: ^3.3.0
-    espree: ^9.3.1
-    esquery: ^1.4.0
-    esutils: ^2.0.2
-    fast-deep-equal: ^3.1.3
-    file-entry-cache: ^6.0.1
-    functional-red-black-tree: ^1.0.1
-    glob-parent: ^6.0.1
-    globals: ^13.6.0
-    ignore: ^5.2.0
-    import-fresh: ^3.0.0
-    imurmurhash: ^0.1.4
-    is-glob: ^4.0.0
-    js-yaml: ^4.1.0
-    json-stable-stringify-without-jsonify: ^1.0.1
-    levn: ^0.4.1
-    lodash.merge: ^4.6.2
-    minimatch: ^3.0.4
-    natural-compare: ^1.4.0
-    optionator: ^0.9.1
-    regexpp: ^3.2.0
-    strip-ansi: ^6.0.1
-    strip-json-comments: ^3.1.0
-    text-table: ^0.2.0
-    v8-compile-cache: ^2.0.3
-  bin:
-    eslint: bin/eslint.js
-  checksum: 87d2e3e5eb93216d4ab36006e7b8c0bfad02f40b0a0f193f1d42754512cd3a9d8244152f1c69df5db2e135b3c4f1c10d0ed2f0881fe8a8c01af55465968174c1
-  languageName: node
-  linkType: hard
-
-"eslint@npm:^8.20.0":
+"eslint@npm:8.20.0":
   version: 8.20.0
   resolution: "eslint@npm:8.20.0"
   dependencies:
@@ -15705,6 +15806,51 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint@patch:eslint@npm%3A8.20.0#./.yarn/patches/eslint-npm-8.20.0-6bbc377ff7.patch::locator=metamask-crx%40workspace%3A.":
+  version: 8.20.0
+  resolution: "eslint@patch:eslint@npm%3A8.20.0#./.yarn/patches/eslint-npm-8.20.0-6bbc377ff7.patch::version=8.20.0&hash=25e082&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@eslint/eslintrc": ^1.3.0
+    "@humanwhocodes/config-array": ^0.9.2
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.3.2
+    doctrine: ^3.0.0
+    escape-string-regexp: ^4.0.0
+    eslint-scope: ^7.1.1
+    eslint-utils: ^3.0.0
+    eslint-visitor-keys: ^3.3.0
+    espree: ^9.3.2
+    esquery: ^1.4.0
+    esutils: ^2.0.2
+    fast-deep-equal: ^3.1.3
+    file-entry-cache: ^6.0.1
+    functional-red-black-tree: ^1.0.1
+    glob-parent: ^6.0.1
+    globals: ^13.15.0
+    ignore: ^5.2.0
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    js-yaml: ^4.1.0
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash.merge: ^4.6.2
+    minimatch: ^3.1.2
+    natural-compare: ^1.4.0
+    optionator: ^0.9.1
+    regexpp: ^3.2.0
+    strip-ansi: ^6.0.1
+    strip-json-comments: ^3.1.0
+    text-table: ^0.2.0
+    v8-compile-cache: ^2.0.3
+  bin:
+    eslint: bin/eslint.js
+  checksum: ba514053dc1b8cb00895f500c556b1ca01e0a96acffa11394bc4c44f399743f2e4d98d8d58b57ea8418348cf98fcc7bfc82499fd2cb8b3f3d34f3c2adc46ffbf
+  languageName: node
+  linkType: hard
+
 "esm@npm:^3.2.25":
   version: 3.2.25
   resolution: "esm@npm:3.2.25"
@@ -15723,7 +15869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.3.1, espree@npm:^9.3.2":
+"espree@npm:^9.3.2":
   version: 9.3.2
   resolution: "espree@npm:9.3.2"
   dependencies:
@@ -16010,13 +16156,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-query@npm:^2.1.0, eth-query@npm:^2.1.2":
+"eth-query@npm:2.1.2":
   version: 2.1.2
   resolution: "eth-query@npm:2.1.2"
   dependencies:
     json-rpc-random-id: ^1.0.0
     xtend: ^4.0.1
   checksum: 83daa0e28452c54722aec78cd24d036bad5b6e7c08035d98e10d4bea11f71662f12cab63ebd8a848d4df46ad316503d54ecccb41c9244d2ea8b29364b0a20201
+  languageName: node
+  linkType: hard
+
+"eth-query@patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.1.2
+  resolution: "eth-query@patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch::version=2.1.2&hash=181db5&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    json-rpc-random-id: ^1.0.0
+    xtend: ^4.0.1
+  checksum: fe9828453595822ab41a63bb6397ba0ec0a47c931c926a49adf4378c233002fe325e0376e66e05abd45758e08239d4a9ba94744fb8c1782eafcd2b9e7334302e
   languageName: node
   linkType: hard
 
@@ -16246,7 +16402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:^5.0.0, ethereumjs-util@npm:^5.1.1, ethereumjs-util@npm:^5.1.2, ethereumjs-util@npm:^5.1.5, ethereumjs-util@npm:^5.2.0":
+"ethereumjs-util@npm:5.2.1":
   version: 5.2.1
   resolution: "ethereumjs-util@npm:5.2.1"
   dependencies:
@@ -16258,6 +16414,19 @@ __metadata:
     rlp: ^2.0.0
     safe-buffer: ^5.1.1
   checksum: 20db6c639d92b35739fd5f7a71e64a92e85442ea0d176b59b5cd5828265b6cf42bd4868cf81a9b20a83738db1ffa7a2f778f1d850d663627a1a5209f7904b44f
+  languageName: node
+  linkType: hard
+
+"ethereumjs-util@npm:7.1.5":
+  version: 7.1.5
+  resolution: "ethereumjs-util@npm:7.1.5"
+  dependencies:
+    "@types/bn.js": ^5.1.0
+    bn.js: ^5.1.2
+    create-hash: ^1.1.2
+    ethereum-cryptography: ^0.1.3
+    rlp: ^2.2.4
+  checksum: 27a3c79d6e06b2df34b80d478ce465b371c8458b58f5afc14d91c8564c13363ad336e6e83f57eb0bd719fde94d10ee5697ceef78b5aa932087150c5287b286d1
   languageName: node
   linkType: hard
 
@@ -16276,16 +16445,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:^7.0.10, ethereumjs-util@npm:^7.0.2, ethereumjs-util@npm:^7.0.7, ethereumjs-util@npm:^7.0.8, ethereumjs-util@npm:^7.0.9, ethereumjs-util@npm:^7.1.0, ethereumjs-util@npm:^7.1.4, ethereumjs-util@npm:^7.1.5":
+"ethereumjs-util@patch:ethereumjs-util@npm%3A5.2.1#./.yarn/patches/ethereumjs-util-npm-5.2.1-72b39f4e7e.patch::locator=metamask-crx%40workspace%3A.":
+  version: 5.2.1
+  resolution: "ethereumjs-util@patch:ethereumjs-util@npm%3A5.2.1#./.yarn/patches/ethereumjs-util-npm-5.2.1-72b39f4e7e.patch::version=5.2.1&hash=9f5be4&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    bn.js: ^4.11.0
+    create-hash: ^1.1.2
+    elliptic: ^6.5.2
+    ethereum-cryptography: ^0.1.3
+    ethjs-util: ^0.1.3
+    rlp: ^2.0.0
+    safe-buffer: ^5.1.1
+  checksum: 0d6a33beab91147e3dc01402e6abc499479a1ae7d17008e27d55f318ee40a566d2bfc23ca4b76d203ac716db02ae443fe9ce219c2ebd562bc0ff59a526ac41fe
+  languageName: node
+  linkType: hard
+
+"ethereumjs-util@patch:ethereumjs-util@npm%3A7.1.5#./.yarn/patches/ethereumjs-util-npm-7.1.5-5bb4d00000.patch::locator=metamask-crx%40workspace%3A.":
   version: 7.1.5
-  resolution: "ethereumjs-util@npm:7.1.5"
+  resolution: "ethereumjs-util@patch:ethereumjs-util@npm%3A7.1.5#./.yarn/patches/ethereumjs-util-npm-7.1.5-5bb4d00000.patch::version=7.1.5&hash=13de7a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@types/bn.js": ^5.1.0
     bn.js: ^5.1.2
     create-hash: ^1.1.2
     ethereum-cryptography: ^0.1.3
     rlp: ^2.2.4
-  checksum: 27a3c79d6e06b2df34b80d478ce465b371c8458b58f5afc14d91c8564c13363ad336e6e83f57eb0bd719fde94d10ee5697ceef78b5aa932087150c5287b286d1
+  checksum: b49e6689ef97ac1bcc5c5dbe2f815a6bf192ee9b10fb0aae3718b67ef227f26ae20677601c0400bfeb2a04f0ce76e667e03222984e45a38355910eb8fba0211f
   languageName: node
   linkType: hard
 
@@ -17079,7 +17263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-json-patch@npm:^2.0.6, fast-json-patch@npm:^2.2.1":
+"fast-json-patch@npm:2.2.1":
   version: 2.2.1
   resolution: "fast-json-patch@npm:2.2.1"
   dependencies:
@@ -17088,10 +17272,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-json-patch@npm:^3.1.0":
+"fast-json-patch@npm:3.1.0":
   version: 3.1.0
   resolution: "fast-json-patch@npm:3.1.0"
   checksum: bad25a6121650d5e138fba787f8e8c6c738779a9a84a978513261110632b1450d96b92a7fedd17188ae847cd5a2b0560725b400a0214aefd3c6506e1be36c66e
+  languageName: node
+  linkType: hard
+
+"fast-json-patch@patch:fast-json-patch@npm%3A2.2.1#./.yarn/patches/fast-json-patch-npm-2.2.1-63b021bb37.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.2.1
+  resolution: "fast-json-patch@patch:fast-json-patch@npm%3A2.2.1#./.yarn/patches/fast-json-patch-npm-2.2.1-63b021bb37.patch::version=2.2.1&hash=705eeb&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    fast-deep-equal: ^2.0.1
+  checksum: 4a949bfdbdb47dacd4d70356cd5b59dd97c34b3a988931e586f924978969815f0ff88855fbdb72599131411261eed033159fece405de6e6be9e0ebf83d592773
+  languageName: node
+  linkType: hard
+
+"fast-json-patch@patch:fast-json-patch@npm%3A3.1.0#./.yarn/patches/fast-json-patch-npm-3.1.0-f4bd467b5f.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.1.0
+  resolution: "fast-json-patch@patch:fast-json-patch@npm%3A3.1.0#./.yarn/patches/fast-json-patch-npm-3.1.0-f4bd467b5f.patch::version=3.1.0&hash=a705a6&locator=metamask-crx%40workspace%3A."
+  checksum: 4452b428571e0a7650889711952509f08f5301f4f8b0b7fe7d38b92ed830bd2bf76d11a6b1b72b77724a6c4b27dfe66dbca53f91d695b08cec37cf2394945a56
   languageName: node
   linkType: hard
 
@@ -17473,15 +17673,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-yarn-workspace-root@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "find-yarn-workspace-root@npm:2.0.0"
-  dependencies:
-    micromatch: ^4.0.2
-  checksum: fa5ca8f9d08fe7a54ce7c0a5931ff9b7e36f9ee7b9475fb13752bcea80ec6b5f180fa5102d60b376d5526ce924ea3fc6b19301262efa0a5d248dd710f3644242
-  languageName: node
-  linkType: hard
-
 "findup-sync@npm:^2.0.0":
   version: 2.0.0
   resolution: "findup-sync@npm:2.0.0"
@@ -17858,17 +18049,6 @@ __metadata:
     path-is-absolute: ^1.0.0
     rimraf: ^2.2.8
   checksum: 6edfd65fc813baa27f1603778c0f5ec11f8c5006a20b920437813ee2023eba18aeec8bef1c89b2e6c84f9fc90fdc7c916f4a700466c8c69d22a35d018f2570f0
-  languageName: node
-  linkType: hard
-
-"fs-extra@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "fs-extra@npm:7.0.1"
-  dependencies:
-    graceful-fs: ^4.1.2
-    jsonfile: ^4.0.0
-    universalify: ^0.1.0
-  checksum: 141b9dccb23b66a66cefdd81f4cda959ff89282b1d721b98cea19ba08db3dcbe6f862f28841f3cf24bb299e0b7e6c42303908f65093cb7e201708e86ea5a8dcf
   languageName: node
   linkType: hard
 
@@ -18702,7 +18882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^13.15.0, globals@npm:^13.6.0":
+"globals@npm:^13.15.0":
   version: 13.17.0
   resolution: "globals@npm:13.17.0"
   dependencies:
@@ -19034,7 +19214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gulp-sourcemaps@npm:^3.0.0":
+"gulp-sourcemaps@npm:3.0.0":
   version: 3.0.0
   resolution: "gulp-sourcemaps@npm:3.0.0"
   dependencies:
@@ -19050,6 +19230,25 @@ __metadata:
     strip-bom-string: ^1.0.0
     through2: ^2.0.0
   checksum: 845004dfbc47aac5395957393e66520c2aca5bdf64f17a4c2ac17f1fb2cebb5bc9839a3527e55a295d9f229362cb63d03e676517f0bd6fb22c033d24b66c5597
+  languageName: node
+  linkType: hard
+
+"gulp-sourcemaps@patch:gulp-sourcemaps@npm%3A3.0.0#./.yarn/patches/gulp-sourcemaps-npm-3.0.0-1ae0fbef6d.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.0.0
+  resolution: "gulp-sourcemaps@patch:gulp-sourcemaps@npm%3A3.0.0#./.yarn/patches/gulp-sourcemaps-npm-3.0.0-1ae0fbef6d.patch::version=3.0.0&hash=352196&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@gulp-sourcemaps/identity-map": ^2.0.1
+    "@gulp-sourcemaps/map-sources": ^1.0.0
+    acorn: ^6.4.1
+    convert-source-map: ^1.0.0
+    css: ^3.0.0
+    debug-fabulous: ^1.0.0
+    detect-newline: ^2.0.0
+    graceful-fs: ^4.0.0
+    source-map: ^0.6.0
+    strip-bom-string: ^1.0.0
+    through2: ^2.0.0
+  checksum: da9e65b9ccbd61b6b0a2d06a9f4c2d6955296a3e09d487be0571ccfeb55b9a2b6ee16f6c94b1633646f5b1f6045505c822ff1491cf57f533737e409cfa7710a8
   languageName: node
   linkType: hard
 
@@ -20239,12 +20438,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inline-source-map@npm:~0.6.0":
+"inline-source-map@npm:0.6.2":
   version: 0.6.2
   resolution: "inline-source-map@npm:0.6.2"
   dependencies:
     source-map: ~0.5.3
   checksum: 1f7fa2ad1764d03a0a525d5c47993f9e3d0445f29c2e2413d2878deecb6ecb1e6f9137a6207e3db8dc129565bde15de88c1ba2665407e753e7f3ec768ca29262
+  languageName: node
+  linkType: hard
+
+"inline-source-map@patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.2
+  resolution: "inline-source-map@patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch::version=0.6.2&hash=666dff&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    source-map: ~0.5.3
+  checksum: b25c0c215ba3b88e6a18c0bf3625ba5b306a5438235f21ad3357e6e0f5b3a09af8afcf9daf3f0a394f836c6ed695b34debc4802323a2604b5fa1798265350df0
   languageName: node
   linkType: hard
 
@@ -23548,15 +23756,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"klaw-sync@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "klaw-sync@npm:6.0.0"
-  dependencies:
-    graceful-fs: ^4.1.11
-  checksum: 0da397f8961313c3ef8f79fb63af9002cde5a8fb2aeb1a37351feff0dd6006129c790400c3f5c3b4e757bedcabb13d21ec0a5eaef5a593d59515d4f2c291e475
-  languageName: node
-  linkType: hard
-
 "klaw@npm:^1.0.0":
   version: 1.3.1
   resolution: "klaw@npm:1.3.1"
@@ -25222,10 +25421,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^1.26.0":
+"luxon@npm:1.26.0":
   version: 1.26.0
   resolution: "luxon@npm:1.26.0"
   checksum: 06706c615863f52f13bed0ba2b522150935c13d59f18cf924357d1fe621691cb5996e9275d19e5628a6cbccf5a2a8495b6b34ec462dc9462ed0fe0313c809019
+  languageName: node
+  linkType: hard
+
+"luxon@patch:luxon@npm%3A1.26.0#./.yarn/patches/luxon-npm-1.26.0-09624ad59c.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.26.0
+  resolution: "luxon@patch:luxon@npm%3A1.26.0#./.yarn/patches/luxon-npm-1.26.0-09624ad59c.patch::version=1.26.0&hash=2c953c&locator=metamask-crx%40workspace%3A."
+  checksum: 90db89919bdfbfa60f993809249dc1c1779d6b1132333eda378d0ead45e6fc8d085c294cfc1fb14ff0f1ce760b2b4e91c43b81bc2fdca5945aad9b5b10b77ace
   languageName: node
   linkType: hard
 
@@ -26012,7 +26218,6 @@ __metadata:
     nonce-tracker: ^1.0.0
     nyc: ^15.0.0
     obj-multiplex: ^1.0.0
-    patch-package: ^6.4.7
     pify: ^5.0.0
     polyfill-crypto.getrandomvalues: ^1.0.0
     prettier: ^2.7.1
@@ -28093,7 +28298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object.values@npm:^1.0.4, object.values@npm:^1.1.0, object.values@npm:^1.1.5":
+"object.values@npm:1.1.5":
   version: 1.1.5
   resolution: "object.values@npm:1.1.5"
   dependencies:
@@ -28101,6 +28306,17 @@ __metadata:
     define-properties: ^1.1.3
     es-abstract: ^1.19.1
   checksum: 0f17e99741ebfbd0fa55ce942f6184743d3070c61bd39221afc929c8422c4907618c8da694c6915bc04a83ab3224260c779ba37fc07bb668bdc5f33b66a902a4
+  languageName: node
+  linkType: hard
+
+"object.values@patch:object.values@npm%3A1.1.5#./.yarn/patches/object.values-npm-1.1.5-f1de7f3742.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.1.5
+  resolution: "object.values@patch:object.values@npm%3A1.1.5#./.yarn/patches/object.values-npm-1.1.5-f1de7f3742.patch::version=1.1.5&hash=a26351&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    call-bind: ^1.0.2
+    define-properties: ^1.1.3
+    es-abstract: ^1.19.1
+  checksum: b70a5ecfe9d6adfdd3e6cbbc362585043d06ed03ffb6455b259d1494ab86c96d7d8279ad5b85766f811da8fe83d0c7c6e2f8651f0ee412d4a9facc43aaa45882
   languageName: node
   linkType: hard
 
@@ -28178,7 +28394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open@npm:^7.0.3, open@npm:^7.4.2":
+"open@npm:^7.0.3":
   version: 7.4.2
   resolution: "open@npm:7.4.2"
   dependencies:
@@ -28484,7 +28700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"os-tmpdir@npm:^1.0.0, os-tmpdir@npm:~1.0.2":
+"os-tmpdir@npm:^1.0.0":
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
   checksum: 5666560f7b9f10182548bf7013883265be33620b1c1b4a4d405c25be2636f970c5488ff3e6c48de75b55d02bde037249fe5dbfbb4c0fb7714953d56aed062e6d
@@ -29047,6 +29263,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse5@npm:7.0.0":
+  version: 7.0.0
+  resolution: "parse5@npm:7.0.0"
+  dependencies:
+    entities: ^4.3.0
+  checksum: 7da5d61cc18eb36ffa71fc861e65cbfd1f23d96483a6631254e627be667dbc9c93ac0b0e6cb17a13a2e4033dab19bfb2f76f38e5936cfb57240ed49036a83fcc
+  languageName: node
+  linkType: hard
+
 "parse5@npm:^3.0.2":
   version: 3.0.3
   resolution: "parse5@npm:3.0.3"
@@ -29063,12 +29288,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^7.0.0":
+"parse5@patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch::locator=metamask-crx%40workspace%3A.":
   version: 7.0.0
-  resolution: "parse5@npm:7.0.0"
+  resolution: "parse5@patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch::version=7.0.0&hash=d0ce7a&locator=metamask-crx%40workspace%3A."
   dependencies:
     entities: ^4.3.0
-  checksum: 7da5d61cc18eb36ffa71fc861e65cbfd1f23d96483a6631254e627be667dbc9c93ac0b0e6cb17a13a2e4033dab19bfb2f76f38e5936cfb57240ed49036a83fcc
+  checksum: 15c01cf033fb86fab130fc18e9e909145ada02c22c22e8171fcb6d071443e6133da7a281ca50953892b7c30534bd0a7e94453ffd5d8471224fc9455b94db4f98
   languageName: node
   linkType: hard
 
@@ -29117,29 +29342,6 @@ __metadata:
   version: 0.1.1
   resolution: "pascalcase@npm:0.1.1"
   checksum: f83681c3c8ff75fa473a2bb2b113289952f802ff895d435edd717e7cb898b0408cbdb247117a938edcbc5d141020909846cc2b92c47213d764e2a94d2ad2b925
-  languageName: node
-  linkType: hard
-
-"patch-package@npm:^6.4.7":
-  version: 6.4.7
-  resolution: "patch-package@npm:6.4.7"
-  dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    chalk: ^2.4.2
-    cross-spawn: ^6.0.5
-    find-yarn-workspace-root: ^2.0.0
-    fs-extra: ^7.0.1
-    is-ci: ^2.0.0
-    klaw-sync: ^6.0.0
-    minimist: ^1.2.0
-    open: ^7.4.2
-    rimraf: ^2.6.3
-    semver: ^5.6.0
-    slash: ^2.0.0
-    tmp: ^0.0.33
-  bin:
-    patch-package: index.js
-  checksum: f36d5324da3b69ee635e7cd2c68f4d3dd89dc91d60ffdaad3b602fd953277f4da901c91033683bf6ff31c14799bc049849af3a389455c25d0435fe9cfb0d4088
   languageName: node
   linkType: hard
 
@@ -29652,7 +29854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plugin-error@npm:1.0.1, plugin-error@npm:^1.0.1":
+"plugin-error@npm:1.0.1":
   version: 1.0.1
   resolution: "plugin-error@npm:1.0.1"
   dependencies:
@@ -29661,6 +29863,18 @@ __metadata:
     arr-union: ^3.1.0
     extend-shallow: ^3.0.2
   checksum: 5cacd34372b909f07125829c2876707f4add64dcdf0dd8bd23d7ceac70eeb961c038a9707a998cc498bf8d478cc81f8d85b82584313926fe61a8fa294f79f3e4
+  languageName: node
+  linkType: hard
+
+"plugin-error@patch:plugin-error@npm%3A1.0.1#./.yarn/patches/plugin-error-npm-1.0.1-7d15e880d6.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.0.1
+  resolution: "plugin-error@patch:plugin-error@npm%3A1.0.1#./.yarn/patches/plugin-error-npm-1.0.1-7d15e880d6.patch::version=1.0.1&hash=f7a2d5&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    ansi-colors: ^1.0.1
+    arr-diff: ^4.0.0
+    arr-union: ^3.1.0
+    extend-shallow: ^3.0.2
+  checksum: b30b4cae3fb6d0625b4054b6f828c578a9368df2eda88fd03405ef1808c6b787da8d9214bf0a183fef91b170cf10c9728a8b292f9dd11016b1eccc5bdbfefc3c
   languageName: node
   linkType: hard
 
@@ -32089,10 +32303,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.11.0, regenerator-runtime@npm:^0.13.4, regenerator-runtime@npm:^0.13.7":
+"regenerator-runtime@npm:0.13.7":
   version: 0.13.7
   resolution: "regenerator-runtime@npm:0.13.7"
   checksum: 52b66e6669152c0b1bccd95c8e11aabbfe67bb97bdf00e223bdf723b0f0052d4da5c02001d4c4bef576bdc5bcdc38a20496d1b5363b65c950c8434ed5071d9e0
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.13.7
+  resolution: "regenerator-runtime@patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch::version=0.13.7&hash=16e0d6&locator=metamask-crx%40workspace%3A."
+  checksum: 17686581c776dcea38c7f3daf4d53462aeaa486b0a48513d594ef5c017bae61b2b81e202d9c9cdfb86c1dfe0d318f2d3df31896f2be482b646f21a12e7b9e57e
   languageName: node
   linkType: hard
 
@@ -33219,7 +33440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.26.3, sass@npm:^1.29.0, sass@npm:^1.32.4":
+"sass@npm:1.35.2":
   version: 1.35.2
   resolution: "sass@npm:1.35.2"
   dependencies:
@@ -33227,6 +33448,17 @@ __metadata:
   bin:
     sass: sass.js
   checksum: bae338ac88d5a2f6d99dd3fc8f3ac84a93419eaa2d38ee877ddd844f6996f21b0005ed074e9eadb28bb08c4a3c2dc379a01cd6fe47352a9857870d33f69273ef
+  languageName: node
+  linkType: hard
+
+"sass@patch:sass@npm%3A1.35.2#./.yarn/patches/sass-npm-1.35.2-6df4e15d13.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.35.2
+  resolution: "sass@patch:sass@npm%3A1.35.2#./.yarn/patches/sass-npm-1.35.2-6df4e15d13.patch::version=1.35.2&hash=ec5322&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    chokidar: ">=3.0.0 <4.0.0"
+  bin:
+    sass: sass.js
+  checksum: e49d110c222706cc2787c38b2b645470535fbb936dfa50574b0ba45b86be1f13d64b70d998e33e71c943943a9620f8322bfe47564b327e5b7d1b539d6ca0bcc5
   languageName: node
   linkType: hard
 
@@ -33382,19 +33614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secp256k1@npm:4.0.2":
-  version: 4.0.2
-  resolution: "secp256k1@npm:4.0.2"
-  dependencies:
-    elliptic: ^6.5.2
-    node-addon-api: ^2.0.0
-    node-gyp: latest
-    node-gyp-build: ^4.2.0
-  checksum: 0d0d42e8033aee5aec5caaaa26d90fcaec4bf5e24dc4652552ddaa60734c2d95e90f7d95697b521fe833363c629d5ff623227961de86686c7a0ed5b5ffc1ebd0
-  languageName: node
-  linkType: hard
-
-"secp256k1@npm:^3.0.1, secp256k1@npm:^3.6.1, secp256k1@npm:^3.6.2":
+"secp256k1@npm:3.8.0":
   version: 3.8.0
   resolution: "secp256k1@npm:3.8.0"
   dependencies:
@@ -33411,6 +33631,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"secp256k1@npm:4.0.2":
+  version: 4.0.2
+  resolution: "secp256k1@npm:4.0.2"
+  dependencies:
+    elliptic: ^6.5.2
+    node-addon-api: ^2.0.0
+    node-gyp: latest
+    node-gyp-build: ^4.2.0
+  checksum: 0d0d42e8033aee5aec5caaaa26d90fcaec4bf5e24dc4652552ddaa60734c2d95e90f7d95697b521fe833363c629d5ff623227961de86686c7a0ed5b5ffc1ebd0
+  languageName: node
+  linkType: hard
+
 "secp256k1@npm:^4.0.0, secp256k1@npm:^4.0.1":
   version: 4.0.3
   resolution: "secp256k1@npm:4.0.3"
@@ -33420,6 +33652,23 @@ __metadata:
     node-gyp: latest
     node-gyp-build: ^4.2.0
   checksum: 21e219adc0024fbd75021001358780a3cc6ac21273c3fcaef46943af73969729709b03f1df7c012a0baab0830fb9a06ccc6b42f8d50050c665cb98078eab477b
+  languageName: node
+  linkType: hard
+
+"secp256k1@patch:secp256k1@npm%3A3.8.0#./.yarn/patches/secp256k1-npm-3.8.0-e2ef54940a.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.8.0
+  resolution: "secp256k1@patch:secp256k1@npm%3A3.8.0#./.yarn/patches/secp256k1-npm-3.8.0-e2ef54940a.patch::version=3.8.0&hash=daafc4&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    bindings: ^1.5.0
+    bip66: ^1.1.5
+    bn.js: ^4.11.8
+    create-hash: ^1.2.0
+    drbg.js: ^1.0.1
+    elliptic: ^6.5.2
+    nan: ^2.14.0
+    node-gyp: latest
+    safe-buffer: ^5.1.2
+  checksum: 293015367fcab5fd9fe015404281119f250790928fae3a36d72fbbb8bff5577eea0062d747f9e328b50d4df56b2499790cbe81ad9b49777d56087b5a21ed59c9
   languageName: node
   linkType: hard
 
@@ -34426,10 +34675,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"squirrelly@npm:^8.0.8":
+"squirrelly@npm:8.0.8":
   version: 8.0.8
   resolution: "squirrelly@npm:8.0.8"
   checksum: 0ee76512b88ee38be0a91886bedf01b96aa6a557aaf7cee5d6d2b5ab3903ae32898007447805e3ef46a03f9dde7483d678e1ee433e7882c4b7a110b4c58f4f9f
+  languageName: node
+  linkType: hard
+
+"squirrelly@patch:squirrelly@npm%3A8.0.8#./.yarn/patches/squirrelly-npm-8.0.8-1d17420d8d.patch::locator=metamask-crx%40workspace%3A.":
+  version: 8.0.8
+  resolution: "squirrelly@patch:squirrelly@npm%3A8.0.8#./.yarn/patches/squirrelly-npm-8.0.8-1d17420d8d.patch::version=8.0.8&hash=db398a&locator=metamask-crx%40workspace%3A."
+  checksum: ffec537e63964d354c77878d322b450b88d1723651b2876e1c858845113c02d3936d144f038d6f0c60cac727e11a87c79ae0d4431b4af3a5e09e7373f209f2cb
   languageName: node
   linkType: hard
 
@@ -35136,7 +35392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint@npm:^13.6.1":
+"stylelint@npm:13.6.1":
   version: 13.6.1
   resolution: "stylelint@npm:13.6.1"
   dependencies:
@@ -35191,6 +35447,64 @@ __metadata:
   bin:
     stylelint: bin/stylelint.js
   checksum: f2258fe05589e21a015eb3a64d9cf64c398c36fbf6887f0e7c3f90ec638506a350963b65d3a3de45abf99586239fcbe2b7ece92ed586751a31dbdf543352d88b
+  languageName: node
+  linkType: hard
+
+"stylelint@patch:stylelint@npm%3A13.6.1#./.yarn/patches/stylelint-npm-13.6.1-47aaddf62b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 13.6.1
+  resolution: "stylelint@patch:stylelint@npm%3A13.6.1#./.yarn/patches/stylelint-npm-13.6.1-47aaddf62b.patch::version=13.6.1&hash=78cae8&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@stylelint/postcss-css-in-js": ^0.37.1
+    "@stylelint/postcss-markdown": ^0.36.1
+    autoprefixer: ^9.8.0
+    balanced-match: ^1.0.0
+    chalk: ^4.1.0
+    cosmiconfig: ^6.0.0
+    debug: ^4.1.1
+    execall: ^2.0.0
+    file-entry-cache: ^5.0.1
+    get-stdin: ^8.0.0
+    global-modules: ^2.0.0
+    globby: ^11.0.1
+    globjoin: ^0.1.4
+    html-tags: ^3.1.0
+    ignore: ^5.1.8
+    import-lazy: ^4.0.0
+    imurmurhash: ^0.1.4
+    known-css-properties: ^0.19.0
+    leven: ^3.1.0
+    lodash: ^4.17.15
+    log-symbols: ^4.0.0
+    mathml-tag-names: ^2.1.3
+    meow: ^7.0.1
+    micromatch: ^4.0.2
+    normalize-selector: ^0.2.0
+    postcss: ^7.0.32
+    postcss-html: ^0.36.0
+    postcss-less: ^3.1.4
+    postcss-media-query-parser: ^0.2.3
+    postcss-reporter: ^6.0.1
+    postcss-resolve-nested-selector: ^0.1.1
+    postcss-safe-parser: ^4.0.2
+    postcss-sass: ^0.4.4
+    postcss-scss: ^2.1.1
+    postcss-selector-parser: ^6.0.2
+    postcss-syntax: ^0.36.2
+    postcss-value-parser: ^4.1.0
+    resolve-from: ^5.0.0
+    slash: ^3.0.0
+    specificity: ^0.4.1
+    string-width: ^4.2.0
+    strip-ansi: ^6.0.0
+    style-search: ^0.1.0
+    sugarss: ^2.0.0
+    svg-tags: ^1.0.0
+    table: ^5.4.6
+    v8-compile-cache: ^2.1.1
+    write-file-atomic: ^3.0.3
+  bin:
+    stylelint: bin/stylelint.js
+  checksum: 295b4de7102356c1dfd5d26d095d45a028ce66d151e82ada274c0e604d67dcf255bdcc65d9de773e7951288cba9a733f04ab35ea655783b729ad3ddd8175ae3b
   languageName: node
   linkType: hard
 
@@ -35934,15 +36248,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.0.33":
-  version: 0.0.33
-  resolution: "tmp@npm:0.0.33"
-  dependencies:
-    os-tmpdir: ~1.0.2
-  checksum: 902d7aceb74453ea02abbf58c203f4a8fc1cead89b60b31e354f74ed5b3fb09ea817f94fb310f884a5d16987dd9fa5a735412a7c2dd088dd3d415aa819ae3a28
-  languageName: node
-  linkType: hard
-
 "tmp@npm:^0.2.1":
   version: 0.2.1
   resolution: "tmp@npm:0.2.1"
@@ -36490,6 +36795,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.4.4":
+  version: 4.4.4
+  resolution: "typescript@npm:4.4.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^3.9.5, typescript@npm:^3.9.7":
   version: 3.9.10
   resolution: "typescript@npm:3.9.10"
@@ -36497,16 +36812,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 46c842e2cd4797b88b66ef06c9c41dd21da48b95787072ccf39d5f2aa3124361bc4c966aa1c7f709fae0509614d76751455b5231b12dbb72eb97a31369e1ff92
-  languageName: node
-  linkType: hard
-
-"typescript@npm:~4.4.0":
-  version: 4.4.4
-  resolution: "typescript@npm:4.4.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
   languageName: node
   linkType: hard
 
@@ -36520,13 +36825,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@~4.4.0#~builtin<compat/typescript>":
+"typescript@patch:typescript@npm:4.4.4#.yarn/patches/typescript-npm-4.4.4-3fedcc07a3.patch::locator=metamask-crx%40workspace%3A.":
   version: 4.4.4
-  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=701156"
+  resolution: "typescript@patch:typescript@npm%3A4.4.4#.yarn/patches/typescript-npm-4.4.4-3fedcc07a3.patch::version=4.4.4&hash=241c77&locator=metamask-crx%40workspace%3A."
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 3d1b04449662193544b81d055479d03b4c5dca95f1a82f8922596f089d894c9fefbe16639d1d9dfe26a7054419645530cef44001bc17aed1fe1eb3c237e9b3c7
+  checksum: 30c380ccd20c17ef1277a8735c675d830e51dfef4fed137122dd5ec4c86936bbe649d948fbdb8f29a356a89f89e789459fd195aa56617d1005f0be1f230295c9
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@patch%3Atypescript@npm%3A4.4.4%23.yarn/patches/typescript-npm-4.4.4-3fedcc07a3.patch%3A%3Alocator=metamask-crx%2540workspace%253A.#~builtin<compat/typescript>":
+  version: 4.4.4
+  resolution: "typescript@patch:typescript@patch%3Atypescript@npm%253A4.4.4%23.yarn/patches/typescript-npm-4.4.4-3fedcc07a3.patch%3A%3Aversion=4.4.4&hash=241c77&locator=metamask-crx%2540workspace%253A.#~builtin<compat/typescript>::version=4.4.4&hash=701156"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 3cc6d8c9918432246d8ccf2b5f9ea4ef2a621f6a544bbba98d6843152bb97149ac0df5608b59cb2d37161d38558143e393d29ec0e5193c655df82572c914337a
   languageName: node
   linkType: hard
 
@@ -36607,7 +36922,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undeclared-identifiers@npm:^1.1.2":
+"undeclared-identifiers@npm:1.1.2":
   version: 1.1.2
   resolution: "undeclared-identifiers@npm:1.1.2"
   dependencies:
@@ -36618,6 +36933,20 @@ __metadata:
   bin:
     undeclared-identifiers: bin.js
   checksum: 6a9475b5e50eb5261c1d6389f9520916278d1e8b3084852467b05323654ea8f9c28ddafb04cf38309b3c300cfe3fcf974d7ae7dfc19b06bc4f11cbbe22483260
+  languageName: node
+  linkType: hard
+
+"undeclared-identifiers@patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.1.2
+  resolution: "undeclared-identifiers@patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch::version=1.1.2&hash=9700ed&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    acorn-node: ^1.3.0
+    get-assigned-identifiers: ^1.2.0
+    simple-concat: ^1.0.0
+    xtend: ^4.0.1
+  bin:
+    undeclared-identifiers: bin.js
+  checksum: 62443fc2a3f483895d12076e850aa917f9e110756fd2bde3629a83f89319b3ba587bb20cf702eea60d07f07d29e3cb795083df2cc9a2e8c8efae85bb3481d9ee
   languageName: node
   linkType: hard
 
@@ -37623,7 +37952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"watchify@npm:^4.0.0":
+"watchify@npm:4.0.0":
   version: 4.0.0
   resolution: "watchify@npm:4.0.0"
   dependencies:
@@ -37637,6 +37966,23 @@ __metadata:
   bin:
     watchify: bin/cmd.js
   checksum: fd50437609fa7077605dc601439fc132bedf32eff7bfbf472cfd53c13dac8b82dafa28b0db70ca68acf81bb61d94edb9284be3af8aea104a4701a515c9c9a4a7
+  languageName: node
+  linkType: hard
+
+"watchify@patch:watchify@npm%3A4.0.0#./.yarn/patches/watchify-npm-4.0.0-4fd965dd49.patch::locator=metamask-crx%40workspace%3A.":
+  version: 4.0.0
+  resolution: "watchify@patch:watchify@npm%3A4.0.0#./.yarn/patches/watchify-npm-4.0.0-4fd965dd49.patch::version=4.0.0&hash=3f1dc4&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    anymatch: ^3.1.0
+    browserify: ^17.0.0
+    chokidar: ^3.4.0
+    defined: ^1.0.0
+    outpipe: ^1.1.0
+    through2: ^4.0.2
+    xtend: ^4.0.2
+  bin:
+    watchify: bin/cmd.js
+  checksum: cf8d2c95adeb376b2d373c87c229598477b51b40a6a551298216607c7c66e3fa7215726252b495a43ef9bcfa0cbc8886665014f7d81824d5de640fab8f441292
   languageName: node
   linkType: hard
 
@@ -37760,7 +38106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3@npm:^0.20.7":
+"web3@npm:0.20.7":
   version: 0.20.7
   resolution: "web3@npm:0.20.7"
   dependencies:
@@ -37770,6 +38116,19 @@ __metadata:
     xhr2-cookies: ^1.1.0
     xmlhttprequest: "*"
   checksum: acec4beac2265a7ff864f35df5a709d086d2bdb4c0e1dbf323e07b963bee5662c1b18fd26c7f11595006a3a9288d769b75f6e43c5aa3bfc36e957650cd2ac4b6
+  languageName: node
+  linkType: hard
+
+"web3@patch:web3@npm%3A0.20.7#./.yarn/patches/web3-npm-0.20.7-ee7ef00c57.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.20.7
+  resolution: "web3@patch:web3@npm%3A0.20.7#./.yarn/patches/web3-npm-0.20.7-ee7ef00c57.patch::version=0.20.7&hash=302657&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    bignumber.js: "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
+    crypto-js: ^3.1.4
+    utf8: ^2.1.1
+    xhr2-cookies: ^1.1.0
+    xmlhttprequest: "*"
+  checksum: 2c6035eb18f8fd9214b5f560a169b344828818b61ae36c30b708de71b186a55319a6750644009a8b4e063a4014725668e04a30c13d54f9bee78d4de9ad71b69e
   languageName: node
   linkType: hard
 
@@ -38831,9 +39190,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zxcvbn@npm:^4.4.2":
+"zxcvbn@npm:4.4.2":
   version: 4.4.2
   resolution: "zxcvbn@npm:4.4.2"
   checksum: 76ab32c066082ac73491b7cd7f93ad0595c59b6d45ae80a0745e9e1661237388beb2f0c2ba0ae3dc330ca3ecdb87edcb7a21e0c09137ab81d5b32e584cda1e5d
+  languageName: node
+  linkType: hard
+
+"zxcvbn@patch:zxcvbn@npm%3A4.4.2#./.yarn/patches/zxcvbn-npm-4.4.2-6527983856.patch::locator=metamask-crx%40workspace%3A.":
+  version: 4.4.2
+  resolution: "zxcvbn@patch:zxcvbn@npm%3A4.4.2#./.yarn/patches/zxcvbn-npm-4.4.2-6527983856.patch::version=4.4.2&hash=5e3c67&locator=metamask-crx%40workspace%3A."
+  checksum: a74a77ff89bc4820fa8b094c0c29e275abcab5bc5c110b45c3bd6c9d4144cdcce5fc2372ed31cf94a6e75da831a5ebf906aec85786d2099ab1fbbc4835dcc318
   languageName: node
   linkType: hard
