@@ -1,5 +1,4 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Confusable from '.';
 
@@ -30,7 +29,6 @@ describe('Confusable component', () => {
     };
 
     const { container } = renderWithProvider(<Confusable {...props} />);
-    screen.debug();
     expect(container).toMatchSnapshot();
   });
 
@@ -42,6 +40,5 @@ describe('Confusable component', () => {
     const { container } = renderWithProvider(<Confusable {...props} />);
 
     expect(container).toMatchSnapshot();
-    screen.debug();
   });
 });
