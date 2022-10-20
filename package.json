@@ -82,13 +82,6 @@
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard"
   },
   "resolutions": {
-    "**/regenerator-runtime": "^0.13.7",
-    "**/cross-fetch": "^3.1.5",
-    "**/configstore/dot-prop": "^5.1.1",
-    "**/ethers/elliptic": "^6.5.4",
-    "**/redux/symbol-observable": "^2.0.3",
-    "**/redux-devtools-instrument/symbol-observable": "^2.0.3",
-    "**/rxjs/symbol-observable": "^2.0.3",
     "analytics-node/axios": "^0.21.2",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
@@ -414,7 +407,7 @@
   },
   "engines": {
     "node": "^16.0.0",
-    "yarn": "^1.16.0"
+    "yarn": "^3.2.4"
   },
   "lavamoat": {
     "allowScripts": {
@@ -472,5 +465,6 @@
       "@metamask/base-controller>simple-git-hooks": false,
       "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false
     }
-  }
+  },
+  "packageManager": "yarn@3.2.4"
 }
