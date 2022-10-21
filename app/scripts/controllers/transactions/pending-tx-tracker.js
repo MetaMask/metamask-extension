@@ -238,7 +238,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     } = txMeta;
     const networkNextNonce = await this.query.getTransactionCount(from);
 
-    if (parseInt(nonce, 16) >= networkNextNonce.toNumber()) {
+    if (parseInt(nonce, 16) > networkNextNonce.toNumber()) {
       return false;
     }
 
