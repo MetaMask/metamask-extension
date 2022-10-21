@@ -9,9 +9,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
-import * as Utils from '../lib/util';
 
 const segment = createSegmentMock(2, 10000);
 
@@ -152,10 +152,9 @@ function getMetaMetricsController({
   });
 }
 describe('MetaMetricsController', function () {
-  let now = new Date();
-
+  const now = new Date();
   let clock;
-  beforeEach(() => {
+  beforeEach(function () {
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
