@@ -145,7 +145,7 @@ describe('Editing Confirm Transaction', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '2.2008 ETH',
+          text: '2.20085 ETH',
         });
 
         // confirms the transaction
