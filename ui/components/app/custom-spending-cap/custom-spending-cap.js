@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -17,6 +17,7 @@ import {
   SIZES,
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
+import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -24,16 +25,17 @@ export default function CustomSpendingCap({
   currentTokenBalance,
   dappProposedValue,
   siteOrigin,
-  passTheCurrentValue,
   passTheErrorText,
 }) {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
-  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const value = useSelector(getCustomTokenAmount);
 
-  const [value, setValue] = useState(customTokenAmount);
   const [error, setError] = useState('');
-  const [showUseDefaultButton, setShowUseDefaultButton] = useState(true);
+  const [showUseDefaultButton, setShowUseDefaultButton] = useState(
+    value !== String(dappProposedValue) && true,
+  );
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const getInputTextLogic = (inputNumber) => {
@@ -64,7 +66,7 @@ export default function CustomSpendingCap({
   };
 
   const [customSpendingCapText, setCustomSpendingCapText] = useState(
-    getInputTextLogic(customTokenAmount).description,
+    getInputTextLogic(value).description,
   );
 
   const handleChange = (valueInput) => {
@@ -81,12 +83,11 @@ export default function CustomSpendingCap({
       setError('');
     }
 
-    setValue(valueInput);
-    passTheCurrentValue(valueInput);
+    dispatch(setCustomTokenAmount(String(valueInput)));
   };
 
   useEffect(() => {
-    if (value !== dappProposedValue) {
+    if (value !== String(dappProposedValue)) {
       setShowUseDefaultButton(true);
     }
   }, [value, dappProposedValue]);
@@ -121,7 +122,6 @@ export default function CustomSpendingCap({
           onClick={(e) => {
             e.preventDefault();
             handleChange(currentTokenBalance);
-            setValue(currentTokenBalance);
           }}
         >
           {t('max')}
@@ -221,10 +221,6 @@ CustomSpendingCap.propTypes = {
    * The origin of the site generally the URL
    */
   siteOrigin: PropTypes.string,
-  /**
-   * Parent component's callback function passed in order to get the input value
-   */
-  passTheCurrentValue: PropTypes.func,
   /**
    * Parent component's callback function passed in order to get the error text
    */
