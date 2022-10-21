@@ -17,9 +17,6 @@ export default {
     siteOrigin: {
       control: { type: 'text' },
     },
-    passTheCurrentValue: {
-      action: 'passTheCurrentValue',
-    },
     passTheErrorText: {
       action: 'passTheErrorText',
     },

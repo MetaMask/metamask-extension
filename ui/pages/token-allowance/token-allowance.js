@@ -43,7 +43,7 @@ import ApproveContentCard from '../../components/app/approve-content-card/approv
 import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
 import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
-import { setCustomTokenAmount } from '../../ducks/app/app';
+import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 
 export default function TokenAllowance({
   origin,
@@ -63,7 +63,7 @@ export default function TokenAllowance({
   data,
   isSetApproveForAll,
   isApprovalOrRejection,
-  customTxParamsData,
+  decimals,
   dappProposedTokenAmount,
   currentTokenBalance,
   toAddress,
@@ -77,14 +77,21 @@ export default function TokenAllowance({
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(true);
-  const [customTokenAmountInputValue, setCustomTokenAmountInputValue] =
-    useState('');
   const [errorText, setErrorText] = useState('');
 
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const customTokenAmount = useSelector(getCustomTokenAmount);
+
+  const customPermissionAmount = customTokenAmount.toString();
+
+  const customTxParamsData = customTokenAmount
+    ? getCustomTxParamsData(data, {
+        customPermissionAmount,
+        decimals,
+      })
+    : null;
 
   let fullTxData = { ...txData };
 
@@ -104,7 +111,7 @@ export default function TokenAllowance({
   const { balanceError } = useGasFeeContext();
 
   const disableNextButton =
-    isFirstPage && (customTokenAmountInputValue === '' || errorText !== '');
+    isFirstPage && (customTokenAmount === '' || errorText !== '');
 
   const disableApproveButton = !isFirstPage && balanceError;
 
@@ -146,10 +153,10 @@ export default function TokenAllowance({
     }
 
     if (customTokenAmount) {
-      txData.customTokenAmount = customTokenAmount;
-      txData.finalApprovalAmount = customTokenAmount;
+      fullTxData.customTokenAmount = customTokenAmount;
+      fullTxData.finalApprovalAmount = customTokenAmount;
     } else if (dappProposedTokenAmount !== undefined) {
-      txData.finalApprovalAmount = dappProposedTokenAmount;
+      fullTxData.finalApprovalAmount = dappProposedTokenAmount;
     }
 
     if (currentTokenBalance) {
@@ -165,7 +172,6 @@ export default function TokenAllowance({
   };
 
   const handleNextClick = () => {
-    dispatch(setCustomTokenAmount(customTokenAmountInputValue));
     setShowFullTxDetails(false);
     setIsFirstPage(false);
   };
@@ -296,9 +302,6 @@ export default function TokenAllowance({
             currentTokenBalance={parseFloat(currentTokenBalance)}
             dappProposedValue={parseFloat(dappProposedTokenAmount)}
             siteOrigin={origin}
-            passTheCurrentValue={(inputValue) =>
-              setCustomTokenAmountInputValue(inputValue)
-            }
             passTheErrorText={(value) => setErrorText(value)}
           />
         ) : (
@@ -376,7 +379,7 @@ export default function TokenAllowance({
               supportsEIP1559V2={supportsEIP1559V2}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
-              data={data}
+              data={customTxParamsData || data}
             />
           </Box>
         </Box>
@@ -474,9 +477,9 @@ TokenAllowance.propTypes = {
    */
   isApprovalOrRejection: PropTypes.bool,
   /**
-   * Custom transaction parameters data made by the user (fees)
+   * Number of decimals
    */
-  customTxParamsData: PropTypes.object,
+  decimals: PropTypes.string,
   /**
    * Token amount proposed by the Dapp
    */
