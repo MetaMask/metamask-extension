@@ -64,6 +64,10 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        const snapButton = await driver.findElement('#sendConfirmButton');
+        await driver.scrollToElement(snapButton);
+
         await driver.delay(1000);
         await driver.clickElement('#sendConfirmButton');
 

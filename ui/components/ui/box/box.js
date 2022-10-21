@@ -330,6 +330,7 @@ Box.propTypes = {
   height: MultipleBlockSizes,
   backgroundColor: MultipleBackgroundColors,
   className: PropTypes.string,
+  style: PropTypes.object,
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Box component
    * Defaults to 'div'
