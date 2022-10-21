@@ -408,7 +408,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  async function connectRemote(remotePort) {
+  function connectRemote(remotePort) {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
