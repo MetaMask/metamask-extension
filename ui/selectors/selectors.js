@@ -376,12 +376,17 @@ export function getAddressBook(state) {
 }
 
 export function getEnsResolutionByAddress(state, address) {
+  if (state.metamask.ensResolutionsByAddress[address]) {
+    return state.metamask.ensResolutionsByAddress[address];
+  }
+
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
       isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
     );
-  return state.metamask.ensResolutionsByAddress[address] || entry?.name || '';
+
+  return entry?.name || '';
 }
 
 export function getAddressBookEntry(state, address) {
