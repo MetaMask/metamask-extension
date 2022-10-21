@@ -83,7 +83,7 @@ import {
   IN_PROGRESS_TRANSACTION_STATUSES,
   SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import { getGasFeeEstimates } from '../metamask/metamask';
+import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   calcGasTotal,
@@ -606,6 +606,15 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   };
 };
 
+const isTokenAlreadyAdded = (tokenAddress, tokens) => {
+  if (!Array.isArray(tokens)) {
+    return false;
+  }
+  return tokens.find(
+    (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+  );
+};
+
 export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
@@ -674,7 +683,8 @@ export const fetchQuotesAndSetQuoteState = (
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined
+      contractExchangeRates[toTokenAddress] === undefined &&
+      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
     ) {
       destinationTokenAddedForSwap = true;
       await dispatch(

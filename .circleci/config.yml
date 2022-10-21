@@ -728,6 +728,9 @@ jobs:
           name: Run page load benchmark
           command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
       - run:
+          name: Install jq
+          command: sudo apt install jq -y
+      - run:
           name: Record bundle size at commit
           command: ./.circleci/scripts/bundle-stats-commit.sh
       - store_artifacts:
