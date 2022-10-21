@@ -71,6 +71,7 @@ export default function AdvancedGasControls({
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
             numeric
+            allowDecimals
             error={
               gasErrors?.maxPriorityFee
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
@@ -87,6 +88,7 @@ export default function AdvancedGasControls({
             }}
             value={maxFee}
             numeric
+            allowDecimals
             detailText={maxFeeFiat}
             error={
               gasErrors?.maxFee
@@ -107,6 +109,7 @@ export default function AdvancedGasControls({
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}
             numeric
+            allowDecimals
             error={
               gasErrors?.gasPrice
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
