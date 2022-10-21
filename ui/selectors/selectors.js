@@ -543,9 +543,12 @@ export function getShowTestNetworks(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
+  return Boolean(
+    (isMainNet || isCustomNetwork || showFiatInTestnets) && conversionRate,
+  );
 }
 
 export function getShouldHideZeroBalanceTokens(state) {

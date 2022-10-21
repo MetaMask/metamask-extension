@@ -85,6 +85,7 @@ class RevealSeedPage extends Component {
         </label>
         <div className="input-group">
           <input
+            data-testid="input-password"
             type="password"
             placeholder={t('password')}
             id="password-box"

@@ -30,18 +30,19 @@ export const ButtonBase = ({
   iconProps,
   ...props
 }) => {
+  const Tag = props?.href ? 'a' : as;
   return (
     <Box
-      as={as}
+      as={Tag}
       paddingLeft={size === BUTTON_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_SIZES.AUTO ? 0 : 4}
       className={classnames(
         'mm-button',
         `mm-button--size-${size}`,
         {
-          'mm-button--loading': Boolean(loading),
-          'mm-button--disabled': Boolean(disabled),
-          'mm-button--block': Boolean(block),
+          'mm-button--loading': loading,
+          'mm-button--disabled': disabled,
+          'mm-button--block': block,
         },
         className,
       )}
@@ -117,7 +118,7 @@ ButtonBase.propTypes = {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: Icon.propTypes,
+  iconProps: PropTypes.object,
   /**
    * Boolean to show loading spinner in button
    */
