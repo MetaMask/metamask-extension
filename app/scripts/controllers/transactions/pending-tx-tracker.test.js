@@ -759,7 +759,7 @@ describe('PendingTransactionTracker', function () {
     });
 
     it("should emit 'tx:dropped' with the txMetas id only after the fourth call", async function () {
-      const nonceBN = new BN(2);
+      const nonceBN = new BN(1);
       const txMeta = {
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
