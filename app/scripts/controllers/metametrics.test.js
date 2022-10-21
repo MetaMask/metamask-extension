@@ -11,6 +11,7 @@ import waitUntilCalled from '../../../test/lib/wait-until-called';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
+import * as Utils from '../lib/util';
 
 const segment = createSegmentMock(2, 10000);
 
@@ -146,10 +147,18 @@ function getMetaMetricsController({
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
       },
+      events: {},
     },
   });
 }
 describe('MetaMetricsController', function () {
+  let now = new Date();
+
+  let clock;
+  beforeEach(() => {
+    clock = sinon.useFakeTimers(now.getTime());
+    sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
+  });
   describe('constructor', function () {
     it('should properly initialize', function () {
       const mock = sinon.mock(segment);
@@ -164,6 +173,8 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
@@ -234,15 +245,18 @@ describe('MetaMetricsController', function () {
       });
       const mock = sinon.mock(segment);
 
-      mock
-        .expects('identify')
-        .once()
-        .withArgs({ userId: TEST_META_METRICS_ID, traits: MOCK_TRAITS });
+      mock.expects('identify').once().withArgs({
+        userId: TEST_META_METRICS_ID,
+        traits: MOCK_TRAITS,
+        messageId: Utils.generateRandomId(),
+        timestamp: new Date(),
+      });
 
       metaMetricsController.identify({
         ...MOCK_TRAITS,
         ...MOCK_INVALID_TRAITS,
       });
+
       mock.verify();
     });
 
@@ -264,6 +278,8 @@ describe('MetaMetricsController', function () {
           traits: {
             test_date: mockDateISOString,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
 
       metaMetricsController.identify({
@@ -359,6 +375,8 @@ describe('MetaMetricsController', function () {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -389,6 +407,8 @@ describe('MetaMetricsController', function () {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -418,6 +438,8 @@ describe('MetaMetricsController', function () {
             legacy_event: true,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -440,12 +462,14 @@ describe('MetaMetricsController', function () {
         .once()
         .withArgs({
           event: 'Fake Event',
-          userId: TEST_META_METRICS_ID,
-          context: DEFAULT_TEST_CONTEXT,
           properties: {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          context: DEFAULT_TEST_CONTEXT,
+          userId: TEST_META_METRICS_ID,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent({
         event: 'Fake Event',
@@ -520,6 +544,8 @@ describe('MetaMetricsController', function () {
             foo: 'bar',
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         }),
       );
       assert.ok(
@@ -528,6 +554,8 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: DEFAULT_EVENT_PROPERTIES,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         }),
       );
     });
@@ -548,6 +576,8 @@ describe('MetaMetricsController', function () {
             params: null,
             ...DEFAULT_PAGE_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.trackPage({
         name: 'home',
@@ -591,6 +621,8 @@ describe('MetaMetricsController', function () {
             params: null,
             ...DEFAULT_PAGE_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.trackPage(
         {
@@ -822,6 +854,7 @@ describe('MetaMetricsController', function () {
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();
+    clock.restore();
     sinon.restore();
   });
 });
