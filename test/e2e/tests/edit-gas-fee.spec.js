@@ -126,7 +126,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.fill('[data-testid="base-fee-input"]', '8');
 
         // enter priority fee
-        await driver.fill('[data-testid="priority-fee-input"]', '8');
+        await driver.fill('[data-testid="priority-fee-input"]', '8.5');
 
         // save default values
         await driver.clickElement('input[type="checkbox"]');
@@ -141,7 +141,7 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-          text: '0.0008 ETH',
+          text: '0.00085 ETH',
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
