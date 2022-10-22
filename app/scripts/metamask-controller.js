@@ -80,7 +80,7 @@ import {
   toChecksumHexAddress,
   stripHexPrefix,
 } from '../../shared/modules/hexstring-utils';
-import { MILLISECOND } from '../../shared/constants/time';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -475,8 +475,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
-    if (this.phishingController.isOutOfDate()) {
+    if (process.env.IN_TEST) {
       this.phishingController.updatePhishingLists();
+      this.phishingController.setRefreshInterval(5 * SECOND);
     }
 
     this.announcementController = new AnnouncementController(
