@@ -35,6 +35,22 @@ describe('label', () => {
     fireEvent.click(label);
     expect(input).toHaveFocus();
   });
+  it('should render when wrapping an input and focus input when clicked without htmlFor', () => {
+    const { getByText, getByRole } = render(
+      <>
+        <Label>
+          Label text
+          <TextFieldBase />
+        </Label>
+      </>,
+    );
+    const input = getByRole('textbox');
+    const label = getByText('Label text');
+    expect(label).toBeDefined();
+    expect(input).not.toHaveFocus();
+    fireEvent.click(label);
+    expect(input).toHaveFocus();
+  });
   it('should render with required asterisk', () => {
     const { getByText } = render(<Label required>label</Label>);
     expect(getByText('label')).toBeDefined();

@@ -52,7 +52,11 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const Children = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+  <Box
+    display={DISPLAY.INLINE_FLEX}
+    flexDirection={FLEX_DIRECTION.COLUMN}
+    gap={2}
+  >
     <Label {...args}>Plain text</Label>
     <Label {...args} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
       Text and icon
@@ -61,6 +65,16 @@ export const Children = (args) => (
         name={ICON_NAMES.INFO_FILLED}
         size={SIZES.AUTO}
       />
+    </Label>
+    <Label
+      {...args}
+      display={DISPLAY.INLINE_FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      alignItems={ALIGN_ITEMS.FLEX_START}
+    >
+      Label that wraps an input
+      {/* TODO: replace with TextField component */}
+      <TextFieldBase placeholder="Click label to focus" />
     </Label>
   </Box>
 );

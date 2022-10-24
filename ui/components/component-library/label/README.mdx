@@ -25,9 +25,10 @@ The `children` of the label can be text or a react node.
 </Canvas>
 
 ```jsx
-import { DISPLAY, ALIGN_ITEMS, SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { DISPLAY, ALIGN_ITEMS, FLEX_DIRECTION, SIZES, COLORS } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../ui/component-library/icon';
 import { Label } from '../../ui/component-library/label';
+import { TextFieldBase } from '../../ui/component-library/text-field-base'
 
 <Label>Plain text</Label>
 <Label display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
@@ -37,6 +38,15 @@ import { Label } from '../../ui/component-library/label';
     name={ICON_NAMES.INFO_FILLED}
     size={SIZES.AUTO}
   />
+</Label>
+<Label
+  display={DISPLAY.INLINE_FLEX}
+  flexDirection={FLEX_DIRECTION.COLUMN}
+  alignItems={ALIGN_ITEMS.FLEX_START}
+>
+  Label that wraps an input
+  {/* TODO: replace with TextField component */}
+  <TextFieldBase placeholder="Click label to focus" />
 </Label>
 ```
 

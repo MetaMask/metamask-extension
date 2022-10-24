@@ -1,9 +1,11 @@
 .mm-label {
+  --label-opacity-disabled: 0.5; // TODO: replace with design token
+
   &--html-for {
     cursor: pointer;
   }
 
   &--disabled {
-    opacity: 0.5;
+    opacity: var(--label-opacity-disabled);
   }
 }
