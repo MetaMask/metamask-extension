@@ -475,8 +475,8 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
+    this.phishingController.updatePhishingLists();
     if (process.env.IN_TEST) {
-      this.phishingController.updatePhishingLists();
       this.phishingController.setRefreshInterval(5 * SECOND);
     }
 
