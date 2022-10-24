@@ -40,6 +40,7 @@ describe('Test Snap bip-32', function () {
         await driver.clickElement('#connectBip32');
 
         // approve install of snap
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
