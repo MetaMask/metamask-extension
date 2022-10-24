@@ -22,16 +22,13 @@ const Address = ({
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
   const addressBook = useSelector(getAddressBook);
-  const getNickName = (address) => {
-    const addressBookEntryObject = addressBook.find((entry) => {
-      return address.toLowerCase() === entry.address.toLowerCase();
-    });
-    return (addressBookEntryObject && addressBookEntryObject?.name) || '';
-  };
-
-  const recipientNickname = getNickName(checksummedRecipientAddress);
-  const recipientMetadataName = getMetadataContractName(
-    checksummedRecipientAddress,
+  const addressBookEntryObject = addressBook.find(
+    (entry) =>
+      entry.address.toLowerCase() === checksummedRecipientAddress.toLowerCase(),
+  );
+  const recipientNickname = addressBookEntryObject?.name;
+  const recipientMetadataName = useSelector((state) =>
+    getMetadataContractName(state, checksummedRecipientAddress),
   );
 
   const recipientToRender = addressOnly

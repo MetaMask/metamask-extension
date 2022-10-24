@@ -8,6 +8,31 @@ import SignatureRequest from './signature-request.container';
 describe('Signature Request', () => {
   const mockStore = {
     metamask: {
+      tokenList: {
+        '0x514910771af9ca656af840dff83e8264ecf986ca': {
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+          name: 'ChainLink Token',
+          iconUrl:
+            'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+          aggregators: [
+            'Aave',
+            'Bancor',
+            'CMC',
+            'Crypto.com',
+            'CoinGecko',
+            '1inch',
+            'Paraswap',
+            'PMM',
+            'Zapper',
+            'Zerion',
+            '0x',
+          ],
+          occurrences: 12,
+          unlisted: false,
+        },
+      },
       identities: {
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
           name: 'Account 2',
