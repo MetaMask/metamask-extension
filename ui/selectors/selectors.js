@@ -1334,13 +1334,43 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
 
-export function getShouldShowSeedPhraseReminder(state) {
+export function getIsAnyAccountWithBalanceOnNonTestNetwork(state) {
+  const { cachedBalances } = state.metamask;
+
+  const zeroBalanceCheck = (currentValue) =>
+    currentValue === '0x0' || currentValue === '0x00';
+
+  const balancesOnNonTestNetworks = Object.entries(cachedBalances)
+    .filter(
+      (networkAndAccountBalances) =>
+        TEST_CHAINS.includes(networkAndAccountBalances[0]) === false &&
+        networkAndAccountBalances,
+    )
+    .map((accountAndBalance) => Object.values(accountAndBalance[1]))
+    .map((balance) => balance.every(zeroBalanceCheck));
+
+  return balancesOnNonTestNetworks.includes(false);
+}
+
+export async function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
   const accountBalance = getCurrentEthBalance(state) ?? 0;
+  const isTestNet = getIsTestnet(state);
+  const isHardwareWalletConnected = isHardwareWallet(state);
+  const isAnyAccountWithBalanceOnNonTestNetwork =
+    getIsAnyAccountWithBalanceOnNonTestNetwork(state);
+  const tokenBalances =
+    tokens.length > 0 ? await getBalancesInSingleCall(tokens) : {};
+  const allTokensAreWithZeroBalance = isEqual(tokenBalances, {});
+
   return (
+    !isHardwareWalletConnected &&
+    !isTestNet &&
     seedPhraseBackedUp === false &&
-    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+    (parseInt(accountBalance, 16) > 0 ||
+      isAnyAccountWithBalanceOnNonTestNetwork ||
+      !allTokensAreWithZeroBalance) &&
     dismissSeedBackUpReminder === false
   );
 }

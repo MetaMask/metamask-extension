@@ -122,7 +122,10 @@ export default class Routes extends Component {
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
     currentChainId: PropTypes.string,
-    shouldShowSeedPhraseReminder: PropTypes.bool,
+    shouldShowSeedPhraseReminder: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object,
+    ]),
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,

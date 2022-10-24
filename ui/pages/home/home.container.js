@@ -25,6 +25,7 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
+  getSelectedAccountCachedBalance,
 } from '../../selectors';
 
 import {
@@ -106,6 +107,8 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
+  const balance = getSelectedAccountCachedBalance(state);
+
   return {
     forgottenPassword,
     suggestedAssets,
@@ -146,6 +149,7 @@ const mapStateToProps = (state) => {
     newTokensImported: getNewTokensImported(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
+    balance,
   };
 };
 

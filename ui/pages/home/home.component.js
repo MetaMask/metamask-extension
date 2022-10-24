@@ -87,7 +87,10 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedAssets: PropTypes.array,
     unconfirmedTransactionsCount: PropTypes.number,
-    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
+    shouldShowSeedPhraseReminder: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object,
+    ]).isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
@@ -147,12 +150,14 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
+    balance: PropTypes.string,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    showSeedPhraseReminder: false,
   };
 
   constructor(props) {
@@ -212,8 +217,16 @@ export default class Home extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const {
+      shouldShowSeedPhraseReminder,
+    } = this.props;
+
     this.checkStatusAndNavigate();
+
+    const showSRP = await shouldShowSeedPhraseReminder;
+
+    this.setState({ showSeedPhraseReminder: showSRP });
   }
 
   static getDerivedStateFromProps(props) {
@@ -223,14 +236,22 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification } = this.props;
+  async componentDidUpdate(_prevProps, prevState) {
+    const { closeNotificationPopup, isNotification, shouldShowSeedPhraseReminder } = this.props;
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
     } else if (isNotification) {
       this.checkStatusAndNavigate();
+    }
+
+    const showSRP = await shouldShowSeedPhraseReminder;
+
+    if (
+      _prevProps.shouldShowSeedPhraseReminder !== shouldShowSeedPhraseReminder
+    ) {
+      this.setState({ showSeedPhraseReminder: showSRP });
     }
   }
 
@@ -253,7 +274,6 @@ export default class Home extends PureComponent {
 
     const {
       history,
-      shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
@@ -276,6 +296,7 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
       setActiveNetwork,
+      balance,
     } = this.props;
 
     const onAutoHide = () => {
@@ -449,7 +470,7 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {shouldShowSeedPhraseReminder ? (
+        {balance && this.state.showSeedPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}
