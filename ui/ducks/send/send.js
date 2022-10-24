@@ -1596,9 +1596,7 @@ const slice = createSlice({
           // the asset is set to the native network asset, and then validate
           // the transaction.
           if (draftTransaction) {
-            if (draftTransaction?.asset.type === ASSET_TYPES.NATIVE) {
-              draftTransaction.asset.balance = action.payload.account.balance;
-            }
+            draftTransaction.asset.balance = action.payload.account.balance;
             slice.caseReducers.validateAmountField(state);
             slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
