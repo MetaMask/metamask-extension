@@ -4114,7 +4114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controllers@npm:^30.0.0, @metamask/controllers@npm:^30.3.0":
+"@metamask/controllers@npm:^30.0.0":
   version: 30.3.0
   resolution: "@metamask/controllers@npm:30.3.0"
   dependencies:
@@ -4464,15 +4464,6 @@ __metadata:
     pump: ^3.0.0
     ses: 0.12.4
   checksum: 5cdf2f5fb12dbf774c6d54670051ecd02c489f3f0a5ae68a3facbb2135347be3fe308e260fb44e1a34310fe20cb8e26c3b7b0a3addfdd70ca26ff6ba22f22d92
-  languageName: node
-  linkType: hard
-
-"@metamask/post-message-stream@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/post-message-stream@npm:4.0.0"
-  dependencies:
-    readable-stream: 2.3.3
-  checksum: b9c549363418e6b005e4b0fa4f5054d8a33eadcf487d3b4684866f88e8c808c71524544e1a068cecdbbf9f078f233cb79910b2a9e68f1ca0c9f9098f899bac90
   languageName: node
   linkType: hard
 
@@ -23083,16 +23074,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "json-rpc-middleware-stream@npm:2.1.1"
-  dependencies:
-    readable-stream: ^2.3.3
-    safe-event-emitter: ^1.0.1
-  checksum: e3c1c25c4b46b25e3c5a577e751ad3cabe3f1a387b5a8f345618563cb0ca24bc26eb25f170cf7ccb1e2c36d759947861cca0debb913b672ddf352b0f8add4ecf
-  languageName: node
-  linkType: hard
-
 "json-rpc-middleware-stream@npm:^3.0.0":
   version: 3.0.0
   resolution: "json-rpc-middleware-stream@npm:3.0.0"
@@ -25816,7 +25797,7 @@ __metadata:
     "@material-ui/core": ^4.11.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/contract-metadata": ^1.31.0
-    "@metamask/controllers": ^30.3.0
+    "@metamask/controllers": ^31.0.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0
@@ -25833,7 +25814,7 @@ __metadata:
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/obs-store": ^5.0.0
     "@metamask/phishing-warning": ^1.2.1
-    "@metamask/post-message-stream": ^4.0.0
+    "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.0.0
     "@metamask/rpc-methods": ^0.22.2
     "@metamask/slip44": ^2.1.0
@@ -25990,7 +25971,7 @@ __metadata:
     jest-junit: ^14.0.1
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
-    json-rpc-middleware-stream: ^2.1.1
+    json-rpc-middleware-stream: ^3.0.0
     jsonschema: ^1.2.4
     koa: ^2.7.0
     labeled-stream-splicer: ^2.0.2
@@ -26006,7 +25987,7 @@ __metadata:
     madge: ^5.0.1
     mocha: ^7.2.0
     mockttp: ^2.6.0
-    nanoid: ^2.1.6
+    nanoid: ^3.3.4
     nock: ^13.2.9
     node-fetch: ^2.6.1
     nonce-tracker: ^1.0.0
@@ -27033,14 +27014,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^2.0.0, nanoid@npm:^2.1.6":
+"nanoid@npm:^2.0.0":
   version: 2.1.11
   resolution: "nanoid@npm:2.1.11"
   checksum: 18cd14386816873849787eb4e65667021bfdeb019a8f14c74287c23594c67b7c0e8f42c7d69f6aedf05cd3d100f1ddc41184f9f9b6b17fbaea1c3ee3f0704eec
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.31, nanoid@npm:^3.3.1, nanoid@npm:^3.3.3":
+"nanoid@npm:^3.1.31, nanoid@npm:^3.3.1, nanoid@npm:^3.3.3, nanoid@npm:^3.3.4":
   version: 3.3.4
   resolution: "nanoid@npm:3.3.4"
   bin:
