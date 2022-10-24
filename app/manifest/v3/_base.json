@@ -66,6 +66,7 @@
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
+    "http://127.0.0.1:2025/*",
     "https://*.infura.io/",
     "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",

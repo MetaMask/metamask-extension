@@ -37,6 +37,7 @@ export default function reduceApp(state = {}, action) {
     isMouseUser: false,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
+      alcSigner: `m/localhost:2025/0/test/testtesttesttest`,
       ledger: `m/44'/60'/0'/0/0`,
       lattice: `m/44'/60'/0'/0`,
     },

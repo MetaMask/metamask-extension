@@ -6,6 +6,7 @@
 export const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
+  ALC_SIGNER: 'AlphaLab Capital Signer',
   LATTICE: 'Lattice Hardware',
   QR: 'QR Hardware Wallet Device',
   IMPORTED: 'Simple Key Pair',
@@ -14,6 +15,7 @@ export const KEYRING_TYPES = {
 export const DEVICE_NAMES = {
   LEDGER: 'ledger',
   TREZOR: 'trezor',
+  ALC_SIGNER: 'alcSigner',
   QR: 'QR Hardware',
   LATTICE: 'lattice',
 };
@@ -23,6 +25,7 @@ export const KEYRING_NAMES = {
   TREZOR: 'Trezor',
   QR: 'QR',
   LATTICE: 'Lattice1',
+  ALC_SIGNER: 'AlphaLab Capital Signer',
 };
 
 /**

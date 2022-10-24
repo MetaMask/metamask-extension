@@ -124,6 +124,7 @@ class ConnectHardwareForm extends Component {
   };
 
   onAccountChange = (account) => {
+    console.log(`onAccountChange: account=${account}`)
     let { selectedAccounts } = this.state;
     if (selectedAccounts.includes(account)) {
       selectedAccounts = selectedAccounts.filter((acc) => account !== acc);
@@ -397,6 +398,12 @@ const mapDispatchToProps = (dispatch) => {
       hdPath,
       hdPathDescription,
     ) => {
+      console.log(
+        "create-account/connect-hardware/index.js: unlockHardwareWalletAccounts:",
+        indexes,
+        deviceName,
+        hdPath,
+        hdPathDescription)
       return dispatch(
         actions.unlockHardwareWalletAccounts(
           indexes,

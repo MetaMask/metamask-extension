@@ -3,7 +3,7 @@
     "extension_pages": "default-src 'self'; frame-ancestors 'none'"
   },
   "externally_connectable": {
-    "matches": ["https://metamask.io/*"],
+    "matches": ["https://metamask.io/*", "http://127.0.0.1:2025/*"],
     "ids": ["*"]
   },
   "minimum_chrome_version": "66"

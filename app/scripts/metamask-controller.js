@@ -98,6 +98,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import AlcSignerKeyring from './lib/AlcSignerKeyring';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -566,6 +567,7 @@ export default class MetamaskController extends EventEmitter {
       LedgerBridgeKeyring,
       LatticeKeyring,
       QRHardwareKeyring,
+      AlcSignerKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -2436,6 +2438,9 @@ export default class MetamaskController extends EventEmitter {
       case DEVICE_NAMES.TREZOR:
         keyringName = TrezorKeyring.type;
         break;
+      case DEVICE_NAMES.ALC_SIGNER:
+        keyringName = AlcSignerKeyring.type;
+        break;
       case DEVICE_NAMES.LEDGER:
         keyringName = LedgerBridgeKeyring.type;
         break;
@@ -2466,6 +2471,10 @@ export default class MetamaskController extends EventEmitter {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
+    if (deviceName === DEVICE_NAMES.ALC_SIGNER) {
+      const d = await keyring.getAlcSignerDesc();
+      this.appStateController.setAlcSignerDesc(d);
+    }
 
     keyring.network = this.networkController.getProviderConfig().type;
 
@@ -2492,6 +2501,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
+    console.log('connectHardware', deviceName, page, hdPath)
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
     let accounts = [];
     switch (page) {
@@ -2546,7 +2556,7 @@ export default class MetamaskController extends EventEmitter {
    * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
    *
    * @param {string} address - Address to retrieve keyring for
-   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   * @returns {'hardware' | 'imported' | 'MetaMask' | 'alc-signer'}
    */
   async getAccountType(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
@@ -2558,6 +2568,8 @@ export default class MetamaskController extends EventEmitter {
         return 'hardware';
       case KEYRING_TYPES.IMPORTED:
         return 'imported';
+      case KEYRING_TYPES.ALC_SIGNER:
+        return 'alc-signer';
       default:
         return 'MetaMask';
     }
@@ -2576,6 +2588,8 @@ export default class MetamaskController extends EventEmitter {
     switch (keyring.type) {
       case KEYRING_TYPES.TREZOR:
         return keyring.getModel();
+      case KEYRING_TYPES.ALC_SIGNER:
+        return "ALCALCALC";
       case KEYRING_TYPES.QR:
         return keyring.getName();
       case KEYRING_TYPES.LEDGER:
@@ -2616,6 +2630,10 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
+    console.log('metamask-controller.js: unlockHardwareWalletAccount:', index,
+      deviceName,
+      hdPath,
+      hdPathDescription)
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
 
     keyring.setAccountToUnlock(index);
@@ -3105,6 +3123,14 @@ export default class MetamaskController extends EventEmitter {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case KEYRING_TYPES.ALC_SIGNER: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Alc Signer does not support eth_getEncryptionPublicKey.'),
           );
         });
       }

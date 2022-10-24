@@ -48,6 +48,20 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToAlcSignerButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.ALC_SIGNER,
+        })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.ALC_SIGNER })}
+      >
+        <img src="images/logo-alc.svg" alt="AlphaLab Capital Logo" width="130px"
+          style={{background: "black", padding: "3px"}} />
+      </button>
+    );
+  }
+
   renderConnectToLatticeButton() {
     return (
       <button
@@ -93,6 +107,11 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+        </div>
+        <div className="hw-connect__btn-wrapper"
+          style={{ margin: '20px 0 10px' }}
+        >
+          {this.renderConnectToAlcSignerButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"
@@ -162,6 +181,8 @@ export default class SelectHardware extends Component {
     switch (this.state.selectedDevice) {
       case DEVICE_NAMES.LEDGER:
         return this.renderLedgerTutorialSteps();
+      case DEVICE_NAMES.ALC_SIGNER:
+        return this.renderAlcSignerTutorialSteps();
       case DEVICE_NAMES.TREZOR:
         return this.renderTrezorTutorialSteps();
       case DEVICE_NAMES.LATTICE:
@@ -225,6 +246,19 @@ export default class SelectHardware extends Component {
             )}
           </div>
         ))}
+      </div>
+    );
+  }
+
+  renderAlcSignerTutorialSteps() {
+    return (
+      <div className="hw-tutorial">
+        <div className="hw-connect" key="0">
+          <h3 className="hw-connect__title">Steps to use Alc Signer</h3>
+          <p className="hw-connect__msg">
+            Make sure you followed these steps to enable TCP network-level connectivity to Alc Signer
+          </p>
+        </div>
       </div>
     );
   }

@@ -35,6 +35,7 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showPortfolioTooltip: true,
       trezorModel: null,
+      alcSignerDesc: null,
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
@@ -273,6 +274,15 @@ export default class AppStateController extends EventEmitter {
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
+  }
+
+  /**
+   * Sets a property indicating the instance of AlphaLab Signer
+   *
+   * @param alcSignerDesc - descriptive string e.g. "signer-tokyo-1"
+   */
+  setAlcSignerDesc(alcSignerDesc) {
+    this.store.updateState({ alcSignerDesc });
   }
 
   /**
