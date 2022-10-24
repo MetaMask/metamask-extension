@@ -18,6 +18,7 @@ export const ButtonIcon = ({
   size = BUTTON_ICON_SIZES.LG,
   icon,
   disabled,
+  primary,
   ...props
 }) => {
   return (
@@ -29,6 +30,7 @@ export const ButtonIcon = ({
         `mm-button-icon--size-${size}`,
         {
           'mm-button-icon--disabled': disabled,
+          'mm-button-icon--type-primary': primary,
         },
         className,
       )}
@@ -61,6 +63,10 @@ ButtonIcon.propTypes = {
    * The name of the icon to display. Should be one of ICON_NAMES
    */
   icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  /**
+   * When true, ButtonIcon color becomes primary color
+   */
+  primary: PropTypes.bool,
   /**
    * The size of the ButtonIcon.
    * Possible values could be 'SIZES.AUTO', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',

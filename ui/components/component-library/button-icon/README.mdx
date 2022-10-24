@@ -45,22 +45,6 @@ import { ButtonIcon } from '../ui/component-library';
 <ButtonIcon size={SIZES.LG} />
 ```
 
-### Block
-
-Use boolean `block` prop to quickly enable a full width block button
-
-<Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--block" />
-</Canvas>
-
-```jsx
-import { DISPLAY } from '../../../helpers/constants/design-system';
-import { ButtonIcon } from '../ui/component-library';
-
-<ButtonIcon>Default Button</ButtonIcon>
-<ButtonIcon block>Block Button</ButtonIcon>
-```
-
 ### As
 
 Use the `as` box prop to change the element of `ButtonIcon`. Defaults to `button`.
@@ -78,10 +62,8 @@ Button `as` options:
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button">Button Element</ButtonIcon>
-<ButtonIcon as="a" href="#">
-  Anchor Element
-</ButtonIcon>
+<ButtonIcon as="button" icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+<ButtonIcon as="a" href="#" icon={ICON_NAMES.ADD_SQUARE_FILLED} />
 ```
 
 ### Disabled
@@ -95,5 +77,5 @@ Use the boolean `disabled` prop to disable button
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon disabled>Disabled Button</ButtonIcon>;
+<ButtonIcon icon={ICON_NAMES.ADD_SQUARE_FILLED} disabled />;
 ```

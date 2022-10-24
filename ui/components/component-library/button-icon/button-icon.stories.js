@@ -56,6 +56,9 @@ export default {
     loading: {
       control: 'boolean',
     },
+    primary: {
+      control: 'boolean',
+    },
     size: {
       control: 'select',
       options: Object.values(BUTTON_ICON_SIZES),
@@ -115,4 +118,12 @@ export const Disabled = (args) => (
 
 Disabled.args = {
   disabled: true,
+};
+
+export const Primary = (args) => (
+  <ButtonIcon {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+);
+
+Primary.args = {
+  primary: true,
 };

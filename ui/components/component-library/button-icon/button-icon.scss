@@ -1,30 +1,31 @@
 .mm-button-icon {
   position: relative;
-  height: 32px;
-  width: 32px;
+  height: 24px;
+  width: 24px;
   padding: 0;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--color-text-default);
-  background-color: var(--brand-colors-grey-grey100);
-  vertical-align: middle;
-  user-select: none;
+  color: var(--color-icon-default);
+  background-color: transparent;
 
+  // ButtonIcon default states
   &:active,
   &:hover {
-    color: var(--color-text-default);
+    opacity: 0.5;
   }
 
-  &--block {
-    display: block;
-    width: 100%;
+  &--disabled,
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
-  &__content {
-    height: 100%;
+  // ButtonIcon Type(s)
+  &--type-primary {
+    color: var(--color-primary-default);
   }
 
-
+  // ButtonIcon Sizes
   &--size-sm {
     height: 24px;
     width: 24px;
@@ -33,14 +34,6 @@
   &--size-lg {
     height: 32px;
     width: 32px;
-  }
-
-
-
-  &--disabled,
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
   }
 }
 
