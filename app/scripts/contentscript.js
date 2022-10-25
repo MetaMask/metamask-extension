@@ -5,7 +5,7 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 
-import { MESSAGE_TYPE } from '../../shared/constants/app';
+import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -402,7 +402,7 @@ const destroyLegacyExtensionStreams = () => {
 // When extension background is loaded it sends message 'METAMASK_EXTENSION_READY' to browser tabs
 // Function below helps to setup streams after service worker in-activity
 const activateStreams = (msg) => {
-  if (msg.name === 'METAMASK_EXTENSION_READY') {
+  if (msg.name === EXTENSION_MESSAGES.READY) {
     setupExtensionStreams();
     setupLegacyExtensionStreams();
   }
