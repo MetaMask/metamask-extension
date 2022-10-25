@@ -24,6 +24,21 @@ describe('TextFieldBase', () => {
     fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
     expect(textFieldBase.value).toBe(''); // value is empty string after reset
   });
+  it('should render with focused state when clicked', () => {
+    const { getByTestId } = render(
+      <TextFieldBase
+        data-testid="text-field-base"
+        inputProps={{ 'data-testid': 'input' }}
+      />,
+    );
+    const textFieldBase = getByTestId('text-field-base');
+
+    fireEvent.click(textFieldBase);
+    expect(getByTestId('input')).toHaveFocus();
+    expect(getByTestId('text-field-base')).toHaveClass(
+      'mm-text-field-base--focused ',
+    );
+  });
   it('should render and fire onFocus and onBlur events', () => {
     const onFocus = jest.fn();
     const onBlur = jest.fn();
@@ -103,11 +118,17 @@ describe('TextFieldBase', () => {
       'password',
     );
   });
-  it('should render with truncate class', () => {
+  it('should render with truncate class as true by default and remove it when truncate is false', () => {
     const { getByTestId } = render(
-      <TextFieldBase truncate data-testid="truncate" />,
+      <>
+        <TextFieldBase data-testid="truncate" />
+        <TextFieldBase truncate={false} data-testid="no-truncate" />
+      </>,
     );
     expect(getByTestId('truncate')).toHaveClass('mm-text-field-base--truncate');
+    expect(getByTestId('no-truncate')).not.toHaveClass(
+      'mm-text-field-base--truncate',
+    );
   });
   it('should render with right and left accessories', () => {
     const { getByRole, getByText } = render(
@@ -190,8 +211,12 @@ describe('TextFieldBase', () => {
     const { getByTestId } = render(
       <TextFieldBase
         readOnly
+        data-testid="read-only"
         inputProps={{ 'data-testid': 'text-field-base-readonly' }}
       />,
+    );
+    expect(getByTestId('read-only')).not.toHaveClass(
+      'mm-text-field-base--focused ',
     );
     expect(getByTestId('text-field-base-readonly')).toHaveAttribute(
       'readonly',
