@@ -1654,6 +1654,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
           preferencesController,
         ),
+      setTransactionSecurityCheckEnabled:
+        preferencesController.setTransactionSecurityCheckEnabled.bind(
+          preferencesController,
+        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 

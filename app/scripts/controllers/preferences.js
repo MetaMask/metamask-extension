@@ -70,6 +70,7 @@ export default class PreferencesController {
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
       improvedTokenAllowanceEnabled: false,
+      transactionSecurityCheckEnabled: false,
       ...opts.initState,
     };
 
@@ -196,6 +197,17 @@ export default class PreferencesController {
   setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
     this.store.updateState({
       improvedTokenAllowanceEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `transactionSecurityCheckEnabled` property
+   *
+   * @param transactionSecurityCheckEnabled
+   */
+  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
+    this.store.updateState({
+      transactionSecurityCheckEnabled,
     });
   }
 

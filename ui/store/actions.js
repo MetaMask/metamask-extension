@@ -3810,6 +3810,20 @@ export function setImprovedTokenAllowanceEnabled(
   };
 }
 
+export function setTransactionSecurityCheckEnabled(
+  transactionSecurityCheckEnabled,
+) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
+        transactionSecurityCheckEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 export function setFirstTimeUsedNetwork(chainId) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
