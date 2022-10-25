@@ -11,11 +11,15 @@ exports[`MainQuoteSummary renders the component with initial props 1`] = `
   >
     2
   </span>
-  <span
-    class="icon-with-fallback__fallback url-icon__fallback main-quote-summary__icon-fallback"
+  <div
+    class=""
   >
-    E
-  </span>
+    <span
+      class="icon-with-fallback__fallback url-icon__fallback main-quote-summary__icon-fallback"
+    >
+      E
+    </span>
+  </div>
   <span
     class="main-quote-summary__source-row-symbol"
     title="ETH"
@@ -29,11 +33,15 @@ exports[`MainQuoteSummary renders the component with initial props 2`] = `
 <div
   class="main-quote-summary__destination-row"
 >
-  <span
-    class="icon-with-fallback__fallback url-icon__fallback main-quote-summary__icon-fallback"
+  <div
+    class=""
   >
-    B
-  </span>
+    <span
+      class="icon-with-fallback__fallback url-icon__fallback main-quote-summary__icon-fallback"
+    >
+      B
+    </span>
+  </div>
   <span
     class="main-quote-summary__destination-row-symbol"
   >
