@@ -1,5 +1,3 @@
-/* global chrome */
-
 /**
  * @file The entry point for the web extension singleton process.
  */
@@ -94,25 +92,41 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 /**
  * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
  * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ *
+ * @param remotePort
  */
-
 const initApp = async (remotePort) => {
   browser.runtime.onConnect.removeListener(initApp);
   await initialize(remotePort);
   log.info('MetaMask initialization complete.');
 };
 
+/**
+ * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
+ * the backend is not active. It is required to re-connect dapps after service worker re-activates.
+ */
+const sendReadyMessageToActiveTab = async () => {
+  try {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (!tabs?.[0]?.id) {
+      return;
+    }
+
+    await browser.tabs.sendMessage(tabs[0].id, {
+      name: EXTENSION_MESSAGES.READY,
+    });
+  } catch (err) {
+    log.error(err);
+  }
+};
+
 if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
-  // Message below signals content script in DAPPS to connect to metamask background as backend is not active
-  // It is required to re-connect DAPPS after service worker re-activation
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { name: EXTENSION_MESSAGES.READY },
-      () => undefined,
-    );
-  });
+  sendReadyMessageToActiveTab();
 } else {
   // initialization flow
   initialize().catch(log.error);
