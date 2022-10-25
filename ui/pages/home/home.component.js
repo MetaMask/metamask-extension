@@ -615,6 +615,7 @@ export default class Home extends PureComponent {
       completedOnboarding,
       shouldShowSeedPhraseReminder,
       onboardedInThisUISession,
+      newCustomNetworkAdded,
     } = this.props;
 
     if (forgottenPassword) {
@@ -629,7 +630,8 @@ export default class Home extends PureComponent {
       announcementsToShow &&
       showWhatsNewPopup &&
       !showPortfolioTooltip &&
-      !portfolioTooltipWasShownInThisSession;
+      !portfolioTooltipWasShownInThisSession &&
+      Object.keys(newCustomNetworkAdded).length === 0;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />

@@ -80,7 +80,7 @@ import {
   toChecksumHexAddress,
   stripHexPrefix,
 } from '../../shared/modules/hexstring-utils';
-import { MILLISECOND } from '../../shared/constants/time';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -201,6 +201,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = new ControllerMessenger();
 
+    // instance of a class that wraps the extension's storage local API.
+    this.localStoreApiWrapper = opts.localStore;
+
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -247,7 +250,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      preventPollingOnNetworkRestart: true,
+      preventPollingOnNetworkRestart: initState.TokenListController
+        ? initState.TokenListController.preventPollingOnNetworkRestart
+        : true,
       onNetworkStateChange: (cb) => {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
@@ -470,6 +475,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
+    this.phishingController.updatePhishingLists();
+    if (process.env.IN_TEST) {
+      this.phishingController.setRefreshInterval(5 * SECOND);
+    }
 
     this.announcementController = new AnnouncementController(
       { allAnnouncements: UI_NOTIFICATIONS },
@@ -654,7 +663,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.9.0',
+        'https://metamask.github.io/iframe-execution-environment/0.9.1',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -2139,6 +2148,11 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionController.clearState();
 
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      // Clear snap state
+      this.snapController.clearState();
+      ///: END:ONLY_INCLUDE_IN
+
       // clear accounts in accountTracker
       this.accountTracker.clearAccounts();
 
@@ -3371,6 +3385,10 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
+      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
+      if (phishingListsAreOutOfDate) {
+        this.phishingController.updatePhishingLists();
+      }
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
@@ -3480,7 +3498,15 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
+    outStream.on(
+      'data',
+      createMetaRPCHandler(
+        api,
+        outStream,
+        this.store,
+        this.localStoreApiWrapper,
+      ),
+    );
     const handleUpdate = (update) => {
       if (outStream._writableState.ended) {
         return;
@@ -3744,7 +3770,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getPermittedSnaps',
+          'SnapController:getPermitted',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
