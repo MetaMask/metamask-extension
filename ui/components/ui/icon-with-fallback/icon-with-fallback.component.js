@@ -36,7 +36,7 @@ const IconWithFallback = ({
             fallbackClassName,
           )}
         >
-          {name && name.length ? name.charAt(0).toUpperCase() : ''}
+          {name?.charAt(0).toUpperCase() || ''}
         </span>
       )}
     </div>
