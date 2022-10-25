@@ -168,6 +168,7 @@ export default function CustomSpendingCap({
                 </button>
               }
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
+              allowDecimals
             />
             <Typography
               color={COLORS.TEXT_DEFAULT}

@@ -178,6 +178,7 @@ export default function TokenAllowance({
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}
+        chainId={fullTxData.chainId}
       />
       <Box
         display={DISPLAY.FLEX}
