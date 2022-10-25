@@ -59,17 +59,16 @@ ButtonIcon.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * Add icon to left side of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
   icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
-   * When true, ButtonIcon color becomes primary color
+   * When true, ButtonIcon becomes primary color
    */
   primary: PropTypes.bool,
   /**
    * The size of the ButtonIcon.
-   * Possible values could be 'SIZES.AUTO', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
+   * Possible values could be 'SIZES.SM', 'SIZES.LG',
    */
   size: PropTypes.oneOf(Object.values(BUTTON_ICON_SIZES)),
   /**

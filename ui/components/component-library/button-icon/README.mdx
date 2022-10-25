@@ -1,8 +1,6 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { ButtonIcon } from './button-icon';
 
-### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
-
 # ButtonIcon
 
 The `ButtonIcon` is the base component for buttons.
@@ -20,16 +18,14 @@ The `ButtonIcon` accepts all props below as well as all [Box](/docs/ui-component
 ### Size
 
 Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
-to change the size of `ButtonIcon`. Defaults to `SIZES.MD`
+to change the size of `ButtonIcon`. Defaults to `SIZES.SM`
 
 Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
-- `SIZES.SM` 32px
-- `SIZES.MD` 40px
-- `SIZES.LG` 48px
+- `SIZES.SM` 24px
+- `SIZES.LG` 32px
 
 <Canvas>
   <Story id="ui-components-component-library-button-icon-button-icon-stories-js--size" />
@@ -39,9 +35,7 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.AUTO} />
 <ButtonIcon size={SIZES.SM} />
-<ButtonIcon size={SIZES.MD} />
 <ButtonIcon size={SIZES.LG} />
 ```
 

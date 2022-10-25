@@ -87,9 +87,11 @@ export default {
   args: {},
 };
 
-export const DefaultStory = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.FULL_CIRCLE_FILLED} />
-);
+export const DefaultStory = (args) => <ButtonIcon {...args} />;
+
+DefaultStory.args = {
+  icon: ICON_NAMES.ADD_SQUARE_FILLED,
+};
 
 DefaultStory.storyName = 'Default';
 
