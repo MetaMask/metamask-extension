@@ -1,5 +1,3 @@
-/* global chrome */
-
 /**
  * @file The entry point for the web extension singleton process.
  */
@@ -106,8 +104,8 @@ if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
   // Message below signals content script in DAPPS to connect to metamask background as backend is not active
   // It is required to re-connect DAPPS after service worker re-activation
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(
+  browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    browser.tabs.sendMessage(
       tabs[0].id,
       { name: EXTENSION_MESSAGES.READY },
       () => undefined,
