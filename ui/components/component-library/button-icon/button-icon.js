@@ -19,6 +19,7 @@ export const ButtonIcon = ({
   icon,
   disabled,
   primary,
+  iconProps,
   ...props
 }) => {
   return (
@@ -40,7 +41,7 @@ export const ButtonIcon = ({
       alignItems={ALIGN_ITEMS.CENTER}
       {...props}
     >
-      <Icon name={icon} size={size} />
+      <Icon name={icon} size={size} {...iconProps} />
     </Box>
   );
 };
@@ -62,6 +63,10 @@ ButtonIcon.propTypes = {
    * The name of the icon to display. Should be one of ICON_NAMES
    */
   icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  /**
+   * iconProps accepts all the props from Icon
+   */
+  iconProps: PropTypes.object,
   /**
    * When true, ButtonIcon becomes primary color
    */
