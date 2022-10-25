@@ -46,7 +46,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform } from './lib/util';
+import { checkForError, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -101,6 +101,13 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
+const throwErrorIfLastErrorFound = () => {
+  const err = checkForError();
+  if (err) {
+    throw err;
+  }
+};
+
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
@@ -111,6 +118,7 @@ const sendReadyMessageToActiveTab = async () => {
       active: true,
       currentWindow: true,
     });
+    throwErrorIfLastErrorFound();
 
     if (!tabs?.[0]?.id) {
       return;
@@ -119,6 +127,7 @@ const sendReadyMessageToActiveTab = async () => {
     await browser.tabs.sendMessage(tabs[0].id, {
       name: EXTENSION_MESSAGES.READY,
     });
+    throwErrorIfLastErrorFound();
   } catch (err) {
     log.error(err);
   }
