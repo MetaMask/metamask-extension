@@ -130,6 +130,7 @@ describe('Incremental Security', function () {
         const revealedSeedPhrase = await driver.findElement(
           '.reveal-seed-phrase__secret-words',
         );
+        await driver.waitForNonEmptyElement(revealedSeedPhrase);
         const seedPhrase = await revealedSeedPhrase.getText();
         assert.equal(seedPhrase.split(' ').length, 12);
 
