@@ -80,7 +80,7 @@ import {
   toChecksumHexAddress,
   stripHexPrefix,
 } from '../../shared/modules/hexstring-utils';
-import { MILLISECOND } from '../../shared/constants/time';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -470,6 +470,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
+    this.phishingController.updatePhishingLists();
+    if (process.env.IN_TEST) {
+      this.phishingController.setRefreshInterval(5 * SECOND);
+    }
 
     this.announcementController = new AnnouncementController(
       { allAnnouncements: UI_NOTIFICATIONS },
@@ -3371,6 +3375,10 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
+      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
+      if (phishingListsAreOutOfDate) {
+        this.phishingController.updatePhishingLists();
+      }
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
