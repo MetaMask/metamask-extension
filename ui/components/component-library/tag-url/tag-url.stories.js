@@ -15,17 +15,17 @@ export default {
     label: {
       control: 'text',
     },
-    avatarFaviconImageSource: {
+    url: {
       control: 'text',
     },
-    cta: {
-      control: 'object',
+    actionButtonLabel: {
+      control: 'text',
     },
   },
   args: {
     label:
       'https://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.org',
-    avatarFaviconImageSource: 'https://uniswap.org/favicon.ico',
+    url: 'https://uniswap.org/favicon.ico',
   },
 };
 

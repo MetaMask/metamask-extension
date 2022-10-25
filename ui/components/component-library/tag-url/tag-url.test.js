@@ -16,12 +16,10 @@ describe('Tag', () => {
       <TagUrl
         data-testid="tag-url"
         label="https://app.uniswap.org"
-        cta={{ label: 'Action' }}
+        actionButtonLabel="Permissions"
       />,
     );
-    expect(screen.getByText('Action').closest('a')).toHaveAttribute(
-      'href',
-      '#',
-    );
+
+    expect(screen.getByText('Permissions').closest('a')).toBeDefined();
   });
 });

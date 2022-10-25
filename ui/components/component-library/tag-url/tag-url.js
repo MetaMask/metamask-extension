@@ -19,7 +19,7 @@ export const TagUrl = ({
   labelProps,
   actionButtonLabel,
   actionButtonProps,
-  avatarFaviconImageSource,
+  url,
   avatarFaviconProps,
   className,
   ...props
@@ -38,10 +38,7 @@ export const TagUrl = ({
       display={DISPLAY.INLINE_FLEX}
       {...props}
     >
-      <AvatarFavicon
-        imageSource={avatarFaviconImageSource}
-        {...avatarFaviconProps}
-      />
+      <AvatarFavicon imageSource={url} {...avatarFaviconProps} />
       <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
         {label}
       </Text>
@@ -64,9 +61,9 @@ export const TagUrl = ({
 
 TagUrl.propTypes = {
   /**
-   * The avatarFaviconImageSource accepts the string of the image to be rendered
+   * The url accepts the string of the image to be rendered
    */
-  avatarFaviconImageSource: PropTypes.string,
+  url: PropTypes.string,
   /**
    * It accepts all the props from Avatar Favicon
    */
