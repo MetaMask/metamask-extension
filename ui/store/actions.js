@@ -3618,7 +3618,10 @@ export async function closeNotificationPopup() {
  * @returns {Promise<void>}
  */
 export function trackMetaMetricsEvent(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsEvent', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function createEventFragment(options) {
@@ -3650,7 +3653,10 @@ export function finalizeEventFragment(id, options) {
  * @param {MetaMetricsPageOptions} options - options for handling the page view
  */
 export function trackMetaMetricsPage(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsPage', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsPage', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap) {
@@ -3680,6 +3686,7 @@ export async function setSmartTransactionsOptInStatus(
   prevOptInState,
 ) {
   trackMetaMetricsEvent({
+    actionId: generateActionId(),
     event: 'STX OptIn',
     category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
@@ -3941,7 +3948,10 @@ export function addCustomNetwork(customRpc) {
   return async (dispatch) => {
     try {
       dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [customRpc]);
+      await submitRequestToBackground('addCustomNetwork', [
+        customRpc,
+        generateActionId(),
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
