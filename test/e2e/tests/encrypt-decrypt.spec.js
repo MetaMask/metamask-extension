@@ -75,7 +75,7 @@ describe('Encrypt Decrypt', function () {
           text: message,
           tag: 'div',
         });
-        assert.equal(await notificationMessage, true);
+        assert.equal(notificationMessage, true);
         await driver.clickElement({ text: 'Decrypt', tag: 'button' });
 
         // Verify message in Test Dapp
