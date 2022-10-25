@@ -793,6 +793,11 @@ jobs:
           path: development/ts-migration-dashboard/build
           destination: ts-migration-dashboard
       - run:
+          name: Set branch parent commit env var
+          command: |
+            echo "export PARENT_COMMIT=$(git rev-parse HEAD^)" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
 

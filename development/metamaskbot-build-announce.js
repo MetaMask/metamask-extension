@@ -23,6 +23,8 @@ async function start() {
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  const { PARENT_COMMIT } = process.env;
+  console.log('PARENT_COMMIT', PARENT_COMMIT);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -88,7 +90,7 @@ async function start() {
     .join('')}</ul>`;
 
   const bundleSizeDataUrl =
-    'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.js';
+    'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
   const coverageLink = `<a href="${coverageUrl}">Report</a>`;
@@ -269,9 +271,7 @@ async function start() {
     };
 
     const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      const re = new RegExp(`(?<="${part}": )(.*)(?=,)`, 'gu');
-      const history = devBundleSizeStats.match(re);
-      sizes[part] = parseInt(history[history.length - 1], 10);
+      sizes[part] = devBundleSizeStats[PARENT_COMMIT][part] || 0;
       return sizes;
     }, {});
 
@@ -280,10 +280,9 @@ async function start() {
       return output;
     }, {});
 
-    const sizeDiffRows = Object.keys(diffs).reduce((output, part) => {
-      output.push(`${part}: ${diffs[part]}`);
-      return output;
-    }, []);
+    const sizeDiffRows = Object.keys(diffs).map(
+      (part) => `${part}: ${diffs[part]} bytes`,
+    );
 
     const sizeDiffHiddenContent = `<ul>${sizeDiffRows
       .map((row) => `<li>${row}</li>`)
@@ -291,8 +290,8 @@ async function start() {
 
     const sizeDiffWarning =
       diffs.background + diffs.common > 0
-        ? `🚨 Warning! Bundle size has increased! 🚨`
-        : `🚀 Bundle size reduced! 🚀`;
+        ? `🚨 Warning! Bundle size has increased!`
+        : `🚀 Bundle size reduced!`;
     const sizeDiffExposedContent = `Bundle size diffs [${sizeDiffWarning}]`;
     const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 
