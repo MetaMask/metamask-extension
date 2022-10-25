@@ -16,7 +16,6 @@ export default function NftInfoSetApprovalForAll({
   assetName,
   tokenAddress,
   total,
-  collections = {},
 }) {
   const t = useContext(I18nContext);
 
@@ -39,7 +38,6 @@ export default function NftInfoSetApprovalForAll({
             <NftCollectionImage
               assetName={assetName}
               tokenAddress={tokenAddress}
-              collections={collections}
             />
           </Box>
           <Typography
@@ -97,27 +95,6 @@ export default function NftInfoSetApprovalForAll({
 }
 
 NftInfoSetApprovalForAll.propTypes = {
-  collections: PropTypes.shape({
-    collectibles: PropTypes.arrayOf(
-      PropTypes.shape({
-        address: PropTypes.string.isRequired,
-        tokenId: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        image: PropTypes.string,
-        standard: PropTypes.string,
-        imageThumbnail: PropTypes.string,
-        imagePreview: PropTypes.string,
-        creator: PropTypes.shape({
-          address: PropTypes.string,
-          config: PropTypes.string,
-          profile_img_url: PropTypes.string,
-        }),
-      }),
-    ),
-    collectionImage: PropTypes.string,
-    collectionName: PropTypes.string,
-  }),
   assetName: PropTypes.string,
   tokenAddress: PropTypes.string,
   total: PropTypes.number,

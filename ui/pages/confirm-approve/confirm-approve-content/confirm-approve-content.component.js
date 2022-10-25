@@ -532,7 +532,6 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
-      userAddress,
       isSetApproveForAll,
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
@@ -608,7 +607,6 @@ export default class ConfirmApproveContent extends Component {
             <NftInfoSetApprovalForAll
               assetName={assetName}
               tokenAddress={tokenAddress}
-              collections={collections}
               total={this.state.collectionBalance}
             />
           </Box>
