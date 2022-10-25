@@ -11,7 +11,7 @@ describe('Tag', () => {
     );
     expect(getByTestId('tag-url')).toBeDefined();
   });
-  it('should render the button Link if there is a cta object inside the tag', () => {
+  it('should render the button if there is a actionButtonLabel inside the tag', () => {
     render(
       <TagUrl
         data-testid="tag-url"
