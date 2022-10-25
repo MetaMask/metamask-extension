@@ -37,7 +37,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.add-network__networks-container');
 
-        await driver.clickElement('[data-testid="add-network-manually"]');
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'button',
+        });
 
         await driver.findElement('.networks-tab__subheader');
 
@@ -91,7 +94,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.add-network__networks-container');
 
-        await driver.clickElement('[data-testid="add-network-manually"]');
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'button',
+        });
 
         await driver.findElement('.networks-tab__subheader');
 
@@ -133,7 +139,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.add-network__networks-container');
 
-        await driver.clickElement('[data-testid="add-network-manually"]');
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'button',
+        });
 
         await driver.findElement('.networks-tab__subheader');
 
@@ -229,7 +238,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.add-network__networks-container');
 
-        await driver.clickElement('[data-testid="add-network-manually"]');
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'button',
+        });
 
         // // cancel new custom rpc
         await driver.clickElement(
