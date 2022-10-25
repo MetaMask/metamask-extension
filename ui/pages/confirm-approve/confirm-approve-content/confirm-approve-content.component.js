@@ -505,11 +505,13 @@ export default class ConfirmApproveContent extends Component {
   }
 
   async componentDidMount() {
-    const { tokenAddress, userAddress } = this.props;
-    const tokenBalance = await fetchTokenBalance(tokenAddress, userAddress);
-    this.setState({
-      collectionBalance: tokenBalance?.balance?.words?.[0],
-    });
+    const { tokenAddress, userAddress, isSetApproveForAll } = this.props;
+    if (isSetApproveForAll) {
+      const tokenBalance = await fetchTokenBalance(tokenAddress, userAddress);
+      this.setState({
+        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+      });
+    }
   }
 
   render() {

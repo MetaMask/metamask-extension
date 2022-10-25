@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Typography from '../typography';
@@ -9,11 +8,9 @@ import {
   DISPLAY,
   FONT_WEIGHT,
   TYPOGRAPHY,
-  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import Identicon from '../identicon';
 import Tooltip from '../tooltip/tooltip';
-import { getTokenList } from '../../../selectors';
+import NftCollectionImage from '../nft-collection-image/nft-collection-image';
 
 export default function NftInfoSetApprovalForAll({
   assetName,
@@ -22,35 +19,6 @@ export default function NftInfoSetApprovalForAll({
   collections = {},
 }) {
   const t = useContext(I18nContext);
-  const tokenList = useSelector(getTokenList);
-
-  const nftTokenListImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
-
-  let nftCollectionNameExist;
-  let nftCollectionImageExist;
-
-  Object.values(collections).forEach((nftCollections) => {
-    if (nftCollections.collectionName === assetName) {
-      nftCollectionNameExist = nftCollections.collectionName;
-      nftCollectionImageExist = nftCollections.collectionImage;
-    }
-  });
-
-  const renderCollectionImage = (collectionImage, collectionName, key) => {
-    if (collectionImage) {
-      return <Identicon diameter={24} image={collectionImage} />;
-    }
-    return (
-      <Box
-        key={key}
-        color={COLORS.OVERLAY_INVERSE}
-        textAlign={TEXT_ALIGN.CENTER}
-        className="nft-info-setApproveForAll__collection-image-alt"
-      >
-        {collectionName?.[0]?.toUpperCase() ?? null}
-      </Box>
-    );
-  };
 
   return (
     <Box
@@ -68,12 +36,11 @@ export default function NftInfoSetApprovalForAll({
         </Typography>
         <Box display={DISPLAY.FLEX}>
           <Box marginBottom={4}>
-            {Object.keys(collections).length > 0 && nftCollectionNameExist
-              ? renderCollectionImage(
-                  nftCollectionImageExist,
-                  nftCollectionNameExist,
-                )
-              : renderCollectionImage(nftTokenListImage, assetName)}
+            <NftCollectionImage
+              assetName={assetName}
+              tokenAddress={tokenAddress}
+              collections={collections}
+            />
           </Box>
           <Typography
             variant={TYPOGRAPHY.H5}
@@ -82,7 +49,7 @@ export default function NftInfoSetApprovalForAll({
             marginLeft={2}
             marginTop={0}
           >
-            {assetName}
+            {assetName ?? t('unknownCollection')}
           </Typography>
         </Box>
         <Typography
