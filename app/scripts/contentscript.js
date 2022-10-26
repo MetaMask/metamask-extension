@@ -399,15 +399,21 @@ const destroyLegacyExtensionStreams = () => {
   legacyExtPublicConfigChannel.destroy();
 };
 
-// When extension background is loaded it sends message 'METAMASK_EXTENSION_READY' to browser tabs
-// Function below helps to setup streams after service worker in-activity
-const activateStreams = (msg) => {
+/**
+ * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
+ * This function receives the message to set up the streams after service worker in-activity.
+ *
+ * @param {object} msg
+ * @param {string} msg.name - custom property and name to identify the message received
+ */
+const onMessageActivateStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     setupExtensionStreams();
     setupLegacyExtensionStreams();
   }
 };
-browser.runtime.onMessage.addListener(activateStreams);
+
+browser.runtime.onMessage.addListener(onMessageActivateStreams);
 
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
