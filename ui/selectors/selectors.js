@@ -543,9 +543,12 @@ export function getShowTestNetworks(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
+  return Boolean(
+    (isMainNet || isCustomNetwork || showFiatInTestnets) && conversionRate,
+  );
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
@@ -721,9 +724,16 @@ export function getIsBuyableMoonpayToken(state, symbol) {
   const chainId = getCurrentChainId(state);
   const _symbol = formatMoonpaySymbol(symbol, chainId);
   return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay.showOnlyCurrencies?.includes(
+    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
       _symbol,
     ),
+  );
+}
+
+export function getIsBuyableWyreToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
   );
 }
 

@@ -170,39 +170,6 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="confirm-approve-content__ledger-instruction-wrapper"
-    >
-      <div>
-        <div
-          class="confirm-detail-row"
-        >
-          <div
-            class="dialog dialog--message"
-          >
-            <div
-              class="ledger-live-dialog"
-            >
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                Prior to clicking confirm:
-              </h6>
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                - Plug in your Ledger device and select the Ethereum app
-              </h6>
-              <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-bold typography--style-normal typography--color-text-default"
-              >
-                - Enable "smart contract data" or "blind signing" on your Ledger device
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
       class="request-signature__footer"
     >
       <button

@@ -153,6 +153,7 @@ export default class Home extends PureComponent {
     newCustomNetworkAdded: PropTypes.object,
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    onboardedInThisUISession: PropTypes.bool,
   };
 
   state = {
@@ -613,6 +614,8 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       completedOnboarding,
       shouldShowSeedPhraseReminder,
+      onboardedInThisUISession,
+      newCustomNetworkAdded,
     } = this.props;
 
     if (forgottenPassword) {
@@ -622,12 +625,13 @@ export default class Home extends PureComponent {
     }
 
     const showWhatsNew =
-      ((completedOnboarding && firstTimeFlowType === 'import') ||
-        !completedOnboarding) &&
+      completedOnboarding &&
+      (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
       showWhatsNewPopup &&
       !showPortfolioTooltip &&
-      !portfolioTooltipWasShownInThisSession;
+      !portfolioTooltipWasShownInThisSession &&
+      Object.keys(newCustomNetworkAdded).length === 0;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />

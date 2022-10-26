@@ -47,9 +47,7 @@ export default class NewAccountCreateForm extends Component {
     };
 
     const accountNameExists = (allAccounts, accountName) => {
-      const accountsNames = allAccounts.map((item) => item.name);
-
-      return accountsNames.includes(accountName);
+      return Boolean(allAccounts.find((item) => item.name === accountName));
     };
 
     const existingAccountName = accountNameExists(accounts, newAccountName);

@@ -80,6 +80,7 @@ export default function SortList({
       <div className="select-quote-popover__column-headers">
         <div
           className="select-quote-popover__column-header select-quote-popover__receiving"
+          data-testid="select-quote-popover__receiving"
           onClick={() => onColumnHeaderClick('destinationTokenValue')}
         >
           <span className="select-quote-popover__receiving-symbol">
@@ -96,6 +97,7 @@ export default function SortList({
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+          data-testid="select-quote-popover__network-fees-header"
           onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
           {!hideEstimatedGasFee && (
@@ -111,6 +113,7 @@ export default function SortList({
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
+          data-testid="select-quote-popover__quote-source"
           onClick={() => onColumnHeaderClick('quoteSource')}
         >
           {t('swapQuoteSource')}
@@ -137,6 +140,7 @@ export default function SortList({
             })}
             onClick={() => onSelect(aggId)}
             key={`select-quote-popover-row-${i}`}
+            data-testid={`select-quote-popover-row-${i}`}
           >
             <div className="select-quote-popover__receiving">
               <div className="select-quote-popover__receiving-value">
@@ -178,6 +182,7 @@ export default function SortList({
             </div>
             <div
               className="select-quote-popover__caret-right"
+              data-testid={`select-quote-popover__caret-right-${i}`}
               onClick={(event) => {
                 event.stopPropagation();
                 onCaretClick(aggId);

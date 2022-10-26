@@ -113,6 +113,7 @@ export default class Routes extends Component {
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     portfolioTooltipIsBeingShown: PropTypes.bool,
+    forgottenPassword: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -165,7 +166,10 @@ export default class Routes extends Component {
   }
 
   renderRoutes() {
-    const { autoLockTimeLimit, setLastActiveTime } = this.props;
+    const { autoLockTimeLimit, setLastActiveTime, forgottenPassword } =
+      this.props;
+    const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
+
     const routes = (
       <Switch>
         {process.env.ONBOARDING_V2 && (
@@ -174,7 +178,7 @@ export default class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized
+        <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
           component={RestoreVaultPage}
           exact
@@ -465,12 +469,6 @@ export default class Routes extends Component {
     switch (providerType) {
       case NETWORK_TYPES.MAINNET:
         return t('connectingToMainnet');
-      case NETWORK_TYPES.ROPSTEN:
-        return t('connectingToRopsten');
-      case NETWORK_TYPES.KOVAN:
-        return t('connectingToKovan');
-      case NETWORK_TYPES.RINKEBY:
-        return t('connectingToRinkeby');
       case NETWORK_TYPES.GOERLI:
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:

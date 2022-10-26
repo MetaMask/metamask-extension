@@ -11,7 +11,7 @@ export const txMetaStub = {
     {
       id: 405984854664302,
       loadingDefaults: true,
-      metamaskNetworkId: '4',
+      metamaskNetworkId: '5',
       status: TRANSACTION_STATUSES.UNAPPROVED,
       time: 1572395156620,
       type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -56,7 +56,7 @@ export const txMetaStub = {
         op: 'add',
         path: '/txParams/nonce',
         timestamp: 1572395158261,
-        value: '0x4',
+        value: '0x5',
       },
       {
         op: 'add',
@@ -163,7 +163,7 @@ export const txMetaStub = {
   ],
   id: 405984854664302,
   loadingDefaults: false,
-  metamaskNetworkId: '4',
+  metamaskNetworkId: '5',
   nonceDetails: {
     local: {
       details: {
@@ -200,7 +200,7 @@ export const txMetaStub = {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     gas: GAS_LIMITS.SIMPLE,
     gasPrice: '0x1e8480',
-    nonce: '0x4',
+    nonce: '0x5',
     to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     value: '0x0',
   },

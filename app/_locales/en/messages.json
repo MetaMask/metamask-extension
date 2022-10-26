@@ -36,10 +36,10 @@
     "message": "Scan QR code"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+    "message": "You can choose from a list of official QR-code supporting partners below."
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "QR-based HW wallet"
+    "message": "Connect your QR hardware wallet"
   },
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (coming soon)"
@@ -47,13 +47,18 @@
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
   },
-  "SIWEDomainInvalid": {
-    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
-    "description": "$1 represents the website domain"
+  "SIWEDomainInvalidText": {
+    "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "Deceptive site request."
   },
   "SIWEDomainWarningBody": {
     "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
     "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "Unsafe"
   },
   "SIWELabelChainID": {
     "message": "Chain ID:"
@@ -100,9 +105,6 @@
   },
   "about": {
     "message": "About"
-  },
-  "acceleratingATransaction": {
-    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
@@ -265,9 +267,6 @@
   },
   "airgapVault": {
     "message": "AirGap Vault"
-  },
-  "airgapVaultTutorial": {
-    "message": " (Tutorials)"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -524,6 +523,9 @@
     "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyNow": {
+    "message": "Buy Now"
+  },
   "buyWithWyre": {
     "message": "Buy $1 with Wyre"
   },
@@ -711,17 +713,8 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
-  "connectingToKovan": {
-    "message": "Connecting to Kovan test network"
-  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby test network"
-  },
-  "connectingToRopsten": {
-    "message": "Connecting to Ropsten test network"
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
@@ -780,6 +773,9 @@
   "convertTokenToNFTExistDescription": {
     "message": "We’ve detected that this asset has been added as an NFT. Would you like to remove it from your token list?"
   },
+  "coolWallet": {
+    "message": "CoolWallet"
+  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -831,6 +827,9 @@
   "currentLanguage": {
     "message": "Current language"
   },
+  "currentRpcUrlDeprecated": {
+    "message": "The current rpc url for this network has been deprecated."
+  },
   "currentTitle": {
     "message": "Current:"
   },
@@ -852,15 +851,9 @@
   "customContentSearch": {
     "message": "Search for a previously added network"
   },
-  "customGas": {
-    "message": "Customize gas"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customGasSubTitle": {
-    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customSpendLimit": {
     "message": "Custom spend limit"
@@ -911,6 +904,9 @@
   },
   "dataHex": {
     "message": "Hex"
+  },
+  "dcent": {
+    "message": "D'Cent"
   },
   "decimal": {
     "message": "Token decimal"
@@ -1014,6 +1010,9 @@
   },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
+  },
+  "downloadNow": {
+    "message": "Download Now"
   },
   "downloadSecretBackup": {
     "message": "Download this Secret Recovery Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
@@ -1259,6 +1258,9 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
+  "enterANumber": {
+    "message": "Enter a number"
+  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
@@ -1299,9 +1301,6 @@
   "errorStack": {
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Estimated processing times"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -1347,9 +1346,6 @@
   },
   "fast": {
     "message": "Fast"
-  },
-  "fastest": {
-    "message": "Fastest"
   },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
@@ -1702,6 +1698,16 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "inputLogicEmptyState": {
+    "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "This allows the contract to spend $1 from your current balance.",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
   "install": {
     "message": "Install"
   },
@@ -1806,17 +1812,11 @@
   "keystone": {
     "message": "Keystone"
   },
-  "keystoneTutorial": {
-    "message": " (Tutorials)"
-  },
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
-  },
-  "kovan": {
-    "message": "Kovan test network"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2233,12 +2233,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token imported"
-  },
-  "newTotal": {
-    "message": "New total"
-  },
-  "newTransactionFee": {
-    "message": "New transaction fee"
   },
   "newValues": {
     "message": "new values"
@@ -2933,6 +2927,9 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "reviewSpendingCap": {
+    "message": "Review your spending cap"
+  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -2943,12 +2940,6 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
-  },
-  "rinkeby": {
-    "message": "Rinkeby test network"
-  },
-  "ropsten": {
-    "message": "Ropsten test network"
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -3061,9 +3052,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
-  "selectAHigherGasFee": {
-    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
-  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
@@ -3096,9 +3084,6 @@
   },
   "send": {
     "message": "Send"
-  },
-  "sendAmount": {
-    "message": "Send amount"
   },
   "sendBugReport": {
     "message": "Send us a bug report."
@@ -3139,6 +3124,9 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "setSpendingCap": {
+    "message": "Set a spending cap for your"
   },
   "settings": {
     "message": "Settings"
@@ -3233,9 +3221,6 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
-  },
-  "slow": {
-    "message": "Slow"
   },
   "smartTransaction": {
     "message": "Smart transaction"
@@ -3343,6 +3328,13 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
+  "spendingCapError": {
+    "message": "Error: Enter numbers only"
+  },
+  "spendingCapErrorDescription": {
+    "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
+    "description": "$1 is origin of the site requesting the token limit"
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -3395,10 +3387,10 @@
     "message": "Not connected"
   },
   "step1LatticeWallet": {
-    "message": "Make sure your Lattice1 is ready to connect"
+    "message": "Connect your Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready. For more on using hardware wallets, $1",
+    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -3409,17 +3401,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Plug in Trezor wallet"
+    "message": "Connect your Trezor"
   },
   "step1TrezorWalletMsg": {
-    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "message": "Plug your Trezor directly into your computer and unlock it. Make sure you use the correct passphrase.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Plug in Ledger wallet"
+    "message": "Connect your Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillGettingMessage": {
@@ -4141,6 +4133,9 @@
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
+  "tutorial": {
+    "message": "Tutorial"
+  },
   "twelveHrTitle": {
     "message": "12hr:"
   },
@@ -4223,6 +4218,9 @@
   "useCollectibleDetectionDescription": {
     "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
   },
+  "useDefault": {
+    "message": "Use default"
+  },
   "usePhishingDetection": {
     "message": "Use phishing detection"
   },
@@ -4238,6 +4236,9 @@
   "userName": {
     "message": "Username"
   },
+  "verifyContractDetails": {
+    "message": "Verify contract details"
+  },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -4250,6 +4251,9 @@
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "View"
+  },
   "viewAccount": {
     "message": "View account"
   },
@@ -4258,6 +4262,9 @@
   },
   "viewContact": {
     "message": "View contact"
+  },
+  "viewDetails": {
+    "message": "View details"
   },
   "viewFullTransactionDetails": {
     "message": "View full transaction details"
