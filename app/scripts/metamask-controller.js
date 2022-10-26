@@ -55,6 +55,7 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import browser from 'webextension-polyfill';
 import {
   ASSET_TYPES,
   TRANSACTION_STATUSES,
@@ -140,6 +141,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+
 import {
   CaveatMutatorFactories,
   getCaveatSpecifications,
@@ -2403,7 +2405,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     try {
-      const { loginToken } = await chrome.storage.session.get(['loginToken']);
+      const { loginToken } = await browser.storage.session.get(['loginToken']);
       if (loginToken) {
         const { vault } = this.keyringController.store.getState();
         await this.keyringController.submitEncryptionKey(loginToken, vault);
@@ -2411,7 +2413,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
-      await chrome.storage.session.remove(['loginToken']);
+      await browser.storage.session.remove(['loginToken']);
       throw e;
     } finally {
       this.appStateController.store.updateState({
@@ -4008,7 +4010,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (isManifestV3) {
-      await chrome.storage.session.set({ loginToken });
+      await browser.storage.session.set({ loginToken });
     }
 
     if (!addresses.length) {
@@ -4403,7 +4405,7 @@ export default class MetamaskController extends EventEmitter {
     ledgerKeyring?.destroy?.();
 
     if (isManifestV3) {
-      chrome.storage.session.remove(['loginToken']);
+      browser.storage.session.remove(['loginToken']);
     }
 
     return this.keyringController.setLocked();
