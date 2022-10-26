@@ -195,7 +195,7 @@ const setupPhishingExtStreams = () => {
   );
 
   // eslint-disable-next-line no-use-before-define
-  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
+  phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
 };
 
 /** Destroys all of the phishing extension streams */
@@ -210,14 +210,14 @@ const destroyPhishingExtStreams = () => {
 };
 
 /**
- * Resets the extension stream with new streams to channel with the phishing page streams,
- * and creates a new event listener to the reestablished extension port.
+ * This listener destroys the phishing extension streams when the extension port is disconnected,
+ * so that streams may be re-established later when we reconnect the phishing extension port.
  */
-const resetPhishingStreamAndListeners = () => {
-  phishingExtPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
-
+const onDisconnectDestroyPhishingStreams = () => {
+  phishingExtPort.onDisconnect.removeListener(
+    onDisconnectDestroyPhishingStreams,
+  );
   destroyPhishingExtStreams();
-  setupPhishingExtStreams();
 };
 
 /**
