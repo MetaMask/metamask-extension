@@ -764,13 +764,17 @@ export default class ConfirmTransactionBase extends Component {
       ({ id }) => id === selectedInsightSnapId,
     );
 
+    const allowedTransactionTypes =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+      txData.type === TRANSACTION_TYPES.SIMPLE_SEND ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+
     const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
 
-    if (
-      txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-      !insightSnaps.length
-    ) {
+    if (!allowedTransactionTypes || !insightSnaps.length) {
       return null;
     }
 
