@@ -401,16 +401,20 @@ const destroyLegacyExtensionStreams = () => {
 
 /**
  * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
- * This function receives the message to set up the streams after service worker in-activity.
+ * This listener/callback receives the message to set up the streams after service worker in-activity.
  *
  * @param {object} msg
  * @param {string} msg.name - custom property and name to identify the message received
+ * @returns {Promise|false}
  */
 const onMessageActivateStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     setupExtensionStreams();
     setupLegacyExtensionStreams();
+    return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
+
+  return false;
 };
 
 browser.runtime.onMessage.addListener(onMessageActivateStreams);
