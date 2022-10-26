@@ -10,29 +10,8 @@ import {
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
-import {
-  ASSET_TYPES,
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
-import Box from '../../../components/ui/box';
-import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  BLOCK_SIZES,
-} from '../../../helpers/constants/design-system';
-import {
-  CONTRACT_ADDRESS_LINK,
-  PRIMARY,
-  SECONDARY,
-} from '../../../helpers/constants/common';
-import {
-  hexWEIToDecETH,
-  addHexes,
-} from '../../../helpers/utils/conversions.util';
-import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
@@ -65,17 +44,6 @@ export default class SendContent extends Component {
     recipient: PropTypes.object,
     acknowledgeRecipientWarning: PropTypes.func,
     recipientWarningAcknowledged: PropTypes.bool,
-    draftTransaction: PropTypes.object,
-    hexMaximumTransactionFee: PropTypes.string,
-    hexMinimumTransactionFee: PropTypes.string,
-    hexTransactionAmount: PropTypes.string,
-    hexTransactionTotal: PropTypes.string,
-    nativeCurrency: PropTypes.string,
-    isBuyableChain: PropTypes.bool,
-    chainId: PropTypes.string,
-    showAccountDetails: PropTypes.func,
-    useNonceField: PropTypes.bool,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   render() {
@@ -91,17 +59,6 @@ export default class SendContent extends Component {
       assetError,
       recipient,
       recipientWarningAcknowledged,
-      draftTransaction,
-      hexMaximumTransactionFee,
-      hexMinimumTransactionFee,
-      hexTransactionAmount,
-      hexTransactionTotal,
-      nativeCurrency,
-      useNonceField,
-      useNativeCurrencyAsPrimaryCurrency,
-      isBuyableChain,
-      chainId,
-      showAccountDetails,
     } = this.props;
 
     let gasError;
@@ -120,79 +77,6 @@ export default class SendContent extends Component {
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';
     const hideAddContactDialog = recipient.warning === 'loading';
-
-    let title;
-    if (
-      draftTransaction?.asset.details?.standard === ERC721 ||
-      draftTransaction?.asset.details?.standard === ERC1155
-    ) {
-      title = draftTransaction?.asset.details?.name;
-    } else if (draftTransaction?.asset.details?.standard === ERC20) {
-      title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
-        draftTransaction?.asset.details?.symbol
-      }`;
-    }
-
-    const ethTransactionTotalMaxAmount = Number(
-      hexWEIToDecETH(hexMaximumTransactionFee),
-    );
-
-    const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
-
-    const detailText = (
-      <Box
-        height={BLOCK_SIZES.MAX}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        className="gas-display__total-value"
-      >
-        <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
-        <UserPreferencedCurrencyDisplay
-          type={SECONDARY}
-          key="total-detail-text"
-          value={hexTransactionTotal}
-          hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-        />
-      </Box>
-    );
-
-    let detailTotal, maxAmount;
-
-    if (draftTransaction?.asset.type === 'NATIVE') {
-      detailTotal = (
-        <Box
-          height={BLOCK_SIZES.MAX}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          className="gas-display__total-value"
-        >
-          <LoadingHeartBeat estimateUsed={draftTransaction?.userFeeLevel} />
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={hexTransactionTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
-        </Box>
-      );
-      maxAmount = (
-        <UserPreferencedCurrencyDisplay
-          type={PRIMARY}
-          key="total-max-amount"
-          value={addHexes(
-            draftTransaction.amount.value,
-            hexMaximumTransactionFee,
-          )}
-          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-        />
-      );
-    } else if (useNativeCurrencyAsPrimaryCurrency) {
-      detailTotal = primaryTotalTextOverrideMaxAmount;
-      maxAmount = primaryTotalTextOverrideMaxAmount;
-    } else {
-      detailTotal = undefined;
-      maxAmount = undefined;
-    }
 
     return (
       <PageContainerContent>
@@ -213,28 +97,7 @@ export default class SendContent extends Component {
           <SendAmountRow />
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
-          <GasDisplay
-            draftTransaction={draftTransaction}
-            detailText={detailText}
-            detailTotal={detailTotal}
-            maxAmount={maxAmount}
-            hexMaximumTransactionFee={hexMaximumTransactionFee}
-            hexMinimumTransactionFee={hexMinimumTransactionFee}
-            hexTransactionAmount={hexTransactionAmount}
-            hexTransactionTotal={hexTransactionTotal}
-            primaryTotalTextOverrideMaxAmount={
-              primaryTotalTextOverrideMaxAmount
-            }
-            useNonceField={useNonceField}
-            useNativeCurrencyAsPrimaryCurrency={
-              useNativeCurrencyAsPrimaryCurrency
-            }
-            isBuyableChain={isBuyableChain}
-            nativeCurrency={nativeCurrency}
-            chainId={chainId}
-            showAccountDetails={showAccountDetails}
-            gasError={gasError}
-          />
+          <GasDisplay gasError={gasError} />
         </div>
       </PageContainerContent>
     );
