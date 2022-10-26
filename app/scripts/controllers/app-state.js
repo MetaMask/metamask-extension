@@ -19,7 +19,7 @@ export default class AppStateController extends EventEmitter {
       showUnlockRequest,
       preferencesStore,
       qrHardwareStore,
-      isAttemptingLogin,
+      isAttemptingSessionLogin,
     } = opts;
     super();
 
@@ -52,7 +52,7 @@ export default class AppStateController extends EventEmitter {
     this.timer = null;
 
     this.isUnlocked = isUnlocked;
-    this.isAttemptingLogin = isAttemptingLogin;
+    this.isAttemptingSessionLogin = isAttemptingSessionLogin;
     this.waitingForUnlock = [];
     addUnlockListener(this.handleUnlock.bind(this));
 
