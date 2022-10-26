@@ -111,23 +111,33 @@ const throwErrorIfLastErrorFound = () => {
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
+ * For non-dapp pages, the message will be sent and ignored.
  */
-const sendReadyMessageToActiveTab = async () => {
+const sendReadyMessageToTabs = async () => {
   try {
-    const tabs = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+    const tabs = await browser.tabs.query({});
     throwErrorIfLastErrorFound();
 
-    if (!tabs?.[0]?.id) {
-      return;
+    /* TODO we should only sendMessage to dapp tabs, not all tabs. */
+    for (const tab of tabs) {
+      browser.tabs
+        .sendMessage(tab.id, {
+          name: EXTENSION_MESSAGES.READY,
+        })
+        .catch((e) => {
+          if (
+            e.message ===
+            'Could not establish connection. Receiving end does not exist.'
+          ) {
+            /** Safely ignore this error, as it means the tab may not be a dapp. */
+          } else {
+            throw new Error(e);
+          }
+        })
+        .finally(() => {
+          throwErrorIfLastErrorFound();
+        });
     }
-
-    await browser.tabs.sendMessage(tabs[0].id, {
-      name: EXTENSION_MESSAGES.READY,
-    });
-    throwErrorIfLastErrorFound();
   } catch (err) {
     log.error(err);
   }
@@ -135,7 +145,7 @@ const sendReadyMessageToActiveTab = async () => {
 
 if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
-  sendReadyMessageToActiveTab();
+  sendReadyMessageToTabs();
 } else {
   // initialization flow
   initialize().catch(log.error);
