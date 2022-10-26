@@ -141,16 +141,6 @@ export default {
   },
   args: {
     placeholder: 'Placeholder...',
-    autoFocus: false,
-    defaultValue: '',
-    disabled: false,
-    error: false,
-    id: '',
-    readOnly: false,
-    required: false,
-    size: SIZES.MD,
-    type: 'text',
-    truncate: false,
   },
 };
 

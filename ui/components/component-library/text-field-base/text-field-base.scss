@@ -17,7 +17,8 @@
   border-color: var(--color-border-default);
 
   &--focused {
-    border-color: var(--color-primary-default);
+    outline: 5px auto Highlight; // firefox
+    outline: 5px auto -webkit-focus-ring-color; // chrome
   }
 
   &--error {
