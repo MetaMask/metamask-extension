@@ -91,7 +91,7 @@ describe('Dapp interactions', function () {
         // Connect to Dapp1
         await driver.openNewPage('http://127.0.0.1:8081/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+        await driver.waitUntilXWindowHandles(4);
         windowHandles = await driver.getAllWindowHandles();
 
         popup = await driver.switchToWindowWithTitle(
