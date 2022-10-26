@@ -4392,7 +4392,10 @@ export default class MetamaskController extends EventEmitter {
 
   rejectPendingApproval = (id, error) => {
     try {
-      this.approvalController.reject(id, error);
+      this.approvalController.reject(
+        id,
+        new EthereumRpcError(error.code, error.message, error.data),
+      );
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;
