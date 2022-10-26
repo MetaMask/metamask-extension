@@ -32,19 +32,20 @@ const defaultCaptureException = (err) => {
   });
 };
 
+// The function is used to build a unique messageId for segment messages
+// It uses actionId and uniqueIdentifier from event if present
 const buildUniqueMessageId = (args) => {
-  let actionId = '';
+  let messageId = '';
   if (args.uniqueIdentifier) {
-    actionId += `${args.uniqueIdentifier}-`;
+    messageId += `${args.uniqueIdentifier}-`;
   }
   if (args.actionId) {
-    actionId += args.actionId;
+    messageId += args.actionId;
   }
-  if (actionId.length) {
-    return actionId;
-  } else {
-    return generateRandomId();
+  if (messageId.length) {
+    return messageId;
   }
+  return generateRandomId();
 };
 
 const exceptionsToFilter = {
