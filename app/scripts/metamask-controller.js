@@ -34,9 +34,9 @@ import {
   TokenListController,
   TokensController,
   TokenRatesController,
-  CollectiblesController,
+  NftController,
   AssetsContractController,
-  CollectibleDetectionController,
+  NftDetectionController,
   PermissionController,
   SubjectMetadataController,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -90,6 +90,8 @@ import {
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
+import { TOKEN_LIST_FETCH_ALARM } from '../../shared/constants/alarms';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 
 import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -139,6 +141,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { checkAlarmExists } from './lib/util';
 import {
   CaveatMutatorFactories,
   getCaveatSpecifications,
@@ -244,6 +247,51 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
+    const tokenListFetchScheduler = {
+      schedule: (duration, fetchTokenListFn) => {
+        if (isManifestV3) {
+          chrome.alarms.getAll((alarms) => {
+            const hasAlarm = checkAlarmExists(alarms, TOKEN_LIST_FETCH_ALARM);
+            if (!hasAlarm) {
+              this.fetchTokenListFn = fetchTokenListFn;
+              chrome.alarms.create(TOKEN_LIST_FETCH_ALARM, {
+                delayInMinutes: duration,
+                periodInMinutes: duration,
+              });
+            }
+          });
+          chrome.alarms.onAlarm.addListener(this.alarmListener);
+          return undefined;
+        }
+        return setInterval(async () => {
+          try {
+            await fetchTokenListFn();
+          } catch (error) {
+            console.error(error);
+          }
+        }, durarion);
+      },
+      unschedule: (intervalId) => {
+        if (isManifestV3) {
+          chrome.alarms.clear(TOKEN_LIST_FETCH_ALARM);
+          chrome.alarms.onAlarm.removeListener(this.alarmListener);
+        } else if (intervalId) {
+          clearInterval(intervalId);
+        }
+      },
+    };
+    this.alarmListener = () => {
+      chrome.alarms.getAll(async (alarms) => {
+        const hasAlarm = checkAlarmExists(alarms, TOKEN_LIST_FETCH_ALARM);
+        if (hasAlarm) {
+          try {
+            await this.fetchTokenListFn();
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+    };
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
@@ -265,6 +313,8 @@ export default class MetamaskController extends EventEmitter {
           return cb(modifiedNetworkState);
         });
       },
+      interval: 5,
+      scheduler: tokenListFetchScheduler,
       messenger: tokenListMessenger,
       state: initState.TokenListController,
     });
@@ -312,7 +362,7 @@ export default class MetamaskController extends EventEmitter {
       initState.AssetsContractController,
     );
 
-    this.collectiblesController = new CollectiblesController(
+    this.collectiblesController = new NftController(
       {
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
@@ -366,28 +416,26 @@ export default class MetamaskController extends EventEmitter {
     this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
 
     process.env.COLLECTIBLES_V1 &&
-      (this.collectibleDetectionController = new CollectibleDetectionController(
-        {
-          onCollectiblesStateChange: (listener) =>
-            this.collectiblesController.subscribe(listener),
-          onPreferencesStateChange:
-            this.preferencesController.store.subscribe.bind(
-              this.preferencesController.store,
-            ),
-          onNetworkStateChange: this.networkController.store.subscribe.bind(
-            this.networkController.store,
+      (this.collectibleDetectionController = new NftDetectionController({
+        onCollectiblesStateChange: (listener) =>
+          this.collectiblesController.subscribe(listener),
+        onPreferencesStateChange:
+          this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
           ),
-          getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
-          getBalancesInSingleCall:
-            this.assetsContractController.getBalancesInSingleCall.bind(
-              this.assetsContractController,
-            ),
-          addCollectible: this.collectiblesController.addCollectible.bind(
-            this.collectiblesController,
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
+        getBalancesInSingleCall:
+          this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
           ),
-          getCollectiblesState: () => this.collectiblesController.state,
-        },
-      ));
+        addCollectible: this.collectiblesController.addCollectible.bind(
+          this.collectiblesController,
+        ),
+        getCollectiblesState: () => this.collectiblesController.state,
+      }));
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -1655,35 +1703,33 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
       // CollectiblesController
-      addCollectible: collectiblesController.addCollectible.bind(
+      addCollectible: collectiblesController.addNft.bind(
         collectiblesController,
       ),
 
       addCollectibleVerifyOwnership:
-        collectiblesController.addCollectibleVerifyOwnership.bind(
+        collectiblesController.addNftVerifyOwnership.bind(
           collectiblesController,
         ),
 
       removeAndIgnoreCollectible:
-        collectiblesController.removeAndIgnoreCollectible.bind(
-          collectiblesController,
-        ),
+        collectiblesController.removeAndIgnoreNft.bind(collectiblesController),
 
-      removeCollectible: collectiblesController.removeCollectible.bind(
+      removeCollectible: collectiblesController.removeNft.bind(
         collectiblesController,
       ),
 
       checkAndUpdateAllCollectiblesOwnershipStatus:
-        collectiblesController.checkAndUpdateAllCollectiblesOwnershipStatus.bind(
+        collectiblesController.checkAndUpdateAllNftsOwnershipStatus.bind(
           collectiblesController,
         ),
 
       checkAndUpdateSingleCollectibleOwnershipStatus:
-        collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus.bind(
+        collectiblesController.checkAndUpdateSingleNftOwnershipStatus.bind(
           collectiblesController,
         ),
 
-      isCollectibleOwner: collectiblesController.isCollectibleOwner.bind(
+      isCollectibleOwner: collectiblesController.isNftOwner.bind(
         collectiblesController,
       ),
 
@@ -1994,7 +2040,7 @@ export default class MetamaskController extends EventEmitter {
 
       // DetectCollectibleController
       detectCollectibles: process.env.COLLECTIBLES_V1
-        ? collectibleDetectionController.detectCollectibles.bind(
+        ? collectibleDetectionController.detectNfts.bind(
             collectibleDetectionController,
           )
         : null,
