@@ -457,7 +457,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
-      isAttemptingLogin: isManifestV3,
+      isAttemptingSessionLogin: isManifestV3,
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       showUnlockRequest: opts.showUserConfirmation,
@@ -2334,15 +2334,26 @@ export default class MetamaskController extends EventEmitter {
    * Submits a user's encryption key to log the user in via login token
    */
   async submitEncryptionKey() {
-    this.appStateController.store.updateState({ isAttemptingLogin: true });
-    const { loginToken } = await chrome.storage.session.get(['loginToken']);
-    if (loginToken) {
-      const { vault } = this.keyringController.store.getState();
-      await this.keyringController.submitEncryptionKey(loginToken, vault);
-    }
     this.appStateController.store.updateState({
-      isAttemptingLogin: false,
+      isAttemptingSessionLogin: true,
     });
+
+    try {
+      const { loginToken } = await chrome.storage.session.get(['loginToken']);
+      if (loginToken) {
+        const { vault } = this.keyringController.store.getState();
+        await this.keyringController.submitEncryptionKey(loginToken, vault);
+      }
+    } catch (e) {
+      // If somehow this login token doesn't work properly,
+      // remove it and the user will get shown back to the unlock screen
+      await chrome.storage.session.remove(['loginToken']);
+      throw e;
+    } finally {
+      this.appStateController.store.updateState({
+        isAttemptingSessionLogin: false,
+      });
+    }
   }
 
   /**

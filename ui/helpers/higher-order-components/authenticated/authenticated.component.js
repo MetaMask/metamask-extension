@@ -8,9 +8,9 @@ import {
 } from '../../constants/routes';
 
 export default function Authenticated(props) {
-  const { isUnlocked, completedOnboarding, isAttemptingLogin } = props;
+  const { isUnlocked, completedOnboarding, isAttemptingSessionLogin } = props;
   switch (true) {
-    case (isUnlocked || isAttemptingLogin) && completedOnboarding:
+    case (isUnlocked || isAttemptingSessionLogin) && completedOnboarding:
       return <Route {...props} />;
     case !completedOnboarding:
       return (
@@ -30,5 +30,5 @@ export default function Authenticated(props) {
 Authenticated.propTypes = {
   isUnlocked: PropTypes.bool,
   completedOnboarding: PropTypes.bool,
-  isAttemptingLogin: PropTypes.bool,
+  isAttemptingSessionLogin: PropTypes.bool,
 };
