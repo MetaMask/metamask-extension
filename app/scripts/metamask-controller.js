@@ -3,7 +3,7 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
@@ -57,6 +57,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
@@ -66,6 +67,7 @@ import {
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
+  HARDWARE_KEYRINGS,
   KEYRING_TYPES,
 } from '../../shared/constants/hardware-wallets';
 import {
@@ -90,6 +92,7 @@ import {
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
+import { CONTROLLER_CONNECTION_EVENTS } from '../../shared/constants/events';
 
 import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -170,6 +173,181 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
+/**
+ * Determines if error is provoked by manifest v3 changes,
+ * e.g. WebUSB incompatibility, WebHID incompatibility,
+ * and general DOM access.
+ *
+ * @param {Error} error - The error to check.
+ * @returns {boolean}
+ */
+const isServiceWorkerMv3Error = (error) => {
+  // @TODO, hacky as the MV3 error could be captured and rethrown with
+  // different error message. Assess whether we should just only check if it's MV3
+
+  const isUserSet = Boolean(error.cause);
+
+  if (!isManifestV3 || isUserSet) {
+    return false;
+  }
+
+  if (error instanceof ReferenceError) {
+    const message = error.message.toLowerCase();
+
+    if (message.includes('navigator.usb')) {
+      return true;
+    }
+
+    if (message.includes('navigator.hid')) {
+      return true;
+    }
+
+    if (message.includes('document is not defined')) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+class KeyringEventBatcher {
+  constructor({ sendPromisifiedClientAction }) {
+    const addToEventPool = this.addToEventPool.bind(this);
+
+    this.eventPool = [];
+    this.sendPromisifiedClientAction = sendPromisifiedClientAction;
+    this.keyrings = HARDWARE_KEYRINGS.map((Keyring) => {
+      return class HardwareKeyringWrapper extends Keyring {
+        constructor(opts) {
+          super({
+            ...opts,
+            delayInit: true,
+          });
+
+          this.init(); // calls a wrapped init method
+        }
+
+        resolveWrapper = (type, resolve) => (newState, res) => {
+          // @TODO, update the state of keyring controller with clientside state
+          // before finally resolving the promise
+
+          resolve(res);
+        };
+
+        async wrapMethod(method, ...args) {
+          const prevState = await this.serialize();
+
+          try {
+            const res = super[method](...args);
+
+            return res;
+          } catch (e) {
+            if (isServiceWorkerMv3Error(e)) {
+              // if error is due to mv3 then re-open promise
+              return new Promise((resolve, reject) => {
+                addToEventPool({
+                  type: this.type,
+                  method,
+                  args,
+                  prevState,
+                  resolve: this.resolveWrapper(this.type, resolve),
+                  reject,
+                });
+
+                // allow promise to hang as it will be resolved by the event pool
+              });
+            }
+
+            // rethrow error if not due to mv3
+            throw e;
+          }
+        }
+
+        // @TODO, dynamically wrap all methods
+
+        init(...args) {
+          return this.wrapMethod('init', ...args);
+        }
+
+        unlock(...args) {
+          return this.wrapMethod('unlock', ...args);
+        }
+
+        // Trezor specific
+        dispose(...args) {
+          return this.wrapMethod('dispose', ...args);
+        }
+
+        // ledger specific
+        destroy(...args) {
+          return this.wrapMethod('destroy', ...args);
+        }
+
+        signTransaction(...args) {
+          return this.wrapMethod('signTransaction', ...args);
+        }
+
+        signPersonalMessage(...args) {
+          return this.wrapMethod('signPersonalMessage', ...args);
+        }
+
+        signTypedData(...args) {
+          return this.wrapMethod('signTypedData', ...args);
+        }
+
+        addAccounts(...args) {
+          return this.wrapMethod('addAccounts', ...args);
+        }
+
+        __getPage(...args) {
+          return this.wrapMethod('__getPage', ...args);
+        }
+      };
+    });
+
+    // use _.throttle to clear the eventPool every X milliseconds, as there are some
+    // limitations as there are some limitations in various browsers based on
+    // how often we can emit (?)
+    throttle(this.clearMempool.bind(this), 300 * MILLISECOND);
+  }
+
+  /**
+   *
+   * @param {string} keyring
+   * @param {string} method
+   * @param {any[]} args
+   * @param {object} prevState
+   * @param {Function} resolve
+   * @param {Function} reject
+   */
+  addToEventPool({ keyring, method, args, prevState, resolve, reject }) {
+    this.eventPool.push({
+      payload: {
+        keyring,
+        method,
+        args,
+        prevState,
+        createdAt: new Date().toISOString(),
+      },
+      resolve,
+      reject,
+    });
+  }
+
+  clearMempool() {
+    // @TODO, allow for sending events in one go as opposed to one by one
+
+    for (const event of this.eventPool) {
+      this.sendPromisifiedClientAction(JSON.stringify(event.payload))
+        .then(event.resolve)
+        .catch(event.reject);
+    }
+
+    // then clear mempool
+    this.eventPool = [];
+  }
+}
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -409,7 +587,7 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
-    this.on('update', (update) => {
+    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
@@ -575,14 +753,12 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [
-      TrezorKeyring,
-      LedgerBridgeKeyring,
-      LatticeKeyring,
-      QRHardwareKeyring,
-    ];
+    this.hardwareKeyringController = new KeyringEventBatcher({
+      sendPromisifiedClientAction: this.sendPromisifiedClientAction,
+    });
+
     this.keyringController = new KeyringController({
-      keyringTypes: additionalKeyrings,
+      keyringTypes: this.hardwareKeyringController.keyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
     });
@@ -1025,7 +1201,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => this._onStateUpdate(memState));
+    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, (memState) =>
+      this._onStateUpdate(memState),
+    );
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -1413,7 +1591,7 @@ export default class MetamaskController extends EventEmitter {
     const { networkController } = this;
 
     // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore);
+    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, updatePublicConfigStore);
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
@@ -1558,6 +1736,7 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
+      closeBackgroundPromise: this.closeBackgroundPromise.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
@@ -3507,25 +3686,41 @@ export default class MetamaskController extends EventEmitter {
         this.localStoreApiWrapper,
       ),
     );
-    const handleUpdate = (update) => {
+
+    const handleWrite = (method) => (params) => {
       if (outStream._writableState.ended) {
         return;
       }
       // send notification to client-side
       outStream.write({
+        method,
         jsonrpc: '2.0',
-        method: 'sendUpdate',
-        params: [update],
+        params: [params], // @TODO, allow for multiple params
       });
     };
-    this.on('update', handleUpdate);
+
+    const handleUpdate = handleWrite(CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE);
+    const handleMessage = handleWrite(CONTROLLER_CONNECTION_EVENTS.SEND_ACTION);
+    const handleHardwareCall = handleWrite(
+      CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL,
+    );
+
+    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
+    this.on(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
+    this.on(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, handleHardwareCall);
+
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
         'controllerConnectionChanged',
         this.activeControllerConnections,
       );
-      this.removeListener('update', handleUpdate);
+      this.removeListener(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
+      this.removeListener(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
+      this.removeListener(
+        CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL,
+        handleHardwareCall,
+      );
     });
   }
 
@@ -4041,7 +4236,57 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   privateSendUpdate() {
-    this.emit('update', this.getState());
+    this.emit(CONTROLLER_CONNECTION_EVENTS.UPDATE, this.getState());
+  }
+
+  sendHardwareCall(message) {
+    this.emit(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, message);
+  }
+
+  sendClientAction(message) {
+    this.emit(CONTROLLER_CONNECTION_EVENTS.ACTION, message);
+  }
+
+  sendPromisifiedClientAction = (message) => {
+    const promiseId = nanoid();
+    const promise = new Promise((resolve, reject) => {
+      // client messages are sent sync
+      this.sendHardwareCall({
+        ...message,
+        promiseId,
+        // @TODO, genericize this more?
+        // promiseId needs to be included in the message in order
+        // for the frontend to know which promiseID it needs to resolve
+      });
+
+      // // client messages are sent sync
+      // this.sendClientAction({
+      //   ...message,
+      //   promiseId,
+      //   // promiseId needs to be included in the message in order
+      //   // for the frontend to know which promiseID it needs to resolve
+      // });
+
+      this.clientMessagePromises = {
+        ...this.clientMessagePromises,
+        [promiseId]: { resolve, reject },
+      };
+
+      // @TODO, add a setTimeout to reject the promise if it takes too long?
+    });
+
+    return promise;
+  };
+
+  closeBackgroundPromise({ promiseId, result, data }) {
+    if (this.clientMessagePromises[promiseId]) {
+      // @TODO, potentially confusing as we allow for a promise
+      // to be resolved with multiple arguments, but in reality,
+      // they can only be resolved with one argument
+      this.clientMessagePromises[promiseId][result](...data);
+
+      this.clientMessagePromises[promiseId] = null;
+    }
   }
 
   /**

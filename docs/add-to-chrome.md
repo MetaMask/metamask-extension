@@ -8,6 +8,7 @@
   * Or go straight to [chrome://extensions](chrome://extensions).
 * Check "Developer mode".
 * At the top, click `Load Unpacked Extension`.
+  * If your find that your current version of Chrome has an unresponsive `Load Unpacked` button then consider using [Chrome Canary](https://www.google.com/chrome/canary/) instead.
 * Navigate to your `metamask-extension/dist/chrome` folder.
 * Click `Select`.
 * Change to your locale via `chrome://settings/languages`

@@ -10,6 +10,7 @@ import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { CONTROLLER_CONNECTION_EVENTS } from '../shared/constants/events';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
@@ -26,10 +27,12 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
+import { ClientKeyringController } from './store/client-keyrings';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
 let reduxStore;
+let clientKeyringController; // poc purposes only
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -39,14 +42,37 @@ let reduxStore;
 export const updateBackgroundConnection = (backgroundConnection) => {
   _setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else {
-      throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
-      );
+    switch (data.method) {
+      case CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE: {
+        reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+        break;
+      }
+      case CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL: {
+        // quick change for POC, to be refactored @TODO
+        clientKeyringController.handleMethodCall(data.params[0]);
+        break;
+      }
+      case CONTROLLER_CONNECTION_EVENTS.SEND_ACTION: {
+        const [action, payload] = data.params;
+
+        if (Object.hasOwnProperty.call(actions, action)) {
+          // eslint-disable-next-line import/namespace
+          reduxStore.dispatch(actions[action](payload));
+        } else {
+          throw new Error(
+            `Invalid Redux Action Referenced:\n\n ${JSON.stringify(data)}`,
+          );
+        }
+
+        break;
+      }
+      default: {
+        throw new Error(
+          `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+            data,
+          )}`,
+        );
+      }
     }
   });
 };
@@ -64,6 +90,12 @@ export default function launchMetamaskUi(opts, cb) {
       cb(null, store);
     });
   });
+}
+
+function initializeClientKeyringController() {
+  if (!clientKeyringController) {
+    clientKeyringController = new ClientKeyringController();
+  }
 }
 
 async function startApp(metamaskState, backgroundConnection, opts) {
@@ -123,6 +155,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   const store = configureStore(draftInitialState);
   reduxStore = store;
+
+  initializeClientKeyringController();
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(

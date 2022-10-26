@@ -1,3 +1,8 @@
+import TrezorKeyring from 'eth-trezor-keyring';
+import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import LatticeKeyring from 'eth-lattice-keyring';
+// import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring/dist/MetaMaskKeyring';
+
 /**
  * Accounts can be instantiated from simple, HD or the multiple hardware wallet
  * keyring types. Both simple and HD are treated as default but we do special
@@ -24,6 +29,13 @@ export const KEYRING_NAMES = {
   QR: 'QR',
   LATTICE: 'Lattice1',
 };
+
+export const HARDWARE_KEYRINGS = [
+  TrezorKeyring,
+  LedgerBridgeKeyring,
+  LatticeKeyring,
+  // QRHardwareKeyring,
+];
 
 /**
  * Used for setting the users preference for ledger transport type
