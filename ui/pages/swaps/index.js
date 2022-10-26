@@ -409,6 +409,10 @@ export default function Swap() {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
                 }
 
+                // TODO: Remove this once the feature is ready, it's only here for development purposes.
+                // This is needed because `yarn start` changes it from true to undefined on rebuild.
+                process.env.PREPARE_SWAP = true;
+
                 if (process.env.PREPARE_SWAP) {
                   return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }

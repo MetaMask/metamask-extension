@@ -1,4 +1,4 @@
-.build-quote {
+.prepare-swap {
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -88,7 +88,7 @@
         color: var(--color-text-default);
       }
 
-      .build-quote__form-error:first-of-type {
+      .prepare-swap__form-error:first-of-type {
         font-weight: bold;
         color: var(--color-error-default);
       }

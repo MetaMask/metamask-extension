@@ -478,8 +478,8 @@ export default function PrepareSwap({
   const BlockExplorerLink = () => {
     return (
       <a
-        className="build-quote__token-etherscan-link build-quote__underline"
-        key="build-quote-etherscan-link"
+        className="prepare-swap__token-etherscan-link prepare-swap__underline"
+        key="prepare-swap-etherscan-link"
         onClick={() => {
           /* istanbul ignore next */
           trackEvent({
@@ -575,8 +575,8 @@ export default function PrepareSwap({
   ]);
 
   return (
-    <div className="build-quote">
-      <div className="build-quote__content">
+    <div className="prepare-swap">
+      <div className="prepare-swap__content">
         {showSmartTransactionsOptInPopover && (
           <Popover
             title={t('stxAreHere')}
@@ -682,12 +682,12 @@ export default function PrepareSwap({
           hideItemIf={(item) =>
             isEqualCaseInsensitive(item.address, selectedToToken?.address)
           }
-          listContainerClassName="build-quote__open-dropdown"
+          listContainerClassName="prepare-swap__open-dropdown"
           autoFocus
         />
         <div
-          className={classnames('build-quote__balance-message', {
-            'build-quote__balance-message--error':
+          className={classnames('prepare-swap__balance-message', {
+            'prepare-swap__balance-message--error':
               balanceError || fromTokenError,
           })}
         >
@@ -707,7 +707,7 @@ export default function PrepareSwap({
           )}
           {fromTokenError && (
             <>
-              <div className="build-quote__form-error">
+              <div className="prepare-swap__form-error">
                 {t('swapTooManyDecimalsError', [
                   fromTokenSymbol,
                   fromTokenDecimals,
@@ -717,11 +717,11 @@ export default function PrepareSwap({
             </>
           )}
         </div>
-        <div className="build-quote__dropdown-input-pair-header">
+        <div className="prepare-swap__dropdown-input-pair-header">
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
-              className="build-quote__max-button"
-              data-testid="build-quote__max-button"
+              className="prepare-swap__max-button"
+              data-testid="prepare-swap__max-button"
               onClick={() =>
                 onInputChange(fromTokenBalance || '0', fromTokenBalance)
               }
@@ -730,10 +730,10 @@ export default function PrepareSwap({
             </div>
           )}
         </div>
-        <div className="build-quote__swap-arrows-row">
+        <div className="prepare-swap__swap-arrows-row">
           <button
-            className="build-quote__swap-arrows"
-            data-testid="build-quote__swap-arrows"
+            className="prepare-swap__swap-arrows"
+            data-testid="prepare-swap__swap-arrows"
             onClick={() => {
               onToSelect(selectedFromToken);
               onFromSelect(selectedToToken);
@@ -759,7 +759,7 @@ export default function PrepareSwap({
             }
             externallySelectedItem={selectedToToken}
             hideItemIf={hideDropdownItemIf}
-            listContainerClassName="build-quote__open-to-dropdown"
+            listContainerClassName="prepare-swap__open-to-dropdown"
             hideRightLabels
             defaultToAll
             shouldSearchForImports
@@ -770,8 +770,8 @@ export default function PrepareSwap({
             <ActionableMessage
               type={occurrences === 1 ? 'warning' : 'danger'}
               message={
-                <div className="build-quote__token-verification-warning-message">
-                  <div className="build-quote__bold">
+                <div className="prepare-swap__token-verification-warning-message">
+                  <div className="prepare-swap__bold">
                     {occurrences === 1
                       ? t('swapTokenVerificationOnlyOneSource')
                       : t('swapTokenVerificationAddedManually')}
@@ -795,9 +795,9 @@ export default function PrepareSwap({
               }
             />
           ) : (
-            <div className="build-quote__token-message">
+            <div className="prepare-swap__token-message">
               <span
-                className="build-quote__bold"
+                className="prepare-swap__bold"
                 key="token-verification-bold-text"
               >
                 {t('swapTokenVerificationSources', [occurrences])}
@@ -806,8 +806,8 @@ export default function PrepareSwap({
                 <>
                   {t('swapTokenVerificationMessage', [
                     <a
-                      className="build-quote__token-etherscan-link"
-                      key="build-quote-etherscan-link"
+                      className="prepare-swap__token-etherscan-link"
+                      key="prepare-swap-etherscan-link"
                       onClick={() => {
                         /* istanbul ignore next */
                         trackEvent({
@@ -836,7 +836,7 @@ export default function PrepareSwap({
                     contentText={t('swapVerifyTokenExplanation', [
                       blockExplorerLabel,
                     ])}
-                    containerClassName="build-quote__token-tooltip-container"
+                    containerClassName="prepare-swap__token-tooltip-container"
                     key="token-verification-info-tooltip"
                   />
                 </>
@@ -845,7 +845,7 @@ export default function PrepareSwap({
           ))}
         {(smartTransactionsEnabled ||
           (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-          <div className="build-quote__slippage-buttons-container">
+          <div className="prepare-swap__slippage-buttons-container">
             <SlippageButtons
               onSelect={(newSlippage) => {
                 dispatch(setMaxSlippage(newSlippage));
