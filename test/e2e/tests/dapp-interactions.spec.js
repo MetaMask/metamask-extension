@@ -80,7 +80,7 @@ describe('Dapp interactions', function () {
 
         // Connect to Dapp0
         await connectDappWithExtensionPopup(driver, 0);
-        windowHandles = await driver.getAllWindowHandles();      
+        windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
         // Lock Account
