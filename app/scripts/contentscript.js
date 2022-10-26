@@ -211,7 +211,7 @@ const destroyPhishingExtStreams = () => {
 
 /**
  * This listener destroys the phishing extension streams when the extension port is disconnected,
- * so that streams may be re-established later when we reconnect the phishing extension port.
+ * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = () => {
   phishingExtPort.onDisconnect.removeListener(
@@ -439,7 +439,7 @@ const onMessageSetUpExtensionStreams = (msg) => {
 
 /**
  * This listener destroys the extension streams when the extension port is disconnected,
- * so that streams may be re-established later when we reconnect the extension port.
+ * so that streams may be re-established later the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
