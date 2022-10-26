@@ -4390,9 +4390,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  rejectPendingApproval = (id, value) => {
+  rejectPendingApproval = (id, error) => {
     try {
-      this.approvalController.reject(id, value);
+      this.approvalController.reject(id, error);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;
