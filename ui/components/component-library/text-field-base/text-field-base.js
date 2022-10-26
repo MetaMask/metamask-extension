@@ -42,7 +42,7 @@ export const TextFieldBase = ({
   required,
   size = SIZES.MD,
   type = 'text',
-  truncate,
+  truncate = true,
   value,
   ...props
 }) => {
@@ -95,7 +95,7 @@ export const TextFieldBase = ({
         'mm-text-field-base',
         `mm-text-field-base--size-${size}`,
         {
-          'mm-text-field-base--focused': focused && !disabled,
+          'mm-text-field-base--focused': focused && !disabled && !readOnly,
           'mm-text-field-base--error': error,
           'mm-text-field-base--disabled': disabled,
           'mm-text-field-base--truncate': truncate,
@@ -212,6 +212,10 @@ TextFieldBase.propTypes = {
    */
   onChange: PropTypes.func,
   /**
+   * Callback fired when the TextField is clicked on
+   */
+  onClick: PropTypes.func,
+  /**
    * Callback fired on focus
    */
   onFocus: PropTypes.func,
@@ -237,6 +241,11 @@ TextFieldBase.propTypes = {
    * Defaults to TEXT_FIELD_BASE_TYPES.TEXT ('text')
    */
   type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
+  /**
+   * If true will ellipse the text of the input
+   * Defaults to true
+   */
+  truncate: PropTypes.bool,
   /**
    * The input value, required for a controlled component.
    */
