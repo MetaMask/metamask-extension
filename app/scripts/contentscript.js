@@ -221,6 +221,24 @@ const resetPhishingStreamAndListeners = () => {
 };
 
 /**
+ * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
+ * This listener/callback receives the message to set up the streams after service worker in-activity.
+ *
+ * @param {object} msg
+ * @param {string} msg.name - custom property and name to identify the message received
+ * @returns {Promise|false}
+ */
+const onMessageSetUpPhishingStreams = (msg) => {
+  if (msg.name === EXTENSION_MESSAGES.READY) {
+    setupPhishingExtStreams();
+    return Promise.resolve(
+      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
+    );
+  }
+  return false;
+};
+
+/**
  * Initializes two-way communication streams between the browser extension and
  * the phishing page context. This function also creates an event listener to
  * reset the streams if the service worker resets.
@@ -228,6 +246,8 @@ const resetPhishingStreamAndListeners = () => {
 const initPhishingStreams = () => {
   setupPhishingPageStreams();
   setupPhishingExtStreams();
+
+  browser.runtime.onMessage.addListener(onMessageSetUpPhishingStreams);
 };
 
 /**
