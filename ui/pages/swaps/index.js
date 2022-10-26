@@ -409,19 +409,6 @@ export default function Swap() {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
                 }
 
-                console.log(
-                  '-------------------------inside BUILD_QUOTE_ROUTE------------------------------',
-                );
-                console.log(
-                  '-------------------------process.env.PREPARE_SWAP------------------------------',
-                );
-                console.log(process.env.PREPARE_SWAP);
-                process.env.PREPARE_SWAP = true;
-                console.log(
-                  '-------------------------after hardcoding the value------------------------------',
-                );
-                console.log(process.env.PREPARE_SWAP);
-
                 if (process.env.PREPARE_SWAP) {
                   return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }
