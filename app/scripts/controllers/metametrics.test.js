@@ -152,7 +152,7 @@ function getMetaMetricsController({
     },
   });
 }
-describe.only('MetaMetricsController', function () {
+describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
   beforeEach(function () {
