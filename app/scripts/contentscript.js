@@ -407,7 +407,7 @@ const destroyLegacyExtensionStreams = () => {
  * @param {string} msg.name - custom property and name to identify the message received
  * @returns {Promise|false}
  */
-const onMessageActivateStreams = (msg) => {
+const onMessageSetUpExtensionStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     setupExtensionStreams();
     setupLegacyExtensionStreams();
@@ -416,8 +416,6 @@ const onMessageActivateStreams = (msg) => {
 
   return false;
 };
-
-browser.runtime.onMessage.addListener(onMessageActivateStreams);
 
 /**
  * Resets the extension stream with new streams to channel with the in page streams,
@@ -441,6 +439,8 @@ const initStreams = () => {
 
   setupExtensionStreams();
   setupLegacyExtensionStreams();
+
+  browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
 };
 
 // TODO:LegacyProvider: Delete
