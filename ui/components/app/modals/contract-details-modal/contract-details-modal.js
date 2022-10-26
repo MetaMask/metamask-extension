@@ -21,12 +21,12 @@ import {
   JUSTIFY_CONTENT,
   SIZES,
   BORDER_STYLE,
-  TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
-import { getAddressBookEntry, getTokenList } from '../../../../selectors';
+import { getAddressBookEntry } from '../../../../selectors';
 import { ERC1155, ERC721 } from '../../../../../shared/constants/transaction';
+import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 
 export default function ContractDetailsModal({
   onClose,
@@ -40,7 +40,6 @@ export default function ContractDetailsModal({
   tokenId,
   assetName,
   assetStandard,
-  collections = {},
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
@@ -55,42 +54,6 @@ export default function ContractDetailsModal({
     // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenName and tokenId we assume its an NFT
     (assetName && tokenId) ||
     (tokenName && tokenId);
-
-  const tokenList = useSelector(getTokenList);
-
-  const nftTokenListImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
-
-  let nftCollectionNameExist;
-  let nftCollectionImageExist;
-
-  Object.values(collections).forEach((nftCollections) => {
-    if (nftCollections.collectionName === assetName) {
-      nftCollectionNameExist = nftCollections.collectionName;
-      nftCollectionImageExist = nftCollections.collectionImage;
-    }
-  });
-
-  const renderCollectionImage = (collectionImage, collectionName, key) => {
-    if (collectionImage) {
-      return (
-        <Identicon
-          className="contract-details-modal__content__contract__identicon"
-          diameter={24}
-          image={collectionImage}
-        />
-      );
-    }
-    return (
-      <Box
-        key={key}
-        color={COLORS.OVERLAY_INVERSE}
-        textAlign={TEXT_ALIGN.CENTER}
-        className="contract-details-modal__content__contract__collection"
-      >
-        {collectionName?.[0]?.toUpperCase() ?? null}
-      </Box>
-    );
-  };
 
   return (
     <Popover className="contract-details-modal">
@@ -133,14 +96,12 @@ export default function ContractDetailsModal({
           className="contract-details-modal__content__contract"
         >
           {nft ? (
-            <>
-              {Object.keys(collections).length > 0 && nftCollectionNameExist
-                ? renderCollectionImage(
-                    nftCollectionImageExist,
-                    nftCollectionNameExist,
-                  )
-                : renderCollectionImage(nftTokenListImage, assetName)}
-            </>
+            <Box margin={4}>
+              <NftCollectionImage
+                assetName={assetName}
+                tokenAddress={tokenAddress}
+              />
+            </Box>
           ) : (
             <Identicon
               className="contract-details-modal__content__contract__identicon"
@@ -395,28 +356,4 @@ ContractDetailsModal.propTypes = {
    * The name of the collection
    */
   assetName: PropTypes.string,
-  /**
-   * NFTs Collection
-   */
-  collections: PropTypes.shape({
-    collectibles: PropTypes.arrayOf(
-      PropTypes.shape({
-        address: PropTypes.string.isRequired,
-        tokenId: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        image: PropTypes.string,
-        standard: PropTypes.string,
-        imageThumbnail: PropTypes.string,
-        imagePreview: PropTypes.string,
-        creator: PropTypes.shape({
-          address: PropTypes.string,
-          config: PropTypes.string,
-          profile_img_url: PropTypes.string,
-        }),
-      }),
-    ),
-    collectionImage: PropTypes.string,
-    collectionName: PropTypes.string,
-  }),
 };

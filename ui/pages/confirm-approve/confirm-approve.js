@@ -37,7 +37,6 @@ import { parseStandardTokenTransactionData } from '../../../shared/modules/trans
 import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
-import { useCollectiblesCollections } from '../../hooks/useCollectiblesCollections';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -94,8 +93,6 @@ export default function ConfirmApprove({
     showCustomizeGasPopover,
     closeCustomizeGasPopover,
   } = useApproveTransaction();
-
-  const { collections } = useCollectiblesCollections();
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -223,7 +220,6 @@ export default function ConfirmApprove({
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
-              collections={collections}
               userAddress={userAddress}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}

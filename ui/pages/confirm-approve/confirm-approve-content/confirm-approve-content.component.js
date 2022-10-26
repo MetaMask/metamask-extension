@@ -78,27 +78,6 @@ export default class ConfirmApproveContent extends Component {
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
-    collections: PropTypes.shape({
-      collectibles: PropTypes.arrayOf(
-        PropTypes.shape({
-          address: PropTypes.string.isRequired,
-          tokenId: PropTypes.string.isRequired,
-          name: PropTypes.string,
-          description: PropTypes.string,
-          image: PropTypes.string,
-          standard: PropTypes.string,
-          imageThumbnail: PropTypes.string,
-          imagePreview: PropTypes.string,
-          creator: PropTypes.shape({
-            address: PropTypes.string,
-            config: PropTypes.string,
-            profile_img_url: PropTypes.string,
-          }),
-        }),
-      ),
-      collectionImage: PropTypes.string,
-      collectionName: PropTypes.string,
-    }),
   };
 
   state = {
@@ -614,7 +593,6 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
-      collections,
     } = this.props;
     const { showFullTxDetails, setshowContractDetails } = this.state;
 
@@ -682,7 +660,6 @@ export default class ConfirmApproveContent extends Component {
                 tokenId={tokenId}
                 assetName={assetName}
                 assetStandard={assetStandard}
-                collections={collections}
               />
             )}
           </Box>
