@@ -1,0 +1,33 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { BannerBase } from './banner-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# BannerBase
+
+The `BannerBase` is the base component for buttons.
+
+<Canvas>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `BannerBase` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={BannerBase} />
+
+### Icon
+
+Use the `icon` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+
+<Canvas>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--icon" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../ui/component-library';
+import { ICON_NAMES } from '../icon';
+
+<BannerBase icon={ICON_NAMES.ADD_SQUARE_FILLED}>Button</BannerBase>;
+```
