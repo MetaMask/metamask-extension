@@ -47,15 +47,37 @@ let lastMessageRecievedTimestamp = Date.now();
  * if service worker is inactive it is reactivated and script re-loaded
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
+let extensionPort;
+let timeoutHandle;
+
 if (isManifestV3) {
-  // Setup a broadcast channel to communicate with service worker
-  // eslint-disable-next-line no-undef
-  const channel = new window.BroadcastChannel('sw-messages');
+  // Checking for SW aliveness (or stuckness) flow
+  // 1. Check if we have an extensionPort, if yes
+  // 2a. Send a keep alive message to the background via extensionPort
+  // 2b. Add a listener to it (if not already added)
+  // 3a. Set a timeout to check if we have received an ACK from background
+  // 3b. If we have not received an ACK within Xs, we know the background is stuck or dead
+  // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
+
+  const ackKeepAliveListener = (message) => {
+    if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
+      lastMessageRecievedTimestamp = Date.now();
+      clearTimeout(timeoutHandle);
+    }
+  };
 
   const handle = setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
-    const timeoutHandle = setTimeout(() => {
+    if (extensionPort !== null && extensionPort !== undefined) {
+      extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+      if (extensionPort.onMessage.hasListener(ackKeepAliveListener) === false) {
+        extensionPort.onMessage.addListener(ackKeepAliveListener);
+      }
+    }
+
+    timeoutHandle = setTimeout(() => {
       if (
         Date.now() - lastMessageRecievedTimestamp >
         ACK_KEEP_ALIVE_WAIT_TIME
@@ -67,14 +89,6 @@ if (isManifestV3) {
         );
       }
     }, ACK_KEEP_ALIVE_WAIT_TIME);
-
-    // add listener to receive ACK_KEEP_ALIVE_MESSAGE
-    channel.addEventListener('message', (event) => {
-      if (event.data.name === ACK_KEEP_ALIVE_MESSAGE) {
-        lastMessageRecievedTimestamp = Date.now();
-        clearTimeout(timeoutHandle);
-      }
-    });
   }, WORKER_KEEP_ALIVE_INTERVAL);
 }
 
@@ -90,7 +104,7 @@ async function start() {
   let isUIInitialised = false;
 
   // setup stream to background
-  let extensionPort = browser.runtime.connect({ name: windowType });
+  extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
