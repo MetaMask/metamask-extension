@@ -102,6 +102,14 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function isCurrentProviderCustom(state) {
+  const provider = getProvider(state);
+  return (
+    provider.type === NETWORK_TYPES.RPC &&
+    !Object.values(CHAIN_IDS).includes(provider.chainId)
+  );
+}
+
 export function getCurrentQRHardwareState(state) {
   const { qrHardware } = state.metamask;
   return qrHardware || {};
