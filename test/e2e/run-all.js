@@ -5,6 +5,14 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 
+const getTestPathsForTestDir = async (testDir) => {
+  const testFilenames = await fs.readdir(testDir);
+  const testPaths = testFilenames.map((filename) =>
+    path.join(testDir, filename),
+  );
+  return testPaths;
+};
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -38,12 +46,8 @@ async function main() {
     testDir = path.join(__dirname, 'snaps');
   }
 
-  // Includes E2E tests for Swaps.
-  testDir = path.join(__dirname, 'swaps');
-
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
+  const testPaths = await getTestPathsForTestDir(testDir).concat(
+    await getTestPathsForTestDir(path.join(__dirname, 'swaps')),
   );
 
   if (!snaps) {
