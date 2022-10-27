@@ -1642,10 +1642,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setCustomNetworkListEnabled:
-        preferencesController.setCustomNetworkListEnabled.bind(
-          preferencesController,
-        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 

@@ -258,6 +258,7 @@ const AddNetwork = () => {
           >
             <Button
               type="link"
+              data-testid="add-network-manually"
               onClick={(event) => {
                 event.preventDefault();
                 getEnvironmentType() === ENVIRONMENT_TYPE_POPUP

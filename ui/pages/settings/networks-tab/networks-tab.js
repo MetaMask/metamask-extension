@@ -5,7 +5,6 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -15,7 +14,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
   getFrequentRpcListDetail,
-  getIsCustomNetworkListEnabled,
   getNetworksTabSelectedRpcUrl,
   getProvider,
 } from '../../../selectors';
@@ -50,9 +48,6 @@ const NetworksTab = ({ addNewNetwork }) => {
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
   const networksTabSelectedRpcUrl = useSelector(getNetworksTabSelectedRpcUrl);
-  const addPopularNetworkFeatureToggledOn = useSelector(
-    getIsCustomNetworkListEnabled,
-  );
 
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
@@ -127,15 +122,11 @@ const NetworksTab = ({ addNewNetwork }) => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    if (addPopularNetworkFeatureToggledOn) {
-                      history.push(ADD_POPULAR_CUSTOM_NETWORK);
-                    } else {
-                      isFullScreen
-                        ? history.push(ADD_NETWORK_ROUTE)
-                        : global.platform.openExtensionInBrowser(
-                            ADD_NETWORK_ROUTE,
-                          );
-                    }
+                    isFullScreen
+                      ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
+                      : global.platform.openExtensionInBrowser(
+                          ADD_POPULAR_CUSTOM_NETWORK,
+                        );
                   }}
                 >
                   {t('addNetwork')}
