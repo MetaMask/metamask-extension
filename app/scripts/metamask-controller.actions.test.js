@@ -353,7 +353,11 @@ describe('MetaMaskController', function () {
         },
       };
       // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.rejectPendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+      metamaskController.rejectPendingApproval('DUMMY_ID', {
+        code: 'DUMMY_CODE',
+        message: 'DUMMY_MESSAGE',
+        data: 'DUMMY_DATA',
+      });
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
@@ -364,7 +368,11 @@ describe('MetaMaskController', function () {
         },
       };
       assert.throws(() => {
-        metamaskController.rejectPendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+        metamaskController.rejectPendingApproval('DUMMY_ID', {
+          code: 'DUMMY_CODE',
+          message: 'DUMMY_MESSAGE',
+          data: 'DUMMY_DATA',
+        });
       }, error);
     });
   });
