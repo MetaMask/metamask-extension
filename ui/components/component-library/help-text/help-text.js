@@ -33,7 +33,7 @@ HelpText.propTypes = {
    * If the HelperText should display in error state
    * Will override the color prop if true
    */
-  error: PropTypes.boolean,
+  error: PropTypes.bool,
   /**
    * The color of the HelpText will be overridden if error is true
    * Defaults to COLORS.TEXT_DEFAULT
