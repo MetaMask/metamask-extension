@@ -3891,18 +3891,6 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
-export function setCustomNetworkListEnabled(customNetworkListEnabled) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setCustomNetworkListEnabled', [
-        customNetworkListEnabled,
-      ]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
 export function setFirstTimeUsedNetwork(chainId) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }

@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
   },
-  "showCustomNetworkList": {
-    "message": "カスタムネットワークリストを表示"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "新規ネットワークの追加時に事前に情報が入力済みのネットワークのリストを表示するには、これを選択します。"
-  },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
   },
