@@ -225,7 +225,7 @@ class KeyringEventBatcher {
             delayInit: true,
           });
 
-          this.init(); // calls a wrapped init method
+          this.init();
         }
 
         resolveWrapper = (type, resolve) => (newState, res) => {
@@ -239,28 +239,27 @@ class KeyringEventBatcher {
           const prevState = await this.serialize();
 
           try {
-            const res = super[method](...args);
+            const res = await super[method](...args);
 
             return res;
           } catch (e) {
-            if (isServiceWorkerMv3Error(e)) {
-              // if error is due to mv3 then re-open promise
-              return new Promise((resolve, reject) => {
-                addToEventPool({
-                  type: this.type,
-                  method,
-                  args,
-                  prevState,
-                  resolve: this.resolveWrapper(this.type, resolve),
-                  reject,
-                });
+            console.log(isServiceWorkerMv3Error(e), e.cause);
 
-                // allow promise to hang as it will be resolved by the event pool
+            // if error is due to mv3 then re-open promise
+            const res = await new Promise((resolve, reject) => {
+              addToEventPool({
+                type: this.type,
+                method,
+                args,
+                prevState,
+                resolve: this.resolveWrapper(this.type, resolve),
+                reject,
               });
-            }
 
-            // rethrow error if not due to mv3
-            throw e;
+              // allow promise to hang as it will be resolved by the event pool
+            });
+
+            return res;
           }
         }
 
@@ -303,13 +302,20 @@ class KeyringEventBatcher {
         __getPage(...args) {
           return this.wrapMethod('__getPage', ...args);
         }
+
+        _setupIframe(...args) {
+          return this.wrapMethod('_setupIframe', ...args);
+        }
       };
     });
 
     // use _.throttle to clear the eventPool every X milliseconds, as there are some
     // limitations as there are some limitations in various browsers based on
     // how often we can emit (?)
-    throttle(this.clearMempool.bind(this), 300 * MILLISECOND);
+    this.clearEventPool = throttle(
+      this._clearEventPool.bind(this),
+      300 * MILLISECOND,
+    );
   }
 
   /**
@@ -333,9 +339,11 @@ class KeyringEventBatcher {
       resolve,
       reject,
     });
+
+    this.clearEventPool();
   }
 
-  clearMempool() {
+  _clearEventPool() {
     // @TODO, allow for sending events in one go as opposed to one by one
 
     for (const event of this.eventPool) {

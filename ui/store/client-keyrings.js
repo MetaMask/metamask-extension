@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { HARDWARE_KEYRINGS } from '../../shared/constants/hardware-wallets';
-import { callBackgroundMethod } from 'ui/store/action-queue';
+import { callBackgroundMethod } from '../store/action-queue';
 
 const HARDWARE_KEYRING_OPTS = {
   delayInt: true,

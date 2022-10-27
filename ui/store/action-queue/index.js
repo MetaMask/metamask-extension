@@ -119,6 +119,7 @@ export const callBackgroundMethod = (
   if (isManifestV3) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
+
     executeActionOrAddToRetryQueue({
       actionId,
       request: { method, args },

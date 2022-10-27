@@ -42,6 +42,7 @@ let clientKeyringController; // poc purposes only
 export const updateBackgroundConnection = (backgroundConnection) => {
   _setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
+    console.log('Notification', data);
     switch (data.method) {
       case CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE: {
         reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
