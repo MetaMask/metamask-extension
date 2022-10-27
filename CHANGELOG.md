@@ -39,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[FLASK] BREAKING:** Remove deprecated snap_getBip44Entropy_* method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
 - [FLASK] Miscellaneous fixes to the Snaps platform ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
 - [FLASK] `snaps-monorepo@0.22.2` ([#16161](https://github.com/MetaMask/metamask-extension/pull/16161))
-- [FLASK] `snaps-skunkworks@0.22.0` ([#16069](https://github.com/MetaMask/metamask-extension/pull/16069))
 
 ### Fixed
 - Fix double account creation when using keyboard controls on New Account page ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
