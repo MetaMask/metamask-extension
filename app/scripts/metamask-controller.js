@@ -225,7 +225,9 @@ class KeyringEventBatcher {
             delayInit: true,
           });
 
-          this.init();
+          if(super.init){
+            this.init();
+          }
         }
 
         resolveWrapper = (type, resolve) => (newState, res) => {
@@ -236,6 +238,10 @@ class KeyringEventBatcher {
         };
 
         async wrapMethod(method, ...args) {
+          if(!super[method]){
+            throw ReferenceError('Un-implemented method called');
+          }
+
           const prevState = await this.serialize();
 
           try {
@@ -347,7 +353,7 @@ class KeyringEventBatcher {
     // @TODO, allow for sending events in one go as opposed to one by one
 
     for (const event of this.eventPool) {
-      this.sendPromisifiedClientAction(JSON.stringify(event.payload))
+      this.sendPromisifiedClientAction(event.payload)
         .then(event.resolve)
         .catch(event.reject);
     }
