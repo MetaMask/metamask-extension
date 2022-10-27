@@ -343,6 +343,13 @@
     "message": "Approve $1 spend limit",
     "description": "The token symbol that is being approved"
   },
+  "approveTokenDescription": {
+    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenTitle": {
+    "message": "Allow access to and transfer of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approved": {
     "message": "Approved"
   },
