@@ -109,12 +109,13 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   before(async function () {
+    console.log('Before Called');
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
     sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
-    globalThis.isFirstTimeProfileLoaded = true;
     nock('https://min-api.cryptocompare.com')
       .persist()
       .get(/.*/u)
@@ -165,9 +166,17 @@ describe('MetaMaskController', function () {
     await ganacheServer.quit();
   });
 
-  describe('should reset state on first time profile load', function () {
+  describe('should reset states on first time profile load', function () {
     it('should reset state', function () {
       assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+
+    it('should not reset states if already set', function () {
+      // Even though MMController is initialzed again in beforeEach,
+      // resetStates should still be called once
+      assert(metamaskController.resetStates.calledOnce);
+      // global.isFirstTime should also remain false
       assert.equal(globalThis.isFirstTimeProfileLoaded, false);
     });
   });
