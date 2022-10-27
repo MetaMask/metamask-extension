@@ -38,6 +38,9 @@ async function main() {
     testDir = path.join(__dirname, 'snaps');
   }
 
+  // Includes E2E tests for Swaps.
+  testDir = path.join(__dirname, 'swaps');
+
   const testFilenames = await fs.readdir(testDir);
   const testPaths = testFilenames.map((filename) =>
     path.join(testDir, filename),
