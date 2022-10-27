@@ -93,7 +93,7 @@ function defaultFixture() {
           13: {
             date: '2022-09-15',
             id: 13,
-            isShown: true,
+            isShown: false,
           },
           14: {
             date: '2022-09-15',
@@ -189,7 +189,6 @@ function defaultFixture() {
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
-        customNetworkListEnabled: false,
         dismissSeedBackUpReminder: true,
         featureFlags: {
           showIncomingTransactions: true,
@@ -310,7 +309,6 @@ function onboardingFixture() {
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
-        customNetworkListEnabled: false,
         dismissSeedBackUpReminder: false,
         featureFlags: {
           showIncomingTransactions: true,
