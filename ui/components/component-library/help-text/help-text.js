@@ -5,49 +5,51 @@ import classnames from 'classnames';
 import {
   COLORS,
   TEXT,
-  SEVERITIES,
+  TEXT_COLORS,
 } from '../../../helpers/constants/design-system';
-
-import { HELP_TEXT_SEVERITIES } from './help-text.constants';
 
 import { Text } from '../text';
 
-export const HelpText = ({ severity, className, children, ...props }) => {
-  let severityColor = severity && `${severity.toUpperCase()}_DEFAULT`;
-  /*
-   * Currently our design token for danger is called error
-   * this maps those tokens together
-   * TODO: update when design tokens v2 is ready
-   */
-  if (severity === SEVERITIES.DANGER) {
-    severityColor = COLORS.ERROR_DEFAULT.replace(/-/gu, '_').toUpperCase();
-  }
-  return (
-    <Text
-      as="span"
-      className={classnames('mm-help-text', className)}
-      variant={TEXT.BODY_XS}
-      color={COLORS[severityColor]}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-};
+export const HelpText = ({
+  error,
+  color = COLORS.TEXT_DEFAULT,
+  className,
+  children,
+  ...props
+}) => (
+  <Text
+    as="span"
+    className={classnames('mm-help-text', className)}
+    variant={TEXT.BODY_XS}
+    color={error ? COLORS.ERROR_DEFAULT : color}
+    {...props}
+  >
+    {children}
+  </Text>
+);
 
 HelpText.propTypes = {
+  /**
+   * If the HelperText should display in error state
+   * Will override the color prop
+   */
+  error: PropTypes.boolean,
+  /**
+   * The color of the HelpText will be overridden if error is true
+   * Defaults to COLORS.TEXT_DEFAULT
+   */
+  color: PropTypes.oneOf(Object.values[TEXT_COLORS]),
   /**
    * The content of the help-text
    */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * What severity the HelpText renders in. Can be one of
-   * SEVERITIES.WARNING, SEVERITIES.DANGER, SEVERITIES.SUCCESS, SEVERITIES.INFO
-   * Defaults to undefined and renders with color COLORS.TEXT_DEFAULT
-   */
-  severity: PropTypes.oneOf(Object.values(HELP_TEXT_SEVERITIES)),
-  /**
    * Additional classNames to be added to the help-text component
    */
   className: PropTypes.string,
+  /**
+   * BaseAvatar also accepts all Box props including but not limited to
+   * className, as(change root element of HTML element) and margin props
+   */
+  ...Text.propTypes,
 };

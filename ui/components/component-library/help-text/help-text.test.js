@@ -1,9 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
 
 import { HelpText } from './help-text';
 
@@ -28,16 +27,24 @@ describe('HelpText', () => {
     expect(getByText('help text')).toBeDefined();
     expect(getByText('help text')).toHaveClass('test-class');
   });
-  it('should render with different severities', () => {
+  it('should render with error state', () => {
     const { getByText } = render(
       <>
-        <HelpText severity={SEVERITIES.DANGER}>danger</HelpText>
-        <HelpText severity={SEVERITIES.WARNING}>warning</HelpText>
-        <HelpText severity={SEVERITIES.SUCCESS}>success</HelpText>
-        <HelpText severity={SEVERITIES.INFO}>info</HelpText>
+        <HelpText error>error</HelpText>
       </>,
     );
-    expect(getByText('danger')).toHaveClass('text--color-error-default');
+    expect(getByText('error')).toHaveClass('text--color-error-default');
+  });
+  it('should render with different colors', () => {
+    const { getByText } = render(
+      <>
+        <HelpText>default</HelpText>
+        <HelpText color={COLORS.WARNING_DEFAULT}>warning</HelpText>
+        <HelpText color={COLORS.SUCCESS_DEFAULT}>success</HelpText>
+        <HelpText color={COLORS.INFO_DEFAULT}>info</HelpText>
+      </>,
+    );
+    expect(getByText('default')).toHaveClass('text--color-text-default');
     expect(getByText('warning')).toHaveClass('text--color-warning-default');
     expect(getByText('success')).toHaveClass('text--color-success-default');
     expect(getByText('info')).toHaveClass('text--color-info-default');

@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
   COLORS,
+  TEXT_COLORS,
   SIZES,
-  ALIGN_ITEMS,
-  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
 
-import { HELP_TEXT_SEVERITIES } from './help-text.constants';
 import { HelpText } from './help-text';
 
 import README from './README.mdx';
@@ -33,9 +30,12 @@ export default {
     className: {
       control: 'text',
     },
-    severity: {
+    error: {
+      control: 'boolean',
+    },
+    color: {
       control: 'select',
-      options: Object.values(HELP_TEXT_SEVERITIES),
+      options: Object.values(TEXT_COLORS),
     },
   },
   args: {
@@ -63,20 +63,26 @@ export const Children = (args) => (
   </Box>
 );
 
-export const Severity = (args) => (
+export const ErrorStory = (args) => (
+  <HelpText error {...args}>
+    This HelpText is in error state
+  </HelpText>
+);
+ErrorStory.storyName = 'Error';
+
+export const Color = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <HelpText {...args}>None</HelpText>
-    <HelpText {...args} severity={SEVERITIES.INFO}>
-      SEVERITIES.INFO
+    <HelpText color={COLORS.TEXT_DEFAULT} {...args}>
+      This HelpText default color is COLORS.TEXT_DEFAULT
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.DANGER}>
-      SEVERITIES.DANGER
+    <HelpText color={COLORS.INFO_DEFAULT} {...args}>
+      This HelpText color is COLORS.INFO_DEFAULT
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.WARNING}>
-      SEVERITIES.WARNING
+    <HelpText color={COLORS.WARNING_DEFAULT} {...args}>
+      This HelpText color is COLORS.WARNING_DEFAULT
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.SUCCESS}>
-      SEVERITIES.SUCCESS
+    <HelpText color={COLORS.SUCCESS_DEFAULT} {...args}>
+      This HelpText color is COLORS.SUCCESS_DEFAULT
     </HelpText>
   </Box>
 );
