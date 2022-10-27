@@ -46,12 +46,14 @@ async function main() {
     testDir = path.join(__dirname, 'snaps');
   }
 
-  const testPaths = await getTestPathsForTestDir(testDir).concat(
-    await getTestPathsForTestDir(path.join(__dirname, 'swaps')),
-  );
+  let testPaths = await getTestPathsForTestDir(testDir);
 
   if (!snaps) {
-    testPaths.push(path.join(__dirname, 'metamask-ui.spec.js'));
+    testPaths = [
+      ...testPaths,
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
