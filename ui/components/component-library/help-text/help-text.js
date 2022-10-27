@@ -31,7 +31,7 @@ export const HelpText = ({
 HelpText.propTypes = {
   /**
    * If the HelperText should display in error state
-   * Will override the color prop
+   * Will override the color prop if true
    */
   error: PropTypes.boolean,
   /**
@@ -44,12 +44,11 @@ HelpText.propTypes = {
    */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Additional classNames to be added to the help-text component
+   * Additional classNames to be added to the HelpText component
    */
   className: PropTypes.string,
   /**
-   * BaseAvatar also accepts all Box props including but not limited to
-   * className, as(change root element of HTML element) and margin props
+   * HelpText also accepts all Text and Box props
    */
   ...Text.propTypes,
 };

@@ -65,7 +65,7 @@ export const Children = (args) => (
 
 export const ErrorStory = (args) => (
   <HelpText error {...args}>
-    This HelpText is in error state
+    This HelpText in error state
   </HelpText>
 );
 ErrorStory.storyName = 'Error';
