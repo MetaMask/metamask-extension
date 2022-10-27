@@ -100,7 +100,9 @@ describe('Chain Interactions', function () {
         await driver.switchToWindow(extension);
 
         // verify current network
-        const networkDisplay = await driver.findElement('[data-testid="network-display"]');
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
         assert.equal(await networkDisplay.getText(), `Localhost ${port}`);
       },
     );
