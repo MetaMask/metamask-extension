@@ -12,6 +12,10 @@ const loadTimeLogs = [];
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
+// Setup a broadcast channel to communicate with the frontend
+// eslint-disable-next-line no-undef
+const channel = new BroadcastChannel('sw-messages');
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -133,9 +137,9 @@ chrome.runtime.onMessage.addListener(() => {
 // Here respond to all clients with ACK_KEEP_ALIVE_MESSAGE
 chrome.runtime.onMessage.addListener((message) => {
   if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
-    // eslint-disable-next-line no-undef
-    const channel = new BroadcastChannel('sw-messages');
     channel.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+    // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
+    // channel.close();
   }
 });
 

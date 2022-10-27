@@ -48,6 +48,10 @@ let lastMessageRecievedTimestamp = Date.now();
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
 if (isManifestV3) {
+  // Setup a broadcast channel to communicate with service worker
+  // eslint-disable-next-line no-undef
+  const channel = new window.BroadcastChannel('sw-messages');
+
   const handle = setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
@@ -65,8 +69,6 @@ if (isManifestV3) {
     }, ACK_KEEP_ALIVE_WAIT_TIME);
 
     // add listener to receive ACK_KEEP_ALIVE_MESSAGE
-    // eslint-disable-next-line no-undef
-    const channel = new window.BroadcastChannel('sw-messages');
     channel.addEventListener('message', (event) => {
       if (event.data.name === ACK_KEEP_ALIVE_MESSAGE) {
         lastMessageRecievedTimestamp = Date.now();
