@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
   },
-  "showCustomNetworkList": {
-    "message": "Özel Ağ Listesini Göster"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Yeni bir ağ eklerken önceden doldurulan bilgilerle ağ listesini görüntülenmesi için bunu seçin."
-  },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında Dönüşümü göster"
   },

@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
   },
-  "showCustomNetworkList": {
-    "message": "Benutzerdefinierte Netzwerkliste anzeigen"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Diese Option zeigt eine Liste von Netzwerken mit vorausgefüllten Details an, sobald ein neues Netzwerk hinzugefügt wird."
-  },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
   },

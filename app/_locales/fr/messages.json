@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
   },
-  "showCustomNetworkList": {
-    "message": "Afficher la liste des réseaux personnalisés"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Sélectionnez cette option pour afficher une liste de réseaux dont l’adresse est préremplie lorsque vous ajoutez un nouveau réseau."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur les testnets"
   },

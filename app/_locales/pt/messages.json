@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Selecione isso para mostrar o preço do gás e limitar os controles diretamente nas telas de envio e de confirmação."
   },
-  "showCustomNetworkList": {
-    "message": "Exibir lista de redes personalizadas"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Selecione esta opção para exibir uma lista de redes com as informações pré-preenchidas ao adicionar uma nova rede."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversão nas redes de teste"
   },

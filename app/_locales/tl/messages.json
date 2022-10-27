@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Piliin ito para direktang maipakita ang presyo ng gas at mga kontrol sa limitasyon sa mga screen ng pagpapadala at pagkumpirma."
   },
-  "showCustomNetworkList": {
-    "message": "Ipakita ang Listahan ng Custom na Network"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Piliin ito para magpakita ng listahan ng mga network na may prefilled na mga detalye kapag nagdaragdag ng bagong network."
-  },
   "showFiatConversionInTestnets": {
     "message": "Ipakita ang Conversion sa Testnets"
   },
