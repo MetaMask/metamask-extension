@@ -1,10 +1,16 @@
 import React from 'react';
-import { ALIGN_ITEMS, DISPLAY } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  SIZES,
+  TEXT,
+} from '../../../helpers/constants/design-system';
 import { ICON_NAMES } from '../icon';
-import { ButtonPrimary } from './button-primary';
-import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
+import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
+import Box from '../../ui/box/box';
+import { Text } from '../text';
 import README from './README.mdx';
+import { Button, BUTTON_TYPES } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -25,13 +31,14 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonPrimary',
+  title: 'Components/ComponentLibrary/Button',
   id: __filename,
-  component: ButtonPrimary,
+  component: Button,
   parameters: {
     docs: {
       page: README,
     },
+    controls: { sort: 'alpha' },
   },
   argTypes: {
     as: {
@@ -56,6 +63,9 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
+    href: {
+      control: 'text',
+    },
     icon: {
       control: 'select',
       options: Object.values(ICON_NAMES),
@@ -76,7 +86,11 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_PRIMARY_SIZES),
+      options: Object.values(BUTTON_LINK_SIZES),
+    },
+    type: {
+      options: Object.values(BUTTON_TYPES),
+      control: 'select',
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -100,34 +114,68 @@ export default {
     },
   },
   args: {
-    children: 'Button Primary',
+    children: 'Button',
   },
 };
 
-export const DefaultStory = (args) => <ButtonPrimary {...args} />;
+export const DefaultStory = (args) => <Button {...args} />;
 
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.SM}>
-      Small Button
-    </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.MD}>
-      Medium (Default) Button
-    </ButtonPrimary>
-    <ButtonPrimary {...args} size={BUTTON_PRIMARY_SIZES.LG}>
-      Large Button
-    </ButtonPrimary>
-  </Box>
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.BASELINE}
+      gap={1}
+      marginBottom={3}
+    >
+      <Button {...args} size={SIZES.SM}>
+        Small Button
+      </Button>
+      <Button {...args} size={SIZES.MD}>
+        Medium (Default) Button
+      </Button>
+      <Button {...args} size={SIZES.LG}>
+        Large Button
+      </Button>
+    </Box>
+    <Text variant={TEXT.BODY_SM}>
+      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
+        Button Auto
+      </Button>{' '}
+      inherits the font-size of the parent element. Auto size only used for
+      ButtonLink.
+    </Text>
+  </>
 );
 
 export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <ButtonPrimary {...args}>Normal</ButtonPrimary>
+    <Button {...args}>Normal</Button>
     {/* Test Anchor tag to match exactly as button */}
-    <ButtonPrimary as="a" {...args} href="#" danger>
+    <Button as="a" {...args} href="#" danger>
       Danger
-    </ButtonPrimary>
+    </Button>
+  </Box>
+);
+
+export const Href = (args) => <Button {...args}>Href Example</Button>;
+
+Href.args = {
+  href: '/metamask',
+};
+
+export const Type = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <Button type={BUTTON_TYPES.PRIMARY} {...args}>
+      Primary Button
+    </Button>
+    <Button type={BUTTON_TYPES.SECONDARY} {...args}>
+      Secondary Button
+    </Button>
+    <Button type={BUTTON_TYPES.LINK} {...args}>
+      Link Button
+    </Button>
   </Box>
 );

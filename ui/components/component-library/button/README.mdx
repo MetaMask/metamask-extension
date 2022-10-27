@@ -1,0 +1,90 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Button } from './button';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# Button
+
+The `Button` is the base component for buttons.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-button-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `Button` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={Button} />
+
+### Size
+
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `SIZES.MD`
+
+Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `SIZES`.
+
+Possible sizes include:
+
+- `SIZES.AUTO` inherits the font-size of the parent element.
+- `SIZES.SM` 32px
+- `SIZES.MD` 40px
+- `SIZES.LG` 48px
+
+<Canvas>
+  <Story id="ui-components-component-library-button-button-stories-js--size" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { Button } from '../ui/component-library/button/button/button';
+
+<Button size={SIZES.AUTO} />
+<Button size={SIZES.SM} />
+<Button size={SIZES.MD} />
+<Button size={SIZES.LG} />
+```
+
+### Danger
+
+Use the `danger` boolean prop to change the `ButtonPrimary` to danger color.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-button-stories-js--danger" />
+</Canvas>
+
+```jsx
+import { Button } from '../ui/component-library/button/button/button';
+
+<Button>Normal</Button>
+<Button danger>Danger</Button>
+```
+
+### Href
+
+When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-button-stories-js--href" />
+</Canvas>
+
+```jsx
+import { Button } from '../ui/component-library/button/button/button';
+
+<Button href="/">Href Example</Button>;
+```
+
+### Type
+
+Use the `type` prop and the `BUTTON_TYPES` object from `./button.constants.js` to change the `Button` type.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-button-stories-js--type" />
+</Canvas>
+
+```jsx
+import { Button, BUTTON_TYPES } from '../ui/component-library/button';
+
+<Button type={BUTTON_TYPES.PRIMARY}>Primary Button</Button>
+<Button type={BUTTON_TYPES.SECONDARY}>Secondary Button</Button>
+<Button type={BUTTON_TYPES.LINK}>Link Button</Button>
+```
