@@ -99,10 +99,8 @@ describe('Chain Interactions', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
-        // verify network info popup
-        const networkDisplay = await driver.findElement(
-          '.new-network-info__token-box',
-        );
+        // verify current network
+        const networkDisplay = await driver.findElement('[data-testid="network-display"]');
         assert.equal(await networkDisplay.getText(), `Localhost ${port}`);
       },
     );
