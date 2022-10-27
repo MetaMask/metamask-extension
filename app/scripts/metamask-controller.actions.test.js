@@ -354,7 +354,7 @@ describe('MetaMaskController', function () {
       };
       // Line below will not throw error, in case it throws this test case will fail.
       metamaskController.rejectPendingApproval('DUMMY_ID', {
-        code: 'DUMMY_CODE',
+        code: 1,
         message: 'DUMMY_MESSAGE',
         data: 'DUMMY_DATA',
       });
@@ -369,7 +369,7 @@ describe('MetaMaskController', function () {
       };
       assert.throws(() => {
         metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 'DUMMY_CODE',
+          code: 1,
           message: 'DUMMY_MESSAGE',
           data: 'DUMMY_DATA',
         });
