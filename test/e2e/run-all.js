@@ -51,7 +51,8 @@ async function main() {
   if (!snaps) {
     testPaths = [
       ...testPaths,
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      // TODO: Enable the next line once the Swaps E2E tests are stable.
+      // ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
