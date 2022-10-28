@@ -146,7 +146,7 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
-    // Code below will submit to segment pending events as vontroller is re-instantiated
+    // Code below submits any pending events to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       Object.values(events).forEach(({ eventType, payload, callback }) => {
         this._submitSegmentEvent(eventType, payload, callback);
