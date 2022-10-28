@@ -516,6 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
+    parallelism: 10
     steps:
       - checkout
       - run:
@@ -534,7 +535,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2
+              yarn test:e2e:chrome --retries 2 | circleci tests split --split-by=timings
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -624,6 +625,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
+    parallelism: 10
     steps:
       - checkout
       - run:
@@ -642,7 +644,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox --retries 2
+              yarn test:e2e:firefox --retries 2 | circleci tests split --split-by=timings
             fi
           no_output_timeout: 20m
       - store_artifacts:
