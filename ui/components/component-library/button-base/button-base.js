@@ -15,14 +15,14 @@ import {
   SIZES,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
-import { BUTTON_SIZES } from './button.constants';
+import { BUTTON_BASE_SIZES } from './button-base.constants';
 
 export const ButtonBase = ({
   as = 'button',
   block,
   children,
   className,
-  size = BUTTON_SIZES.MD,
+  size = BUTTON_BASE_SIZES.MD,
   icon,
   iconPositionRight,
   loading,
@@ -34,8 +34,8 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
-      paddingLeft={size === BUTTON_SIZES.AUTO ? 0 : 4}
-      paddingRight={size === BUTTON_SIZES.AUTO ? 0 : 4}
+      paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
+      paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       className={classnames(
         'mm-button',
         `mm-button--size-${size}`,
@@ -61,13 +61,13 @@ export const ButtonBase = ({
           iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
         }
         gap={2}
-        variant={size === BUTTON_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
+        variant={size === BUTTON_BASE_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
         color={TEXT_COLORS.INHERIT}
       >
         {icon && (
           <Icon
             name={icon}
-            size={size === BUTTON_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
+            size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
             {...iconProps}
           />
         )}
@@ -77,7 +77,7 @@ export const ButtonBase = ({
         <Icon
           className="mm-button__icon-loading"
           name={ICON_NAMES.LOADING_FILLED}
-          size={size === BUTTON_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
+          size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
         />
       )}
     </Box>
@@ -127,7 +127,7 @@ ButtonBase.propTypes = {
    * The size of the ButtonBase.
    * Possible values could be 'SIZES.AUTO', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
    */
-  size: PropTypes.oneOf(Object.values(BUTTON_SIZES)),
+  size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
   /**
    * Addition style properties to apply to the button.
    */

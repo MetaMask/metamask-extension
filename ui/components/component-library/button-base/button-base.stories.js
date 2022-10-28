@@ -9,7 +9,7 @@ import {
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
 import { Text } from '../text';
-import { BUTTON_SIZES } from './button.constants';
+import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
 
@@ -66,7 +66,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_SIZES),
+      options: Object.values(BUTTON_BASE_SIZES),
     },
     marginTop: {
       options: marginSizeControlOptions,

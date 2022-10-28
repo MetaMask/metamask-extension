@@ -9,6 +9,8 @@ import { BUTTON_TYPES } from './button.constants';
 
 export const Button = ({ type, ...props }) => {
   switch (type) {
+    case BUTTON_TYPES.PRIMARY:
+      return <ButtonPrimary {...props} />;
     case BUTTON_TYPES.SECONDARY:
       return <ButtonSecondary {...props} />;
     case BUTTON_TYPES.LINK:
