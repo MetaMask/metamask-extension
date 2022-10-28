@@ -2346,8 +2346,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       const { loginToken } = await browser.storage.session.get(['loginToken']);
       if (loginToken) {
-        const { vault } = this.keyringController.store.getState();
-        await this.keyringController.submitEncryptionKey(loginToken, vault);
+        await this.keyringController.submitEncryptionKey(loginTokens);
       }
     } catch (e) {
       // If somehow this login token doesn't work properly,
