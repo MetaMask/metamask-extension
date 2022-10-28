@@ -63,10 +63,12 @@ describe('Sign Typed Data V4 Signature Request', function () {
         assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await verifyContractDetailsButton.getText(),
-          'Verify contract details',
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await message.getText(), 'Hello, Bob!');
         // Approve signing typed data
         await driver.clickElement(
@@ -147,10 +149,12 @@ describe('Sign Typed Data V3 Signature Request', function () {
         assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await verifyContractDetailsButton.getText(),
-          'Verify contract details',
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await messages[4].getText(), 'Hello, Bob!');
 
         // Approve signing typed data
