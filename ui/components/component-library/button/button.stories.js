@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ALIGN_ITEMS,
   DISPLAY,
+  FLEX_DIRECTION,
   SIZES,
   TEXT,
 } from '../../../helpers/constants/design-system';
@@ -44,11 +45,9 @@ export default {
     as: {
       control: 'select',
       options: ['button', 'a'],
-      table: { category: 'button base props' },
     },
     block: {
       control: 'boolean',
-      table: { category: 'button base props' },
     },
     children: {
       control: 'text',
@@ -61,7 +60,6 @@ export default {
     },
     disabled: {
       control: 'boolean',
-      table: { category: 'button base props' },
     },
     href: {
       control: 'text',
@@ -69,20 +67,16 @@ export default {
     icon: {
       control: 'select',
       options: Object.values(ICON_NAMES),
-      table: { category: 'button base props' },
     },
     iconPositionRight: {
       control: 'boolean',
-      table: { category: 'button base props' },
     },
     iconProps: {
       control: 'object',
-      table: { category: 'button base props' },
     },
 
     loading: {
       control: 'boolean',
-      table: { category: 'button base props' },
     },
     size: {
       control: 'select',
@@ -121,6 +115,20 @@ export default {
 export const DefaultStory = (args) => <Button {...args} />;
 
 DefaultStory.storyName = 'Default';
+
+export const Type = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <Button type={BUTTON_TYPES.PRIMARY} {...args}>
+      Primary Button
+    </Button>
+    <Button type={BUTTON_TYPES.SECONDARY} {...args}>
+      Secondary Button
+    </Button>
+    <Button type={BUTTON_TYPES.LINK} {...args}>
+      Link Button
+    </Button>
+  </Box>
+);
 
 export const Size = (args) => (
   <>
@@ -166,16 +174,40 @@ Href.args = {
   href: '/metamask',
 };
 
-export const Type = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
-    <Button type={BUTTON_TYPES.PRIMARY} {...args}>
-      Primary Button
+export const Block = (args) => (
+  <>
+    <Button {...args} marginBottom={2}>
+      Default Button
     </Button>
-    <Button type={BUTTON_TYPES.SECONDARY} {...args}>
-      Secondary Button
+    <Button {...args} block marginBottom={2}>
+      Block Button
     </Button>
-    <Button type={BUTTON_TYPES.LINK} {...args}>
-      Link Button
+  </>
+);
+
+export const As = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
+    <Button {...args}>Button Element</Button>
+    <Button as="a" href="#" {...args}>
+      Anchor Element
     </Button>
   </Box>
+);
+
+export const Disabled = (args) => <Button {...args}>Disabled Button</Button>;
+
+Disabled.args = {
+  disabled: true,
+};
+
+export const Loading = (args) => <Button {...args}>Loading Button</Button>;
+
+Loading.args = {
+  loading: true,
+};
+
+export const Icon = (args) => (
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
+    Button
+  </Button>
 );
