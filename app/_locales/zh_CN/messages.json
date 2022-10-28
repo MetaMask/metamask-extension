@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
   },
-  "showCustomNetworkList": {
-    "message": "显示自定义网络列表"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "选择此项，在添加新网络时就会显示附有预填详细信息的网络列表。"
-  },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
   },

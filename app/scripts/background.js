@@ -215,7 +215,7 @@ if (isManifestV3) {
 async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode, remotePort);
+  setupController(initState, initLangCode, remotePort);
   if (!isManifestV3) {
     await loadPhishingWarningPage();
   }
@@ -352,7 +352,6 @@ async function loadStateFromPersistence() {
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {string} remoteSourcePort - remote application port connecting to extension.
- * @returns {Promise} After setup is complete.
  */
 function setupController(initState, initLangCode, remoteSourcePort) {
   //
@@ -707,8 +706,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
     updateBadge();
   }
-
-  return Promise.resolve();
 }
 
 //

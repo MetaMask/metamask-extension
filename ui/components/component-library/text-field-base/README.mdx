@@ -69,7 +69,7 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
 ### Truncate
 
-Use the `truncate` prop to truncate the text of the the `TextFieldBase`
+Use the `truncate` prop to truncate the text of the the `TextFieldBase`. Defaults to `true`.
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--truncate" />
@@ -78,7 +78,8 @@ Use the `truncate` prop to truncate the text of the the `TextFieldBase`
 ```jsx
 import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
-<TextFieldBase truncate />;
+<TextFieldBase truncate />; // truncate is set to `true` by default
+<TextFieldBase truncate={false} />;
 ```
 
 ### Left Accessory Right Accessory
@@ -273,7 +274,7 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
 ### Read Only
 
-Use the `readOnly` prop to set the `TextFieldBase` to read only
+Use the `readOnly` prop to set the `TextFieldBase` to read only. When `readOnly` is true `TextFieldBase` will not have a focus state.
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--read-only" />

@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "गैस मूल्य और सीमा नियंत्रण को सीधे भेजने और पुष्टि करने की स्क्रीन पर दिखाने के लिए इसका चयन करें।"
   },
-  "showCustomNetworkList": {
-    "message": "कस्टम नेटवर्क की सूची दिखाएं"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "नया नेटवर्क जोड़ते समय पहले से भरे हुए विवरण वाले नेटवर्कों की सूची दिखाने के लिए इसे चुनें।"
-  },
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर रूपांतरण दिखाएं"
   },

@@ -2318,25 +2318,6 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
-    "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/networks": {
-      "packages": {
-        "@ethersproject/bignumber>@ethersproject/logger": true
-      }
-    },
-    "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/web": {
-      "globals": {
-        "clearTimeout": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/wallet>@ethersproject/properties": true
-      }
-    },
     "@eth-optimism/contracts>@ethersproject/abstract-signer": {
       "packages": {
         "@ethersproject/bignumber>@ethersproject/logger": true,
@@ -2678,6 +2659,9 @@
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
         "@metamask/contract-metadata": true,
+        "@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/controllers>@ethersproject/contracts": true,
+        "@metamask/controllers>@ethersproject/providers": true,
         "@metamask/controllers>abort-controller": true,
         "@metamask/controllers>async-mutex": true,
         "@metamask/controllers>eth-json-rpc-infura": true,
@@ -2700,7 +2684,6 @@
         "eth-rpc-errors": true,
         "eth-sig-util": true,
         "ethereumjs-util": true,
-        "ethers": true,
         "ethjs>ethjs-unit": true,
         "immer": true,
         "json-rpc-engine": true,
@@ -2708,6 +2691,103 @@
         "punycode": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/abi": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
+        "ethers>@ethersproject/units>@ethersproject/constants": true,
+        "ethers>@ethersproject/wallet>@ethersproject/address": true,
+        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
+        "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/wallet>@ethersproject/properties": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/contracts": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
+        "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/controllers>@ethersproject/abi": true,
+        "ethers>@ethersproject/wallet>@ethersproject/address": true,
+        "ethers>@ethersproject/wallet>@ethersproject/properties": true,
+        "ethers>@ethersproject/wallet>@ethersproject/transactions": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/providers": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
+        "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/networks": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/web": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/basex": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
+        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
+        "ethers>@ethersproject/providers>bech32": true,
+        "ethers>@ethersproject/units>@ethersproject/constants": true,
+        "ethers>@ethersproject/wallet>@ethersproject/address": true,
+        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
+        "ethers>@ethersproject/wallet>@ethersproject/properties": true,
+        "ethers>@ethersproject/wallet>@ethersproject/random": true,
+        "ethers>@ethersproject/wallet>@ethersproject/transactions": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/providers>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/providers>@ethersproject/networks": {
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": {
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@metamask/controllers>@ethersproject/providers>@ethersproject/web": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bignumber>@ethersproject/bytes": true,
+        "@ethersproject/bignumber>@ethersproject/logger": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
+        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
+        "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
     "@metamask/controllers>abort-controller": {
@@ -2979,27 +3059,8 @@
     },
     "@metamask/controllers>web3-provider-engine>eth-sig-util": {
       "packages": {
-        "@metamask/controllers>web3-provider-engine>eth-sig-util>ethereumjs-abi": true,
-        "@metamask/controllers>web3-provider-engine>ethereumjs-util": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>eth-sig-util>ethereumjs-abi": {
-      "packages": {
-        "@metamask/controllers>web3-provider-engine>eth-sig-util>ethereumjs-abi>ethereumjs-util": true,
-        "bn.js": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>eth-sig-util>ethereumjs-abi>ethereumjs-util": {
-      "packages": {
-        "3box>ethers>elliptic": true,
-        "@metamask/controllers>web3-provider-engine>ethereumjs-util>ethjs-util": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true
+        "@metamask/controllers>web3-provider-engine>ethereumjs-util": true,
+        "ethereumjs-abi": true
       }
     },
     "@metamask/controllers>web3-provider-engine>ethereumjs-util": {
@@ -3096,27 +3157,8 @@
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": {
       "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": true,
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi": {
-      "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": true,
-        "bn.js": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-abi>ethereumjs-util": {
-      "packages": {
-        "3box>ethers>elliptic": true,
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true
+        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": true,
+        "ethereumjs-abi": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": {
@@ -3373,22 +3415,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@ethersproject/bignumber": true,
-        "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@ethersproject/bignumber>@ethersproject/logger": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
-        "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
-        "ethers>@ethersproject/wallet>@ethersproject/properties": true
-      }
-    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -3406,58 +3432,146 @@
       "packages": {
         "@ethersproject/bignumber": true,
         "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@metamask/controllers": true,
+        "@metamask/controllers>@ethersproject/providers": true,
         "@metamask/controllers>isomorphic-fetch": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/smart-transactions-controller>fast-json-patch": true,
         "lodash": true
       }
     },
-    "@metamask/smart-transactions-controller>@ethersproject/providers": {
+    "@metamask/smart-transactions-controller>@metamask/controllers": {
       "globals": {
-        "WebSocket": true,
+        "Headers": true,
+        "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.log": true,
-        "console.warn": true,
+        "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
-        "@eth-optimism/contracts>@ethersproject/abstract-provider": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/networks": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-provider>@ethersproject/web": true,
-        "@eth-optimism/contracts>@ethersproject/abstract-signer": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/basex": true,
-        "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
-        "ethers>@ethersproject/pbkdf2>@ethersproject/sha2": true,
-        "ethers>@ethersproject/providers>bech32": true,
-        "ethers>@ethersproject/units>@ethersproject/constants": true,
-        "ethers>@ethersproject/wallet>@ethersproject/address": true,
-        "ethers>@ethersproject/wallet>@ethersproject/hash": true,
-        "ethers>@ethersproject/wallet>@ethersproject/properties": true,
-        "ethers>@ethersproject/wallet>@ethersproject/random": true,
-        "ethers>@ethersproject/wallet>@ethersproject/transactions": true
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>web3": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "eth-keyring-controller": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethers": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true
       }
     },
-    "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs": {
       "globals": {
-        "atob": true,
-        "btoa": true
+        "clearInterval": true,
+        "setInterval": true
       },
       "packages": {
-        "@ethersproject/bignumber>@ethersproject/bytes": true
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-unit": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>number-to-bn": true
       }
     },
-    "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@ethersproject/bignumber>@ethersproject/bytes": true,
-        "@ethersproject/bignumber>@ethersproject/logger": true
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "ethjs-query>babel-runtime": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>js-sha3": true,
+        "browserify>buffer": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "ethjs-query>babel-runtime": true,
+        "ethjs-query>ethjs-format": true,
+        "ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>js-sha3": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet>uuid": true,
+        "@truffle/codec>utf8": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethers>@ethersproject/json-wallets>scrypt-js": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -4728,7 +4842,7 @@
       "packages": {
         "3box>ethers>elliptic": true,
         "@ethereumjs/common>crc-32": true,
-        "@metamask/rpc-methods>@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/controllers>@ethersproject/abi": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
@@ -6285,7 +6399,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true
       }
     },
@@ -6294,7 +6408,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/base64": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/base64": true,
         "ethers>@ethersproject/hdnode>@ethersproject/strings": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,
@@ -6331,7 +6445,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@metamask/smart-transactions-controller>@ethersproject/providers>@ethersproject/rlp": true,
+        "@metamask/controllers>@ethersproject/providers>@ethersproject/rlp": true,
         "ethers>@ethersproject/units>@ethersproject/constants": true,
         "ethers>@ethersproject/wallet>@ethersproject/address": true,
         "ethers>@ethersproject/wallet>@ethersproject/keccak256": true,

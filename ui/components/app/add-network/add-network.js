@@ -49,7 +49,7 @@ const AddNetwork = () => {
   const infuraRegex = /infura.io/u;
 
   const nets = FEATURED_RPCS.sort((a, b) =>
-    a.ticker > b.ticker ? 1 : -1,
+    a.nickname > b.nickname ? 1 : -1,
   ).slice(0, FEATURED_RPCS.length);
 
   const notFrequentRpcNetworks = nets.filter(
@@ -258,6 +258,7 @@ const AddNetwork = () => {
           >
             <Button
               type="link"
+              data-testid="add-network-manually"
               onClick={(event) => {
                 event.preventDefault();
                 getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
