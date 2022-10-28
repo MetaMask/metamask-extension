@@ -149,7 +149,7 @@ export default class MetaMetricsController {
     // Code below submits any pending events to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       Object.values(events).forEach(({ eventType, payload, callback }) => {
-        this._submitSegmentEvent(eventType, payload, callback);
+        this._submitSegmentAPICall(eventType, payload, callback);
       });
     }
 
@@ -473,7 +473,7 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this._submitSegmentEvent('page', {
+      this._submitSegmentAPICall('page', {
         [idTrait]: idValue,
         name,
         properties: {
@@ -826,7 +826,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this._submitSegmentEvent('identify', {
+      this._submitSegmentAPICall('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -955,7 +955,7 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this._submitSegmentEvent('track', payload, callback);
+      this._submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
@@ -967,7 +967,7 @@ export default class MetaMetricsController {
   // and pass a callback to remove it from store once request is submitted to segment
   // Saving events in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
-  _submitSegmentEvent(eventType, payload, callback) {
+  _submitSegmentAPICall(eventType, payload, callback) {
     const messageId = payload.messageId || generateRandomId();
     const timestamp = payload.timestamp || new Date();
     const modifiedPayload = { ...payload, messageId, timestamp };
