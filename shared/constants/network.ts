@@ -165,6 +165,8 @@ export const NETWORK_TYPES = {
   MAINNET: 'mainnet',
   RPC: 'rpc',
   SEPOLIA: 'sepolia',
+  XINFIN: 'xinfin',
+  APOTHEM: 'apothem',
 } as const;
 
 /**
@@ -190,6 +192,8 @@ export const NETWORK_IDS = {
   GOERLI: '5',
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
+  XINFIN: '50',
+  APOTHEM: '51',
 } as const;
 
 /**
@@ -212,6 +216,8 @@ export const CHAIN_IDS = {
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
   AURORA: '0x4e454152',
+  XINFIN: '0x32',
+  APOTHEM: '0x33',
 } as const;
 
 /**
@@ -236,6 +242,8 @@ export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
+export const XINFIN_DISPLAY_NAME = 'XinFin Mainnet';
+export const APOTHEM_DISPLAY_NAME = 'Apothem Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -253,6 +261,8 @@ export const MAINNET_RPC_URL = getRpcUrl({
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
+export const XINFIN_RPC_URL = 'https://rpc.xinfin.network';
+export const APOTHEM_RPC_URL = 'https://rpc.apothem.network';
 
 /**
  * An object containing the token symbols for various tokens that are either
@@ -277,6 +287,7 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
+  XDC: 'XDC',
 } as const;
 
 /**
@@ -418,6 +429,7 @@ export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
+export const XDC_TOKEN_IMAGE_URL = './images/xdc-token.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -429,6 +441,7 @@ export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LOCALHOST,
+  CHAIN_IDS.APOTHEM,
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
@@ -470,6 +483,22 @@ export const BUILT_IN_NETWORKS = {
     networkId: NETWORK_IDS.LOCALHOST,
     chainId: CHAIN_IDS.LOCALHOST,
   },
+  [NETWORK_TYPES.MAINNET]: {
+    networkId: NETWORK_IDS.MAINNET,
+    chainId: CHAIN_IDS.MAINNET,
+  },
+  [NETWORK_TYPES.MAINNET]: {
+    networkId: NETWORK_IDS.MAINNET,
+    chainId: CHAIN_IDS.MAINNET,
+  },
+  [NETWORK_TYPES.XINFIN]: {
+    networkId: NETWORK_IDS.XINFIN,
+    chainId: CHAIN_IDS.XINFIN,
+  },
+  [NETWORK_TYPES.APOTHEM]: {
+    networkId: NETWORK_IDS.APOTHEM,
+    chainId: CHAIN_IDS.APOTHEM,
+  },
 } as const;
 
 export const NETWORK_TO_NAME_MAP = {
@@ -477,16 +506,22 @@ export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [NETWORK_TYPES.XINFIN]: XINFIN_DISPLAY_NAME,
+  [NETWORK_TYPES.APOTHEM]: APOTHEM_DISPLAY_NAME,
 
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [NETWORK_IDS.XINFIN]: XINFIN_DISPLAY_NAME,
+  [NETWORK_IDS.APOTHEM]: APOTHEM_DISPLAY_NAME,
 
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [CHAIN_IDS.XINFIN]: XINFIN_DISPLAY_NAME,
+  [CHAIN_IDS.APOTHEM]: APOTHEM_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_TYPE_MAP = {
@@ -494,6 +529,8 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
+  [CHAIN_IDS.XINFIN]: NETWORK_TYPES.XINFIN,
+  [CHAIN_IDS.APOTHEM]: NETWORK_TYPES.APOTHEM,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
@@ -501,6 +538,8 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
   [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
+  [CHAIN_IDS.XINFIN]: XINFIN_RPC_URL,
+  [CHAIN_IDS.APOTHEM]: APOTHEM_RPC_URL,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
@@ -515,12 +554,16 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XINFIN]: XDC_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.APOTHEM]: XDC_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
   [NETWORK_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
+  [NETWORK_IDS.XINFIN]: NETWORK_TYPES.XINFIN,
+  [NETWORK_IDS.APOTHEM]: NETWORK_TYPES.APOTHEM,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = {
@@ -528,6 +571,8 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
+  [CHAIN_IDS.XINFIN]: NETWORK_IDS.XINFIN,
+  [CHAIN_IDS.APOTHEM]: NETWORK_IDS.APOTHEM,
 } as const;
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
@@ -538,6 +583,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.XDC]: XDC_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -979,6 +1025,26 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://celoscan.io',
       imageUrl: CELO_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.XINFIN,
+    nickname: `${XINFIN_DISPLAY_NAME}`,
+    rpcUrl: XINFIN_RPC_URL,
+    ticker: CURRENCY_SYMBOLS.XDC,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.xinfin.network/',
+      imageUrl: XDC_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.APOTHEM,
+    nickname: `${APOTHEM_DISPLAY_NAME}`,
+    rpcUrl: APOTHEM_RPC_URL,
+    ticker: CURRENCY_SYMBOLS.XDC,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.apothem.network/',
+      imageUrl: XDC_TOKEN_IMAGE_URL,
     },
   },
 ];
