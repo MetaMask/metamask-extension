@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Swap Eth for another Token', function () {
   const ganacheOptions = {
@@ -14,7 +15,7 @@ describe('Swap Eth for another Token', function () {
   it('Completes a Swap between Eth and Matic', async function () {
     await withFixtures(
       {
-        fixtures: 'special-settings',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
