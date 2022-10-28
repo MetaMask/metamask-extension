@@ -20,11 +20,17 @@ export const Button = ({ type, ...props }) => {
 
 Button.propTypes = {
   /**
+   * Select the type of Button.
+   * Possible values could be 'BUTTON_TYPES.PRIMARY', 'BUTTON_TYPES.SECONDARY', 'BUTTON_TYPES.LINK'
+   * Button will default to `BUTTON_TYPES.PRIMARY`
+   */
+  type: PropTypes.oneOf(Object.values(BUTTON_TYPES)),
+  /**
    * Addition style properties to apply to the button.
    */
   style: PropTypes.object,
   /**
-   * Button accepts all the props from Box
+   * Button accepts all the props from ButtonPrimary (same props as ButtonSecondary & ButtonLink)
    */
-  ...ButtonLink.propTypes,
+  ...ButtonPrimary.propTypes,
 };
