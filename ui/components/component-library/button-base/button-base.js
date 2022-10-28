@@ -22,6 +22,7 @@ export const ButtonBase = ({
   block,
   children,
   className,
+  href,
   size = BUTTON_BASE_SIZES.MD,
   icon,
   iconPositionRight,
@@ -105,6 +106,10 @@ ButtonBase.propTypes = {
    * Boolean to disable button
    */
   disabled: PropTypes.bool,
+  /**
+   * When an `href` prop is passed, ButtonBase will automatically change the root element to be an `a` (anchor) tag
+   */
+  href: PropTypes.string,
   /**
    * Add icon to left side of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
