@@ -516,7 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
-    parallelism: 5
+    parallelism: 3
     steps:
       - checkout
       - run:
@@ -625,7 +625,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
-    parallelism: 5
+    parallelism: 3
     steps:
       - checkout
       - run:
