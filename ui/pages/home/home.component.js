@@ -52,6 +52,7 @@ import Tooltip from '../../components/ui/tooltip';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
+import BetaHomeHeader from './beta/beta-home-header';
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -606,6 +607,11 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(beta)
+              <BetaHomeHeader />
+              ///: END:ONLY_INCLUDE_IN(beta)
+            }
             <MenuBar />
             <div className="home__balance-wrapper">
               <EthOverview />
