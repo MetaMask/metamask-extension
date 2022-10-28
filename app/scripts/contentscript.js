@@ -4,6 +4,7 @@ import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
+import log from 'loglevel';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
@@ -104,6 +105,23 @@ let keepAliveInterval;
 let keepAliveTimer;
 
 /**
+ * Sending a message to the extension to receive will keep the service worker alive.
+ *
+ * If the extension is unloaded or reloaded during a session and the user attempts to send a
+ * message to the extension, an "Extension context invalidated." error will occur.
+ * When this happens, prompt the user to reload the extension.
+ */
+const sendMessageWorkerKeepAlive = () => {
+  browser.runtime
+    .sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE })
+    .catch((e) => {
+      e.message === 'Extension context invalidated.'
+        ? log.error(`Please refresh the page. MetaMask: ${e}`)
+        : log.error(`MetaMask: ${e}`);
+    });
+};
+
+/**
  * Running this method will ensure the service worker is kept alive for 45 minutes.
  * The first message is sent immediately and subsequent messages are sent at an
  * interval of WORKER_KEEP_ALIVE_INTERVAL.
@@ -117,11 +135,11 @@ const runWorkerKeepAliveInterval = () => {
 
   clearInterval(keepAliveInterval);
 
-  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+  sendMessageWorkerKeepAlive();
 
   keepAliveInterval = setInterval(() => {
     if (browser.runtime.id) {
-      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+      sendMessageWorkerKeepAlive();
     }
   }, WORKER_KEEP_ALIVE_INTERVAL);
 };
