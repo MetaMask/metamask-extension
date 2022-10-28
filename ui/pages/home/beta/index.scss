@@ -1,0 +1,21 @@
+.home__main-view__beta-header {
+  background: var(--brand-colors-orange-orange400);
+  padding: 7px 16px 7px 10px;
+  display: flex;
+
+  &__message {
+    text-align: center;
+    color: var(--brand-colors-white-white000);
+    flex-grow: 1;
+  }
+
+  &__button {
+    background: transparent;
+    padding: 0 6px;
+    margin: 0;
+
+    i {
+      color: var(--brand-colors-white-white000);
+    }
+  }
+}
