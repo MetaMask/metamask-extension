@@ -269,7 +269,7 @@ export default class MetamaskController extends EventEmitter {
           } catch (error) {
             console.error(error);
           }
-        }, durarion);
+        }, durarion*60*1000);
       },
       unschedule: (intervalId) => {
         if (isManifestV3) {
@@ -280,17 +280,14 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     };
-    this.alarmListener = () => {
-      chrome.alarms.getAll(async (alarms) => {
-        const hasAlarm = checkAlarmExists(alarms, TOKEN_LIST_FETCH_ALARM);
-        if (hasAlarm) {
-          try {
-            await this.fetchTokenListFn();
-          } catch (error) {
-            console.error(error);
-          }
+    this.alarmListener = async (alarmInfo) => {
+      if (alarmInfo.name === TOKEN_LIST_FETCH_ALARM) {
+        try {
+          await this.fetchTokenListFn();
+        } catch (error) {
+          console.error(error);
         }
-      });
+      }
     };
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -314,6 +311,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
       interval: 5,
+      cacheRefreshThreshold:3*60*1000,
       scheduler: tokenListFetchScheduler,
       messenger: tokenListMessenger,
       state: initState.TokenListController,
