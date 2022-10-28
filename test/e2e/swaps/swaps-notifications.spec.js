@@ -1,13 +1,15 @@
 const { strict: assert } = require('assert');
 
 const { withFixtures } = require('../helpers');
-const { defaultFixturesOptions, loadSwaps, buildQuote } = require('./shared');
+const FixtureBuilder = require('../fixture-builder');
+const { ganacheOptions, loadSwaps, buildQuote } = require('./shared');
 
 describe('Swaps - notifications', function () {
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withFixtures(
       {
-        ...defaultFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -46,7 +48,8 @@ describe('Swaps - notifications', function () {
   it('tests notifications for verified token on 0 sources and high slippage', async function () {
     await withFixtures(
       {
-        ...defaultFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -95,7 +98,8 @@ describe('Swaps - notifications', function () {
   it('tests a notification for not enough balance', async function () {
     await withFixtures(
       {
-        ...defaultFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {

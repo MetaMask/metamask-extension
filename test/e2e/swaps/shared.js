@@ -47,6 +47,7 @@ const buildQuote = async (driver, options) => {
 
 module.exports = {
   defaultFixturesOptions,
+  ganacheOptions,
   loadSwaps,
   buildQuote,
 };
