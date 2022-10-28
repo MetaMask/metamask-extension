@@ -13,14 +13,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';
+import { Icon, ICON_NAMES } from '../icon';
 
 export const TagUrl = ({
   label,
   labelProps,
   actionButtonLabel,
   actionButtonProps,
-  url,
+  src,
   avatarFaviconProps,
+  fallbackIconProps,
   className,
   ...props
 }) => {
@@ -38,7 +40,15 @@ export const TagUrl = ({
       display={DISPLAY.INLINE_FLEX}
       {...props}
     >
-      <AvatarFavicon imageSource={url} {...avatarFaviconProps} />
+      <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
+      <Icon
+        className="tag-url__lock-icon"
+        name={ICON_NAMES.LOCK_FILLED}
+        color={COLORS.ICON_DEFAULT}
+        size={SIZES.SM}
+        aria-label="https://"
+        {...fallbackIconProps}
+      />
       <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
         {label}
       </Text>
@@ -61,17 +71,21 @@ export const TagUrl = ({
 
 TagUrl.propTypes = {
   /**
-   * The url accepts the string of the image to be rendered
+   * The src accepts the string of the image to be rendered
    */
-  url: PropTypes.string,
+  src: PropTypes.string,
   /**
    * It accepts all the props from Avatar Favicon
    */
   avatarFaviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
   /**
+   * It accepts all the props from Icon
+   */
+  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
+  /**
    * The text content of the TagUrl component
    */
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   /**
    * It accepts all the props from Text Component
    */

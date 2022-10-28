@@ -15,7 +15,7 @@ export default {
     label: {
       control: 'text',
     },
-    url: {
+    src: {
       control: 'text',
     },
     actionButtonLabel: {
@@ -23,9 +23,8 @@ export default {
     },
   },
   args: {
-    label:
-      'https://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.orghttps://app.uniswap.org',
-    url: 'https://uniswap.org/favicon.ico',
+    label: 'app.uniswap.org',
+    src: 'https://uniswap.org/favicon.ico',
   },
 };
 
