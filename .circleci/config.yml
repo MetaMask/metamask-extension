@@ -516,7 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -571,6 +571,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -589,7 +590,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2
+              yarn test:e2e:firefox:snaps --retries 2 | circleci tests split --split-by=timings
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -598,6 +599,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -616,7 +618,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2
+              yarn test:e2e:chrome:snaps --retries 2 | circleci tests split --split-by=timings
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -625,7 +627,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - run:
