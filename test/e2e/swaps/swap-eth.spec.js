@@ -10,6 +10,7 @@ describe('Swap Eth for another Token', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {

@@ -8,12 +8,6 @@ const ganacheOptions = {
   ],
 };
 
-const defaultFixturesOptions = {
-  fixtures: 'special-settings',
-  failOnConsoleError: false,
-  ganacheOptions,
-};
-
 const loadSwaps = async (driver) => {
   await driver.navigate();
   await driver.fill('#password', 'correct horse battery staple');
@@ -46,7 +40,6 @@ const buildQuote = async (driver, options) => {
 };
 
 module.exports = {
-  defaultFixturesOptions,
   ganacheOptions,
   loadSwaps,
   buildQuote,
