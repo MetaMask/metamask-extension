@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
   const ganacheOptions = {
@@ -14,7 +15,7 @@ describe('Address Book', function () {
   it('Adds an entry to the address book and sends eth to that address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -77,7 +78,21 @@ describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        fixtures: 'address-entry',
+        fixtures: new FixtureBuilder()
+          .withAddressBookController({
+            addressBook: {
+              '0x539': {
+                '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
+                  address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+                  chainId: '0x539',
+                  isEns: false,
+                  memo: '',
+                  name: 'Test Name 1',
+                },
+              },
+            },
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },

@@ -5,6 +5,14 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 
+const getTestPathsForTestDir = async (testDir) => {
+  const testFilenames = await fs.readdir(testDir);
+  const testPaths = testFilenames.map((filename) =>
+    path.join(testDir, filename),
+  );
+  return testPaths;
+};
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -38,13 +46,15 @@ async function main() {
     testDir = path.join(__dirname, 'snaps');
   }
 
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
+  let testPaths = await getTestPathsForTestDir(testDir);
 
   if (!snaps) {
-    testPaths.push(path.join(__dirname, 'metamask-ui.spec.js'));
+    testPaths = [
+      ...testPaths,
+      // TODO: Enable the next line once the Swaps E2E tests are stable.
+      // ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
