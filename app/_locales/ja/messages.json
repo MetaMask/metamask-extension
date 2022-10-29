@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "サインインリクエストのアドレスが、サインインに使用しているアカウントのアドレスと一致していません。"
   },
-  "SIWEDomainInvalid": {
-    "message": "サインインしようとしている Web サイト ($1) が、サインインリクエストのドメインと一致していません。慎重に進めてください。",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Web サイト ($1) が正しくないドメインへのサインインを要求しています。フィッシング攻撃の可能性があります。",
     "description": "$1 represents the website domain"

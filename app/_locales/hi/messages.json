@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "साइन-इन अनुरोध का पता उस अकाउंट के पते से मेल नहीं खाता जिसका उपयोग आप साइन इन करने के लिए कर रहे हैं।"
   },
-  "SIWEDomainInvalid": {
-    "message": "जिस वेबसाइट में ($1) आप साइन इन करने की कोशिश कर रहे हैं वह साइन-इन अनुरोध के डोमेन से मेल नहीं खाती। सावधानी के साथ आगे बढ़ें।",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "वेबसाइट ($1) आपसे गलत डोमेन में साइन इन करने के लिए कह रही है। यह एक फिशिंग अटैक हो सकता है।",
     "description": "$1 represents the website domain"

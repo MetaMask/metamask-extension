@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Ang address sa request sa pag-sign in ay hindi tugma sa address ng account na ginagamit mo sa pag-sign in."
   },
-  "SIWEDomainInvalid": {
-    "message": "Ang website kung saan mo sinusubukang mag-sign in sa ($1) ay hindi tugma sa domain sa request sa pag-sign in. Magpatuloy nang may pag-iingat.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Hinihiling sa iyo ng website ($1) na mag-sign in sa maling domain. Posibleng phishing na pag-atake ito.",
     "description": "$1 represents the website domain"

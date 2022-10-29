@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "Die Adresse in der Anmeldeanfrage entspricht nicht der Adresse des Kontos, mit dem Sie sich anmelden."
   },
-  "SIWEDomainInvalid": {
-    "message": "Die Webseite, auf der Sie sich anmelden möchten ($1) entspricht nicht der Domain der Anmeldeanfrage. Bitte seien Sie vorsichtig.",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "Die Webseite ($1) bittet Sie, sich in der falschen Domain anzumelden. Dies könnte ein Phishing-Angriff sein.",
     "description": "$1 represents the website domain"
