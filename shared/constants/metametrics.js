@@ -203,8 +203,8 @@ export const TRAITS = {
   NUMBER_OF_NFTS: 'number_of_nfts',
   NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
-  THEME: 'theme',
   THREE_BOX_ENABLED: 'three_box_enabled',
+  THEME: 'theme',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
 };
 
