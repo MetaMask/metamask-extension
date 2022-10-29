@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { GOERLI_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import CachedBalancesController from './cached-balances';
 
 describe('CachedBalancesController', function () {
   describe('updateCachedBalances', function () {
     it('should update the cached balances', async function () {
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => GOERLI_CHAIN_ID,
+        getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: () => undefined,
@@ -27,7 +27,7 @@ describe('CachedBalancesController', function () {
       assert.equal(controller._generateBalancesToCache.callCount, 1);
       assert.deepEqual(controller._generateBalancesToCache.args[0], [
         'mockAccounts',
-        GOERLI_CHAIN_ID,
+        CHAIN_IDS.GOERLI,
       ]);
       assert.equal(
         controller.store.getState().cachedBalances,
@@ -46,7 +46,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            [GOERLI_CHAIN_ID]: {
+            [CHAIN_IDS.GOERLI]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -66,11 +66,11 @@ describe('CachedBalancesController', function () {
           b: { balance: null },
           c: { balance: '0x5' },
         },
-        GOERLI_CHAIN_ID,
+        CHAIN_IDS.GOERLI,
       );
 
       assert.deepEqual(result, {
-        [GOERLI_CHAIN_ID]: {
+        [CHAIN_IDS.GOERLI]: {
           a: '0x4',
           b: '0x2',
           c: '0x5',
@@ -92,7 +92,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            [GOERLI_CHAIN_ID]: {
+            [CHAIN_IDS.GOERLI]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -111,7 +111,7 @@ describe('CachedBalancesController', function () {
       );
 
       assert.deepEqual(result, {
-        [GOERLI_CHAIN_ID]: {
+        [CHAIN_IDS.GOERLI]: {
           a: '0x1',
           b: '0x2',
           c: '0x3',
@@ -128,7 +128,7 @@ describe('CachedBalancesController', function () {
     it('should subscribe to the account tracker with the updateCachedBalances method', async function () {
       const subscribeSpy = sinon.spy();
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => GOERLI_CHAIN_ID,
+        getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: subscribeSpy,

@@ -9,7 +9,7 @@ import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
-import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
+import { NETWORK_TYPES } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
   DEVICE_NAMES,
@@ -24,7 +24,7 @@ const firstTimeState = {
   config: {},
   NetworkController: {
     provider: {
-      type: NETWORK_TYPE_RPC,
+      type: NETWORK_TYPES.RPC,
       rpcUrl: 'http://localhost:8545',
       chainId: '0x539',
     },

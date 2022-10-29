@@ -2,9 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "acceleratingATransaction": {
-    "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
-  },
   "accessingYourCamera": {
     "message": "ወደ ካሜራዎ መድረስ..."
   },
@@ -232,12 +229,6 @@
   "currentLanguage": {
     "message": "ወቅታዊ ቋንቋ"
   },
-  "customGas": {
-    "message": "ነዳጅን አብጅ"
-  },
-  "customGasSubTitle": {
-    "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },
@@ -321,9 +312,6 @@
   },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "የሚገመት የክወና ጊዜያት"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum ሕዝባዊ አድራሻ"
@@ -577,12 +565,6 @@
   "newToMetaMask": {
     "message": "ለ MetaMask አዲስ ነዎት?"
   },
-  "newTotal": {
-    "message": "አዲስ ድምር"
-  },
-  "newTransactionFee": {
-    "message": "አዲስ የግብይት ክፍያ"
-  },
   "next": {
     "message": "ቀጣይ"
   },
@@ -777,9 +759,6 @@
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },
-  "selectAHigherGasFee": {
-    "message": "የግብይትዎን ክዋኔ ለማቀላጠፍ የበለጠ የነዳጅ ዋጋ ይምረጡ።*"
-  },
   "selectAnAccount": {
     "message": "መለያ ይምረጡ"
   },
@@ -797,9 +776,6 @@
   },
   "send": {
     "message": "ላክ"
-  },
-  "sendAmount": {
-    "message": "መጠኑን ላክ"
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
@@ -842,9 +818,6 @@
   },
   "signed": {
     "message": "ተፈርሟል"
-  },
-  "slow": {
-    "message": "ቀስ"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"

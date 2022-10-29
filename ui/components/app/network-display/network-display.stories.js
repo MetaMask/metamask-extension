@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {
-  NETWORK_TYPE_TO_ID_MAP,
-  NETWORK_TYPE_RPC,
+  BUILT_IN_NETWORKS,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { SIZES } from '../../../helpers/constants/design-system';
 
@@ -21,7 +21,7 @@ export default {
     },
     targetNetwork: {
       control: 'select',
-      options: [...Object.keys(NETWORK_TYPE_TO_ID_MAP), NETWORK_TYPE_RPC],
+      options: [...Object.keys(BUILT_IN_NETWORKS), NETWORK_TYPES.RPC],
     },
     disabled: {
       control: 'boolean',
@@ -51,8 +51,8 @@ DefaultStory.storyName = 'Default';
 
 export const TargetNetwork = (args) => {
   const targetNetworkArr = [
-    ...Object.keys(NETWORK_TYPE_TO_ID_MAP),
-    NETWORK_TYPE_RPC,
+    ...Object.keys(BUILT_IN_NETWORKS),
+    NETWORK_TYPES.RPC,
   ];
   return (
     <>
@@ -72,8 +72,8 @@ export const TargetNetwork = (args) => {
 
 export const DisplayOnly = (args) => {
   const targetNetworkArr = [
-    ...Object.keys(NETWORK_TYPE_TO_ID_MAP),
-    NETWORK_TYPE_RPC,
+    ...Object.keys(BUILT_IN_NETWORKS),
+    NETWORK_TYPES.RPC,
   ];
   return (
     <>

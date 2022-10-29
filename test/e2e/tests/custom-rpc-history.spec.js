@@ -35,7 +35,14 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
-        await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.add-network__networks-container');
+
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'h6',
+        });
+
+        await driver.findElement('.networks-tab__subheader');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[1];
@@ -85,7 +92,14 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
-        await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.add-network__networks-container');
+
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'h6',
+        });
+
+        await driver.findElement('.networks-tab__subheader');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[2];
@@ -123,7 +137,14 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
-        await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.add-network__networks-container');
+
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'h6',
+        });
+
+        await driver.findElement('.networks-tab__subheader');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[2];
@@ -215,7 +236,13 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
-        await driver.findVisibleElement('.settings-page__content');
+        await driver.findElement('.add-network__networks-container');
+
+        await driver.clickElement({
+          text: 'Add a network manually',
+          tag: 'h6',
+        });
+
         // // cancel new custom rpc
         await driver.clickElement(
           '.networks-tab__add-network-form-footer button.btn-secondary',

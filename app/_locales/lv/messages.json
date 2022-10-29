@@ -8,9 +8,6 @@
   "about": {
     "message": "Par"
   },
-  "acceleratingATransaction": {
-    "message": "* Darījuma paātrināšana, izmantojot augstāku Gas cenu, palielina iespēju, ka tīkls to apstrādās ātrāk, taču tas nav garantēts."
-  },
   "accessingYourCamera": {
     "message": "Piekļūst kamerai..."
   },
@@ -241,12 +238,6 @@
   "custom": {
     "message": "Papildu"
   },
-  "customGas": {
-    "message": "Pielāgot Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
-  },
   "customToken": {
     "message": "Pielāgots marķieris"
   },
@@ -330,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Aprēķinātais apstrādes laiks"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum publiskā adrese"
@@ -588,12 +576,6 @@
   "newToMetaMask": {
     "message": "Nepazīstat MetaMask?"
   },
-  "newTotal": {
-    "message": "Jaunā kopsumma"
-  },
-  "newTransactionFee": {
-    "message": "Jauna darījuma nodeva"
-  },
   "next": {
     "message": "Nākamais"
   },
@@ -788,9 +770,6 @@
   "seedPhraseReq": {
     "message": "Atkopšanas frāzes ir 12 vārdus garas"
   },
-  "selectAHigherGasFee": {
-    "message": "Atlasiet lielāku maksu par Gas, lai paātrinātu darījuma apstrādi.*"
-  },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
   },
@@ -808,9 +787,6 @@
   },
   "send": {
     "message": "Sūtīt"
-  },
-  "sendAmount": {
-    "message": "Nosūtītā summa"
   },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
@@ -853,9 +829,6 @@
   },
   "signed": {
     "message": "Parakstīts"
-  },
-  "slow": {
-    "message": "Lēns"
   },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."

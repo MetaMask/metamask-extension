@@ -8,9 +8,6 @@
   "about": {
     "message": "Про Google Chrome"
   },
-  "acceleratingATransaction": {
-    "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
-  },
   "accessingYourCamera": {
     "message": "Отримуємо доступ до вашої камери..."
   },
@@ -241,12 +238,6 @@
   "custom": {
     "message": "Розширені"
   },
-  "customGas": {
-    "message": "Налаштувати пальне"
-  },
-  "customGasSubTitle": {
-    "message": "Збільшення комісії може призвести до зменшення часу обробки, але це не гарантується."
-  },
   "customToken": {
     "message": "Користувацький токен"
   },
@@ -330,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизні часи обробки"
   },
   "ethereumPublicAddress": {
     "message": "Публічна адреса Ethereum"
@@ -592,12 +580,6 @@
   "newToMetaMask": {
     "message": "Вперше в MetaMask?"
   },
-  "newTotal": {
-    "message": "Новий підсумок"
-  },
-  "newTransactionFee": {
-    "message": "Нова комісія за транзакцію"
-  },
   "next": {
     "message": "Далі"
   },
@@ -792,9 +774,6 @@
   "seedPhraseReq": {
     "message": "Початкові фрази мають 12 слів"
   },
-  "selectAHigherGasFee": {
-    "message": "Оберіть вищу вартість пального, щоб пришвидшити обробку вашої транзакції.*"
-  },
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
   },
@@ -812,9 +791,6 @@
   },
   "send": {
     "message": "Надіслати"
-  },
-  "sendAmount": {
-    "message": "Надіслати суму"
   },
   "sendTokens": {
     "message": "Надіслати токени"
@@ -857,9 +833,6 @@
   },
   "signed": {
     "message": "Підписано"
-  },
-  "slow": {
-    "message": "Повільна"
   },
   "somethingWentWrong": {
     "message": "Ой! Щось пішло не так."

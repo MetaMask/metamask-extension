@@ -36,6 +36,10 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
+// contexts
+const CONTENT_SCRIPT = 'metamask-contentscript';
+const INPAGE = 'metamask-inpage';
+
 restoreContextAfterImports();
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
@@ -47,8 +51,8 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 if (shouldInjectProvider()) {
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
-    name: 'metamask-inpage',
-    target: 'metamask-contentscript',
+    name: INPAGE,
+    target: CONTENT_SCRIPT,
   });
 
   initializeProvider({

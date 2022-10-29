@@ -36,6 +36,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${GENERAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
+    tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
@@ -293,13 +300,6 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('theme'),
-    descriptionMessage: (t) => t('themeDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#theme`,
-    icon: 'fa fa-flask',
-  },
-  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('enhancedTokenDetection'),
     descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
@@ -321,13 +321,6 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'COLLECTIBLES_V1',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('showCustomNetworkList'),
-    descriptionMessage: (t) => t('showCustomNetworkListDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),

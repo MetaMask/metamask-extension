@@ -1663,15 +1663,16 @@
   "lastConnected": {
     "message": "最后连接"
   },
-  "learmMoreAboutGas": {
-    "message": "想要 $1 有关燃料的相关信息吗？"
-  },
   "learnCancelSpeeedup": {
     "message": "学习如何 $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "了解更多"
+  },
+  "learnMoreAboutGas": {
+    "message": "想要 $1 有关燃料的相关信息吗？",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "了解更多"
@@ -1991,9 +1992,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2479,7 +2477,7 @@
   },
   "permission_manageBip44Keys": {
     "message": "控制您的“$1”账户和资产。",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
@@ -3281,9 +3279,6 @@
   "swap": {
     "message": "交换"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "如果在您下订单和确认订单之间价格发生了变化，这就叫做“滑点”。如果滑点超过您的“最大滑点”设置，您的交换将自动取消。"
-  },
   "swapAggregator": {
     "message": "聚合器"
   },
@@ -3447,9 +3442,6 @@
   "swapQuoteDetails": {
     "message": "报价详情"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "如果在您下订单和确认订单之间价格发生了变化，这就叫做“滑点”。如果滑点超过您的“最大滑点”设置，您的交换将自动取消。"
-  },
   "swapQuoteSource": {
     "message": "报价来源"
   },
@@ -3479,9 +3471,6 @@
   },
   "swapReviewSwap": {
     "message": "审查交换"
-  },
-  "swapSearchForAToken": {
-    "message": "搜索代币"
   },
   "swapSelect": {
     "message": "选择"

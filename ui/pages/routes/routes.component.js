@@ -71,12 +71,13 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
@@ -112,6 +113,8 @@ export default class Routes extends Component {
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     portfolioTooltipIsBeingShown: PropTypes.bool,
+    forgottenPassword: PropTypes.bool,
+    isCurrentProviderCustom: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -164,7 +167,10 @@ export default class Routes extends Component {
   }
 
   renderRoutes() {
-    const { autoLockTimeLimit, setLastActiveTime } = this.props;
+    const { autoLockTimeLimit, setLastActiveTime, forgottenPassword } =
+      this.props;
+    const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
+
     const routes = (
       <Switch>
         {process.env.ONBOARDING_V2 && (
@@ -173,7 +179,7 @@ export default class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized
+        <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
           component={RestoreVaultPage}
           exact
@@ -372,6 +378,7 @@ export default class Routes extends Component {
       currentChainId,
       shouldShowSeedPhraseReminder,
       portfolioTooltipIsBeingShown,
+      isCurrentProviderCustom,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -383,6 +390,7 @@ export default class Routes extends Component {
       currentChainId &&
       !isTestNet &&
       !isNetworkUsed &&
+      !isCurrentProviderCustom &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
@@ -459,16 +467,17 @@ export default class Routes extends Component {
       return loadingMessage;
     }
     const { providerType, providerId } = this.props;
+    const { t } = this.context;
 
     switch (providerType) {
-      case 'mainnet':
-        return this.context.t('connectingToMainnet');
-      case 'goerli':
-        return this.context.t('connectingToGoerli');
-      case 'sepolia':
-        return this.context.t('connectingToSepolia');
+      case NETWORK_TYPES.MAINNET:
+        return t('connectingToMainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('connectingToGoerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('connectingToSepolia');
       default:
-        return this.context.t('connectingTo', [providerId]);
+        return t('connectingTo', [providerId]);
     }
   }
 }

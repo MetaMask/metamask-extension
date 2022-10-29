@@ -2,12 +2,8 @@ import nock from 'nock';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { setStorageItem } from '../../helpers/utils/storage-helpers';
-import {
-  MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({
@@ -96,7 +92,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
-      featureFlagsResponse.ethereum.extension_active = false;
+      featureFlagsResponse.ethereum.extensionActive = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
@@ -117,8 +113,8 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
-      featureFlagsResponse.ethereum.extension_active = false;
-      featureFlagsResponse.ethereum.fallback_to_v1 = false;
+      featureFlagsResponse.ethereum.extensionActive = false;
+      featureFlagsResponse.ethereum.fallbackToV1 = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
@@ -269,19 +265,19 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = POLYGON_CHAIN_ID;
+      state.metamask.provider.chainId = CHAIN_IDS.POLYGON;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = BSC_CHAIN_ID;
+      state.metamask.provider.chainId = CHAIN_IDS.BSC;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns true if feature flag is enabled, not a HW and is Rinkeby network', () => {
+    it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = '0x4';
+      state.metamask.provider.chainId = CHAIN_IDS.GOERLI;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 
@@ -304,7 +300,7 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       expect(swaps.getCurrentSmartTransactions(state)).toMatchObject(
         state.metamask.smartTransactionsState.smartTransactions[
-          MAINNET_CHAIN_ID
+          CHAIN_IDS.MAINNET
         ],
       );
     });

@@ -91,7 +91,7 @@ const EditGasFeePopover = () => {
                 tag={TYPOGRAPHY.Paragraph}
                 variant={TYPOGRAPHY.H7}
               >
-                {t('learmMoreAboutGas', [
+                {t('learnMoreAboutGas', [
                   <a
                     key="learnMoreLink"
                     target="_blank"
