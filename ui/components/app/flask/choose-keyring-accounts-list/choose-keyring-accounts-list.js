@@ -78,9 +78,10 @@ const ChooseKeyringAccountsList = ({
       <div className="choose-keyring-accounts-list__wrapper">
         <div className="choose-keyring-accounts-list__list">
           {accounts.map((account, index) => {
-            const { address, snapId, suggestedChainNames, namespace } = account;
+            const { address, snapId, suggestedChainNames, namespace, caip10 } =
+              account;
             const isSelectedAccount = Boolean(
-              selectedAccounts[namespace]?.[snapId]?.[address],
+              selectedAccounts[namespace]?.[snapId]?.[caip10],
             );
             const isConflict = checkIfConflict(account);
             const snap = snaps[snapId];

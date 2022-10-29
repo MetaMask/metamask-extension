@@ -22,13 +22,13 @@ const ChooseKeyringAccounts = ({
 
   const handleAccountClick = (accountObj, isConflict) => {
     const newSelectedAccounts = { ...selectedAccounts };
-    const { namespace, snapId, address } = accountObj;
-    if (newSelectedAccounts[namespace]?.[snapId]?.[address]) {
-      delete newSelectedAccounts[namespace][snapId][address];
+    const { namespace, snapId, caip10 } = accountObj;
+    if (newSelectedAccounts[namespace]?.[snapId]?.[caip10]) {
+      delete newSelectedAccounts[namespace][snapId][caip10];
     } else if (isConflict) {
       return;
     } else {
-      set(newSelectedAccounts, [namespace, snapId, address], true);
+      set(newSelectedAccounts, [namespace, snapId, caip10], true);
     }
     setSelectedAccounts(newSelectedAccounts);
   };
@@ -61,6 +61,7 @@ const ChooseKeyringAccounts = ({
           const splitId = account.split(':');
           const chainId = `${splitId[0]}:${splitId[1]}`;
           accountObj.address = splitId[2];
+          accountObj.caip10 = account;
           const suggestedChainName = getChainName(namespace, chainId, snapId);
           accountObj.suggestedChainNames.push(suggestedChainName);
         });
