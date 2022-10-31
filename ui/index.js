@@ -5,7 +5,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
-import TrezorKeyring from 'eth-trezor-keyring';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';

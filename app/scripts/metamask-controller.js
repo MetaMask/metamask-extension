@@ -3,7 +3,7 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { debounce, throttle } from 'lodash';
+import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
@@ -59,7 +59,6 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
@@ -69,8 +68,6 @@ import {
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
-  HARDWARE_KEYRING_INIT_OPTS,
-  HARDWARE_KEYRINGS,
   KEYRING_TYPES,
 } from '../../shared/constants/hardware-wallets';
 import {
@@ -138,10 +135,12 @@ import PersonalMessageManager from './lib/personal-message-manager';
 import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
+import KeyringEventsController from "app/scripts/controllers/keyring-events";
 import SwapsController from './controllers/swaps';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
+
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -175,196 +174,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-/**
- * Determines if error is provoked by manifest v3 changes,
- * e.g. WebUSB incompatibility, WebHID incompatibility,
- * and general DOM access.
- *
- * @param {Error} error - The error to check.
- * @returns {boolean}
- */
-const isServiceWorkerMv3Error = (error) => {
-  // @TODO, hacky as the MV3 error could be captured and rethrown with
-  // different error message. Assess whether we should just only check if it's MV3
-
-  const isUserSet = Boolean(error.cause);
-
-  if (!isManifestV3 || isUserSet) {
-    return false;
-  }
-
-  if (error instanceof ReferenceError) {
-    const message = error.message.toLowerCase();
-
-    if (message.includes('navigator.usb')) {
-      return true;
-    }
-
-    if (message.includes('navigator.hid')) {
-      return true;
-    }
-
-    if (message.includes('document is not defined')) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-class KeyringEventBatcher {
-  constructor({ sendPromisifiedClientAction }) {
-    const addToEventPool = this.addToEventPool.bind(this);
-
-    this.eventPool = [];
-    this.sendPromisifiedClientAction = sendPromisifiedClientAction;
-    this.keyrings = HARDWARE_KEYRINGS.map((Keyring) => {
-      return class HardwareKeyringWrapper extends Keyring {
-        constructor(opts) {
-          super({
-            ...opts,
-            ...HARDWARE_KEYRING_INIT_OPTS,
-          });
-
-          if (super.init) {
-            this.init();
-          }
-        }
-
-        resolveWrapper = (type, resolve) => (newState, res) => {
-          // @TODO, update the state of keyring controller with clientside state
-          // before finally resolving the promise
-
-          resolve(res);
-        };
-
-        async wrapMethod(method, ...args) {
-          if (!super[method]) {
-            throw ReferenceError('Un-implemented method called');
-          }
-
-          const prevState = await this.serialize();
-
-          try {
-            const res = await super[method](...args);
-
-            return res;
-          } catch (e) {
-            console.log(isServiceWorkerMv3Error(e), e.cause);
-
-            // if error is due to mv3 then re-open promise
-            const res = await new Promise((resolve, reject) => {
-              addToEventPool({
-                type: this.type,
-                method,
-                args,
-                prevState,
-                resolve: this.resolveWrapper(this.type, resolve),
-                reject,
-              });
-
-              // allow promise to hang as it will be resolved by the event pool
-            });
-
-            return res;
-          }
-        }
-
-        // @TODO, dynamically wrap all methods?
-
-        init(...args) {
-          return this.wrapMethod('init', ...args);
-        }
-
-        unlock(...args) {
-          return this.wrapMethod('unlock', ...args);
-        }
-
-        // Trezor specific
-        dispose(...args) {
-          return this.wrapMethod('dispose', ...args);
-        }
-
-        // ledger specific
-        destroy(...args) {
-          return this.wrapMethod('destroy', ...args);
-        }
-
-        signTransaction(...args) {
-          return this.wrapMethod('signTransaction', ...args);
-        }
-
-        signPersonalMessage(...args) {
-          return this.wrapMethod('signPersonalMessage', ...args);
-        }
-
-        signTypedData(...args) {
-          return this.wrapMethod('signTypedData', ...args);
-        }
-
-        addAccounts(...args) {
-          return this.wrapMethod('addAccounts', ...args);
-        }
-
-        __getPage(...args) {
-          return this.wrapMethod('__getPage', ...args);
-        }
-
-        _setupIframe(...args) {
-          return this.wrapMethod('_setupIframe', ...args);
-        }
-      };
-    });
-
-    // use _.throttle to clear the eventPool every X milliseconds, as there are some
-    // limitations as there are some limitations in various browsers based on
-    // how often we can emit (?)
-    this.clearEventPool = throttle(
-      this._clearEventPool.bind(this),
-      300 * MILLISECOND,
-    );
-  }
-
-  /**
-   *
-   * @param {string} keyring
-   * @param {string} method
-   * @param {any[]} args
-   * @param {object} prevState
-   * @param {Function} resolve
-   * @param {Function} reject
-   */
-  addToEventPool({ keyring, method, args, prevState, type, resolve, reject }) {
-    this.eventPool.push({
-      payload: {
-        keyring,
-        method,
-        args,
-        type,
-        prevState,
-        createdAt: new Date().toISOString(),
-      },
-      resolve,
-      reject,
-    });
-
-    this.clearEventPool();
-  }
-
-  _clearEventPool() {
-    // @TODO, allow for sending events in one go as opposed to one by one
-
-    for (const event of this.eventPool) {
-      this.sendPromisifiedClientAction(event.payload)
-        .then(event.resolve)
-        .catch(event.reject);
-    }
-
-    // then clear mempool
-    this.eventPool = [];
-  }
-}
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -770,7 +579,7 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    this.hardwareKeyringController = new KeyringEventBatcher({
+    this.hardwareKeyringController = new KeyringEventsController({
       sendPromisifiedClientAction: this.sendPromisifiedClientAction,
     });
 
