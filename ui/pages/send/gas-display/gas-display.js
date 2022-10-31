@@ -132,7 +132,7 @@ export default function GasDisplay({ gasError }) {
         flexDirection={FLEX_DIRECTION.COLUMN}
         className="gas-display__total-value"
       >
-        <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+        <LoadingHeartBeat estimateUsed={transactionData?.userFeeLevel} />
         <UserPreferencedCurrencyDisplay
           type={PRIMARY}
           key="total-detail-value"
@@ -310,7 +310,9 @@ export default function GasDisplay({ gasError }) {
                     flexDirection={FLEX_DIRECTION.COLUMN}
                     className="gas-display__currency-container"
                   >
-                    <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+                    <LoadingHeartBeat
+                      estimateUsed={transactionData?.userFeeLevel}
+                    />
                     <UserPreferencedCurrencyDisplay
                       type={SECONDARY}
                       value={hexMinimumTransactionFee}
@@ -325,7 +327,9 @@ export default function GasDisplay({ gasError }) {
                     flexDirection={FLEX_DIRECTION.COLUMN}
                     className="gas-display__currency-container"
                   >
-                    <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+                    <LoadingHeartBeat
+                      estimateUsed={transactionData?.userFeeLevel}
+                    />
                     <UserPreferencedCurrencyDisplay
                       type={PRIMARY}
                       value={hexMinimumTransactionFee}
@@ -346,7 +350,9 @@ export default function GasDisplay({ gasError }) {
                       className="gas-display__currency-container"
                     >
                       <LoadingHeartBeat
-                        estimateUsed={txData?.userFeeLevel ?? estimateUsed}
+                        estimateUsed={
+                          transactionData?.userFeeLevel ?? estimateUsed
+                        }
                       />
                       <UserPreferencedCurrencyDisplay
                         key="editGasSubTextFeeAmount"
@@ -382,7 +388,9 @@ export default function GasDisplay({ gasError }) {
                     flexDirection={FLEX_DIRECTION.COLUMN}
                     className="gas-display__total-value"
                   >
-                    <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+                    <LoadingHeartBeat
+                      estimateUsed={transactionData?.userFeeLevel}
+                    />
                     <UserPreferencedCurrencyDisplay
                       type={SECONDARY}
                       key="total-detail-text"
@@ -401,7 +409,9 @@ export default function GasDisplay({ gasError }) {
                     className="gas-display__total-amount"
                   >
                     <LoadingHeartBeat
-                      estimateUsed={txData?.userFeeLevel ?? estimateUsed}
+                      estimateUsed={
+                        transactionData?.userFeeLevel ?? estimateUsed
+                      }
                     />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
