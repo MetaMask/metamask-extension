@@ -593,16 +593,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withThreeBoxController(data) {
-    merge(
-      this.fixture.data.ThreeBoxController
-        ? this.fixture.data.ThreeBoxController
-        : (this.fixture.data.ThreeBoxController = {}),
-      data,
-    );
-    return this;
-  }
-
   withTokenListController(data) {
     merge(
       this.fixture.data.TokenListController

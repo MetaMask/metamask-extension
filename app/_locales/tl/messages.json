@@ -878,9 +878,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupFoundInfo": {
-    "message": "Ang ilan sa data ng iyong account ay na-back up sa nakaraang pag-install ng MetaMask. Maaaring kasama rito ang iyong mga setting, contact, at token. Gusto mo bang i-restore na ang data na ito?"
-  },
   "dataBackupSeemsCorrupt": {
     "message": "Hindi maibalik ang iyong datos. Mukhang sira ang file."
   },
@@ -2865,10 +2862,6 @@
   "restoreUserDataDescription": {
     "message": "Maaari mong ibalik ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang dating na-back up na JSON file."
   },
-  "restoreWalletPreferences": {
-    "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Subukan Ulit ang Transaksyon"
   },
@@ -3840,15 +3833,6 @@
   },
   "syncWithMobileTitle": {
     "message": "I-sync sa mobile"
-  },
-  "syncWithThreeBox": {
-    "message": "I-sync ang data sa 3Box (pinag-eeksperimentuhan)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "I-on para ma-back up ang iyong mga setting sa 3Box. Kasalukuyang pinag-eeksperimentuhan ang feature na ito; gamitin sa sarili mong pagpapasya."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "Na-disable ang 3Box dahil sa isang error sa unang pag-sync"
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"
