@@ -1,10 +1,12 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
+const path = require('path');
 const {
   convertToHexValue,
   withFixtures,
   createDownloadFolder,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
@@ -35,7 +37,14 @@ const backupExists = async () => {
   }
 };
 
-describe('Backup', function () {
+const restoreFile = path.join(
+  __dirname,
+  '..',
+  'restore',
+  'MetaMaskUserData.json',
+);
+
+describe('Backup and Restore', function () {
   const ganacheOptions = {
     accounts: [
       {
@@ -45,10 +54,10 @@ describe('Backup', function () {
       },
     ],
   };
-  it('should create backup for the account', async function () {
+  it('should backup the account settings', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -75,6 +84,42 @@ describe('Backup', function () {
           return fileExists === true;
         }, 10000);
         assert.equal(fileExists, true);
+      },
+    );
+  });
+
+  it('should restore the account settings', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // Restore
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        const restore = await driver.findElement('#restore-file');
+        await restore.sendKeys(restoreFile);
+
+        // Dismiss success message
+        await driver.waitForSelector({
+          css: '.actionable-message__message',
+          text: 'Your data has been restored successfully',
+        });
+        await driver.clickElement({ text: 'Dismiss', tag: 'button' });
+
+        // Verify restore
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        const recipient = await driver.findElement('[data-testid="recipient"]');
+        assert.ok(
+          /Test\sAccount\s*0x0c54...AaFb/u.test(await recipient.getText()),
+        );
       },
     );
   });
