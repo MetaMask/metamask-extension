@@ -540,7 +540,7 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-    
+
   test-e2e-chrome-mv3:
     executor: node-browsers
     steps:
@@ -795,7 +795,7 @@ jobs:
       - run:
           name: Set branch parent commit env var
           command: |
-            echo "export PARENT_COMMIT=$(git rev-parse HEAD^)" >> $BASH_ENV
+            echo "export PARENT_COMMIT=$(git rev-parse origin/HEAD)" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: build:announce
