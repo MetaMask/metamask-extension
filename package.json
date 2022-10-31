@@ -91,12 +91,10 @@
     "**/redux/symbol-observable": "^2.0.3",
     "**/redux-devtools-instrument/symbol-observable": "^2.0.3",
     "**/rxjs/symbol-observable": "^2.0.3",
-    "**/xmlhttprequest-ssl": "^1.6.2",
     "analytics-node/axios": "^0.21.2",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",
-    "pull-ws": "^3.3.2",
     "json-schema": "^0.4.0",
     "simple-get": "^4.0.1",
     "@storybook/**/ast-types": "^0.14.2"
