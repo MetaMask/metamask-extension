@@ -3629,15 +3629,6 @@
   "syncWithMobileTitle": {
     "message": "与移动设备同步"
   },
-  "syncWithThreeBox": {
-    "message": "与 3Box 同步数据（实验功能）"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "开启以使用 3Box 备份您的设置。此功能目前是实验功能，使用时风险自负。"
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "由于初始同步过程中出现错误，3Box 已被禁用"
-  },
   "tenPercentIncreased": {
     "message": "增加10%"
   },
