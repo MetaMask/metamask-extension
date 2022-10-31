@@ -27,6 +27,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
+import { SECOND } from '../../shared/constants/time';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -44,6 +45,15 @@ export const ensInitialState = initialState;
 const name = 'ENS';
 
 let provider = null;
+
+/**
+ * An error thrown if the provider in the ENS slice is slow to resolve, indicating that it may be stale / requring re-instantiation.
+ */
+class EnsSliceProviderTimeoutError extends Error {
+  constructor() {
+    super('Timeout failed');
+  }
+}
 
 const slice = createSlice({
   name,
@@ -177,9 +187,25 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       try {
-        address = await provider.resolveName(trimmedEnsName);
+        // if resolveName is failing to resolve after 1 second we throw a time out error that is caught in the catch block
+        // causing a re-initializition of the ENS slice (and the provider along with it) and then we retry calling resolveName.
+        // This helps handle the case where the provider is unresponsive/stale if, in MV3, the service worker dies after the ENS slice is instantiated
+        address = await Promise.race([
+          provider.resolveName(trimmedEnsName),
+          new Promise((_, reject) => {
+            setTimeout(
+              () => reject(new EnsSliceProviderTimeoutError()),
+              SECOND,
+            );
+          }),
+        ]);
       } catch (err) {
-        error = err;
+        if (err instanceof EnsSliceProviderTimeoutError) {
+          await dispatch(initializeEnsSlice());
+          address = await provider.resolveName(trimmedEnsName);
+        } else {
+          error = err;
+        }
       }
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
