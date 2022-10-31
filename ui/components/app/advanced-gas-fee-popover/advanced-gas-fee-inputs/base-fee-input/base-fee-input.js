@@ -118,6 +118,7 @@ const BaseFeeInput = () => {
         tooltipText={t('advancedBaseGasFeeToolTip')}
         value={baseFee}
         detailText={`≈ ${baseFeeInPrimaryCurrency}`}
+        allowDecimals
         numeric
       />
       <AdvancedGasFeeInputSubtext

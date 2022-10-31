@@ -1,9 +1,6 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  connectDappWithExtensionPopup,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Dapp interactions', function () {
   let windowHandles;
@@ -22,7 +19,7 @@ describe('Dapp interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: {
           ...ganacheOptions,
           concurrent: { port: 8546, chainId: 1338 },
@@ -34,8 +31,7 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Connect to Dapp0
-        await connectDappWithExtensionPopup(driver, 0);
+        await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -68,7 +64,9 @@ describe('Dapp interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.title,
@@ -78,8 +76,7 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Connect to Dapp0
-        await connectDappWithExtensionPopup(driver, 0);
+        await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -91,7 +88,7 @@ describe('Dapp interactions', function () {
         // Connect to Dapp1
         await driver.openNewPage('http://127.0.0.1:8081/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+        await driver.waitUntilXWindowHandles(4);
         windowHandles = await driver.getAllWindowHandles();
 
         popup = await driver.switchToWindowWithTitle(
