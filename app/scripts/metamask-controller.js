@@ -67,6 +67,7 @@ import {
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
+  HARDWARE_KEYRING_INIT_OPTS,
   HARDWARE_KEYRINGS,
   KEYRING_TYPES,
 } from '../../shared/constants/hardware-wallets';
@@ -222,10 +223,10 @@ class KeyringEventBatcher {
         constructor(opts) {
           super({
             ...opts,
-            delayInit: true,
+            ...HARDWARE_KEYRING_INIT_OPTS,
           });
 
-          if(super.init){
+          if (super.init) {
             this.init();
           }
         }
@@ -238,7 +239,7 @@ class KeyringEventBatcher {
         };
 
         async wrapMethod(method, ...args) {
-          if(!super[method]){
+          if (!super[method]) {
             throw ReferenceError('Un-implemented method called');
           }
 
@@ -269,7 +270,7 @@ class KeyringEventBatcher {
           }
         }
 
-        // @TODO, dynamically wrap all methods
+        // @TODO, dynamically wrap all methods?
 
         init(...args) {
           return this.wrapMethod('init', ...args);
@@ -333,12 +334,13 @@ class KeyringEventBatcher {
    * @param {Function} resolve
    * @param {Function} reject
    */
-  addToEventPool({ keyring, method, args, prevState, resolve, reject }) {
+  addToEventPool({ keyring, method, args, prevState, type, resolve, reject }) {
     this.eventPool.push({
       payload: {
         keyring,
         method,
         args,
+        type,
         prevState,
         createdAt: new Date().toISOString(),
       },
@@ -3729,6 +3731,9 @@ export default class MetamaskController extends EventEmitter {
         'controllerConnectionChanged',
         this.activeControllerConnections,
       );
+
+      // @TODO, should we be removing listeners even if there are active
+      // controller connections?
       this.removeListener(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
       this.removeListener(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
       this.removeListener(
@@ -4257,6 +4262,12 @@ export default class MetamaskController extends EventEmitter {
     this.emit(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, message);
   }
 
+  /**
+   * A method for dispatching a redux action on the client side to all registered listeners.
+   *
+   * @param message
+   * @private
+   */
   sendClientAction(message) {
     this.emit(CONTROLLER_CONNECTION_EVENTS.ACTION, message);
   }

@@ -5,6 +5,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+import TrezorKeyring from 'eth-trezor-keyring';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
@@ -33,6 +34,12 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
 let reduxStore;
 let clientKeyringController; // poc purposes only
+const initializeClientKeyringController = () => {
+  if (!clientKeyringController) {
+    clientKeyringController = new ClientKeyringController();
+  }
+};
+
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -41,14 +48,16 @@ let clientKeyringController; // poc purposes only
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
   _setBackgroundConnection(backgroundConnection);
+
   backgroundConnection.onNotification((data) => {
-    console.log('Notification', data);
     switch (data.method) {
       case CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE: {
         reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
         break;
       }
       case CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL: {
+        console.log('Hardware Notification', data);
+
         // quick change for POC, to be refactored @TODO
         clientKeyringController.handleMethodCall(data.params[0]);
         break;
@@ -91,12 +100,6 @@ export default function launchMetamaskUi(opts, cb) {
       cb(null, store);
     });
   });
-}
-
-function initializeClientKeyringController() {
-  if (!clientKeyringController) {
-    clientKeyringController = new ClientKeyringController();
-  }
 }
 
 async function startApp(metamaskState, backgroundConnection, opts) {
@@ -156,8 +159,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   const store = configureStore(draftInitialState);
   reduxStore = store;
-
-  initializeClientKeyringController();
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(

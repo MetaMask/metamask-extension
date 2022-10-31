@@ -37,6 +37,10 @@ export const HARDWARE_KEYRINGS = [
   // QRHardwareKeyring,
 ];
 
+export const HARDWARE_KEYRING_INIT_OPTS = {
+  delayInt: true,
+};
+
 /**
  * Used for setting the users preference for ledger transport type
  */
