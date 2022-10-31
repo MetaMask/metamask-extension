@@ -896,9 +896,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
-  },
   "dataBackupSeemsCorrupt": {
     "message": "Can not restore your data. The file appears to be corrupt."
   },
@@ -2902,10 +2899,6 @@
   "restoreUserDataDescription": {
     "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
   },
-  "restoreWalletPreferences": {
-    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Retry transaction"
   },
@@ -3890,15 +3883,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Sync with mobile"
-  },
-  "syncWithThreeBox": {
-    "message": "Sync data with 3Box (experimental)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box has been disabled due to an error during the initial sync"
   },
   "tenPercentIncreased": {
     "message": "10% increase"
