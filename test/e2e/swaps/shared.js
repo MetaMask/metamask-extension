@@ -44,11 +44,19 @@ const buildQuote = async (driver, options) => {
   }, 20000);
   await driver.clickElement('.searchable-item-list__labels');
   await driver.clickElement('.dropdown-input-pair__to');
-  await driver.clickElement('[placeholder="Search name or paste address"]');
-  await driver.fill(
-    '[placeholder="Search name or paste address"]',
-    options.swapTo,
+  await driver.clickElement(
+    'input[placeholder="Search name or paste address"]',
   );
+  await driver.fill(
+    'input[placeholder="Search name or paste address"]',
+    options.swapTo || options.swapToContractAddress,
+  );
+  if (options.swapToContractAddress) {
+    await driver.waitForSelector({
+      css: '.searchable-item-list__item button.btn-primary',
+      text: 'Import',
+    });
+  }
   await driver.clickElement('.searchable-item-list__primary-label');
 };
 
