@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.21.1]
-### Uncategorized
-- Increase provider rate limited to 5 minutes ([#16308](https://github.com/MetaMask/metamask-extension/pull/16308))
+### Changed
+- Improve rate limiting for metric events ([#16308](https://github.com/MetaMask/metamask-extension/pull/16308))
 
 ## [10.21.0]
 ### Added
