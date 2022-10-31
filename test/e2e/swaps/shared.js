@@ -44,11 +44,9 @@ const buildQuote = async (driver, options) => {
   }, 20000);
   await driver.clickElement('.searchable-item-list__labels');
   await driver.clickElement('.dropdown-input-pair__to');
-  await driver.clickElement(
-    'input[placeholder="Search name or paste address"]',
-  );
+  await driver.clickElement('input[data-testid="search-list-items"]');
   await driver.fill(
-    'input[placeholder="Search name or paste address"]',
+    'input[data-testid="search-list-items"]',
     options.swapTo || options.swapToContractAddress,
   );
   if (options.swapToContractAddress) {
