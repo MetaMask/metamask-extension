@@ -249,14 +249,14 @@ async function start() {
   }
 
   try {
-    const prBundleSizeStats = await (
-      await fetch(bundleSizeStatsUrl, {
-        method: 'GET',
-        headers: {
-          'User-Agent': 'metamaskbot',
-        },
-      })
-    ).json();
+    const prBundleSizeStats = await fs.readFile(
+      path.resolve(
+        __dirname,
+        '..',
+        path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+      ),
+      'utf-8',
+    );
 
     const devBundleSizeStats = await (
       await fetch(bundleSizeDataUrl, {
