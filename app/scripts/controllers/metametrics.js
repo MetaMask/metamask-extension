@@ -113,7 +113,7 @@ export default class MetaMetricsController {
     const events = initState?.events || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: true,
+      participateInMetaMetrics: null,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
