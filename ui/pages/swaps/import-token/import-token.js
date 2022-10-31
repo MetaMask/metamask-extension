@@ -34,6 +34,7 @@ export default function ImportToken({
         type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
+        data-testid="page-container__import-button"
       >
         {t('import')}
       </Button>
