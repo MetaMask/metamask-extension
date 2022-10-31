@@ -40,7 +40,7 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render backup button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(16);
+    expect(component.find('.settings-page__content-row')).toHaveLength(15);
 
     expect(
       component
@@ -71,7 +71,7 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render restore button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(16);
+    expect(component.find('.settings-page__content-row')).toHaveLength(15);
 
     expect(
       component
