@@ -39,6 +39,8 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  PermissionsRequestNotFoundError,
+  ApprovalRequestNotFoundError,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
   NotificationController,
@@ -1498,7 +1500,6 @@ export default class MetamaskController extends EventEmitter {
     const {
       addressBookController,
       alertController,
-      approvalController,
       appStateController,
       collectiblesController,
       collectibleDetectionController,
@@ -1820,16 +1821,9 @@ export default class MetamaskController extends EventEmitter {
       initializeThreeBox: this.initializeThreeBox.bind(this),
 
       // permissions
-      removePermissionsFor:
-        permissionController.revokePermissions.bind(permissionController),
-      approvePermissionsRequest:
-        permissionController.acceptPermissionsRequest.bind(
-          permissionController,
-        ),
-      rejectPermissionsRequest:
-        permissionController.rejectPermissionsRequest.bind(
-          permissionController,
-        ),
+      removePermissionsFor: this.removePermissionsFor,
+      approvePermissionsRequest: this.acceptPermissionsRequest,
+      rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1947,14 +1941,8 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // approval controller
-      resolvePendingApproval:
-        approvalController.accept.bind(approvalController),
-      rejectPendingApproval: async (id, error) => {
-        approvalController.reject(
-          id,
-          new EthereumRpcError(error.code, error.message, error.data),
-        );
-      },
+      resolvePendingApproval: this.resolvePendingApproval,
+      rejectPendingApproval: this.rejectPendingApproval,
 
       // Notifications
       updateViewedNotifications: announcementController.updateViewed.bind(
@@ -4361,4 +4349,57 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.setLocked();
   }
+
+  removePermissionsFor = (subjects) => {
+    try {
+      this.permissionController.revokePermissions(subjects);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  rejectPermissionsRequest = (requestId) => {
+    try {
+      this.permissionController.rejectPermissionsRequest(requestId);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  acceptPermissionsRequest = (request) => {
+    try {
+      this.permissionController.acceptPermissionsRequest(request);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  resolvePendingApproval = (id, value) => {
+    try {
+      this.approvalController.accept(id, value);
+    } catch (exp) {
+      if (!(exp instanceof ApprovalRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  rejectPendingApproval = (id, error) => {
+    try {
+      this.approvalController.reject(
+        id,
+        new EthereumRpcError(error.code, error.message, error.data),
+      );
+    } catch (exp) {
+      if (!(exp instanceof ApprovalRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
 }
