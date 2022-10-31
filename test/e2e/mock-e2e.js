@@ -189,12 +189,16 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  // It disables loading of all token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
-  await server.forGet(/\/tokenIcons/u).thenCallback(() => {
-    return {
-      statusCode: 200,
-    };
-  });
+  // It disables loading of token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  await server
+    .forGet(
+      /^https:\/\/static\.metaswap\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
 
   await server
     .forGet('https://min-api.cryptocompare.com/data/price')
