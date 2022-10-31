@@ -970,8 +970,13 @@ export default class MetaMetricsController {
   _submitSegmentAPICall(eventType, payload, callback) {
     const messageId = payload.messageId || generateRandomId();
     const payloadDate = payload.timestamp && new Date(payload.timestamp);
-    const timestamp =
-      payloadDate && isValidDate(payloadDate) ? payloadDate : new Date();
+    let timestamp = new Date();
+    if (payload.timestamp) {
+      const payloadDate = new Date(payload.timestamp);
+      if (isValidDate(payloadDate)) {
+        timestamp = payloadDate;
+      }
+    }
     const modifiedPayload = { ...payload, messageId, timestamp };
     this.store.updateState({
       events: {
