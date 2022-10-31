@@ -237,7 +237,11 @@ export default class Home extends PureComponent {
   }
 
   async componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification, shouldShowSeedPhraseReminder } = this.props;
+    const {
+      closeNotificationPopup,
+      isNotification,
+      shouldShowSeedPhraseReminder,
+    } = this.props;
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
