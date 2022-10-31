@@ -1,10 +1,5 @@
 {
   "resources": {
-    "3box>graphql-request>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "@babel/runtime": {
       "globals": {
         "regeneratorRuntime": "write"
