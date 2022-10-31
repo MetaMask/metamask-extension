@@ -20,7 +20,7 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId } from '../lib/util';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -113,7 +113,7 @@ export default class MetaMetricsController {
     const events = initState?.events || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: null,
+      participateInMetaMetrics: true,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
@@ -969,12 +969,19 @@ export default class MetaMetricsController {
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
     const messageId = payload.messageId || generateRandomId();
-    const timestamp = payload.timestamp || new Date();
+    const payloadDate = payload.timestamp && new Date(payload.timestamp);
+    const timestamp =
+      payloadDate && isValidDate(payloadDate) ? payloadDate : new Date();
     const modifiedPayload = { ...payload, messageId, timestamp };
     this.store.updateState({
       events: {
         ...this.store.getState().events,
-        [messageId]: { eventType, payload: modifiedPayload, callback },
+        [messageId]: {
+          eventType,
+          payload: modifiedPayload,
+          callback,
+          timestamp: modifiedPayload.timestamp.toString(),
+        },
       },
     });
     const modifiedCallback = (result) => {
