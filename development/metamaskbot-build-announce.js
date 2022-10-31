@@ -262,7 +262,7 @@ async function start() {
       await fetch(bundleSizeDataUrl, {
         method: 'GET',
       })
-    ).text();
+    ).json();
 
     const prSizes = {
       background: prBundleSizeStats.background.size,
