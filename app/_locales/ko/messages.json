@@ -878,9 +878,6 @@
   "data": {
     "message": "데이터"
   },
-  "dataBackupFoundInfo": {
-    "message": "일부 계정 데이터가 이전의 MetaMask 설치 도중에 백업되었습니다. 여기에는 설정, 연락처, 토큰이 포함될 수 있습니다. 지금 이 데이터를 복구할까요?"
-  },
   "dataBackupSeemsCorrupt": {
     "message": "사용자 데이터를 복원할 수 없습니다. 파일이 손상된 것 같습니다."
   },
@@ -2865,10 +2862,6 @@
   "restoreUserDataDescription": {
     "message": "이전에 백업한 JSON 파일에서 기본 설정과 계정 주소가 포함된 사용자 설정을 복원할 수 있습니다."
   },
-  "restoreWalletPreferences": {
-    "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복원할까요?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "트랜잭션 재시도"
   },
@@ -3840,15 +3833,6 @@
   },
   "syncWithMobileTitle": {
     "message": "모바일과 동기화"
-  },
-  "syncWithThreeBox": {
-    "message": "3Box로 데이터 동기화(실험적 기능)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "이 기능을 켜면 3Box를 이용해 설정을 백업합니다. 현재 실험 중인 기능이므로 본인의 책임 하에 사용해야 합니다."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "초기 동기화 도중 오류가 발생하여 3Box가 비활성화되었습니다."
   },
   "tenPercentIncreased": {
     "message": "10% 인상"
