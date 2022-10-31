@@ -15,6 +15,22 @@
     }
   }
 
+  &__title {
+    &__estimate {
+      font-size: 12px;
+      line-height: inherit;
+    }
+  }
+
+  &__gas-fee-warning {
+    color: var(--color-warning-default);
+  }
+
+  &__gas-fee-label {
+    position: relative;
+    white-space: nowrap;
+  }
+
   &__warning-message {
     height: 120px;
   }
