@@ -1,3 +1,5 @@
+const FixtureBuilder = require('../fixture-builder');
+
 const ganacheOptions = {
   accounts: [
     {
@@ -6,6 +8,17 @@ const ganacheOptions = {
       balance: 25000000000000000000,
     },
   ],
+};
+
+const driverOptions = {
+  timeOut: 20000,
+};
+
+const withFixturesOptions = {
+  fixtures: new FixtureBuilder().build(),
+  ganacheOptions,
+  driverOptions,
+  failOnConsoleError: false,
 };
 
 const loadSwaps = async (driver) => {
@@ -28,7 +41,7 @@ const buildQuote = async (driver, options) => {
   await driver.wait(async () => {
     const tokens = await driver.findElements('.searchable-item-list__item');
     return tokens.length > 1;
-  }, 10000);
+  }, 20000);
   await driver.clickElement('.searchable-item-list__labels');
   await driver.clickElement('.dropdown-input-pair__to');
   await driver.clickElement('[placeholder="Search name or paste address"]');
@@ -40,7 +53,7 @@ const buildQuote = async (driver, options) => {
 };
 
 module.exports = {
-  ganacheOptions,
+  withFixturesOptions,
   loadSwaps,
   buildQuote,
 };
