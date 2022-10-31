@@ -249,13 +249,15 @@ async function start() {
   }
 
   try {
-    const prBundleSizeStats = await fs.readFile(
-      path.resolve(
-        __dirname,
-        '..',
-        path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+    const prBundleSizeStats = JSON.parse(
+      await fs.readFile(
+        path.resolve(
+          __dirname,
+          '..',
+          path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+        ),
+        'utf-8',
       ),
-      'utf-8',
     );
 
     const devBundleSizeStats = await (
