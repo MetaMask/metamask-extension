@@ -826,7 +826,18 @@ function setupBundlerDefaults(
       [
         babelify,
         // Run TypeScript files through Babel
-        { extensions },
+        {
+          extensions,
+        },
+      ],
+      [
+        babelify,
+        // Run TypeScript files through Babel
+        {
+          global: true,
+          // ignore all deps, except for @lightclients/kevlar
+          ignore: [/\/node_modules\/(?!@lightclients\/kevlar\/)/],
+        },
       ],
       // Inline `fs.readFileSync` files
       brfs,
