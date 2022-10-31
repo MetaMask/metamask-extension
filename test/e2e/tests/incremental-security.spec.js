@@ -24,7 +24,29 @@ describe('Incremental Security', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkController({
+            provider: {
+              ticker: 'ETH',
+              type: 'rpc',
+              rpcUrl: 'http://localhost:8545',
+              chainId: '0x1',
+              nickname: 'Localhost 8545',
+            },
+            network: '1',
+          })
+          .withPreferencesController({
+            frequentRpcListDetail: [
+              {
+                rpcUrl: 'http://localhost:8545',
+                chainId: '0x1',
+                ticker: 'ETH',
+                nickname: 'Localhost 8545',
+                rpcPrefs: {},
+              },
+            ],
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
