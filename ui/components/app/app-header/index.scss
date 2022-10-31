@@ -7,6 +7,7 @@
   flex-flow: column nowrap;
   width: 100%;
   flex: 0 0 auto;
+  margin-top: 3px;
 
   @include screen-sm-max {
     padding: 1rem;
@@ -38,22 +39,6 @@
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
-
-    @include screen-sm-max {
-      height: 100%;
-    }
-
-    @include screen-sm-min {
-      width: 85vw;
-    }
-
-    @include screen-md-min {
-      width: 80vw;
-    }
-
-    @include screen-lg-min {
-      width: 62vw;
-    }
   }
 
   &__logo-container {
@@ -105,6 +90,47 @@
       border-radius: 50%;
       background-color: var(--color-primary-default);
       color: var(--color-primary-inverse);
+    }
+  }
+
+  &__beta-header {
+    background: var(--brand-colors-orange-orange400);
+    padding: 7px 10px;
+    display: flex;
+  
+    &__message {
+      text-align: center;
+      color: var(--brand-colors-white-white000);
+      flex-grow: 1;
+    }
+  
+    &__button {
+      background: transparent;
+      padding: 0 6px;
+      margin: 0;
+  
+      i {
+        color: var(--brand-colors-white-white000);
+      }
+    }
+  }
+  
+  &__contents,
+  &__beta-header {
+    @include screen-sm-max {
+      height: 100%;
+    }
+
+    @include screen-sm-min {
+      width: 85vw;
+    }
+
+    @include screen-md-min {
+      width: 80vw;
+    }
+
+    @include screen-lg-min {
+      width: 62vw;
     }
   }
 }

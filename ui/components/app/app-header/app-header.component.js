@@ -6,6 +6,7 @@ import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
+import BetaHomeHeader from './beta-home-header';
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -138,6 +139,11 @@ export default class AppHeader extends PureComponent {
             {this.renderAccountMenu()}
           </div>
         </div>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(beta)
+          <BetaHomeHeader />
+          ///: END:ONLY_INCLUDE_IN(beta)
+        }
       </div>
     );
   }
