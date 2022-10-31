@@ -10,7 +10,6 @@ describe('Swaps - notifications', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -51,7 +50,6 @@ describe('Swaps - notifications', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -102,7 +100,6 @@ describe('Swaps - notifications', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
