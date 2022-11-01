@@ -3,8 +3,8 @@
  */
 
 import {
-  withMockedInfuraCommunications,
-  withInfuraClient,
+  withMockedCommunications,
+  withClient,
 } from './provider-api-tests/helpers';
 import {
   testsForRpcMethodNotHandledByMiddleware,
@@ -36,7 +36,7 @@ describe('createInfuraClient', () => {
 
     describe('eth_chainId', () => {
       it('does not hit Infura, instead returning the chain id that maps to the Infura network, as a hex string', async () => {
-        const chainId = await withInfuraClient(
+        const chainId = await withClient(
           { network: 'goerli' },
           ({ makeRpcCall }) => {
             return makeRpcCall({
@@ -149,14 +149,14 @@ describe('createInfuraClient', () => {
       testsForRpcMethodsThatCheckForBlockHashInResponse(method);
 
       it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
-        await withMockedInfuraCommunications(async (comms) => {
+        await withMockedCommunications(async (comms) => {
           const request = { method };
 
           // The first time a block-cacheable request is made, the latest
           // block number is retrieved through the block tracker first.
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
           // This is our request.
-          comms.mockInfuraRpcCall({
+          comms.mockRpcCall({
             request,
             response: {
               result: {
@@ -168,7 +168,7 @@ describe('createInfuraClient', () => {
           // block through the block tracker again.
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
 
-          await withInfuraClient(async ({ makeRpcCall, blockTracker }) => {
+          await withClient(async ({ makeRpcCall, blockTracker }) => {
             await makeRpcCall(request);
             expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
           });
@@ -188,14 +188,14 @@ describe('createInfuraClient', () => {
       testsForRpcMethodsThatCheckForBlockHashInResponse(method);
 
       it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
-        await withMockedInfuraCommunications(async (comms) => {
+        await withMockedCommunications(async (comms) => {
           const request = { method };
 
           // The first time a block-cacheable request is made, the latest
           // block number is retrieved through the block tracker first.
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
           // This is our request.
-          comms.mockInfuraRpcCall({
+          comms.mockRpcCall({
             request,
             response: {
               result: {
@@ -207,7 +207,7 @@ describe('createInfuraClient', () => {
           // block through the block tracker again.
           comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
 
-          await withInfuraClient(async ({ makeRpcCall, blockTracker }) => {
+          await withClient(async ({ makeRpcCall, blockTracker }) => {
             await makeRpcCall(request);
             expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
           });
@@ -342,7 +342,7 @@ describe('createInfuraClient', () => {
 
     describe('net_version', () => {
       it('does not hit Infura, instead returning the chain id that maps to the Infura network, as a decimal string', async () => {
-        const chainId = await withInfuraClient(
+        const chainId = await withClient(
           { network: 'goerli' },
           ({ makeRpcCall }) => {
             return makeRpcCall({
