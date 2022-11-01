@@ -970,7 +970,6 @@ export default class MetaMetricsController {
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
     const messageId = payload.messageId || generateRandomId();
-    const payloadDate = payload.timestamp && new Date(payload.timestamp);
     let timestamp = new Date();
     if (payload.timestamp) {
       const payloadDate = new Date(payload.timestamp);
