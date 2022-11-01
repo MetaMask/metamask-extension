@@ -20,7 +20,7 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
-  getFullTxDataAllTransactions,
+  getFullTxData,
 } from '../../../selectors';
 
 import {
@@ -81,7 +81,7 @@ export default function AwaitingSwap({
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
-    useSelector((state) => getFullTxDataAllTransactions(state, txId)) || {};
+    useSelector((state) => getFullTxData(state, txId)) || {};
   const fetchParams = useSelector(getFetchParams, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const maxSlippage = useSelector(getMaxSlippage);
@@ -333,4 +333,5 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
+  txId: PropTypes.string,
 };
