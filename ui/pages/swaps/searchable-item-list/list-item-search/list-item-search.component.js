@@ -128,6 +128,6 @@ ListItemSearch.propTypes = {
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
   shouldSearchForImports: PropTypes.bool,
-  searchQuery: PropTypes.func,
+  searchQuery: PropTypes.string,
   setSearchQuery: PropTypes.func,
 };

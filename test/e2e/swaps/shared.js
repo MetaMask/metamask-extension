@@ -18,7 +18,6 @@ const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
   ganacheOptions,
   driverOptions,
-  failOnConsoleError: false,
 };
 
 const loadSwaps = async (driver) => {
@@ -41,7 +40,7 @@ const buildQuote = async (driver, options) => {
   await driver.wait(async () => {
     const tokens = await driver.findElements('.searchable-item-list__item');
     return tokens.length > 1;
-  }, 20000);
+  });
   await driver.clickElement('.searchable-item-list__labels');
   await driver.clickElement('.dropdown-input-pair__to');
   await driver.clickElement('input[data-testid="search-list-items"]');
