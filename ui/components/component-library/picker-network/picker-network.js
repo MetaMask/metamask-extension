@@ -4,22 +4,33 @@ import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
 import { Icon } from '../icon';
 import { Text } from '../text';
-import Box from 'ui/components/ui/box';
+import Box from '../../ui/box';
+import {
+  ALIGN_ITEMS,
+  COLORS,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 export const PickerNetwork = ({
   className,
-  AccessoryComponentLeft = AvatarNetwork,
-  leftAccessoryComponentProps,
-  AccessoryComponentRight = Icon,
-  rightAccessoryComponentProps,
+  avatarNetworkProps,
+  fallbackIconProps,
   label,
   ...props
 }) => {
   return (
-    <Box className={classnames('mm-picker-network', className)} {...props}>
-      <AccessoryComponentLeft {...leftAccessoryComponentProps} />
+    <Box
+      className={classnames('mm-picker-network', className)}
+      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      alignItems={ALIGN_ITEMS.CENTER}
+      paddingLeft={1}
+      paddingRight={1}
+      display={DISPLAY.FLEX}
+      {...props}
+    >
+      <AvatarNetwork {...avatarNetworkProps} />
       <Text>{label}</Text>
-      <AccessoryComponentRight {...rightAccessoryComponentProps} />
+      <Icon {...fallbackIconProps} />
     </Box>
   );
 };
@@ -30,19 +41,19 @@ PickerNetwork.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * The text content of the PickerNetwork component
+   * It accepts all the props from AvatarNetwork
    */
-  label: PropTypes.string,
+  avatarNetworkProps: PropTypes.shape(AvatarNetwork.PropTypes),
   /**
-   * The component to be rendered in left side of the picker network
+   * It accepts all the props from Icon
    */
-  AccessoryComponentLeft: PropTypes.node,
+  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
-   * The component to be rendered in right side of the picker network
+   * The text content of the TagUrl component
    */
-  AccessoryComponentRight: PropTypes.node,
+  label: PropTypes.string.isRequired,
   /**
    * PickerNetwork accepts all the props from Box
    */
-  ...PickerNetwork.propTypes,
+  ...Box.propTypes,
 };
