@@ -791,6 +791,8 @@ const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
+const getCurrentNetworkTransactionList = (state) => state.metamask.currentNetworkTxList
+
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 export const getUnapprovedTransaction = createDeepEqualSelector(
@@ -803,9 +805,41 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
   },
 );
 
+export const getTransaction = createDeepEqualSelector(
+  getCurrentNetworkTransactionList,
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
 export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId) => getUnapprovedTransaction(state, transactionId),
+  (_state, _transactionId, customTxParamsData) => customTxParamsData,
+  (txData, transaction, customTxParamsData) => {
+    let fullTxData = { ...txData, ...transaction };
+    if (transaction && transaction.simulationFails) {
+      txData.simulationFails = transaction.simulationFails;
+    }
+    if (customTxParamsData) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          data: customTxParamsData,
+        },
+      };
+    }
+    return fullTxData;
+  },
+);
+
+export const getFullTxDataAllTransactions = createDeepEqualSelector(
+  getTxData,
+  (state, transactionId) => getTransaction(state, transactionId),
   (_state, _transactionId, customTxParamsData) => customTxParamsData,
   (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
