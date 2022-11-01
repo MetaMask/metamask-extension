@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -18,7 +19,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -69,7 +70,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -134,7 +135,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -223,7 +226,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,

@@ -3337,108 +3337,6 @@ export function setSeedPhraseBackedUp(seedPhraseBackupState) {
   };
 }
 
-export function initializeThreeBox() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('initializeThreeBox', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function setShowRestorePromptToFalse() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('setShowRestorePromptToFalse', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOn() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('turnThreeBoxSyncingOn', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function restoreFromThreeBox(accountAddress) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('restoreFromThreeBox', [accountAddress], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function getThreeBoxLastUpdated() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('getThreeBoxLastUpdated', [], (err, lastUpdated) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve(lastUpdated);
-      });
-    });
-  };
-}
-
-export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'setThreeBoxSyncingPermission',
-        [threeBoxSyncingAllowed],
-        (err) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOnAndInitialize() {
-  return async (dispatch) => {
-    await dispatch(setThreeBoxSyncingPermission(true));
-    await dispatch(turnThreeBoxSyncingOn());
-    await dispatch(initializeThreeBox(true));
-  };
-}
-
 export function setNextNonce(nextNonce) {
   return {
     type: actionConstants.SET_NEXT_NONCE,
@@ -3889,18 +3787,6 @@ export function setCollectiblesDetectionNoticeDismissed() {
 
 export function setEnableEIP1559V2NoticeDismissed() {
   return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
-}
-
-export function setCustomNetworkListEnabled(customNetworkListEnabled) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setCustomNetworkListEnabled', [
-        customNetworkListEnabled,
-      ]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
 }
 
 export function setFirstTimeUsedNetwork(chainId) {

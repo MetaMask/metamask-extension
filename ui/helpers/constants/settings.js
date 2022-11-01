@@ -120,13 +120,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithThreeBox'),
-    descriptionMessage: (t) => t('syncWithThreeBoxDescription'),
-    route: `${ADVANCED_ROUTE}#sync-with3box`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('ipfsGateway'),
     descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${ADVANCED_ROUTE}#ipfs-gateway`,
@@ -321,13 +314,6 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'COLLECTIBLES_V1',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('showCustomNetworkList'),
-    descriptionMessage: (t) => t('showCustomNetworkListDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),

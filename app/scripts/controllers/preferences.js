@@ -69,7 +69,6 @@ export default class PreferencesController {
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
-      customNetworkListEnabled: false,
       ...opts.initState,
     };
 
@@ -186,17 +185,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `customNetworkListEnabled` property
-   *
-   * @param customNetworkListEnabled
-   */
-  setCustomNetworkListEnabled(customNetworkListEnabled) {
-    this.store.updateState({
-      customNetworkListEnabled,
-    });
   }
 
   /**
