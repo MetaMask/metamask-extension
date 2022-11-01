@@ -18,6 +18,7 @@ describe('Test Snap Error', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -28,18 +29,16 @@ describe('Test Snap Error', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        //        await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
-
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         const snapButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(snapButton);
         await driver.delay(500);
-
         await driver.clickElement('#connectErrorSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
+        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -66,24 +65,23 @@ describe('Test Snap Error', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
+
+        //find and click on send error
         await driver.clickElement('#sendError');
 
-        await driver.navigate(PAGES.HOME);
+        // switch back to the extension page
+        await driver.switchToWindow(extensionPage);
+        await driver.delay(1000);
 
-        const error = await driver.findElement(
-          '.home-notification__content-container',
-        );
-        const text = await error.getText();
-        assert.equal(
-          text.includes(
-            "Snap Error: 'random error inside'. Error Code: '-32603'",
-          ),
-          true,
-        );
+        // try to click on the dismiss button and pass test if it works
+        await driver.clickElement({
+          text: 'Dismiss',
+          tag: 'button',
+        });
       },
     );
   });
