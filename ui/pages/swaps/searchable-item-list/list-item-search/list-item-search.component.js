@@ -81,7 +81,7 @@ export default function ListItemSearch({
         searchQuery: newSearchQuery,
         results,
       });
-    }, 400);
+    }, 350);
   };
 
   useEffect(() => {

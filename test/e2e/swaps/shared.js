@@ -18,6 +18,7 @@ const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
   ganacheOptions,
   driverOptions,
+  failOnConsoleError: false,
 };
 
 const loadSwaps = async (driver) => {
