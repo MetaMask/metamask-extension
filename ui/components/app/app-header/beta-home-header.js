@@ -7,9 +7,7 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { getShowBetaHeader } from '../../../selectors';
-import {
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { hideBetaHeader } from '../../../store/actions';
 
 const BetaHomeHeader = () => {
