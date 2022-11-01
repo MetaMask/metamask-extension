@@ -592,6 +592,7 @@ export default class MetamaskController extends EventEmitter {
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
+      cacheEncryptionKey: true,
     });
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
