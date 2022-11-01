@@ -17,6 +17,8 @@ const renderAdornment = () => (
   </InputAdornment>
 );
 
+let timeoutIdForSearch;
+
 export default function ListItemSearch({
   onSearch,
   error,
@@ -60,20 +62,26 @@ export default function ListItemSearch({
   };
 
   const handleSearch = async (newSearchQuery) => {
-    const trimmedNewSearchQuery = newSearchQuery.trim();
-    const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
-    const fuseSearchResult = fuseRef.current.search(newSearchQuery);
-    const results =
-      defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
-    if (shouldSearchForImports && results.length === 0 && validHexAddress) {
-      await handleSearchTokenForImport(trimmedNewSearchQuery);
-      return;
-    }
     setSearchQuery(newSearchQuery);
-    onSearch({
-      searchQuery: newSearchQuery,
-      results,
-    });
+    if (timeoutIdForSearch) {
+      clearTimeout(timeoutIdForSearch);
+    }
+    timeoutIdForSearch = setTimeout(async () => {
+      timeoutIdForSearch = null;
+      const trimmedNewSearchQuery = newSearchQuery.trim();
+      const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
+      const fuseSearchResult = fuseRef.current.search(newSearchQuery);
+      const results =
+        defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
+      if (shouldSearchForImports && results.length === 0 && validHexAddress) {
+        await handleSearchTokenForImport(trimmedNewSearchQuery);
+        return;
+      }
+      onSearch({
+        searchQuery: newSearchQuery,
+        results,
+      });
+    }, 400);
   };
 
   useEffect(() => {
