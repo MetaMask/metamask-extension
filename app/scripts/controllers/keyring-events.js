@@ -1,13 +1,12 @@
 import EventEmitter from 'events';
-import { throttle } from 'lodash';
+import { isFunction, pullAllBy, throttle } from 'lodash';
+import nanoid from 'nanoid';
 import { isManifestV3 } from 'shared/modules/mv3.utils';
 import {
   HARDWARE_KEYRING_INIT_OPTS,
   HARDWARE_KEYRINGS,
 } from 'shared/constants/hardware-wallets';
 import { MILLISECOND } from 'shared/constants/time';
-
-const ADD_TO_EVENT_POOL = 'addToEventPool';
 
 /**
  * Determines if error is provoked by manifest v3 changes,
@@ -18,8 +17,8 @@ const ADD_TO_EVENT_POOL = 'addToEventPool';
  * @returns {boolean}
  */
 const isServiceWorkerMv3Error = (error) => {
-  // @TODO, hacky as the MV3 error could be captured and rethrown with
-  // different error message. Assess whether we should just only check if it's MV3
+  // @TODO, hacky as the MV3 error could be captured and rethrown with a user-set
+  // error message. Assess whether we should just only check if it's MV3.
 
   const isUserSet = Boolean(error.cause);
 
@@ -58,128 +57,17 @@ const getClassInstanceMethods = (classInstance) =>
     (method) => method !== 'constructor',
   );
 
-class HardwareKeyringWrapper extends EventEmitter {
-  constructor(opts = {}, wrapperOpts = {}) {
-    super();
-
-    this.keyring = new wrapperOpts.Keyring({
-      ...opts,
-      // Pass these opts to prevent MV3 errors from
-      // being thrown in the class's constructor
-      ...HARDWARE_KEYRING_INIT_OPTS,
-    });
-
-    // implement all class methods
-    const methods = getClassInstanceMethods(this.keyring);
-
-    methods.forEach((method) => {
-      if (!this[method]) {
-        // only add the method if it isn't already wrapped
-        this[method] = this.keyring[method].bind(this.keyring);
-      }
-    });
-
-    // If keyring manually implements the .init method ...
-    if (this.keyring.init) {
-      this.init(); // ... then call the wrapped version of the method.
-    }
-  }
-
-  resolveWrapper = (type, resolve) => (newState, res) => {
-    // @TODO, update the state of keyring controller with clientside state
-    // before finally resolving the promise
-
-    resolve(res);
-  };
-
-  async wrapMethod(method, ...args) {
-    if (!this.keyring[method]) {
-      throw ReferenceError('Un-implemented method called');
-    }
-
-    const prevState = await this.keyring.serialize();
-
-    try {
-      const res = await this.keyring[method](...args);
-
-      return res;
-    } catch (e) {
-      console.log(isServiceWorkerMv3Error(e), e.cause);
-
-      // if error is due to mv3 then re-open promise
-      const res = await new Promise((resolve, reject) => {
-        this.emit(ADD_TO_EVENT_POOL, {
-          type: this.type,
-          method,
-          args,
-          prevState,
-          resolve: this.resolveWrapper(this.type, resolve),
-          reject,
-        });
-        // allow promise to hang as it will be resolved by the event pool
-      });
-
-      return res;
-    }
-  }
-
-  // @TODO, dynamically wrap all methods?
-
-  init(...args) {
-    return this.wrapMethod('init', ...args);
-  }
-
-  unlock(...args) {
-    return this.wrapMethod('unlock', ...args);
-  }
-
-  // Trezor specific
-  dispose(...args) {
-    return this.wrapMethod('dispose', ...args);
-  }
-
-  // ledger specific
-  destroy(...args) {
-    return this.wrapMethod('destroy', ...args);
-  }
-
-  signTransaction(...args) {
-    return this.wrapMethod('signTransaction', ...args);
-  }
-
-  signPersonalMessage(...args) {
-    return this.wrapMethod('signPersonalMessage', ...args);
-  }
-
-  signTypedData(...args) {
-    return this.wrapMethod('signTypedData', ...args);
-  }
-
-  addAccounts(...args) {
-    return this.wrapMethod('addAccounts', ...args);
-  }
-
-  __getPage(...args) {
-    return this.wrapMethod('__getPage', ...args);
-  }
-
-  _setupIframe(...args) {
-    return this.wrapMethod('_setupIframe', ...args);
-  }
-}
-
 export default class KeyringEventsController extends EventEmitter {
   constructor({ sendPromisifiedClientAction }) {
     super();
     this.eventPool = [];
-    // @TODO, migrate the below to event emission
     this.sendPromisifiedClientAction = sendPromisifiedClientAction;
     this.keyrings = this._getKeyrings();
 
-    // use _.throttle to clear the eventPool every X milliseconds, as there are some
-    // limitations as there are some limitations in various browsers based on
-    // how often we can emit (?)
-    this.clearEventPool = throttle(this._clearEventPool, 300 * MILLISECOND);
+    // use _.throttle to clear the eventPool every X milliseconds, as there
+    // are some limitations as there are some limitations in various browsers
+    // based on how often we can emit RPC events.
+    this._sendEvents = throttle(this.__sendEvents, 10 * MILLISECOND);
   }
 
   /**
@@ -188,7 +76,7 @@ export default class KeyringEventsController extends EventEmitter {
    * NOTE: If MV3, a function constructor (not a class) is returned in order
    * to pass data from this context to the HardwareKeyringWrapper instantiation.
    *
-   * @returns {(function(*): HardwareKeyringWrapper)[]|[Keyring]}
+   * @returns {[Proxy]|[Keyring]}
    */
   _getKeyrings = () => {
     if (this.keyrings) {
@@ -200,37 +88,91 @@ export default class KeyringEventsController extends EventEmitter {
       return HARDWARE_KEYRINGS;
     }
 
-    const wrappedKeyrings = HARDWARE_KEYRINGS.map((Keyring) => (opts) => {
-      const keyring = new HardwareKeyringWrapper(opts, { Keyring });
-
-      // add required listeners
-      keyring.on(ADD_TO_EVENT_POOL, this.addToEventPool);
-
-      return keyring;
-    });
+    const wrappedKeyrings = HARDWARE_KEYRINGS.map((Keyring) =>
+      this._wrapKeyring(Keyring),
+    );
 
     return wrappedKeyrings;
   };
 
   /**
+   * Return a proxy within a proxy:
+   * This is necessary, as we need to proxy the class
+   * to override the constructor while still returning
+   * static fields. But we also need an additional proxy
+   * of the instance.
+   *
+   * @param Keyring
+   * @returns Proxy<Keyring>
+   */
+  _wrapKeyring = (Keyring) => {
+    const proxy = new Proxy(Keyring, {
+      construct: (Target, args) => {
+        // Attach arguments that prevent MV3 errors from being thrown immediately
+        const newArgs = [
+          { ...args[0], ...HARDWARE_KEYRING_INIT_OPTS },
+          ...args.slice(1),
+        ];
+        const instance = new Target(...newArgs);
+
+        // Create an additional proxy, this time for the instance
+        // Ensure that a new proxy is created upon every 'new' call
+        // of the Keyring's class (i.e., this execution context)
+        const instanceProxy = this._getKeyringInstanceProxy(instance);
+
+        if (instanceProxy.init) {
+          // ... then call the wrapped version of the method.
+          // important distinction, as non-wrapped version
+          // will always error.
+          instanceProxy.init();
+        }
+
+        return instanceProxy;
+      },
+    });
+
+    return proxy;
+  };
+
+  /**
+   * Wraps all functions of a keyring instance in a proxy
+   * with an error handler.
+   *
+   * @param {Keyring} instance
+   * @private
+   */
+  _getKeyringInstanceProxy(instance) {
+    const keyringInstanceProxy = new Proxy(instance, {
+      get: (target, prop) => {
+        if (isFunction(target[prop])) {
+          const wrappedFunction = (...args) => {
+            return this._catchKeyringMethodErrors(target, prop, args);
+          };
+
+          return wrappedFunction;
+        }
+
+        return target[prop];
+      },
+    });
+
+    return keyringInstanceProxy;
+  }
+
+  /**
    * Adds a failed keyring call to the event pool.
    *
-   * @param keyring.keyring
-   * @param keyring
-   * @param method
-   * @param args
-   * @param prevState
-   * @param type
-   * @param resolve
-   * @param reject
-   * @param keyring.method
-   * @param keyring.args
-   * @param keyring.prevState
-   * @param keyring.type
-   * @param keyring.resolve
-   * @param keyring.reject
+   * @param opts
+   * @param {keyring} opts.keyring
+   * @param {string|number|symbol} opts.method
+   * @param {*[]} opts.args - The arguments passed to the method
+   * @param opts.prevState - The state that the client-side should use
+   * @param {string} opts.type - The type of keyring
+   * @param {(value: *) => void} opts.resolve
+   * @param {(value: *) => void} opts.reject
+   * @private
    */
-  addToEventPool = ({
+  _addToEventPool = ({
     keyring,
     method,
     args,
@@ -250,21 +192,105 @@ export default class KeyringEventsController extends EventEmitter {
       },
       resolve,
       reject,
+      id: nanoid(),
     });
 
-    this.clearEventPool();
+    this._sendEvents();
   };
 
-  _clearEventPool = () => {
-    // @TODO, allow for sending events in one go as opposed to one by one
+  /**
+   * Wraps a keyring-wrapped-method's resolve, allowing
+   * us to update the state of the keyring background-side.
+   *
+   * @param {keyring} keyring
+   * @param {(value: *) => void} resolve
+   * @private
+   */
+  _resolveWrapper =
+    (keyring, resolve) =>
+    async ({ newState, response }) => {
+      await keyring.deserialize(newState);
+
+      resolve(response);
+    };
+
+  /**
+   * Catches errors thrown by keyring methods. If the error is
+   * due to MV3 then the error is added to the event pool and the
+   * promise stays open until it's resolved client-side.
+   *
+   * @param {keyring} keyring
+   * @param {string|symbol|number} method
+   * @param {*[]} args
+   * @private
+   */
+  _catchKeyringMethodErrors = async (keyring, method, args) => {
+    // @TODO, delay this function .serialize call until there are no
+    // remaining pending promises in the event pool
+    const prevState = await keyring.serialize();
+
+    try {
+      // Technically this .bind is superfluous but is included for clarity.
+      // In the following call stack of this method call, it will only call
+      // non-wrapped methods. This is intentional.
+      const res = await keyring[method].bind(keyring)(...args);
+
+      return res;
+    } catch (e) {
+      console.log(isServiceWorkerMv3Error(e), e.cause);
+
+      // if error is due to mv3 then re-open promise
+      if (isServiceWorkerMv3Error(e)) {
+        const res = await new Promise((resolve, reject) => {
+          this._addToEventPool({
+            type: this.type,
+            method, // @TODO, create a test for calling a symbol method
+            args,
+            prevState,
+            resolve: this._resolveWrapper(keyring, resolve),
+            reject, // if rejected again then just allow for error to be thrown
+          });
+          // Allow promise to hang as it will be resolved by the event pool
+        });
+
+        return res;
+      }
+
+      // ... otherwise, rethrow error
+      throw e;
+    }
+  };
+
+  /**
+   * NOTE: only to be called by _sendEvents
+   *
+   * Given that multiple threads can interact with this class
+   * ensure eventIds are tracked upon each call, so that the
+   * eventPool can be cleared precisely, instead of
+   *
+   * @private
+   */
+  __sendEvents = () => {
+    const sentEvents = [];
 
     for (const event of this.eventPool) {
       this.sendPromisifiedClientAction(event.payload)
         .then(event.resolve)
         .catch(event.reject);
+
+      sentEvents.push(event);
     }
 
-    // then clear mempool
-    this.eventPool = [];
+    this._clearEventPool(sentEvents);
   };
+
+  /**
+   * Clears the event pool of events that have been sent.
+   *
+   * @param {{id: string}[]} sentEvents
+   * @private
+   */
+  _clearEventPool(sentEvents) {
+    this.eventPool = pullAllBy(this.eventPool, sentEvents, 'id');
+  }
 }
