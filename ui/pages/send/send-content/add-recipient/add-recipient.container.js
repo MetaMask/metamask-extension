@@ -3,6 +3,7 @@ import {
   getAddressBook,
   getAddressBookEntry,
   getMetaMaskAccountsOrdered,
+  currentNetworkTxListSelector,
 } from '../../../../selectors';
 
 import {
@@ -35,6 +36,22 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
+  const txList = currentNetworkTxListSelector(state).reverse();
+
+  const nonContacts = addressBook
+    .filter(({ name }) => !name)
+    .map((nonContact) => {
+      const nonContactTx = txList.find(
+        (transaction) =>
+          transaction.txParams.to === nonContact.address.toLowerCase(),
+      );
+      return { ...nonContact, timestamp: nonContactTx.time };
+    });
+
+  nonContacts.sort((a, b) => {
+    return b.timestamp - a.timestamp;
+  });
+
   const ownedAccounts = getMetaMaskAccountsOrdered(state);
 
   return {
@@ -44,7 +61,7 @@ function mapStateToProps(state) {
     domainResolution,
     domainError: getDomainError(state),
     domainWarning: getDomainWarning(state),
-    nonContacts: addressBook.filter(({ name }) => !name),
+    nonContacts,
     ownedAccounts,
     isUsingMyAccountsForRecipientSearch:
       getIsUsingMyAccountForRecipientSearch(state),
