@@ -113,7 +113,7 @@ export default class MetaMetricsController {
     const events = initState?.events || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: null,
+      participateInMetaMetrics: true,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
@@ -146,6 +146,7 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
+    console.log('events', events);
     // Code below submits any pending events to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       Object.values(events).forEach(({ eventType, payload, callback }) => {
@@ -983,9 +984,11 @@ export default class MetaMetricsController {
         ...this.store.getState().events,
         [messageId]: {
           eventType,
-          payload: modifiedPayload,
+          payload: {
+            ...modifiedPayload,
+            timestamp: modifiedPayload.timestamp.toString(),
+          },
           callback,
-          timestamp: modifiedPayload.timestamp.toString(),
         },
       },
     });
