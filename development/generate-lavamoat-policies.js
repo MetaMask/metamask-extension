@@ -45,7 +45,7 @@ async function start() {
   await concurrently(
     (Array.isArray(buildTypes) ? buildTypes : [buildTypes]).map(
       (buildType) => ({
-        command: `yarn ${buildCommand} scripts:dist --policy-only --build-type=${buildType}`,
+        command: `yarn ${buildCommand} scripts:dist --policy-only --lint-fence-files=false --build-type=${buildType}`,
         env: {
           WRITE_AUTO_POLICY: 1,
         },
