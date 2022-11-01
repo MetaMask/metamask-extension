@@ -58,9 +58,6 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 
-const LEARN_MORE_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
-
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
@@ -526,8 +523,12 @@ export default class Home extends PureComponent {
         }}
         footer={
           <>
-            <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">
-              {t('learnMore')}
+            <a
+              href={ZENDESK_URLS.USER_GUIDE_DAPPS}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('learnMoreUpperCase')}
             </a>
             <Button
               type="primary"
