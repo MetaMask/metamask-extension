@@ -49,6 +49,18 @@ const buildQuote = async (driver, options) => {
     'input[data-testid="search-list-items"]',
     options.swapTo || options.swapToContractAddress,
   );
+  if (options.swapTo) {
+    await driver.wait(async () => {
+      const tokenNames = await driver.findElements(
+        '.searchable-item-list__primary-label',
+      );
+      if (tokenNames.length === 0) {
+        return false;
+      }
+      const tokenName = await tokenNames[0].getText();
+      return tokenName === options.swapTo;
+    });
+  }
   if (options.swapToContractAddress) {
     await driver.waitForSelector({
       css: '.searchable-item-list__item button.btn-primary',
