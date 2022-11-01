@@ -27,7 +27,6 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
-import { SECOND } from '../../shared/constants/time';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -44,16 +43,7 @@ export const ensInitialState = initialState;
 
 const name = 'ENS';
 
-let provider = null;
-
-/**
- * An error thrown if the provider in the ENS slice is slow to resolve, indicating that it may be stale / requring re-instantiation.
- */
-class EnsSliceProviderTimeoutError extends Error {
-  constructor() {
-    super('Timeout failed');
-  }
-}
+let web3Provider = null;
 
 const slice = createSlice({
   name,
@@ -125,7 +115,7 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.currentChainId) {
         state.stage = 'UNINITIALIZED';
-        provider = null;
+        web3Provider = null;
       }
     });
   },
@@ -152,14 +142,17 @@ export function initializeEnsSlice() {
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
-      provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
-        name: networkName,
-        ensAddress,
-      });
+      web3Provider = new ethers.providers.Web3Provider(
+        global.ethereumProvider,
+        {
+          chainId: parseInt(network, 10),
+          name: networkName,
+          ensAddress,
+        },
+      );
       dispatch(enableEnsLookup(network));
     } else {
-      provider = null;
+      web3Provider = null;
       dispatch(disableEnsLookup());
     }
   };
@@ -187,25 +180,15 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       try {
-        // if resolveName is failing to resolve after 1 second we throw a time out error that is caught in the catch block
-        // causing a re-initializition of the ENS slice (and the provider along with it) and then we retry calling resolveName.
-        // This helps handle the case where the provider is unresponsive/stale if, in MV3, the service worker dies after the ENS slice is instantiated
-        address = await Promise.race([
-          provider.resolveName(trimmedEnsName),
-          new Promise((_, reject) => {
-            setTimeout(
-              () => reject(new EnsSliceProviderTimeoutError()),
-              SECOND,
-            );
-          }),
-        ]);
-      } catch (err) {
-        if (err instanceof EnsSliceProviderTimeoutError) {
+        // the writable property on the 'provider' object on the 'web3Provider' flips to false when stale
+        // This helps handle the case where the provider is becomes unresponsive if/when, in MV3, the service worker dies after the ENS slice is instantiated
+        const isProviderActive = web3Provider.provider?.writable;
+        if (!isProviderActive) {
           await dispatch(initializeEnsSlice());
-          address = await provider.resolveName(trimmedEnsName);
-        } else {
-          error = err;
         }
+        address = await web3Provider.resolveName(trimmedEnsName);
+      } catch (err) {
+        error = err;
       }
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
