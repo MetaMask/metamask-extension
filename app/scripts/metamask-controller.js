@@ -581,7 +581,7 @@ export default class MetamaskController extends EventEmitter {
 
     this._clientMessagePromises = {};
     this.hardwareKeyringController = new KeyringEventsController({
-      sendPromisifiedHardwareCall: this.sendPromisifiedHardwareCall(),
+      sendPromisifiedHardwareCall: this.sendPromisifiedHardwareCall.bind(this),
     });
 
     this.keyringController = new KeyringController({
@@ -4005,9 +4005,9 @@ export default class MetamaskController extends EventEmitter {
     this.emit(CONTROLLER_CONNECTION_EVENTS.UPDATE, this.getState());
   }
 
-  sendHardwareCall(message) {
+  sendHardwareCall = (message) => {
     this.emit(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, message);
-  }
+  };
 
   /**
    * A method for dispatching a redux action on the client side to all registered listeners.
@@ -4019,41 +4019,45 @@ export default class MetamaskController extends EventEmitter {
     this.emit(CONTROLLER_CONNECTION_EVENTS.ACTION, message);
   }
 
-  sendPromisifiedClientAction = (message) => {
-    console.log('sendPromisifiedClientAction', message);
+  sendPromisifiedMessage = (event, _message) => {
     const promiseId = nanoid();
+    const message = { ..._message, promiseId };
+    // promiseId needs to be included in the message in order
+    // for the frontend to know which promiseID it needs to resolve
+
     const promise = new Promise((resolve, reject) => {
-      // client messages are sent sync
-      console.log('sendingHardwareCall', message);
-
-      // client messages are sent sync
-      this.sendClientAction({
-        ...message,
-        promiseId,
-        // promiseId needs to be included in the message in order
-        // for the frontend to know which promiseID it needs to resolve
-      });
-
       this._clientMessagePromises[promiseId] = { resolve, reject };
+
+      switch (event) {
+        case CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL: {
+          this.sendHardwareCall(message);
+          break;
+        }
+        case CONTROLLER_CONNECTION_EVENTS.ACTION: {
+          this.sendClientAction(message);
+          break;
+        }
+        default: {
+          throw new Error('Invalid event passed to sendPromisifiedMessage');
+        }
+      }
     });
 
     return promise;
   };
 
+  sendPromisifiedClientAction = (message) => {
+    return this.sendPromisifiedMessage(
+      CONTROLLER_CONNECTION_EVENTS.ACTION,
+      message,
+    );
+  };
+
   sendPromisifiedHardwareCall = (message) => {
-    const promiseId = nanoid();
-    const promise = new Promise((resolve, reject) => {
-      this.sendHardwareCall({
-        ...message,
-        promiseId,
-        // promiseId needs to be included in the message in order
-        // for the frontend to know which promiseID it needs to resolve
-      });
-
-      this._clientMessagePromises[promiseId] = { resolve, reject };
-    });
-
-    return promise;
+    return this.sendPromisifiedMessage(
+      CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL,
+      message,
+    );
   };
 
   /**

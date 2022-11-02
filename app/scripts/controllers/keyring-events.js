@@ -10,8 +10,8 @@ import {
 import { MILLISECOND } from '../../../shared/constants/time';
 
 const ENFORCE_CLIENT_INVOCATION_METHODS = {
-  [KEYRING_TYPES.TREZOR]: [],
-  [KEYRING_TYPES.LEDGER]: ['updateTransportMethod', 'getFirstPage'],
+  [KEYRING_TYPES.TREZOR]: ['init'],
+  [KEYRING_TYPES.LEDGER]: ['updateTransportMethod', 'getFirstPage', 'init'],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
 };

@@ -92,6 +92,9 @@ export class ClientKeyringController extends EventEmitter {
         callback,
       );
     } catch (e) {
+      // eslint-disable-next-line no-debugger
+      debugger;
+
       console.log(`❌🖥️ unsuccessful hardware call`, {
         method,
         type: keyring.type,
@@ -104,8 +107,6 @@ export class ClientKeyringController extends EventEmitter {
           {
             promiseId,
             result: 'reject',
-            // @TODO, test is we can do this
-            // result: Promise.reject(res),
             data: e,
           },
         ],
