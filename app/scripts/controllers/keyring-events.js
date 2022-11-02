@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { isFunction, pullAllBy, throttle } from 'lodash';
+import { isFunction, noop, pullAllBy, throttle } from 'lodash';
 import nanoid from 'nanoid';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import {
@@ -10,8 +10,26 @@ import {
 import { MILLISECOND } from '../../../shared/constants/time';
 
 const ENFORCE_CLIENT_INVOCATION_METHODS = {
+  [KEYRING_TYPES.TREZOR]: [
+    'getFirstPage',
+    'addAccounts',
+    // TrezorKeyring.model isn't a part of serialised data returned
+    // back-and-forth, therefore we defer to clientside for this
+    // data, by intercepting TrezorKeyring.getModel
+    'getModel',
+  ],
+  [KEYRING_TYPES.LEDGER]: [
+    'updateTransportMethod',
+    'getFirstPage',
+    'addAccounts',
+  ],
+  [KEYRING_TYPES.QR]: [],
+  [KEYRING_TYPES.LATTICE]: [],
+};
+
+const IGNORE_METHODS = {
   [KEYRING_TYPES.TREZOR]: ['init'],
-  [KEYRING_TYPES.LEDGER]: ['updateTransportMethod', 'getFirstPage', 'init'],
+  [KEYRING_TYPES.LEDGER]: ['init'],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
 };
@@ -127,11 +145,10 @@ export default class KeyringEventsController extends EventEmitter {
         console.trace(`Constructing: ${Target.type}`, args);
 
         // Attach arguments that prevent MV3 errors from being thrown immediately
-        const newArgs = [
+        const instance = new Target(
           { ...args[0], ...HARDWARE_KEYRING_INIT_OPTS },
           ...args.slice(1),
-        ];
-        const instance = new Target(...newArgs);
+        );
 
         // Create an additional proxy, this time for the instance
         // Ensure that a new proxy is created upon every 'new' call
@@ -248,21 +265,22 @@ export default class KeyringEventsController extends EventEmitter {
     // @TODO, delay this function .serialize call until there are no
     // remaining pending promises in the event pool
 
+    const shouldAlwaysRunClientSide =
+      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
+    const shouldIgnoreMethod = IGNORE_METHODS[keyring.type]?.includes(method);
+
+    if (shouldIgnoreMethod) {
+      return noop;
+    }
+
     // Ensure that we serialize the state before we try
     // to call the method in the background-script
     const prevState = await keyring.serialize();
-    const shouldAlwaysRunClientSide =
-      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
-
-    console.log(`🏹💾 Sending method ${keyring.type}.${method}`, args);
+    const getClientSidePromise = () =>
+      this._createClientSidePromise(keyring, method, args, prevState);
 
     if (shouldAlwaysRunClientSide) {
-      const clientSideResult = await this._createClientSidePromise(
-        keyring,
-        method,
-        args,
-        prevState,
-      );
+      const clientSideResult = await getClientSidePromise();
 
       return clientSideResult;
     }
@@ -288,12 +306,7 @@ export default class KeyringEventsController extends EventEmitter {
 
       // if error is due to mv3 then re-open the promise
       if (isServiceWorkerMv3Error(e)) {
-        const clientSideResult = await this._createClientSidePromise(
-          keyring,
-          method,
-          args,
-          prevState,
-        );
+        const clientSideResult = await getClientSidePromise();
 
         return clientSideResult;
       }
@@ -316,6 +329,8 @@ export default class KeyringEventsController extends EventEmitter {
    */
   _createClientSidePromise(keyring, method, args, prevState) {
     return new Promise((resolve, reject) => {
+      console.log(`🏹💾 Sending method ${keyring.type}.${method}`, args);
+
       this._addToEventPool({
         type: keyring.type,
         method, // @TODO, create a test for calling a symbol method

@@ -1,20 +1,14 @@
 import EventEmitter from 'events';
-import {
-  HARDWARE_KEYRING_INIT_OPTS,
-  HARDWARE_KEYRINGS,
-} from '../../shared/constants/hardware-wallets';
+import { HARDWARE_KEYRINGS } from '../../shared/constants/hardware-wallets';
 import { callBackgroundMethod } from './action-queue';
 
 export class ClientKeyringController extends EventEmitter {
   constructor() {
     super();
-
-    console.trace('ClientKeyringController constructor called');
-
     this.keyrings = HARDWARE_KEYRINGS;
     // Avoid initializing keyrings until the background requests so
     this.keyringInstances = HARDWARE_KEYRINGS.map((KeyringClass) => {
-      return new KeyringClass(HARDWARE_KEYRING_INIT_OPTS);
+      return new KeyringClass();
     });
   }
 
@@ -63,8 +57,6 @@ export class ClientKeyringController extends EventEmitter {
   async handleMethodCall({ type, method, args, prevState, promiseId }) {
     const callback = (res, err) =>
       console.log('closeBackgroundPromise callback', res, err);
-    console.trace(`Handle Method Call: ${type} ${method}`);
-
     await this.updateKeyringData(type, prevState);
 
     const keyring = this.getKeyringInstanceForType(type);
@@ -92,9 +84,6 @@ export class ClientKeyringController extends EventEmitter {
         callback,
       );
     } catch (e) {
-      // eslint-disable-next-line no-debugger
-      debugger;
-
       console.log(`❌🖥️ unsuccessful hardware call`, {
         method,
         type: keyring.type,
@@ -115,3 +104,19 @@ export class ClientKeyringController extends EventEmitter {
     }
   }
 }
+
+let clientKeyringController; // poc purposes only
+
+export const initializeClientKeyringController = () => {
+  if (!clientKeyringController) {
+    clientKeyringController = new ClientKeyringController();
+  } else {
+    console.warn('ClientKeyringController already initialized, skipping.');
+  }
+};
+
+export const handleHardwareCall = (params) => {
+  initializeClientKeyringController();
+
+  clientKeyringController.handleMethodCall(params);
+};

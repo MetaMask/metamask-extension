@@ -4,8 +4,6 @@ import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
-
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
@@ -28,48 +26,14 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
-import { ClientKeyringController } from './store/client-keyrings';
+import {
+  handleHardwareCall,
+  initializeClientKeyringController,
+} from './store/client-keyrings';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
 let reduxStore;
-let clientKeyringController; // poc purposes only
-const initializeClientKeyringController = () => {
-  if (!clientKeyringController) {
-    clientKeyringController = new ClientKeyringController();
-  }
-};
-
-// initializeClientKeyringController();
-
-// A function that returns a promise which resolves in x milliseconds
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const ledger = new LedgerBridgeKeyring();
-
-setTimeout(async () => {
-  await ledger.deserialize({
-    hdPath: "m/44'/60'/0'/0/0",
-    accounts: [],
-    accountDetails: {},
-    bridgeUrl: 'https://metamask.github.io/eth-ledger-bridge-keyring',
-    implementFullBIP44: false,
-  });
-  ledger.setHdPath("m/44'/60'/0'/0");
-  const accounts = await ledger.getAccounts();
-
-  console.log(accounts);
-  await delay(2000);
-
-  await ledger.updateTransportMethod('webhid');
-
-  await delay(2000);
-
-  ledger
-    .getFirstPage()
-    .then((res) => console.log(res))
-    .catch((err) => console.log({ err }));
-}, 2000);
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -87,10 +51,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
       }
       case CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL: {
         console.log('Hardware Notification', data);
-
-        if (clientKeyringController) {
-          clientKeyringController.handleMethodCall(data.params[0]);
-        }
+        handleHardwareCall(data.params[0]);
         break;
       }
       case CONTROLLER_CONNECTION_EVENTS.SEND_ACTION: {
@@ -163,6 +124,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   };
 
   updateBackgroundConnection(backgroundConnection);
+  initializeClientKeyringController();
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
