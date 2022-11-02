@@ -11,13 +11,10 @@ import { SEND_STAGES } from '../../../ducks/send';
 
 export default class SendFooter extends Component {
   static propTypes = {
-    addToAddressBookIfNew: PropTypes.func,
     resetSendState: PropTypes.func,
     disabled: PropTypes.bool.isRequired,
     history: PropTypes.object,
     sign: PropTypes.func,
-    to: PropTypes.string,
-    toAccounts: PropTypes.array,
     sendStage: PropTypes.string,
     sendErrors: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
@@ -52,11 +49,9 @@ export default class SendFooter extends Component {
 
   async onSubmit(event) {
     event.preventDefault();
-    const { addToAddressBookIfNew, sign, to, toAccounts, history } = this.props;
+    const { sign, history } = this.props;
     const { trackEvent } = this.context;
 
-    // TODO: add nickname functionality
-    await addToAddressBookIfNew(to, toAccounts);
     const promise = sign();
 
     Promise.resolve(promise).then(() => {

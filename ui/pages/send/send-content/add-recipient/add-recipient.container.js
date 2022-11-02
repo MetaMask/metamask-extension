@@ -36,7 +36,7 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
-  const txList = currentNetworkTxListSelector(state).reverse();
+  const txList = [...currentNetworkTxListSelector(state)].reverse();
 
   const nonContacts = addressBook
     .filter(({ name }) => !name)
@@ -45,7 +45,7 @@ function mapStateToProps(state) {
         (transaction) =>
           transaction.txParams.to === nonContact.address.toLowerCase(),
       );
-      return { ...nonContact, timestamp: nonContactTx.time };
+      return { ...nonContact, timestamp: nonContactTx?.time };
     });
 
   nonContacts.sort((a, b) => {
