@@ -1,0 +1,83 @@
+diff --git a/node_modules/jest-it-up/README.md b/node_modules/jest-it-up/README.md
+index 66c80cc..dc81c51 100644
+--- a/node_modules/jest-it-up/README.md
++++ b/node_modules/jest-it-up/README.md
+@@ -67,6 +67,7 @@ Options:
+   -i, --interactive      ask for confirmation before applying changes
+   -s, --silent           do not output messages
+   -d, --dry-run          process but do not change files
++  -c, --config <path>    the path to a Jest config file
+   -v, --version          output the version number
+   -h, --help             display help for command
+ ```
+diff --git a/node_modules/jest-it-up/bin/jest-it-up b/node_modules/jest-it-up/bin/jest-it-up
+index b19fe07..45a907b 100755
+--- a/node_modules/jest-it-up/bin/jest-it-up
++++ b/node_modules/jest-it-up/bin/jest-it-up
+@@ -9,6 +9,7 @@ program
+   .option('-i, --interactive', 'ask for confirmation before applying changes')
+   .option('-s, --silent', 'do not output messages')
+   .option('-d, --dry-run', 'process but do not change files')
++  .option('-c, --config <path>', 'the path to a Jest config file')
+   .version(version, '-v, --version')
+   .parse(process.argv)
+ 
+diff --git a/node_modules/jest-it-up/lib/getData.js b/node_modules/jest-it-up/lib/getData.js
+index 527c3f3..2c1b94a 100644
+--- a/node_modules/jest-it-up/lib/getData.js
++++ b/node_modules/jest-it-up/lib/getData.js
+@@ -8,7 +8,7 @@ const getData = async configPath => {
+     coverageDirectory = 'coverage',
+   } = typeof config === 'function' ? await config() : config
+   const reportPath = path.resolve(
+-    process.cwd(),
++    path.dirname(configPath),
+     coverageDirectory,
+     'coverage-summary.json',
+   )
+diff --git a/node_modules/jest-it-up/lib/index.js b/node_modules/jest-it-up/lib/index.js
+index 3eb2e00..1cfddb3 100644
+--- a/node_modules/jest-it-up/lib/index.js
++++ b/node_modules/jest-it-up/lib/index.js
+@@ -10,12 +10,15 @@ const outputChanges = require('./outputChanges')
+ const outputResult = require('./outputResult')
+ 
+ module.exports = async ({
++  config = false,
+   dryRun = false,
+   interactive = false,
+   margin = 0,
+   silent = false,
+ } = {}) => {
+-  const configPath = path.resolve(process.cwd(), 'jest.config.js')
++  const configPath = config
++    ? path.resolve(process.cwd(), config)
++    : path.resolve(process.cwd(), 'jest.config.js')
+ 
+   const { thresholds, coverages } = await getData(configPath)
+   const newThresholds = getNewThresholds(thresholds, coverages, margin)
+@@ -42,5 +45,5 @@ module.exports = async ({
+     applyChanges(configPath, data)
+   }
+ 
+-  outputResult(dryRun)
++  outputResult(configPath, dryRun)
+ }
+diff --git a/node_modules/jest-it-up/lib/outputResult.js b/node_modules/jest-it-up/lib/outputResult.js
+index 3d7a641..8a0cbb2 100644
+--- a/node_modules/jest-it-up/lib/outputResult.js
++++ b/node_modules/jest-it-up/lib/outputResult.js
+@@ -1,10 +1,10 @@
+ const { yellow } = require('ansi-colors')
+ 
+-const outputResult = dryRun => {
++const outputResult = (configPath, dryRun) => {
+   console.log(
+     dryRun
+-      ? `No changes made to ${yellow('jest.config.js')}. (dry-run mode)`
+-      : `Done! Please record the changes to ${yellow('jest.config.js')}.`,
++      ? `No changes made to ${yellow(configPath)}. (dry-run mode)`
++      : `Done! Please record the changes to ${yellow(configPath)}.`,
+   )
+ }
+ 
