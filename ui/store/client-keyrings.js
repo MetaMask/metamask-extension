@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { HARDWARE_KEYRINGS } from '../../shared/constants/hardware-wallets';
+import buildUnserializedTransaction from '../helpers/utils/optimism/buildUnserializedTransaction';
 import { callBackgroundMethod } from './action-queue';
 
 export class ClientKeyringController extends EventEmitter {
@@ -54,11 +55,12 @@ export class ClientKeyringController extends EventEmitter {
     return data;
   }
 
-  async handleMethodCall({ type, method, args, prevState, promiseId }) {
+  async handleMethodCall({ type, method, args: _args, prevState, promiseId }) {
     const callback = (res, err) =>
       console.log('closeBackgroundPromise callback', res, err);
     await this.updateKeyringData(type, prevState);
 
+    const args = this.processArgs(_args, method);
     const keyring = this.getKeyringInstanceForType(type);
 
     try {
@@ -102,6 +104,22 @@ export class ClientKeyringController extends EventEmitter {
         callback,
       );
     }
+  }
+
+  processArgs(args, method) {
+    if (method === 'signTransaction') {
+      // Find a better solution for this
+      return [
+        args[0],
+        buildUnserializedTransaction({
+          ...args[1],
+          txParams: args[1],
+        }),
+        args[1],
+      ];
+    }
+
+    return args;
   }
 }
 

@@ -7,7 +7,7 @@ import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 function buildTxParams(txMeta) {
   return {
     ...omit(txMeta.txParams, 'gas'),
-    gasLimit: txMeta.txParams.gas,
+    gasLimit: txMeta.txParams.gasLimit || txMeta.txParams.gas,
   };
 }
 

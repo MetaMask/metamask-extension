@@ -12,7 +12,9 @@ import { MILLISECOND } from '../../../shared/constants/time';
 const ENFORCE_CLIENT_INVOCATION_METHODS = {
   [KEYRING_TYPES.TREZOR]: [
     'getFirstPage',
+    'signTypedData',
     'addAccounts',
+    'signTransaction',
     // TrezorKeyring.model isn't a part of serialised data returned
     // back-and-forth, therefore we defer to clientside for this
     // data, by intercepting TrezorKeyring.getModel
@@ -20,8 +22,11 @@ const ENFORCE_CLIENT_INVOCATION_METHODS = {
   ],
   [KEYRING_TYPES.LEDGER]: [
     'updateTransportMethod',
+    'signTypedData',
+    'signTransaction',
     'getFirstPage',
     'addAccounts',
+    'attemptMakeApp',
   ],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
@@ -198,7 +203,6 @@ export default class KeyringEventsController extends EventEmitter {
    * Adds a failed keyring call to the `eventPool`.
    *
    * @param opts
-   * @param {keyring} opts.keyring
    * @param {string|number|symbol} opts.method
    * @param {*[]} opts.args - The arguments passed to the method
    * @param opts.prevState - The state that the client-side should use
@@ -207,18 +211,9 @@ export default class KeyringEventsController extends EventEmitter {
    * @param {(value: *) => void} opts.reject
    * @private
    */
-  _addToEventPool = ({
-    keyring,
-    method,
-    args,
-    prevState,
-    type,
-    resolve,
-    reject,
-  }) => {
+  _addToEventPool = ({ type, method, args, prevState, resolve, reject }) => {
     this.eventPool.push({
       payload: {
-        keyring,
         method,
         args,
         type,
