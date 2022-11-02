@@ -263,26 +263,37 @@ export default function TokenAllowance({
           </Typography>
         </Box>
       </Box>
-      <Box marginBottom={5} marginLeft={4} marginRight={4}>
+      <Box marginLeft={4} marginRight={4}>
         <Typography
           variant={TYPOGRAPHY.H3}
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {isFirstPage && t('setSpendingCap')}
-          {!isFirstPage &&
-            (customTokenAmount === '0' || isEmpty
-              ? t('revokeSpendingCap')
-              : t('reviewSpendingCap'))}
+          {isFirstPage ? (
+            t('setSpendingCap', [
+              <Box marginTop={4} key={tokenAddress}>
+                <ContractTokenValues
+                  tokenName={tokenSymbol}
+                  address={tokenAddress}
+                  chainId={fullTxData.chainId}
+                  rpcPrefs={rpcPrefs}
+                />
+              </Box>,
+            ])
+          ) : (
+            <Box>
+             {customTokenAmount === '0' ? t('revokeSpendingCap') : t('reviewSpendingCap')}
+              <Box marginTop={4} key={tokenAddress}>
+                <ContractTokenValues
+                  tokenName={tokenSymbol}
+                  address={tokenAddress}
+                  chainId={fullTxData.chainId}
+                  rpcPrefs={rpcPrefs}
+                />
+              </Box>
+            </Box>
+          )}
         </Typography>
-      </Box>
-      <Box>
-        <ContractTokenValues
-          tokenName={tokenSymbol}
-          address={tokenAddress}
-          chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
-        />
       </Box>
       <Box
         marginTop={1}
