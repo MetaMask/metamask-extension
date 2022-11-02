@@ -290,11 +290,18 @@ async function start() {
       .map((row) => `<li>${row}</li>`)
       .join('\n')}</ul>`;
 
+    const sizeDiff = diffs.background + diffs.common;
+
     const sizeDiffWarning =
-      diffs.background + diffs.common > 0
+      sizeDiff > 0
         ? `🚨 Warning! Bundle size has increased!`
         : `🚀 Bundle size reduced!`;
-    const sizeDiffExposedContent = `Bundle size diffs [${sizeDiffWarning}]`;
+
+    const sizeDiffExposedContent =
+      sizeDiff === 0
+        ? `Bundle size diffs`
+        : `Bundle size diffs [${sizeDiffWarning}]`;
+
     const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 
     commentBody += sizeDiffBody;
