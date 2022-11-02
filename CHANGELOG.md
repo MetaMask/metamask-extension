@@ -6,6 +6,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.21.1]
+### Changed
+- Improve rate limiting for metric events ([#16308](https://github.com/MetaMask/metamask-extension/pull/16308))
+
+## [10.21.0]
+### Added
+- Add functionality for buying native currency and tokens on Optimism and Arbitrum, using Transak ([#16031](https://github.com/MetaMask/metamask-extension/pull/16031))
+- Add functionality for buying tokens with Wyre ([#15992](https://github.com/MetaMask/metamask-extension/pull/15992))
+- Add functionality for buying tokens with Moonpay ([#15924](https://github.com/MetaMask/metamask-extension/pull/15924))
+- Add functionality for buying tokens with Coinbase Pay and Transak ([#15551](https://github.com/MetaMask/metamask-extension/pull/15551))
+- Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH_CN ([#15411](https://github.com/MetaMask/metamask-extension/pull/15411))
+- Add Hardware wallet Buy and Tutorial buttons and update copies ([#14738](https://github.com/MetaMask/metamask-extension/pull/14738))
+- [FLASK] Add support for blocking Snaps by source shasum ([#15830](https://github.com/MetaMask/metamask-extension/pull/15830))
+- [FLASK] Add transaction insights via Snaps ([#15814](https://github.com/MetaMask/metamask-extension/pull/15814))
+
+### Changed
+- Dark Mode: elevate the Theme functionality from Experimental to General Settings ([#15865](https://github.com/MetaMask/metamask-extension/pull/15865))
+- Update Arbitrum symbol from `AETH` to `ETH` ([#15747](https://github.com/MetaMask/metamask-extension/pull/15747))
+- Update warning dialog copy on SetApprovalForAll Confirmation page ([#15744](https://github.com/MetaMask/metamask-extension/pull/15744))
+- Update header display on NFT Approval and SetApprovalForAll Confirmation pages ([#15727](https://github.com/MetaMask/metamask-extension/pull/15727))
+- Bump `@metamask/contract-metadata` from `1.35.0` to `1.36.0` ([#15597](https://github.com/MetaMask/metamask-extension/pull/15597))
+  - Add tokens: ZKP, GTON, PRVG, XCHF, XHT, OGV, veOFV, wOUSD and SUSHI
+  - Fix SVG icons for sETH and sUSD tokens
+  - Add the top NFT contracts on Opensea
+- Enable Add Popular Networks by default for all users ([#16172](https://github.com/MetaMask/metamask-extension/pull/16172))
+- Update `@metamask/controllers` to v31.2.0 ([#16033](https://github.com/MetaMask/metamask-extension/pull/16033))
+- Swaps: replace Rinkeby with Goerli for performing swaps on a testnet ([#15781](https://github.com/MetaMask/metamask-extension/pull/15781))
+- Swaps: only render tooltip component if swap network is disabled ([#15733](https://github.com/MetaMask/metamask-extension/pull/15733))
+- Swaps: use `gasEstimateWithRefund` instead of `gasEstimate` for more precise estimations ([#15968](https://github.com/MetaMask/metamask-extension/pull/15968))
+- Swaps: improve Build Quote page ([#15758](https://github.com/MetaMask/metamask-extension/pull/15758))
+  - Preserve search query for the `Swap from` and `Swap to` form fields
+  - Update placeholder text on `Swap to` and `Swap from` search fields
+  - Update copy on slippage tolerance tooltip
+- [FLASK] `Add snap_getBip32PublicKey` RPC method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- **[FLASK] BREAKING:** Remove deprecated snap_getBip44Entropy_* method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- [FLASK] Miscellaneous fixes to the Snaps platform ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+
+### Fixed
+- Fix double account creation when using keyboard controls on New Account page ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
+- Fix error message getting cut when introducing wrong private key format on Import Account page ([#15940](https://github.com/MetaMask/metamask-extension/pull/15940))
+- Fix edit button not being displayed when sending tx with hex data to a contract on Confirm tx page ([#15812](https://github.com/MetaMask/metamask-extension/pull/15812))
+- Fix incorrect balance asset on Encrypt and Decrypt Request pages ([#15885](https://github.com/MetaMask/metamask-extension/pull/15885))
+- Fix spelling errors and improve grammar for German translation ([#15592](https://github.com/MetaMask/metamask-extension/pull/15592))
+- Fix typos for French translation ([#15735](https://github.com/MetaMask/metamask-extension/pull/15735))
+- Fix incorrect identicon type for Account, by ensuring Blockies is displayed everywhere when enabled instead of Jazzicon ([#15768](https://github.com/MetaMask/metamask-extension/pull/15768))
+- Fix query verification for signatures, by ensuring we skip searching 4byte directory if we don't have a full 4 bytes of data ([#15473](https://github.com/MetaMask/metamask-extension/pull/15473))
+- Fix address resolution to Account name, when editing a tx instead of displaying the hex address ([#15873](https://github.com/MetaMask/metamask-extension/pull/15873))
+- Fix "Get ether from faucet" message, by including the end of the sentence and a full stop ([#15875](https://github.com/MetaMask/metamask-extension/pull/15875))
+- Fix font weight of the `<b>` element, by restoring the `b` style ([#15784](https://github.com/MetaMask/metamask-extension/pull/15784))
+- Fix ETH badge being displayed to networks where ETH is not the primary currency ([#16102](https://github.com/MetaMask/metamask-extension/pull/16102))
+- Fix overlapping Portfolio tooltip with Network popup, when a custom network is added ([#16090](https://github.com/MetaMask/metamask-extension/pull/16090))
+- Fix typo in French translation for "removeAccount" ([#16095](https://github.com/MetaMask/metamask-extension/pull/16095))
+- Fix What's New notification not displayed to users who created a new wallet ([#16042](https://github.com/MetaMask/metamask-extension/pull/16042))
+- [FLASK] Fix an issue with installing snaps that request the `eth_accounts` permission ([#16161](https://github.com/MetaMask/metamask-extension/pull/16161))
+
 ## [10.20.0]
 ### Changed
 - Deprecate Rinkeby, Ropsten and Kovan test networks and define Goerli as the default network in test mode ([#15989](https://github.com/MetaMask/metamask-extension/pull/15989))
@@ -3198,7 +3253,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...HEAD
+[10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
+[10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
 [10.20.0]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...v10.20.0
 [10.19.0]: https://github.com/MetaMask/metamask-extension/compare/v10.18.4...v10.19.0
 [10.18.4]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...v10.18.4

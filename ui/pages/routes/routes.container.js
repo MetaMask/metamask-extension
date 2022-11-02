@@ -12,6 +12,7 @@ import {
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   getShowPortfolioTooltip,
+  isCurrentProviderCustom,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -53,6 +54,7 @@ function mapStateToProps(state) {
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
     forgottenPassword: state.metamask.forgottenPassword,
+    isCurrentProviderCustom: isCurrentProviderCustom(state),
   };
 }
 

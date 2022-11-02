@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Gas API fallback', function () {
   async function mockGasApiDown(mockServer) {
@@ -29,7 +30,7 @@ describe('Gas API fallback', function () {
   it('error message is displayed but gas recommendation is not displayed', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockGasApiDown,
         ganacheOptions,
         title: this.test.title,
