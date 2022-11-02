@@ -283,7 +283,6 @@ const setupPageStreams = () => {
 
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  // extensionPort.onMessage.addListener(extensionStreamMessageListener);
   extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
@@ -489,30 +488,6 @@ function logStreamDisconnectWarning(remoteLabel, error) {
     error,
   );
 }
-
-/**
- * The function send message to inpage to notify it of extension stream connection
- * This is used as notification to replay any pending messages in MV3
- */
-// function extensionStreamMessageListener(msg) {
-//   if (isManifestV3 && msg.name === 'CONNECTION_READY') {
-//     window.postMessage(
-//       {
-//         target: INPAGE, // the post-message-stream "target"
-//         data: {
-//           // this object gets passed to obj-multiplex
-//           name: PROVIDER, // the obj-multiplex channel name
-//           data: {
-//             jsonrpc: '2.0',
-//             method: 'METAMASK_EXTENSION_STREAM_CONNECT',
-//           },
-//         },
-//       },
-//       window.location.origin,
-//     );
-//     extensionPort.onMessage.removeListener(extensionStreamMessageListener);
-//   }
-// }
 
 /**
  * This function must ONLY be called in pump destruction/close callbacks.
