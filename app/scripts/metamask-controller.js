@@ -2340,10 +2340,6 @@ export default class MetamaskController extends EventEmitter {
    * Submits a user's encryption key to log the user in via login token
    */
   async submitEncryptionKey() {
-    this.appStateController.store.updateState({
-      isAttemptingSessionLogin: true,
-    });
-
     try {
       const { loginToken } = await browser.storage.session.get(['loginToken']);
       if (loginToken) {
