@@ -187,7 +187,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(8);
+      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
     });
   });
 

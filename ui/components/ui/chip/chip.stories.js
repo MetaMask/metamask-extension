@@ -81,6 +81,12 @@ export default {
       },
       options: Object.values(COLORS),
     },
+    color: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(COLORS),
+    },
     children: {
       control: 'text',
     },

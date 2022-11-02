@@ -11,6 +11,7 @@ export default function Chip({
   className,
   children,
   borderColor = COLORS.BORDER_DEFAULT,
+  color = COLORS.TEXT_ALTERNATIVE,
   backgroundColor,
   label,
   labelProps = {},
@@ -56,7 +57,7 @@ export default function Chip({
           className="chip__label"
           variant={TYPOGRAPHY.H6}
           as="span"
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={color}
           {...labelProps}
         >
           {label}
@@ -80,6 +81,10 @@ Chip.propTypes = {
    * The background color of the Chip component
    */
   backgroundColor: PropTypes.oneOf(Object.values(COLORS)),
+  /**
+   * The text color of the Chip component
+   */
+  color: PropTypes.oneOf(Object.values(COLORS)),
   /**
    * The label of the Chip component has a default typography variant of h6 and is a span html element
    */

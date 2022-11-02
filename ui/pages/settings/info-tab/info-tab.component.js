@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../../../components/ui/button';
+import Chip from '../../../components/ui/chip/chip';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
+import { COLORS } from '../../../helpers/constants/design-system';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
@@ -73,6 +75,25 @@ export default class InfoTab extends PureComponent {
             {t('terms')}
           </Button>
         </div>
+        {isBeta() ? (
+          <div ref={this.settingsRefs[8]} className="info-tab__link-item">
+            <Button
+              type="link"
+              href="https://metamask.io/beta-terms.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="info-tab__link-text"
+            >
+              {t('betaTerms')}
+              <Chip
+                borderColor={COLORS.PRIMARY_DEFAULT}
+                backgroundColor={COLORS.PRIMARY_DEFAULT}
+                color={COLORS.PRIMARY_INVERSE}
+                label={t('new')}
+              />
+            </Button>
+          </div>
+        ) : null}
         <div ref={this.settingsRefs[4]} className="info-tab__link-item">
           <Button
             type="link"
