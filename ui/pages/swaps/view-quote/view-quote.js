@@ -1038,7 +1038,7 @@ export default function ViewQuote() {
         }
         hideCancel
         disabled={isSwapButtonDisabled}
-        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
+        className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
         showTopBorder
       />
     </div>

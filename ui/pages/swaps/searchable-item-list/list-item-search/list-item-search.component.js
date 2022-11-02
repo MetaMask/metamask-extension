@@ -84,6 +84,10 @@ export default function ListItemSearch({
   };
 
   useEffect(() => {
+    return () => clearTimeout(timeoutIdForSearch);
+  }, []);
+
+  useEffect(() => {
     if (!fuseRef.current) {
       fuseRef.current = new Fuse(listToSearch, {
         shouldSort: true,
