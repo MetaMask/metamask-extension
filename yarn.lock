@@ -3096,15 +3096,15 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
   integrity sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA==
 
-"@lightclients/kevlar@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@lightclients/kevlar/-/kevlar-0.1.12.tgz#f5384df6d27e75abf9e03602130803218f3e4967"
-  integrity sha512-9yljQZ/kqybvzehne/FqJuvrI4HH3NlCBIC2Nyh38N8GjyEtxTh14DPfThD0FAbPrTtLgTnFskzqGm3vPLX8tw==
+"@lightclients/kevlar@0.2.1-0":
+  version "0.2.1-0"
+  resolved "https://registry.yarnpkg.com/@lightclients/kevlar/-/kevlar-0.2.1-0.tgz#4df03e74e390c613b49a000a1ede9a712087def7"
+  integrity sha512-AcKb+3O5k6g2TSY27klmv2axF7geSEzvfTZK51ZnKKe+BpoBKM+myUh5D3pW2QDOJJ5fiJ+tWLMM9bS3kwsMbA==
   dependencies:
     "@chainsafe/as-sha256" "^0.3.1"
     "@chainsafe/bls" "^7.1.1"
     "@chainsafe/ssz" "^0.9.2"
-    "@lightclients/patronum" "0.1.8"
+    "@lightclients/patronum" "0.1.10"
     "@lodestar/api" "^1.0.0"
     "@lodestar/config" "^1.0.0"
     "@lodestar/light-client" "https://gitpkg.now.sh/shresthagrawal/lodestar/packages/light-client?edc9b76aaeb9d480011ae1f2302e73787d84e69e"
@@ -3113,14 +3113,15 @@
     axios "0.27.2"
     decimal.js "10.4.1"
     dotenv "16.0.2"
+    eth-rpc-errors "4.0.3"
     yargs "17.5.1"
   optionalDependencies:
     "@chainsafe/blst" "^0.2.6"
 
-"@lightclients/patronum@0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@lightclients/patronum/-/patronum-0.1.8.tgz#0997cff4ddeead94db27a5d214fbea70b1691729"
-  integrity sha512-rjXFtnepmF5KR7R6gZE2qft9p2EVnxBSOYVYd9DCIvpuCG1jkv0AZXwQMzuTS5BaRKGXi3SmZ4D/zombWI1wKA==
+"@lightclients/patronum@0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@lightclients/patronum/-/patronum-0.1.10.tgz#0ff675a87b6a5ae108bcb016a55c6d345622510d"
+  integrity sha512-Fkl0+f8uY1IXmLK893GvQE4nJkoCWdaYk8EB0ibkre12nAdVHN+lG+9CQVOf6HKTvOvT4tKkxpWdAOy28XHq+A==
   dependencies:
     "@ethereumjs/block" "4.0.0"
     "@ethereumjs/blockchain" "6.0.0"
@@ -3129,6 +3130,7 @@
     "@ethereumjs/tx" "4.0.0"
     "@ethereumjs/util" "8.0.0"
     "@ethereumjs/vm" "6.0.0"
+    axios "0.27.2"
     json-rpc-2.0 "1.4.1"
     lodash "4.17.21"
     rlp "3.0.0"
@@ -12156,17 +12158,17 @@ eth-query@^2.1.0, eth-query@^2.1.2:
     json-rpc-random-id "^1.0.0"
     xtend "^4.0.1"
 
+eth-rpc-errors@4.0.3, eth-rpc-errors@^4.0.0, eth-rpc-errors@^4.0.2, eth-rpc-errors@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-4.0.3.tgz#6ddb6190a4bf360afda82790bb7d9d5e724f423a"
+  integrity sha512-Z3ymjopaoft7JDoxZcEb3pwdGh7yiYMhOwm2doUt6ASXlMavpNlK6Cre0+IMl2VSGyEU9rkiperQhp5iRxn5Pg==
+  dependencies:
+    fast-safe-stringify "^2.0.6"
+
 eth-rpc-errors@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-3.0.0.tgz#d7b22653c70dbf9defd4ef490fd08fe70608ca10"
   integrity sha512-iPPNHPrLwUlR9xCSYm7HHQjWBasor3+KZfRvwEWxMz3ca0yqnlBeJrnyphkGIXZ4J7AMAaOLmwy4AWhnxOiLxg==
-  dependencies:
-    fast-safe-stringify "^2.0.6"
-
-eth-rpc-errors@^4.0.0, eth-rpc-errors@^4.0.2, eth-rpc-errors@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/eth-rpc-errors/-/eth-rpc-errors-4.0.3.tgz#6ddb6190a4bf360afda82790bb7d9d5e724f423a"
-  integrity sha512-Z3ymjopaoft7JDoxZcEb3pwdGh7yiYMhOwm2doUt6ASXlMavpNlK6Cre0+IMl2VSGyEU9rkiperQhp5iRxn5Pg==
   dependencies:
     fast-safe-stringify "^2.0.6"
 
@@ -18618,6 +18620,8 @@ minimatch@^3.0.2, minimatch@^3.0.4, minimatch@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.1.2.tgz#19cd194bfd3e428f049a70817c038d89ab4be35b"
   integrity sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==
+  dependencies:
+    brace-expansion "^1.1.7"
 
 minimatch@^5.0.1:
   version "5.0.1"
