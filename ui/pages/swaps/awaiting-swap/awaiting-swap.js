@@ -333,5 +333,5 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
-  txId: PropTypes.string,
+  txId: PropTypes.number,
 };
