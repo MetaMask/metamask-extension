@@ -3096,10 +3096,10 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
   integrity sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA==
 
-"@lightclients/kevlar@0.2.1-0":
-  version "0.2.1-0"
-  resolved "https://registry.yarnpkg.com/@lightclients/kevlar/-/kevlar-0.2.1-0.tgz#4df03e74e390c613b49a000a1ede9a712087def7"
-  integrity sha512-AcKb+3O5k6g2TSY27klmv2axF7geSEzvfTZK51ZnKKe+BpoBKM+myUh5D3pW2QDOJJ5fiJ+tWLMM9bS3kwsMbA==
+"@lightclients/kevlar@0.2.2-0":
+  version "0.2.2-0"
+  resolved "https://registry.yarnpkg.com/@lightclients/kevlar/-/kevlar-0.2.2-0.tgz#f59fd47fbb2e7b1a7edb1cea620b275f3cc15cf8"
+  integrity sha512-siasGYeRjIfD1ki5kwAiepAfP+as5yd3iv3p7H/sHD5golQdlkboxJiXhvh9wlMU4A+STshZLkpMRrOl55pm7A==
   dependencies:
     "@chainsafe/as-sha256" "^0.3.1"
     "@chainsafe/bls" "^7.1.1"
