@@ -4,8 +4,8 @@ import React from 'react';
 
 import { TagUrl } from './tag-url';
 
-describe('Tag', () => {
-  it('should render the label inside the tag', () => {
+describe('TagUrl', () => {
+  it('should render the label inside the TagUrl', () => {
     const { getByTestId } = render(
       <TagUrl data-testid="tag-url" label="https://app.uniswap.org" />,
     );
