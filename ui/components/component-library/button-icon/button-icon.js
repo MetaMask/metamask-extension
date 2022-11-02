@@ -15,6 +15,7 @@ import { Icon } from '../icon';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
 export const ButtonIcon = ({
+  ariaLabel,
   as = 'button',
   className,
   color = COLORS.ICON_DEFAULT,
@@ -28,6 +29,7 @@ export const ButtonIcon = ({
   const Tag = href ? 'a' : as;
   return (
     <Box
+      aria-label={ariaLabel}
       as={Tag}
       padding={1}
       className={classnames(
@@ -53,6 +55,10 @@ export const ButtonIcon = ({
 };
 
 ButtonIcon.propTypes = {
+  /**
+   *  String that adds an accessible name for ButtonIcon
+   */
+  ariaLabel: PropTypes.string.isRequired,
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    */

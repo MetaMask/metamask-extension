@@ -3,7 +3,7 @@ import { ButtonIcon } from './button-icon';
 
 # ButtonIcon
 
-The `ButtonIcon` is the base component for buttons.
+The `ButtonIcon` is used for icons associated with a user action.
 
 <Canvas>
   <Story id="ui-components-component-library-button-icon-button-icon-stories-js--default-story" />
@@ -14,6 +14,21 @@ The `ButtonIcon` is the base component for buttons.
 The `ButtonIcon` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={ButtonIcon} />
+
+### Icon<span style={{ color: 'red' }}>\*</span>
+
+Use the required `icon` prop with `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--icon" />
+</Canvas>
+
+```jsx
+import { ButtonIcon } from '../ui/component-library';
+import { ICON_NAMES } from '../icon';
+
+<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />;
+```
 
 ### Size
 
@@ -35,8 +50,24 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.SM} />
-<ButtonIcon size={SIZES.LG} />
+<ButtonIcon size={SIZES.SM} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon size={SIZES.LG} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+```
+
+### Aria Label
+
+Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibility
+
+<Canvas>
+  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--aria-label" />
+</Canvas>
+
+```jsx
+import { ButtonIcon } from '../ui/component-library';
+
+
+<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -56,8 +87,8 @@ Button `as` options:
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button" icon={ICON_NAMES.ADD_SQUARE_FILLED} />
-<ButtonIcon as="a" href="#" icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Disabled
@@ -71,5 +102,5 @@ Use the boolean `disabled` prop to disable button
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon icon={ICON_NAMES.ADD_SQUARE_FILLED} disabled />;
+<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} disabled ariaLabel="Close" />;
 ```

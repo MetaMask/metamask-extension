@@ -40,6 +40,9 @@ export default {
     },
   },
   argTypes: {
+    ariaLabel: {
+      control: 'text',
+    },
     as: {
       control: 'select',
       options: ['button', 'a'],
@@ -98,10 +101,14 @@ export default {
 export const DefaultStory = (args) => <ButtonIcon {...args} />;
 
 DefaultStory.args = {
-  icon: ICON_NAMES.ADD_SQUARE_FILLED,
+  icon: ICON_NAMES.CLOSE_OUTLINE,
 };
 
 DefaultStory.storyName = 'Default';
+
+export const Icon = (args) => (
+  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />
+);
 
 export const Size = (args) => (
   <Box
@@ -110,14 +117,40 @@ export const Size = (args) => (
     gap={1}
     marginBottom={2}
   >
-    <ButtonIcon {...args} size={SIZES.SM} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+    <ButtonIcon
+      {...args}
+      size={SIZES.SM}
+      icon={ICON_NAMES.CLOSE_OUTLINE}
+      ariaLabel="Close"
+    />
     <ButtonIcon
       {...args}
       size={SIZES.LG}
       color={COLORS.PRIMARY}
-      icon={ICON_NAMES.ADD_SQUARE_FILLED}
+      icon={ICON_NAMES.CLOSE_OUTLINE}
+      ariaLabel="Close"
     />
   </Box>
+);
+
+export const AriaLabel = (args) => (
+  <>
+    <ButtonIcon
+      as="button"
+      icon={ICON_NAMES.CLOSE_OUTLINE}
+      ariaLabel="Close"
+      {...args}
+    />
+    <ButtonIcon
+      as="a"
+      href="https://metamask.io/"
+      target="_blank"
+      color={COLORS.PRIMARY_DEFAULT}
+      icon={ICON_NAMES.EXPORT}
+      ariaLabel="Visit MetaMask.io"
+      {...args}
+    />
+  </>
 );
 
 export const As = (args) => (
@@ -134,7 +167,7 @@ export const As = (args) => (
 );
 
 export const Disabled = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
 );
 
 Disabled.args = {
