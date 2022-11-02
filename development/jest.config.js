@@ -1,10 +1,10 @@
 module.exports = {
   displayName: '/development',
-  collectCoverageFrom: ['<rootDir>/**/*.js'],
+  collectCoverageFrom: ['<rootDir>/build/transforms/**/*.js'],
   coverageDirectory: '../jest-coverage/development/',
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   coverageThreshold: {
-    './development/build/transforms/**/*.js': {
+    global: {
       branches: 100,
       functions: 100,
       lines: 100,
@@ -14,6 +14,6 @@ module.exports = {
   resetMocks: true,
   restoreMocks: true,
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/build/**/*.test.js'],
+  testMatch: ['<rootDir>/build/transforms/**/*.test.js'],
   testTimeout: 2500,
 };
