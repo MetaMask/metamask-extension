@@ -1,12 +1,37 @@
 import EventEmitter from 'events';
 import { isFunction, pullAllBy, throttle } from 'lodash';
 import nanoid from 'nanoid';
-import { isManifestV3 } from 'shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import {
   HARDWARE_KEYRING_INIT_OPTS,
   HARDWARE_KEYRINGS,
-} from 'shared/constants/hardware-wallets';
-import { MILLISECOND } from 'shared/constants/time';
+  KEYRING_TYPES,
+} from '../../../shared/constants/hardware-wallets';
+import { MILLISECOND } from '../../../shared/constants/time';
+
+const ENFORCE_CLIENT_INVOCATION_METHODS = {
+  [KEYRING_TYPES.TREZOR]: [],
+  [KEYRING_TYPES.LEDGER]: ['updateTransportMethod', 'getFirstPage'],
+  [KEYRING_TYPES.QR]: [],
+  [KEYRING_TYPES.LATTICE]: [],
+};
+
+/**
+ * Returns true if text resembles MV3 error message.
+ *
+ * @param {string} _text
+ * @returns {boolean}
+ */
+const isMv3ErrorMessage = (_text) => {
+  const text = _text.toLowerCase();
+  const mv3ErrorText = [
+    'navigator.usb',
+    'navigator.hid',
+    'document is not defined',
+  ];
+
+  return mv3ErrorText.some((errorText) => text.includes(errorText));
+};
 
 /**
  * Determines if error is provoked by manifest v3 changes,
@@ -17,32 +42,23 @@ import { MILLISECOND } from 'shared/constants/time';
  * @returns {boolean}
  */
 const isServiceWorkerMv3Error = (error) => {
+  console.error('isServiceWorkerMv3Error', { error });
   // @TODO, hacky as the MV3 error could be captured and rethrown with a user-set
   // error message. Assess whether we should just only check if it's MV3.
-
-  const isUserSet = Boolean(error.cause);
-
-  if (!isManifestV3 || isUserSet) {
+  const isFormOfError = error instanceof Error;
+  if (!isManifestV3 || !isFormOfError) {
     return false;
   }
 
-  if (error instanceof ReferenceError) {
-    const message = error.message.toLowerCase();
+  const isUserSet = Boolean(error.cause);
 
-    if (message.includes('navigator.usb')) {
-      return true;
-    }
-
-    if (message.includes('navigator.hid')) {
-      return true;
-    }
-
-    if (message.includes('document is not defined')) {
-      return true;
-    }
+  if (isUserSet) {
+    return isMv3ErrorMessage(error.cause.message);
   }
 
-  return false;
+  const errorText = error.message || error.stack || error.toString();
+
+  return isMv3ErrorMessage(errorText);
 };
 
 /**
@@ -58,10 +74,10 @@ const getClassInstanceMethods = (classInstance) =>
   );
 
 export default class KeyringEventsController extends EventEmitter {
-  constructor({ sendPromisifiedClientAction }) {
+  constructor({ sendPromisifiedHardwareCall }) {
     super();
     this.eventPool = [];
-    this.sendPromisifiedClientAction = sendPromisifiedClientAction;
+    this.sendPromisifiedHardwareCall = sendPromisifiedHardwareCall;
     this.keyrings = this._getKeyrings();
 
     // use _.throttle to clear the eventPool every X milliseconds, as there
@@ -108,6 +124,8 @@ export default class KeyringEventsController extends EventEmitter {
   _wrapKeyring = (Keyring) => {
     const proxy = new Proxy(Keyring, {
       construct: (Target, args) => {
+        console.trace(`Constructing: ${Target.type}`, args);
+
         // Attach arguments that prevent MV3 errors from being thrown immediately
         const newArgs = [
           { ...args[0], ...HARDWARE_KEYRING_INIT_OPTS },
@@ -160,7 +178,7 @@ export default class KeyringEventsController extends EventEmitter {
   }
 
   /**
-   * Adds a failed keyring call to the event pool.
+   * Adds a failed keyring call to the `eventPool`.
    *
    * @param opts
    * @param {keyring} opts.keyring
@@ -199,8 +217,9 @@ export default class KeyringEventsController extends EventEmitter {
   };
 
   /**
-   * Wraps a keyring-wrapped-method's resolve, allowing
-   * us to update the state of the keyring background-side.
+   * Wraps a keyring-wrapped-method's `resolve`, allowing
+   * us to update the state of the keyring background-side
+   * after a keyring method has been fired client-side.
    *
    * @param {keyring} keyring
    * @param {(value: *) => void} resolve
@@ -210,6 +229,7 @@ export default class KeyringEventsController extends EventEmitter {
     (keyring, resolve) =>
     async ({ newState, response }) => {
       await keyring.deserialize(newState);
+      console.log('⬆️ State update for keyring', keyring.type, newState);
 
       resolve(response);
     };
@@ -227,33 +247,55 @@ export default class KeyringEventsController extends EventEmitter {
   _catchKeyringMethodErrors = async (keyring, method, args) => {
     // @TODO, delay this function .serialize call until there are no
     // remaining pending promises in the event pool
-    const prevState = await keyring.serialize();
 
+    // Ensure that we serialize the state before we try
+    // to call the method in the background-script
+    const prevState = await keyring.serialize();
+    const shouldAlwaysRunClientSide =
+      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
+
+    console.log(`🏹💾 Sending method ${keyring.type}.${method}`, args);
+
+    if (shouldAlwaysRunClientSide) {
+      const clientSideResult = await this._createClientSidePromise(
+        keyring,
+        method,
+        args,
+        prevState,
+      );
+
+      return clientSideResult;
+    }
+
+    // ... otherwise, try to run the method in the background-script first
     try {
       // Technically this .bind is superfluous but is included for clarity.
       // In the following call stack of this method call, it will only call
       // non-wrapped methods. This is intentional.
       const res = await keyring[method].bind(keyring)(...args);
 
+      console.log(
+        `✅💾 Keyring method ${keyring.type}.${method} resolved`,
+        res,
+      );
+
       return res;
     } catch (e) {
-      console.log(isServiceWorkerMv3Error(e), e.cause);
+      console.log(
+        `❌💾 Keyring method ${keyring.type}.${method} resolved`,
+        isServiceWorkerMv3Error(e),
+      );
 
-      // if error is due to mv3 then re-open promise
+      // if error is due to mv3 then re-open the promise
       if (isServiceWorkerMv3Error(e)) {
-        const res = await new Promise((resolve, reject) => {
-          this._addToEventPool({
-            type: this.type,
-            method, // @TODO, create a test for calling a symbol method
-            args,
-            prevState,
-            resolve: this._resolveWrapper(keyring, resolve),
-            reject, // if rejected again then just allow for error to be thrown
-          });
-          // Allow promise to hang as it will be resolved by the event pool
-        });
+        const clientSideResult = await this._createClientSidePromise(
+          keyring,
+          method,
+          args,
+          prevState,
+        );
 
-        return res;
+        return clientSideResult;
       }
 
       // ... otherwise, rethrow error
@@ -262,11 +304,37 @@ export default class KeyringEventsController extends EventEmitter {
   };
 
   /**
-   * NOTE: only to be called by _sendEvents
+   * Creates a promise that will be only be resolved by
+   * client-side instantiation of the specified keyring.
+   *
+   * @param keyring
+   * @param method
+   * @param args
+   * @param prevState
+   * @returns {Promise<unknown>}
+   * @private
+   */
+  _createClientSidePromise(keyring, method, args, prevState) {
+    return new Promise((resolve, reject) => {
+      this._addToEventPool({
+        type: keyring.type,
+        method, // @TODO, create a test for calling a symbol method
+        args,
+        prevState,
+        resolve: this._resolveWrapper(keyring, resolve),
+        reject, // if rejected again then just allow for error to be thrown
+      });
+      // Allow the promise to hang as it will be resolved by the event pool
+    });
+  }
+
+  /**
+   * NOTE: only to be called by `_sendEvents`
    *
    * Given that multiple threads can interact with this class
    * ensure eventIds are tracked upon each call, so that the
-   * eventPool can be cleared precisely, instead of
+   * `eventPool` can be cleared precisely, instead of clearing
+   * it in one go with something like `this.eventPool = []`
    *
    * @private
    */
@@ -274,7 +342,8 @@ export default class KeyringEventsController extends EventEmitter {
     const sentEvents = [];
 
     for (const event of this.eventPool) {
-      this.sendPromisifiedClientAction(event.payload)
+      console.log('sending event', event);
+      this.sendPromisifiedHardwareCall(event.payload)
         .then(event.resolve)
         .catch(event.reject);
 

@@ -11,17 +11,11 @@ export class ClientKeyringController extends EventEmitter {
 
     console.trace('ClientKeyringController constructor called');
 
-    // @TODO, play around with OBS later here
-    // this.store = new ObservableStore({});
-
-    // Avoid initializing keyrings until the background requests so
     this.keyrings = HARDWARE_KEYRINGS;
+    // Avoid initializing keyrings until the background requests so
     this.keyringInstances = HARDWARE_KEYRINGS.map((KeyringClass) => {
       return new KeyringClass(HARDWARE_KEYRING_INIT_OPTS);
     });
-
-    console.log(this.keyringInstances.map((k) => k.type));
-    // this.keyringInstances = [];
   }
 
   /**
@@ -52,6 +46,10 @@ export class ClientKeyringController extends EventEmitter {
   async updateKeyringData(type, data) {
     const keyring = this.getKeyringInstanceForType(type);
 
+    if (!keyring) {
+      console.error('updateKeyringData', type, data, this.keyringInstances);
+    }
+
     await keyring.deserialize(data);
   }
 
@@ -63,32 +61,56 @@ export class ClientKeyringController extends EventEmitter {
   }
 
   async handleMethodCall({ type, method, args, prevState, promiseId }) {
+    const callback = (res, err) =>
+      console.log('closeBackgroundPromise callback', res, err);
     console.trace(`Handle Method Call: ${type} ${method}`);
 
     await this.updateKeyringData(type, prevState);
 
     const keyring = this.getKeyringInstanceForType(type);
 
-    keyring[method](...args)
-      .then(async (res) => {
-        const update = await this.getUpdatedKeyringData(type);
+    try {
+      const res = await keyring[method](...args);
+      const newState = await this.getUpdatedKeyringData(type);
 
-        callBackgroundMethod('closeBackgroundPromise', [
+      console.log(`✅🖥️ successful hardware call`, {
+        res,
+        newState,
+        method,
+        type: keyring.type,
+      });
+
+      callBackgroundMethod(
+        'closeBackgroundPromise',
+        [
           {
             promiseId,
             result: 'resolve',
-            data: [update, res],
+            data: { newState, response: res },
           },
-        ]);
-      })
-      .catch((res) => {
-        callBackgroundMethod('closeBackgroundPromise', [
+        ],
+        callback,
+      );
+    } catch (e) {
+      console.log(`❌🖥️ unsuccessful hardware call`, {
+        method,
+        type: keyring.type,
+        e,
+      });
+
+      callBackgroundMethod(
+        'closeBackgroundPromise',
+        [
           {
             promiseId,
             result: 'reject',
-            data: [res],
+            // @TODO, test is we can do this
+            // result: Promise.reject(res),
+            data: e,
           },
-        ]);
-      });
+        ],
+        callback,
+      );
+    }
   }
 }

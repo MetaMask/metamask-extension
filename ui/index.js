@@ -39,6 +39,8 @@ const initializeClientKeyringController = () => {
   }
 };
 
+initializeClientKeyringController();
+
 
 /**
  * Method to update backgroundConnection object use by UI

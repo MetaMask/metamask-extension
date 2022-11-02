@@ -135,7 +135,7 @@ import PersonalMessageManager from './lib/personal-message-manager';
 import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
-import KeyringEventsController from "app/scripts/controllers/keyring-events";
+import KeyringEventsController from './controllers/keyring-events';
 import SwapsController from './controllers/swaps';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
@@ -579,8 +579,9 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
+    this._clientMessagePromises = {};
     this.hardwareKeyringController = new KeyringEventsController({
-      sendPromisifiedClientAction: this.sendPromisifiedClientAction,
+      sendPromisifiedHardwareCall: this.sendPromisifiedHardwareCall(),
     });
 
     this.keyringController = new KeyringController({
@@ -4019,44 +4020,62 @@ export default class MetamaskController extends EventEmitter {
   }
 
   sendPromisifiedClientAction = (message) => {
+    console.log('sendPromisifiedClientAction', message);
     const promiseId = nanoid();
     const promise = new Promise((resolve, reject) => {
       // client messages are sent sync
-      this.sendHardwareCall({
+      console.log('sendingHardwareCall', message);
+
+      // client messages are sent sync
+      this.sendClientAction({
         ...message,
         promiseId,
-        // @TODO, genericize this more?
         // promiseId needs to be included in the message in order
         // for the frontend to know which promiseID it needs to resolve
       });
 
-      // // client messages are sent sync
-      // this.sendClientAction({
-      //   ...message,
-      //   promiseId,
-      //   // promiseId needs to be included in the message in order
-      //   // for the frontend to know which promiseID it needs to resolve
-      // });
-
-      this.clientMessagePromises = {
-        ...this.clientMessagePromises,
-        [promiseId]: { resolve, reject },
-      };
-
-      // @TODO, add a setTimeout to reject the promise if it takes too long?
+      this._clientMessagePromises[promiseId] = { resolve, reject };
     });
 
     return promise;
   };
 
-  closeBackgroundPromise({ promiseId, result, data }) {
-    if (this.clientMessagePromises[promiseId]) {
-      // @TODO, potentially confusing as we allow for a promise
-      // to be resolved with multiple arguments, but in reality,
-      // they can only be resolved with one argument
-      this.clientMessagePromises[promiseId][result](...data);
+  sendPromisifiedHardwareCall = (message) => {
+    const promiseId = nanoid();
+    const promise = new Promise((resolve, reject) => {
+      this.sendHardwareCall({
+        ...message,
+        promiseId,
+        // promiseId needs to be included in the message in order
+        // for the frontend to know which promiseID it needs to resolve
+      });
 
-      this.clientMessagePromises[promiseId] = null;
+      this._clientMessagePromises[promiseId] = { resolve, reject };
+    });
+
+    return promise;
+  };
+
+  /**
+   * Either rejects or resolves the promise associated with the given promiseId,
+   * created by sendPromisifiedClientAction.
+   *
+   * @param {string} promiseId
+   * @param {'resolve'|'reject'}result
+   * @param {any} data
+   */
+  closeBackgroundPromise({ promiseId, result, data }) {
+    console.log(
+      `closing background promise: ${promiseId}`,
+      this._clientMessagePromises,
+      result,
+    );
+
+    if (this._clientMessagePromises[promiseId]) {
+      // Don't spread args here, as a promises resolve/reject should
+      // only accept one arg.
+      this._clientMessagePromises[promiseId][result](data);
+      delete this._clientMessagePromises[promiseId];
     }
   }
 

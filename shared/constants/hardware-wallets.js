@@ -38,7 +38,7 @@ export const HARDWARE_KEYRINGS = [
 ];
 
 export const HARDWARE_KEYRING_INIT_OPTS = {
-  delayInt: true,
+  delayInit: true,
 };
 
 /**
