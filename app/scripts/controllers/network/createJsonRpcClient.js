@@ -9,6 +9,7 @@ import {
 } from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
+import { getRPCLightClientMiddleware } from '@lightclients/kevlar'
 
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
@@ -17,7 +18,8 @@ const getTestMiddlewares = () => {
 };
 
 export default function createJsonRpcClient({ rpcUrl, chainId }) {
-  const fetchMiddleware = createFetchMiddleware({ rpcUrl });
+  // const fetchMiddleware = createFetchMiddleware({ rpcUrl });
+  const fetchMiddleware = getRPCLightClientMiddleware(chainId);
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,

@@ -405,17 +405,18 @@ export default class NetworkController extends EventEmitter {
 
   _configureProvider({ type, rpcUrl, chainId }) {
     // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-    if (isInfura) {
-      this._configureInfuraProvider(type, this._infuraProjectId);
-      // url-based rpc endpoints
-    } else if (type === NETWORK_TYPES.RPC) {
-      this._configureStandardProvider(rpcUrl, chainId);
-    } else {
-      throw new Error(
-        `NetworkController - _configureProvider - unknown type "${type}"`,
-      );
-    }
+    this._configureStandardProvider(rpcUrl, type === NETWORK_TYPES.MAINNET ? 1 : chainId);
+    // const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+    // if (isInfura) {
+    //   this._configureInfuraProvider(type, this._infuraProjectId);
+    //   // url-based rpc endpoints
+    // } else if (type === NETWORK_TYPES.RPC) {
+    //   this._configureStandardProvider(rpcUrl, chainId);
+    // } else {
+    //   throw new Error(
+    //     `NetworkController - _configureProvider - unknown type "${type}"`,
+    //   );
+    // }
   }
 
   _configureInfuraProvider(type, projectId) {
