@@ -1,6 +1,4 @@
 import React from 'react';
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '../icon/icon.constants';
 import README from './README.mdx';
 import { PickerNetwork } from './picker-network';
 
@@ -17,15 +15,13 @@ export default {
     label: {
       control: 'text',
     },
+    src: {
+      control: 'text',
+    },
   },
   args: {
     label: 'Imported',
-    networkName: 'Arbitrum One',
-    networkImageUrl: './images/arbitrum.svg',
-    size: SIZES.MD,
-    showHalo: false,
-    name: ICON_NAMES.ARROW_DOWN,
-    color: COLORS.INHERIT,
+    src: './images/avax-token.png',
   },
 };
 

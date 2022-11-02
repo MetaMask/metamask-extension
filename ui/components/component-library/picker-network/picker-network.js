@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
-import { Icon } from '../icon';
+import { Icon, ICON_NAMES } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {
   ALIGN_ITEMS,
   COLORS,
   DISPLAY,
+  SIZES,
+  BORDER_RADIUS,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 
 export const PickerNetwork = ({
@@ -16,26 +19,46 @@ export const PickerNetwork = ({
   avatarNetworkProps,
   fallbackIconProps,
   label,
+  src,
   ...props
 }) => {
   return (
     <Box
       className={classnames('mm-picker-network', className)}
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      borderColor={COLORS.BORDER_DEFAULT}
+      borderWidth={1}
       alignItems={ALIGN_ITEMS.CENTER}
-      paddingLeft={1}
-      paddingRight={1}
-      display={DISPLAY.FLEX}
+      paddingLeft={2}
+      paddingRight={4}
+      gap={2}
+      borderRadius={BORDER_RADIUS.PILL}
+      display={DISPLAY.INLINE_FLEX}
       {...props}
     >
-      <AvatarNetwork {...avatarNetworkProps} />
-      <Text>{label}</Text>
-      <Icon {...fallbackIconProps} />
+      <AvatarNetwork
+        networkImageUrl={src}
+        networkName={label}
+        size={SIZES.XS}
+        {...avatarNetworkProps}
+      />
+      <Text variant={TEXT.BODY_SM}>{label}</Text>
+      <Icon
+        className="picker-network__arrow-down-icon"
+        name={ICON_NAMES.ARROW_DOWN}
+        color={COLORS.ICON_DEFAULT}
+        size={SIZES.XS}
+        {...fallbackIconProps}
+      />
     </Box>
   );
 };
 
 PickerNetwork.propTypes = {
+  /**
+   * The src accepts the string of the image to be rendered
+   */
+  src: PropTypes.string,
   /**
    * An additional className to apply to the PickerNetwork.
    */
@@ -49,7 +72,7 @@ PickerNetwork.propTypes = {
    */
   fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
-   * The text content of the TagUrl component
+   * The text content of the PickerNetwork component
    */
   label: PropTypes.string.isRequired,
   /**
