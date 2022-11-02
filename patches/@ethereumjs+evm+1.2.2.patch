@@ -1,5 +1,5 @@
 diff --git a/node_modules/@ethereumjs/evm/dist/evm.js b/node_modules/@ethereumjs/evm/dist/evm.js
-index 17da6e1..3b14ab5 100644
+index 17da6e1..87299fa 100644
 --- a/node_modules/@ethereumjs/evm/dist/evm.js
 +++ b/node_modules/@ethereumjs/evm/dist/evm.js
 @@ -15,7 +15,7 @@ const transientStorage_1 = require("./transientStorage");
@@ -7,7 +7,7 @@ index 17da6e1..3b14ab5 100644
  const debugGas = (0, debug_1.debug)('evm:gas');
  // very ugly way to detect if we are running in a browser
 -const isBrowser = new Function('try {return this===window;}catch(e){ return false;}');
-+const isBrowser = true;
++const isBrowser = () => true;
  let mcl;
  let mclInitPromise;
  if (isBrowser() === false) {
