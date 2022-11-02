@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ALIGN_ITEMS,
+  COLORS,
   DISPLAY,
   FLEX_DIRECTION,
   SIZES,
@@ -46,8 +47,15 @@ export default {
     className: {
       control: 'text',
     },
+    color: {
+      control: 'select',
+      options: Object.values(COLORS),
+    },
     disabled: {
       control: 'boolean',
+    },
+    href: {
+      control: 'string',
     },
     icon: {
       control: 'select',
@@ -103,14 +111,25 @@ export const Size = (args) => (
     marginBottom={2}
   >
     <ButtonIcon {...args} size={SIZES.SM} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
-    <ButtonIcon {...args} size={SIZES.LG} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+    <ButtonIcon
+      {...args}
+      size={SIZES.LG}
+      color={COLORS.PRIMARY}
+      icon={ICON_NAMES.ADD_SQUARE_FILLED}
+    />
   </Box>
 );
 
 export const As = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
-    <ButtonIcon {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
-    <ButtonIcon as="a" href="#" {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+    <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+    <ButtonIcon
+      as="a"
+      href="#"
+      {...args}
+      color={COLORS.PRIMARY_DEFAULT}
+      icon={ICON_NAMES.EXPORT}
+    />
   </Box>
 );
 
@@ -122,10 +141,10 @@ Disabled.args = {
   disabled: true,
 };
 
-export const Primary = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED} />
+export const Href = (args) => (
+  <ButtonIcon icon={ICON_NAMES.EXPORT} {...args} target="_blank" />
 );
 
-Primary.args = {
-  primary: true,
+Href.args = {
+  href: 'https://metamask.io/',
 };

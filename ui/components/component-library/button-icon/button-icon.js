@@ -2,43 +2,49 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import Box from '../../ui/box';
-import { Icon } from '../icon';
-
 import {
   ALIGN_ITEMS,
+  COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+import { Icon } from '../icon';
+
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
 export const ButtonIcon = ({
   as = 'button',
   className,
+  color = COLORS.ICON_DEFAULT,
+  href,
   size = BUTTON_ICON_SIZES.LG,
   icon,
   disabled,
-  primary,
   iconProps,
   ...props
 }) => {
+  const Tag = href ? 'a' : as;
   return (
     <Box
-      as={as}
+      as={Tag}
       padding={1}
       className={classnames(
         'mm-button-icon',
         `mm-button-icon--size-${size}`,
         {
           'mm-button-icon--disabled': disabled,
-          'mm-button-icon--type-primary': primary,
         },
         className,
       )}
+      color={color}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
       justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={COLORS.TRANSPARENT}
+      href={href}
       {...props}
     >
       <Icon name={icon} size={size} {...iconProps} />
@@ -56,21 +62,26 @@ ButtonIcon.propTypes = {
    */
   className: PropTypes.string,
   /**
+   * The color of the ButtonIcon component should use the COLOR object from
+   * ./ui/helpers/constants/design-system.js
+   */
+  color: PropTypes.oneOf(Object.values(COLORS)),
+  /**
    * Boolean to disable button
    */
   disabled: PropTypes.bool,
   /**
+   * When an `href` prop is passed, ButtonIcon will automatically change the root element to be an `a` (anchor) tag
+   */
+  href: PropTypes.string,
+  /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  icon: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
    * iconProps accepts all the props from Icon
    */
   iconProps: PropTypes.object,
-  /**
-   * When true, ButtonIcon becomes primary color
-   */
-  primary: PropTypes.bool,
   /**
    * The size of the ButtonIcon.
    * Possible values could be 'SIZES.SM', 'SIZES.LG',
