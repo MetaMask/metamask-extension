@@ -10,14 +10,9 @@ const ganacheOptions = {
   ],
 };
 
-const driverOptions = {
-  timeOut: 20000,
-};
-
 const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
   ganacheOptions,
-  driverOptions,
 };
 
 const loadSwaps = async (driver) => {
