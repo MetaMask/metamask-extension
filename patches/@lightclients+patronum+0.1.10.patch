@@ -1,0 +1,18 @@
+diff --git a/node_modules/@lightclients/patronum/lib/express-server.js b/node_modules/@lightclients/patronum/lib/express-server.js
+index 49d4c79..08c4301 100644
+--- a/node_modules/@lightclients/patronum/lib/express-server.js
++++ b/node_modules/@lightclients/patronum/lib/express-server.js
+@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.startServer = exports.getExpressApp = void 0;
+-const express_1 = __importDefault(require("express"));
++// const express_1 = __importDefault(require("express"));
+ const body_parser_1 = __importDefault(require("body-parser"));
+ const json_rpc_server_1 = require("./json-rpc-server");
+ function getExpressApp(provider) {
+-    const app = (0, express_1.default)();
++    const app = {}; // (0, express_1.default)();
+     const server = (0, json_rpc_server_1.getJSONRPCServer)(provider);
+     app.use(body_parser_1.default.json({ limit: '100mb' }));
+     app.use((_, res, next) => {
