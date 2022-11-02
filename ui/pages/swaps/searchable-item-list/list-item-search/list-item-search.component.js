@@ -39,7 +39,6 @@ export default function ListItemSearch({
    * @param {string} contractAddress
    */
   const handleSearchTokenForImport = async (contractAddress) => {
-    setSearchQuery(contractAddress);
     try {
       const token = await fetchToken(contractAddress, chainId);
       if (token) {
