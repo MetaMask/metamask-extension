@@ -307,5 +307,5 @@ export function getFirstPermissionRequest(state) {
 }
 
 export function getPermissions(state, origin) {
-  return getPermissionSubjects(state)[origin].permissions;
+  return getPermissionSubjects(state)[origin]?.permissions;
 }
