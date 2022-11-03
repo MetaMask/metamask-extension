@@ -1,4 +1,5 @@
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Simple send', function () {
   it('can send a simple transaction from one account to another', async function () {
@@ -12,7 +13,11 @@ describe('Simple send', function () {
       ],
     };
     await withFixtures(
-      { fixtures: 'imported-account', ganacheOptions, title: this.test.title },
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
