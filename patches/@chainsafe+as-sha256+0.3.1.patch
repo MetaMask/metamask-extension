@@ -1,0 +1,191 @@
+diff --git a/node_modules/@chainsafe/as-sha256/lib/index.js b/node_modules/@chainsafe/as-sha256/lib/index.js
+index 6930b09..17a0b0f 100644
+--- a/node_modules/@chainsafe/as-sha256/lib/index.js
++++ b/node_modules/@chainsafe/as-sha256/lib/index.js
+@@ -4,55 +4,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.digest64HashObjects = exports.digest2Bytes32 = exports.digest64 = exports.digest = exports.SHA256 = exports.hashObjectToByteArray = exports.byteArrayToHashObject = void 0;
+-const wasm_1 = require("./wasm");
++// const wasm_1 = require("./wasm");
+ const hashObject_1 = require("./hashObject");
+ Object.defineProperty(exports, "byteArrayToHashObject", { enumerable: true, get: function () { return hashObject_1.byteArrayToHashObject; } });
+ Object.defineProperty(exports, "hashObjectToByteArray", { enumerable: true, get: function () { return hashObject_1.hashObjectToByteArray; } });
+-const sha256_1 = __importDefault(require("./sha256"));
+-exports.SHA256 = sha256_1.default;
+-const ctx = wasm_1.newInstance();
+-const wasmInputValue = ctx.input.value;
+-const wasmOutputValue = ctx.output.value;
+-const inputUint8Array = new Uint8Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
+-const outputUint8Array = new Uint8Array(ctx.memory.buffer, wasmOutputValue, 32);
+-const inputUint32Array = new Uint32Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
++// const sha256_1 = __importDefault(require("./sha256"));
++// exports.SHA256 = sha256_1.default;
++// const ctx = wasm_1.newInstance();
++// const wasmInputValue = ctx.input.value;
++// const wasmOutputValue = ctx.output.value;
++// const inputUint8Array = new Uint8Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
++// const outputUint8Array = new Uint8Array(ctx.memory.buffer, wasmOutputValue, 32);
++// const inputUint32Array = new Uint32Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
+ function digest(data) {
+-    if (data.length === 64) {
+-        return digest64(data);
+-    }
+-    if (data.length <= ctx.INPUT_LENGTH) {
+-        inputUint8Array.set(data);
+-        ctx.digest(data.length);
+-        const output = new Uint8Array(32);
+-        output.set(outputUint8Array);
+-        return output;
+-    }
+-    ctx.init();
+-    update(data);
+-    return final();
++    // if (data.length === 64) {
++    //     return digest64(data);
++    // }
++    // if (data.length <= ctx.INPUT_LENGTH) {
++    //     inputUint8Array.set(data);
++    //     ctx.digest(data.length);
++    //     const output = new Uint8Array(32);
++    //     output.set(outputUint8Array);
++    //     return output;
++    // }
++    // ctx.init();
++    // update(data);
++    // return final();
++    return new Uint8Array();
+ }
+ exports.digest = digest;
+ function digest64(data) {
+-    if (data.length === 64) {
+-        inputUint8Array.set(data);
+-        ctx.digest64(wasmInputValue, wasmOutputValue);
+-        const output = new Uint8Array(32);
+-        output.set(outputUint8Array);
+-        return output;
+-    }
+-    throw new Error("InvalidLengthForDigest64");
++    // if (data.length === 64) {
++    //     inputUint8Array.set(data);
++    //     ctx.digest64(wasmInputValue, wasmOutputValue);
++    //     const output = new Uint8Array(32);
++    //     output.set(outputUint8Array);
++    //     return output;
++    // }
++    // throw new Error("InvalidLengthForDigest64");
++    return new Uint8Array();
+ }
+ exports.digest64 = digest64;
+ function digest2Bytes32(bytes1, bytes2) {
+-    if (bytes1.length === 32 && bytes2.length === 32) {
+-        inputUint8Array.set(bytes1);
+-        inputUint8Array.set(bytes2, 32);
+-        ctx.digest64(wasmInputValue, wasmOutputValue);
+-        const output = new Uint8Array(32);
+-        output.set(outputUint8Array);
+-        return output;
+-    }
+-    throw new Error("InvalidLengthForDigest64");
++    // if (bytes1.length === 32 && bytes2.length === 32) {
++    //     inputUint8Array.set(bytes1);
++    //     inputUint8Array.set(bytes2, 32);
++    //     ctx.digest64(wasmInputValue, wasmOutputValue);
++    //     const output = new Uint8Array(32);
++    //     output.set(outputUint8Array);
++    //     return output;
++    // }
++    // throw new Error("InvalidLengthForDigest64");
++    return new Uint8Array();
+ }
+ exports.digest2Bytes32 = digest2Bytes32;
+ /**
+@@ -62,46 +65,47 @@ exports.digest2Bytes32 = digest2Bytes32;
+  * @returns
+  */
+ function digest64HashObjects(obj1, obj2) {
+-    // TODO: expect obj1 and obj2 as HashObject
+-    inputUint32Array[0] = obj1.h0;
+-    inputUint32Array[1] = obj1.h1;
+-    inputUint32Array[2] = obj1.h2;
+-    inputUint32Array[3] = obj1.h3;
+-    inputUint32Array[4] = obj1.h4;
+-    inputUint32Array[5] = obj1.h5;
+-    inputUint32Array[6] = obj1.h6;
+-    inputUint32Array[7] = obj1.h7;
+-    inputUint32Array[8] = obj2.h0;
+-    inputUint32Array[9] = obj2.h1;
+-    inputUint32Array[10] = obj2.h2;
+-    inputUint32Array[11] = obj2.h3;
+-    inputUint32Array[12] = obj2.h4;
+-    inputUint32Array[13] = obj2.h5;
+-    inputUint32Array[14] = obj2.h6;
+-    inputUint32Array[15] = obj2.h7;
+-    ctx.digest64(wasmInputValue, wasmOutputValue);
+-    // extracting numbers from Uint32Array causes more memory
+-    return hashObject_1.byteArrayToHashObject(outputUint8Array);
++    // // TODO: expect obj1 and obj2 as HashObject
++    // inputUint32Array[0] = obj1.h0;
++    // inputUint32Array[1] = obj1.h1;
++    // inputUint32Array[2] = obj1.h2;
++    // inputUint32Array[3] = obj1.h3;
++    // inputUint32Array[4] = obj1.h4;
++    // inputUint32Array[5] = obj1.h5;
++    // inputUint32Array[6] = obj1.h6;
++    // inputUint32Array[7] = obj1.h7;
++    // inputUint32Array[8] = obj2.h0;
++    // inputUint32Array[9] = obj2.h1;
++    // inputUint32Array[10] = obj2.h2;
++    // inputUint32Array[11] = obj2.h3;
++    // inputUint32Array[12] = obj2.h4;
++    // inputUint32Array[13] = obj2.h5;
++    // inputUint32Array[14] = obj2.h6;
++    // inputUint32Array[15] = obj2.h7;
++    // ctx.digest64(wasmInputValue, wasmOutputValue);
++    // // extracting numbers from Uint32Array causes more memory
++    // return hashObject_1.byteArrayToHashObject(outputUint8Array);
++    return new Uint8Array();
+ }
+ exports.digest64HashObjects = digest64HashObjects;
+-function update(data) {
+-    const INPUT_LENGTH = ctx.INPUT_LENGTH;
+-    if (data.length > INPUT_LENGTH) {
+-        for (let i = 0; i < data.length; i += INPUT_LENGTH) {
+-            const sliced = data.slice(i, i + INPUT_LENGTH);
+-            inputUint8Array.set(sliced);
+-            ctx.update(wasmInputValue, sliced.length);
+-        }
+-    }
+-    else {
+-        inputUint8Array.set(data);
+-        ctx.update(wasmInputValue, data.length);
+-    }
+-}
+-function final() {
+-    ctx.final(wasmOutputValue);
+-    const output = new Uint8Array(32);
+-    output.set(outputUint8Array);
+-    return output;
+-}
++// function update(data) {
++//     const INPUT_LENGTH = ctx.INPUT_LENGTH;
++//     if (data.length > INPUT_LENGTH) {
++//         for (let i = 0; i < data.length; i += INPUT_LENGTH) {
++//             const sliced = data.slice(i, i + INPUT_LENGTH);
++//             inputUint8Array.set(sliced);
++//             ctx.update(wasmInputValue, sliced.length);
++//         }
++//     }
++//     else {
++//         inputUint8Array.set(data);
++//         ctx.update(wasmInputValue, data.length);
++//     }
++// }
++// function final() {
++//     ctx.final(wasmOutputValue);
++//     const output = new Uint8Array(32);
++//     output.set(outputUint8Array);
++//     return output;
++// }
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
