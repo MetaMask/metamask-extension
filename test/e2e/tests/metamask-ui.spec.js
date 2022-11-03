@@ -1,17 +1,17 @@
 const { strict: assert } = require('assert');
 const path = require('path');
 
-const enLocaleMessages = require('../../app/_locales/en/messages.json');
-const createStaticServer = require('../../development/create-static-server');
+const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const createStaticServer = require('../../../development/create-static-server');
 const {
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
-} = require('./helpers');
-const { buildWebDriver } = require('./webdriver');
-const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
+} = require('../helpers');
+const { buildWebDriver } = require('../webdriver');
+const Ganache = require('../ganache');
+const { ensureXServerIsRunning } = require('../x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;

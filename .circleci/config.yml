@@ -590,12 +590,14 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2
+              yarn test:e2e:firefox:snaps --retries 2 --reporter xunit --reporter-option output=test/test-results/firefox-snaps-e2e.xml
             fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/firefox-snaps-e2e.xml
 
   test-e2e-chrome-snaps:
     executor: node-browsers
@@ -617,12 +619,14 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2
+              yarn test:e2e:chrome:snaps --retries 2 --reporter xunit --reporter-option output=test/test-results/chrome-snaps-e2e.xml
             fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/chrome-snaps-e2e.xml
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
@@ -644,12 +648,14 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox --retries 2
+              yarn test:e2e:firefox --retries 2 --reporter xunit --reporter-option output=test/test-results/firefox-e2e.xml
             fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/firefox-e2e.xml
 
   benchmark:
     executor: node-browsers-medium-plus
