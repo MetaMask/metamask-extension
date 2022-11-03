@@ -516,6 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
+    parallelism: 4
     steps:
       - checkout
       - run:
@@ -534,7 +535,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --reporter xunit --reporter-option output=test/test-results/chrome-e2e.xml
+              yarn test:e2e:chrome --retries 2 --reporter xunit --reporter-option output=test/test-results/chrome-e2e.xml | circleci tests split --split-by=timings
             fi
           no_output_timeout: 20m
       - store_artifacts:
