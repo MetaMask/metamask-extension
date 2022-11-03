@@ -44,7 +44,7 @@ const initialState = {
 
 export const domainInitialState = initialState;
 
-const name = 'domainState';
+const name = 'DNS';
 
 let web3Provider = null;
 
@@ -196,7 +196,7 @@ export function lookupEnsName(domainName) {
           error,
           chainId,
           network,
-          domainType: 'ENS',
+          domainType: ENS,
           domainName: trimmedDomainName,
         }),
       );

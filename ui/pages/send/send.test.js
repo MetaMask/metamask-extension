@@ -53,7 +53,7 @@ jest.mock('ethers', () => {
 });
 const baseStore = {
   send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  domainState: domainInitialState,
+  DNS: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
   },
@@ -131,7 +131,7 @@ describe('Send Page', () => {
       expect(actions).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'domainState/enabledomainLookup',
+            type: 'DNS/enabledomainLookup',
           }),
         ]),
       );
@@ -145,7 +145,7 @@ describe('Send Page', () => {
       expect(actions).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'domainState/enabledomainLookup',
+            type: 'DNS/enabledomainLookup',
           }),
           expect.objectContaining({
             type: 'UI_MODAL_OPEN',
@@ -168,7 +168,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or Domain Name'),
+        getByPlaceholderText('Search, public address (0x), or ENS'),
       ).toBeTruthy();
     });
 
@@ -191,7 +191,7 @@ describe('Send Page', () => {
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
       expect(
-        getByPlaceholderText('Search, public address (0x), or Domain Name'),
+        getByPlaceholderText('Search, public address (0x), or ENS'),
       ).toBeTruthy();
       // Ensure we start a new draft transaction when its missing.
       expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
@@ -212,7 +212,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or Domain Name'),
+        getByPlaceholderText('Search, public address (0x), or ENS'),
       ).toBeTruthy();
     });
 
