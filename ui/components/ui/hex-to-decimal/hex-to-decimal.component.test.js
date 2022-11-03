@@ -1,23 +1,27 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import HexToDecimal from './hex-to-decimal.component';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import HexToDecimal from '.';
 
 describe('HexToDecimal Component', () => {
   it('should render a prefixed hex as a decimal with a className', () => {
-    const wrapper = shallow(
-      <HexToDecimal value="0x3039" className="hex-to-decimal" />,
-    );
+    const props = {
+      value: '0x3039',
+      className: 'hex-to-decimal',
+    };
 
-    expect(wrapper.hasClass('hex-to-decimal')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('12345');
+    const { container } = renderWithProvider(<HexToDecimal {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render an unprefixed hex as a decimal with a className', () => {
-    const wrapper = shallow(
-      <HexToDecimal value="1A85" className="hex-to-decimal" />,
-    );
+    const props = {
+      value: '1A85',
+      className: 'hex-to-decimal',
+    };
 
-    expect(wrapper.hasClass('hex-to-decimal')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('6789');
+    const { container } = renderWithProvider(<HexToDecimal {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 });
