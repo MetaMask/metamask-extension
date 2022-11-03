@@ -1,8 +1,8 @@
 diff --git a/node_modules/@chainsafe/as-sha256/lib/index.js b/node_modules/@chainsafe/as-sha256/lib/index.js
-index 6930b09..17a0b0f 100644
+index 6930b09..442d22e 100644
 --- a/node_modules/@chainsafe/as-sha256/lib/index.js
 +++ b/node_modules/@chainsafe/as-sha256/lib/index.js
-@@ -4,55 +4,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+@@ -4,55 +4,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
  };
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.digest64HashObjects = exports.digest2Bytes32 = exports.digest64 = exports.digest = exports.SHA256 = exports.hashObjectToByteArray = exports.byteArrayToHashObject = void 0;
@@ -19,6 +19,7 @@ index 6930b09..17a0b0f 100644
 -const inputUint8Array = new Uint8Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
 -const outputUint8Array = new Uint8Array(ctx.memory.buffer, wasmOutputValue, 32);
 -const inputUint32Array = new Uint32Array(ctx.memory.buffer, wasmInputValue, ctx.INPUT_LENGTH);
++const { sha256 } = require("ethereum-cryptography/sha256");
 +// const sha256_1 = __importDefault(require("./sha256"));
 +// exports.SHA256 = sha256_1.default;
 +// const ctx = wasm_1.newInstance();
@@ -54,7 +55,7 @@ index 6930b09..17a0b0f 100644
 +    // ctx.init();
 +    // update(data);
 +    // return final();
-+    return new Uint8Array();
++    return sha256(data);
  }
  exports.digest = digest;
  function digest64(data) {
@@ -74,7 +75,7 @@ index 6930b09..17a0b0f 100644
 +    //     return output;
 +    // }
 +    // throw new Error("InvalidLengthForDigest64");
-+    return new Uint8Array();
++    return sha256(data);
  }
  exports.digest64 = digest64;
  function digest2Bytes32(bytes1, bytes2) {
@@ -96,11 +97,11 @@ index 6930b09..17a0b0f 100644
 +    //     return output;
 +    // }
 +    // throw new Error("InvalidLengthForDigest64");
-+    return new Uint8Array();
++    return sha256(new Uint8Array([...bytes1, ...bytes2]));
  }
  exports.digest2Bytes32 = digest2Bytes32;
  /**
-@@ -62,46 +65,47 @@ exports.digest2Bytes32 = digest2Bytes32;
+@@ -62,46 +66,50 @@ exports.digest2Bytes32 = digest2Bytes32;
   * @returns
   */
  function digest64HashObjects(obj1, obj2) {
@@ -144,7 +145,10 @@ index 6930b09..17a0b0f 100644
 +    // ctx.digest64(wasmInputValue, wasmOutputValue);
 +    // // extracting numbers from Uint32Array causes more memory
 +    // return hashObject_1.byteArrayToHashObject(outputUint8Array);
-+    return new Uint8Array();
++    const bytes = new Uint8Array(64);
++    hashObjectToByteArray(obj1, bytes, 0);
++    hashObjectToByteArray(obj2, bytes, 32);
++    return byteArrayToHashObject(sha256(bytes));
  }
  exports.digest64HashObjects = digest64HashObjects;
 -function update(data) {
