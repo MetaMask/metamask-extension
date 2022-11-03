@@ -21,10 +21,14 @@ export default {
     actionButtonLabel: {
       control: 'text',
     },
+    showLockIcon: {
+      control: 'boolean',
+    },
   },
   args: {
     label: 'app.uniswap.org',
     src: 'https://uniswap.org/favicon.ico',
+    showLockIcon: false,
   },
 };
 
@@ -36,4 +40,9 @@ DefaultStory.storyName = 'Default';
 export const ActionButtonLabel = Template.bind({});
 ActionButtonLabel.args = {
   actionButtonLabel: 'Permissions',
+};
+
+export const ShowLockIcon = Template.bind({});
+ShowLockIcon.args = {
+  showLockIcon: true,
 };

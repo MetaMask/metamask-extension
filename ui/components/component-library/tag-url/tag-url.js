@@ -21,8 +21,9 @@ export const TagUrl = ({
   actionButtonLabel,
   actionButtonProps,
   src,
+  showLockIcon,
   avatarFaviconProps,
-  fallbackIconProps,
+  lockIconProps,
   className,
   ...props
 }) => {
@@ -41,7 +42,7 @@ export const TagUrl = ({
       {...props}
     >
       <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
-      {label.includes('https://') ? (
+      {showLockIcon ? (
         <>
           <Icon
             className="tag-url__lock-icon"
@@ -49,10 +50,10 @@ export const TagUrl = ({
             color={COLORS.ICON_ALTERNATIVE}
             size={SIZES.SM}
             aria-label="https://"
-            {...fallbackIconProps}
+            {...lockIconProps}
           />
           <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
-            {label.replace('https://', '')}
+            {label}
           </Text>{' '}
         </>
       ) : (
@@ -83,13 +84,17 @@ TagUrl.propTypes = {
    */
   src: PropTypes.string,
   /**
+   * The showLockIcon accepts a boolean prop to render the lock icon instead of https in label
+   */
+  showLockIcon: PropTypes.bool,
+  /**
    * It accepts all the props from Avatar Favicon
    */
   avatarFaviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
   /**
    * It accepts all the props from Icon
    */
-  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
+  lockIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The text content of the TagUrl component
    */
