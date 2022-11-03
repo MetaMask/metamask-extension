@@ -9,7 +9,18 @@ import {
 } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { NETWORK_EVENTS } from './network';
+
+const getInitLedgerTransportType = () => {
+  if (isManifestV3) {
+    return LEDGER_TRANSPORT_TYPES.WEBHID;
+  }
+
+  return window.navigator.hid
+    ? LEDGER_TRANSPORT_TYPES.WEBHID
+    : LEDGER_TRANSPORT_TYPES.U2F;
+};
 
 export default class PreferencesController {
   /**
@@ -65,9 +76,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
-      ledgerTransportType: window.navigator.hid
-        ? LEDGER_TRANSPORT_TYPES.WEBHID
-        : LEDGER_TRANSPORT_TYPES.U2F,
+      ledgerTransportType: getInitLedgerTransportType(),
       theme: 'light',
       ...opts.initState,
     };
