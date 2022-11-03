@@ -41,17 +41,25 @@ export const TagUrl = ({
       {...props}
     >
       <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
-      <Icon
-        className="tag-url__lock-icon"
-        name={ICON_NAMES.LOCK_FILLED}
-        color={COLORS.ICON_DEFAULT}
-        size={SIZES.SM}
-        aria-label="https://"
-        {...fallbackIconProps}
-      />
-      <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
-        {label}
-      </Text>
+      {label.includes('https://') ? (
+        <>
+          <Icon
+            className="tag-url__lock-icon"
+            name={ICON_NAMES.LOCK_FILLED}
+            color={COLORS.ICON_ALTERNATIVE}
+            size={SIZES.SM}
+            aria-label="https://"
+            {...fallbackIconProps}
+          />
+          <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
+            {label.replace('https://', '')}
+          </Text>{' '}
+        </>
+      ) : (
+        <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
+          {label}
+        </Text>
+      )}
       {actionButtonLabel && (
         <ButtonLink
           as="a"
