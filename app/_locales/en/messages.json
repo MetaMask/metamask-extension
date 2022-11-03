@@ -2779,7 +2779,7 @@
     "message": "Recents"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or Domain Name"
+    "message": "Search, public address (0x), or ENS"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
