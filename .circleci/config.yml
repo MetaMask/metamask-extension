@@ -795,8 +795,7 @@ jobs:
       - run:
           name: Set branch parent commit env var
           command: |
-            git fetch
-            echo "export PARENT_COMMIT=$(git merge-base --fork-point origin/HEAD HEAD)" >> $BASH_ENV
+            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: build:announce
