@@ -226,7 +226,7 @@ const onDisconnectDestroyPhishingStreams = () => {
  *
  * @param {object} msg
  * @param {string} msg.name - custom property and name to identify the message received
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 const onMessageSetUpPhishingStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
