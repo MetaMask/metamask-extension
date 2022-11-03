@@ -37,6 +37,7 @@ export const PickerNetwork = ({
       {...props}
     >
       <AvatarNetwork
+        className="mm-picker-network__avatar-network"
         networkImageUrl={src}
         networkName={label}
         size={SIZES.XS}
@@ -44,7 +45,7 @@ export const PickerNetwork = ({
       />
       <Text variant={TEXT.BODY_SM}>{label}</Text>
       <Icon
-        className="picker-network__arrow-down-icon"
+        className="mm-picker-network__arrow-down-icon"
         name={ICON_NAMES.ARROW_DOWN}
         color={COLORS.ICON_DEFAULT}
         size={SIZES.XS}
