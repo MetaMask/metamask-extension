@@ -6,5 +6,5 @@ export default {
 };
 
 export const SmartTransactionStatusComponent = () => {
-  return <SmartTransactionStatus />;
+  return <SmartTransactionStatus txId={1} />;
 };

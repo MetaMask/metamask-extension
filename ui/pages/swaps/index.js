@@ -575,7 +575,7 @@ export default function Swap() {
               path={SMART_TRANSACTION_STATUS_ROUTE}
               exact
               render={() => {
-                return <SmartTransactionStatus />;
+                return <SmartTransactionStatus txId={tradeTxData?.id} />;
               }}
             />
             <Route

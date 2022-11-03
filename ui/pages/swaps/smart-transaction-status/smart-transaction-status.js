@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -25,6 +25,7 @@ import {
   conversionRateSelector,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
+  getFullTxData,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
@@ -67,12 +68,14 @@ import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
 
-export default function SmartTransactionStatus() {
+export default function SmartTransactionStatus({ txId }) {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
+  const { swapMetaData } =
+    useSelector((state) => getFullTxData(state, txId)) || {};
   const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
     fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -125,9 +128,9 @@ export default function SmartTransactionStatus() {
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,
-    token_from: sourceTokenInfo?.symbol,
+    token_from: swapMetaData?.token_from,
     token_from_amount: fetchParams?.value,
-    token_to: destinationTokenInfo?.symbol,
+    token_to: swapMetaData?.token_to,
     request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
     slippage: fetchParams?.slippage,
     custom_slippage: fetchParams?.slippage === 2,
@@ -214,8 +217,8 @@ export default function SmartTransactionStatus() {
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
     headerText = t('stxSuccess');
-    if (destinationTokenInfo?.symbol) {
-      description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
+    if (swapMetaData?.token_to) {
+      description = t('stxSuccessDescription', [swapMetaData.token_to]);
     }
     icon = <SuccessIcon />;
   } else if (
@@ -325,12 +328,12 @@ export default function SmartTransactionStatus() {
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1, marginRight: 2 }}
           >
-            {sourceTokenInfo?.symbol}
+            {swapMetaData?.token_from}
           </Typography>
           <UrlIcon
             url={sourceTokenInfo.iconUrl}
             className="main-quote-summary__icon"
-            name={sourceTokenInfo.symbol}
+            name={swapMetaData?.token_from}
             fallbackClassName="main-quote-summary__icon-fallback"
           />
           <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
@@ -339,7 +342,7 @@ export default function SmartTransactionStatus() {
           <UrlIcon
             url={destinationTokenInfo.iconUrl}
             className="main-quote-summary__icon"
-            name={destinationTokenInfo.symbol}
+            name={swapMetaData?.token_to}
             fallbackClassName="main-quote-summary__icon-fallback"
           />
           <Typography
@@ -355,7 +358,7 @@ export default function SmartTransactionStatus() {
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1 }}
           >
-            {destinationTokenInfo?.symbol}
+            {swapMetaData?.token_to}
           </Typography>
         </Box>
         <Box
@@ -471,3 +474,5 @@ export default function SmartTransactionStatus() {
     </div>
   );
 }
+
+SmartTransactionStatus.propTypes = { txId: PropTypes.number };
