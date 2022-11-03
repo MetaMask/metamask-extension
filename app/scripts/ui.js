@@ -30,22 +30,65 @@ const container = document.getElementById('app-content');
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
 const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
+// Service Worker Keep Alive Message Constants
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+const ACK_KEEP_ALIVE_WAIT_TIME = 60_000; // 1 minute
+const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
+let lastMessageRecievedTimestamp = Date.now();
 /*
  * As long as UI is open it will keep sending messages to service worker
  * In service worker as this message is received
  * if service worker is inactive it is reactivated and script re-loaded
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
+let extensionPort;
+let timeoutHandle;
+
 if (isManifestV3) {
-  setInterval(() => {
+  // Checking for SW aliveness (or stuckness) flow
+  // 1. Check if we have an extensionPort, if yes
+  // 2a. Send a keep alive message to the background via extensionPort
+  // 2b. Add a listener to it (if not already added)
+  // 3a. Set a timeout to check if we have received an ACK from background
+  // 3b. If we have not received an ACK within Xs, we know the background is stuck or dead
+  // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
+
+  const ackKeepAliveListener = (message) => {
+    if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
+      lastMessageRecievedTimestamp = Date.now();
+      clearTimeout(timeoutHandle);
+    }
+  };
+
+  const handle = setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+    if (extensionPort !== null && extensionPort !== undefined) {
+      extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+      if (extensionPort.onMessage.hasListener(ackKeepAliveListener) === false) {
+        extensionPort.onMessage.addListener(ackKeepAliveListener);
+      }
+    }
+
+    timeoutHandle = setTimeout(() => {
+      if (
+        Date.now() - lastMessageRecievedTimestamp >
+        ACK_KEEP_ALIVE_WAIT_TIME
+      ) {
+        clearInterval(handle);
+        displayCriticalError(
+          'somethingIsWrong',
+          new Error("Something's gone wrong. Try reloading the page."),
+        );
+      }
+    }, ACK_KEEP_ALIVE_WAIT_TIME);
   }, WORKER_KEEP_ALIVE_INTERVAL);
 }
 
@@ -61,7 +104,7 @@ async function start() {
   let isUIInitialised = false;
 
   // setup stream to background
-  let extensionPort = browser.runtime.connect({ name: windowType });
+  extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
@@ -208,7 +251,7 @@ async function start() {
     initializeUi(tab, connectionStream, (err, store) => {
       if (err) {
         // if there's an error, store will be = metamaskState
-        displayCriticalError(err, store);
+        displayCriticalError('troubleStarting', err, store);
         return;
       }
       isUIInitialised = true;
@@ -226,7 +269,7 @@ async function start() {
   function updateUiStreams() {
     connectToAccountManager(connectionStream, (err, backgroundConnection) => {
       if (err) {
-        displayCriticalError(err);
+        displayCriticalError('troubleStarting', err);
         return;
       }
 
@@ -277,8 +320,8 @@ function initializeUi(activeTab, connectionStream, cb) {
   });
 }
 
-async function displayCriticalError(err, metamaskState) {
-  const html = await getErrorHtml(SUPPORT_LINK, metamaskState);
+async function displayCriticalError(errorKey, err, metamaskState) {
+  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
 
   container.innerHTML = html;
 
