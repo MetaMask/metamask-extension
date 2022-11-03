@@ -1,0 +1,13 @@
+diff --git a/node_modules/@chainsafe/bls/lib/herumi/index.js b/node_modules/@chainsafe/bls/lib/herumi/index.js
+index 4ed8fdd..a0ab1eb 100644
+--- a/node_modules/@chainsafe/bls/lib/herumi/index.js
++++ b/node_modules/@chainsafe/bls/lib/herumi/index.js
+@@ -3,7 +3,7 @@ import { PublicKey } from "./publicKey.js";
+ import { Signature } from "./signature.js";
+ import { init, destroy } from "./context.js";
+ import { functionalInterfaceFactory } from "../functional.js";
+-await init();
++// await init();
+ export * from "../constants.js";
+ export { SecretKey, PublicKey, Signature, init, destroy };
+ export const bls = {
