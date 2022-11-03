@@ -164,9 +164,11 @@ export default class MetaMetricsController {
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(segmentApiCalls).forEach(({ eventType, payload, callback }) => {
-        this._submitSegmentAPICall(eventType, payload, callback);
-      });
+      Object.values(segmentApiCalls).forEach(
+        ({ eventType, payload, callback }) => {
+          this._submitSegmentAPICall(eventType, payload, callback);
+        },
+      );
     }
 
     // Close out event fragments that were created but not progressed. An
