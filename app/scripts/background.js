@@ -107,10 +107,16 @@ const initApp = async (remotePort) => {
  * For non-dapp pages, the message will be sent and ignored.
  */
 const sendReadyMessageToTabs = async () => {
-  const tabs = await browser.tabs.query({}).then((result) => {
-    checkForErrorAndLog();
-    return result;
-  });
+  const tabs = await browser.tabs
+    .query({
+      // Query tabs with a url. New tabs and DevTool tabs have no url value. e.g. chrome://extensions, chrome://inspect
+      url: '<all_urls>',
+      windowType: 'normal',
+    })
+    .then((result) => {
+      checkForErrorAndLog();
+      return result;
+    });
 
   /* TODO we should only sendMessage to dapp tabs, not all tabs. */
   for (const tab of tabs) {
