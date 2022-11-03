@@ -42,27 +42,6 @@ export default class ConfirmApproveContent extends Component {
   };
 
   static propTypes = {
-    collections: PropTypes.shape({
-      collectibles: PropTypes.arrayOf(
-        PropTypes.shape({
-          address: PropTypes.string.isRequired,
-          tokenId: PropTypes.string.isRequired,
-          name: PropTypes.string,
-          description: PropTypes.string,
-          image: PropTypes.string,
-          standard: PropTypes.string,
-          imageThumbnail: PropTypes.string,
-          imagePreview: PropTypes.string,
-          creator: PropTypes.shape({
-            address: PropTypes.string,
-            config: PropTypes.string,
-            profile_img_url: PropTypes.string,
-          }),
-        }),
-      ),
-      collectionImage: PropTypes.string,
-      collectionName: PropTypes.string,
-    }),
     fromName: PropTypes.string,
     fromAddress: PropTypes.string,
     decimals: PropTypes.number,
@@ -103,6 +82,7 @@ export default class ConfirmApproveContent extends Component {
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
+    tokenImage: PropTypes.string,
   };
 
   state = {
@@ -156,7 +136,7 @@ export default class ConfirmApproveContent extends Component {
               </Box>
             )}
             {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
-              <EditGasFeeButton />
+              <EditGasFeeButton userAcknowledgedGasMissing />
             )}
           </div>
         )}
@@ -180,7 +160,7 @@ export default class ConfirmApproveContent extends Component {
       supportsEIP1559V2,
     } = this.props;
     if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
-      return <GasDetailsItem />;
+      return <GasDetailsItem userAcknowledgedGasMissing />;
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
@@ -594,11 +574,13 @@ export default class ConfirmApproveContent extends Component {
   }
 
   async componentDidMount() {
-    const { tokenAddress, fromAddress } = this.props;
-    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
-    this.setState({
-      collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
-    });
+    const { tokenAddress, fromAddress, isSetApproveForAll } = this.props;
+    if (isSetApproveForAll) {
+      const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+      this.setState({
+        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+      });
+    }
   }
 
   render() {
@@ -625,12 +607,12 @@ export default class ConfirmApproveContent extends Component {
       assetStandard,
       userAddress,
       isSetApproveForAll,
-      collections,
       assetName,
       tokenId,
       tokenAddress,
       fromName,
       fromAddress,
+      tokenImage,
     } = this.props;
     const { showFullTxDetails, showViewNftModal, collectionBalance } =
       this.state;
@@ -747,7 +729,6 @@ export default class ConfirmApproveContent extends Component {
           <Box padding={4} width={BLOCK_SIZES.FULL}>
             <NftInfo
               tokenAddress={tokenAddress}
-              collections={collections}
               assetName={assetName}
               tokenId={tokenId}
               onView={() => this.setState({ showViewNftModal: true })}
@@ -853,11 +834,12 @@ export default class ConfirmApproveContent extends Component {
 
         {showViewNftModal && (
           <NftsModal
-            collections={collections}
             senderAddress={fromAddress}
             accountName={fromName}
             total={collectionBalance}
             assetName={assetName}
+            tokenImage={tokenImage}
+            tokenId={tokenId}
             isSetApproveForAll={isSetApproveForAll}
             onClose={() => this.setState({ showViewNftModal: false })}
           />

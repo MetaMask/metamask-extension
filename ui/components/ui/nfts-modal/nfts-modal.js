@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../popover';
@@ -19,24 +18,22 @@ import {
   FLEX_WRAP,
   SIZES,
 } from '../../../helpers/constants/design-system';
-import { getIpfsGateway } from '../../../selectors';
 import Identicon from '../identicon';
-import { shortenAddress, getAssetImageURL } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CollectibleDefaultImage from '../../app/collectible-default-image';
 
 export default function NftsModal({
-  collections = {},
   senderAddress,
   accountName,
   assetName,
+  tokenImage,
+  tokenId,
   total,
   isSetApproveForAll,
   onClose,
 }) {
   const t = useI18nContext();
-  const collectionsKeys = Object.keys(collections);
-  const ipfsGateway = useSelector(getIpfsGateway);
 
   const footer = (
     <Box
@@ -55,96 +52,6 @@ export default function NftsModal({
       </Button>
     </Box>
   );
-
-  const renderCollection = ({ collectibles, collectionName, key }) => {
-    return (
-      <Box className="nfts-modal__collection" key={`collection-${key}`}>
-        {collectionName === assetName ? (
-          <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
-            {collectibles.map((collectible, i) => {
-              const { image, tokenId, backgroundColor, name } = collectible;
-              const collectibleImage = getAssetImageURL(image, ipfsGateway);
-
-              if (!isSetApproveForAll && i === 0) {
-                return (
-                  <Box
-                    width={BLOCK_SIZES.ONE_THIRD}
-                    key={`collectible-${i}`}
-                    className="nfts-modal__item-wrapper"
-                  >
-                    <Card
-                      padding={0}
-                      justifyContent={JUSTIFY_CONTENT.CENTER}
-                      className="nfts-modal__item-wrapper__card"
-                    >
-                      {collectibleImage ? (
-                        <Box
-                          borderRadius={SIZES.SM}
-                          display={DISPLAY.FLEX}
-                          justifyContent={JUSTIFY_CONTENT.CENTER}
-                          className="nfts-modal__item"
-                          style={{
-                            backgroundColor,
-                          }}
-                        >
-                          <img
-                            className="nfts-modal__item-image"
-                            src={collectibleImage}
-                          />
-                        </Box>
-                      ) : (
-                        <CollectibleDefaultImage
-                          name={name}
-                          tokenId={tokenId}
-                        />
-                      )}
-                    </Card>
-                  </Box>
-                );
-              } else if (isSetApproveForAll) {
-                return (
-                  <Box
-                    width={BLOCK_SIZES.ONE_THIRD}
-                    key={`collectible-${i}`}
-                    className="nfts-modal__item-wrapper"
-                  >
-                    <Card
-                      padding={0}
-                      justifyContent={JUSTIFY_CONTENT.CENTER}
-                      className="nfts-modal__item-wrapper__card"
-                    >
-                      {collectibleImage ? (
-                        <Box
-                          borderRadius={SIZES.SM}
-                          display={DISPLAY.FLEX}
-                          justifyContent={JUSTIFY_CONTENT.CENTER}
-                          className="nfts-modal__item"
-                          style={{
-                            backgroundColor,
-                          }}
-                        >
-                          <img
-                            className="nfts-modal__item-image"
-                            src={collectibleImage}
-                          />
-                        </Box>
-                      ) : (
-                        <CollectibleDefaultImage
-                          name={name}
-                          tokenId={tokenId}
-                        />
-                      )}
-                    </Card>
-                  </Box>
-                );
-              }
-              return null;
-            })}
-          </Box>
-        ) : null}
-      </Box>
-    );
-  };
 
   return (
     <Popover className="nfts-modal__content" footer={footer}>
@@ -186,15 +93,33 @@ export default function NftsModal({
         paddingRight={4}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        {collectionsKeys.map((key) => {
-          const { collectibles, collectionName } = collections[key];
-
-          return renderCollection({
-            collectibles,
-            collectionName,
-            key,
-          });
-        })}
+        <Box className="nfts-modal__collection">
+          <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
+            <Box
+              width={BLOCK_SIZES.ONE_THIRD}
+              className="nfts-modal__item-wrapper"
+            >
+              <Card
+                padding={0}
+                justifyContent={JUSTIFY_CONTENT.CENTER}
+                className="nfts-modal__item-wrapper__card"
+              >
+                {tokenImage ? (
+                  <Box
+                    borderRadius={SIZES.SM}
+                    display={DISPLAY.FLEX}
+                    justifyContent={JUSTIFY_CONTENT.CENTER}
+                    className="nfts-modal__item"
+                  >
+                    <img className="nfts-modal__item-image" src={tokenImage} />
+                  </Box>
+                ) : (
+                  <CollectibleDefaultImage name={assetName} tokenId={tokenId} />
+                )}
+              </Card>
+            </Box>
+          </Box>
+        </Box>
       </Box>
 
       {isSetApproveForAll && (
@@ -219,28 +144,11 @@ export default function NftsModal({
 }
 
 NftsModal.propTypes = {
-  collections: PropTypes.shape({
-    collectibles: PropTypes.arrayOf(
-      PropTypes.shape({
-        address: PropTypes.string.isRequired,
-        tokenId: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        image: PropTypes.string,
-        standard: PropTypes.string,
-        imageThumbnail: PropTypes.string,
-        imagePreview: PropTypes.string,
-        creator: PropTypes.shape({
-          address: PropTypes.string,
-          config: PropTypes.string,
-          profile_img_url: PropTypes.string,
-        }),
-      }),
-    ),
-  }),
   senderAddress: PropTypes.string,
   accountName: PropTypes.string,
   assetName: PropTypes.string,
+  tokenImage: PropTypes.string,
+  tokenId: PropTypes.string,
   total: PropTypes.number,
   isSetApproveForAll: PropTypes.bool,
   onClose: PropTypes.func,
