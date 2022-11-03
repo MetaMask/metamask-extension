@@ -192,5 +192,5 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
-  isBestQuote: PropTypes.bool.isRequired,
+  isBestQuote: PropTypes.bool,
 };
