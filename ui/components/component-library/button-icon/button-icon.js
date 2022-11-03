@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import {
   ALIGN_ITEMS,
+  BORDER_RADIUS,
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
@@ -45,6 +46,7 @@ export const ButtonIcon = ({
       display={DISPLAY.INLINE_FLEX}
       justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
+      borderRadius={BORDER_RADIUS.LG}
       backgroundColor={COLORS.TRANSPARENT}
       href={href}
       {...props}
@@ -93,10 +95,6 @@ ButtonIcon.propTypes = {
    * Possible values could be 'SIZES.SM', 'SIZES.LG',
    */
   size: PropTypes.oneOf(Object.values(BUTTON_ICON_SIZES)),
-  /**
-   * Addition style properties to apply to the button.
-   */
-  style: PropTypes.object,
   /**
    * ButtonIcon accepts all the props from Box
    */

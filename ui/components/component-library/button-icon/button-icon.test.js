@@ -32,6 +32,19 @@ describe('ButtonIcon', () => {
     expect(anchor).toBe(1);
   });
 
+  it('should render anchor element correctly using href', () => {
+    const { getByTestId, getByRole } = render(
+      <ButtonIcon
+        href="/metamask"
+        data-testid="button-icon"
+        icon="add-square-filled"
+        ariaLabel="add"
+      />,
+    );
+    expect(getByTestId('button-icon')).toHaveClass('mm-button-icon');
+    expect(getByRole('link')).toBeDefined();
+  });
+
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
