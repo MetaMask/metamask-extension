@@ -741,7 +741,7 @@ export default function ViewQuote() {
   const priceSlippageUnknownFiatValue =
     !priceSlippageFromSource ||
     !priceSlippageFromDestination ||
-    usedQuote?.priceSlippage?.calculationError;
+    Boolean(usedQuote?.priceSlippage?.calculationError);
 
   let priceDifferencePercentage = 0;
   if (usedQuote?.priceSlippage?.ratio) {
@@ -1038,7 +1038,7 @@ export default function ViewQuote() {
         }
         hideCancel
         disabled={isSwapButtonDisabled}
-        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
+        className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
         showTopBorder
       />
     </div>

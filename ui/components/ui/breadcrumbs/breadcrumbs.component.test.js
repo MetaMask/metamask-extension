@@ -1,22 +1,16 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Breadcrumbs from './breadcrumbs.component';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import Breadcrumbs from '.';
 
 describe('Breadcrumbs Component', () => {
-  it('should render with the correct colors', () => {
-    const wrapper = shallow(<Breadcrumbs currentIndex={1} total={3} />);
+  it('should match snapshot with multiple breakcumbs', () => {
+    const props = {
+      currentIndex: 1,
+      total: 3,
+    };
 
-    expect(wrapper).toHaveLength(1);
-    expect(wrapper.find('.breadcrumbs')).toHaveLength(1);
-    expect(wrapper.find('.breadcrumb')).toHaveLength(3);
-    expect(
-      wrapper.find('.breadcrumb').at(0).props().style.backgroundColor,
-    ).toStrictEqual('var(--color-background-default)');
-    expect(
-      wrapper.find('.breadcrumb').at(1).props().style.backgroundColor,
-    ).toStrictEqual('var(--color-background-alternative)');
-    expect(
-      wrapper.find('.breadcrumb').at(2).props().style.backgroundColor,
-    ).toStrictEqual('var(--color-background-default)');
+    const { container } = renderWithProvider(<Breadcrumbs {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 });
