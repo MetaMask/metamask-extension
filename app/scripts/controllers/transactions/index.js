@@ -8,7 +8,7 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
-import { merge, pickBy } from 'lodash';
+import { isString, merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
@@ -1476,7 +1476,14 @@ export default class TransactionController extends EventEmitter {
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
-    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+    let signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+
+    if (isString(signedEthTx)) {
+      const bufferData = toBuffer(signedEthTx);
+      signedEthTx = TransactionFactory.fromSerializedData(bufferData, {
+        common,
+      });
+    }
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation

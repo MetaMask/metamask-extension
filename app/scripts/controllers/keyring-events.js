@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { isFunction, noop, pullAllBy, throttle } from 'lodash';
 import nanoid from 'nanoid';
+import { Transaction } from '@ethereumjs/tx';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import {
   HARDWARE_KEYRING_INIT_OPTS,
@@ -27,6 +28,7 @@ const ENFORCE_CLIENT_INVOCATION_METHODS = {
     'getFirstPage',
     'addAccounts',
     'attemptMakeApp',
+    'getFirstPage',
   ],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
@@ -95,6 +97,21 @@ const getClassInstanceMethods = (classInstance) =>
   Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance)).filter(
     (method) => method !== 'constructor',
   );
+
+function getSerializedArgs(args, method) {
+  if (method === 'signTransaction') {
+    return args.map((arg) => {
+      if (arg instanceof Transaction) {
+        // return arg.serialize();
+        return arg.toJSON();
+      }
+
+      return arg;
+    });
+  }
+
+  return args;
+}
 
 export default class KeyringEventsController extends EventEmitter {
   constructor({ sendPromisifiedHardwareCall }) {
@@ -271,9 +288,16 @@ export default class KeyringEventsController extends EventEmitter {
     // Ensure that we serialize the state before we try
     // to call the method in the background-script
     const prevState = await keyring.serialize();
-    const getClientSidePromise = () =>
-      this._createClientSidePromise(keyring, method, args, prevState);
+    const getClientSidePromise = () => {
+      const serializedArgs = getSerializedArgs(args);
 
+      return this._createClientSidePromise(
+        keyring,
+        method,
+        serializedArgs,
+        prevState,
+      );
+    };
     if (shouldAlwaysRunClientSide) {
       const clientSideResult = await getClientSidePromise();
 
