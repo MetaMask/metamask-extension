@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+import log from 'loglevel';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
@@ -111,6 +112,17 @@ function checkForError() {
   return new Error(lastError.message);
 }
 
+/** @returns {Error|undefined} */
+function checkForErrorAndLog() {
+  const error = checkForError();
+
+  if (error) {
+    log.error(error);
+  }
+
+  return error;
+}
+
 /**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
@@ -169,6 +181,7 @@ export {
   hexToBn,
   BnMultiplyByFraction,
   checkForError,
+  checkForErrorAndLog,
   addHexPrefix,
   bnToHex,
   getChainType,

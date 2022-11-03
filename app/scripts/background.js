@@ -46,7 +46,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { checkForError, getPlatform } from './lib/util';
+import { checkForErrorAndLog, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -101,45 +101,35 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
-const throwErrorIfLastErrorFound = () => {
-  const err = checkForError();
-  if (err) {
-    throw err;
-  }
-};
-
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
  * For non-dapp pages, the message will be sent and ignored.
  */
 const sendReadyMessageToTabs = async () => {
-  try {
-    const tabs = await browser.tabs.query({});
-    throwErrorIfLastErrorFound();
+  const tabs = await browser.tabs.query({}).then(() => {
+    checkForErrorAndLog();
+  });
 
-    /* TODO we should only sendMessage to dapp tabs, not all tabs. */
-    for (const tab of tabs) {
-      browser.tabs
-        .sendMessage(tab.id, {
-          name: EXTENSION_MESSAGES.READY,
-        })
-        .catch((e) => {
-          if (
-            e.message ===
-            'Could not establish connection. Receiving end does not exist.'
-          ) {
-            /** Safely ignore this error, as it means the tab may not be a dapp. */
-          } else {
-            throw new Error(e);
-          }
-        })
-        .finally(() => {
-          throwErrorIfLastErrorFound();
-        });
-    }
-  } catch (err) {
-    log.error(err);
+  /* TODO we should only sendMessage to dapp tabs, not all tabs. */
+  for (const tab of tabs) {
+    browser.tabs
+      .sendMessage(tab.id, {
+        name: EXTENSION_MESSAGES.READY,
+      })
+      .then(() => {
+        checkForErrorAndLog();
+      })
+      .catch((e) => {
+        if (
+          e.message ===
+          'Could not establish connection. Receiving end does not exist.'
+        ) {
+          /** Safely ignore this error, as it means the tab may not be a dapp. */
+        } else {
+          log.error(e);
+        }
+      });
   }
 };
 
