@@ -126,16 +126,6 @@ const sendReadyMessageToTabs = async () => {
       })
       .then(() => {
         checkForErrorAndLog();
-      })
-      .catch((e) => {
-        if (
-          e.message ===
-          'Could not establish connection. Receiving end does not exist.'
-        ) {
-          /** Safely ignore this error, as it means the tab may not be a dapp. */
-        } else {
-          log.error(e);
-        }
       });
   }
 };
