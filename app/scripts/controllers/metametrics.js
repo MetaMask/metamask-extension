@@ -20,7 +20,7 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId } from '../lib/util';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -126,10 +126,10 @@ export default class MetaMetricsController {
     this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
-    const events = initState?.events || {};
+    const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: null,
+      participateInMetaMetrics: true,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
@@ -137,8 +137,8 @@ export default class MetaMetricsController {
       fragments: {
         ...initState?.fragments,
       },
-      events: {
-        ...events,
+      segmentApiCalls: {
+        ...segmentApiCalls,
       },
     });
 
@@ -162,10 +162,10 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
-    // Code below will submit to segment pending events as vontroller is re-instantiated
+    // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(events).forEach(({ eventType, payload, callback }) => {
-        this._submitSegmentEvent(eventType, payload, callback);
+      Object.values(segmentApiCalls).forEach(({ eventType, payload, callback }) => {
+        this._submitSegmentAPICall(eventType, payload, callback);
       });
     }
 
@@ -722,7 +722,7 @@ export default class MetaMetricsController {
       ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
@@ -823,7 +823,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this._submitSegmentEvent('identify', {
+      this._submitSegmentAPICall('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -952,7 +952,7 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this._submitSegmentEvent('track', payload, callback);
+      this._submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
@@ -960,25 +960,38 @@ export default class MetaMetricsController {
   }
 
   // Method below submits the request to analytics SDK.
-  // For MV3 it will also add event to controller store
+  // It will also add event to controller store
   // and pass a callback to remove it from store once request is submitted to segment
-  // Saving events in controller store in MV3 ensures that events are tracked
+  // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
-  _submitSegmentEvent(eventType, payload, callback) {
+  _submitSegmentAPICall(eventType, payload, callback) {
     const messageId = payload.messageId || generateRandomId();
-    const timestamp = payload.timestamp || new Date();
+    let timestamp = new Date();
+    if (payload.timestamp) {
+      const payloadDate = new Date(payload.timestamp);
+      if (isValidDate(payloadDate)) {
+        timestamp = payloadDate;
+      }
+    }
     const modifiedPayload = { ...payload, messageId, timestamp };
     this.store.updateState({
-      events: {
-        ...this.store.getState().events,
-        [messageId]: { eventType, payload: modifiedPayload, callback },
+      segmentApiCalls: {
+        ...this.store.getState().segmentApiCalls,
+        [messageId]: {
+          eventType,
+          payload: {
+            ...modifiedPayload,
+            timestamp: modifiedPayload.timestamp.toString(),
+          },
+          callback,
+        },
       },
     });
     const modifiedCallback = (result) => {
-      const { events } = this.store.getState();
-      delete events[messageId];
+      const { segmentApiCalls } = this.store.getState();
+      delete segmentApiCalls[messageId];
       this.store.updateState({
-        events,
+        segmentApiCalls,
       });
       return callback?.(result);
     };
