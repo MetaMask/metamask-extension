@@ -8,7 +8,6 @@ import { obj as createThoughStream } from 'through2';
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { checkForError } from './lib/util';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
