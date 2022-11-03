@@ -226,7 +226,7 @@ const onDisconnectDestroyPhishingStreams = () => {
  *
  * @param {object} msg
  * @param {string} msg.name - custom property and name to identify the message received
- * @returns {Promise|false}
+ * @returns {Promise}
  */
 const onMessageSetUpPhishingStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
@@ -235,7 +235,6 @@ const onMessageSetUpPhishingStreams = (msg) => {
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
   }
-  return false;
 };
 
 /**
@@ -424,7 +423,7 @@ const destroyLegacyExtensionStreams = () => {
  *
  * @param {object} msg
  * @param {string} msg.name - custom property and name to identify the message received
- * @returns {Promise|false}
+ * @returns {Promise|undefined}
  */
 const onMessageSetUpExtensionStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
@@ -432,8 +431,6 @@ const onMessageSetUpExtensionStreams = (msg) => {
     setupLegacyExtensionStreams();
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
-
-  return false;
 };
 
 /**
