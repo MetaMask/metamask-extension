@@ -1,5 +1,24 @@
+diff --git a/node_modules/@chainsafe/bls/lib/getImplementation.js b/node_modules/@chainsafe/bls/lib/getImplementation.js
+index 9137cd4..59bc896 100644
+--- a/node_modules/@chainsafe/bls/lib/getImplementation.js
++++ b/node_modules/@chainsafe/bls/lib/getImplementation.js
+@@ -1,3 +1,4 @@
++import bls from "./noble.js";
+ // Thanks https://github.com/iliakan/detect-node/blob/master/index.esm.js
+ const isNode = Object.prototype.toString.call(typeof process !== "undefined" ? process : 0) === "[object process]";
+ export async function getImplementation(impl = "herumi") {
+@@ -5,6 +6,9 @@ export async function getImplementation(impl = "herumi") {
+         case "herumi": {
+             return (await import("./herumi/index.js")).bls;
+         }
++        case "noble": {
++            return bls;
++        }
+         case "blst-native":
+             // Lazy import native bindings to prevent automatically importing binding.node files
+             if (!isNode) {
 diff --git a/node_modules/@chainsafe/bls/lib/herumi/index.js b/node_modules/@chainsafe/bls/lib/herumi/index.js
-index 4ed8fdd..a0ab1eb 100644
+index 4ed8fdd..9cba385 100644
 --- a/node_modules/@chainsafe/bls/lib/herumi/index.js
 +++ b/node_modules/@chainsafe/bls/lib/herumi/index.js
 @@ -3,7 +3,7 @@ import { PublicKey } from "./publicKey.js";
@@ -7,7 +26,129 @@ index 4ed8fdd..a0ab1eb 100644
  import { init, destroy } from "./context.js";
  import { functionalInterfaceFactory } from "../functional.js";
 -await init();
-+// await init();
++init();
  export * from "../constants.js";
  export { SecretKey, PublicKey, Signature, init, destroy };
  export const bls = {
+diff --git a/node_modules/@chainsafe/bls/lib/noble.js b/node_modules/@chainsafe/bls/lib/noble.js
+new file mode 100644
+index 0000000..2d062b2
+--- /dev/null
++++ b/node_modules/@chainsafe/bls/lib/noble.js
+@@ -0,0 +1,116 @@
++import { hexToBytes, bytesToHex } from "./helpers/index.js";
++export class SecretKey {
++    constructor(bytes) {
++        this.bytes = bytes;
++    }
++    static fromBytes(bytes) {
++        return new SecretKey(bytes);
++    }
++    static fromHex(hex) {
++        return new SecretKey(hexToBytes(hex));
++    }
++    static fromKeygen(entropy) {
++        throw new Error('not implemented');
++    }
++    sign(message) {
++        throw new Error('not implemented');
++    }
++    toPublicKey() {
++        throw new Error('not implemented');
++    }
++    toBytes() {
++        return this.bytes;
++    }
++    toHex() {
++        return bytesToHex(this.bytes);
++    }
++}
++export class PublicKey {
++    constructor(bytes) {
++        this.bytes = bytes;
++    }
++    static fromBytes(bytes) {
++        return new PublicKey(bytes);
++    }
++    static fromHex(hex) {
++        return new PublicKey(hexToBytes(hex));
++    }
++    static aggregate(publicKeys) {
++        // throw new Error('not implemented');
++        // TODO: fix me
++        return new PublicKey(new Uint8Array());
++    }
++    toBytes() {
++        return this.bytes;
++    }
++    toHex() {
++        return bytesToHex(this.bytes);
++    }
++}
++export class Signature {
++    constructor(bytes) {
++        this.bytes = bytes;
++    }
++    static fromBytes(bytes) {
++        return new Signature(bytes);
++    }
++    static fromHex(hex) {
++        return new Signature(hexToBytes(hex));
++    }
++    static aggregate(signatures) {
++        throw new Error('not implemented');
++    }
++    static verifyMultipleSignatures(sets) {
++        throw new Error('not implemented');
++    }
++    verify(publicKey, message) {
++        // throw new Error('not implemented');
++        // TODO: fix me
++        return true;
++    }
++    verifyAggregate(publicKeys, message) {
++        throw new Error('not implemented');
++    }
++    verifyMultiple(publicKeys, messages) {
++        throw new Error('not implemented');
++    }
++    toBytes() {
++        return this.bytes;
++    }
++    toHex() {
++        return bytesToHex(this.bytes);
++    }
++}
++export class bls {
++    constructor() {
++        this.implementation = "noble";
++        this.SecretKey = SecretKey;
++        this.PublicKey = PublicKey;
++        this.Signature = Signature;
++    }
++    sign(secretKey, message) {
++        throw new Error('not implemented');
++    }
++    aggregatePublicKeys(publicKeys) {
++        throw new Error('not implemented');
++    }
++    aggregateSignatures(signatures) {
++        throw new Error('not implemented');
++    }
++    verify(publicKey, message, signature) {
++        throw new Error('not implemented');
++    }
++    verifyAggregate(publicKeys, message, signature) {
++        throw new Error('not implemented');
++    }
++    verifyMultiple(publicKeys, messages, signature) {
++        throw new Error('not implemented');
++    }
++    verifyMultipleSignatures(sets) {
++        throw new Error('not implemented');
++    }
++    secretKeyToPublicKey(secretKey) {
++        throw new Error('not implemented');
++    }
++}
++export default new bls();

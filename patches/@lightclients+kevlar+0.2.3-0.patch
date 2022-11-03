@@ -1,0 +1,18 @@
+diff --git a/node_modules/@lightclients/kevlar/dist/rpc-bundle/client-manager.js b/node_modules/@lightclients/kevlar/dist/rpc-bundle/client-manager.js
+index 635caed..abe6fa1 100644
+--- a/node_modules/@lightclients/kevlar/dist/rpc-bundle/client-manager.js
++++ b/node_modules/@lightclients/kevlar/dist/rpc-bundle/client-manager.js
+@@ -24,12 +24,7 @@ export class ClientManager {
+         }
+     }
+     async sync() {
+-        try {
+-            await init('blst-native');
+-        }
+-        catch {
+-            await init('herumi');
+-        }
++        await init('noble');
+         await this.client.sync();
+         const { blockhash, blockNumber } = await this.client.getNextValidExecutionInfo();
+         const provider = new VerifyingProvider(this.providerURL, blockNumber, blockhash, this.chain);
