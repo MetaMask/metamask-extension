@@ -534,12 +534,14 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2
+              yarn test:e2e:chrome --retries 2 --reporter xunit --reporter-option output=test/test-results/chrome-e2e.xml
             fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/chrome-e2e.xml
     
   test-e2e-chrome-mv3:
     executor: node-browsers
