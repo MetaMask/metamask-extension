@@ -127,7 +127,7 @@ export default class AppHeader extends PureComponent {
             }}
           />
           <div className="app-header__account-menu-container">
-            {!hideNetworkIndicator && (
+            {hideNetworkIndicator ? null : (
               <div className="app-header__network-component-wrapper">
                 <NetworkDisplay
                   onClick={(event) => this.handleNetworkIndicatorClick(event)}

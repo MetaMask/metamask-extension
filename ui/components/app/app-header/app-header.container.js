@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isUnlocked,
     isAccountMenuOpen,
+    hideNetworkIndicator: !isUnlocked,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount,
     ///: END:ONLY_INCLUDE_IN
