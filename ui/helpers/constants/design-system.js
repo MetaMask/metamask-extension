@@ -46,10 +46,8 @@ export const COLORS = {
   INFO_INVERSE: 'info-inverse',
   INFO_DISABLED: 'info-disabled',
   MAINNET: 'mainnet',
-  ROPSTEN: 'ropsten',
-  KOVAN: 'kovan',
-  RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
+  SEPOLIA: 'sepolia',
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
@@ -74,10 +72,8 @@ export const BACKGROUND_COLORS = pick(COLORS, [
   'INFO_ALTERNATIVE',
   'INFO_MUTED',
   'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);
@@ -101,10 +97,8 @@ export const BORDER_COLORS = pick(COLORS, [
   'INFO_ALTERNATIVE',
   'INFO_MUTED',
   'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
   'GOERLI',
+  'SEPOLIA',
   'TRANSPARENT',
   'LOCALHOST',
 ]);
@@ -167,6 +161,7 @@ export const TEXT = {
   BODY_MD: 'body-md',
   BODY_SM: 'body-sm',
   BODY_XS: 'body-xs',
+  INHERIT: 'inherit',
 };
 
 const NONE = 'none';
@@ -178,6 +173,7 @@ export const SIZES = {
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
+  AUTO: 'auto', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   NONE,
 };
 
@@ -187,6 +183,16 @@ export const BORDER_STYLE = {
   DOTTED: 'dotted',
   DOUBLE: 'double',
   NONE,
+};
+
+export const BORDER_RADIUS = {
+  XS: SIZES.XS,
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
+  NONE,
+  PILL: 'pill',
 };
 
 const FLEX_END = 'flex-end';

@@ -28,7 +28,7 @@ export default class AddRecipient extends Component {
     isUsingMyAccountsForRecipientSearch: PropTypes.bool,
     recipient: PropTypes.shape({
       address: PropTypes.string,
-      nickname: PropTypes.nickname,
+      nickname: PropTypes.string,
       error: PropTypes.string,
       warning: PropTypes.string,
     }),

@@ -1,12 +1,7 @@
 import browser from 'webextension-polyfill';
-
-import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import {
-  MAINNET_CHAIN_ID,
-  TEST_CHAINS,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -19,6 +14,7 @@ import {
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -148,12 +144,23 @@ function bnToHex(inputBn) {
 }
 
 function getChainType(chainId) {
-  if (chainId === MAINNET_CHAIN_ID) {
+  if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
   } else if (TEST_CHAINS.includes(chainId)) {
     return 'testnet';
   }
   return 'custom';
+}
+
+/**
+ * Checks if the alarmname exists in the list
+ *
+ * @param {Array} alarmList
+ * @param alarmName
+ * @returns
+ */
+function checkAlarmExists(alarmList, alarmName) {
+  return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
 export {
@@ -165,4 +172,5 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
+  checkAlarmExists,
 };

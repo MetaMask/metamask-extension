@@ -1,9 +1,7 @@
 const blacklistedHosts = [
   'goerli.infura.io',
-  'kovan.infura.io',
   'mainnet.infura.io',
-  'rinkeby.infura.io',
-  'ropsten.infura.io',
+  'sepolia.infura.io',
 ];
 
 async function setupMocking(server, testSpecificMock) {
@@ -123,36 +121,24 @@ async function setupMocking(server, testSpecificMock) {
         json: [
           {
             ethereum: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             bsc: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             polygon: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             avalanche: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
-            },
-            smart_transactions: {
-              mobile_active: false,
-              extension_active: false,
             },
             smartTransactions: {
               mobileActive: false,
@@ -203,19 +189,10 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
+  // It disables loading of token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   await server
     .forGet(
-      'https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-
-  await server
-    .forGet(
-      'https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711.png',
+      /^https:\/\/static\.metaswap\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
     )
     .thenCallback(() => {
       return {

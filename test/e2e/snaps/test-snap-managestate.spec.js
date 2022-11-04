@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap manageState', function () {
@@ -16,7 +17,9 @@ describe('Test Snap manageState', function () {
 
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToSnapDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -40,25 +43,9 @@ describe('Test Snap manageState', function () {
         // connect the snap
         await driver.clickElement('#connectManageState');
 
-        // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
-        await driver.delay(2000);
-
         // approve install of snap
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -73,6 +60,7 @@ describe('Test Snap manageState', function () {
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.fill('#dataManageState', '23');
+        await driver.delay(1000);
         await driver.clickElement('#sendManageState');
 
         // check the results of the public key test

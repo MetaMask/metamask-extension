@@ -1,0 +1,43 @@
+.mm-button-link {
+  color: var(--color-primary-default);
+  background-color: transparent;
+
+  &:hover {
+    color: var(--color-primary-default);
+    opacity: 0.5;
+  }
+
+  &:active {
+    color: var(--color-primary-default);
+    opacity: 0.5;
+  }
+
+  &.mm-button--disabled {
+    &:hover {
+      color: var(--color-primary-default);
+      opacity: 0.3;
+    }
+
+    &:active {
+      opacity: 0.3;
+    }
+  }
+
+  &--type-danger {
+    color: var(--color-error-default);
+
+    &:hover {
+      color: var(--color-error-default);
+      opacity: 0.5;
+    }
+
+    &:active {
+      color: var(--color-error-default);
+      opacity: 0.5;
+    }
+
+    &.mm-button--disabled:hover {
+      color: var(--color-error-default);
+    }
+  }
+}

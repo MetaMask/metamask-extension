@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import { formatSwapsValueForDisplay } from '../swaps.util';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 
 export default function ExchangeRateDisplay({
   primaryTokenValue,
@@ -66,6 +66,7 @@ export default function ExchangeRateDisplay({
       <span>1</span>
       <span
         className={classnames({ 'exchange-rate-display__bold': boldSymbols })}
+        data-testid="exchange-rate-display__base-symbol"
       >
         {baseSymbol}
       </span>
@@ -80,6 +81,7 @@ export default function ExchangeRateDisplay({
         className={classnames('exchange-rate-display__switch-arrows', {
           'exchange-rate-display__switch-arrows-rotate': rotating,
         })}
+        data-testid="exchange-rate-display__switch-arrows"
         onClick={() => {
           setShowPrimaryToSecondary(!showPrimaryToSecondary);
           setRotating(true);

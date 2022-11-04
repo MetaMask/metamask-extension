@@ -11,11 +11,7 @@ import {
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexToDecimal,
-} from '../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
@@ -37,6 +33,8 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
+import { decimalToHex } from '../../../../shared/lib/transactions-controller-utils';
 
 export default function EditGasPopover({
   popoverTitle = '',

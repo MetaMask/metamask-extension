@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -18,6 +18,9 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
+import { checkAlarmExists } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -62,7 +65,7 @@ const exceptionsToFilter = {
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
    * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
@@ -144,16 +147,42 @@ export default class MetaMetricsController {
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
-    setInterval(() => {
-      Object.values(this.store.getState().fragments).forEach((fragment) => {
-        if (
-          fragment.timeout &&
-          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-        ) {
-          this.finalizeEventFragment(fragment.id, { abandoned: true });
+    if (isManifestV3) {
+      /* eslint-disable no-undef */
+      chrome.alarms.getAll((alarms) => {
+        const hasAlarm = checkAlarmExists(
+          alarms,
+          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+        );
+
+        if (!hasAlarm) {
+          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
+            delayInMinutes: 1,
+            periodInMinutes: 1,
+          });
         }
       });
-    }, SECOND * 30);
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
+          this.finalizeAbandonedFragments();
+        }
+      });
+    } else {
+      setInterval(() => {
+        this.finalizeAbandonedFragments();
+      }, SECOND * 30);
+    }
+  }
+
+  finalizeAbandonedFragments() {
+    Object.values(this.store.getState().fragments).forEach((fragment) => {
+      if (
+        fragment.timeout &&
+        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+      ) {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
+    });
   }
 
   generateMetaMetricsId() {
@@ -188,9 +217,18 @@ export default class MetaMetricsController {
         }`,
       );
     }
+
+    const existingFragment = this.getExistingEventFragment(
+      options.actionId,
+      options.uniqueIdentifier,
+    );
+    if (existingFragment) {
+      return existingFragment;
+    }
+
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
@@ -234,6 +272,26 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
+  }
+
+  /**
+   * Returns the fragment stored in memory with provided id or undefined if it
+   * does not exist.
+   *
+   * @param {string} actionId - actionId passed from UI
+   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
+   * @returns {[MetaMetricsEventFragment]}
+   */
+  getExistingEventFragment(actionId, uniqueIdentifier) {
+    const { fragments } = this.store.getState();
+
+    const existingFragment = Object.values(fragments).find(
+      (fragment) =>
+        fragment.actionId === actionId &&
+        fragment.uniqueIdentifier === uniqueIdentifier,
+    );
+
+    return existingFragment;
   }
 
   /**
@@ -649,7 +707,7 @@ export default class MetaMetricsController {
       ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };

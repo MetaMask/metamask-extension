@@ -1,4 +1,5 @@
 import React from 'react';
+import DropdownTab from './dropdown-tab';
 import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 
@@ -41,6 +42,14 @@ export const DefaultStory = (args) => {
       onTabClick={args.onTabClick}
     >
       {args.tabs.map((tabProps, i) => renderTab(tabProps, i))}
+      <DropdownTab
+        options={[
+          { name: 'Insight Snap', value: 'Insight Snap' },
+          { name: 'Tenderly Insight', value: 'Tenderly Insight' },
+        ]}
+      >
+        This is a dropdown Tab
+      </DropdownTab>
     </Tabs>
   );
 };

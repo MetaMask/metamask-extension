@@ -5,13 +5,13 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
-import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -150,6 +150,7 @@ export default class UnlockPage extends Component {
     return (
       <Button
         type="submit"
+        data-testid="unlock-submit"
         style={style}
         disabled={!this.state.password}
         variant="contained"
@@ -181,6 +182,7 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
+              data-testid="unlock-password"
               label={t('password')}
               type="password"
               value={password}

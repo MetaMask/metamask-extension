@@ -7,9 +7,8 @@ import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
+import { storeAsStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
-import { captureException } from '@sentry/browser';
 
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -88,6 +87,9 @@ const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
+
+const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 /**
  * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
@@ -171,8 +173,10 @@ if (isManifestV3) {
 async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode, remotePort);
-  await loadPhishingWarningPage();
+  setupController(initState, initLangCode, remotePort);
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
   log.info('MetaMask initialization complete.');
 }
 
@@ -287,16 +291,11 @@ async function loadStateFromPersistence() {
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   }
+  // this initializes the meta/version data as a class variable to be used for future writes
+  localStore.setMetadata(versionedData.meta);
 
   // write to disk
-  if (localStore.isSupported) {
-    localStore.set(versionedData);
-  } else {
-    // throw in setTimeout so as to not block boot
-    setTimeout(() => {
-      throw new Error('MetaMask - Localstore not supported');
-    });
-  }
+  localStore.set(versionedData.data);
 
   // return just the data
   return versionedData.data;
@@ -311,7 +310,6 @@ async function loadStateFromPersistence() {
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {string} remoteSourcePort - remote application port connecting to extension.
- * @returns {Promise} After setup is complete.
  */
 function setupController(initState, initLangCode, remoteSourcePort) {
   //
@@ -337,6 +335,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
+    localStore,
   });
 
   setupEnsIpfsResolver({
@@ -353,51 +352,13 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    storeTransformStream(versionifyData),
-    createStreamSink(persistData),
+    createStreamSink((state) => localStore.set(state)),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
   );
 
   setupSentryGetStateGlobal(controller);
-
-  /**
-   * Assigns the given state to the versioned object (with metadata), and returns that.
-   *
-   * @param {object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
-   */
-  function versionifyData(state) {
-    versionedData.data = state;
-    return versionedData;
-  }
-
-  let dataPersistenceFailing = false;
-
-  async function persistData(state) {
-    if (!state) {
-      throw new Error('MetaMask - updated state is missing');
-    }
-    if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data');
-    }
-    if (localStore.isSupported) {
-      try {
-        await localStore.set(state);
-        if (dataPersistenceFailing) {
-          dataPersistenceFailing = false;
-        }
-      } catch (err) {
-        // log error so we dont break the pipeline
-        if (!dataPersistenceFailing) {
-          dataPersistenceFailing = true;
-          captureException(err);
-        }
-        log.error('error setting state in local store:', err);
-      }
-    }
-  }
 
   //
   // connect to other contexts
@@ -481,6 +442,14 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
         remotePort.postMessage({ name: 'CONNECTION_READY' });
+
+        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
+        remotePort.onMessage.addListener((message) => {
+          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
+            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
+            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+          }
+        });
       }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -703,8 +672,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
     updateBadge();
   }
-
-  return Promise.resolve();
 }
 
 //

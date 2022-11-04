@@ -72,9 +72,6 @@
   "createAccount": {
     "message": "Account aanmaken"
   },
-  "customGas": {
-    "message": "Pas Gas aan"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
@@ -175,9 +172,6 @@
     "message": "JSON-bestand",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan-testnetwerk"
-  },
   "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
@@ -273,12 +267,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
-  "rinkeby": {
-    "message": "Rinkeby testnetwerk"
-  },
-  "ropsten": {
-    "message": "Ropsten testnetwerk"
   },
   "save": {
     "message": "Opslaan"

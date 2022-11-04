@@ -68,6 +68,7 @@ export class DropdownMenuItem extends Component {
     return (
       <li
         className="dropdown-menu-item"
+        data-testid="dropdown-menu-item"
         onClick={() => {
           onClick();
           closeMenu();
