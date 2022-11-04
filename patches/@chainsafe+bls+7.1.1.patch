@@ -32,11 +32,14 @@ index 4ed8fdd..9cba385 100644
  export const bls = {
 diff --git a/node_modules/@chainsafe/bls/lib/noble.js b/node_modules/@chainsafe/bls/lib/noble.js
 new file mode 100644
-index 0000000..2d062b2
+index 0000000..f7597dc
 --- /dev/null
 +++ b/node_modules/@chainsafe/bls/lib/noble.js
-@@ -0,0 +1,116 @@
+@@ -0,0 +1,90 @@
++import { aggregatePublicKeys, utils, verify } from "@noble/bls12-381";
 +import { hexToBytes, bytesToHex } from "./helpers/index.js";
++import { functionalInterfaceFactory } from "./functional.js";
++utils.setDSTLabel('BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_');
 +export class SecretKey {
 +    constructor(bytes) {
 +        this.bytes = bytes;
@@ -74,9 +77,7 @@ index 0000000..2d062b2
 +        return new PublicKey(hexToBytes(hex));
 +    }
 +    static aggregate(publicKeys) {
-+        // throw new Error('not implemented');
-+        // TODO: fix me
-+        return new PublicKey(new Uint8Array());
++        return PublicKey.fromBytes(aggregatePublicKeys(publicKeys.map(p => p.toBytes())));
 +    }
 +    toBytes() {
 +        return this.bytes;
@@ -102,9 +103,7 @@ index 0000000..2d062b2
 +        throw new Error('not implemented');
 +    }
 +    verify(publicKey, message) {
-+        // throw new Error('not implemented');
-+        // TODO: fix me
-+        return true;
++        return verify(this.bytes, message, publicKey.toBytes());
 +    }
 +    verifyAggregate(publicKeys, message) {
 +        throw new Error('not implemented');
@@ -119,36 +118,11 @@ index 0000000..2d062b2
 +        return bytesToHex(this.bytes);
 +    }
 +}
-+export class bls {
-+    constructor() {
-+        this.implementation = "noble";
-+        this.SecretKey = SecretKey;
-+        this.PublicKey = PublicKey;
-+        this.Signature = Signature;
-+    }
-+    sign(secretKey, message) {
-+        throw new Error('not implemented');
-+    }
-+    aggregatePublicKeys(publicKeys) {
-+        throw new Error('not implemented');
-+    }
-+    aggregateSignatures(signatures) {
-+        throw new Error('not implemented');
-+    }
-+    verify(publicKey, message, signature) {
-+        throw new Error('not implemented');
-+    }
-+    verifyAggregate(publicKeys, message, signature) {
-+        throw new Error('not implemented');
-+    }
-+    verifyMultiple(publicKeys, messages, signature) {
-+        throw new Error('not implemented');
-+    }
-+    verifyMultipleSignatures(sets) {
-+        throw new Error('not implemented');
-+    }
-+    secretKeyToPublicKey(secretKey) {
-+        throw new Error('not implemented');
-+    }
-+}
-+export default new bls();
++export const bls = {
++    implementation: "noble",
++    SecretKey,
++    PublicKey,
++    Signature,
++    ...functionalInterfaceFactory({ SecretKey, PublicKey, Signature }),
++};
++export default bls;
