@@ -94,13 +94,13 @@ describe('Test Snap Confirm', function () {
         const confirmResult = await driver.findElement('#confirmResult');
         assert.equal(await confirmResult.getText(), 'true');
 
-        // enter a message to sign
-        await driver.fill('#bip44Message', '1234');
-        await driver.delay(1000);
-        const snapButton3 = await driverfindElement('#signBip44Message');
-        await driver.scrollToElement(snapButton3);
-        await driver.delay(1000);
-        await driver.clickElement('#signBip44Message');
+        // // enter a message to sign
+        // await driver.fill('#bip44Message', '1234');
+        // await driver.delay(1000);
+        // const snapButton3 = await driver.findElement('#signBip44Message');
+        // await driver.scrollToElement(snapButton3);
+        // await driver.delay(1000);
+        // await driver.clickElement('#signBip44Message');
       },
     );
   });
