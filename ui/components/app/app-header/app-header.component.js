@@ -6,7 +6,7 @@ import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
-import BetaHomeHeader from './beta-home-header';
+import BetaHomeHeader from '../beta-header';
 
 export default class AppHeader extends PureComponent {
   static propTypes = {

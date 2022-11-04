@@ -108,27 +108,4 @@
       color: var(--color-primary-inverse);
     }
   }
-
-  &__beta-header {
-    background: var(--color-warning-default);
-    padding: 8px 8px;
-    display: flex;
-    width: 100%;
-  
-    &__message {
-      text-align: center;
-      color: var(--color-warning-inverse);
-      flex-grow: 1;
-    }
-  
-    &__button {
-      background: transparent;
-      padding: 0 6px;
-      margin: 0;
-  
-      i {
-        color: var(--brand-colors-white-white000);
-      }
-    }
-  }
 }

@@ -3,29 +3,28 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Typography from '../../ui/typography/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { getShowBetaHeader } from '../../../selectors';
-import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { hideBetaHeader } from '../../../store/actions';
 
 const BetaHomeHeader = () => {
   const t = useI18nContext();
   const showBetaHeader = useSelector(getShowBetaHeader);
-  const isUnlocked = useSelector(getIsUnlocked);
 
-  if (!isUnlocked || !showBetaHeader) {
-    // return null;
+  if (!showBetaHeader) {
+    return null;
   }
 
   return (
-    <div className="app-header__beta-header">
+    <div className="beta-header">
       <Typography
         variant={TYPOGRAPHY.H7}
         marginTop={0}
         marginBottom={0}
-        className="app-header__beta-header__message"
+        className="beta-header__message"
+        color={COLORS.WARNING_INVERSE}
       >
         {t('betaHomeHeaderText', [
           <a href={BETA_BUGS_URL} key="link" target="_blank" rel="noreferrer">
@@ -34,7 +33,7 @@ const BetaHomeHeader = () => {
         ])}
       </Typography>
       <button
-        className="app-header__beta-header__button"
+        className="beta-header__button"
         onClick={() => {
           hideBetaHeader();
         }}
