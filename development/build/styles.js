@@ -58,10 +58,8 @@ function createStyleTasks({ livereload }) {
     };
 
     async function buildScss() {
-      await Promise.all([
-        buildScssPipeline(src, dest, devMode, false),
-        buildScssPipeline(src, dest, devMode, true),
-      ]);
+      await buildScssPipeline(src, dest, devMode, false);
+      await buildScssPipeline(src, dest, devMode, true);
     }
   }
 }

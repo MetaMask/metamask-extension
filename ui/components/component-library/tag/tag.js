@@ -15,7 +15,7 @@ import {
 export const Tag = ({ label, className, labelProps, ...props }) => {
   return (
     <Box
-      className={classnames('tag', className)}
+      className={classnames('mm-tag', className)}
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderColor={COLORS.BORDER_DEFAULT}
       borderWidth={1}
@@ -47,4 +47,8 @@ Tag.propTypes = {
    * Additional classNames to be added to the Tag component
    */
   className: PropTypes.string,
+  /**
+   * Tag also accepts all props from Box
+   */
+  ...Box.propTypes,
 };
