@@ -820,12 +820,12 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('submitting events to segment SDK', function () {
+  describe('submitting segmentApiCalls to segment SDK', function () {
     it('should add event to store when submitting to SDK', function () {
       const metaMetricsController = getMetaMetricsController({});
       metaMetricsController.trackPage({}, { isOptIn: true });
-      const { events } = metaMetricsController.store.getState();
-      assert(Object.keys(events).length > 0);
+      const { segmentApiCalls } = metaMetricsController.store.getState();
+      assert(Object.keys(segmentApiCalls).length > 0);
     });
 
     it('should remove event from store when callback is invoked', function () {
@@ -840,8 +840,8 @@ describe('MetaMetricsController', function () {
         segmentInstance,
       });
       metaMetricsController.trackPage({}, { isOptIn: true });
-      const { events } = metaMetricsController.store.getState();
-      assert(Object.keys(events).length === 0);
+      const { segmentApiCalls } = metaMetricsController.store.getState();
+      assert(Object.keys(segmentApiCalls).length === 0);
     });
   });
 
