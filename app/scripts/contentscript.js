@@ -8,6 +8,7 @@ import { obj as createThoughStream } from 'through2';
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { checkForErrorAndWarn } from './lib/util';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -216,9 +217,12 @@ const destroyPhishingExtStreams = () => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = () => {
+  checkForErrorAndWarn();
+
   phishingExtPort.onDisconnect.removeListener(
     onDisconnectDestroyPhishingStreams,
   );
+
   destroyPhishingExtStreams();
 };
 
@@ -448,6 +452,8 @@ const onMessageSetUpExtensionStreams = (msg) => {
  * so that streams may be re-established later the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
+  checkForErrorAndWarn();
+
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
 
   destroyExtensionStreams();
