@@ -12,11 +12,14 @@ describe('Button', () => {
     expect(getByText('Button')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {
     const { getByTestId, container } = render(
-      <Button as="a" data-testid="button" />,
+      <Button as="a" data-testid="button">
+        Button
+      </Button>,
     );
     expect(getByTestId('button')).toHaveClass('mm-button');
     const anchor = container.getElementsByTagName('a').length;
@@ -25,7 +28,9 @@ describe('Button', () => {
 
   it('should render anchor element correctly by href only being passed', () => {
     const { getByTestId, container } = render(
-      <Button href="#" data-testid="button" />,
+      <Button href="/metamask" data-testid="button">
+        Visit Site
+      </Button>,
     );
     expect(getByTestId('button')).toHaveClass('mm-button');
     const anchor = container.getElementsByTagName('a').length;
@@ -38,17 +43,20 @@ describe('Button', () => {
   });
 
   it('should render with different button types', () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <>
-        <Button
-          type={BUTTON_TYPES.PRIMARY}
-          data-testid={BUTTON_TYPES.PRIMARY}
-        />
+        <Button type={BUTTON_TYPES.PRIMARY} data-testid={BUTTON_TYPES.PRIMARY}>
+          Button
+        </Button>
         <Button
           type={BUTTON_TYPES.SECONDARY}
           data-testid={BUTTON_TYPES.SECONDARY}
-        />
-        <Button type={BUTTON_TYPES.LINK} data-testid={BUTTON_TYPES.LINK} />
+        >
+          Button
+        </Button>
+        <Button type={BUTTON_TYPES.LINK} data-testid={BUTTON_TYPES.LINK}>
+          Button
+        </Button>
       </>,
     );
     expect(getByTestId(BUTTON_TYPES.PRIMARY)).toHaveClass(
@@ -60,6 +68,7 @@ describe('Button', () => {
     expect(getByTestId(BUTTON_TYPES.LINK)).toHaveClass(
       `mm-button-${BUTTON_TYPES.LINK}`,
     );
+    expect(container).toMatchSnapshot();
   });
 
   it('should render with different size classes', () => {
@@ -69,10 +78,18 @@ describe('Button', () => {
           size={BUTTON_SIZES.AUTO}
           type={BUTTON_TYPES.LINK}
           data-testid={BUTTON_SIZES.AUTO}
-        />
-        <Button size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM} />
-        <Button size={BUTTON_SIZES.MD} data-testid={BUTTON_SIZES.MD} />
-        <Button size={BUTTON_SIZES.LG} data-testid={BUTTON_SIZES.LG} />
+        >
+          Button {BUTTON_SIZES.AUTO}
+        </Button>
+        <Button size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM}>
+          Button {BUTTON_SIZES.SM}
+        </Button>
+        <Button size={BUTTON_SIZES.MD} data-testid={BUTTON_SIZES.MD}>
+          Button {BUTTON_SIZES.MD}
+        </Button>
+        <Button size={BUTTON_SIZES.LG} data-testid={BUTTON_SIZES.LG}>
+          Button {BUTTON_SIZES.LG}
+        </Button>
       </>,
     );
     expect(getByTestId(BUTTON_SIZES.AUTO)).toHaveClass(
@@ -91,7 +108,9 @@ describe('Button', () => {
 
   it('should render with added classname', () => {
     const { getByTestId } = render(
-      <Button data-testid="classname" className="mm-button--test" />,
+      <Button data-testid="classname" className="mm-button--test">
+        Button
+      </Button>,
     );
     expect(getByTestId('classname')).toHaveClass('mm-button--test');
   });
@@ -99,8 +118,12 @@ describe('Button', () => {
   it('should render with different button states', () => {
     const { getByTestId } = render(
       <>
-        <Button loading data-testid="loading" />
-        <Button disabled data-testid="disabled" />
+        <Button loading data-testid="loading">
+          Button
+        </Button>
+        <Button disabled data-testid="disabled">
+          Button
+        </Button>
       </>,
     );
     expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
@@ -112,7 +135,9 @@ describe('Button', () => {
         data-testid="icon"
         icon="add-square-filled"
         iconProps={{ 'data-testid': 'base-button-icon' }}
-      />,
+      >
+        Button
+      </Button>,
     );
 
     expect(getByTestId('base-button-icon')).toBeDefined();
@@ -122,7 +147,9 @@ describe('Button', () => {
 it('should render as danger', () => {
   const { getByTestId } = render(
     <>
-      <Button danger data-testid="danger" />
+      <Button danger data-testid="danger">
+        Button Danger
+      </Button>
     </>,
   );
 
