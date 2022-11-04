@@ -61,12 +61,12 @@ You can run the linter by itself with `yarn lint`, and you can automatically fix
 
 ### Running E2E Tests
 
-Our e2e test suite can be run on either Firefox or Chrome. In either case, start by creating a test build by running `yarn build:test`.
+Our e2e test suite can be run on either Firefox or Chrome.
 
 1. **required** `yarn build:test` to create a test build.
 2. run tests, targetting the browser:
-  a) Firefox e2e tests can be run with `yarn test:e2e:firefox`.
-  b) Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
+ * Firefox e2e tests can be run with `yarn test:e2e:firefox`.
+ * Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
 
 #### Running a single e2e test
 
