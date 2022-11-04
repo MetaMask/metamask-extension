@@ -116,35 +116,38 @@ export default class AppHeader extends PureComponent {
     } = this.props;
 
     return (
-      <div className="app-header">
-        <div className="app-header__contents">
-          <MetaFoxLogo
-            unsetIconHeight
-            onClick={async () => {
-              if (onClick) {
-                await onClick();
-              }
-              history.push(DEFAULT_ROUTE);
-            }}
-          />
-          <div className="app-header__account-menu-container">
-            {!hideNetworkIndicator && (
-              <div className="app-header__network-component-wrapper">
-                <NetworkDisplay
-                  onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                  disabled={disabled || disableNetworkIndicator}
-                />
-              </div>
-            )}
-            {this.renderAccountMenu()}
-          </div>
-        </div>
+      <>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(beta)
           <BetaHomeHeader />
           ///: END:ONLY_INCLUDE_IN(beta)
         }
-      </div>
+
+        <div className="app-header">
+          <div className="app-header__contents">
+            <MetaFoxLogo
+              unsetIconHeight
+              onClick={async () => {
+                if (onClick) {
+                  await onClick();
+                }
+                history.push(DEFAULT_ROUTE);
+              }}
+            />
+            <div className="app-header__account-menu-container">
+              {!hideNetworkIndicator && (
+                <div className="app-header__network-component-wrapper">
+                  <NetworkDisplay
+                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
+                    disabled={disabled || disableNetworkIndicator}
+                  />
+                </div>
+              )}
+              {this.renderAccountMenu()}
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 }
