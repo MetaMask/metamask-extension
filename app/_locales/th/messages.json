@@ -41,10 +41,6 @@
   "SIWEAddressInvalid": {
     "message": "Address ในคำขอลงชื่อเข้าใช้ ไม่ตรงกับ Address บัญชีของคุณ"
   },
-  "SIWEDomainInvalid": {
-    "message": "เว็บไซต์ที่คุณพยายามลงชื่อเข้าใช้ ($1) ไม่ตรงกับชื่อเว็บไซต์ในคำขอลงชื่อเข้าใช้ โปรดดำเนินการด้วยความระมัดระวัง",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "เว็บไซต์ ($1) ขอให้คุณลงชื่อเข้าใช้ ในเว็บไซต์ที่ไม่ถูกต้อง นี่อาจเป็นการโจมตีแบบ phishing (ฟิชชิง)",
     "description": "$1 represents the website domain"
@@ -60,9 +56,6 @@
   },
   "about": {
     "message": "เกี่ยวกับ"
-  },
-  "acceleratingATransaction": {
-    "message": "* การเร่งการทำธุรกรรมโดยใช้เพิ่มราคาค่า Gas ที่สูงขึ้นจะเพิ่มโอกาสในการประมวลผล Network เร็วขึ้น แต่ก็ไม่รับประกันเสมอไป"
   },
   "acceptTermsOfUse": {
     "message": "ฉันได้อ่านและยอมรับ$1",
@@ -300,17 +293,8 @@
   "connectingToGoerli": {
     "message": "กำลังเชื่อมต่อกับ Goerli test network"
   },
-  "connectingToKovan": {
-    "message": "กำลังเชื่อมต่อกับ Kovan test network"
-  },
   "connectingToMainnet": {
     "message": "กำลังเชื่อมต่อกับ Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "กำลังเชื่อมต่อกับ Rinkeby test network"
-  },
-  "connectingToRopsten": {
-    "message": "กำลังเชื่อมต่อกับ Ropsten test network"
   },
   "connectingToSepolia": {
     "message": "กำลังเชื่อมต่อกับ Sepolia test network"
@@ -374,12 +358,6 @@
   },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
-  },
-  "customGas": {
-    "message": "กำหนดค่า Gas เอง"
-  },
-  "customGasSubTitle": {
-    "message": "ค่าธรรมเนียมที่เพิ่มขึ้นอาจลดเวลาในการดำเนินการ แต่ไม่รับประกัน"
   },
   "decimal": {
     "message": "จำนวนทศนิยม"
@@ -960,9 +938,6 @@
   "send": {
     "message": "โอน"
   },
-  "sendAmount": {
-    "message": "จำนวนที่โอน"
-  },
   "sendTo": {
     "message": "ส่งถึง"
   },
@@ -1130,7 +1105,7 @@
   },
   "typePassword": {
     "message": "พิมพ์รหัสผ่าน MetaMask ของคุณ"
-  },  
+  },
   "typeYourSRP": {
     "message": "พิมพ์ Secret Recovery Phrase ของคุณ"
   },
