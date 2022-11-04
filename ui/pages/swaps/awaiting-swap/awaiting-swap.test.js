@@ -29,6 +29,7 @@ const createProps = (customProps = {}) => {
     submittingSwap: true,
     inputValue: 5,
     maxSlippage: SLIPPAGE.DEFAULT,
+    txId: 6571648590592143,
     ...customProps,
   };
 };

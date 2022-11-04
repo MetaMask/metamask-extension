@@ -1,16 +1,13 @@
 const { strict: assert } = require('assert');
 
 const { withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { ganacheOptions, loadSwaps, buildQuote } = require('./shared');
+const { withFixturesOptions, loadSwaps, buildQuote } = require('./shared');
 
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between Eth and Matic', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        failOnConsoleError: false,
+        ...withFixturesOptions,
         title: this.test.title,
       },
       async ({ driver }) => {

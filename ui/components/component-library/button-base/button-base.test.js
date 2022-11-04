@@ -5,13 +5,14 @@ import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 
 describe('ButtonBase', () => {
-  it('should render button element correctly', () => {
+  it('should render button element correctly and match snapshot', () => {
     const { getByTestId, getByText, container } = render(
       <ButtonBase data-testid="button-base">Button base</ButtonBase>,
     );
     expect(getByText('Button base')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-base')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {

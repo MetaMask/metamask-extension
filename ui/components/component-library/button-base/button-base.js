@@ -31,7 +31,7 @@ export const ButtonBase = ({
   iconProps,
   ...props
 }) => {
-  const Tag = props?.href ? 'a' : as;
+  const Tag = href ? 'a' : as;
   return (
     <Box
       as={Tag}
@@ -130,7 +130,7 @@ ButtonBase.propTypes = {
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.AUTO', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
+   * Possible values could be 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
    */
   size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
   /**

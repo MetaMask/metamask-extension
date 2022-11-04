@@ -145,6 +145,12 @@ export const As = (args) => (
   </Box>
 );
 
+export const Href = (args) => <ButtonBase {...args}>Anchor Element</ButtonBase>;
+
+Href.args = {
+  href: '/metamask',
+};
+
 export const Disabled = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
