@@ -1,9 +1,90 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "ผิดพลาด"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "ข้อมูลธุรกรรมที่ไม่สอดคล้องกัน กรุณาตรวจสอบรายละเอียดการทำรายการ"
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "ไม่มีบัญชี หากคุณต้องการเข้าถึงบัญชีอื่นที่ไม่อยู่ในรายการด้านล่าง โปรดเชื่อมต่อ Hardware Wallet ของคุณใหม่และเลือกบัญชี"
+  },
+  "QRHardwareScanInstructions": {
+    "message": "โปรดแสดง QR Code ไว้หน้ากล้องของคุณ หน้าจอเบลอแต่จะไม่ส่งผลต่อการทำงาน"
+  },
   "QRHardwareSignRequestCancel": {
     "message": "ปฏิเสธ"
   },
+  "QRHardwareSignRequestDescription": {
+    "message": "หลังจากที่คุณได้ลงนามด้วยกระเป๋าเงินของคุณแล้ว ให้คลิกที่ 'รับลายเซ็น' เพื่อรับลายเซ็น"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "รับลายเซ็น"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "สแกน QR Code ด้วยกระเป๋าเงินของคุณ"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "ขอลายเซ็น"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "QR Code ไม่ถูกต้อง โปรดสแกน QR Code สำหรับการซิงค์ของ Hardware Wallet"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "สแกน QR code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "เชื่อมต่อ Hardware Wallet แบบ air-gapped ที่ใช้งานผ่าน QR Code ซึ่ง Hardware Wallet แบบ air-gapped ที่รองรับอย่างเป็นทางการ มีดังนี้ :"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Ngrave (เร็ว ๆ นี้)"
+  },
+  "SIWEAddressInvalid": {
+    "message": "Address ในคำขอลงชื่อเข้าใช้ ไม่ตรงกับ Address บัญชีของคุณ"
+  },
+  "SIWEDomainInvalid": {
+    "message": "เว็บไซต์ที่คุณพยายามลงชื่อเข้าใช้ ($1) ไม่ตรงกับชื่อเว็บไซต์ในคำขอลงชื่อเข้าใช้ โปรดดำเนินการด้วยความระมัดระวัง",
+    "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningBody": {
+    "message": "เว็บไซต์ ($1) ขอให้คุณลงชื่อเข้าใช้ ในเว็บไซต์ที่ไม่ถูกต้อง นี่อาจเป็นการโจมตีแบบ phishing (ฟิชชิง)",
+    "description": "$1 represents the website domain"
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "เว็บไซต์นี้กำลังขอลงชื่อเข้าใช้ด้วย"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "เพื่อยืนยันว่าคุณเข้าใจ โปรดตรวจสอบ:"
+  },
+  "SIWEWarningTitle": {
+    "message": "คุณแน่ใจไหม ?"
+  },
   "about": {
     "message": "เกี่ยวกับ"
+  },
+  "acceleratingATransaction": {
+    "message": "* การเร่งการทำธุรกรรมโดยใช้เพิ่มราคาค่า Gas ที่สูงขึ้นจะเพิ่มโอกาสในการประมวลผล Network เร็วขึ้น แต่ก็ไม่รับประกันเสมอไป"
+  },
+  "acceptTermsOfUse": {
+    "message": "ฉันได้อ่านและยอมรับ$1",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 อาจเข้าถึงและใช้จ่ายได้ถึงจำนวนสูงสุดนี้",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 อาจเข้าถึงและใช้ทรัพย์สินนี้",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessYourWalletWithSRP": {
+    "message": "เข้าถึงกระเป๋าเงินของคุณด้วย Secret Recovery Phrase"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask ไม่สามารถกู้คืนรหัสผ่านของคุณได้ เราจะใช้ Secret Recovery Phrase ของคุณเพื่อ ตรวจสอบความเป็นเจ้าของ, กู้คืนกระเป๋าเงินของคุณ และสำหรับการตั้งรหัสผ่านใหม่ ขั้นตอนแรก ให้ป้อน Secret Recovery Phrase ที่คุณเคยจดบันทึกไว้ (เมื่อตอนที่คุณสร้าง Wallet ของคุณ) $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
+  "accessingYourCamera": {
+    "message": "เข้าถึงกล้องของคุณ..."
   },
   "account": {
     "message": "บัญชี"
@@ -14,54 +95,176 @@
   "accountName": {
     "message": "ชื่อบัญชี"
   },
+  "accountNameDuplicate": {
+    "message": "ชื่อบัญชีนี้มีอยู่แล้ว",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
+  "accountOptions": {
+    "message": "ตัวเลือกบัญชี"
+  },
+  "accountSelectionRequired": {
+    "message": "คุณต้องเลือกบัญชี!"
+  },
+  "add": {
+    "message": "เพิ่ม"
+  },
+  "addANetwork": {
+    "message": "เพิ่ม Network"
+  },
+  "addANetworkManually": {
+    "message": "เพิ่ม Network ด้วยตนเอง"
+  },
+  "addANickname": {
+    "message": "เพิ่มชื่อเล่น"
+  },
+  "addAcquiredTokens": {
+    "message": "เพิ่ม Token ที่คุณได้รับโดยใช้ MetaMask"
+  },
+  "addAlias": {
+    "message": "เพิ่มนามแฝง"
+  },
+  "addBlockExplorer": {
+    "message": "เพิ่ม block explorer"
+  },
+  "addContact": {
+    "message": "เพิ่มผู้ติดต่อ"
+  },
+  "addCustomToken": {
+    "message": "เพิ่ม Token ที่กำหนดเอง"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "ไม่พบ Token ? คุณสามารถเพิ่ม Token ได้ด้วยตนเองโดยวาง Contract Address ของ Tokon ซึ่งสามารถดูได้ที่ $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "ซึ่งจะทำให้สามารถใช้ Network นี้ใน MetaMask ได้"
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask ไม่ได้ตรวจสอบหรือยืนยันความถูกต้อง Network ที่กำหนดเอง"
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "เรียนรู้เกี่ยวกับ $1",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "การหลอกลวงและความเสี่ยงด้านความปลอดภัยของ Network",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "อนุญาตให้เว็บไซต์นี้เพิ่ม Network หรือไม่ ?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "เพิ่มเพื่อนและ Address ที่คุณไว้วางใจ"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "เพิ่มจากรายการ Network ที่ได้รับความนิยมหรือเพิ่ม Network ด้วยตนเอง และทำธุรกรรมกับคนที่คุณเชื่อถือเท่านั้น"
+  },
+  "addMemo": {
+    "message": "เพิ่มบันทึก"
+  },
+  "addMoreNetworks": {
+    "message": "เพิ่ม Network ด้วยตนเอง"
+  },
+  "addNetwork": {
+    "message": "เพิ่ม Network"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "การเชื่อมต่อ Network นี้ขึ้นอยู่กับบุคคลที่สาม การเชื่อมต่อนี้อาจเชื่อถือได้น้อยลงหรือทำให้บุคคลที่สามสามารถติดตามกิจกรรมได้ $1",
+    "description": "$1 is Learn more link"
+  },
+  "addSuggestedTokens": {
+    "message": "เพิ่ม Token ที่แนะนำ"
+  },
   "addToken": {
-    "message": "เพิ่มโทเค็น"
+    "message": "เพิ่ม Token"
+  },
+  "advanced": {
+    "message": "ขั้นสูง"
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "บันทึก $1 เป็นค่าเริ่มต้นของฉันสำหรับ \"ขั้นสูง\""
+  },
+  "advancedOptions": {
+    "message": "ตัวเลือกขั้นสูง"
+  },
+  "affirmAgree": {
+    "message": "ฉันยอมรับ"
+  },
+  "alertDisableTooltip": {
+    "message": "สามารถเปลี่ยนแปลงได้ใน \"ตั้งค่า > การแจ้งเตือน\""
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "เรียกดูเว็บไซต์โดยเลือกบัญชีที่ไม่ได้เชื่อมต่อ"
+  },
+  "allowThisSiteTo": {
+    "message": "อนุญาตให้ไซต์นี้:"
   },
   "amount": {
     "message": "จำนวน"
   },
   "appDescription": {
-    "message": "ส่วนขยายเบราว์เซอร์สำหรับอีเธอเรียม",
+    "message": "ส่วนขยายเบราว์เซอร์สำหรับ Ethereum",
     "description": "The description of the application"
-  },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "appNameBeta": {
-    "message": "MetaMask Beta",
-    "description": "The name of the application (Beta)"
-  },
-  "appNameFlask": {
-    "message": "MetaMask Flask",
-    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "อนุมัติ"
   },
+  "attemptSendingAssets": {
+    "message": "หากคุณพยายามส่งทรัพย์สินจาก Network หนึ่งไปยังอีก Network หนึ่งโดยตรง อาจส่งผลให้สูญเสียทรัพย์สินอย่างถาวร เพื่อให้แน่ใจโปรดใช้ Bridge"
+  },
   "attemptingConnect": {
-    "message": "กำลังเชื่อมต่อกับบล็อกเชน"
+    "message": "กำลังเชื่อมต่อกับ Blockchain"
   },
   "attributions": {
     "message": "อ้างถึง"
   },
   "back": {
-    "message": "กลับ"
+    "message": "ย้อนกลับ"
   },
   "backupApprovalNotice": {
-    "message": "แบ็คอัพโค้ดกู้คืนลับของคุณเพื่อรักษา Wallet และเงินให้ปลอดภัย"
+    "message": "สำรอง Secret Recovery Phrase ของคุณ เพื่อเก็บ Wallet และทรัพย์สินให้ปลอดภัย"
   },
   "balance": {
-    "message": "ยอดคงเหลือ:"
+    "message": "คงเหลือ"
+  },
+  "blockExplorerView": {
+    "message": "ดูบัญชีที่ $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "buildContactList": {
+    "message": "สร้างรายชื่อผู้ติดต่อของคุณ"
+  },
+  "buy": {
+    "message": "ซื้อ"
   },
   "cancel": {
     "message": "ยกเลิก"
   },
   "cancellationGasFee": {
-    "message": "ค่าธรรมเนียม Gas การยกเลิก"
+    "message": "ค่าธรรมเนียม (ค่า Gas) การยกเลิก"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
+  },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "คลิกที่นี่เพื่อเชื่อมต่อ Ledger ของคุณผ่าน WebHID",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToManuallyAdd": {
+    "message": "คลิกที่นี่เพื่อเพิ่ม Token ด้วยตนเอง"
+  },
+  "clickToRevealSeed": {
+    "message": "คลิกที่นี่เพื่อเปิด"
+  },
+  "close": {
+    "message": "ปิด"
+  },
+  "collectibleAddFailedMessage": {
+    "message": "ไม่สามารถเพิ่ม NFT ได้เนื่องจากรายละเอียดการเป็นเจ้าของไม่ตรงกัน โปรดตรวจสอบให้แน่ใจว่าคุณได้ป้อนข้อมูลที่ถูกต้อง"
+  },
+  "collectibleAddressError": {
+    "message": "Token นี้เป็น NFT เพิ่มใน $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "ยืนยัน"
@@ -70,28 +273,86 @@
     "message": "ยืนยันรหัสผ่าน"
   },
   "confirmSecretBackupPhrase": {
-    "message": "ยืนยัน Phrase แบ็คอัพลับของคุณ"
+    "message": "ยืนยัน Secret Recovery Phrase ของคุณ"
   },
   "congratulations": {
-    "message": "ยินดีด้วย"
+    "message": "ขอแสดงความยินดี"
+  },
+  "connect": {
+    "message": "เชื่อมต่อ"
+  },
+  "connectedSites": {
+    "message": "เว็บไซต์ที่เชื่อมต่อแล้ว"
+  },
+  "connecting": {
+    "message": "กำลังเชื่อมต่อ..."
+  },
+  "connectTo": {
+    "message": "เชื่อมต่อกับ $1",
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
+  },
+  "connectWithMetaMask": {
+    "message": "เชื่อมต่อกับ MetaMask"
   },
   "connectingTo": {
-    "message": "เชื่อมต่อกับ $1"
+    "message": "กำลังเชื่อมต่อ $1"
+  },
+  "connectingToGoerli": {
+    "message": "กำลังเชื่อมต่อกับ Goerli test network"
+  },
+  "connectingToKovan": {
+    "message": "กำลังเชื่อมต่อกับ Kovan test network"
   },
   "connectingToMainnet": {
-    "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
+    "message": "กำลังเชื่อมต่อกับ Ethereum Mainnet"
+  },
+  "connectingToRinkeby": {
+    "message": "กำลังเชื่อมต่อกับ Rinkeby test network"
+  },
+  "connectingToRopsten": {
+    "message": "กำลังเชื่อมต่อกับ Ropsten test network"
+  },
+  "connectingToSepolia": {
+    "message": "กำลังเชื่อมต่อกับ Sepolia test network"
+  },
+  "contactUs": {
+    "message": "ติดต่อเรา"
+  },
+  "contacts": {
+    "message": "รายชื่อผู้ติดต่อ"
+  },
+  "continue": {
+    "message": "ดำเนินการต่อ"
+  },
+  "continueToCoinbasePay": {
+    "message": "ดำเนินการต่อที่ Coinbase Pay"
+  },
+  "continueToMoonPay": {
+    "message": "ดำเนินการต่อที่ MoonPay"
+  },
+  "continueToTransak": {
+    "message": "ดำเนินการต่อที่ Transak"
   },
   "continueToWyre": {
-    "message": "ไปที่ Wyre"
+    "message": "ดำเนินการต่อที่ Wyre"
   },
-  "contractDeployment": {
-    "message": "การติดตั้งสัญญา"
+  "contractAddressError": {
+    "message": "คุณกำลังส่ง Token ไปยัง Contract Address ของ Token ซึ่งอาจส่งผลให้สูญเสีย Token เหล่านี้"
+  },
+  "contractDescription": {
+    "message": "เพื่อป้องกันตัวเองจากมิจฉาชีพ โปรดใช้เวลาตรวจสอบรายละเอียดสัญญาสักครู่"
+  },
+  "convertTokenToNFTDescription": {
+    "message": "เราตรวจพบว่าทรัพย์สินนี้เป็น NFT ตอนนี้ MetaMask รองรับ NFT แบบเต็มรูปแบบแล้ว คุณต้องการลบออกจากรายการ Token และเพิ่มในหมวด NFT หรือไม่ ?"
+  },
+  "convertTokenToNFTExistDescription": {
+    "message": "เราตรวจพบว่าทรัพย์สินนี้ถูกเพิ่มในหมวด NFT แล้ว คุณต้องการลบออกจากรายการ Token ของคุณหรือไม่ ?"
   },
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
   "copyPrivateKey": {
-    "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
+    "message": "นี่คือ Private Key ของคุณ (กดเพื่อคัดลอก)"
   },
   "copyToClipboard": {
     "message": "คัดลอกไปคลิปบอร์ด"
@@ -105,11 +366,23 @@
   "createAccount": {
     "message": "สร้างบัญชี"
   },
+  "createNewWallet": {
+    "message": "สร้าง Wallet ใหม่"
+  },
+  "createPassword": {
+    "message": "กำหนดรหัสผ่าน"
+  },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },
+  "customGas": {
+    "message": "กำหนดค่า Gas เอง"
+  },
+  "customGasSubTitle": {
+    "message": "ค่าธรรมเนียมที่เพิ่มขึ้นอาจลดเวลาในการดำเนินการ แต่ไม่รับประกัน"
+  },
   "decimal": {
-    "message": "ตำแหน่งของทศนิยม"
+    "message": "จำนวนทศนิยม"
   },
   "decimalsMustZerotoTen": {
     "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
@@ -118,7 +391,7 @@
     "message": "ลบ"
   },
   "deleteNetwork": {
-    "message": "ลบเครือข่าย?"
+    "message": "ลบ Network ?"
   },
   "details": {
     "message": "รายละเอียด"
@@ -127,22 +400,47 @@
     "message": "เสร็จสิ้น"
   },
   "downloadSecretBackup": {
-    "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
+    "message": "ดาวน์โหลด Secret Recovery Phrase เป็นไฟล์ และเก็บไว้อย่างปลอดภัยบน External Harddisk ที่เข้ารหัส หรือที่เก็บข้อมูล"
   },
   "downloadStateLogs": {
-    "message": "ดาวน์โหลดล็อกสถานะ"
+    "message": "ดาวน์โหลด logs"
   },
   "edit": {
     "message": "แก้ไข"
   },
   "editContact": {
-    "message": "แก้ไขผู้ติดต่อ"
+    "message": "แก้ไขรายชื่อผู้ติดต่อ"
+  },
+  "enableSmartTransactions": {
+    "message": "เปิดใช้งาน Smart Transactions"
   },
   "endOfFlowMessage1": {
-    "message": "คุณผ่านการทดสอบแล้ว กรุณารับผิดชอบในการรักษา Seed Phrase ให้ปลอดภัย"
+    "message": "คุณผ่านการทดสอบแล้ว โปรดเก็บรักษา Secret Recovery Phrase ของคุณให้ปลอดภัย ถือเป็นความรับผิดชอบของคุณ!"
+  },
+  "endOfFlowMessage10": {
+    "message": "เสร็จสิ้น"
+  },
+  "endOfFlowMessage2": {
+    "message": "เคล็ดลับในการจัดเก็บอย่างปลอดภัย"
+  },
+  "endOfFlowMessage3": {
+    "message": "เก็บสำรองไว้ในที่ปลอดภัยหลาย ๆ ที่"
+  },
+  "endOfFlowMessage4": {
+    "message": "อย่าให้คนอื่นรู้ Secret Recovery Phrase ของคุณ"
   },
   "endOfFlowMessage5": {
-    "message": "โปรดระวังฟิชชิ่ง MetaMask จะไม่ขอ Seed Phrase ของคุณโดยไม่มีการแจ้งล่วงหน้าเลย"
+    "message": "โปรดระวังฟิชชิ่ง! โดยปกติแล้ว ในการใช้งานทั่วไป MetaMask จะไม่ถาม Secret Recovery Phrase ของคุณ"
+  },
+  "endOfFlowMessage6": {
+    "message": "หากคุณต้องการตรวจสอบ Secret Recovery Phrase อีกครั้ง คุณสามารถตรวจสอบได้ที่เมนู \"การตั้งค่า\" > \"ความปลอดภัย\""
+  },
+  "endOfFlowMessage7": {
+    "message": "หากคุณมีคำถามหรือพบเห็นอะไรแปลก ๆ โปรดติดต่อฝ่ายสนับสนุนของเรา $1",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ไม่สามารถกู้คืน Secret Recovery Phrase ให้คุณได้"
   },
   "endOfFlowMessage9": {
     "message": "เรียนรู้เพิ่มเติม"
@@ -153,11 +451,11 @@
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
-  "expandView": {
-    "message": "ขยายมุมมอง"
+  "etherscanViewOn": {
+    "message": "แสดงบน Etherscan"
   },
-  "exportPrivateKey": {
-    "message": "ส่งออกคีย์ส่วนตัว"
+  "expandView": {
+    "message": "ขยายหน้าจอ"
   },
   "failed": {
     "message": "ล้มเหลว"
@@ -166,34 +464,65 @@
     "message": "เร็ว"
   },
   "fiat": {
-    "message": "เงินตรา",
+    "message": "เงิน",
     "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
+    "message": "Import ไฟล์ไม่สำเร็จ คลิกที่นี่!",
     "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "จาก"
   },
   "gasLimit": {
-    "message": "วงเงินแก็ส"
+    "message": "วงเงิน Gas"
   },
   "gasLimitTooLow": {
-    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
+    "message": "วงเงิน Gas อย่างน้อย 21000"
   },
   "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
+    "message": "ราคา Gas (GWEI)"
+  },
+  "gdprMessage": {
+    "message": "ข้อมูลนี้ถูกรวบรวมและไม่ระบุชื่อตามวัตถุประสงค์ของกฎหมายคุ้มครองข้อมูลส่วนบุคคลของ สหภาพยุโรป (General Data Protection Regulation : GDPR) 2016/679 สำหรับข้อมูลเพิ่มเติมเกี่ยวกับหลักปฏิบัติด้านความเป็นส่วนตัวของเรา โปรดดูที่ $1",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "general": {
     "message": "ทั่วไป"
   },
   "getEther": {
-    "message": "รับอีเธอร์"
+    "message": "รับ Ether"
   },
   "getEtherFromFaucet": {
-    "message": "รับอีเธอร์ที่ปล่อยจาก $1",
+    "message": "รับ Ether จาก faucet สำหรับ $1",
     "description": "Displays network name for Ether faucet"
+  },
+  "getStarted": {
+    "message": "เริ่มกันเลย !"
+  },
+  "goBack": {
+    "message": "ย้อนกลับ"
+  },
+  "gotIt": {
+    "message": "เข้าใจแล้ว!"
+  },
+  "grantedToWithColon": {
+    "message": "มอบให้:"
+  },
+  "happyToSeeYou": {
+    "message": "เราดีใจที่ได้พบคุณ"
+  },
+  "hardwareWalletConnected": {
+    "message": "เชื่อมต่อ Hardware Wallet สำเร็จแล้ว"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "คลิกที่นี่"
+  },
+  "hardwareWallets": {
+    "message": "เชื่อมต่อ Hardware Wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "เลือก Hardware Wallet ที่คุณต้องการใช้กับ MetaMask"
   },
   "here": {
     "message": "ที่นี่",
@@ -203,42 +532,81 @@
     "message": "ซ่อน"
   },
   "hideTokenPrompt": {
-    "message": "ซ่อนโทเค็นหรือไม่?"
-  },
-  "import": {
-    "message": "นำเข้า",
-    "description": "Button to import an account from a selected file"
+    "message": "ซ่อน Token หรือไม่ ?"
   },
   "importAccount": {
-    "message": "นำเข้าบัญชี"
+    "message": "Import บัญชี"
+  },
+  "importAccountError": {
+    "message": "เกิดข้อผิดพลาดขณะ Import บัญชี"
   },
   "importAccountMsg": {
-    "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
+    "message": "Account ที่ Import จะไม่เชื่อมโยงกับ Secret Recovery Phrase ของบัญชี MetaMask ที่คุณสร้างขึ้น เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่ Import"
+  },
+  "importAccountSeedPhrase": {
+    "message": "Import Wallet ด้วย Secret Recovery Phrase"
+  },
+  "importMyWallet": {
+    "message": "Import Wallet ของฉัน"
+  },
+  "importNFTAddressToolTip": {
+    "message": "ตัวอย่างเช่น บน OpenSea ในหน้าของ NFT ที่ภายใต้ Details หัวข้อ 'Contract Address' จะมีลิงก์สีน้ำเงินอยู่ หากคุณคลิกที่ปุ่มนี้ ระบบจะนำคุณไปยัง Contract Address ใน Etherscan ที่ด้านบนซ้ายของหน้านั้น ควรมีไอคอนที่ระบุว่า 'Contract' และถัดมาทางด้านขวามือ จะเป็นตัวอักษรและตัวเลขยาว ๆ นี่คือที่ Contract Address ที่สร้าง NFT ของคุณ คลิกที่ไอคอน 'Copy' ที่อยู่ถัดมา เพื่อคัดลอกลงในคลิปบอร์ด"
+  },
+  "importNFTPage": {
+    "message": "Import หน้า NFT"
+  },
+  "importNFTTokenIdToolTip": {
+    "message": "Token ID ที่ไม่ซ้ำกัน เนื่องจากไม่มี NFT สองตัวที่เหมือนกัน ตัวอย่างเช่น บน OpenSea หมายเลขนี้จะอยู่อยู่ภายใต้ Details จดบันทึกหรือคัดลอกลงในคลิปบอร์ดของคุณ"
+  },
+  "importSelectedTokens": {
+    "message": "Import Token ที่เลือก ?"
+  },
+  "importSelectedTokensDescription": {
+    "message": "เฉพาะ Token ที่คุณเลือกเท่านั้นที่จะปรากฏใน Wallet ของคุณ คุณสามารถ Import Token ที่ซ่อนอยู่ได้ในภายหลังโดยการค้นหา"
+  },
+  "importTokenQuestion": {
+    "message": "Import Token ไหม ?"
+  },
+  "importTokenWarning": {
+    "message": "ใคร ๆ ก็สามารถสร้าง Token ด้วยชื่อใดก็ได้ รวมถึง Token ปลอม เพื่อเลียนแบบ Token ที่มีอยู่แล้ว เพิ่มและซื้อขายด้วยความเสี่ยงของคุณเอง!"
+  },
+  "importTokens": {
+    "message": "Import Token"
+  },
+  "importTokensCamelCase": {
+    "message": "Import Token"
+  },
+  "importWithCount": {
+    "message": "Import $1 รายการ",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
+  },
+  "importYourExisting": {
+    "message": "Import Wallet ที่คุณมีอยู่แล้วโดยใช้ Secret Recovery Phrase"
   },
   "imported": {
-    "message": "นำเข้าเรียบร้อย",
+    "message": "Import เรียบร้อย",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "insufficientFunds": {
-    "message": "เงินทุนไม่เพียงพอ"
+    "message": "เงินไม่เพียงพอ"
   },
   "insufficientTokens": {
-    "message": "โทเค็นไม่เพียงพอ"
+    "message": "Token ไม่เพียงพอ"
   },
   "invalidAddress": {
-    "message": "แอดแดรสไม่ถูกต้อง"
+    "message": "Address ไม่ถูกต้อง"
   },
   "invalidAddressRecipient": {
-    "message": "แอดแดรสผู้รับไม่ถูกต้อง"
+    "message": "Address ผู้รับไม่ถูกต้อง"
   },
   "invalidAddressRecipientNotEthNetwork": {
-    "message": "ไม่ใช่เครือข่าย ETH ตั้งเป็นตัวพิมพ์เล็ก"
+    "message": "ไม่ใช่ ETH Network ตั้งค่าเป็นตัวพิมพ์เล็ก"
   },
   "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI ไม่ถูกต้อง"
+    "message": "Block Explorer URL ไม่ถูกต้อง"
   },
   "invalidRPC": {
-    "message": "RPC URI ไม่ถูกต้อง"
+    "message": "RPC URL ไม่ถูกต้อง"
   },
   "jsonFile": {
     "message": "ไฟล์ JSON",
@@ -250,67 +618,129 @@
   "learnMoreUpperCase": {
     "message": "เรียนรู้เพิ่มเติม"
   },
+  "letsGoSetUp": {
+    "message": "ใช่ มาเริ่มกันเลย!"
+  },
   "likeToImportTokens": {
-    "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
+    "message": "คุณต้องการ Import Token เหล่านี้ไหม ?"
+  },
+  "link": {
+    "message": "ลิงก์"
+  },
+  "links": {
+    "message": "ลิงก์"
+  },
+  "loadMore": {
+    "message": "โหลดเพิ่มเติม"
   },
   "loading": {
     "message": "กำลังโหลด..."
   },
+  "loadingNFTs": {
+    "message": "กำลังโหลด NFTs..."
+  },
   "loadingTokens": {
-    "message": "กำลังโหลดโทเค็น..."
+    "message": "กำลังโหลด Tokens..."
+  },
+  "localhost": {
+    "message": "localhost:8545"
   },
   "lock": {
-    "message": "ออกจากระบบ"
+    "message": "ล็อก"
   },
-  "mainnet": {
-    "message": "เครือข่าย Mainnet"
+  "memorizePhrase": {
+    "message": "ใช้สมองจดจำคำศัพท์และลำดับ"
   },
   "message": {
     "message": "ข้อความ"
   },
   "metamaskDescription": {
-    "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
+    "message": "เชื่อมต่อคุณกับ Ethereum และเว็บแบบ Decentralized (กระจายอำนาจ/ไร้ศูนย์กลาง)"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "อนุญาตให้คุณถอนความยินยอมได้เสมอผ่าน \"การตั้งค่า\""
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "ส่งบันทึกการคลิกและการดูหน้าเว็บแบบไม่ระบุตัวตน"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask จะ..."
+  },
+  "metametricsCommitmentsNeverCollect": {
+    "message": "ไม่บันทึก Keys, Address, Transactions, ยอดคงเหลือ, Hashes หรือข้อมูลส่วนบุคคลใด ๆ"
+  },
+  "metametricsCommitmentsNeverIP": {
+    "message": "ไม่บันทึก IP Address ของคุณ"
+  },
+  "metametricsCommitmentsNeverSell": {
+    "message": "ไม่ขายข้อมูลเพื่อผลกำไร"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "ช่วยให้เราปรับปรุง MetaMask"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask ต้องการรวบรวมข้อมูลการใช้งานเพื่อให้เข้าใจมากขึ้นว่าผู้ใช้ของเราโต้ตอบกับส่วนขยายอย่างไร ข้อมูลนี้จะถูกนำมาใช้เพื่อปรับปรุงความสามารถในการใช้งานและประสบการณ์ผู้ใช้ผลิตภัณฑ์ของเรา และระบบนิเวศ Ethereum อย่างต่อเนื่อง"
+  },
+  "missingToken": {
+    "message": "หากไม่เห็น Token ของคุณ ?"
   },
   "mustSelectOne": {
-    "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
+    "message": "ต้องเลือกอย่างน้อย 1 Token"
   },
   "myAccounts": {
     "message": "บัญชีของฉัน"
   },
+  "nativeToken": {
+    "message": "Native Coin บน Network นี้คือ $1 ใช้สำหรับจ่ายค่าธรรมเนียมธุรกรรม (ค่า Gas)",
+    "description": "$1 represents the name of the native token on the current network"
+  },
+  "needHelp": {
+    "message": "ต้องการความช่วยเหลือ ? โปรดติดต่อ $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
   "needImportFile": {
-    "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
+    "message": "คุณต้องเลือกไฟล์ที่จะ import",
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
-    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
+    "message": "ไม่สามารถส่ง ETH จำนวนติดลบได้"
   },
-  "networks": {
-    "message": "เครือข่าย"
+  "networkDetails": {
+    "message": "รายละเอียด Network"
   },
   "newAccount": {
-    "message": "บัญชีใหม่"
+    "message": "สร้างบัญชีใหม่"
   },
   "newAccountDetectedDialogMessage": {
-    "message": "ตรวจพบที่อยู่ใหม่! คลิกที่นี่เพื่อเพิ่มลงในสมุดที่อยู่ของคุณ"
+    "message": "ตรวจพบ Address ใหม่! คลิกที่นี่เพื่อเพิ่มลงในสมุดรายชื่อผู้ติดต่อของคุณ"
   },
   "newAccountNumberName": {
     "message": "บัญชี $1",
     "description": "Default name of next account to be created on create account screen"
   },
+  "newContact": {
+    "message": "รายชื่อผู้ติดต่อใหม่"
+  },
   "newContract": {
-    "message": "สร้างสัญญาใหม่"
+    "message": "สัญญาฉบับใหม่"
   },
   "newPassword": {
-    "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
+    "message": "รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)"
   },
   "newToMetaMask": {
-    "message": "เพิ่งเริ่มใช้ MetaMask?"
+    "message": "เพิ่งเคยใช้ MetaMask หรือเปล่า ?"
   },
   "next": {
     "message": "ถัดไป"
   },
   "noAddressForName": {
-    "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
+    "message": "ไม่ได้กำหนด Address สำหรับชื่อนี้"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "ไม่, ฉันมี Secret Recovery Phrase อยู่แล้ว"
+  },
+  "noThanks": {
+    "message": "ไม่เป็นไร ขอบคุณ"
   },
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
@@ -318,31 +748,79 @@
   "on": {
     "message": "เปิด"
   },
+  "onlyAddTrustedNetworks": {
+    "message": "ผู้ให้บริการเครือข่ายที่เป็นอันตรายสามารถโกหกเกี่ยวกับสถานะของ blockchain และบันทึกหรือติดตามกิจกรรมของคุณ โปรดเพิ่มเฉพาะ Network ที่คุณไว้วางใจเท่านั้น"
+  },
+  "onlyConnectTrust": {
+    "message": "เชื่อมต่อกับเว็บไซต์ที่คุณเชื่อถือเท่านั้น"
+  },
+  "origin": {
+    "message": "ต้นเรื่อง"
+  },
   "participateInMetaMetricsDescription": {
-    "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
+    "message": "เข้าร่วม MetaMetrics เพื่อช่วยเราปรับปรุง MetaMask ให้ดีขึ้น"
+  },
+  "passwordsDontMatch": {
+    "message": "รหัสผ่านไม่ตรงกัน"
   },
   "pastePrivateKey": {
-    "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
+    "message": "วาง Private Key ของคุณที่นี่:",
     "description": "For importing an account from a private key"
   },
+  "permission_ethereumAccounts": {
+    "message": "มองเห็น Address, ยอดเงินในบัญชี, กิจกรรม และเสนอธุรกรรมเพื่อขออนุมัติ",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "personalAddressDetected": {
-    "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
+    "message": "นี่คือ Address ของบุคคล โปรดใส่ Contract Address ของ Token เท่านั้น"
   },
   "privacyMsg": {
-    "message": "นโยบายสความเป็นส่วนตัว"
-  },
-  "privateKey": {
-    "message": "คีย์ส่วนตัว",
-    "description": "select this type of file to use to import an account"
+    "message": "นโยบายความเป็นส่วนตัว"
   },
   "privateKeyWarning": {
-    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มีคีย์ส่วนตัวสามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
-  },
-  "privateNetwork": {
-    "message": "เครือข่ายส่วนตัว"
+    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มี Private Keys สามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
   },
   "readdToken": {
-    "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
+    "message": "คุณสามารถเพิ่มโทเค็นนี้กลับมาได้ในอนาคตโดยไปที่ “Import token” ในเมนูตัวเลือกบัญชีของคุณ"
+  },
+  "receive": {
+    "message": "รับ"
+  },
+  "recents": {
+    "message": "ล่าสุด"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "ค้นหา Public Address (0x) หรือ ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "แนะนำ"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "เริ่มที่นี่"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "เข้าใจแล้ว"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "เก็บ Secret Recovery Phrase ของคุณไว้ในที่ที่ปลอดภัยและเป็นความลับเสมอ"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "ต้องการสำรองข้อมูล Secret Recovery Phrase ของคุณอีกครั้งหรือไม่ ?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "อย่าเปิดเผยหรือแบ่งปัน Secret Recovery Phrase กับใคร"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "ทีมงาน MetaMask จะไม่ถาม Secret Recovery Phrase ของคุณ"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Secret Recovery Phrase ควบคุมบัญชีของคุณทั้งหมด"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "ปกป้องทรัพย์สินของคุณ"
+  },
+  "refreshList": {
+    "message": "Refresh รายการ"
   },
   "reject": {
     "message": "ปฏิเสธ"
@@ -360,34 +838,136 @@
     "message": "รีเซ็ตบัญชี"
   },
   "revealSeedWords": {
-    "message": "เปิดเผยกลุ่มคำชีด"
+    "message": "เปิดดู Secret Recovery Phrase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "หากคุณเปลี่ยนเบราว์เซอร์หรือเปลี่ยนคอมพิวเตอร์ คุณจะต้องใช้ Secret Recovery Phrase เพื่อเข้าถึงบัญชีของคุณ โปรดเก็บไว้ในที่ปลอดภัยและเป็นความลับ"
   },
   "revealSeedWordsWarning": {
-    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
+    "message": "คำชุดนี้สามารถใช้เพื่อขโมยบัญชีหรือทรัพย์สินทั้งหมดของคุณได้"
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "อย่าแชร์หรือแบ่งปัน Secret Recovery Phrase กับใคร!"
   },
   "save": {
     "message": "บันทึก"
   },
+  "saveAsCsvFile": {
+    "message": "บันทึกเป็นไฟล์ CSV"
+  },
+  "scanInstructions": {
+    "message": "วาง QR Code ไว้หน้ากล้องของคุณ"
+  },
+  "scanQrCode": {
+    "message": "สแกน QR Code"
+  },
+  "scrollDown": {
+    "message": "เลื่อนลง"
+  },
   "search": {
     "message": "ค้นหา"
   },
+  "searchAccounts": {
+    "message": "ค้นหาบัญชี"
+  },
+  "searchResults": {
+    "message": "ผลการค้นหา"
+  },
+  "searchSettings": {
+    "message": "ค้นหาในการตั้งค่า"
+  },
+  "searchTokens": {
+    "message": "ค้นหา Token"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Secret Recovery Phrase เป็นคำศัพท์ที่ทำให้ง่ายต่อการสำรองและกู้คืนบัญชีของคุณ"
+  },
+  "secretBackupPhraseWarning": {
+    "message": "คำเตือน: อย่าเปิดเผย Secret Recovery Phrase ของคุณ ใครก็ตามที่รู้ข้อมูลนี้ จะสามารถใช้ Wallet ของคุณได้ตลอดไป"
+  },
+  "secretPhrase": {
+    "message": "เฉพาะบัญชีแรกใน Wallet นี้เท่านั้นที่จะโหลดอัตโนมัติ หากต้องการเพิ่มบัญชีให้คลิกเมนู จากนั้นเลือก \"สร้างบัญชีใหม่\""
+  },
+  "securityAndPrivacy": {
+    "message": "ความปลอดภัยและความเป็นส่วนตัว"
+  },
+  "seedPhraseConfirm": {
+    "message": "ยืนยัน Secret Recovery Phrase"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "ยืนยัน Secret Recovery Phrase"
+  },
+  "seedPhraseIntroNotRecommendedButtonCopy": {
+    "message": "เตือนฉันในภายหลัง (ไม่แนะนำ)"
+  },
+  "seedPhraseIntroRecommendedButtonCopy": {
+    "message": "รักษาความปลอดภัยกระเป๋าเงินของฉัน (แนะนำ)"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "จดและเก็บไว้ในที่ลับหลายแห่ง"
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "บันทึกในโปรแกรมจัดการรหัสผ่าน"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "เก็บในตู้เซฟหรือตู้นิรภัย"
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "เก็บไว้ในตู้นิรภัยธนาคาร"
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Secret Recovery Phrase คือคำศัพท์ 12 คำ (หรือมากกว่า) ที่เปรียบเสมือนเป็น \"Master Key\" ของ Wallet และเงินของคุณ"
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "หากมีคน(หรือเว็บไซต์)ถาม Secret Recovery Phrase ของคุณ พวกเขามักจะพยายามหลอกลวงคุณและขโมยเงินใน Wallet ของคุณ"
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "ไม่!! คุณไม่ควรแบ่งปัน Secret Recovery Phrase ของคุณแม้แต่กับ MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Secret Recovery Phrase คืออะไร ?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "ฉันควรแชร์ Secret Recovery Phrase หรือไม่ ?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "ฉันควรเก็บ Secret Recovery Phrase ของฉันอย่างไร ?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "ใช้ Wallet อย่างปลอดภัย"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "ก่อนที่จะเริ่มต้น ดูวิดีโอสั้น ๆ นี้ เพื่อเรียนรู้เกี่ยวกับ Secret Recovery Phrases และวิธีดูแล Wallet ให้ปลอดภัย"
+  },
   "seedPhraseReq": {
-    "message": "กลุ่มคำชีดมีความยาว 12 คำ"
+    "message": "Secret Recovery Phrases มี 12, 15, 18, 21 หรือ 24 คำ"
+  },
+  "selectAccounts": {
+    "message": "เลือกบัญชีที่จะใช้ในเว็บไซต์นี้"
   },
   "selectAnAccount": {
     "message": "เลือกบัญชี"
   },
+  "selectEachPhrase": {
+    "message": "โปรดเลือกแต่ละคำตามลำดับ เพื่อให้แน่ใจว่าถูกต้อง"
+  },
   "selectHdPath": {
-    "message": "เลือกเส้นทาง HD"
+    "message": "เลือก HD Path"
   },
   "selectType": {
     "message": "เลือกประเภท"
   },
   "send": {
-    "message": "ส่ง"
+    "message": "โอน"
+  },
+  "sendAmount": {
+    "message": "จำนวนที่โอน"
+  },
+  "sendTo": {
+    "message": "ส่งถึง"
   },
   "sendTokens": {
-    "message": "ส่งโทเค็น"
+    "message": "โอน Token"
   },
   "settings": {
     "message": "การตั้งค่า"
@@ -396,22 +976,30 @@
     "message": "การควบคุม Gas ขั้นสูง"
   },
   "showPrivateKeys": {
-    "message": "แสดงคีย์ส่วนตัว"
+    "message": "แสดง Private Keys"
   },
   "sigRequest": {
-    "message": "ขอลายเซ็น"
+    "message": "โปรดลงนาม"
   },
   "sign": {
     "message": "เซ็นชื่อ"
   },
   "signNotice": {
-    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
+    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณเชื่อถือเท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
   },
   "signatureRequest": {
-    "message": "ขอลายเซ็น"
+    "message": "โปรดลงนาม"
   },
   "signed": {
-    "message": "ลงชื่อแล้ว"
+    "message": "เซ็นชื่อแล้ว"
+  },
+  "srpInputNumberOfWords": {
+    "message": "ฉันมี Secret Recovery Phrase $1 คำ",
+    "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpPasteTip": {
+    "message": "คุณสามารถวาง Secret Recovery Phrase ทั้งหมดของคุณลงในฟิลด์ใดก็ได้",
+    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
@@ -419,20 +1007,71 @@
   "stateLogsDescription": {
     "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
   },
+  "status": {
+    "message": "สถานะ"
+  },
+  "statusConnected": {
+    "message": "เชื่อมต่อแล้ว"
+  },
+  "statusNotConnected": {
+    "message": "ไม่ได้เชื่อมต่อ"
+  },
+  "stxAreHere": {
+    "message": "Smart Transactions อยู่ที่นี่แล้ว!"
+  },
+  "stxBenefit1": {
+    "message": "ลดต้นทุนการทำธุรกรรมให้น้อยที่สุด"
+  },
+  "stxBenefit2": {
+    "message": "ลดโอกาสธุรกรรมล้มเหลว"
+  },
+  "stxBenefit3": {
+    "message": "นำธุรกรรมที่ค้างอยู่ออก"
+  },
+  "stxBenefit4": {
+    "message": "ป้องกัน front-running"
+  },
+  "stxDescription": {
+    "message": "MetaMask Swap ฉลาดขึ้นมาก! การเปิดใช้งาน Smart Transactions จะช่วยให้ MetaMask สามารถเพิ่มประสิทธิภาพการแลกเปลี่ยน (Swap) ของคุณ โดยทางโปรแกรมช่วย:"
+  },
+  "stxSubDescription": {
+    "message": "* Smart Transactions จะพยายามส่งธุรกรรมของคุณแบบส่วนตัวหลาย ๆ ครั้ง หากความพยายามทั้งหมดล้มเหลว ธุรกรรมจะถูกบันทึกบน blockchain และเผยแพร่สู่สาธารณะ เพื่อให้แน่ใจว่าการแลกเปลี่ยน (Swap) ของคุณจะสำเร็จ"
+  },
+  "stxYouCanOptOut": {
+    "message": "คุณสามารถเลือก \"ไม่ใช้\" ใน \"การตั้งค่าขั้นสูง\" ได้ทุกเมื่อ"
+  },
   "storePhrase": {
-    "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
+    "message": "เก็บ Secret Recovery Phrase นี้ไว้ในตัวจัดการรหัสผ่านเช่น 1Password"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
   },
+  "swap": {
+    "message": "แลกเปลี่ยน"
+  },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "การดำเนินการนี้จะเปลี่ยน Network ปัจจุบันเป็น Network ที่เพิ่มไว้ก่อนหน้านี้:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "อนุญาตให้ไซต์นี้เปลี่ยน Network หรือไม่ ?"
+  },
+  "switchNetwork": {
+    "message": "เปลี่ยน Network"
+  },
   "switchNetworks": {
-    "message": "เปลี่ยนเครือข่าย"
+    "message": "เปลี่ยน Networks"
+  },
+  "switchedTo": {
+    "message": "คุณได้เปลี่ยนเป็น"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "การเปลี่ยน Network จะยกเลิกรายการที่รอดำเนินการทั้งหมด"
   },
   "symbol": {
-    "message": "เครื่องหมาย"
+    "message": "สัญลักษณ์"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
+    "message": "สัญลักษณ์ต้องมีความยาว 11 อักขระหรือน้อยกว่า"
   },
   "syncWithMobileComplete": {
     "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
@@ -443,17 +1082,26 @@
   "testFaucet": {
     "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
   },
+  "thingsToKeep": {
+    "message": "สิ่งที่ควรทราบ:"
+  },
   "thisWillCreate": {
-    "message": "สิ่งนี้จะสร้าง Wallet และ Seed Phrase ใหม่"
+    "message": "สร้าง Wallet และ Secret Recovery Phrase ใหม่"
+  },
+  "tips": {
+    "message": "เคล็ดลับ"
   },
   "to": {
     "message": "ถึง"
   },
   "tokenAlreadyAdded": {
-    "message": "โทเคนได้ถูกเพิ่มไปแล้ว"
+    "message": "Token ได้ถูกเพิ่มไปแล้ว"
+  },
+  "tokenShowUp": {
+    "message": "Token ของคุณอาจไม่ปรากฏใน Wallet ของคุณโดยอัตโนมัติ"
   },
   "tokenSymbol": {
-    "message": "สัญลักษณ์ประจำตัว"
+    "message": "สัญลักษณ์"
   },
   "total": {
     "message": "รวม"
@@ -468,17 +1116,29 @@
     "message": "โอนระหว่างบัญชีของฉัน"
   },
   "troubleTokenBalances": {
-    "message": "เรามีปัญหาในการโหลดยอดโทเค็นคงเหลือของคุณ คุณสามารถดูได้ที่นี่",
+    "message": "เรามีปัญหาในการโหลดยอด Token คงเหลือของคุณ คุณสามารถดูได้ที่นี่",
     "description": "Followed by a link (here) to view token balances"
   },
+  "trustSiteApprovePermission": {
+    "message": "เมื่อให้อนุญาต แสดงว่าต่อไปนี้คุณอนุญาตให้ $1 เข้าถึงทรัพย์สินของคุณ"
+  },
+  "tryAgain": {
+    "message": "ลองอีกครั้ง"
+  },
+  "tryOur": {
+    "message": "ลองใช้ของเรา"
+  },
   "typePassword": {
-    "message": "พิมพ์รหัสผ่านของคุณ"
+    "message": "พิมพ์รหัสผ่าน MetaMask ของคุณ"
+  },  
+  "typeYourSRP": {
+    "message": "พิมพ์ Secret Recovery Phrase ของคุณ"
   },
   "unknown": {
     "message": "ไม่รู้จัก"
   },
   "unknownNetwork": {
-    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
+    "message": "ไม่รู้จัก Private Network"
   },
   "unlock": {
     "message": "ปลดล็อก"
@@ -487,7 +1147,7 @@
     "message": "อัปเดต $1 แล้ว"
   },
   "urlErrorMsg": {
-    "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
+    "message": "URR ต้องขึ้นต้นด้วย HTTP หรือ HTTPS"
   },
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
@@ -495,13 +1155,77 @@
   "viewAccount": {
     "message": "ดูบัญชี"
   },
+  "viewAllDetails": {
+    "message": "ดูรายละเอียดทั้งหมด"
+  },
+  "viewContact": {
+    "message": "ดูรายชื่อผู้ติดต่อ"
+  },
+  "viewFullTransactionDetails": {
+    "message": "ดูรายละเอียดการทำธุรกรรมทั้งหมด"
+  },
+  "viewMore": {
+    "message": "ดูเพิ่มเติม"
+  },
+  "viewOnBlockExplorer": {
+    "message": "ดูบน block explorer"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "ดู $1 บน $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+  },
+  "viewOnEtherscan": {
+    "message": "ดู $1 บน Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "ดูบน Opensea"
+  },
+  "viewinExplorer": {
+    "message": "ดู $1 บน explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
   },
   "welcome": {
-    "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
+    "message": "ยินดีต้อนรับสู่ MetaMask"
+  },
+  "welcomeBack": {
+    "message": "ยินดีต้อนรับการกลับมา!"
+  },
+  "welcomeExploreDescription": {
+    "message": "เก็บ, โอน และใช้จ่าย cryptocurrencies และสินทรัพย์"
+  },
+  "welcomeExploreTitle": {
+    "message": "สำรวจแอปที่กระจายอำนาจ"
+  },
+  "welcomeLoginDescription": {
+    "message": "ใช้ MetaMask ของคุณเพื่อลงชื่อเข้าใช้แอปแบบกระจายศูนย์ - ไม่จำเป็นต้องลงทะเบียน"
+  },
+  "welcomeLoginTitle": {
+    "message": "พูดทักทาย Wallet ของคุณ"
+  },
+  "welcomeToMetaMask": {
+    "message": "มาเริ่มกันเลย"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "MetaMask เป็น Wallet ที่ปลอดภัยซึ่งได้รับความไว้วางใจจากคนนับล้าน ทำให้ทุกคนสามารถเข้าถึงโลกของ web3"
+  },
+  "whatsNew": {
+    "message": "มีอะไรใหม่บ้าง",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
+  },
+  "whatsThis": {
+    "message": "นี่คืออะไร?"
+  },
+  "writePhrase": {
+    "message": "เขียน Secret Recovery Phrase ลงบนกระดาษและเก็บไว้ในที่ปลอดภัย หากคุณต้องการความปลอดภัยมากขึ้น ให้จดไว้บนกระดาษหลาย ๆ แผ่น และเก็บไว้ในที่ต่างกัน 2-3 แห่ง"
   },
   "youSign": {
     "message": "คุณกำลังเซ็นชื่อ"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Secret Recovery Phrase ของคุณ"
   }
 }
