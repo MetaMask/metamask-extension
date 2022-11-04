@@ -19,29 +19,29 @@ const styles = {
   },
   rail: {
     borderRadius: 50,
-    background: '#D6D9DC',
+    background: 'var(--color-background-alternative)',
     height: 6,
   },
   track: {
     borderRadius: 50,
-    background: '#037DD6',
+    background: 'var(--color-primary-default)',
     height: 6,
   },
   thumb: {
-    'height': 20,
-    'width': 20,
-    'marginTop': -7,
-    'marginLeft': -7,
-    'backgroundColor': '#037DD6',
-    'border': '1px solid #EAF6FF',
-    'boxSizing': 'border-box',
-    'boxShadow': '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+    height: 20,
+    width: 20,
+    marginTop: -7,
+    marginLeft: -7,
+    backgroundColor: 'var(--color-primary-default)',
+    border: '1px solid var(--color-border-muted)',
+    boxSizing: 'border-box',
+    boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '&:focus, &$active': {
       height: 20,
       width: 20,
       marginTop: -7,
       marginLeft: -7,
-      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 22,
@@ -49,7 +49,7 @@ const styles = {
       marginTop: -8,
       marginLeft: -8,
       border: 'none',
-      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
   },
 };
@@ -80,14 +80,20 @@ const Slider = ({
           <InfoTooltip position="top" contentText={tooltipText} />
         )}
         {valueText && (
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {valueText}
           </Typography>
         )}
       </div>
       {titleDetail && (
         <div className="slider__heading-detail">
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {titleDetail}
           </Typography>
         </div>
@@ -97,7 +103,10 @@ const Slider = ({
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {infoText}
           </Typography>
         )}
@@ -118,17 +127,53 @@ Slider.defaultProps = {
 };
 
 Slider.propTypes = {
+  /**
+   * Show edit text
+   */
   editText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show info text
+   */
   infoText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show title detail text
+   */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show title text
+   */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show tooltip Text
+   */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show value text
+   */
   valueText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Set maximum step
+   */
   max: PropTypes.number,
+  /**
+   * Set minimum step
+   */
   min: PropTypes.number,
+  /**
+   * Handler for onChange
+   */
   onChange: PropTypes.func,
+  /**
+   * Handler for onEdit
+   */
   onEdit: PropTypes.func,
+  /**
+   * Total steps
+   */
   step: PropTypes.number,
+  /**
+   * Show value on slider
+   */
   value: PropTypes.number,
 };
 

@@ -1,0 +1,25 @@
+@use "design-system";
+
+.textarea {
+  display: block;
+  box-shadow: none;
+  color: var(--color-text-default);
+
+  @include design-system.H6;
+
+  font-size: 1rem;
+
+  &--scrollable {
+    overflow-y: scroll;
+  }
+
+  &--not-scrollable {
+    overflow-y: hidden;
+  }
+
+  @each $size in design-system.$resize {
+    &--resize-#{$size} {
+      resize: $size;
+    }
+  }
+}

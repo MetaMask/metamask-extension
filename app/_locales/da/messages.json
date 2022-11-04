@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afvis"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-kode"
+  },
   "about": {
     "message": "Om"
-  },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation"
-  },
-  "acceleratingATransaction": {
-    "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
   },
   "accessingYourCamera": {
     "message": "Tilgår din kamera..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },
-  "addToAddressBook": {
-    "message": "Føj til adressebogen"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "f.eks. John D."
-  },
   "addToken": {
     "message": "Tilføj Polet"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "amount": {
     "message": "Beløb"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkend"
@@ -131,17 +130,14 @@
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Brug Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Din browser er ikke understøttet..."
   },
   "buyWithWyre": {
-    "message": "Køb ETH med Wyre"
+    "message": "Køb $1 med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lader dig bruge et kreditkort til at indbetale ETH på din MetaMask-konto."
+    "message": "Wyre lader dig bruge et kreditkort til at indbetale $1 på din MetaMask-konto."
   },
   "bytes": {
     "message": "Byte"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
-  "connectingToKovan": {
-    "message": "Forbinder til Kovan Testnetværk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
-  },
-  "connectingToRinkeby": {
-    "message": "Forbinder til Rinkeby-testnetværk"
-  },
-  "connectingToRopsten": {
-    "message": "Forbinder til Ropsten-testnetværk"
   },
   "continueToWyre": {
     "message": "Fortsæt til Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Kopieret!"
-  },
-  "copiedTransactionId": {
-    "message": "Kopieret transaktions-id"
   },
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Nuværende sprog"
   },
-  "customGas": {
-    "message": "Tilpas brændstof"
-  },
-  "customGasSubTitle": {
-    "message": "Forøgelse af gebyr kan mindske bearbejdningstiden, men det er ikke en garanti."
+  "custom": {
+    "message": "Avanceret"
   },
   "customToken": {
     "message": "Brugerdefineret Token"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Mainnet."
   },
   "delete": {
     "message": "Slet"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Er du sikker på, at du vil slette dette netværk?"
   },
-  "depositEther": {
-    "message": "Indbetal Ether"
-  },
   "details": {
     "message": "Detaljer"
-  },
-  "directDepositEther": {
-    "message": "Indskyd Ether direkte"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
   },
   "done": {
     "message": "Færdig"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Fejl i ENS-navneregistrering"
   },
-  "enterAnAlias": {
-    "message": "Indtast et alias"
-  },
   "enterPassword": {
     "message": "Indtast kodeord"
   },
   "enterPasswordContinue": {
     "message": "Indtast adgangskode for at fortsætte"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Estimerede behandlingstider"
   },
   "ethereumPublicAddress": {
     "message": "Offentlig Ethereum-adresse"
@@ -413,9 +376,6 @@
   },
   "general": {
     "message": "Generelt"
-  },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primær valuta, sprog, blockies-identicon"
   },
   "getEther": {
     "message": "Hent Ether"
@@ -515,10 +475,10 @@
   "knownAddressRecipient": {
     "message": "Kendte kontaktadresser."
   },
-  "kovan": {
-    "message": "Kovan Test-Netværk"
-  },
   "learnMore": {
+    "message": "Lær mere"
+  },
+  "learnMoreUpperCase": {
     "message": "Lær mere"
   },
   "ledgerAccountRestriction": {
@@ -566,9 +526,6 @@
   "myAccounts": {
     "message": "Mine Konti"
   },
-  "needEtherInWallet": {
-    "message": "Du skal have Ether i din tegnebog for at interagere med decentraliserede applikationer, der bruger MetaMask."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
@@ -578,9 +535,6 @@
   },
   "networkName": {
     "message": "Netværksnavn"
-  },
-  "networkSettingsDescription": {
-    "message": "Tilføj og redigér brugerdefinerede RPC-netværk"
   },
   "networks": {
     "message": "Netværk"
@@ -609,12 +563,6 @@
   },
   "newToMetaMask": {
     "message": "Ny på MetaMask?"
-  },
-  "newTotal": {
-    "message": "Ny Sum"
-  },
-  "newTransactionFee": {
-    "message": "Nyt Transaktionsgebyr"
   },
   "next": {
     "message": "Næste"
@@ -759,9 +707,6 @@
   "restore": {
     "message": "Gendan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gendan din konto med Seed-sætning"
-  },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
@@ -773,12 +718,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DEL IKKE denne sætning med nogen!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby-testnetværk"
-  },
-  "ropsten": {
-    "message": "Ropsten Test-netværk"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"
@@ -813,23 +752,11 @@
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
-  "securitySettingsDescription": {
-    "message": "Indstillinger for beskyttelse af personlige oplysninger og backupsætning til tegnebog"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Adskil hvert ord med et enkelt mellemrum"
-  },
   "seedPhraseReq": {
     "message": "Backupsætninger er 12 ord lange"
   },
-  "selectAHigherGasFee": {
-    "message": "Vælg et højere Gas-gebyr, for at gøre behandlingen af din transaktion hurtigere.*"
-  },
   "selectAnAccount": {
     "message": "Vælg en Konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
@@ -843,14 +770,8 @@
   "selectType": {
     "message": "Vælg type"
   },
-  "sendAmount": {
-    "message": "Send Beløb"
-  },
   "sendTokens": {
     "message": "Send tokens"
-  },
-  "separateEachWord": {
-    "message": "Separer hvert ord med et enkelt mellemrum"
   },
   "settings": {
     "message": "Indstillinger "
@@ -890,9 +811,6 @@
   },
   "signed": {
     "message": "Underskrevet"
-  },
-  "slow": {
-    "message": "Langsom"
   },
   "somethingWentWrong": {
     "message": "Ups! Noget gik galt."

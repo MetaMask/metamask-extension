@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
@@ -8,6 +9,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -15,33 +17,19 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { getFirstTimeFlowType } from '../../../selectors';
 
 export default function CreationSuccessful() {
-  const firstTimeFlowTypeNameMap = {
-    create: 'New Wallet Created',
-    import: 'New Wallet Imported',
-  };
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-
-  const onboardingCompletedEvent = useMetricEvent({
-    category: 'Onboarding',
-    action: 'Onboarding Complete',
-    name: firstTimeFlowTypeNameMap[firstTimeFlowType],
-  });
 
   const onComplete = async () => {
     await dispatch(setCompletedOnboarding());
-    onboardingCompletedEvent();
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
   return (
-    <div className="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER} margin={6}>
+    <div className="creation-successful" data-testid="creation-successful">
+      <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
           variant={TYPOGRAPHY.H2}
@@ -54,7 +42,13 @@ export default function CreationSuccessful() {
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
-      <Typography variant={TYPOGRAPHY.H4}>{t('remember')}</Typography>
+      <Typography
+        variant={TYPOGRAPHY.H4}
+        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        marginLeft={12}
+      >
+        {t('remember')}
+      </Typography>
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
@@ -85,7 +79,7 @@ export default function CreationSuccessful() {
             type="link"
             rel="noopener noreferrer"
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </Button>
         </li>
       </ul>
@@ -96,8 +90,14 @@ export default function CreationSuccessful() {
         >
           {t('setAdvancedPrivacySettings')}
         </Button>
-        <Button type="primary" large rounded onClick={onComplete}>
-          {t('done')}
+        <Button
+          data-testid="onboarding-complete-done"
+          type="primary"
+          large
+          rounded
+          onClick={onComplete}
+        >
+          {t('gotIt')}
         </Button>
       </Box>
     </div>

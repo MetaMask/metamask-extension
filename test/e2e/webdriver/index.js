@@ -1,10 +1,9 @@
 const { Browser } = require('selenium-webdriver');
-const fetchMockResponses = require('../../data/fetch-mocks.json');
 const Driver = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 
-async function buildWebDriver({ responsive, port } = {}) {
+async function buildWebDriver({ responsive, port, timeOut } = {}) {
   const browser = process.env.SELENIUM_BROWSER;
 
   const {
@@ -12,8 +11,7 @@ async function buildWebDriver({ responsive, port } = {}) {
     extensionId,
     extensionUrl,
   } = await buildBrowserWebDriver(browser, { responsive, port });
-  await setupFetchMocking(seleniumDriver);
-  const driver = new Driver(seleniumDriver, browser, extensionUrl);
+  const driver = new Driver(seleniumDriver, browser, extensionUrl, timeOut);
 
   return {
     driver,
@@ -33,53 +31,6 @@ async function buildBrowserWebDriver(browser, webDriverOptions) {
       throw new Error(`Unrecognized browser: ${browser}`);
     }
   }
-}
-
-async function setupFetchMocking(driver) {
-  // define fetchMocking script, to be evaluated in the browser
-  function fetchMocking(mockResponses) {
-    window.origFetch = window.fetch.bind(window);
-    window.fetch = async (...args) => {
-      const url = args[0];
-      // api.metaswap.codefi.network/gasPrices
-      if (
-        url.match(/^http(s)?:\/\/api\.metaswap\.codefi\.network\/gasPrices/u)
-      ) {
-        return { json: async () => clone(mockResponses.gasPricesBasic) };
-      } else if (url.match(/chromeextensionmm/u)) {
-        return { json: async () => clone(mockResponses.metametrics) };
-      } else if (url.match(/^https:\/\/(api2\.metaswap\.codefi\.network)/u)) {
-        if (url.match(/featureFlags$/u)) {
-          return { json: async () => clone(mockResponses.swaps.featureFlags) };
-        }
-      } else if (
-        url.match(/^https:\/\/(token-api\.airswap-prod\.codefi\.network)/u)
-      ) {
-        if (url.match(/tokens\/1337$/u)) {
-          return { json: async () => clone(mockResponses.tokenList) };
-        }
-      }
-      return window.origFetch(...args);
-    };
-    if (window.chrome && window.chrome.webRequest) {
-      window.chrome.webRequest.onBeforeRequest.addListener(
-        cancelInfuraRequest,
-        { urls: ['https://*.infura.io/*'] },
-        ['blocking'],
-      );
-    }
-    function cancelInfuraRequest(requestDetails) {
-      console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`);
-      return { cancel: true };
-    }
-    function clone(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
-  }
-  // fetchMockResponses are parsed last minute to ensure that objects are uniquely instantiated
-  const fetchMockResponsesJson = JSON.stringify(fetchMockResponses);
-  // eval the fetchMocking script in the browser
-  await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`);
 }
 
 module.exports = {

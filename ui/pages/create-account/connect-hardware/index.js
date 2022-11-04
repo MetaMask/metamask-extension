@@ -10,8 +10,13 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../../../shared/constants/hardware-wallets';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -20,11 +25,38 @@ const U2F_ERROR = 'U2F';
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
 const BIP44_PATH = `m/44'/60'/0'/0`;
-const HD_PATHS = [
+const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
   { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
 ];
+
+const LATTICE_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
+const LATTICE_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
+const LATTICE_MEW_PATH = `m/44'/60'/0'/x`;
+const LATTICE_HD_PATHS = [
+  {
+    name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
+    value: LATTICE_STANDARD_BIP44_PATH,
+  },
+  {
+    name: `Ledger Live (${LATTICE_LEDGER_LIVE_PATH})`,
+    value: LATTICE_LEDGER_LIVE_PATH,
+  },
+  { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
+];
+
+const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
+const TREZOR_HD_PATHS = [
+  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
+  { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
+];
+
+const HD_PATHS = {
+  ledger: LEDGER_HD_PATHS,
+  lattice: LATTICE_HD_PATHS,
+  trezor: TREZOR_HD_PATHS,
+};
 
 class ConnectHardwareForm extends Component {
   static contextTypes = {
@@ -56,7 +88,11 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked() {
-    for (const device of ['trezor', 'ledger']) {
+    for (const device of [
+      DEVICE_NAMES.TREZOR,
+      DEVICE_NAMES.LEDGER,
+      DEVICE_NAMES.LATTICE,
+    ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {
@@ -157,8 +193,21 @@ class ConnectHardwareForm extends Component {
             error: this.context.t('ledgerTimeout'),
           });
         } else if (
+          errorMessage
+            .toLowerCase()
+            .includes(
+              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
+            )
+        ) {
+          this.setState({
+            error: this.context.t('QRHardwarePubkeyAccountOutOfRange'),
+          });
+        } else if (
           errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed'
+          errorMessage !== 'Popup closed' &&
+          errorMessage
+            .toLowerCase()
+            .includes('KeystoneError#sync_cancel'.toLowerCase()) === false
         ) {
           this.setState({
             error: errorMessage,
@@ -184,11 +233,8 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = (device, path) => {
-    const {
-      history,
-      mostRecentOverviewPage,
-      unlockHardwareWalletAccounts,
-    } = this.props;
+    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+      this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {
@@ -206,23 +252,23 @@ class ConnectHardwareForm extends Component {
       description,
     )
       .then((_) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
-            action: 'Connected Hardware Wallet',
-            name: `Connected Account with: ${device}`,
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
           },
         });
         history.push(mostRecentOverviewPage);
       })
       .catch((e) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
-            action: 'Connected Hardware Wallet',
-            name: 'Error connecting hardware wallet',
-          },
-          customVariables: {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
             error: e.message,
           },
         });
@@ -243,7 +289,7 @@ class ConnectHardwareForm extends Component {
             this.state.device,
             // eslint-disable-next-line react/jsx-key
             <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="hardware-connection-guide"
               target="_blank"
               rel="noopener noreferrer"
@@ -367,7 +413,7 @@ const mapDispatchToProps = (dispatch) => {
 
 ConnectHardwareForm.contextTypes = {
   t: PropTypes.func,
-  metricsEvent: PropTypes.func,
+  trackEvent: PropTypes.func,
 };
 
 export default connect(

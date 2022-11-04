@@ -1,30 +1,38 @@
-import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
-import { boolean, text } from '@storybook/addon-knobs';
-
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
+import README from './README.mdx';
 import ToggleButton from './toggle-button.component';
 
 export default {
-  title: 'ToggleButton',
+  title: 'Components/UI/ToggleButton',
   component: ToggleButton,
   id: __filename,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    value: { control: 'boolean' },
+    onToggle: { action: 'onToggle' },
+    offLabel: { control: 'text' },
+    onLabel: { control: 'text' },
+    disabled: { control: 'boolean' },
+  },
 };
 
-export const DefaultStory = () => {
-  const [checked, setChecked] = useState(false);
-  const handleOnToggle = (e) => {
-    action('onToggle')(e);
-    setChecked(!checked);
+export const DefaultStory = (args) => {
+  const [{ value }, updateArgs] = useArgs();
+  const handleOnToggle = () => {
+    updateArgs({ value: !value });
   };
-  return (
-    <ToggleButton
-      offLabel={text('offLabel', 'off')}
-      onLabel={text('onLabel', 'on')}
-      disabled={boolean('disabled', false)}
-      value={checked}
-      onToggle={handleOnToggle}
-    />
-  );
+  return <ToggleButton {...args} value={value} onToggle={handleOnToggle} />;
 };
 
 DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  value: false,
+  offLabel: 'off',
+  onLabel: 'on',
+  disabled: false,
+};

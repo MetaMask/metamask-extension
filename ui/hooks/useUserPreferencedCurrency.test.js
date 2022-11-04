@@ -20,7 +20,7 @@ const tests = [
     },
     result: {
       currency: 'ETH',
-      numberOfDecimals: 6,
+      numberOfDecimals: 8,
     },
   },
   {
@@ -82,7 +82,7 @@ const tests = [
     },
     result: {
       currency: 'ETH',
-      numberOfDecimals: 6,
+      numberOfDecimals: 8,
     },
   },
   {

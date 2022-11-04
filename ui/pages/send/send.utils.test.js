@@ -1,4 +1,5 @@
 import { rawEncode } from 'ethereumjs-abi';
+import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 
 import {
   multiplyCurrencies,
@@ -8,8 +9,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 
 import {
-  calcGasTotal,
-  generateTokenTransferData,
+  generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 } from './send.utils';
@@ -32,9 +32,16 @@ jest.mock('../../../shared/modules/conversion.utils', () => ({
   conversionLessThan: (obj1, obj2) => obj1.value < obj2.value,
 }));
 
-jest.mock('../../helpers/utils/token-util', () => ({
-  calcTokenAmount: (a, d) => `calc:${a}${d}`,
-}));
+jest.mock('../../../shared/lib/transactions-controller-utils', () => {
+  const originalModule = jest.requireActual(
+    '../../../shared/lib/transactions-controller-utils',
+  );
+
+  return {
+    ...originalModule,
+    calcTokenAmount: (a, d) => `calc:${a}${d}`,
+  };
+});
 
 jest.mock('ethereumjs-abi', () => ({
   rawEncode: jest.fn().mockReturnValue(16, 1100),
@@ -53,10 +60,10 @@ describe('send utils', () => {
     });
   });
 
-  describe('generateTokenTransferData()', () => {
+  describe('generateERC20TransferData()', () => {
     it('should return undefined if not passed a send token', () => {
       expect(
-        generateTokenTransferData({
+        generateERC20TransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: undefined,
@@ -65,7 +72,7 @@ describe('send utils', () => {
     });
 
     it('should call abi.rawEncode with the correct params', () => {
-      generateTokenTransferData({
+      generateERC20TransferData({
         toAddress: 'mockAddress',
         amount: 'ab',
         sendToken: { address: '0x0' },
@@ -73,14 +80,14 @@ describe('send utils', () => {
       expect(rawEncode.mock.calls[0].toString()).toStrictEqual(
         [
           ['address', 'uint256'],
-          ['mockAddress', '0xab'],
+          ['0xmockAddress', '0xab'],
         ].toString(),
       );
     });
 
     it('should return encoded token transfer data', () => {
       expect(
-        generateTokenTransferData({
+        generateERC20TransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: { address: '0x0' },

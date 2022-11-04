@@ -1,11 +1,7 @@
-import extension from 'extensionizer';
-import { stripHexPrefix } from 'ethereumjs-util';
+import browser from 'webextension-polyfill';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import {
-  MAINNET_CHAIN_ID,
-  TEST_CHAINS,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -18,6 +14,7 @@ import {
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -26,7 +23,7 @@ const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
-  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
+  } else if (['/home.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
@@ -54,31 +51,28 @@ const getEnvironmentType = (url = window.location.href) =>
  * Returns the platform (browser) where the extension is running.
  *
  * @returns {string} the platform ENUM
- *
  */
-const getPlatform = (_) => {
-  const ua = window.navigator.userAgent;
-  if (ua.search('Firefox') === -1) {
-    if (window && window.chrome && window.chrome.ipcRenderer) {
-      return PLATFORM_BRAVE;
-    }
-    if (ua.search('Edge') !== -1) {
-      return PLATFORM_EDGE;
-    }
-    if (ua.search('OPR') !== -1) {
-      return PLATFORM_OPERA;
-    }
-    return PLATFORM_CHROME;
+const getPlatform = () => {
+  const { navigator } = window;
+  const { userAgent } = navigator;
+
+  if (userAgent.includes('Firefox')) {
+    return PLATFORM_FIREFOX;
+  } else if ('brave' in navigator) {
+    return PLATFORM_BRAVE;
+  } else if (userAgent.includes('Edg/')) {
+    return PLATFORM_EDGE;
+  } else if (userAgent.includes('OPR')) {
+    return PLATFORM_OPERA;
   }
-  return PLATFORM_FIREFOX;
+  return PLATFORM_CHROME;
 };
 
 /**
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} A BN object
- *
+ * @returns {object} A BN object
  */
 function hexToBn(inputHex) {
   return new BN(stripHexPrefix(inputHex), 16);
@@ -91,7 +85,6 @@ function hexToBn(inputHex) {
  * @param {number|string} numerator - The numerator of the fraction multiplier
  * @param {number|string} denominator - The denominator of the fraction multiplier
  * @returns {BN} The product of the multiplication
- *
  */
 function BnMultiplyByFraction(targetBN, numerator, denominator) {
   const numBN = new BN(numerator);
@@ -102,10 +95,11 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
 /**
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
+ *
  * @returns {Error|undefined}
  */
 function checkForError() {
-  const { lastError } = extension.runtime;
+  const { lastError } = browser.runtime;
   if (!lastError) {
     return undefined;
   }
@@ -143,20 +137,30 @@ const addHexPrefix = (str) => {
  * Converts a BN object to a hex string with a '0x' prefix
  *
  * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} - A '0x' prefixed hex string
- *
+ * @returns {string} A '0x' prefixed hex string
  */
 function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
 
 function getChainType(chainId) {
-  if (chainId === MAINNET_CHAIN_ID) {
+  if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
   } else if (TEST_CHAINS.includes(chainId)) {
     return 'testnet';
   }
   return 'custom';
+}
+
+/**
+ * Checks if the alarmname exists in the list
+ *
+ * @param {Array} alarmList
+ * @param alarmName
+ * @returns
+ */
+function checkAlarmExists(alarmList, alarmName) {
+  return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
 export {
@@ -168,4 +172,5 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
+  checkAlarmExists,
 };

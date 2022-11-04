@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versija, atbalsta centrs un kontaktinformācija"
-  },
-  "acceleratingATransaction": {
-    "message": "* Darījuma paātrināšana, izmantojot augstāku Gas cenu, palielina iespēju, ka tīkls to apstrādās ātrāk, taču tas nav garantēts."
   },
   "accessingYourCamera": {
     "message": "Piekļūst kamerai..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
-  "addToAddressBook": {
-    "message": "Pievienot adrešu grāmatai"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "piemēram, Džons D."
-  },
   "addToken": {
     "message": "Pievienot žetonu"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Papildu opcijas"
-  },
-  "advancedSettingsDescription": {
-    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus"
   },
   "amount": {
     "message": "Apjoms"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apstiprināt"
@@ -131,17 +130,14 @@
     "message": "Skatīt kontu $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Izmantot blok indentifikatoru"
-  },
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
   "buyWithWyre": {
-    "message": "Pirkt ETH ar Wyre"
+    "message": "Pirkt $1 ar Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ļauj noguldīt ETH tieši jūsu MetaMask kontā, izmantojot kredītkarti."
+    "message": "Wyre ļauj noguldīt $1 tieši jūsu MetaMask kontā, izmantojot kredītkarti."
   },
   "bytes": {
     "message": "Baiti"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToKovan": {
-    "message": "Savienojas ar Kovan testa tīklu"
-  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
-  },
-  "connectingToRinkeby": {
-    "message": "Pieslēdzas Rinkeby testa tīklam"
-  },
-  "connectingToRopsten": {
-    "message": "Pieslēdzas Ropsten testa tīklam"
   },
   "continueToWyre": {
     "message": "Pāriet uz Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Nokopēts!"
-  },
-  "copiedTransactionId": {
-    "message": "Nokopētais darījuma ID"
   },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Pašreizējā valodā"
   },
-  "customGas": {
-    "message": "Pielāgot Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
+  "custom": {
+    "message": "Papildu"
   },
   "customToken": {
     "message": "Pielāgots marķieris"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
   },
   "delete": {
     "message": "Dzēst"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
-  "depositEther": {
-    "message": "Noguldīt Ether"
-  },
   "details": {
     "message": "Informācija"
-  },
-  "directDepositEther": {
-    "message": "Tiešā Ether iemaksa"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
   },
   "done": {
     "message": "Pabeigts"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
   },
-  "enterAnAlias": {
-    "message": "Ievadiet segvārdu"
-  },
   "enterPassword": {
     "message": "Ievadiet paroli"
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Aprēķinātais apstrādes laiks"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum publiskā adrese"
@@ -413,9 +376,6 @@
   },
   "general": {
     "message": "Vispārīgi"
-  },
-  "generalSettingsDescription": {
-    "message": "Valūtas konvertēšana, galvenā valūta, valoda, bloku identifikators"
   },
   "getEther": {
     "message": "Saņemt Ether"
@@ -518,10 +478,10 @@
   "knownAddressRecipient": {
     "message": "Zināmā līguma adrese."
   },
-  "kovan": {
-    "message": "Kovan testa tīkls"
-  },
   "learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "learnMoreUpperCase": {
     "message": "Uzzināt vairāk"
   },
   "ledgerAccountRestriction": {
@@ -578,9 +538,6 @@
   "myAccounts": {
     "message": "Mani konti"
   },
-  "needEtherInWallet": {
-    "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
-  },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
@@ -590,9 +547,6 @@
   },
   "networkName": {
     "message": "Tīkla nosaukums"
-  },
-  "networkSettingsDescription": {
-    "message": "Pievienot un rediģēt pielāgotos RPC tīklus"
   },
   "networks": {
     "message": "Tīkli"
@@ -621,12 +575,6 @@
   },
   "newToMetaMask": {
     "message": "Nepazīstat MetaMask?"
-  },
-  "newTotal": {
-    "message": "Jaunā kopsumma"
-  },
-  "newTransactionFee": {
-    "message": "Jauna darījuma nodeva"
   },
   "next": {
     "message": "Nākamais"
@@ -774,9 +722,6 @@
   "restore": {
     "message": "Atjaunot"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
-  },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
@@ -788,12 +733,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NEDALIETIES ar šo frāzi!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby testa tīkls"
-  },
-  "ropsten": {
-    "message": "Ropsten testa tīkls"
   },
   "rpcUrl": {
     "message": "Jauns RPC URL"
@@ -828,23 +767,11 @@
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
-  "securitySettingsDescription": {
-    "message": "Konfidencialitātes iestatījumi un maka atkopšanas frāze"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
-  },
   "seedPhraseReq": {
     "message": "Atkopšanas frāzes ir 12 vārdus garas"
   },
-  "selectAHigherGasFee": {
-    "message": "Atlasiet lielāku maksu par Gas, lai paātrinātu darījuma apstrādi.*"
-  },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
-  },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
   },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
@@ -861,14 +788,8 @@
   "send": {
     "message": "Sūtīt"
   },
-  "sendAmount": {
-    "message": "Nosūtītā summa"
-  },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
-  },
-  "separateEachWord": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
   },
   "settings": {
     "message": "Iestatījumi"
@@ -908,9 +829,6 @@
   },
   "signed": {
     "message": "Parakstīts"
-  },
-  "slow": {
-    "message": "Lēns"
   },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."

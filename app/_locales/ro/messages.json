@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Respingeți"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanați codul QR"
+  },
   "about": {
     "message": "Despre"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
-  },
-  "acceleratingATransaction": {
-    "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
   },
   "accessingYourCamera": {
     "message": "Se accesează camera dvs..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
-  "addToAddressBook": {
-    "message": "Adăugați în agendă"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "de ex. John D."
-  },
   "addToken": {
     "message": "Adăugare simbol"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "amount": {
     "message": "Sumă"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprobați"
@@ -131,17 +130,14 @@
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
   "buyWithWyre": {
-    "message": "Cumpărați ETH cu Wyre"
+    "message": "Cumpărați $1 cu Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune ETH direct în contul dvs. MetaMask."
+    "message": "Wyre vă permite să folosiți un card de credit pentru a depune $1 direct în contul dvs. MetaMask."
   },
   "bytes": {
     "message": "Octeți"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToKovan": {
-    "message": "Se conectează la rețeaua de test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
-  },
-  "connectingToRinkeby": {
-    "message": "Se conectează la Rețeaua de test Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Se conectează la rețeaua de test Ropsten"
   },
   "continueToWyre": {
     "message": "Continuați la Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Copiat!"
-  },
-  "copiedTransactionId": {
-    "message": "ID-ul tranzacției a fost copiat"
   },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Limba actuală"
   },
-  "customGas": {
-    "message": "Particularizați Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
+  "custom": {
+    "message": "Avansate"
   },
   "customToken": {
     "message": "Token personalizat"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
-  },
-  "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Mainnet."
   },
   "delete": {
     "message": "Șterge"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
   },
-  "depositEther": {
-    "message": "Depuneți Ether"
-  },
   "details": {
     "message": "Detalii"
-  },
-  "directDepositEther": {
-    "message": "Depuneți direct Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
   },
   "done": {
     "message": "Efectuat"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
   },
-  "enterAnAlias": {
-    "message": "Introduceți un alias"
-  },
   "enterPassword": {
     "message": "Introduceți parola"
   },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Timpi estimativi de procesare"
   },
   "ethereumPublicAddress": {
     "message": "Adresa publică Ethereum"
@@ -410,9 +373,6 @@
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
-  },
-  "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
   },
   "getEther": {
     "message": "Obțineți Ether"
@@ -512,10 +472,10 @@
   "knownAddressRecipient": {
     "message": "Adresa cunoscută din contract."
   },
-  "kovan": {
-    "message": "Rețea de test Kovan"
-  },
   "learnMore": {
+    "message": "Aflați mai multe"
+  },
+  "learnMoreUpperCase": {
     "message": "Aflați mai multe"
   },
   "ledgerAccountRestriction": {
@@ -569,9 +529,6 @@
   "myAccounts": {
     "message": "Conturile mele"
   },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -581,9 +538,6 @@
   },
   "networkName": {
     "message": "Numele rețelei"
-  },
-  "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
   },
   "networks": {
     "message": "Rețele"
@@ -612,12 +566,6 @@
   },
   "newToMetaMask": {
     "message": "Nefamiliarizat cu MetaMask?"
-  },
-  "newTotal": {
-    "message": "Total nou"
-  },
-  "newTransactionFee": {
-    "message": "Taxă nouă de tranzacție"
   },
   "next": {
     "message": "Înainte"
@@ -765,9 +713,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
@@ -779,12 +724,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NU împărtășiți această expresie nimănui!"
-  },
-  "rinkeby": {
-    "message": "Rețea test Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rețea de testare Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC nou"
@@ -819,23 +758,11 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
-  },
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"
   },
-  "selectAHigherGasFee": {
-    "message": "Selectați o taxă gas mai mare pentru a accelera procesarea tranzacției.*"
-  },
   "selectAnAccount": {
     "message": "Selectați un cont"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
@@ -852,14 +779,8 @@
   "send": {
     "message": "Trimite"
   },
-  "sendAmount": {
-    "message": "Suma trimisă"
-  },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"
@@ -899,9 +820,6 @@
   },
   "signed": {
     "message": "Semnat"
-  },
-  "slow": {
-    "message": "Lent"
   },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."

@@ -8,11 +8,14 @@ import {
   hideWarning,
 } from '../../../store/actions';
 import {
-  getAddressConnectedDomainMap,
+  getAddressConnectedSubjectMap,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getUnreadNotificationsCount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
 
@@ -28,15 +31,20 @@ function mapStateToProps(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const origin = getOriginOfCurrentTab(state);
   const selectedAddress = getSelectedAddress(state);
-
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const unreadNotificationsCount = getUnreadNotificationsCount(state);
+  ///: END:ONLY_INCLUDE_IN
   return {
     isAccountMenuOpen,
-    addressConnectedDomainMap: getAddressConnectedDomainMap(state),
+    addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
     originOfCurrentTab: origin,
     selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationsCount,
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

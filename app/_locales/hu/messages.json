@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
-  },
-  "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
-  },
-  "acceleratingATransaction": {
-    "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
   },
   "accessingYourCamera": {
     "message": "Kamerához való hozzáférés..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
-  "addToAddressBook": {
-    "message": "Hozzáadás a címjegyzékhez"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pl. John D."
-  },
   "addToken": {
     "message": "Token hozzáadása"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
-  },
-  "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "amount": {
     "message": "Összeg"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Jóváhagyás"
@@ -131,14 +130,11 @@
     "message": "Tekintse meg a fiókot a(z) $1-en",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies identikon használata"
-  },
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
   "buyWithWyre": {
-    "message": "Vásároljon ETH-t a Wyre-rel"
+    "message": "Vásároljon $1 -t a Wyre-rel"
   },
   "buyWithWyreDescription": {
     "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToKovan": {
-    "message": "Csatlakozás a Kovan teszthálózathoz"
-  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
-  },
-  "connectingToRinkeby": {
-    "message": "Kapcsolódás a Rinkeby Teszthálózathoz"
-  },
-  "connectingToRopsten": {
-    "message": "Csatlakozás a Ropsten teszthálózathoz"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Kimásolva!"
-  },
-  "copiedTransactionId": {
-    "message": "Másolt tranzakció-azonosító"
   },
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Aktuális nyelv"
   },
-  "customGas": {
-    "message": "Gáz testreszabása"
-  },
-  "customGasSubTitle": {
-    "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
+  "custom": {
+    "message": "Speciális"
   },
   "customToken": {
     "message": "Egyéni token"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "A tizedesjegyek száma 0 és 36 között legyen . "
-  },
-  "defaultNetwork": {
-    "message": "Az Ether tranzakciók alapértelmezett hálózata a Mainnet."
   },
   "delete": {
     "message": "Törlés"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "depositEther": {
-    "message": "Ether befizetése"
-  },
   "details": {
     "message": "Részletek"
-  },
-  "directDepositEther": {
-    "message": "Fizess be ethert közvetlenül"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Amennyiben már rendelkezik némi Ether-rel, a közvetlen letéttel gyorsan elhelyezheti azt új pénztárcájában."
   },
   "done": {
     "message": "Kész"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
   },
-  "enterAnAlias": {
-    "message": "Adjon meg álnevet"
-  },
   "enterPassword": {
     "message": "Adja meg a jelszót"
   },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Becsült feldolgozási idők"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum nyilvános címe"
@@ -413,9 +376,6 @@
   },
   "general": {
     "message": "Általános"
-  },
-  "generalSettingsDescription": {
-    "message": "Pénznem átváltása, elsődleges pénznem, nyelv, blockies identikonok"
   },
   "getEther": {
     "message": "Ether beszerzése"
@@ -518,10 +478,10 @@
   "knownAddressRecipient": {
     "message": "Ismert szerződéses cím."
   },
-  "kovan": {
-    "message": "Kovan teszthálózat"
-  },
   "learnMore": {
+    "message": "Tudjon meg többet"
+  },
+  "learnMoreUpperCase": {
     "message": "Tudjon meg többet"
   },
   "ledgerAccountRestriction": {
@@ -575,9 +535,6 @@
   "myAccounts": {
     "message": "Fiókjaim"
   },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
-  },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
@@ -587,9 +544,6 @@
   },
   "networkName": {
     "message": "Hálózat neve"
-  },
-  "networkSettingsDescription": {
-    "message": "Egyedi RPC-hálózatok hozzáadása és szerkesztése"
   },
   "networks": {
     "message": "Hálózatok"
@@ -618,12 +572,6 @@
   },
   "newToMetaMask": {
     "message": "Új a MetaMask-on?"
-  },
-  "newTotal": {
-    "message": "Új végösszeg"
-  },
-  "newTransactionFee": {
-    "message": "Új tranzakciós költség"
   },
   "next": {
     "message": "Következő"
@@ -771,9 +719,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "restoreAccountWithSeed": {
-    "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
@@ -785,12 +730,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE ossza meg ezt a mondatot senkivel!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby teszthálózat"
-  },
-  "ropsten": {
-    "message": "Ropsten teszthálózat"
   },
   "rpcUrl": {
     "message": "Új RPC URL"
@@ -825,23 +764,11 @@
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
-  "securitySettingsDescription": {
-    "message": "Biztonsági beállítások és pénztárca kulcsszólánca"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
-  },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"
   },
-  "selectAHigherGasFee": {
-    "message": "Válasszon magasabb gázdíjat az ügylet feldolgozásának gyorsításához.*"
-  },
   "selectAnAccount": {
     "message": "Válasszon fiókot"
-  },
-  "selectAnAccountHelp": {
-    "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
   },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "
@@ -858,14 +785,8 @@
   "send": {
     "message": "Küldés"
   },
-  "sendAmount": {
-    "message": "Összeg küldése"
-  },
   "sendTokens": {
     "message": "Token küldése"
-  },
-  "separateEachWord": {
-    "message": "Minden egyes szavat szóközzel válasszon el"
   },
   "settings": {
     "message": "Beállítások"
@@ -905,9 +826,6 @@
   },
   "signed": {
     "message": "Aláírva"
-  },
-  "slow": {
-    "message": "Lassú"
   },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."

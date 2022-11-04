@@ -2,10 +2,10 @@ import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  ETH_SYMBOL,
   CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
+  CURRENCY_SYMBOLS,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -15,6 +15,13 @@ import {
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
+  hookNames: {
+    getCurrentChainId: true,
+    findCustomRpcBy: true,
+    setProviderType: true,
+    updateRpcTarget: true,
+    requestUserApproval: true,
+  },
 };
 export default switchEthereumChain;
 
@@ -22,7 +29,7 @@ function findExistingNetwork(chainId, findCustomRpcBy) {
   if (chainId in CHAIN_ID_TO_TYPE_MAP) {
     return {
       chainId,
-      ticker: ETH_SYMBOL,
+      ticker: CURRENCY_SYMBOLS.ETH,
       nickname: NETWORK_TO_NAME_MAP[chainId],
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
       type: CHAIN_ID_TO_TYPE_MAP[chainId],

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util';
@@ -7,8 +8,10 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../../shared/modules/conversion.utils';
+
 import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -32,6 +35,7 @@ export default class TokenInput extends PureComponent {
       symbol: PropTypes.string,
     }).isRequired,
     tokenExchangeRates: PropTypes.object,
+    tokens: PropTypes.array.isRequired,
   };
 
   constructor(props) {
@@ -75,12 +79,13 @@ export default class TokenInput extends PureComponent {
     return Number(decimalValueString) ? decimalValueString : '';
   }
 
-  handleChange = (decimalValue) => {
+  handleChange = (decimalValue, applyDecimals = false) => {
     const { token: { decimals } = {}, onChange } = this.props;
 
     let newDecimalValue = decimalValue;
-    if (decimals) {
-      newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
+
+    if (decimals && decimalValue && applyDecimals) {
+      newDecimalValue = new BigNumber(decimalValue, 10).toFixed(decimals);
     }
 
     const multiplier = Math.pow(10, Number(decimals || 0));
@@ -94,6 +99,10 @@ export default class TokenInput extends PureComponent {
     onChange(hexValue);
   };
 
+  handleBlur = (decimalValue) => {
+    this.handleChange(decimalValue, true);
+  };
+
   renderConversionComponent() {
     const {
       tokenExchangeRates,
@@ -101,10 +110,15 @@ export default class TokenInput extends PureComponent {
       currentCurrency,
       hideConversion,
       token,
+      tokens,
     } = this.props;
     const { decimalValue } = this.state;
 
-    const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
+    const existingToken = tokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, token.address),
+    );
+
+    const tokenExchangeRate = tokenExchangeRates?.[existingToken?.address] ?? 0;
     let currency, numberOfDecimals;
 
     if (hideConversion) {
@@ -155,6 +169,7 @@ export default class TokenInput extends PureComponent {
         {...restProps}
         suffix={token.symbol}
         onChange={this.handleChange}
+        onBlur={this.handleBlur}
         value={decimalValue}
       >
         {this.renderConversionComponent()}

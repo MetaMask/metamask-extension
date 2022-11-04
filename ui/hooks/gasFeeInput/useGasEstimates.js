@@ -14,17 +14,15 @@ import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
 } from '../../selectors';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 /**
- * @typedef {Object} GasEstimatesReturnType
+ * @typedef {object} GasEstimatesReturnType
  * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
  *  based on current network conditions. Expressed in user's preferred currency.
  * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be paid if current
@@ -33,11 +31,23 @@ import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
  *  current network transaction volume increases. Expressed in the network's native currency.
  * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
  *  current network transaction volume increases. Expressed in the network's native currency.
- * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
- *  current network transaction volume increases. Expressed in the network's native currency.
  * @property {HexWeiString} [estimatedBaseFee] - estimatedBaseFee from fee-market gasFeeEstimates
  *  in HexWei.
  * @property {HexWeiString} [minimumCostInHexWei] - the minimum amount this transaction will cost.
+ */
+
+/**
+ * @param options
+ * @param options.editGasMode
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.gasPrice
+ * @param options.maxFeePerGas
+ * @param options.maxPriorityFeePerGas
+ * @param options.minimumGasLimit
+ * @param options.transaction
+ * @returns {GasEstimatesReturnType} The gas estimates.
  */
 export function useGasEstimates({
   editGasMode,
@@ -54,10 +64,8 @@ export function useGasEstimates({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 
@@ -99,7 +107,7 @@ export function useGasEstimates({
   const maximumCostInHexWei = getMaximumGasTotalInHexWei(gasSettings);
 
   if (editGasMode === EDIT_GAS_MODES.SWAPS) {
-    gasSettings = { ...gasSettings, gasLimit: decimalToHex(minimumGasLimit) };
+    gasSettings = { ...gasSettings, gasLimit: minimumGasLimit };
   }
 
   // The minimum amount this transaction will cost
@@ -143,6 +151,7 @@ export function useGasEstimates({
     estimatedBaseFee: supportsEIP1559
       ? decGWEIToHexWEI(gasFeeEstimates.estimatedBaseFee ?? '0')
       : undefined,
+    maximumCostInHexWei,
     minimumCostInHexWei,
   };
 }

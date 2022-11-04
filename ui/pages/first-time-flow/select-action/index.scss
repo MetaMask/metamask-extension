@@ -15,12 +15,13 @@
 
     text-align: center;
     margin-top: 65px;
-    color: black;
+    color: var(--color-text-default);
   }
 
   &__select-buttons {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
     margin-top: 40px;
   }
 
@@ -31,10 +32,10 @@
     justify-content: space-evenly;
     width: 388px;
     height: 278px;
-    border: 1px solid #d8d8d8;
+    border: 1px solid var(--color-border-muted);
     box-sizing: border-box;
     border-radius: 10px;
-    margin-left: 22px;
+    padding: 8px;
 
     .first-time-flow__button {
       max-width: 221px;
@@ -43,7 +44,7 @@
   }
 
   &__button-symbol {
-    color: #c4c4c4;
+    color: var(--color-icon-muted);
     margin-top: 41px;
   }
 
@@ -58,7 +59,7 @@
   &__button-text-big {
     @include H4;
 
-    color: #000;
+    color: var(--color-text-default);
     margin-top: 12px;
     text-align: center;
   }
@@ -66,7 +67,7 @@
   &__button-text-small {
     @include H6;
 
-    color: #7a7a7b;
+    color: var(--color-text-alternative);
     margin-top: 10px;
     text-align: center;
   }

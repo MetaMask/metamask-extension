@@ -1,6 +1,9 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
+import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
+
+class DisconnectError extends Error {}
 
 class MetaRPCClient {
   constructor(connectionStream) {
@@ -10,6 +13,26 @@ class MetaRPCClient {
     this.requests = new Map();
     this.connectionStream.on('data', this.handleResponse.bind(this));
     this.connectionStream.on('end', this.close.bind(this));
+    this.responseHandled = {};
+    this.DisconnectError = DisconnectError;
+  }
+
+  send(id, payload, cb) {
+    this.requests.set(id, cb);
+    this.connectionStream.write(payload);
+    this.responseHandled[id] = false;
+    if (payload.method === 'getState') {
+      setTimeout(() => {
+        if (!this.responseHandled[id] && cb) {
+          delete this.responseHandled[id];
+          return cb(new Error('No response from RPC'), null);
+        }
+
+        delete this.responseHandled[id];
+        // needed for linter to pass
+        return true;
+      }, TEN_SECONDS_IN_MILLISECONDS);
+    }
   }
 
   onNotification(handler) {
@@ -27,12 +50,21 @@ class MetaRPCClient {
   close() {
     this.notificationChannel.removeAllListeners();
     this.uncaughtErrorChannel.removeAllListeners();
+    // fail all unfinished requests
+    for (const [id, handler] of this.requests) {
+      if (!this.responseHandled[id]) {
+        this.responseHandled[id] = true;
+        handler(new DisconnectError('disconnected'));
+      }
+    }
   }
 
   handleResponse(data) {
     const { id, result, error, method, params } = data;
     const isNotification = id === undefined && error === undefined;
     const cb = this.requests.get(id);
+
+    this.responseHandled[id] = true;
 
     if (method && params && !isNotification) {
       // dont handle server-side to client-side requests
@@ -79,14 +111,13 @@ const metaRPCClientFactory = (connectionStream) => {
         const cb = p[p.length - 1];
         const params = p.slice(0, -1);
         const id = createRandomId();
-
-        object.requests.set(id, cb);
-        object.connectionStream.write({
+        const payload = {
           jsonrpc: '2.0',
           method: property,
           params,
           id,
-        });
+        };
+        object.send(id, payload, cb);
       };
     },
   });

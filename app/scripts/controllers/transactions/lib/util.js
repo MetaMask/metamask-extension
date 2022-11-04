@@ -31,10 +31,11 @@ export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
 
 /**
  * Normalizes the given txParams
- * @param {Object} txParams - The transaction params
+ *
+ * @param {object} txParams - The transaction params
  * @param {boolean} [lowerCase] - Whether to lowercase the 'to' address.
  * Default: true
- * @returns {Object} the normalized tx params
+ * @returns {object} the normalized tx params
  */
 export function normalizeTxParams(txParams, lowerCase = true) {
   // apply only keys in the normalizers
@@ -50,10 +51,11 @@ export function normalizeTxParams(txParams, lowerCase = true) {
 /**
  * Given two fields, ensure that the second field is not included in txParams,
  * and if it is throw an invalidParams error.
- * @param {Object} txParams - the transaction parameters object
+ *
+ * @param {object} txParams - the transaction parameters object
  * @param {string} fieldBeingValidated - the current field being validated
  * @param {string} mutuallyExclusiveField - the field to ensure is not provided
- * @throws {ethErrors.rpc.invalidParams} - throws if mutuallyExclusiveField is
+ * @throws {ethErrors.rpc.invalidParams} Throws if mutuallyExclusiveField is
  *  present in txParams.
  */
 function ensureMutuallyExclusiveFieldsNotProvided(
@@ -71,9 +73,10 @@ function ensureMutuallyExclusiveFieldsNotProvided(
 /**
  * Ensures that the provided value for field is a string, throws an
  * invalidParams error if field is not a string.
- * @param {Object} txParams - the transaction parameters object
+ *
+ * @param {object} txParams - the transaction parameters object
  * @param {string} field - the current field being validated
- * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
+ * @throws {ethErrors.rpc.invalidParams} Throws if field is not a string
  */
 function ensureFieldIsString(txParams, field) {
   if (typeof txParams[field] !== 'string') {
@@ -102,10 +105,11 @@ export function ensureFieldIsHexString(key, value) {
  * Ensures that the provided txParams has the proper 'type' specified for the
  * given field, if it is provided. If types do not match throws an
  * invalidParams error.
- * @param {Object} txParams - the transaction parameters object
+ *
+ * @param {object} txParams - the transaction parameters object
  * @param {'gasPrice' | 'maxFeePerGas' | 'maxPriorityFeePerGas'} field - the
  *  current field being validated
- * @throws {ethErrors.rpc.invalidParams} - throws if type does not match the
+ * @throws {ethErrors.rpc.invalidParams} Throws if type does not match the
  *  expectations for provided field.
  */
 function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
@@ -136,7 +140,8 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
 
 /**
  * Validates the given tx parameters
- * @param {Object} txParams - the tx params
+ *
+ * @param {object} txParams - the tx params
  * @param {boolean} eip1559Compatibility - whether or not the current network supports EIP-1559 transactions
  * @throws {Error} if the tx params contains invalid fields
  */
@@ -235,7 +240,8 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
 
 /**
  * Validates the {@code from} field in the given tx params
- * @param {Object} txParams
+ *
+ * @param {object} txParams
  * @throws {Error} if the from address isn't valid
  */
 export function validateFrom(txParams) {
@@ -251,8 +257,9 @@ export function validateFrom(txParams) {
 
 /**
  * Validates the {@code to} field in the given tx params
- * @param {Object} txParams - the tx params
- * @returns {Object} the tx params
+ *
+ * @param {object} txParams - the tx params
+ * @returns {object} the tx params
  * @throws {Error} if the recipient is invalid OR there isn't tx data
  */
 export function validateRecipient(txParams) {
@@ -271,8 +278,47 @@ export function validateRecipient(txParams) {
   return txParams;
 }
 
+export const validateConfirmedExternalTransaction = ({
+  txMeta,
+  pendingTransactions,
+  confirmedTransactions,
+} = {}) => {
+  if (!txMeta || !txMeta.txParams) {
+    throw ethErrors.rpc.invalidParams(
+      '"txMeta" or "txMeta.txParams" is missing',
+    );
+  }
+  if (txMeta.status !== TRANSACTION_STATUSES.CONFIRMED) {
+    throw ethErrors.rpc.invalidParams(
+      'External transaction status should be "confirmed"',
+    );
+  }
+  const externalTxNonce = txMeta.txParams.nonce;
+  if (pendingTransactions && pendingTransactions.length > 0) {
+    const foundPendingTxByNonce = pendingTransactions.find(
+      (el) => el.txParams?.nonce === externalTxNonce,
+    );
+    if (foundPendingTxByNonce) {
+      throw ethErrors.rpc.invalidParams(
+        'External transaction nonce should not be in pending txs',
+      );
+    }
+  }
+  if (confirmedTransactions && confirmedTransactions.length > 0) {
+    const foundConfirmedTxByNonce = confirmedTransactions.find(
+      (el) => el.txParams?.nonce === externalTxNonce,
+    );
+    if (foundConfirmedTxByNonce) {
+      throw ethErrors.rpc.invalidParams(
+        'External transaction nonce should not be in confirmed txs',
+      );
+    }
+  }
+};
+
 /**
  * Returns a list of final states
+ *
  * @returns {string[]} the states that can be considered final states
  */
 export function getFinalStates() {
@@ -282,4 +328,16 @@ export function getFinalStates() {
     TRANSACTION_STATUSES.FAILED, // the tx failed for some reason, included on tx data.
     TRANSACTION_STATUSES.DROPPED, // the tx nonce was already used
   ];
+}
+
+/**
+ * Normalizes tx receipt gas used to be a hexadecimal string.
+ * It seems that sometimes the numerical values being returned from
+ * this.query.getTransactionReceipt are BN instances and not strings.
+ *
+ * @param {string or BN instance} gasUsed
+ * @returns normalized gas used as hexadecimal string
+ */
+export function normalizeTxReceiptGasUsed(gasUsed) {
+  return typeof gasUsed === 'string' ? gasUsed : gasUsed.toString(16);
 }

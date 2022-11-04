@@ -2,10 +2,17 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getAllAccountsOnNetworkAreEmpty,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
-  submittedPendingTransactionsSelector,
+  getTheme,
+  getIsTestnet,
+  getCurrentChainId,
+  getShouldShowSeedPhraseReminder,
+  getShowPortfolioTooltip,
+  isCurrentProviderCustom,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -15,6 +22,7 @@ import {
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
+import { getSendStage } from '../../ducks/send';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -29,15 +37,24 @@ function mapStateToProps(state) {
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     isNetworkLoading: isNetworkLoading(state),
-    provider: state.metamask.provider,
-    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    browserEnvironment: state.metamask.browserEnvironment,
+    browserEnvironmentOs: state.metamask.browserEnvironment?.os,
+    browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
+    providerId: getNetworkIdentifier(state),
+    providerType: state.metamask.provider?.type,
+    theme: getTheme(state),
+    sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
+    isTestNet: getIsTestnet(state),
+    currentChainId: getCurrentChainId(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
+    forgottenPassword: state.metamask.forgottenPassword,
+    isCurrentProviderCustom: isCurrentProviderCustom(state),
   };
 }
 

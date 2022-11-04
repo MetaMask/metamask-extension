@@ -13,6 +13,8 @@ import {
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  CONFIRM_SAFE_TRANSFER_FROM_PATH,
+  CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
 } from '../../helpers/constants/routes';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
@@ -46,8 +48,16 @@ export default class ConfirmTransactionSwitch extends Component {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_APPROVE_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
+        case TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL: {
+          const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`;
+          return <Redirect to={{ pathname }} />;
+        }
         case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_TRANSFER_FROM_PATH}`;
+          return <Redirect to={{ pathname }} />;
+        }
+        case TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM: {
+          const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SAFE_TRANSFER_FROM_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
         default: {

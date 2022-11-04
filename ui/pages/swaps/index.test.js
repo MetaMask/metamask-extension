@@ -30,7 +30,7 @@ describe('Swap', () => {
 
   beforeEach(() => {
     nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/topAssets')
+      .get('/networks/1/topAssets')
       .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
 
     nock(CONSTANTS.METASWAP_BASE_URL)
@@ -38,18 +38,18 @@ describe('Swap', () => {
       .reply(200, MOCKS.REFRESH_TIME_GET_RESPONSE);
 
     nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/aggregatorMetadata')
+      .get('/networks/1/aggregatorMetadata')
       .reply(200, MOCKS.AGGREGATOR_METADATA_GET_RESPONSE);
 
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/gasPrices')
+    nock(CONSTANTS.GAS_API_URL)
+      .get('/networks/1/gasPrices')
       .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
 
     nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/tokens')
+      .get('/networks/1/tokens')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
 
-    featureFlagsNock = nock(CONSTANTS.METASWAP_API_V2_BASE_URL)
+    featureFlagsNock = nock(CONSTANTS.METASWAP_BASE_URL)
       .get('/featureFlags')
       .reply(200, MOCKS.createFeatureFlagsResponse());
   });

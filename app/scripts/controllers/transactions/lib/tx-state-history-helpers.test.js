@@ -119,9 +119,9 @@ describe('Transaction state history helper', function () {
         },
       };
 
-      const before = new Date().getTime();
+      const timeBefore = new Date().getTime();
       const result = generateHistoryEntry(prevState, nextState, note);
-      const after = new Date().getTime();
+      const timeAfter = new Date().getTime();
       assert.ok(Array.isArray(result));
       assert.equal(result.length, 3);
 
@@ -134,7 +134,9 @@ describe('Transaction state history helper', function () {
       assert.equal(result[0].path, expectedEntry1.path);
       assert.equal(result[0].value, expectedEntry1.value);
       assert.equal(result[0].note, note);
-      assert.ok(result[0].timestamp >= before && result[0].timestamp <= after);
+      assert.ok(
+        result[0].timestamp >= timeBefore && result[0].timestamp <= timeAfter,
+      );
 
       const expectedEntry2 = {
         op: 'replace',

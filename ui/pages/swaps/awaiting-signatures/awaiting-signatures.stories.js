@@ -2,10 +2,12 @@ import React from 'react';
 import AwaitingSignatures from './awaiting-signatures';
 
 export default {
-  title: 'Signatures',
+  title: 'Pages/Swaps/AwaitingSignatures',
   id: __filename,
 };
 
-export const AwaitingSignaturesComponent = () => {
+export const DefaultStory = () => {
   return <AwaitingSignatures />;
 };
+
+DefaultStory.storyName = 'Default';

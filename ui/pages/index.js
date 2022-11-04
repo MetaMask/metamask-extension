@@ -8,10 +8,6 @@ import {
   MetaMetricsProvider,
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
-import {
-  MetaMetricsProvider as NewMetaMetricsProvider,
-  LegacyMetaMetricsProvider as NewLegacyMetaMetricsProvider,
-} from '../contexts/metametrics.new';
 import ErrorPage from './error';
 import Routes from './routes';
 
@@ -47,15 +43,11 @@ class Index extends PureComponent {
         <HashRouter hashType="noslash">
           <MetaMetricsProvider>
             <LegacyMetaMetricsProvider>
-              <NewMetaMetricsProvider>
-                <NewLegacyMetaMetricsProvider>
-                  <I18nProvider>
-                    <LegacyI18nProvider>
-                      <Routes />
-                    </LegacyI18nProvider>
-                  </I18nProvider>
-                </NewLegacyMetaMetricsProvider>
-              </NewMetaMetricsProvider>
+              <I18nProvider>
+                <LegacyI18nProvider>
+                  <Routes />
+                </LegacyI18nProvider>
+              </I18nProvider>
             </LegacyMetaMetricsProvider>
           </MetaMetricsProvider>
         </HashRouter>

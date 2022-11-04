@@ -19,7 +19,10 @@ export default function OnboardingPinExtension() {
   const history = useHistory();
 
   return (
-    <div className="onboarding-pin-extension">
+    <div
+      className="onboarding-pin-extension"
+      data-testid="onboarding-pin-extension"
+    >
       <Typography
         variant={TYPOGRAPHY.H2}
         align={TEXT_ALIGN.CENTER}
@@ -58,6 +61,9 @@ export default function OnboardingPinExtension() {
       </Carousel>
       <div className="onboarding-pin-extension__buttons">
         <Button
+          data-testid={
+            selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
+          }
           type="primary"
           onClick={() => {
             if (selectedIndex === 0) {

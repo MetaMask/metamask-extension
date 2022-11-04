@@ -1,12 +1,6 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { boolean, select, text } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import Dropdown from '.';
-
-export default {
-  title: 'Dropdown',
-  id: __filename,
-};
 
 const unnamedOptions = [...Array(10).keys()].map((index) => {
   return { value: `option${index}` };
@@ -23,63 +17,63 @@ const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
   };
 });
 
-export const simple = () => (
-  <Dropdown
-    disabled={boolean('Disabled', false)}
-    title={text('Title', 'Test dropdown name')}
-    onChange={action('Selection changed')}
-    options={namedOptions}
-    required={boolean('Required', false)}
-    selectedOption={select(
-      'Selected Option',
-      namedOptions.map((option) => option.value),
-      namedOptions[0].value,
-    )}
-  />
+export default {
+  title: 'Components/UI/Dropdown',
+  id: __filename,
+  component: Dropdown,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    className: { control: 'text' },
+    disabled: { control: 'boolean' },
+    title: { control: 'text' },
+    onChange: { action: 'onChange' },
+    options: { control: 'array' },
+    selectedOption: { control: 'text' },
+    style: { control: 'object' },
+  },
+};
+
+export const DefaultStory = (args) => <Dropdown {...args} />;
+
+DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  disabled: false,
+  title: 'Test Dropdown Name',
+  options: namedOptions,
+  selectedOption: namedOptions[0].value,
+};
+
+export const OptionsWithoutNames = (args) => <Dropdown {...args} />;
+
+OptionsWithoutNames.args = {
+  disabled: false,
+  title: 'Test Dropdown Name',
+  options: unnamedOptions,
+  selectedOption: unnamedOptions[0].value,
+};
+
+export const OptionsWithLongNames = (args) => <Dropdown {...args} />;
+
+OptionsWithLongNames.args = {
+  disabled: false,
+  title: 'Test Dropdown Name',
+  options: namedOptionsWithVeryLongNames,
+  selectedOption: namedOptionsWithVeryLongNames[0].value,
+};
+
+export const OptionsWithLongNamesAndShortWidth = (args) => (
+  <Dropdown {...args} />
 );
 
-export const optionsWithoutNames = () => (
-  <Dropdown
-    disabled={boolean('Disabled', false)}
-    title={text('Title', 'Test dropdown name')}
-    onChange={action('Selection changed')}
-    options={unnamedOptions}
-    required={boolean('Required', false)}
-    selectedOption={select(
-      'Selected Option',
-      unnamedOptions.map((option) => option.value),
-      unnamedOptions[0].value,
-    )}
-  />
-);
-
-export const optionsWithLongNames = () => (
-  <Dropdown
-    disabled={boolean('Disabled', false)}
-    title={text('Title', 'Test dropdown name')}
-    onChange={action('Selection changed')}
-    options={namedOptionsWithVeryLongNames}
-    required={boolean('Required', false)}
-    selectedOption={select(
-      'Selected Option',
-      namedOptionsWithVeryLongNames.map((option) => option.value),
-      namedOptionsWithVeryLongNames[0].value,
-    )}
-  />
-);
-
-export const optionsWithLongNamesAndShortWidth = () => (
-  <Dropdown
-    disabled={boolean('Disabled', false)}
-    title={text('Title', 'Test dropdown name')}
-    onChange={action('Selection changed')}
-    options={namedOptionsWithVeryLongNames}
-    required={boolean('Required', false)}
-    selectedOption={select(
-      'Selected Option',
-      namedOptionsWithVeryLongNames.map((option) => option.value),
-      namedOptionsWithVeryLongNames[0].value,
-    )}
-    style={{ width: '200px' }}
-  />
-);
+OptionsWithLongNamesAndShortWidth.args = {
+  disabled: false,
+  title: 'Test Dropdown Name',
+  options: namedOptionsWithVeryLongNames,
+  selectedOption: namedOptionsWithVeryLongNames[0].value,
+  style: { width: '200px' },
+};

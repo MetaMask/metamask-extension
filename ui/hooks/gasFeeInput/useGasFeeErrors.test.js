@@ -280,6 +280,21 @@ describe('useGasFeeErrors', () => {
     });
   });
 
+  describe('Simulation Error', () => {
+    it('is false if transaction has falsy values for simulationFails', () => {
+      configureEIP1559();
+      const { result } = renderUseGasFeeErrorsHook();
+      expect(result.current.hasSimulationError).toBe(false);
+    });
+    it('is true if transaction.simulationFails is true', () => {
+      configureEIP1559();
+      const { result } = renderUseGasFeeErrorsHook({
+        transaction: { simulationFails: true },
+      });
+      expect(result.current.hasSimulationError).toBe(true);
+    });
+  });
+
   describe('estimatesUnavailableWarning', () => {
     it('is false if supportsEIP1559 and gasEstimateType is fee-market', () => {
       configureEIP1559();

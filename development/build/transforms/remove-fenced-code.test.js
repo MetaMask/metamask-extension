@@ -1,5 +1,5 @@
 const deepFreeze = require('deep-freeze-strict');
-const { BuildType } = require('../utils');
+const { BuildType } = require('../../lib/build-type');
 const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
@@ -161,6 +161,28 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
+    it('handles error during code fence removal or parsing', async () => {
+      const fileContent = getMinimalFencedCode().concat(
+        '///: END:ONLY_INCLUDE_IN',
+      );
+
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+
+      await new Promise((resolve) => {
+        stream.on('error', (error) => {
+          expect(error.message).toStrictEqual(
+            expect.stringContaining(
+              'A valid fence consists of two fence lines, but the file contains an uneven number, "3", of fence lines.',
+            ),
+          );
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(0);
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
     it('handles transformed file lint failure', async () => {
       lintTransformedFileMock.mockImplementationOnce(() =>
         Promise.reject(new Error('lint failure')),
@@ -267,9 +289,8 @@ describe('build/transforms/remove-fenced-code', () => {
           ),
         ).toStrictEqual([ignoredLine, true]);
 
-        const modifiedInputWithoutFences = testData.validInputs.withoutFences.concat(
-          ignoredLine,
-        );
+        const modifiedInputWithoutFences =
+          testData.validInputs.withoutFences.concat(ignoredLine);
 
         // These inputs will not be transformed
         expect(
@@ -586,6 +607,17 @@ describe('build/transforms/remove-fenced-code', () => {
           ),
         ).toThrow(expectedError);
       });
+    });
+
+    it('ignores files with inline source maps', () => {
+      // This is so that there isn't an unnecessary second execution of
+      // removeFencedCode with a transpiled version of the same file
+      const input = getTestData().validInputs.extraContentWithFences.concat(
+        '\n//# sourceMappingURL=as32e32wcwc2234f2ew32cnin4243f4nv9nsdoivnxzoivnd',
+      );
+      expect(
+        removeFencedCode(mockFileName, BuildType.flask, input),
+      ).toStrictEqual([input, false]);
     });
 
     // We can't do this until there's more than one command

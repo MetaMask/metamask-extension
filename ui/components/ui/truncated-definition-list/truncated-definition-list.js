@@ -24,7 +24,7 @@ export default function TruncatedDefinitionList({
         padding={4}
         paddingBottom={3}
         borderRadius={SIZES.LG}
-        borderColor={COLORS.UI2}
+        borderColor={COLORS.BORDER_MUTED}
       >
         <DefinitionList
           dictionary={pick(dictionary, prefaceKeys)}

@@ -1,15 +1,15 @@
 import { useSelector } from 'react-redux';
+import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../shared/modules/swaps.utils';
-import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { getCurrentChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**
- * @typedef {Object} SwappedTokenValue
+ * @typedef {object} SwappedTokenValue
  * @property {string} swapTokenValue - a primary currency string formatted for display
  * @property {string} swapTokenFiatAmount - a secondary currency string formatted for display
  * @property {boolean} isViewingReceivedTokenFromSwap - true if user is on the asset page for the
@@ -24,6 +24,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount';
  * the swap. In that circumstance we would want to show the primaryCurrency in the
  * activity list that is most relevant for that token (- 1000 DAI, for example, when
  * swapping DAI for ETH).
+ *
  * @param {import('../selectors').transactionGroup} transactionGroup - Group of transactions by nonce
  * @param {import('./useTokenDisplayValue').Token} currentAsset - The current asset the user is looking at
  * @returns {SwappedTokenValue}

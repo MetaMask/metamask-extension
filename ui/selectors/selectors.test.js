@@ -102,7 +102,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           networkDetails: {
-            EIPS: { 1559: undefined },
+            EIPS: { 1559: false },
           },
         },
       });
@@ -118,24 +118,6 @@ describe('Selectors', () => {
       });
       expect(not1559Network).toStrictEqual(true);
     });
-
-    it('returns true if account does not support EIP-1559', () => {
-      const networkOrAccountNotSupports1559 = selectors.checkNetworkOrAccountNotSupports1559(
-        {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            keyrings: [
-              {
-                type: KEYRING_TYPES.TREZOR,
-                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-              },
-            ],
-          },
-        },
-      );
-      expect(networkOrAccountNotSupports1559).toStrictEqual(true);
-    });
   });
 
   describe('#getAddressBook', () => {
@@ -143,7 +125,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x4',
+          chainId: '0x5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',
@@ -153,10 +135,9 @@ describe('Selectors', () => {
   });
 
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
-    const accountsWithSendEther = selectors.accountsWithSendEtherInfoSelector(
-      mockState,
-    );
-    expect(accountsWithSendEther).toHaveLength(2);
+    const accountsWithSendEther =
+      selectors.accountsWithSendEtherInfoSelector(mockState);
+    expect(accountsWithSendEther).toHaveLength(4);
     expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -165,9 +146,8 @@ describe('Selectors', () => {
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
-    const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(
-      mockState,
-    );
+    const currentAccountwithSendEther =
+      selectors.getCurrentAccountWithSendEtherInfo(mockState);
     expect(currentAccountwithSendEther.balance).toStrictEqual('0x0');
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -244,5 +224,43 @@ describe('Selectors', () => {
         occurrences: 12,
       },
     });
+  });
+  it('#getAdvancedGasFeeValues', () => {
+    const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
+    expect(advancedGasFee).toStrictEqual({
+      maxBaseFee: '75',
+      priorityFee: '2',
+    });
+  });
+  it('#getIsAdvancedGasFeeDefault', () => {
+    const isAdvancedGasFeeDefault =
+      selectors.getIsAdvancedGasFeeDefault(mockState);
+    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
+  });
+  it('#getAppIsLoading', () => {
+    const appIsLoading = selectors.getAppIsLoading(mockState);
+    expect(appIsLoading).toStrictEqual(false);
+  });
+  it('#getNotifications', () => {
+    const notifications = selectors.getNotifications(mockState);
+
+    expect(notifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+      mockState.metamask.notifications.test2,
+    ]);
+  });
+  it('#getUnreadNotificationsCount', () => {
+    const unreadNotificationCount =
+      selectors.getUnreadNotificationsCount(mockState);
+
+    expect(unreadNotificationCount).toStrictEqual(1);
+  });
+
+  it('#getUnreadNotifications', () => {
+    const unreadNotifications = selectors.getUnreadNotifications(mockState);
+
+    expect(unreadNotifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+    ]);
   });
 });

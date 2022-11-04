@@ -7,18 +7,20 @@ import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
  * debug information for a failed analysis.
- * @typedef {Object} GasAnalysisResult
+ *
+ * @typedef {object} GasAnalysisResult
  * @property {string} blockGasLimit - The gas limit of the block used for the analysis
  * @property {string} estimatedGasHex - The estimated gas, in hexadecimal
- * @property {Object} simulationFails - Debug information about why an analysis failed
+ * @property {object} simulationFails - Debug information about why an analysis failed
  */
 
 /**
-tx-gas-utils are gas utility methods for Transaction manager
-its passed ethquery
-and used to do things like calculate gas of a tx.
-@param {Object} provider - A network provider.
-*/
+ * tx-gas-utils are gas utility methods for Transaction manager
+ * its passed ethquery
+ * and used to do things like calculate gas of a tx.
+ *
+ * @param {object} provider - A network provider.
+ */
 
 export default class TxGasUtil {
   constructor(provider) {
@@ -26,9 +28,9 @@ export default class TxGasUtil {
   }
 
   /**
-    @param {Object} txMeta - the txMeta object
-    @returns {GasAnalysisResult} The result of the gas analysis
-  */
+   * @param {object} txMeta - the txMeta object
+   * @returns {GasAnalysisResult} The result of the gas analysis
+   */
   async analyzeGasUsage(txMeta) {
     const block = await this.query.getBlockByNumber('latest', false);
 
@@ -48,14 +50,19 @@ export default class TxGasUtil {
       };
     }
 
-    return { blockGasLimit: block.gasLimit, estimatedGasHex, simulationFails };
+    return {
+      blockGasLimit: block.gasLimit,
+      estimatedGasHex,
+      simulationFails,
+    };
   }
 
   /**
-    Estimates the tx's gas usage
-    @param {Object} txMeta - the txMeta object
-    @returns {string} the estimated gas limit as a hex string
-  */
+   * Estimates the tx's gas usage
+   *
+   * @param {object} txMeta - the txMeta object
+   * @returns {string} the estimated gas limit as a hex string
+   */
   async estimateTxGas(txMeta) {
     const txParams = cloneDeep(txMeta.txParams);
 
@@ -73,12 +80,13 @@ export default class TxGasUtil {
   }
 
   /**
-    Adds a gas buffer with out exceeding the block gas limit
-
-    @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
-    @param {string} blockGasLimitHex - the block gas limit
-    @returns {string} the buffered gas limit as a hex string
-  */
+   * Adds a gas buffer with out exceeding the block gas limit
+   *
+   * @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
+   * @param {string} blockGasLimitHex - the block gas limit
+   * @param multiplier
+   * @returns {string} the buffered gas limit as a hex string
+   */
   addGasBuffer(initialGasLimitHex, blockGasLimitHex, multiplier = 1.5) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex);
     const blockGasLimitBn = hexToBn(blockGasLimitHex);
@@ -98,12 +106,8 @@ export default class TxGasUtil {
   }
 
   async getBufferedGasLimit(txMeta, multiplier) {
-    const {
-      blockGasLimit,
-      estimatedGasHex,
-      simulationFails,
-    } = await this.analyzeGasUsage(txMeta);
-
+    const { blockGasLimit, estimatedGasHex, simulationFails } =
+      await this.analyzeGasUsage(txMeta);
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.addGasBuffer(
       addHexPrefix(estimatedGasHex),

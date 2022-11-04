@@ -1,9 +1,14 @@
 import log from 'loglevel';
-import BigNumber from 'bignumber.js';
 import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
+import { getTokenStandardAndDetails } from '../../store/actions';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { ERC20 } from '../../../shared/constants/transaction';
+import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -11,7 +16,6 @@ const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
-
   try {
     const result = await token.symbol();
     return result[0];
@@ -40,14 +44,8 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-function getTokenMetadata(tokenAddress, tokenList) {
-  const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
-    return {
-      ...acc,
-      [base.toLowerCase()]: tokenList[base],
-    };
-  }, {});
-  return tokenAddress && casedTokenList[tokenAddress.toLowerCase()];
+export function getTokenMetadata(tokenAddress, tokenList) {
+  return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
 async function getSymbol(tokenAddress, tokenList) {
@@ -111,16 +109,6 @@ export function tokenInfoGetter() {
   };
 }
 
-export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
-}
-
-export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).times(multiplier);
-}
-
 /**
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
@@ -128,11 +116,12 @@ export function calcTokenValue(value, decimals) {
  *   - The '_to' parameter, if present
  *   - The first parameter, if present
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam(tokenData = {}) {
-  const value = tokenData?.args?._to || tokenData?.args?.[0];
+  const value =
+    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
   return value?.toString().toLowerCase();
 }
 
@@ -140,16 +129,32 @@ export function getTokenAddressParam(tokenData = {}) {
  * Gets the '_value' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
-export function getTokenValueParam(tokenData = {}) {
-  return tokenData?.args?._value?.toString();
+/**
+ * Gets either the '_tokenId' parameter or the 'id' param of the passed token transaction data.,
+ * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
+ * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
+ *
+ * @param {object} tokenData - ethers Interface token data.
+ * @returns {string | undefined} A decimal string value.
+ */
+export function getTokenIdParam(tokenData = {}) {
+  return (
+    tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
+  );
 }
 
-export function getTokenValue(tokenParams = []) {
-  const valueData = tokenParams.find((param) => param.name === '_value');
-  return valueData && valueData.value;
+/**
+ * Gets the '_approved' parameter of the given token transaction data
+ * (i.e function call) per the Human Standard Token ABI, if present.
+ *
+ * @param {object} tokenData - ethers Interface token data.
+ * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
+ */
+export function getTokenApprovedParam(tokenData = {}) {
+  return tokenData?.args?._approved;
 }
 
 /**
@@ -211,4 +216,78 @@ export function getTokenFiatAmount(
     result = currentTokenInFiat;
   }
   return result;
+}
+
+export async function getAssetDetails(
+  tokenAddress,
+  currentUserAddress,
+  transactionData,
+  existingCollectibles,
+) {
+  const tokenData = parseStandardTokenTransactionData(transactionData);
+  if (!tokenData) {
+    throw new Error('Unable to detect valid token data');
+  }
+
+  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+  let tokenId =
+    getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
+
+  const toAddress = getTokenAddressParam(tokenData);
+
+  let tokenDetails;
+
+  // if a tokenId is present check if there is a collectible in state matching the address/tokenId
+  // and avoid unnecessary network requests to query token details we already have
+  if (existingCollectibles?.length && tokenId) {
+    const existingCollectible = existingCollectibles.find(
+      ({ address, tokenId: _tokenId }) =>
+        isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
+    );
+
+    if (existingCollectible) {
+      return {
+        toAddress,
+        ...existingCollectible,
+      };
+    }
+  }
+
+  try {
+    tokenDetails = await getTokenStandardAndDetails(
+      tokenAddress,
+      currentUserAddress,
+      tokenId,
+    );
+  } catch (error) {
+    log.warn(error);
+    // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
+    return { toAddress, tokenId };
+  }
+
+  const tokenAmount =
+    tokenData &&
+    tokenDetails?.decimals &&
+    calcTokenAmount(
+      getTokenValueParam(tokenData),
+      tokenDetails?.decimals,
+    ).toString(10);
+
+  const decimals =
+    tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
+
+  if (tokenDetails?.standard === ERC20) {
+    tokenId = undefined;
+  }
+
+  // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
+  return {
+    tokenAmount,
+    toAddress,
+    decimals,
+    tokenId,
+    ...tokenDetails,
+  };
 }

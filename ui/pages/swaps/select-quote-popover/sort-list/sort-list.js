@@ -17,7 +17,7 @@ const ToggleArrows = () => (
   >
     <path
       d="M0.7948 4.96973C0.365112 4.96973 0.150269 5.47754 0.462769 5.77051L2.78699 8.09473C2.96277 8.29004 3.25574 8.29004 3.45105 8.09473L5.77527 5.77051C6.06824 5.47754 5.85339 4.96973 5.44324 4.96973H0.7948ZM5.77527 2.91895L3.45105 0.594727C3.25574 0.418945 2.96277 0.418945 2.78699 0.594727L0.462769 2.91895C0.150269 3.23145 0.365112 3.71973 0.7948 3.71973H5.44324C5.85339 3.71973 6.06824 3.23145 5.77527 2.91895Z"
-      fill="#037DD6"
+      fill="var(--color-primary-default)"
     />
   </svg>
 );
@@ -32,6 +32,7 @@ export default function SortList({
   setSortDirection,
   sortColumn = null,
   setSortColumn,
+  hideEstimatedGasFee,
 }) {
   const t = useContext(I18nContext);
   const [noRowHover, setRowNowHover] = useState(false);
@@ -79,6 +80,7 @@ export default function SortList({
       <div className="select-quote-popover__column-headers">
         <div
           className="select-quote-popover__column-header select-quote-popover__receiving"
+          data-testid="select-quote-popover__receiving"
           onClick={() => onColumnHeaderClick('destinationTokenValue')}
         >
           <span className="select-quote-popover__receiving-symbol">
@@ -95,17 +97,23 @@ export default function SortList({
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+          data-testid="select-quote-popover__network-fees-header"
           onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
-          <span>{t('swapEstimatedNetworkFees')}</span>
-          <InfoTooltip
-            position="bottom"
-            contentText={t('swapEstimatedNetworkFeesInfo')}
-          />
-          <ToggleArrows />
+          {!hideEstimatedGasFee && (
+            <>
+              <span>{t('swapEstimatedNetworkFees')}</span>
+              <InfoTooltip
+                position="bottom"
+                contentText={t('swapEstimatedNetworkFeesInfo')}
+              />
+              <ToggleArrows />
+            </>
+          )}
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
+          data-testid="select-quote-popover__quote-source"
           onClick={() => onColumnHeaderClick('quoteSource')}
         >
           {t('swapQuoteSource')}
@@ -132,6 +140,7 @@ export default function SortList({
             })}
             onClick={() => onSelect(aggId)}
             key={`select-quote-popover-row-${i}`}
+            data-testid={`select-quote-popover-row-${i}`}
           >
             <div className="select-quote-popover__receiving">
               <div className="select-quote-popover__receiving-value">
@@ -152,7 +161,7 @@ export default function SortList({
               )}
             </div>
             <div className="select-quote-popover__network-fees">
-              {networkFees}
+              {!hideEstimatedGasFee && networkFees}
             </div>
             <div className="select-quote-popover__quote-source">
               <div
@@ -173,6 +182,7 @@ export default function SortList({
             </div>
             <div
               className="select-quote-popover__caret-right"
+              data-testid={`select-quote-popover__caret-right-${i}`}
               onClick={(event) => {
                 event.stopPropagation();
                 onCaretClick(aggId);
@@ -199,4 +209,5 @@ SortList.propTypes = {
   setSortDirection: PropTypes.func.isRequired,
   sortColumn: PropTypes.string,
   setSortColumn: PropTypes.func.isRequired,
+  hideEstimatedGasFee: PropTypes.bool.isRequired,
 };

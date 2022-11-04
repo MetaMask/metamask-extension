@@ -1,10 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
+import { addHexPrefix } from 'ethereumjs-util';
+import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -14,7 +22,6 @@ import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
-import { decimalToHex } from '../../../../helpers/utils/conversions.util';
 import {
   setSelectedSettingsRpcUrl,
   updateAndSetCustomRpc,
@@ -26,6 +33,15 @@ import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
 } from '../../../../helpers/constants/routes';
+import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { usePrevious } from '../../../../hooks/usePrevious';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  infuraProjectId,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
+import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -71,6 +87,7 @@ const NetworksForm = ({
   selectedNetwork,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
@@ -83,7 +100,13 @@ const NetworksForm = ({
     selectedNetwork?.blockExplorerUrl || '',
   );
   const [errors, setErrors] = useState({});
+  const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
+    (featuredRpc) => Number(featuredRpc.chainId) === Number(chainId),
+  );
+  const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
+  const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -92,7 +115,10 @@ const NetworksForm = ({
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
+    setWarnings({});
     setIsSubmitting(false);
+    setIsEditing(false);
+    setPreviousNetwork(selectedNetwork);
   }, [selectedNetwork, selectedNetworkName]);
 
   const stateIsUnchanged = () => {
@@ -128,11 +154,12 @@ const NetworksForm = ({
       setErrors({});
       setIsSubmitting(false);
     } else if (
-      prevNetworkName.current !== selectedNetworkName ||
-      prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-      prevChainId.current !== selectedNetwork.chainId ||
-      prevTicker.current !== selectedNetwork.ticker ||
-      prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl
+      (prevNetworkName.current !== selectedNetworkName ||
+        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
+        prevChainId.current !== selectedNetwork.chainId ||
+        prevTicker.current !== selectedNetwork.ticker ||
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
+      (!isEditing || !isEqual(selectedNetwork, previousNetwork))
     ) {
       resetForm(selectedNetwork);
     }
@@ -140,14 +167,9 @@ const NetworksForm = ({
     selectedNetwork,
     selectedNetworkName,
     addNewNetwork,
-    setNetworkName,
-    setRpcUrl,
-    setChainId,
-    setTicker,
-    setBlockExplorerUrl,
-    setErrors,
-    setIsSubmitting,
+    previousNetwork,
     resetForm,
+    isEditing,
   ]);
 
   useEffect(() => {
@@ -170,229 +192,302 @@ const NetworksForm = ({
     dispatch,
   ]);
 
-  const setErrorTo = (errorKey, errorVal) => {
-    setErrors({ ...errors, [errorKey]: errorVal });
-  };
-
-  const setErrorEmpty = (errorKey) => {
-    setErrors({
-      ...errors,
-      [errorKey]: {
-        msg: '',
-        key: '',
-      },
-    });
-  };
-
-  const hasError = (errorKey, errorKeyVal) => {
-    return errors[errorKey]?.key === errorKeyVal;
-  };
-
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
       const error = errors[key];
       // Do not factor in duplicate chain id error for submission disabling
-      if (key === 'chainId' && error.key === 'chainIdExistsErrorMsg') {
+      if (key === 'chainId' && error?.key === 'chainIdExistsErrorMsg') {
         return false;
       }
-      return error.key && error.msg;
+      return error?.key && error?.msg;
     });
   };
 
-  const validateChainIdOnChange = (chainArg = '') => {
-    const formChainId = chainArg.trim();
-    let errorKey = '';
-    let errorMessage = '';
-    let radix = 10;
-    let hexChainId = formChainId;
+  const validateBlockExplorerURL = useCallback(
+    (url) => {
+      if (!validUrl.isWebUri(url) && url !== '') {
+        let errorKey;
+        let errorMessage;
 
-    if (!hexChainId.startsWith('0x')) {
-      try {
-        hexChainId = `0x${decimalToHex(hexChainId)}`;
-      } catch (err) {
-        setErrorTo('chainId', {
-          key: 'invalidHexNumber',
-          msg: t('invalidHexNumber'),
-        });
-        return;
+        if (isValidWhenAppended(url)) {
+          errorKey = 'urlErrorMsg';
+          errorMessage = t('urlErrorMsg');
+        } else {
+          errorKey = 'invalidBlockExplorerURL';
+          errorMessage = t('invalidBlockExplorerURL');
+        }
+
+        return {
+          key: errorKey,
+          msg: errorMessage,
+        };
       }
-    }
+      return null;
+    },
+    [t],
+  );
 
-    const [matchingChainId] = networksToRender.filter(
-      (e) => e.chainId === hexChainId && e.rpcUrl !== rpcUrl,
-    );
+  const validateChainId = useCallback(
+    async (chainArg = '') => {
+      const formChainId = chainArg.trim();
+      let errorKey = '';
+      let errorMessage = '';
+      let radix = 10;
+      let hexChainId = formChainId;
 
-    if (formChainId === '') {
-      setErrorEmpty('chainId');
-      return;
-    } else if (matchingChainId) {
-      errorKey = 'chainIdExistsErrorMsg';
-      errorMessage = t('chainIdExistsErrorMsg', [
-        matchingChainId.label ?? matchingChainId.labelKey,
-      ]);
-    } else if (formChainId.startsWith('0x')) {
-      radix = 16;
-      if (!/^0x[0-9a-f]+$/iu.test(formChainId)) {
-        errorKey = 'invalidHexNumber';
-        errorMessage = t('invalidHexNumber');
-      } else if (!isPrefixedFormattedHexString(formChainId)) {
-        errorMessage = t('invalidHexNumberLeadingZeros');
-      }
-    } else if (!/^[0-9]+$/u.test(formChainId)) {
-      errorKey = 'invalidNumber';
-      errorMessage = t('invalidNumber');
-    } else if (formChainId.startsWith('0')) {
-      errorKey = 'invalidNumberLeadingZeros';
-      errorMessage = t('invalidNumberLeadingZeros');
-    } else if (!isSafeChainId(parseInt(formChainId, radix))) {
-      errorKey = 'invalidChainIdTooBig';
-      errorMessage = t('invalidChainIdTooBig');
-    }
-
-    setErrorTo('chainId', {
-      key: errorKey,
-      msg: errorMessage,
-    });
-  };
-
-  /**
-   * Validates the chain ID by checking it against the `eth_chainId` return
-   * value from the given RPC URL.
-   * Assumes that all strings are non-empty and correctly formatted.
-   *
-   * @param {string} formChainId - Non-empty, hex or decimal number string from
-   * the form.
-   * @param {string} parsedChainId - The parsed, hex string chain ID.
-   * @param {string} formRpcUrl - The RPC URL from the form.
-   */
-  const validateChainIdOnSubmit = async (
-    formChainId,
-    parsedChainId,
-    formRpcUrl,
-  ) => {
-    let errorKey;
-    let errorMessage;
-    let endpointChainId;
-    let providerError;
-
-    try {
-      endpointChainId = await jsonRpcRequest(formRpcUrl, 'eth_chainId');
-    } catch (err) {
-      log.warn('Failed to fetch the chainId from the endpoint.', err);
-      providerError = err;
-    }
-
-    if (providerError || typeof endpointChainId !== 'string') {
-      errorKey = 'failedToFetchChainId';
-      errorMessage = t('failedToFetchChainId');
-    } else if (parsedChainId !== endpointChainId) {
-      // Here, we are in an error state. The endpoint should always return a
-      // hexadecimal string. If the user entered a decimal string, we attempt
-      // to convert the endpoint's return value to decimal before rendering it
-      // in an error message in the form.
-      if (!formChainId.startsWith('0x')) {
+      if (!hexChainId.startsWith('0x')) {
         try {
-          endpointChainId = parseInt(endpointChainId, 16).toString(10);
+          hexChainId = `0x${decimalToHex(hexChainId)}`;
         } catch (err) {
-          log.warn(
-            'Failed to convert endpoint chain ID to decimal',
-            endpointChainId,
-          );
+          return {
+            key: 'invalidHexNumber',
+            msg: t('invalidHexNumber'),
+          };
         }
       }
 
-      errorKey = 'endpointReturnedDifferentChainId';
-      errorMessage = t('endpointReturnedDifferentChainId', [
-        endpointChainId.length <= 12
-          ? endpointChainId
-          : `${endpointChainId.slice(0, 9)}...`,
-      ]);
-    }
+      const [matchingChainId] = networksToRender.filter(
+        (e) => e.chainId === hexChainId && e.rpcUrl !== rpcUrl,
+      );
 
-    if (errorKey) {
-      setErrorTo('chainId', {
-        key: errorKey,
-        msg: errorMessage,
-      });
-      return false;
-    }
-
-    setErrorEmpty('chainId');
-    return true;
-  };
-
-  const validateBlockExplorerURL = (url) => {
-    if (!validUrl.isWebUri(url) && url !== '') {
-      let errorKey;
-      let errorMessage;
-
-      if (isValidWhenAppended(url)) {
-        errorKey = 'urlErrorMsg';
-        errorMessage = t('urlErrorMsg');
-      } else {
-        errorKey = 'invalidBlockExplorerURL';
-        errorMessage = t('invalidBlockExplorerURL');
+      if (formChainId === '') {
+        return null;
+      } else if (matchingChainId) {
+        errorKey = 'chainIdExistsErrorMsg';
+        errorMessage = t('chainIdExistsErrorMsg', [
+          matchingChainId.label ?? matchingChainId.labelKey,
+        ]);
+      } else if (formChainId.startsWith('0x')) {
+        radix = 16;
+        if (!/^0x[0-9a-f]+$/iu.test(formChainId)) {
+          errorKey = 'invalidHexNumber';
+          errorMessage = t('invalidHexNumber');
+        } else if (!isPrefixedFormattedHexString(formChainId)) {
+          errorMessage = t('invalidHexNumberLeadingZeros');
+        }
+      } else if (!/^[0-9]+$/u.test(formChainId)) {
+        errorKey = 'invalidNumber';
+        errorMessage = t('invalidNumber');
+      } else if (formChainId.startsWith('0')) {
+        errorKey = 'invalidNumberLeadingZeros';
+        errorMessage = t('invalidNumberLeadingZeros');
+      } else if (!isSafeChainId(parseInt(formChainId, radix))) {
+        errorKey = 'invalidChainIdTooBig';
+        errorMessage = t('invalidChainIdTooBig');
       }
 
-      setErrorTo('blockExplorerUrl', {
-        key: errorKey,
-        msg: errorMessage,
-      });
-    } else {
-      setErrorEmpty('blockExplorerUrl');
-    }
-  };
+      let endpointChainId;
+      let providerError;
 
-  const validateUrlRpcUrl = (url) => {
-    const isValidUrl = validUrl.isWebUri(url);
-    const chainIdFetchFailed = hasError('chainId', 'failedToFetchChainId');
-    const [matchingRPCUrl] = networksToRender.filter((e) => e.rpcUrl === url);
-
-    if (!isValidUrl && url !== '') {
-      let errorKey;
-      let errorMessage;
-      if (isValidWhenAppended(url)) {
-        errorKey = 'urlErrorMsg';
-        errorMessage = t('urlErrorMsg');
-      } else {
-        errorKey = 'invalidRPC';
-        errorMessage = t('invalidRPC');
+      try {
+        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+      } catch (err) {
+        log.warn('Failed to fetch the chainId from the endpoint.', err);
+        providerError = err;
       }
-      setErrorTo('rpcUrl', {
-        key: errorKey,
-        msg: errorMessage,
-      });
-    } else if (matchingRPCUrl) {
-      setErrorTo('rpcUrl', {
-        key: 'urlExistsErrorMsg',
-        msg: t('urlExistsErrorMsg', [
-          matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
-        ]),
-      });
-    } else {
-      setErrorEmpty('rpcUrl');
+
+      if (rpcUrl && formChainId) {
+        if (providerError || typeof endpointChainId !== 'string') {
+          errorKey = 'failedToFetchChainId';
+          errorMessage = t('failedToFetchChainId');
+        } else if (hexChainId !== endpointChainId) {
+          // Here, we are in an error state. The endpoint should always return a
+          // hexadecimal string. If the user entered a decimal string, we attempt
+          // to convert the endpoint's return value to decimal before rendering it
+          // in an error message in the form.
+          if (!formChainId.startsWith('0x')) {
+            try {
+              endpointChainId = parseInt(endpointChainId, 16).toString(10);
+            } catch (err) {
+              log.warn(
+                'Failed to convert endpoint chain ID to decimal',
+                endpointChainId,
+              );
+            }
+          }
+
+          errorKey = 'endpointReturnedDifferentChainId';
+          errorMessage = t('endpointReturnedDifferentChainId', [
+            endpointChainId.length <= 12
+              ? endpointChainId
+              : `${endpointChainId.slice(0, 9)}...`,
+          ]);
+        }
+      }
+      if (errorKey) {
+        return {
+          key: errorKey,
+          msg: errorMessage,
+        };
+      }
+
+      return null;
+    },
+    [rpcUrl, networksToRender, t],
+  );
+
+  /**
+   * Validates the ticker symbol by checking it against the nativeCurrency.symbol return
+   * value from chainid.network trusted chain data
+   * Assumes that all strings are non-empty and correctly formatted.
+   *
+   * @param {string} formChainId - The Chain ID currently entered in the form.
+   * @param {string} formTickerSymbol - The ticker/currency symbol currently entered in the form.
+   */
+  const validateTickerSymbol = useCallback(
+    async (formChainId, formTickerSymbol) => {
+      let warningKey;
+      let warningMessage;
+      let safeChainsList;
+      let providerError;
+
+      if (!formChainId || !formTickerSymbol) {
+        return null;
+      }
+
+      try {
+        safeChainsList =
+          (await fetchWithCache('https://chainid.network/chains.json')) || [];
+      } catch (err) {
+        log.warn('Failed to fetch the chainList from chainid.network', err);
+        providerError = err;
+      }
+
+      if (providerError) {
+        warningKey = 'failedToFetchTickerSymbolData';
+        warningMessage = t('failedToFetchTickerSymbolData');
+      } else {
+        const matchedChain = safeChainsList?.find(
+          (chain) => chain.chainId.toString() === formChainId,
+        );
+
+        if (matchedChain === undefined) {
+          warningKey = 'failedToFetchTickerSymbolData';
+          warningMessage = t('failedToFetchTickerSymbolData');
+        } else {
+          const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
+          if (returnedTickerSymbol !== formTickerSymbol) {
+            warningKey = 'chainListReturnedDifferentTickerSymbol';
+            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
+              formChainId,
+              returnedTickerSymbol,
+            ]);
+          }
+        }
+      }
+
+      if (warningKey) {
+        return {
+          key: warningKey,
+          msg: warningMessage,
+        };
+      }
+
+      return null;
+    },
+    [t],
+  );
+
+  const validateRPCUrl = useCallback(
+    (url) => {
+      const isValidUrl = validUrl.isWebUri(url);
+      const [
+        {
+          rpcUrl: matchingRPCUrl = null,
+          label: matchingRPCLabel,
+          labelKey: matchingRPCLabelKey,
+        } = {},
+      ] = networksToRender.filter((e) => e.rpcUrl === url);
+      const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
+
+      if (!isValidUrl && url !== '') {
+        let errorKey;
+        let errorMessage;
+        if (isValidWhenAppended(url)) {
+          errorKey = 'urlErrorMsg';
+          errorMessage = t('urlErrorMsg');
+        } else {
+          errorKey = 'invalidRPC';
+          errorMessage = t('invalidRPC');
+        }
+
+        return {
+          key: errorKey,
+          msg: errorMessage,
+        };
+      } else if (matchingRPCUrl && matchingRPCUrl !== selectedNetworkRpcUrl) {
+        return {
+          key: 'urlExistsErrorMsg',
+          msg: t('urlExistsErrorMsg', [
+            matchingRPCLabel ?? matchingRPCLabelKey,
+          ]),
+        };
+      }
+      return null;
+    },
+    [selectedNetwork, networksToRender, t],
+  );
+
+  // validation effect
+  const previousRpcUrl = usePrevious(rpcUrl);
+  const previousChainId = usePrevious(chainId);
+  const previousTicker = usePrevious(ticker);
+  const previousBlockExplorerUrl = usePrevious(blockExplorerUrl);
+  useEffect(() => {
+    if (viewOnly) {
+      return;
     }
 
-    // Re-validate the chain id if it could not be found with previous rpc url
-    if (chainId && isValidUrl && chainIdFetchFailed) {
-      const formChainId = chainId.trim().toLowerCase();
-      const prefixedChainId = prefixChainId(formChainId);
-      validateChainIdOnSubmit(formChainId, prefixedChainId, url);
+    if (
+      previousRpcUrl === rpcUrl &&
+      previousChainId === chainId &&
+      previousTicker === ticker &&
+      previousBlockExplorerUrl === blockExplorerUrl
+    ) {
+      return;
     }
-  };
+    async function validate() {
+      const chainIdError = await validateChainId(chainId);
+      const tickerWarning = await validateTickerSymbol(chainId, ticker);
+      const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
+      const rpcUrlError = validateRPCUrl(rpcUrl);
+      setErrors({
+        ...errors,
+        blockExplorerUrl: blockExplorerError,
+        rpcUrl: rpcUrlError,
+      });
+      setWarnings({
+        ...warnings,
+        chainId: chainIdError,
+        ticker: tickerWarning,
+      });
+    }
+
+    validate();
+  }, [
+    errors,
+    warnings,
+    rpcUrl,
+    chainId,
+    ticker,
+    blockExplorerUrl,
+    viewOnly,
+    label,
+    previousRpcUrl,
+    previousChainId,
+    previousTicker,
+    previousBlockExplorerUrl,
+    validateBlockExplorerURL,
+    validateChainId,
+    validateTickerSymbol,
+    validateRPCUrl,
+  ]);
 
   const onSubmit = async () => {
     setIsSubmitting(true);
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
-
-      if (
-        !(await validateChainIdOnSubmit(formChainId, prefixedChainId, rpcUrl))
-      ) {
-        setIsSubmitting(false);
-        return;
-      }
 
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
@@ -405,7 +500,7 @@ const NetworksForm = ({
             networkName,
             {
               ...rpcPrefs,
-              blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
             },
           ),
         );
@@ -419,6 +514,30 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
+        let rpcUrlOrigin;
+        try {
+          rpcUrlOrigin = new URL(rpcUrl).origin;
+        } catch {
+          // error
+        }
+        trackEvent({
+          event: 'Custom Network Added',
+          category: EVENT.CATEGORIES.NETWORK,
+          referrer: {
+            url: rpcUrlOrigin,
+          },
+          properties: {
+            chain_id: addHexPrefix(chainId.toString(16)),
+            network_name: networkName,
+            network: rpcUrlOrigin,
+            symbol: ticker,
+            block_explorer_url: blockExplorerUrl,
+            source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          },
+          sensitiveProperties: {
+            rpc_url: rpcUrlOrigin,
+          },
+        });
         dispatch(setNewNetworkAdded(networkName));
         history.push(DEFAULT_ROUTE);
       }
@@ -445,15 +564,22 @@ const NetworksForm = ({
         onConfirm: () => {
           resetForm();
           dispatch(setSelectedSettingsRpcUrl(''));
-          history.push(NETWORKS_ROUTE);
         },
       }),
     );
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
+  const chainIdErrorOnFeaturedRpcDuringEdit =
+    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
-    hasErrors() || isSubmitting || stateUnchanged || !rpcUrl || !chainId;
+    hasErrors() ||
+    isSubmitting ||
+    stateUnchanged ||
+    chainIdErrorOnFeaturedRpcDuringEdit ||
+    !rpcUrl ||
+    !chainId ||
+    !ticker;
 
   return (
     <div
@@ -466,9 +592,10 @@ const NetworksForm = ({
         <ActionableMessage
           type="warning"
           message={t('onlyAddTrustedNetworks')}
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
+          className="networks-tab__add-network-form__alert"
         />
       ) : null}
       <div
@@ -481,7 +608,10 @@ const NetworksForm = ({
         <FormField
           autoFocus
           error={errors.networkName?.msg || ''}
-          onChange={setNetworkName}
+          onChange={(value) => {
+            setIsEditing(true);
+            setNetworkName(value);
+          }}
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
@@ -489,18 +619,22 @@ const NetworksForm = ({
         <FormField
           error={errors.rpcUrl?.msg || ''}
           onChange={(value) => {
+            setIsEditing(true);
             setRpcUrl(value);
-            validateUrlRpcUrl(value);
           }}
           titleText={t('rpcUrl')}
-          value={rpcUrl}
+          value={
+            rpcUrl?.includes(`/v3/${infuraProjectId}`)
+              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
+              : rpcUrl
+          }
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          warning={warnings.chainId?.msg || ''}
           onChange={(value) => {
+            setIsEditing(true);
             setChainId(value);
-            validateChainIdOnChange(value);
           }}
           titleText={t('chainId')}
           value={chainId}
@@ -508,23 +642,26 @@ const NetworksForm = ({
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
         />
         <FormField
-          error={errors.ticker?.msg || ''}
-          onChange={setTicker}
+          warning={warnings.ticker?.msg || ''}
+          onChange={(value) => {
+            setIsEditing(true);
+            setTicker(value);
+          }}
           titleText={t('currencySymbol')}
-          titleUnit={t('optionalWithParanthesis')}
           value={ticker}
           disabled={viewOnly}
         />
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
           onChange={(value) => {
+            setIsEditing(true);
             setBlockExplorerUrl(value);
-            validateBlockExplorerURL(value);
           }}
           titleText={t('blockExplorerUrl')}
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
           disabled={viewOnly}
+          autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
         />
       </div>
       <div

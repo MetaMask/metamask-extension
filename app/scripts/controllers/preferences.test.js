@@ -1,6 +1,10 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import {
+  ControllerMessenger,
+  TokenListController,
+} from '@metamask/controllers';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
 
@@ -9,11 +13,12 @@ describe('preferences controller', function () {
   let network;
   let currentChainId;
   let provider;
+  let tokenListController;
   const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
-    currentChainId = MAINNET_CHAIN_ID;
+    currentChainId = CHAIN_IDS.MAINNET;
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
@@ -21,6 +26,16 @@ describe('preferences controller', function () {
     network.setInfuraProjectId('foo');
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
 
     sandbox
       .stub(network, 'getLatestBlock')
@@ -31,14 +46,40 @@ describe('preferences controller', function () {
       .callsFake(() => ({ type: 'mainnet' }));
 
     preferencesController = new PreferencesController({
+      initLangCode: 'en_US',
       migrateAddressBookState,
       network,
       provider,
+      tokenListController,
     });
   });
 
   afterEach(function () {
     sinon.restore();
+  });
+
+  describe('useBlockie', function () {
+    it('defaults useBlockie to false', function () {
+      assert.equal(preferencesController.store.getState().useBlockie, false);
+    });
+
+    it('setUseBlockie to true', function () {
+      preferencesController.setUseBlockie(true);
+      assert.equal(preferencesController.store.getState().useBlockie, true);
+    });
+  });
+
+  describe('setCurrentLocale', function () {
+    it('checks the default currentLocale', function () {
+      const { currentLocale } = preferencesController.store.getState();
+      assert.equal(currentLocale, 'en_US');
+    });
+
+    it('sets current locale in preferences controller', function () {
+      preferencesController.setCurrentLocale('ja');
+      const { currentLocale } = preferencesController.store.getState();
+      assert.equal(currentLocale, 'ja');
+    });
   });
 
   describe('setAddresses', function () {
@@ -264,6 +305,80 @@ describe('preferences controller', function () {
         preferencesController.store.getState().useTokenDetection,
         true,
       );
+    });
+  });
+
+  describe('setUseCollectibleDetection', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCollectibleDetection, false);
+    });
+
+    it('should set the useCollectibleDetection property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCollectibleDetection,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      preferencesController.setUseCollectibleDetection(true);
+      assert.equal(
+        preferencesController.store.getState().useCollectibleDetection,
+        true,
+      );
+    });
+  });
+
+  describe('setOpenSeaEnabled', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.openSeaEnabled, false);
+    });
+
+    it('should set the openSeaEnabled property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().openSeaEnabled,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      assert.equal(preferencesController.store.getState().openSeaEnabled, true);
+    });
+  });
+
+  describe('setAdvancedGasFee', function () {
+    it('should default to null', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+    });
+
+    it('should set the setAdvancedGasFee property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+      preferencesController.setAdvancedGasFee({
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      });
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '2',
+      );
+    });
+  });
+
+  describe('setTheme', function () {
+    it('should default to value "light"', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'light');
+    });
+
+    it('should set the setTheme property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'light');
+      preferencesController.setTheme('dark');
+      assert.equal(preferencesController.store.getState().theme, 'dark');
     });
   });
 });

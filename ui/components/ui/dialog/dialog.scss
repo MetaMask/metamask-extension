@@ -2,25 +2,24 @@
   @include H7;
 
   padding: 1rem;
-  border: 1px solid $black;
   box-sizing: border-box;
   border-radius: 8px;
 
   &--message {
-    border-color: $Blue-200;
-    color: $Blue-600;
-    background-color: $Blue-000;
+    color: var(--color-text-default);
+    background-color: var(--color-info-muted);
+    border: 1px solid var(--color-info-default);
   }
 
   &--error {
-    border-color: $Red-300;
-    color: $Red-600;
-    background-color: $Red-000;
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-error-muted);
+    border: 1px solid var(--color-error-default);
   }
 
   &--warning {
-    border-color: $Orange-300;
-    color: $Orange-600;
-    background-color: $Orange-000;
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-default);
   }
 }

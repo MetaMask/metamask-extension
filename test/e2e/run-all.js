@@ -5,6 +5,14 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 
+const getTestPathsForTestDir = async (testDir) => {
+  const testFilenames = await fs.readdir(testDir);
+  const testPaths = testFilenames.map((filename) =>
+    path.join(testDir, filename),
+  );
+  return testPaths;
+};
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -17,6 +25,10 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('snaps', {
+            description: `run snaps e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -26,16 +38,23 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries } = argv;
+  const { browser, retries, snaps } = argv;
 
-  const testDir = path.join(__dirname, 'tests');
-  const metamaskUiTest = path.join(__dirname, 'metamask-ui.spec.js');
+  let testDir = path.join(__dirname, 'tests');
 
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
-  const allE2eTestPaths = [...testPaths, metamaskUiTest];
+  if (snaps) {
+    testDir = path.join(__dirname, 'snaps');
+  }
+
+  let testPaths = await getTestPathsForTestDir(testDir);
+
+  if (!snaps) {
+    testPaths = [
+      ...testPaths,
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
+  }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
@@ -47,7 +66,7 @@ async function main() {
     args.push('--retries', retries);
   }
 
-  for (const testPath of allE2eTestPaths) {
+  for (const testPath of testPaths) {
     await runInShell('node', [...args, testPath]);
   }
 }

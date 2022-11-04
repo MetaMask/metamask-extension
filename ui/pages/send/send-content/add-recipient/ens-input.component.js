@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -43,7 +44,7 @@ export default class EnsInput extends Component {
           !isBurnAddress(input) &&
           isValidHexAddress(input, { mixedCaseUseChecksum: true })
         ) {
-          this.props.onPaste(input);
+          this.props.onPaste(addHexPrefix(input));
         }
       });
     }
@@ -74,7 +75,7 @@ export default class EnsInput extends Component {
         !isBurnAddress(input) &&
         isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        onValidAddressTyped(input);
+        onValidAddressTyped(addHexPrefix(input));
       }
     }
 
@@ -96,10 +97,16 @@ export default class EnsInput extends Component {
             'ens-input__wrapper--valid': hasSelectedAddress,
           })}
         >
-          <div
-            className={classnames('ens-input__wrapper__status-icon', {
-              'ens-input__wrapper__status-icon--valid': hasSelectedAddress,
+          <i
+            className={classnames('ens-input__wrapper__status-icon', 'fa', {
+              'fa-check-circle': hasSelectedAddress,
+              'fa-search': !hasSelectedAddress,
             })}
+            style={{
+              color: hasSelectedAddress
+                ? 'var(--color-success-default)'
+                : 'var(--color-icon-muted)',
+            }}
           />
           {hasSelectedAddress ? (
             <>
@@ -113,10 +120,18 @@ export default class EnsInput extends Component {
                   </div>
                 )}
               </div>
-              <div
-                className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
+              <button
                 onClick={this.props.onReset}
-              />
+                className="ens-input__wrapper__action-icon-button"
+              >
+                <i
+                  className="fa fa-times"
+                  style={{
+                    color: 'var(--color-icon-default)',
+                  }}
+                  title={t('close')}
+                />
+              </button>
             </>
           ) : (
             <>
@@ -133,10 +148,7 @@ export default class EnsInput extends Component {
                 data-testid="ens-input"
               />
               <button
-                className={classnames('ens-input__wrapper__action-icon', {
-                  'ens-input__wrapper__action-icon--erase': userInput,
-                  'ens-input__wrapper__action-icon--qrcode': !userInput,
-                })}
+                className="ens-input__wrapper__action-icon-button"
                 onClick={() => {
                   if (userInput) {
                     this.props.onReset();
@@ -144,7 +156,20 @@ export default class EnsInput extends Component {
                     this.props.scanQrCode();
                   }
                 }}
-              />
+              >
+                <i
+                  className={classnames('fa', {
+                    'fa-times': userInput,
+                    'fa-qrcode': !userInput,
+                  })}
+                  title={t(userInput ? 'close' : 'scanQrCode')}
+                  style={{
+                    color: userInput
+                      ? 'var(--color-icon-default)'
+                      : 'var(--color-primary-default)',
+                  }}
+                />
+              </button>
             </>
           )}
         </div>

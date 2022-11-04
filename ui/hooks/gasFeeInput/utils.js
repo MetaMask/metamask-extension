@@ -1,4 +1,7 @@
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 
 export function getGasFeeEstimate(
   field,
@@ -14,4 +17,5 @@ export function getGasFeeEstimate(
 }
 
 export const feeParamsAreCustom = (transaction) =>
-  !transaction?.userFeeLevel || transaction?.userFeeLevel === 'custom';
+  !transaction?.userFeeLevel ||
+  transaction?.userFeeLevel === CUSTOM_GAS_ESTIMATE;

@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Отхвърляне"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканиране на QR код"
+  },
   "about": {
     "message": "Информация"
-  },
-  "aboutSettingsDescription": {
-    "message": "Версия, център за поддръжка и информация за контакт"
-  },
-  "acceleratingATransaction": {
-    "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
   },
   "accessingYourCamera": {
     "message": "Достъп до вашата камера ..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
-  "addToAddressBook": {
-    "message": "Добавяне към адресната книга"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр. Джон Д."
-  },
   "addToken": {
     "message": "Добавяне на жетон"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Разширени опции"
-  },
-  "advancedSettingsDescription": {
-    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC"
   },
   "amount": {
     "message": "Сума"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Одобри"
@@ -131,17 +130,14 @@
     "message": "Преглед на акаунт на $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Използване на Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
   },
   "buyWithWyre": {
-    "message": "Купете ETH с Wyre"
+    "message": "Купете $1 с Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата MetaMask сметка."
+    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате $1 право във вашата MetaMask сметка."
   },
   "bytes": {
     "message": "Байта"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToKovan": {
-    "message": "Свързване с тестовата мрежа на Kovan"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Свързване с тестова мрежа на Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Свързване с тестова мрежа Ropsten"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Копирано!"
-  },
-  "copiedTransactionId": {
-    "message": "Копиран идентификационен номер на транзакцията"
   },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Настоящ език"
   },
-  "customGas": {
-    "message": "Персонализирайте газ"
-  },
-  "customGasSubTitle": {
-    "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
+  "custom": {
+    "message": "Разширени"
   },
   "customToken": {
     "message": "Персонализиран маркер"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
-  },
-  "defaultNetwork": {
-    "message": "Мрежата по подразбиране за Ether транзакции е Mainnet."
   },
   "delete": {
     "message": "Изтриване"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
   },
-  "depositEther": {
-    "message": "Депозирайте етер"
-  },
   "details": {
     "message": "Подробности"
-  },
-  "directDepositEther": {
-    "message": "Директно депозиране на етер"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ако вече имате някакъв етер, най-бързият начин да получите етер в новия си портфейл е чрез директен депозит."
   },
   "done": {
     "message": "Готово"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
   },
-  "enterAnAlias": {
-    "message": "Въведете псевдоним"
-  },
   "enterPassword": {
     "message": "Въведете парола"
   },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизителни времена за обработка"
   },
   "ethereumPublicAddress": {
     "message": "Публичен адрес за етереум"
@@ -413,9 +376,6 @@
   },
   "general": {
     "message": "Общ"
-  },
-  "generalSettingsDescription": {
-    "message": "Конвертиране на валута, първична валута, език, блокчейн идентичност"
   },
   "getEther": {
     "message": "Вземете етер"
@@ -518,10 +478,10 @@
   "knownAddressRecipient": {
     "message": "Известен адрес на договора."
   },
-  "kovan": {
-    "message": "Тестова мрежа на Кован"
-  },
   "learnMore": {
+    "message": "Научете повече"
+  },
+  "learnMoreUpperCase": {
     "message": "Научете повече"
   },
   "ledgerAccountRestriction": {
@@ -578,9 +538,6 @@
   "myAccounts": {
     "message": "Моите акаунти"
   },
-  "needEtherInWallet": {
-    "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
-  },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"
@@ -590,9 +547,6 @@
   },
   "networkName": {
     "message": "Име на мрежата"
-  },
-  "networkSettingsDescription": {
-    "message": "Добавете и редактирайте персонализирани RPC мрежи"
   },
   "networks": {
     "message": "Mрежи"
@@ -621,12 +575,6 @@
   },
   "newToMetaMask": {
     "message": "Нови ли сте в MetaMask?"
-  },
-  "newTotal": {
-    "message": "Ново общо"
-  },
-  "newTransactionFee": {
-    "message": "Нова такса за транзакция"
   },
   "next": {
     "message": "Напред"
@@ -774,9 +722,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "restoreAccountWithSeed": {
-    "message": "Възстановете акаунта си с фраза зародиш"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -788,12 +733,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "НЕ споделяйте тази фраза с никого!"
-  },
-  "rinkeby": {
-    "message": "Тестова мрежа на Rinkeby"
-  },
-  "ropsten": {
-    "message": "Тестова мрежа Ropsten"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"
@@ -828,23 +767,11 @@
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
-  "securitySettingsDescription": {
-    "message": "Настройки за поверителност и фраза зародиш за портфейла"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Отделете всяка дума с един интервал"
-  },
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"
   },
-  "selectAHigherGasFee": {
-    "message": "\nИзберете по-висока такса за газ, за ​​да ускорите обработката на Вашата транзакция.*"
-  },
   "selectAnAccount": {
     "message": "Изберете акаунт"
-  },
-  "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
   },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
@@ -861,14 +788,8 @@
   "send": {
     "message": "Изпращане"
   },
-  "sendAmount": {
-    "message": "Изпратете сумата"
-  },
   "sendTokens": {
     "message": "Изпращане на жетони"
-  },
-  "separateEachWord": {
-    "message": "Отделете всяка дума с интервал"
   },
   "settings": {
     "message": "Настройки"
@@ -908,9 +829,6 @@
   },
   "signed": {
     "message": "Подписан"
-  },
-  "slow": {
-    "message": "Бавно"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."

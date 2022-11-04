@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addDecorator, addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs } from '@storybook/addon-knobs';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
@@ -12,15 +11,32 @@ import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { _setBackgroundConnection } from '../ui/store/actions';
+import { _setBackgroundConnection } from '../ui/store/action-queue';
+import MetaMaskStorybookTheme from './metamask-storybook-theme';
+import addons from '@storybook/addons';
 
 addParameters({
   backgrounds: {
-    default: 'light',
+    default: 'default',
     values: [
-      { name: 'light', value: '#FFFFFF' },
-      { name: 'dark', value: '#333333' },
+      { name: 'default', value: 'var(--color-background-default)' },
+      { name: 'alternative', value: 'var(--color-background-alternative)' },
     ],
+  },
+  docs: {
+    theme: MetaMaskStorybookTheme,
+  },
+  options: {
+    storySort: {
+      order: [
+        'Getting Started',
+        'Foundations',
+        ['Color', 'Shadow', 'Breakpoints'],
+        'Components',
+        ['UI', 'App', 'Component Library'],
+        'Pages',
+      ],
+    },
   },
 });
 
@@ -58,8 +74,29 @@ const proxiedBackground = new Proxy(
 _setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
+  const [isDark, setDark] = useState(false);
+  const channel = addons.getChannel();
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
+
+  useEffect(() => {
+    channel.on('DARK_MODE', setDark);
+    return () => channel.off('DARK_MODE', setDark);
+  }, [channel, setDark]);
+
+  useEffect(() => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+
+    if (!currentTheme)
+      document.documentElement.setAttribute('data-theme', 'light');
+
+    if (currentTheme === 'light' && isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (currentTheme === 'dark' && !isDark) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }, [isDark]);
+
   return (
     <Provider store={store}>
       <Router history={history}>
@@ -77,5 +114,4 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-addDecorator(withKnobs);
 addDecorator(metamaskDecorator);

@@ -7,12 +7,12 @@ import NetworksList from '.';
 const mockState = {
   metamask: {
     provider: {
-      chainId: '0x4',
+      chainId: '0x5',
       nickname: '',
       rpcPrefs: {},
-      rpcUrl: 'https://rinkeby.infura.io/v3/undefined',
+      rpcUrl: 'https://goerli.infura.io/v3/undefined',
       ticker: 'ETH',
-      type: 'rinkeby',
+      type: 'goerli',
     },
   },
 };
@@ -25,6 +25,7 @@ const renderComponent = (props) => {
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
+  isATestNetwork: true,
 }));
 
 const props = {
@@ -32,6 +33,7 @@ const props = {
   networkIsSelected: false,
   networksToRender: defaultNetworks,
   selectedRpcUrl: 'http://localhost:8545',
+  isATestNetwork: true,
 };
 
 describe('NetworksList Component', () => {
@@ -39,9 +41,7 @@ describe('NetworksList Component', () => {
     const { queryByText } = renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Ropsten Test Network')).toBeInTheDocument();
-    expect(queryByText('Rinkeby Test Network')).toBeInTheDocument();
-    expect(queryByText('Goerli Test Network')).toBeInTheDocument();
-    expect(queryByText('Kovan Test Network')).toBeInTheDocument();
+    expect(queryByText('Goerli test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia test network')).toBeInTheDocument();
   });
 });

@@ -1,9 +1,11 @@
-import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
+  getIsNetworkBusy,
 } from '../ducks/metamask/metamask';
 import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
@@ -27,13 +29,17 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * GasFeeController that it is done requiring new gas estimates. Also checks
  * the returned gas estimate for validity on the current network.
  *
- * @returns {GasFeeEstimates} - GasFeeEstimates object
+ * @returns {GasFeeEstimates} GasFeeEstimates object
  */
 export function useGasFeeEstimates() {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
-  const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
+  const gasFeeEstimates = useSelector(getGasFeeEstimates, isEqual);
+  const estimatedGasFeeTimeBounds = useSelector(
+    getEstimatedGasFeeTimeBounds,
+    shallowEqual,
+  );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const isNetworkBusy = useSelector(getIsNetworkBusy);
   useSafeGasEstimatePolling();
 
   return {
@@ -41,5 +47,6 @@ export function useGasFeeEstimates() {
     gasEstimateType,
     estimatedGasFeeTimeBounds,
     isGasEstimatesLoading,
+    isNetworkBusy,
   };
 }

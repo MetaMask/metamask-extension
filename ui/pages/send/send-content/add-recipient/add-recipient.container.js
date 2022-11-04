@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import {
-  accountsWithSendEtherInfoSelector,
   getAddressBook,
   getAddressBookEntry,
+  getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
 
 import {
@@ -13,6 +13,7 @@ import {
   getIsUsingMyAccountForRecipientSearch,
   getRecipientUserInput,
   getRecipient,
+  addHistoryEntry,
 } from '../../../../ducks/send';
 import {
   getEnsResolution,
@@ -34,9 +35,7 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
-  const ownedAccounts = accountsWithSendEtherInfoSelector(state).sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  const ownedAccounts = getMetaMaskAccountsOrdered(state);
 
   return {
     addressBook,
@@ -47,9 +46,8 @@ function mapStateToProps(state) {
     ensWarning: getEnsWarning(state),
     nonContacts: addressBook.filter(({ name }) => !name),
     ownedAccounts,
-    isUsingMyAccountsForRecipientSearch: getIsUsingMyAccountForRecipientSearch(
-      state,
-    ),
+    isUsingMyAccountsForRecipientSearch:
+      getIsUsingMyAccountForRecipientSearch(state),
     userInput: getRecipientUserInput(state),
     recipient: getRecipient(state),
   };
@@ -57,6 +55,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    addHistoryEntry: (entry) => dispatch(addHistoryEntry(entry)),
     updateRecipient: ({ address, nickname }) =>
       dispatch(updateRecipient({ address, nickname })),
     updateRecipientUserInput: (newInput) =>

@@ -29,8 +29,8 @@ this.store.updateStructure({
   ...,
   GasFeeController: this.gasFeeController,
   TokenListController: this.tokenListController,
-  ///: BEGIN:ONLY_INCLUDE_IN(beta)
-  PluginController: this.pluginController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SnapController: this.snapController,
   ///: END:ONLY_INCLUDE_IN
 });
 ```

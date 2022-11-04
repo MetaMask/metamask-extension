@@ -3,6 +3,9 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -18,8 +21,6 @@ import {
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
-  getIsInitialized,
-  getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../ducks/metamask/metamask';
 import {
@@ -30,6 +31,9 @@ import {
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import ExperimentalArea from '../../components/app/flask/experimental-area';
+///: END:ONLY_INCLUDE_IN
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -48,8 +52,6 @@ export default function OnboardingFlow() {
   const currentLocation = useLocation();
   const history = useHistory();
   const t = useI18nContext();
-  const isInitialized = useSelector(getIsInitialized);
-  const isUnlocked = useSelector(getIsUnlocked);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
@@ -57,19 +59,8 @@ export default function OnboardingFlow() {
   useEffect(() => {
     if (completedOnboarding && seedPhraseBackedUp) {
       history.push(DEFAULT_ROUTE);
-      return;
     }
-
-    if (isInitialized && !isUnlocked) {
-      history.push(ONBOARDING_UNLOCK_ROUTE);
-    }
-  }, [
-    history,
-    completedOnboarding,
-    isInitialized,
-    isUnlocked,
-    seedPhraseBackedUp,
-  ]);
+  }, [history, completedOnboarding, seedPhraseBackedUp]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
@@ -161,6 +152,21 @@ export default function OnboardingFlow() {
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          }
+          <Route
+            path={ONBOARDING_EXPERIMENTAL_AREA}
+            render={(routeProps) => (
+              <ExperimentalArea
+                {...routeProps}
+                redirectTo={ONBOARDING_WELCOME_ROUTE}
+              />
+            )}
+          />
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
@@ -172,7 +178,7 @@ export default function OnboardingFlow() {
           target="_blank"
         >
           <span>{t('followUsOnTwitter')}</span>
-          <img src="images/twitter-icon.png" />
+          <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
         </Button>
       )}
     </div>

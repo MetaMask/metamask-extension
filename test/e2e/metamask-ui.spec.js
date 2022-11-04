@@ -3,7 +3,12 @@ const path = require('path');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
-const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
+const {
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  veryLargeDelayMs,
+} = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
 const { ensureXServerIsRunning } = require('./x-server');
@@ -94,13 +99,13 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks the "Create New Wallet" option', async function () {
-      await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
+      await driver.clickElement('.btn-secondary');
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
-      await driver.clickElement('.btn-secondary');
+    it('clicks the "Create New Wallet" option', async function () {
+      await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
       await driver.delay(largeDelayMs);
     });
 
@@ -191,19 +196,16 @@ describe('MetaMask', function () {
 
     it('imports Secret Recovery Phrase', async function () {
       const restoreSeedLink = await driver.findClickableElement(
-        '.unlock-page__link--import',
+        '.unlock-page__link',
       );
-      assert.equal(
-        await restoreSeedLink.getText(),
-        'import using Secret Recovery Phrase',
-      );
+      assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement('.import-account__checkbox-container');
-
-      await driver.fill('.import-account__secret-phrase', testSeedPhrase);
-      await driver.delay(regularDelayMs);
+      await driver.pasteIntoField(
+        '[data-testid="import-srp__srp-word-0"]',
+        testSeedPhrase,
+      );
 
       await driver.fill('#password', 'correct horse battery staple');
       await driver.fill('#confirm-password', 'correct horse battery staple');
@@ -217,7 +219,7 @@ describe('MetaMask', function () {
     it('balance renders', async function () {
       await driver.waitForSelector({
         css: '[data-testid="wallet-balance"] .list-item__heading',
-        text: '100 ETH',
+        text: '1000',
       });
       await driver.delay(regularDelayMs);
     });
@@ -267,16 +269,17 @@ describe('MetaMask', function () {
       popup = windowHandles[2];
       await driver.switchToWindow(popup);
       await driver.delay(regularDelayMs);
-      await driver.clickElement({ text: 'Edit', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Edit', tag: 'button' });
 
       const inputs = await driver.findElements('input[type="number"]');
       const gasLimitInput = inputs[0];
       const gasPriceInput = inputs[1];
       await gasLimitInput.fill('4700000');
       await gasPriceInput.fill('20');
-      await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
-      await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
+      await driver.delay(veryLargeDelayMs);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
+      await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
       await driver.delay(regularDelayMs);
 
@@ -304,7 +307,7 @@ describe('MetaMask', function () {
 
     it('picks the newly created Test token', async function () {
       await driver.clickElement({
-        text: 'Custom Token',
+        text: 'Custom token',
         tag: 'button',
       });
       await driver.delay(regularDelayMs);
@@ -312,10 +315,10 @@ describe('MetaMask', function () {
       await driver.fill('#custom-address', tokenAddress);
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Add Custom Token', tag: 'button' });
+      await driver.clickElement({ text: 'Add custom token', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -345,18 +348,19 @@ describe('MetaMask', function () {
       // Continue to next screen
       await driver.delay(largeDelayMs);
       await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(regularDelayMs);
+      await driver.delay(largeDelayMs);
     });
 
     it('displays the token transfer data', async function () {
-      await driver.clickElement({ text: 'Data', tag: 'button' });
+      await driver.delay(largeDelayMs);
+      await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
       const functionType = await driver.findElement(
         '.confirm-page-container-content__function-type',
       );
       const functionTypeText = await functionType.getText();
-      assert.equal(functionTypeText, 'Transfer');
+      assert(functionTypeText.match('Transfer'));
 
       const tokenAmount = await driver.findElement(
         '.confirm-page-container-summary__title-text',
@@ -388,8 +392,9 @@ describe('MetaMask', function () {
       const gasPriceInput = inputs[1];
       await gasLimitInput.fill('100000');
       await gasPriceInput.fill('100');
-      await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.delay(veryLargeDelayMs);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
     });
 
     it('submits the transaction', async function () {
@@ -400,8 +405,7 @@ describe('MetaMask', function () {
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector(
         {
-          css:
-            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+          css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
           text: '-1 TST',
         },
         { timeout: 10000 },
@@ -451,20 +455,22 @@ describe('MetaMask', function () {
     });
 
     it('customizes gas', async function () {
+      await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Edit', tag: 'button' });
-      await driver.delay(largeDelayMs);
+      await driver.delay(veryLargeDelayMs);
       await driver.clickElement(
         { text: 'Edit suggested gas fee', tag: 'button' },
         10000,
       );
-      await driver.delay(1000);
+      await driver.delay(veryLargeDelayMs);
       const inputs = await driver.findElements('input[type="number"]');
       const gasLimitInput = inputs[0];
       const gasPriceInput = inputs[1];
       await gasLimitInput.fill('60000');
       await gasPriceInput.fill('10');
-      await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.delay(veryLargeDelayMs);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
       await driver.findElement({ tag: 'span', text: '0.0006' });
     });
 
@@ -481,8 +487,7 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
 
@@ -538,8 +543,7 @@ describe('MetaMask', function () {
 
       await driver.waitForSelector({
         // Selects only the very first transaction list item immediately following the 'Pending' header
-        css:
-          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
         text: 'Approve TST spend limit',
       });
 
@@ -548,11 +552,10 @@ describe('MetaMask', function () {
     });
 
     it('displays the token approval data', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
+      await driver.clickElement({
+        text: 'View full transaction details',
+        css: '.confirm-approve-content__small-blue-text',
+      });
       const functionType = await driver.findElement(
         '.confirm-approve-content__data .confirm-approve-content__small-text',
       );
@@ -588,9 +591,10 @@ describe('MetaMask', function () {
 
       await gasLimitInput.fill('60001');
 
-      await driver.delay(1000);
+      await driver.delay(veryLargeDelayMs);
 
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
@@ -615,6 +619,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
 
       // wait for permission modal to be removed from DOM.
       await permissionModal.waitForElementState('hidden');
@@ -634,8 +639,7 @@ describe('MetaMask', function () {
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
         // Select only the heading of the first entry in the transaction list.
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Approve TST spend limit',
       });
     });
@@ -687,14 +691,12 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Send TST',
       });
 
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
@@ -731,8 +733,7 @@ describe('MetaMask', function () {
 
       await driver.waitForSelector({
         // Selects only the very first transaction list item immediately following the 'Pending' header
-        css:
-          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
         text: 'Approve TST spend limit',
       });
 
@@ -741,11 +742,10 @@ describe('MetaMask', function () {
     });
 
     it('shows the correct recipient', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
+      await driver.clickElement({
+        text: 'View full transaction details',
+        css: '.confirm-approve-content__small-blue-text',
+      });
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
       );
@@ -754,15 +754,14 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      await driver.delay(1000);
+      await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Approve TST spend limit',
       });
     });

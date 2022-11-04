@@ -5,6 +5,723 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fix issue where domain names were not always beign rendered correctly in the connected sites list ([#16074](https://github.com/MetaMask/metamask-extension/pull/16074))
+
+## [10.21.1]
+### Changed
+- Improve rate limiting for metric events ([#16308](https://github.com/MetaMask/metamask-extension/pull/16308))
+
+## [10.21.0]
+### Added
+- Add functionality for buying native currency and tokens on Optimism and Arbitrum, using Transak ([#16031](https://github.com/MetaMask/metamask-extension/pull/16031))
+- Add functionality for buying tokens with Wyre ([#15992](https://github.com/MetaMask/metamask-extension/pull/15992))
+- Add functionality for buying tokens with Moonpay ([#15924](https://github.com/MetaMask/metamask-extension/pull/15924))
+- Add functionality for buying tokens with Coinbase Pay and Transak ([#15551](https://github.com/MetaMask/metamask-extension/pull/15551))
+- Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH_CN ([#15411](https://github.com/MetaMask/metamask-extension/pull/15411))
+- Add Hardware wallet Buy and Tutorial buttons and update copies ([#14738](https://github.com/MetaMask/metamask-extension/pull/14738))
+- [FLASK] Add support for blocking Snaps by source shasum ([#15830](https://github.com/MetaMask/metamask-extension/pull/15830))
+- [FLASK] Add transaction insights via Snaps ([#15814](https://github.com/MetaMask/metamask-extension/pull/15814))
+
+### Changed
+- Dark Mode: elevate the Theme functionality from Experimental to General Settings ([#15865](https://github.com/MetaMask/metamask-extension/pull/15865))
+- Update Arbitrum symbol from `AETH` to `ETH` ([#15747](https://github.com/MetaMask/metamask-extension/pull/15747))
+- Update warning dialog copy on SetApprovalForAll Confirmation page ([#15744](https://github.com/MetaMask/metamask-extension/pull/15744))
+- Update header display on NFT Approval and SetApprovalForAll Confirmation pages ([#15727](https://github.com/MetaMask/metamask-extension/pull/15727))
+- Bump `@metamask/contract-metadata` from `1.35.0` to `1.36.0` ([#15597](https://github.com/MetaMask/metamask-extension/pull/15597))
+  - Add tokens: ZKP, GTON, PRVG, XCHF, XHT, OGV, veOFV, wOUSD and SUSHI
+  - Fix SVG icons for sETH and sUSD tokens
+  - Add the top NFT contracts on Opensea
+- Enable Add Popular Networks by default for all users ([#16172](https://github.com/MetaMask/metamask-extension/pull/16172))
+- Update `@metamask/controllers` to v31.2.0 ([#16033](https://github.com/MetaMask/metamask-extension/pull/16033))
+- Swaps: replace Rinkeby with Goerli for performing swaps on a testnet ([#15781](https://github.com/MetaMask/metamask-extension/pull/15781))
+- Swaps: only render tooltip component if swap network is disabled ([#15733](https://github.com/MetaMask/metamask-extension/pull/15733))
+- Swaps: use `gasEstimateWithRefund` instead of `gasEstimate` for more precise estimations ([#15968](https://github.com/MetaMask/metamask-extension/pull/15968))
+- Swaps: improve Build Quote page ([#15758](https://github.com/MetaMask/metamask-extension/pull/15758))
+  - Preserve search query for the `Swap from` and `Swap to` form fields
+  - Update placeholder text on `Swap to` and `Swap from` search fields
+  - Update copy on slippage tolerance tooltip
+- [FLASK] `Add snap_getBip32PublicKey` RPC method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- **[FLASK] BREAKING:** Remove deprecated snap_getBip44Entropy_* method ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+- [FLASK] Miscellaneous fixes to the Snaps platform ([#15889](https://github.com/MetaMask/metamask-extension/pull/15889))
+
+### Fixed
+- Fix double account creation when using keyboard controls on New Account page ([#15077](https://github.com/MetaMask/metamask-extension/pull/15077))
+- Fix error message getting cut when introducing wrong private key format on Import Account page ([#15940](https://github.com/MetaMask/metamask-extension/pull/15940))
+- Fix edit button not being displayed when sending tx with hex data to a contract on Confirm tx page ([#15812](https://github.com/MetaMask/metamask-extension/pull/15812))
+- Fix incorrect balance asset on Encrypt and Decrypt Request pages ([#15885](https://github.com/MetaMask/metamask-extension/pull/15885))
+- Fix spelling errors and improve grammar for German translation ([#15592](https://github.com/MetaMask/metamask-extension/pull/15592))
+- Fix typos for French translation ([#15735](https://github.com/MetaMask/metamask-extension/pull/15735))
+- Fix incorrect identicon type for Account, by ensuring Blockies is displayed everywhere when enabled instead of Jazzicon ([#15768](https://github.com/MetaMask/metamask-extension/pull/15768))
+- Fix query verification for signatures, by ensuring we skip searching 4byte directory if we don't have a full 4 bytes of data ([#15473](https://github.com/MetaMask/metamask-extension/pull/15473))
+- Fix address resolution to Account name, when editing a tx instead of displaying the hex address ([#15873](https://github.com/MetaMask/metamask-extension/pull/15873))
+- Fix "Get ether from faucet" message, by including the end of the sentence and a full stop ([#15875](https://github.com/MetaMask/metamask-extension/pull/15875))
+- Fix font weight of the `<b>` element, by restoring the `b` style ([#15784](https://github.com/MetaMask/metamask-extension/pull/15784))
+- Fix ETH badge being displayed to networks where ETH is not the primary currency ([#16102](https://github.com/MetaMask/metamask-extension/pull/16102))
+- Fix overlapping Portfolio tooltip with Network popup, when a custom network is added ([#16090](https://github.com/MetaMask/metamask-extension/pull/16090))
+- Fix typo in French translation for "removeAccount" ([#16095](https://github.com/MetaMask/metamask-extension/pull/16095))
+- Fix What's New notification not displayed to users who created a new wallet ([#16042](https://github.com/MetaMask/metamask-extension/pull/16042))
+- [FLASK] Fix an issue with installing snaps that request the `eth_accounts` permission ([#16161](https://github.com/MetaMask/metamask-extension/pull/16161))
+
+## [10.20.0]
+### Changed
+- Deprecate Rinkeby, Ropsten and Kovan test networks and define Goerli as the default network in test mode ([#15989](https://github.com/MetaMask/metamask-extension/pull/15989))
+
+### Fixed
+- [FLASK] Fix crash when uninstalling snap ([#15799](https://github.com/MetaMask/metamask-extension/pull/15799))
+- [FLASK] Fix crash with certain permissions on the snap settings page ([#15797](https://github.com/MetaMask/metamask-extension/pull/15797))
+- [FLASK] Fix an issue with installing and updating snaps with 0 permissions ([#15796](https://github.com/MetaMask/metamask-extension/pull/15796))
+
+## [10.19.0]
+### Added
+- Add ENS wildcard and secure offchain resolution (ENSIP-10 & EIP3668) ([#14675](https://github.com/MetaMask/metamask-extension/pull/14675))
+- Add "What's New" notification about the Merge ([#15846](https://github.com/MetaMask/metamask-extension/pull/15846))
+- Add "What's New" notification about 3box deprecation ([#15763](https://github.com/MetaMask/metamask-extension/pull/15763))
+- Add "What's New" notification for Add Popular Networks feature ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add "What's New" notification for Token Detection feature ([#15807](https://github.com/MetaMask/metamask-extension/pull/15807))
+- Add Warning for Rinkeby, Ropsten and Kovan test networks deprecation ([#15725](https://github.com/MetaMask/metamask-extension/pull/15725))
+- Add Network Info popup when changing selected Network ([#13319](https://github.com/MetaMask/metamask-extension/pull/13319))
+- Add Goerli, BSC, Optimism, Polygon, Avalance, Fantom and Arbitrum networks to query balances using BalanceChecker ([#13846]
+- Add Token detection V2 ([#15138](https://github.com/MetaMask/metamask-extension/pull/15138))
+- Add Backup and Restore State functionalities for 3box replacement ([#15243](https://github.com/MetaMask/metamask-extension/pull/15243))(https://github.com/MetaMask/metamask-extension/pull/13846))
+- Add a Warning on the Confirmation screen, when user is performing a SetApprovalForAll transaction ([#15512](https://github.com/MetaMask/metamask-extension/pull/15512))
+- Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
+- Add Italian translation for "Forgot password" message ([#15477](https://github.com/MetaMask/metamask-extension/pull/15477))
+- Add link to Metalabs dapp into MetaMask home page ([#15407](https://github.com/MetaMask/metamask-extension/pull/15407))
+- Add Sepolia as a default test network ([#15787](https://github.com/MetaMask/metamask-extension/pull/15787))
+- Swaps: on the STX status page ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
+  - Add a link to the Swap tx
+  - Add a link for "Create a new swap"
+- Swaps: add a tx details view for cancelled Swaps on the Activity tab ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
+- [FLASK] Add snap update metrics ([#15206](https://github.com/MetaMask/metamask-extension/pull/15206))
+- [FLASK] Add `snap_getBip44Entropy` RPC method and deprecate `snap_getBip44Entropy_*` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
+- [FLASK] Add `snap_getBip32Entropy` JSON-RPC method ([#15619](https://github.com/MetaMask/metamask-extension/pull/15619))
+- [FLASK] Add DApp triggered Snap updates ([#15143](https://github.com/MetaMask/metamask-extension/pull/15143))
+
+### Changed
+- Update Confirmation screen styling by adding a top margin and moving Site Icon next to the site URL ([#15136](https://github.com/MetaMask/metamask-extension/pull/15136))
+- Remove 'ADD_POPULAR_NETWORKS' feature flag as the feature is enabled by default ([#15229](https://github.com/MetaMask/metamask-extension/pull/15229))
+- Remove dark mode and transaction insights from the "What's New" announcements ([#15279](https://github.com/MetaMask/metamask-extension/pull/15279))
+- Update design tokens package and consolidate shadow values with new tokens ([#15264](https://github.com/MetaMask/metamask-extension/pull/15264))
+- Update Zendesk ticket request URLs for a facilitating the bug reporting process ([#15458](https://github.com/MetaMask/metamask-extension/pull/15458))
+- Update Customize Nonce 'Learn More' link pointing to the correct Zendesk article ([#15658](https://github.com/MetaMask/metamask-extension/pull/15658))
+- Update Avalanche RPC endpoint to point Infura, as it is now supported ([#15720](https://github.com/MetaMask/metamask-extension/pull/15720))
+- Update the main text on SetApprovalForAll confirmation screen ([#15724](https://github.com/MetaMask/metamask-extension/pull/15724))
+- Updated origin pill component to match the new design for Permissions and Switching Networks screens ([#15603](https://github.com/MetaMask/metamask-extension/pull/15603))
+- Set "View full transaction details" as default option on SetApprovalForAll Confirmation screen ([#15726](https://github.com/MetaMask/metamask-extension/pull/15726))
+- Update `gridplus-sdk` ([#15711](https://github.com/MetaMask/metamask-extension/pull/15711))
+  - `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.11.0...v0.12.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.11.0...v0.12.0)
+  - `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v2.2.2...v2.2.7](https://github.com/GridPlus/gridplus-sdk/compare/v2.2.2...v2.2.7)
+- Update title case to sentence case with some exceptions (names, companies, special terms and page navigation) ([#15285](https://github.com/MetaMask/metamask-extension/pull/15285))
+- Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
+- Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
+- Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
+- Swaps: only check if a user has enough balance before calling STX. If "Not enough funds" error is thrown, show a notification, but keep STX active ([#15218](https://github.com/MetaMask/metamask-extension/pull/15218))
+- [FLASK] Disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
+
+### Fixed
+- Fix Amount set to 0 on Send page when editing an ERC20 tx by preserving its value ([#15275](https://github.com/MetaMask/metamask-extension/pull/15275))
+- Fix limited scroll area in the Account Menu by adjusting the height of Account Menu nav items, expanding scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
+- Fix Actionable Message overlapping tabs on Confirm Transaction view ([#15272](https://github.com/MetaMask/metamask-extension/pull/15272))
+- Fix Contacts breadcrumb when viewing Contact Details ([#15663](https://github.com/MetaMask/metamask-extension/pull/15663))
+- Fix Blockies identicon alignment in General Settings ([#15652](https://github.com/MetaMask/metamask-extension/pull/15652))
+- Fix extra space and period in Custom Token warning text ([#15650](https://github.com/MetaMask/metamask-extension/pull/15650))
+- Fix Signature Request styles: overlapping text when using hardware wallet and icon shrinking with long URLs ([#15621](https://github.com/MetaMask/metamask-extension/pull/15621))
+- Fix for randomly resets of updated values in network edit form ([#14370](https://github.com/MetaMask/metamask-extension/pull/14370))
+- Fix Connected site popup styling, by aligning the rows, shrinking the site icon with long URLs and preventing size change on Disconnect button hover ([#15409](https://github.com/MetaMask/metamask-extension/pull/15409))
+- Fix Blockies icon on Recipient Details, by ensuring it is used when the option is enabled ([#15662](https://github.com/MetaMask/metamask-extension/pull/15662))
+- Fix casing in Import Token for Spanish locale ([#15687](https://github.com/MetaMask/metamask-extension/pull/15687))
+- Fix approval warning condition for `setApprovalForAll` so it is not shown when revoking ([#15806](https://github.com/MetaMask/metamask-extension/pull/15806))
+- Fix disabled Sign button on the Sign Message screen unless scrolled to the bottom ([#15788](https://github.com/MetaMask/metamask-extension/pull/15788))
+- Swaps: fix displaying "No tokens available matching" when there are tokens available, by updating the `results` state if `initialResultsState` array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
+- Swaps: fix redirect button to the Activity tab, after performing a Swap and clicking "View in Activity" [(#15620)](https://github.com/MetaMask/metamask-extension/pull/15620))
+- [FLASK] Fix missing snap hook for `getAppKey`, the `getUnlockPromise` hook was missing, breaking some snap examples ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
+- [FLASK] Fix snaps authorship pill truncation, previously the authorship label would not be truncated and offset the UI ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
+- [FLASK] Fix Snaps key management permission copy ([#14849](https://github.com/MetaMask/metamask-extension/pull/14849))
+
+## [10.18.4]
+### Changed
+- Update `eth-lattice-keyring` to v0.10.0 which itself updates `gridplus-sdk` ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+  - `eth-lattice-keyring` changes: ([GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0])(https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
+  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v1.2.3...v2.2.4])(https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.4)
+- Update `eth-lattice-keyring` to v0.11.0 ([#15490](https://github.com/MetaMask/metamask-extension/pull/15490)). See changes [GridPlus/eth-lattice-keyring@v0.10.0...v0.11.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.10.0...v0.11.0)
+- Improve ERC721 Send screen by parsing the `tokenId` and refactor `useAssetDetails` hook to avoid unnecessary network calls ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
+
+### Fixed
+- Fix GDrive incompatibility with the Extension by stop injecting provider on docs.google.com ([#15459](https://github.com/MetaMask/metamask-extension/pull/15459))
+- Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
+- Fix block explorer link on custom networks for the cases when link is invalid or left empty ([#13870](https://github.com/MetaMask/metamask-extension/pull/13870))
+- Fix signature parsing errors re-surfaced due to 4byte function signature directory being down, by removing the directory([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
+- Fix intermitent failure when performing a Send tx in non-EIP-1559 networks (like Optimism) by setting the `gasPrice` ([#15628](https://github.com/MetaMask/metamask-extension/pull/15628))
+
+## [10.18.3]
+### Fixed
+- Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
+
+## [10.18.2]
+### Changed
+- Enhance approval screen title logic ([#15406](https://github.com/MetaMask/metamask-extension/pull/15406))
+
+### Fixed
+- Ensure smart contract interactions are properly represented on the confirm screen ([#15446](https://github.com/MetaMask/metamask-extension/pull/15446))
+- Fix update of max amount in send flow after network switch([#15444](https://github.com/MetaMask/metamask-extension/pull/15444))
+- Fix to ensure user can access full screen editing of network forms from the popup ([#15442](https://github.com/MetaMask/metamask-extension/pull/15442))
+- Possibly fix bug which crashes firefox on startup after upgrade to v10.18.1 ([#15425](https://github.com/MetaMask/metamask-extension/pull/15425))
+- Fix blocking of editing transactions that had a contract address recipient but no tx data ([#15424](https://github.com/MetaMask/metamask-extension/pull/15424))
+- Fix error that could leave the app in a stuck state when quickly moving between the send screen and other screens ([#15420](https://github.com/MetaMask/metamask-extension/pull/15420))
+- Fix send screen for Optimism network ([#15419](https://github.com/MetaMask/metamask-extension/pull/15419))
+- Fix to ensure the correct balance is used when validating send amounts ([#15449](https://github.com/MetaMask/metamask-extension/pull/15449))
+- Fix error that makes app unusable after clicking activity list items for token approval transactions ([#15398](https://github.com/MetaMask/metamask-extension/pull/15398))
+
+## [10.18.1]
+### Changed
+- Move the metrics opt-in screen to the second screen of the onboarding flow ([#15313](https://github.com/MetaMask/metamask-extension/pull/15313))
+
+## [10.18.0]
+### Added
+- Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010))
+- Add warning when performing a Send directly to a token contract([#13588](https://github.com/MetaMask/metamask-extension/pull/13588))
+
+### Changed
+- Update Optimism ChainID from Kovan to Goerli ([#15119](https://github.com/MetaMask/metamask-extension/pull/15119))
+
+### Fixed
+- Fix one of the possible causes for "Sending to a random cached address", by removing the global transaction state from the Send flow ([#14777](https://github.com/MetaMask/metamask-extension/pull/14777))
+- Fix Chinese translation for the message of Importing repeated tokens ([#14994](https://github.com/MetaMask/metamask-extension/pull/14994))
+- Fix Japanese translation for the word Sign ([#15078](https://github.com/MetaMask/metamask-extension/pull/15078))
+- Fix partially the error "Seedphrase is invalid" by disabling Seedphrase Import button after switching the Seedphrase length ([#15139](https://github.com/MetaMask/metamask-extension/pull/15139))
+- Fix Edit Transaction flow by ensuring that changing a tx from a Transfer to a Send resets data and updates tx type ([#15248](https://github.com/MetaMask/metamask-extension/pull/15248))
+- Fix UI on Import Seedphrase page by disabling Import button, if any of the characters of the Seedphrase is in uppercase ([#15186](https://github.com/MetaMask/metamask-extension/pull/15186))
+
+## [10.17.0]
+### Added
+- Add cost estimation for canceling a Smart Transaction on Awaiting Swap page ([#15011](https://github.com/MetaMask/metamask-extension/pull/15011))
+- Add missing subtitles for Secret Recovery Phrase video, including French, Greek, Turkish, Chinese
+ ([#14943](https://github.com/MetaMask/metamask-extension/pull/14943))
+
+### Changed
+- Consolidate all Error Messages in one style component ([#14945](https://github.com/MetaMask/metamask-extension/pull/14945))
+- Improve accessibility by allowing keyboard navigation on Accounts menu ([#14936](https://github.com/MetaMask/metamask-extension/pull/14936))
+- Allow using locally hosted RPCs and Block Explorer Urls when adding an Ethereum Chain programmatically ([#14272](https://github.com/MetaMask/metamask-extension/pull/14272))
+- **[FLASK] BREAKING:** Snaps [are now required](https://github.com/MetaMask/snaps-skunkworks/discussions/590) to export `onRpcRequest` to receive RPC requests ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+  - All existing snaps will have to be updated to conform to this new standard.
+- **[FLASK] BREAKING:** Snap state [is now encrypted](https://github.com/MetaMask/snaps-skunkworks/discussions/590) by default ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+  - Breaks existing installed snaps that use `snap_manageState`. All such Snaps must be reinstalled.
+
+### Fixed
+- Fix German translation for `statusConnected` ([#14997](https://github.com/MetaMask/metamask-extension/pull/14997))
+- Fix Account Search functionality returning inconsistent results ([#14914](https://github.com/MetaMask/metamask-extension/pull/14914))
+- Fix Notifications icon color on the Account menu ([#14941](https://github.com/MetaMask/metamask-extension/pull/14941))
+- Fix broken UI for Network Settings page on small browser sizes ([#14857](https://github.com/MetaMask/metamask-extension/pull/14857))
+- Fix scanner for animated QR codes on dark mode, by removing bottom black line from the QR ([#14900](https://github.com/MetaMask/metamask-extension/pull/14900))
+- Fix displaying wrong balance on the first seconds after switching network ([#14354](https://github.com/MetaMask/metamask-extension/pull/14354))
+- Fix Contact name display on Edit tx page ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
+- Fix infinite loading when transferring non-standard ERC721 (without name and/or symbol) ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
+- **[FLASK]:** Fix multiple bugs related to snap installation ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+
+## [10.16.2]
+### Changed
+- This release restores the changes from v10.16.0, which was temporarily reverted in v10.16.1.
+
+## [10.16.1]
+### Changed
+- This release is a patch for v10.15.2, so all changes in v10.16.0 have been temporarily reverted. They will be restored in a future v16 release. ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
+
+### Fixed
+- Fix bug that could cause an incorrect recipient address after pasting an address, without a 0x prefix, in the send flow while sending a token ([#15064](https://github.com/MetaMask/metamask-extension/pull/15064)
+
+## [10.16.0]
+### Added
+- Add friendly error handling screen, when UI fails to connect to background ([#14461](https://github.com/MetaMask/metamask-extension/pull/14461))
+- Add fiat onboarding for AVAX and MATIC through Wyre ([#14683](https://github.com/MetaMask/metamask-extension/pull/14683))
+- Add Coinbase Pay as fiat onramp option ([#14648](https://github.com/MetaMask/metamask-extension/pull/14648))
+- Add search information for Theme dropdown ([#14476](https://github.com/MetaMask/metamask-extension/pull/14476))
+- **[FLASK]** Add in-app notifications for snaps ([#14605](https://github.com/MetaMask/metamask-extension/pull/14605))
+- **[FLASK]** Add `long-running` snap permission ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
+
+### Changed
+- Update caret icon color on Home Page for darkmode, from black to white ([#14835](https://github.com/MetaMask/metamask-extension/pull/14835))
+- Update the color of the ledger alert text to adhere to design system guidelines ([#14674](https://github.com/MetaMask/metamask-extension/pull/14674))
+- Standardize display of connected site's origin data on all confirmation screens ([#14720](https://github.com/MetaMask/metamask-extension/pull/14720))
+- Improved app loading performance
+  - Improve loading performance by patching the "secp256k1" package ([#14677](https://github.com/MetaMask/metamask-extension/pull/14677))
+  - Patch gridplus-sdk module for improving performance ([#14582](https://github.com/MetaMask/metamask-extension/pull/14582))
+- Swaps: ensure that native currency swap amounts are properly displayed on all networks, avoiding a bug where swap received amounts could equal gas costs ([#14821](https://github.com/MetaMask/metamask-extension/pull/14821))
+- Swaps: reduce the default slippage from 3% to 2% ([#14863](https://github.com/MetaMask/metamask-extension/pull/14863))
+- Swaps: update STX status content page ([#14805](https://github.com/MetaMask/metamask-extension/pull/14805))
+  - Make STX status timer behaviour dependent on API values
+  - Change "Swap complete in < X:XX" to "Swap will complete in < X:XX"
+  - Change "Privately submitting the Swap..." to "Privately submitting your Swap..."
+- Swaps: disable STX if a regular tx is in progress ([#14554](https://github.com/MetaMask/metamask-extension/pull/14554))
+- Swaps: remove gas editing ([#14673](https://github.com/MetaMask/metamask-extension/pull/14673))
+- **[FLASK]** Improve snap install screen ([#14803](https://github.com/MetaMask/metamask-extension/pull/14803), ([#14752](https://github.com/MetaMask/metamask-extension/pull/14752)))
+- **[FLASK] BREAKING** Bump `@metamask/key-tree` used by snaps to `4.0.0` ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
+- **[FLASK]** Stopped showing confirmations for terminated snaps ([#14566](https://github.com/MetaMask/metamask-extension/pull/14566))
+
+### Fixed
+- Fix line-wrapping in Edit Nickname screen by decreasing the padding ([#14842](https://github.com/MetaMask/metamask-extension/pull/14842))
+- Fix 'Currency Symbol' detection in network settings when using Firefox ([#14810](https://github.com/MetaMask/metamask-extension/pull/14810))
+- Fix switching between ETH and USD in the amount field on the send screen ([#13827](https://github.com/MetaMask/metamask-extension/pull/13827))
+- Fix addition of 'add recipient' events to the send flow change logs so that 'contact' and 'recent' recipient are correctly distinguished ([#14771](https://github.com/MetaMask/metamask-extension/pull/14771))
+- Fix lock button sizing for text exceeding button boundaries ([#14335](https://github.com/MetaMask/metamask-extension/pull/14335))
+- Fix all "MetaMask" instances wrongly written as "Metamask"
+  - ([#14851](https://github.com/MetaMask/metamask-extension/pull/14851))
+  - ([#14848](https://github.com/MetaMask/metamask-extension/pull/14848))
+- Fix design break on the Settings navbar for certain locales ([#14012](https://github.com/MetaMask/metamask-extension/pull/14012))
+- Fix missing white spacing for keystone transaction qrcode in darkmode ([#14798](https://github.com/MetaMask/metamask-extension/pull/14798))
+- Fix rare bug that could cause unexpected accounts to be generated from Ledger and connected to MetaMask ([#14799](https://github.com/MetaMask/metamask-extension/pull/14799))
+- Fix bug that could cause the incorrect token to be selected after editing the token via the send edit flow ([#14721](https://github.com/MetaMask/metamask-extension/pull/14721))
+- Fix chain ID field to use the same color pattern as the currency symbol field warning message ([#14627](https://github.com/MetaMask/metamask-extension/pull/14627))
+- Fix currency conversion rate on the Edit tx screen ([#14713](https://github.com/MetaMask/metamask-extension/pull/14713))
+- Fix sign button so it is enabled after scrolling all the way to the bottom on the sign type data confirmation screen ([#14745](https://github.com/MetaMask/metamask-extension/pull/14745))
+- Fix wrong tx type text for `Safe Transaction From` ([#14769](https://github.com/MetaMask/metamask-extension/pull/14769))
+- Fix "Site Suggested" tooltip in `EditGasFeeBtn` to only display the origin of dapp suggested gas fee if the origin is provided ([#14734](https://github.com/MetaMask/metamask-extension/pull/14734))
+- Fix incorrect line breaks on footer buttons from NetworksTab ([#14733](https://github.com/MetaMask/metamask-extension/pull/14733))
+- Fix incorrect currency symbol in the send flow history state logs ([#14726](https://github.com/MetaMask/metamask-extension/pull/14726))
+- Fix batch cancel/reject for signature requests ([#13786](https://github.com/MetaMask/metamask-extension/pull/13786))
+- Fix "Learn more" dialog broken link from Eth Sign ([#14667](https://github.com/MetaMask/metamask-extension/pull/14667))
+- Fix mixed text for Speed up/Cancel information ([#14551](https://github.com/MetaMask/metamask-extension/pull/14551))
+- Fix SRP paste duplication ([#14625](https://github.com/MetaMask/metamask-extension/pull/14625))
+- Fix onboarding functionality so that users of dapps using our onboarding library are redirected to the dapp after completing onboarding ([#14550](https://github.com/MetaMask/metamask-extension/pull/14550))
+- Fix error handling for signature methods so that proper errors are returned to dapps when there is a permissions error ([#14126](https://github.com/MetaMask/metamask-extension/pull/14126))
+- Fix `Speed Up` and `Cancel` button styles from `TransactionListItem` consolidating them with `TransactionListItemDetails` buttons ([#14659](https://github.com/MetaMask/metamask-extension/pull/14659))
+- Fix to prevent display of misleading or malicious contract method names ([#14937](https://github.com/MetaMask/metamask-extension/pull/14937))
+- Swaps: fix wrong colour for the high price impact notification ([#14697](https://github.com/MetaMask/metamask-extension/pull/14697))
+- Swaps: fix edge case when missing top assets ([#14688](https://github.com/MetaMask/metamask-extension/pull/14688))
+- **[FLASK]** Fix issues with the snap startup process and usage of `WebAssembly` ([#14772](https://github.com/MetaMask/metamask-extension/pull/14772))
+- **[FLASK]** Fix issues with snap id encoding ([#14693](https://github.com/MetaMask/metamask-extension/pull/14693))
+- **[FLASK]** Fix multiple smaller bugs with snaps ([#14670](https://github.com/MetaMask/metamask-extension/pull/14670))
+
+## [10.15.1]
+### Fixed
+- Fix Ledger connection failures that can occur after remove all hardware wallet accounts and reconnecting  ([#14993](https://github.com/MetaMask/metamask-extension/pull/14993))
+- Fix bug that could cause MetaMask to crash in some cases when interacting with tokens or NFTs ([#14962](https://github.com/MetaMask/metamask-extension/pull/14962))
+
+## [10.15.0]
+### Added
+- Add warning when multiple instances of MetaMask are running ([#13836](https://github.com/MetaMask/metamask-extension/pull/13836))
+- Add "What's New" announcement text for Dark Mode ([#14346](https://github.com/MetaMask/metamask-extension/pull/14346))
+- Theme: Add OS option in theme selection dropdown ([#14379](https://github.com/MetaMask/metamask-extension/pull/14379))
+
+### Changed
+- Use testname as the base currency prefix for preloaded test networks ([#14454](https://github.com/MetaMask/metamask-extension/pull/14454))
+- Update UI of "Add Network" page ([#13866](https://github.com/MetaMask/metamask-extension/pull/13866))
+- Update UI of network switch permissions prompt ([#13450](https://github.com/MetaMask/metamask-extension/pull/13450))
+- Show token approval details on approval screens by default ([#14523](https://github.com/MetaMask/metamask-extension/pull/14523))
+- Ensure theme selection dropdown is discoverable via settings search([#14379](https://github.com/MetaMask/metamask-extension/pull/14379))
+- Stop using the 4bytes registry to name contract deployment transactions in the activity list, preventing false method names from being shown for deployments ([#14598](https://github.com/MetaMask/metamask-extension/pull/14598))
+- Save send flow user action history in transaction state logs ([#14510](https://github.com/MetaMask/metamask-extension/pull/14510))
+- Update GridPlus to use https://github.com/GridPlus/gridplus-sdk/compare/v1.1.6...v1.2.4 ([#14467](https://github.com/MetaMask/metamask-extension/pull/14467))
+
+
+### Fixed
+- Fix `wallet_watchAsset method` ([#14545](https://github.com/MetaMask/metamask-extension/pull/14545))
+- Do not show failed off-chain transactions details when grouped with another valid transaction of same nonce ([#14497](https://github.com/MetaMask/metamask-extension/pull/14497))
+- Fix bug that could have caused some ledger transactions to fail after connecting Ledger then locking and unlocking ([#14563](https://github.com/MetaMask/metamask-extension/pull/14563))
+- Fix bug that could cause MetaMask to crash in some cases when attempting to send a transaction ([#14608](https://github.com/MetaMask/metamask-extension/pull/14608))
+
+## [10.14.7]
+### Changed
+- Make JavaScript bundles more reproducible between environments.
+  - The bundles no longer include absolute paths to each module included.
+
+## [10.14.6]
+### Changed
+- Move phishing warning page to external site.
+  - The page shown when a site is blocked has been extracted from the extension and moved to an external site. This site is eagerly cached with a service worker upon extension startup, so it should continue to work even while offline.
+- Make build .zip files reproducible (#14623)
+  - The ordering of files within each .zip file was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
+## [10.14.5]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.4]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.3]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.2]
+### Fixed
+- Make build deterministic (#14610)
+    - The ordering of modules within each bundle was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
+## [10.14.1]
+### Changed
+- This version was used to rollback from v10.14.0 to v10.13.0.
+
+## [10.14.0]
+### Added
+- **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
+- **[FLASK]** Add support for searching installed snaps in Settings ([#14419](https://github.com/MetaMask/metamask-extension/pull/14419))
+
+### Changed
+- Disable Swaps on Rinkeby ([#14372](https://github.com/MetaMask/metamask-extension/pull/14372))
+- Swaps: Asset sorting improvements ([#14436](https://github.com/MetaMask/metamask-extension/pull/14436))
+    - In 'Swap from' field: tokens are sorted by user ownership and fiat value
+    - In 'Swap to' field: tokens are sorted by top assets
+- Redesign Networks view in Settings ([#13560](https://github.com/MetaMask/metamask-extension/pull/13560))
+    - Adding network search functionality
+- Show Smart Transaction switch when wrapping/unwrapping ([#14225](https://github.com/MetaMask/metamask-extension/pull/14225))
+
+### Fixed
+- Improving identicon settings accessibility ([#13760](https://github.com/MetaMask/metamask-extension/pull/13760))
+- Enhanced Gas Fee UI: Fix gas values overlapping with labels ([#14392](https://github.com/MetaMask/metamask-extension/pull/14392))
+- Settings search improvements ([#14350](https://github.com/MetaMask/metamask-extension/pull/14350))
+    - Allow ampersands in search input
+    - Fix duplicate entry issue in results
+- Fix text wrapping issue in Settings search tabs ([#14368](https://github.com/MetaMask/metamask-extension/pull/14368))
+- Dark Mode: Fix button styles in dialog actions ([#14361](https://github.com/MetaMask/metamask-extension/pull/14361))
+
+## [10.13.0]
+### Added
+- Add a new fiat onboarding option via MoonPay ([#13934](https://github.com/MetaMask/metamask-extension/pull/13934))
+    - Available for the following networks: Ethereum, BNB Chain, Polygon, Avalanche, Celo
+- Add support for a Dark Mode theme ([#14207](https://github.com/MetaMask/metamask-extension/pull/14207))
+- **[FLASK]** Add native browser notifications for Snaps via `snap_notify` permission ([#13613](https://github.com/MetaMask/metamask-extension/pull/13613))
+- **[FLASK]** Add Snaps settting to search index ([#14100](https://github.com/MetaMask/metamask-extension/pull/14100))
+- **[FLASK]** Display the Snap version during Snap installation ([#13931](https://github.com/MetaMask/metamask-extension/pull/13931))
+
+### Changed
+- Improvements for multi-layer fee UX ([#13547](https://github.com/MetaMask/metamask-extension/pull/13547))
+    - Fix 'Send max' button when on a multi-layer fee network
+    - Show fiat currency estimates alongside ETH estimates on multi-layer fee networks
+    - Display L1+L2 gas fees as a combined total on multi-layer fee networks
+    - Don't allow users to set gas price on Optimism
+- Move Token Detection toggle to Advanced tab. ([#13977](https://github.com/MetaMask/metamask-extension/pull/13977))
+- Don’t show ‘What’s new’ pop up to new users ([#13886](https://github.com/MetaMask/metamask-extension/pull/13886))
+- Improving settings toggle accessibility by allowing label interaction ([#13876](https://github.com/MetaMask/metamask-extension/pull/13876))
+- Updating account and network icons ([#13947](https://github.com/MetaMask/metamask-extension/pull/13947))
+- Add 'Enhanced Gas UI' setting to search index ([#14206](https://github.com/MetaMask/metamask-extension/pull/14206))
+- Add buy modal link to insufficient currency warning of all networks that have a fiat onramp, and update spacing in the warning's copy ([#14019](https://github.com/MetaMask/metamask-extension/pull/14019))
+
+### Fixed
+- Fix issue where editing advanced gas while speeeding up a transaction exits speedup ([#14101](https://github.com/MetaMask/metamask-extension/pull/14101))
+- Fix typo in cancel/speed up messaging ([#14067](https://github.com/MetaMask/metamask-extension/pull/14067))
+- Fix token icon when going from token detail page to Swaps view ([#14062](https://github.com/MetaMask/metamask-extension/pull/14062))
+- Fix issue where the contract address is shown as recipient when calling safe transfer method on erc721 or erc1155 contracts ([#13535](https://github.com/MetaMask/metamask-extension/pull/13535))
+- Ensure accounts still line up in dropdown ([#13986](https://github.com/MetaMask/metamask-extension/pull/13986))
+
+## [10.12.4]
+### Fixed
+- Fix MetaMask internal error reporting (#14344)
+
+## [10.12.3]
+### Changed
+- This version was used to rollback from v10.12.0 to v10.11.3.
+
+## [10.12.2]
+### Fixed
+- Fix error where unlock failed after update to v10.12.0
+
+## [10.12.1]
+### Changed
+- This version was used to rollback from v10.12.0 to v10.11.4.
+
+## [10.12.0]
+### Added
+- Add a search feature to the settings page ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
+- Add AirGap Vault detail links to the hardware wallet connection flow ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
+
+### Changed
+- Prevent users from entering too long a number for slippage in swaps ([#13914](https://github.com/MetaMask/metamask-extension/pull/13914))
+- Hide non-essential information in our EIP-1559 v2 gas modal when the gas api is down ([#13865](https://github.com/MetaMask/metamask-extension/pull/13865))
+- Updating colors of the account list ([#13864](https://github.com/MetaMask/metamask-extension/pull/13864))
+- Show a more useful warning is users don't have enough of their networks base currency to pay for gas ([#13182](https://github.com/MetaMask/metamask-extension/pull/13182))
+- Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
+- Show the address of the contract that is being interacted with next to the method name in transaction confirmation headers ([#13683](https://github.com/MetaMask/metamask-extension/pull/13683))
+- Show the address of the contract that is being interacted next to 'Transfer' and 'Transfer From' method names in transaction confirmation headers ([#13776](https://github.com/MetaMask/metamask-extension/pull/13776))
+- Performance and UX improvements for Gridplus lattice users (([#14158]https://github.com/MetaMask/metamask-extension/pull/14158))
+
+### Fixed
+- Ensure long signature request text is visible ([#13828](https://github.com/MetaMask/metamask-extension/pull/13828))
+- Fix spelling of 'Ethereum' in German translation ([#13915](https://github.com/MetaMask/metamask-extension/pull/13915))
+- Fix cases where the action buttons in a switch network confirmation window wouldn't work  ([#13847](https://github.com/MetaMask/metamask-extension/pull/13847))
+- Ensure the origin of a site requesting permissions is fully visible in the permission request UI ([#13868](https://github.com/MetaMask/metamask-extension/pull/13868))
+- Fix visual overflow problems with the account list in the connect flow
+    - ([#13859](https://github.com/MetaMask/metamask-extension/pull/13859))
+    - ([#13592](https://github.com/MetaMask/metamask-extension/pull/13592))
+- Show the users primary currency in the "Max Base Fee" and "Priority Fee" fields of the gas customization window ([#13830](https://github.com/MetaMask/metamask-extension/pull/13830))
+- Ensure latest gas estimates are shown on the transaction screen for users of the EIP-1559 v2 gas UI ([#13809](https://github.com/MetaMask/metamask-extension/pull/13809))
+- Fix to allow toggling of the currency in the send flow when the user has "fiat" selected as the primary currency ([#13813](https://github.com/MetaMask/metamask-extension/pull/13813))
+- Shows the sign and cancel button fully in signature page ([#13686](https://github.com/MetaMask/metamask-extension/pull/13686))
+- Harden keyring type check in EthOverview ([#13711](https://github.com/MetaMask/metamask-extension/pull/13711))
+- Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
+- Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
+- **[FLASK]** Fix Snap permission list item shrinkage with short permission names ([#13996](https://github.com/MetaMask/metamask-extension/pull/13996))
+
+## [10.11.4]
+### Added
+- **[FLASK]** Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
+
+### Changed
+- **[FLASK]** Update MetaMask Flask
+  - This is the first release of [MetaMask Flask](https://metamask.io/flask) since the initial release on January 18. This release includes a significant number of fixes and DevX improvements. Flask will henceforth be released at a more frequent cadence, usually in close proximity to releases of the regular MetaMask Extension.
+  - For reference, [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) used the feature branch that produced the original Flask release after some additional changes were made.
+- **[FLASK]** Update Snaps packages to version `^0.10.6` ([#13901](https://github.com/MetaMask/metamask-extension/pull/13901), [#14041](https://github.com/MetaMask/metamask-extension/pull/14041), [#14070](https://github.com/MetaMask/metamask-extension/pull/14070))
+  - Updates the following packages from `0.9.0` to `0.10.6`:
+    - `@metamask/iframe-execution-environment-service`
+    - `@metamask/rpc-methods`
+    - `@metamask/snap-controllers`
+  - Updates the targeted [`iframe-execution-environment`](https://github.com/MetaMask/iframe-execution-environment) version from `0.3.1` to `0.4.2`.
+  - These changes encompass a variety of fixes and devX improvements. See the [releases](https://github.com/MetaMask/snaps-skunkworks/releases) of the Snaps monorepo for details.
+
+### Fixed
+- **[FLASK]** Various UI issues ([#13462](https://github.com/MetaMask/metamask-extension/pull/13462))
+  - _Note:_ The original Flask release was cut from the feature branch of [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) before it was merged.
+  - Fix Snaps permission request confirmation page title ([#13342](https://github.com/MetaMask/metamask-extension/pull/13342))
+  - Fix Snaps custom confirmation `textarea` height ([#13572](https://github.com/MetaMask/metamask-extension/pull/13572))
+  - Fix various styling issues ([#13577](https://github.com/MetaMask/metamask-extension/pull/13577))
+- **[FLASK]** Fix Snap key management install warning appearance ([#13844](https://github.com/MetaMask/metamask-extension/pull/13844))
+
+## [10.11.3]
+### Changed
+- Split secret recovery phrase input into one-field-per-word ([#14016](https://github.com/MetaMask/metamask-extension/pull/14016))
+
+## [10.11.2]
+### Fixed
+- Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
+
+
+## [10.11.1]
+### Changed
+- Fixes GridPlus Lattice bugs by upgrading to `gridplus-sdk` v1.0.0, `eth-lattice-keyring` v0.5.0 and to compatibility with v0.14.0 ([#13834](https://github.com/MetaMask/metamask-extension/pull/13834))
+- Increases transaction data in state logs
+    - Preserves fewer transactions with shared nonces across networks, decreasing number of old transactions that are not deleted ([#13669](https://github.com/MetaMask/metamask-extension/pull/13669))
+    - Increase the number of transactions saved in state logs to 60 ([#13743](https://github.com/MetaMask/metamask-extension/pull/13743))
+
+### Fixed
+- Ensure that MetaMask popup is shown when a user attempts to connect to a dapp they are already connected to ([#13840](https://github.com/MetaMask/metamask-extension/pull/13840))
+- Submit correct gas limit for Swaps Smart Transactions ([#13891](https://github.com/MetaMask/metamask-extension/pull/13891))
+
+## [10.11.0]
+### Added
+- Swaps: Add support for Smart Transactions on Mainnet and Rinkeby ([#12676](https://github.com/MetaMask/metamask-extension/pull/12676))
+- Add "Token details" page ([#13216](https://github.com/MetaMask/metamask-extension/pull/13216))
+- Add icons to sections in settings ([#12920](https://github.com/MetaMask/metamask-extension/pull/12920))
+- Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
+
+### Changed
+- Swaps: Change language "Quote X of Y" to "Fetching quote X of Y" ([#13663](https://github.com/MetaMask/metamask-extension/pull/13663))
+- Update preferred account identicon selection UI ([#13408](https://github.com/MetaMask/metamask-extension/pull/13408))
+- Include transactions from all networks in state logs ([#13599](https://github.com/MetaMask/metamask-extension/pull/13599))
+- Update accounts connection language ([#13605](https://github.com/MetaMask/metamask-extension/pull/13605))
+- Style updates for setting page in full screen mode ([#13569](https://github.com/MetaMask/metamask-extension/pull/13569))
+- Add currency symbol validation in the add network form ([#12431](https://github.com/MetaMask/metamask-extension/pull/12431))
+
+### Fixed
+- Ensure pre-selected account on connect screen is visible in list ([#13621](https://github.com/MetaMask/metamask-extension/pull/13621))
+- Do not allow transaction creation with gas limit below minimum ([#13574](https://github.com/MetaMask/metamask-extension/pull/13574))
+- Fix network editing error when no block explorer is provided ([#13527](https://github.com/MetaMask/metamask-extension/pull/13527))
+- Swaps: Fix BigNumber error when submitting quote ([#13555](https://github.com/MetaMask/metamask-extension/pull/13555))
+
+## [10.10.2]
+### Added
+- Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
+
+## [10.10.1]
+### Added
+- Swaps: Enable Avalanche ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
+
+### Fixed
+- Ensure Lattice hardware wallet can correctly sign all EIP-712 messages ([#13691](https://github.com/MetaMask/metamask-extension/pull/13691))
+- Fix occasional errors when fetching swaps quotes ([#13732](https://github.com/MetaMask/metamask-extension/pull/13732))
+
+## [10.10.0]
+### Added
+- Enable toggle to turn on the new gas fee customization UI ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
+    - Select between new 'Low', 'Market', and 'Aggressive' gas options
+    - Improved advanced gas fee editing
+    - Adds the ability to save custom gas values as defaults
+    - More informative tooltips about suggested gas options
+    - More information about the status of the network
+- Enable buying MATIC on Polygon, BNB on BSC, AVAX on Avalanche, FTM on Fantom, CELO on Celo, and respective stablecoins  on Transak ([#13398](https://github.com/MetaMask/metamask-extension/pull/13398))
+- Add German subtitles for SRP Video ([#13368](https://github.com/MetaMask/metamask-extension/pull/13368))
+- Adding Brazilian Portuguese translation for some copy in Settings ([#13470](https://github.com/MetaMask/metamask-extension/pull/13470))
+
+### Changed
+- Hide 0 balance tokens in send screen dropdown if the "Hide Tokens Without Balance" toggle is on ([#13306](https://github.com/MetaMask/metamask-extension/pull/13306))
+- Change the 'Connected Sites' removal icon to a button ([#13476](https://github.com/MetaMask/metamask-extension/pull/13476))
+- Add specific hardware wallet names next to HW accounts in the account dropdown ([#13339](https://github.com/MetaMask/metamask-extension/pull/13339))
+- Update title of phishing.html ([#13323](https://github.com/MetaMask/metamask-extension/pull/13323))
+- Update language while importing an SRP to limit encouragement of copy-pasting seed phrases ([#12012](https://github.com/MetaMask/metamask-extension/pull/12012))
+- Maintain leading whitespace in for data to be signed in the signature request popup ([#13340](https://github.com/MetaMask/metamask-extension/pull/13340))
+- Update global link hover color from orange to blue ([#13344](https://github.com/MetaMask/metamask-extension/pull/13344))
+- Adjust ordering of tokens in the Swaps token dropdown ([#13270](https://github.com/MetaMask/metamask-extension/pull/13270))
+
+### Fixed
+- Ensure a correct update of the gas limit upon editing of a transaction recipient ([#12784](https://github.com/MetaMask/metamask-extension/pull/12784))
+- Ensure that the toggled display of currency in the send flow persists when editing a transaction ([#12813](https://github.com/MetaMask/metamask-extension/pull/12813))
+- Ensure settings can be opened if browser zoom level > 100% ([#13460](https://github.com/MetaMask/metamask-extension/pull/13460))
+- Ensure displayed balances of tokens are not incorrectly rounded down ([#13337](https://github.com/MetaMask/metamask-extension/pull/13337))
+- Improve visual spacing on the wallet selection flow of onboarding ([#12799](https://github.com/MetaMask/metamask-extension/pull/12799))
+
+## [10.9.3]
+### Fixed
+- Allow for scrolling when sign type data message is too long ([#13642](https://github.com/MetaMask/metamask-extension/pull/13642))
+  - Require a scroll through of message before allowing user signature
+
+## [10.9.2]
+### Fixed
+- Prevent errors on the swaps "View Quote" screen that can occur if the swaps API returns incorrect refund and max gas fees on some test networks ([#13511](https://github.com/MetaMask/metamask-extension/pull/13511))
+- Prevent errors on startup in Chrome Versions earlier than 69, caused by use of unsupported browser `Array.prototype.flat` method ([#13520](https://github.com/MetaMask/metamask-extension/pull/13520))
+
+
+## [10.9.1]
+### Fixed
+- Fixed application error when adding certain tokens ([#13484](https://github.com/MetaMask/metamask-extension/pull/13484))
+
+## [10.9.0]
+### Added
+- Alert users when the network is busy ([#12268](https://github.com/MetaMask/metamask-extension/pull/12268))
+
+### Changed
+- Clear the clipboard after seed phrase is pasted into restore vault form ([#12987](https://github.com/MetaMask/metamask-extension/pull/12987))
+- Remove bottom space when hiding testnet ([#12821](https://github.com/MetaMask/metamask-extension/pull/12821))
+- Prevent automatic rejection of confirmations ([#13194](https://github.com/MetaMask/metamask-extension/pull/13194))
+- Capitalize "learn more" link in permissions connect screen ([#13092](https://github.com/MetaMask/metamask-extension/pull/13092))
+- Allow keyboard accessiblity on restore vault form ([#12989](https://github.com/MetaMask/metamask-extension/pull/12989))
+- Permission System 2.0 ([#12243](https://github.com/MetaMask/metamask-extension/pull/12243))
+  - Changed site origin and added permission list view ([#12832](https://github.com/MetaMask/metamask-extension/pull/12832))
+  - Changed accounts selection permissions screen ([#13039](https://github.com/MetaMask/metamask-extension/pull/13039))
+- Optimize Swaps flow ([#12939](https://github.com/MetaMask/metamask-extension/pull/12939))
+- Remove legacy node parent detection ([#12814](https://github.com/MetaMask/metamask-extension/pull/12814))
+
+### Fixed
+- Fixed Mainnet Tokens autopopulating in custom token fields on other networks ([#12800](https://github.com/MetaMask/metamask-extension/pull/12800))
+- Adjust the padding of lock button for certain locales ([#13017](https://github.com/MetaMask/metamask-extension/pull/13017))
+- Lock button active state fix when holding mouse click ([#13100](https://github.com/MetaMask/metamask-extension/pull/13100))
+- Fix order of account list on the "Send To" screen ([#12999](https://github.com/MetaMask/metamask-extension/pull/12999))
+- Display hex data from previous send tx screen to edit tx screen ([#12709](https://github.com/MetaMask/metamask-extension/pull/12709))
+- Sanitize eth_signTypedData message when corresponding field in 'types' is missing ([#12905](https://github.com/MetaMask/metamask-extension/pull/12905))
+- Identicon size fix ([#13014](https://github.com/MetaMask/metamask-extension/pull/13014))
+- Fixed latest conversion date on currency conversion in general settings  ([#12422](https://github.com/MetaMask/metamask-extension/pull/12422))
+- Prevent account name duplicates ([#12867](https://github.com/MetaMask/metamask-extension/pull/12867))
+
+## [10.8.2]
+### Fixed
+- Add missing `appName` localized messages for Flask and Beta ([#13138](https://github.com/MetaMask/metamask-extension/pull/13138))
+
+## [10.8.1]
+### Fixed
+- [#13107](https://github.com/MetaMask/metamask-extension/pull/13107): Fix the Use Custom Nonce toggle
+
+## [10.8.0]
+### Added
+- [#12881](https://github.com/MetaMask/metamask-extension/pull/12881): Feature: Transaction Insights
+  - Users can now see much greater details on contract interaction transactions
+  - These transaction details are integrated with new popups for viewing and editing address book information
+  - These details are also viewable within the transaction details popup
+- [#12627](https://github.com/MetaMask/metamask-extension/pull/12627): Add support for eip-1559 on Trezor Model T and Trezor Model One
+- [#12065](https://github.com/MetaMask/metamask-extension/pull/12065): Support QR code based hardware wallet signing
+  - Includes specific support for the Keystone hardware wallet
+
+### Changed
+- [#12842](https://github.com/MetaMask/metamask-extension/pull/12842): Improve performance of the swaps feature
+- [#12776](https://github.com/MetaMask/metamask-extension/pull/12776): Hide the token detection announcement when the token detection is ON
+- [#12828](https://github.com/MetaMask/metamask-extension/pull/12828): Clear the clipboard after the seed phrase is pasted into the import flow
+- [#12576](https://github.com/MetaMask/metamask-extension/pull/12576): Show warning message when gas estimation estimates fail
+
+### Fixed
+- [#12802](https://github.com/MetaMask/metamask-extension/pull/12802): Fix bug causing occasional swaps failures for token pairs with highly precise exchange rates
+- [#12679](https://github.com/MetaMask/metamask-extension/pull/12679): Ensure eth_sign callback fires even when data submitted is invalid
+
+## [10.7.1]
+### Fixed
+- [#13005](https://github.com/MetaMask/metamask-extension/pull/13005): Fix connection to RPC urls with query strings.
+
+## [10.7.0]
+### Changed
+- [#12566](https://github.com/MetaMask/metamask-extension/pull/12566): Enable LavaMoat for the webapp background
+- [#12399](https://github.com/MetaMask/metamask-extension/pull/12399): Update the "Account Details" view
+  - Change "Close" icon color from gray -> black
+  - Display the entire account address
+  - Use rounded style for "View on Etherscan" and "Export Private Key" buttons
+- [#12824](https://github.com/MetaMask/metamask-extension/pull/12824): Add multilayer fee to token approval screen
+
+### Fixed
+- [#12696](https://github.com/MetaMask/metamask-extension/pull/12696): Show correct base asset for current network in the Signature Request view
+- [#12727](https://github.com/MetaMask/metamask-extension/pull/12727): Make toggle buttons keyboard accessible
+- [#12729](https://github.com/MetaMask/metamask-extension/pull/12729): Swaps: Fix issue with wrapping and unwrapping when an address contains uppercase characters
+- [#12631](https://github.com/MetaMask/metamask-extension/pull/12631): Fix bug preventing sending high precision decimal amounts of tokens in the send flow
+
+## [10.6.4]
+### Changed
+- [#12752](https://github.com/MetaMask/metamask-extension/pull/12752): Update link, in the add network flow, to the article with information about network security risks
+
+## [10.6.3]
+### Fixed
+- [##12822](https://github.com/MetaMask/metamask-extension/pull/#12822): Fix `replaceChildren` and `function.prototype.apply` errors that could make the app unusable on older browsers due to a bug in our logo component.
+- [#61e0526d5](https://github.com/MetaMask/metamask-extension/pull/61e0526d5): Fix requesting of swaps quotes for token pairs that have highly precise exchange rates.
+- [##12773](https://github.com/MetaMask/metamask-extension/pull/#12773): Prevent token input in send flow from adding arbitary trailing decimal values to input
+
+## [10.6.2]
+### Fixed
+- [#12770](https://github.com/MetaMask/metamask-extension/pull/12770): Fixed display of best quote in swaps quotes modal
+- [#12786](https://github.com/MetaMask/metamask-extension/pull/12786): Ensure there is a single localhost option in network selector and that it is clickable
+
+## [10.6.1]
+### Fixed
+- [#12573](https://github.com/MetaMask/metamask-extension/pull/12573): Ensure metrics api errors do not impact user experience
+
+## [10.6.0]
+### Added
+- [#12053](https://github.com/MetaMask/metamask-extension/pull/12053): Add support for GridPlus Lattice1 hardware wallet
+- [#12496](https://github.com/MetaMask/metamask-extension/pull/12496): Add warning for insufficient funds when approving a token
+- [#12564](https://github.com/MetaMask/metamask-extension/pull/12564): Add dismissable link to advanced settings to the top of the networks dropdown
+
+### Changed
+- [#12435](https://github.com/MetaMask/metamask-extension/pull/12435): Hide ETH amount on confirm screen for contract interactions where no ETH is being sent
+- [#12626](https://github.com/MetaMask/metamask-extension/pull/12626): Replace instances of 'testnets' with 'test networks' throughout the extension
+- [#12380](https://github.com/MetaMask/metamask-extension/pull/12380): Update heading on contact details in popup view to say "Details" instead of the contact name
+- [#12437](https://github.com/MetaMask/metamask-extension/pull/12437): Change decimal precision for ETH send amounts from 6 -> 8
+- [#12415](https://github.com/MetaMask/metamask-extension/pull/12415): Show account name when entering a user's own account address in the recipient field
+- [#12498](https://github.com/MetaMask/metamask-extension/pull/12498): Change token detection option wording from "Turn on Token Detection" -> "Turn on enhanced token detection"
+- [#12359](https://github.com/MetaMask/metamask-extension/pull/12359): Update settings page icon colors with different gray values
+- [#12531](https://github.com/MetaMask/metamask-extension/pull/12531): Show error if user has insufficient gas during send flow
+- [#12553](https://github.com/MetaMask/metamask-extension/pull/12553): Update the "Permission Request" section on the approve screen
+  - Update header from "Permission" -> "Permission Request"
+  - Update "Amount" label -> "Approved Amount"
+  - Update "To" label -> "Granted to"
+  - Specify in the "Granted to" field whether amount is designated to a contract address
+- [#12401](https://github.com/MetaMask/metamask-extension/pull/12401): Update transaction details view
+  - Left align all content and adjust padding
+  - Truncate "To" and "From" addresses, show icons for addresses
+- [#12360](https://github.com/MetaMask/metamask-extension/pull/12360): Update approval screen
+  - Update header copy: -> "Give permission to access your [token]?”
+  - Update subheader copy -> "By granting permission, you are allowing the following [contract/account] to access your funds”
+  - Include contract address and accompanying icon
+- [#12302](https://github.com/MetaMask/metamask-extension/pull/12302): Open new full browser window for new network form upon clicking "Add Network"
+- [#12260](https://github.com/MetaMask/metamask-extension/pull/12260): Update networks dropdown
+  - Change "Custom RPC" to "Add a network" button
+  - Hide test networks by default, and show them for users who have recently used them
+  - Add option to display test networks in dropdown in advanced settings
+
+### Removed
+- [#12565](https://github.com/MetaMask/metamask-extension/pull/12565): Remove "hex data" field from the send flow for ERC-20 transactions
+
+### Fixed
+- [#12513](https://github.com/MetaMask/metamask-extension/pull/12513): Fix "Unavailable on this network" tooltip showing on Swaps button when Swaps is enabled for the current network.
+- [#12511](https://github.com/MetaMask/metamask-extension/pull/12511): Fix issue where approval confirmation says "Unlimited" though limited funds were specified
+
+## [10.5.2]
+### Fixed
+- [#12685](https://github.com/MetaMask/metamask-extension/pull/12685): Fix Ledger WebHID issue preventing confirmation of token approvals
+
+## [10.5.1]
+### Changed
+- [#12658](https://github.com/MetaMask/metamask-extension/pull/12658): Properly display transaction fees on layer two networks like Optimism which have fees on both layers
+
+## [10.5.0]
+### Added
+- [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
+- [#12501](https://github.com/MetaMask/metamask-extension/pull/12501): Add "What's New" notification regarding Ledger WebHID support
+
+### Removed
+- [#12500](https://github.com/MetaMask/metamask-extension/pull/12500): Remove all notifications prior to Ledger WebHID announcement
 
 ## [10.4.1]
 ### Changed
@@ -38,7 +755,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12230](https://github.com/MetaMask/metamask-extension/pull/12230): Fix gas control flicker on send screen when switching between EIP-1559 networks
 - [#12186](https://github.com/MetaMask/metamask-extension/pull/12186): Fix grammatical issue with "Not connected to this site" message
 - [#12381](https://github.com/MetaMask/metamask-extension/pull/12381): Fix width and padding of the hide token modal while in the popup view
-- [#12339](https://github.com/MetaMask/metamask-extension/pull/11996): Fix 'BigNumber' app error when '0x' is supplied as the transaction value
+- [#11996](https://github.com/MetaMask/metamask-extension/pull/11996): Fix 'BigNumber' app error when '0x' is supplied as the transaction value
 - [#12339](https://github.com/MetaMask/metamask-extension/pull/12339): Correctly notify the inpage provider of current selected account on "unlock" events
 - [#12405](https://github.com/MetaMask/metamask-extension/pull/12405): Fix allowance issue with WETH -> ETH Swaps
 
@@ -95,7 +812,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11967](https://github.com/MetaMask/metamask-extension/pull/11967): Fix the display of long contact names on the contact settings pages.
 - [#12122](https://github.com/MetaMask/metamask-extension/pull/12122): Ensure failed speedups don't prevent further speedup attempts, and hide the Base Fee and Priority Fee fields when we don't have that information
 - [#11963](https://github.com/MetaMask/metamask-extension/pull/11963): Show scrollbar in the accounts menu
-  - This makes the accounts list scrollable for users with no mouse scroll wheel. 
+  - This makes the accounts list scrollable for users with no mouse scroll wheel.
 - [#12058](https://github.com/MetaMask/metamask-extension/pull/12058): Fix clipping issue with long network names in the network dropdown
 - [#12039](https://github.com/MetaMask/metamask-extension/pull/12039): Add missing padding at the bottom of the custom network form in the popup view
 - [#11890](https://github.com/MetaMask/metamask-extension/pull/11890): Fix alignment of horizontal line shown under gas recommendations
@@ -107,7 +824,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12144](https://github.com/MetaMask/metamask-extension/pull/12144): Add What's New notification about ledger EIP-1559 support and firmware updates
 
 ### Fixed
-- [#12069](https://github.com/MetaMask/metamask-extension/pull/12069): Fixes bug where suggestedGasFee api is called excessively. 
+- [#12069](https://github.com/MetaMask/metamask-extension/pull/12069): Fixes bug where suggestedGasFee api is called excessively.
 
 ## [10.1.0]
 ### Added
@@ -262,10 +979,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11118](https://github.com/MetaMask/metamask-extension/pull/11118): Removing support survey notification from What's New
 - [#11115](https://github.com/MetaMask/metamask-extension/pull/11115): Hide basic tab in advanced gas modal for speedup and cancel when on testnets
 - [#11030](https://github.com/MetaMask/metamask-extension/pull/11030): Return a specific error (code 4902) for switchEthereumChain requests for chains that aren't already in the user's wallet.
-- [#11093](https://github.com/MetaMask/metamask-extension/pull/11093): Update all uses of "Seed Phrase" to "Secret Recovery Phrase" 
+- [#11093](https://github.com/MetaMask/metamask-extension/pull/11093): Update all uses of "Seed Phrase" to "Secret Recovery Phrase"
 
 ### Fixed
-- [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occured
+- [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occurred
 - [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent an undefined gas price from breaking the transaction list
 - [#11013](https://github.com/MetaMask/metamask-extension/pull/11013): Prevent signature request component from canceling hardware wallet signing
 - [#10982](https://github.com/MetaMask/metamask-extension/pull/10982): Re-validating chain id when rpc url changes [custom network form]
@@ -282,14 +999,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-added "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which was reverted in the previous version
 
 ### Fixed
-- [#11225](https://github.com/MetaMask/metamask-extension/pull/11225) - Fix persistent display of chrome ledger What's New popup message 
+- [#11225](https://github.com/MetaMask/metamask-extension/pull/11225) - Fix persistent display of chrome ledger What's New popup message
 
 ## [9.5.8]
 ### Added
 - Re-added "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which was reverted in the previous version
 
 ### Fixed
-- [#11207](https://github.com/MetaMask/metamask-extension/pull/11207) - Fix error causing crashes on some locales on v9.5.6 
+- [#11207](https://github.com/MetaMask/metamask-extension/pull/11207) - Fix error causing crashes on some locales on v9.5.6
 
 ## [9.5.7]
 ### Fixed
@@ -319,7 +1036,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [9.5.1]
 ### Fixed
 - Fixed icon on approval screen ([#11048](https://github.com/MetaMask/metamask-extension/pull/11048))
-- Fixed broken app state for some users with Chinese, Portugese or Spanish browser language settings. ([#11036](https://github.com/MetaMask/metamask-extension/pull/11036))
+- Fixed broken app state for some users with Chinese, Portuguese or Spanish browser language settings. ([#11036](https://github.com/MetaMask/metamask-extension/pull/11036))
 
 ## [9.5.0] - 2021-04-28
 ### Added
@@ -408,7 +1125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Japanese translations. ([#10265](https://github.com/MetaMask/metamask-extension/pull/10265))
 - Update Chinese(Simplified) translations. ([#9388](https://github.com/MetaMask/metamask-extension/pull/9388))
 - Update Vietnamese translations. ([#10270](https://github.com/MetaMask/metamask-extension/pull/10270))
-- Update Spanish and Spanish(Latin American and Carribean) translations. ([#10258](https://github.com/MetaMask/metamask-extension/pull/10258))
+- Update Spanish and Spanish(Latin American and Caribbean) translations. ([#10258](https://github.com/MetaMask/metamask-extension/pull/10258))
 - Update Russian translations. ([#10268](https://github.com/MetaMask/metamask-extension/pull/10268))
 - Update Tagalog localized messages. ([#10269](https://github.com/MetaMask/metamask-extension/pull/10269))
 - Fix 'imported' translation use case for Dutch. ([#10448](https://github.com/MetaMask/metamask-extension/pull/10448))
@@ -1099,7 +1816,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.0.0] - 2019-08-07
 ### Uncategorized
 - Capitalized speed up label to match rest of UI ([#6828](https://github.com/MetaMask/metamask-extension/pull/6828))
-- Allows skipping of seed phrase challenge during onboarding, and completing it at a later time ([#6874](https://github.com/MetaMask/metamask-extension/pull/6928))
+- Allows skipping of seed phrase challenge during onboarding, and completing it at a later time ([#6874](https://github.com/MetaMask/metamask-extension/pull/6874))
 - Prevent opening of asset dropdown if no tokens in account ([#6900](https://github.com/MetaMask/metamask-extension/pull/6900))
 - Set privacy mode as default ([#6904](https://github.com/MetaMask/metamask-extension/pull/6904))
 - Adds Address Book feature ([#6914](https://github.com/MetaMask/metamask-extension/pull/6914))
@@ -1285,7 +2002,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.3.5] - 2019-02-04
 ### Uncategorized
-- Privacy mode fixes ([#6084](https://github.com/MetaMask/metamask-extension/pull/6087))
+- Privacy mode fixes ([#6087](https://github.com/MetaMask/metamask-extension/pull/6087))
 
 ## [5.3.4] - 2019-01-31
 ### Uncategorized
@@ -2538,7 +3255,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...HEAD
+[10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
+[10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
+[10.20.0]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...v10.20.0
+[10.19.0]: https://github.com/MetaMask/metamask-extension/compare/v10.18.4...v10.19.0
+[10.18.4]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...v10.18.4
+[10.18.3]: https://github.com/MetaMask/metamask-extension/compare/v10.18.2...v10.18.3
+[10.18.2]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...v10.18.2
+[10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1
+[10.18.0]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...v10.18.0
+[10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
+[10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
+[10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.16.1
+[10.16.0]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...v10.16.0
+[10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
+[10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...v10.15.0
+[10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
+[10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
+[10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.4...v10.14.5
+[10.14.4]: https://github.com/MetaMask/metamask-extension/compare/v10.14.3...v10.14.4
+[10.14.3]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...v10.14.3
+[10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...v10.14.2
+[10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.14.1
+[10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
+[10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
+[10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
+[10.12.3]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...v10.12.3
+[10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.1...v10.12.2
+[10.12.1]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...v10.12.1
+[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...v10.12.0
+[10.11.4]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...v10.11.4
+[10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
+[10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
+[10.11.1]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...v10.11.1
+[10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
+[10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2
+[10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1
+[10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
+[10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
+[10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
+[10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1
+[10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
+[10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
+[10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
+[10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0
+[10.7.1]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.7.1
+[10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...v10.7.0
+[10.6.4]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...v10.6.4
+[10.6.3]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.6.3
+[10.6.2]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...v10.6.2
+[10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
+[10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
+[10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
+[10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
+[10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
 [10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
 [10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0

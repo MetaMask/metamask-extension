@@ -1,13 +1,9 @@
 import log from 'loglevel';
 import Wallet from 'ethereumjs-wallet';
 import importers from 'ethereumjs-wallet/thirdparty';
-import {
-  toBuffer,
-  isValidPrivate,
-  bufferToHex,
-  stripHexPrefix,
-} from 'ethereumjs-util';
+import { toBuffer, isValidPrivate, bufferToHex } from 'ethereumjs-util';
 import { addHexPrefix } from '../lib/util';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 const accountImporter = {
   importAccount(strategy, args) {

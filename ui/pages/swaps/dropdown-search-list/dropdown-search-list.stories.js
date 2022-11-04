@@ -113,7 +113,7 @@ const tokens = [
 ];
 
 export default {
-  title: 'DropdownSearchList',
+  title: 'Pages/Swaps/DropdownSearchList',
   id: __filename,
 };
 
@@ -127,7 +127,7 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const TokenSearchDropdown = () => {
+export const DefaultStory = () => {
   return (
     <div style={{ height: '82vh', width: '357px' }}>
       <DropdownSearchList
@@ -144,3 +144,5 @@ export const TokenSearchDropdown = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

@@ -16,7 +16,9 @@ module.exports = {
 
 async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
   const highlights = await getHighlights({ changedFiles });
-  if (!highlights.length) return null;
+  if (!highlights.length) {
+    return null;
+  }
   const highlightsBody = highlights
     .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
     .join('');
@@ -72,6 +74,9 @@ function urlForStoryFile(filename, artifactBase) {
  * See:
  * https://gist.github.com/davidjrice/9d2af51100e41c6c4b4a
  * https://github.com/ComponentDriven/csf/blame/7ac941eee85816a4c567ca85460731acb5360f50/src/index.ts
+ *
+ * @param {string} string - The string to sanitize.
+ * @returns The sanitized string.
  */
 function sanitize(string) {
   return (

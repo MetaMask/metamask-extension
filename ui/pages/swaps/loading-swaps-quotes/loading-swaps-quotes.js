@@ -4,18 +4,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
 
@@ -25,18 +30,25 @@ export default function LoadingSwapsQuotes({
   onDone,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
@@ -47,6 +59,9 @@ export default function LoadingSwapsQuotes({
       response_time: Date.now() - quotesFetchStartTime,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   };
 
@@ -90,12 +105,8 @@ export default function LoadingSwapsQuotes({
 
   useEffect(() => {
     if (currentMascotContainer) {
-      const {
-        top,
-        left,
-        width,
-        height,
-      } = currentMascotContainer.getBoundingClientRect();
+      const { top, left, width, height } =
+        currentMascotContainer.getBoundingClientRect();
       const center = { x: left + width / 2, y: top + height / 2 };
       setMidpointTarget(center);
     }
@@ -107,7 +118,7 @@ export default function LoadingSwapsQuotes({
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>
-              {t('swapQuoteNofN', [
+              {t('swapFetchingQuoteNofN', [
                 Math.min(quoteCount + 1, numberOfQuotes),
                 numberOfQuotes,
               ])}
@@ -135,7 +146,6 @@ export default function LoadingSwapsQuotes({
               animationEventEmitter={animationEventEmitter.current}
               width="90"
               height="90"
-              followMouse={false}
               lookAtTarget={midPointTarget}
             />
           </div>
@@ -144,7 +154,7 @@ export default function LoadingSwapsQuotes({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          metaMetricsEvent(quotesRequestCancelledEventConfig);
+          trackEvent(quotesRequestCancelledEventConfig);
           await dispatch(navigateBackToBuildQuote(history));
         }}
         hideCancel

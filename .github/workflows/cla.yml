@@ -8,7 +8,7 @@ on:
 jobs:
   CLABot:
     if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       pull-requests: write
       contents: write
@@ -22,6 +22,6 @@ jobs:
           url-to-cladocument: 'https://metamask.io/cla.html'
           # This branch can't have protections, commits are made directly to the specified branch.
           branch: 'cla-signatures'
-          allowlist: 'dependabot[bot],metamaskbot'
+          allowlist: 'dependabot[bot],metamaskbot,crowdin-bot'
           allow-organization-members: true
           blockchain-storage-flag: false

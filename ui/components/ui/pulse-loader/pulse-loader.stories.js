@@ -1,9 +1,18 @@
 import React from 'react';
+import README from './README.mdx';
 import PulseLoader from '.';
 
 export default {
-  title: 'PulseLoader',
+  title: 'Components/UI/PulseLoader',
   id: __filename,
+  component: PulseLoader,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
 };
 
-export const common = () => <PulseLoader />;
+export const DefaultStory = () => <PulseLoader />;
+
+DefaultStory.storyName = 'Default';

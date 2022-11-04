@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "דחה"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "סריקת קוד QR"
+  },
   "about": {
     "message": "מידע כללי"
-  },
-  "aboutSettingsDescription": {
-    "message": "גרסה, מרכז תמיכה ופרטי יצירת קשר."
-  },
-  "acceleratingATransaction": {
-    "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
   },
   "accessingYourCamera": {
     "message": "ניגש למצלמה שלך ..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "הוסף/י אסימונים מוצעים"
   },
-  "addToAddressBook": {
-    "message": "הוסף לפנקס הכתובות"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "למשל ג'ון ד'"
-  },
   "addToken": {
     "message": "הוסף/י אסימון"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "אפשרויות מתקדמות"
-  },
-  "advancedSettingsDescription": {
-    "message": "קבלת גישה לפיצ'רים למפתחים, הורדת יומני מצב, איפוס חשבון, הגדרת testnets ו-RPC מותאם אישית."
   },
   "amount": {
     "message": "כמות"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "אישור"
@@ -131,9 +130,6 @@
     "message": "הצג חשבון ב- $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "השתמש ב- Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
@@ -141,7 +137,7 @@
     "message": "רכישת את'ר עם Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד ETH ישירות בחשבון ה-MetaMask שלך."
+    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד $1 ישירות בחשבון ה-MetaMask שלך."
   },
   "bytes": {
     "message": "בייטים"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "מתחבר ל-Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "connectingToRinkeby": {
-    "message": "מתחבר ל- Rinkeby Test Network  "
-  },
-  "connectingToRopsten": {
-    "message": "מתחבר אל רשת בדיקה Ropsten "
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "הועתק!"
-  },
-  "copiedTransactionId": {
-    "message": "מזהה עסקה הועתק"
   },
   "copyAddress": {
     "message": "העתק כתובת ללוח"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "שפה נוכחית"
   },
-  "customGas": {
-    "message": "התאמה אישית של דלק"
-  },
-  "customGasSubTitle": {
-    "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
+  "custom": {
+    "message": "מתקדם"
   },
   "customToken": {
     "message": "אסימון מותאם אישית"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
-  },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Mainnet."
   },
   "delete": {
     "message": "מחיקה"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
-  "depositEther": {
-    "message": "הפקדת את'ר"
-  },
   "details": {
     "message": "פרטים"
-  },
-  "directDepositEther": {
-    "message": "הפקד את'ר ישירות"
-  },
-  "directDepositEtherExplainer": {
-    "message": "אם כבר יש ברשותך את'ר (Ether) , הדרך המהירה ביותר להכניס את'ר לארנק החדש שלך היא באמצעות הפקדה ישירה."
   },
   "done": {
     "message": "סיום"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
-  "enterAnAlias": {
-    "message": "יש להזין כינוי"
-  },
   "enterPassword": {
     "message": "יש להזין ססמה"
   },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
-  },
-  "estimatedProcessingTimes": {
-    "message": "זמני עיבוד משוערים"
   },
   "ethereumPublicAddress": {
     "message": "כתובת אתריום ציבורית"
@@ -417,9 +380,6 @@
   },
   "general": {
     "message": "כללי"
-  },
-  "generalSettingsDescription": {
-    "message": "המרת מטבע, מטבע עיקרי, שפה, blockies identicon"
   },
   "getEther": {
     "message": "השג/י את'ר"
@@ -522,10 +482,10 @@
   "knownAddressRecipient": {
     "message": "כתובת חוזה ידועה."
   },
-  "kovan": {
-    "message": "רשת בדיקה Kovan "
-  },
   "learnMore": {
+    "message": "למדו עוד"
+  },
+  "learnMoreUpperCase": {
     "message": "למדו עוד"
   },
   "ledgerAccountRestriction": {
@@ -579,9 +539,6 @@
   "myAccounts": {
     "message": "החשבונות שלי"
   },
-  "needEtherInWallet": {
-    "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
-  },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
@@ -591,9 +548,6 @@
   },
   "networkName": {
     "message": "שם רשת"
-  },
-  "networkSettingsDescription": {
-    "message": "הוסף וערוך רשתות RPC מותאמות אישית"
   },
   "networks": {
     "message": "רשתות"
@@ -622,12 +576,6 @@
   },
   "newToMetaMask": {
     "message": "חדש/ה ב- MetaMask?"
-  },
-  "newTotal": {
-    "message": "סכום כולל חדש"
-  },
-  "newTransactionFee": {
-    "message": "עמלת עסקה חדשה"
   },
   "next": {
     "message": "הבא"
@@ -775,9 +723,6 @@
   "restore": {
     "message": "שחזר"
   },
-  "restoreAccountWithSeed": {
-    "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
-  },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
@@ -789,9 +734,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "אין לשתף צירוף מילים זה עם אף אחד!"
-  },
-  "rinkeby": {
-    "message": "רשת בדיקה Rinkeby "
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
@@ -826,23 +768,11 @@
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
-  "securitySettingsDescription": {
-    "message": "הגדרות פרטיות וצירוף הגרעין של הארנק"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "הפרד/י בין המילים ברווח אחד"
-  },
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
   },
-  "selectAHigherGasFee": {
-    "message": "בחר/י בעמלת דלק גבוהה יותר כדי להאיץ את עיבוד העסקה שלך. *"
-  },
   "selectAnAccount": {
     "message": "בחר חשבון"
-  },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
   },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
@@ -859,14 +789,8 @@
   "send": {
     "message": "שלח"
   },
-  "sendAmount": {
-    "message": "שלח סכום"
-  },
   "sendTokens": {
     "message": "שלח טוקנים"
-  },
-  "separateEachWord": {
-    "message": "יש להפריד כל מילה עם רווח יחיד"
   },
   "settings": {
     "message": "הגדרות"
@@ -906,9 +830,6 @@
   },
   "signed": {
     "message": "חתום"
-  },
-  "slow": {
-    "message": "אטי"
   },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."

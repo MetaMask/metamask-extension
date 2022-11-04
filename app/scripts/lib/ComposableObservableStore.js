@@ -15,20 +15,21 @@ export default class ComposableObservableStore extends ObservableStore {
    * store, and the value is either an ObserableStore, or a controller that
    * extends one of the two base controllers in the `@metamask/controllers`
    * package.
-   * @type {Record<string, Object>}
+   *
+   * @type {Record<string, object>}
    */
   config = {};
 
   /**
    * Create a new store
    *
-   * @param {Object} options
-   * @param {Object} [options.config] - Map of internal state keys to child stores
+   * @param {object} options
+   * @param {object} [options.config] - Map of internal state keys to child stores
    * @param {ControllerMessenger} options.controllerMessenger - The controller
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
-   * @param {Object} [options.state] - The initial store state
-   * @param {boolean} [options.persist] - Wether or not to apply the persistence for v2 controllers
+   * @param {object} [options.state] - The initial store state
+   * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
   constructor({ config, controllerMessenger, state, persist }) {
     super(state);
@@ -42,7 +43,7 @@ export default class ComposableObservableStore extends ObservableStore {
   /**
    * Composes a new internal store subscription structure
    *
-   * @param {Record<string, Object>} config - Describes which stores are being
+   * @param {Record<string, object>} config - Describes which stores are being
    *   composed. The key is the name of the store, and the value is either an
    *   ObserableStore, or a controller that extends one of the two base
    *   controllers in the `@metamask/controllers` package.
@@ -78,7 +79,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * Merges all child store state into a single object rather than
    * returning an object keyed by child store class name
    *
-   * @returns {Object} Object containing merged child store state
+   * @returns {object} Object containing merged child store state
    */
   getFlatState() {
     if (!this.config) {

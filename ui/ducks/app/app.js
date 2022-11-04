@@ -4,9 +4,6 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-// actionConstants
-const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED';
-
 export default function reduceApp(state = {}, action) {
   // default state
   const appState = {
@@ -38,11 +35,10 @@ export default function reduceApp(state = {}, action) {
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
+      lattice: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -51,9 +47,17 @@ export default function reduceApp(state = {}, action) {
       testKey: null,
     },
     gasLoadingAnimationIsShowing: false,
+    smartTransactionsError: null,
+    smartTransactionsErrorMessageDismissed: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
+    newCollectibleAddedMessage: '',
+    portfolioTooltipWasShownInThisSession: false,
+    sendInputCurrencySwitched: false,
+    newTokensImported: '',
+    newCustomNetworkAdded: {},
+    onboardedInThisUISession: false,
     ...state,
   };
 
@@ -91,6 +95,19 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         qrCodeData: action.value,
+      };
+
+    // Smart Transactions errors.
+    case actionConstants.SET_SMART_TRANSACTIONS_ERROR:
+      return {
+        ...appState,
+        smartTransactionsError: action.payload,
+      };
+
+    case actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE:
+      return {
+        ...appState,
+        smartTransactionsErrorMessageDismissed: true,
       };
 
     // modal methods:
@@ -289,6 +306,24 @@ export default function reduceApp(state = {}, action) {
         newNetworkAdded: action.value,
       };
 
+    case actionConstants.SET_NEW_TOKENS_IMPORTED:
+      return {
+        ...appState,
+        newTokensImported: action.value,
+      };
+
+    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+      return {
+        ...appState,
+        newCollectibleAddedMessage: action.value,
+      };
+
+    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
+      return {
+        ...appState,
+        portfolioTooltipWasShownInThisSession: true,
+      };
+
     case actionConstants.LOADING_METHOD_DATA_STARTED:
       return {
         ...appState,
@@ -299,12 +334,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         loadingMethodData: false,
-      };
-
-    case SET_THREEBOX_LAST_UPDATED:
-      return {
-        ...appState,
-        threeBoxLastUpdated: action.value,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -357,23 +386,36 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         ledgerTransportStatus: action.value,
       };
-
+    case actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH:
+      return {
+        ...appState,
+        sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
+      };
+    case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
+      return {
+        ...appState,
+        newCustomNetworkAdded: action.value,
+      };
+    case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
+      return {
+        ...appState,
+        onboardedInThisUISession: action.value,
+      };
     default:
       return appState;
   }
 }
 
 // Action Creators
-export function setThreeBoxLastUpdated(lastUpdated) {
-  return {
-    type: SET_THREEBOX_LAST_UPDATED,
-    value: lastUpdated,
-  };
-}
-
 export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function setPortfolioTooltipWasShownInThisSession() {
+  return {
+    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
   };
 }
 
@@ -404,4 +446,20 @@ export function getLedgerWebHidConnectedStatus(state) {
 
 export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getPortfolioTooltipWasShownInThisSession(state) {
+  return state.appState.portfolioTooltipWasShownInThisSession;
+}
+
+export function toggleCurrencySwitch() {
+  return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
+}
+
+export function setNewCustomNetworkAdded(value) {
+  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
+}
+
+export function setOnBoardedInThisUISession(value) {
+  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
 }

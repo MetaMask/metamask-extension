@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Atmesti"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Nuskaityti QR kodą"
+  },
   "about": {
     "message": "Apie"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija"
-  },
-  "acceleratingATransaction": {
-    "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
   },
   "accessingYourCamera": {
     "message": "Kreipiamasi į kamerą..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },
-  "addToAddressBook": {
-    "message": "Pridėti į adresų knygelę"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pvz., John D."
-  },
   "addToken": {
     "message": "Pridėti žetoną"
   },
@@ -56,9 +50,6 @@
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
   },
-  "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
-  },
   "amount": {
     "message": "Suma"
   },
@@ -67,8 +58,16 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "„MetaMask“",
+    "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Patvirtinti"
@@ -131,17 +130,14 @@
     "message": "Peržiūrėti paskyrą $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "„Blockies Identicon“ naudojimas"
-  },
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "buyWithWyre": {
-    "message": "Pirkti ETH su „Wyre“"
+    "message": "Pirkti $1 su „Wyre“"
   },
   "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „MetaMask“ paskyrą."
+    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
   },
   "bytes": {
     "message": "Baitai"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToKovan": {
-    "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
-  },
-  "connectingToRinkeby": {
-    "message": "Jungiamasi prie „Rinkeby“ bandomojo tinklo"
-  },
-  "connectingToRopsten": {
-    "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Nukopijuota!"
-  },
-  "copiedTransactionId": {
-    "message": "Nukopijuotas operacijos ID"
   },
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Dabartinė kalba"
   },
-  "customGas": {
-    "message": "Pritaikyti dujas"
-  },
-  "customGasSubTitle": {
-    "message": "Didinant mokestį gali mažėti apdorojimo trukmė, bet tai negarantuojama."
+  "custom": {
+    "message": "Išplėstiniai"
   },
   "customToken": {
     "message": "Pritaikytas žetonas"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
-  },
-  "defaultNetwork": {
-    "message": "Numatytasis „Ether“ operacijų tinklas yra pagrindinis tinklas."
   },
   "delete": {
     "message": "Ištrinti"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
-  "depositEther": {
-    "message": "Įnešti eterių"
-  },
   "details": {
     "message": "Išsami informacija"
-  },
-  "directDepositEther": {
-    "message": "Tiesiogiai įnešti eteriai"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
   },
   "done": {
     "message": "Atlikta"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
-  "enterAnAlias": {
-    "message": "Įveskite alternatyvųjį vardą"
-  },
   "enterPassword": {
     "message": "Įveskite slaptažodį"
   },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Numatomos apdorojimo trukmės"
   },
   "ethereumPublicAddress": {
     "message": "„Ethereum“ viešasis adresas"
@@ -417,9 +380,6 @@
   },
   "general": {
     "message": "Bendra"
-  },
-  "generalSettingsDescription": {
-    "message": "Valiutos keitimas, pagrindinė valiuta, kalba, „blockies identicon“"
   },
   "getEther": {
     "message": "Gauti eterių"
@@ -522,10 +482,10 @@
   "knownAddressRecipient": {
     "message": "Žinomas sutarties adresas."
   },
-  "kovan": {
-    "message": "„Kovan“ bandomasis tinklas"
-  },
   "learnMore": {
+    "message": "Sužinokite daugiau"
+  },
+  "learnMoreUpperCase": {
     "message": "Sužinokite daugiau"
   },
   "ledgerAccountRestriction": {
@@ -582,9 +542,6 @@
   "myAccounts": {
     "message": "Mano paskyros"
   },
-  "needEtherInWallet": {
-    "message": "Norėdami dirbti su decentralizuotomis programomis „MetaMask“, savo piniginėje turite turėti eterių."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -594,9 +551,6 @@
   },
   "networkName": {
     "message": "Tinklo pavadinimas"
-  },
-  "networkSettingsDescription": {
-    "message": "Įtraukti ir redaguoti tinkintus RPC tinklus"
   },
   "networks": {
     "message": "Tinklai"
@@ -625,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "Tik pradedate naudotis „MetaMask“?"
-  },
-  "newTotal": {
-    "message": "Nauja bendra suma"
-  },
-  "newTransactionFee": {
-    "message": "Naujas operacijos mokestis"
   },
   "next": {
     "message": "Toliau"
@@ -778,9 +726,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
@@ -792,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Šia fraze su niekuo NESIDALINKITE!"
-  },
-  "rinkeby": {
-    "message": "„Rinkeby“ bandomasis tinklas"
-  },
-  "ropsten": {
-    "message": "„Ropsten“ bandomasis tinklas"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"
@@ -832,23 +771,11 @@
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
-  "securitySettingsDescription": {
-    "message": "Privatumo nuostatos ir slaptažodinės atkūrimo frazė"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
-  },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
   },
-  "selectAHigherGasFee": {
-    "message": "Pasirinkite didesnį dujų mokestį, kad paspartintumėte savo operacijos apdorojimą.*"
-  },
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
-  },
-  "selectAnAccountHelp": {
-    "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
   },
   "selectEachPhrase": {
     "message": "Pasirinkite kiekvieną frazę, kad patikrintumėte, ar ji tinkama"
@@ -865,14 +792,8 @@
   "send": {
     "message": "Siųsti"
   },
-  "sendAmount": {
-    "message": "Siųsti sumą"
-  },
   "sendTokens": {
     "message": "Siųsti žetonus"
-  },
-  "separateEachWord": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "settings": {
     "message": "Nustatymai"
@@ -912,9 +833,6 @@
   },
   "signed": {
     "message": "Pasirašyta"
-  },
-  "slow": {
-    "message": "Lėtas"
   },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."

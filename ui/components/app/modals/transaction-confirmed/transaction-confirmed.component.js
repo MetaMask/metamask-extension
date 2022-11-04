@@ -28,7 +28,10 @@ export default class TransactionConfirmed extends PureComponent {
     return (
       <Modal onSubmit={this.handleSubmit} submitText={t('ok')}>
         <div className="transaction-confirmed__content">
-          <img src="images/check-icon.svg" alt="" />
+          <i
+            className="fa fa-check-circle fa-3x"
+            style={{ color: 'var(--color-success-default)' }}
+          />
           <div className="transaction-confirmed__title">
             {`${t('confirmed')}!`}
           </div>

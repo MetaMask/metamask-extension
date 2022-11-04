@@ -33,10 +33,10 @@ describe('Creation Successful Onboarding View', () => {
       .mockReturnValue({ push: pushMock });
   });
 
-  it('should call completeOnboarding in the background when "Done" button is clicked', () => {
+  it('should call completeOnboarding in the background when "Got it!" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const doneButton = getByText('Done');
-    fireEvent.click(doneButton);
+    const gotItButton = getByText('Got it!');
+    fireEvent.click(gotItButton);
     expect(completeOnboardingStub).toHaveBeenCalledTimes(1);
   });
 

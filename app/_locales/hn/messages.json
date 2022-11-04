@@ -22,6 +22,14 @@
     "message": "मेटामास्क/MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "मंजूर"
   },
@@ -36,9 +44,6 @@
   },
   "balance": {
     "message": "उपलब्ध बैलेंस।"
-  },
-  "blockiesIdenticon": {
-    "message": "ब्लॉकीज पहचान का उपयोग करें"
   },
   "cancel": {
     "message": "रद्द करें"
@@ -67,29 +72,14 @@
   "createAccount": {
     "message": "खाता बनाएं"
   },
-  "customGas": {
-    "message": "अनुकूलित करें गैस"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
   "decimalsMustZerotoTen": {
     "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
   },
-  "defaultNetwork": {
-    "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
-  },
-  "depositEther": {
-    "message": "जमा - Ether"
-  },
   "details": {
     "message": "संदेश विवरण"
-  },
-  "directDepositEther": {
-    "message": "सीधे ईथर जमा करें"
-  },
-  "directDepositEtherExplainer": {
-    "message": "यदि आपके पास पहले से कुछ ईथर है, तो सीधे जमा द्वारा अपने नए बटुए में ईथर प्राप्त करने का तेज़ तरीका है।"
   },
   "done": {
     "message": "संपन्न"
@@ -185,9 +175,6 @@
     "message": "JSON फ़ाइल",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "कोवान टेस्ट नेटवर्क"
-  },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
   },
@@ -217,9 +204,6 @@
   },
   "myAccounts": {
     "message": "मेरे खाते"
-  },
-  "needEtherInWallet": {
-    "message": "मेटामास्क का उपयोग करने वाले विकेन्द्रीकृत अनुप्रयोगों के साथ बातचीत करने के लिए, आपको अपने वॉलेट में ईथर की आवश्यकता होगी।"
   },
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
@@ -293,12 +277,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
-  },
-  "rinkeby": {
-    "message": "रिचीव टेस्ट नेटवर्क"
-  },
-  "ropsten": {
-    "message": "रॉप्स्टेन टेस्ट नेटवर्क"
   },
   "save": {
     "message": "सहेजें"

@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afwijzen"
+  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
@@ -19,6 +22,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Goedkeuren"
   },
@@ -33,9 +44,6 @@
   },
   "balance": {
     "message": "Balans:"
-  },
-  "blockiesIdenticon": {
-    "message": "Gebruik Blockies Identicon"
   },
   "cancel": {
     "message": "Annuleer"
@@ -64,26 +72,11 @@
   "createAccount": {
     "message": "Account aanmaken"
   },
-  "customGas": {
-    "message": "Pas Gas aan"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
-  },
-  "depositEther": {
-    "message": "Stort Ether"
-  },
-  "directDepositEther": {
-    "message": "Directe Ether storten"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -179,9 +172,6 @@
     "message": "JSON-bestand",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan-testnetwerk"
-  },
   "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
@@ -208,9 +198,6 @@
   },
   "myAccounts": {
     "message": "Mijn accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -280,12 +267,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
-  "rinkeby": {
-    "message": "Rinkeby testnetwerk"
-  },
-  "ropsten": {
-    "message": "Ropsten testnetwerk"
   },
   "save": {
     "message": "Opslaan"

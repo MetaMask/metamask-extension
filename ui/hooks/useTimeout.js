@@ -6,8 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  * @param {Function} cb - callback function inside setTimeout
  * @param {number} delay - delay in ms
  * @param {boolean} [immediate] - determines whether the timeout is invoked immediately
- *
- * @return {Function|undefined}
+ * @returns {Function|undefined}
  */
 export function useTimeout(cb, delay, immediate = true) {
   const saveCb = useRef();

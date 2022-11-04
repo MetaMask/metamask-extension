@@ -36,10 +36,10 @@
 
   &__stack {
     overflow-x: auto;
-    background-color: #eee;
+    background-color: var(--color-background-alternative);
   }
 
   &__link-text {
-    color: #037dd6;
+    color: var(--color-primary-default);
   }
 }

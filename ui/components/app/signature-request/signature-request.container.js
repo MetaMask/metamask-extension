@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -14,10 +13,8 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    from,
-  );
+  const hardwareWalletRequiresConnection =
+    doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
 
   return {
@@ -28,18 +25,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-  };
-}
-
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const {
-    allAccounts,
-    isLedgerWallet,
-    hardwareWalletRequiresConnection,
-  } = stateProps;
+  const { allAccounts, isLedgerWallet, hardwareWalletRequiresConnection } =
+    stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -83,8 +71,4 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(SignatureRequest);
+export default connect(mapStateToProps, null, mergeProps)(SignatureRequest);

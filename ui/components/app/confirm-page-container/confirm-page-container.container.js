@@ -1,46 +1,42 @@
 import { connect } from 'react-redux';
-import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
-import * as actions from '../../../store/actions';
+import {
+  getAccountsWithLabels,
+  getAddressBookEntry,
+  getIsBuyableChain,
+  getNetworkIdentifier,
+  getSwapsDefaultToken,
+} from '../../../selectors';
+import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
   const to = ownProps.toAddress;
-
+  const isBuyableChain = getIsBuyableChain(state);
   const contact = getAddressBookEntry(state, to);
+  const networkIdentifier = getNetworkIdentifier(state);
+  const defaultToken = getSwapsDefaultToken(state);
+  const accountBalance = defaultToken.string;
+
   return {
+    isBuyableChain,
     contact,
     toName: contact?.name || ownProps.toName,
     isOwnedAccount: getAccountsWithLabels(state)
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
     to,
+    networkIdentifier,
+    accountBalance,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
-    showAddToAddressBookModal: (recipient) =>
-      dispatch(
-        actions.showModal({
-          name: 'ADD_TO_ADDRESSBOOK',
-          recipient,
-        }),
-      ),
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   };
-}
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps;
-  return {
-    ...ownProps,
-    ...restStateProps,
-    showAddToAddressBookModal: () =>
-      dispatchProps.showAddToAddressBookModal(to),
-  };
-}
+};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps,
 )(ConfirmPageContainer);

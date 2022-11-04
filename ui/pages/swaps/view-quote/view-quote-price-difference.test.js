@@ -2,7 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 describe('View Price Quote Difference', () => {
@@ -11,7 +12,7 @@ describe('View Price Quote Difference', () => {
   const state = {
     metamask: {
       tokens: [],
-      provider: { type: NETWORK_TYPE_RPC, nickname: '', rpcUrl: '' },
+      provider: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
       conversionRate: 600.0,
@@ -24,8 +25,7 @@ describe('View Price Quote Difference', () => {
   const DEFAULT_PROPS = {
     usedQuote: {
       trade: {
-        data:
-          '0x5f575529000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000007756e69737761700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca0000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000024855454cb32d335f0000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000005fc7b7100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001f161421c8e0000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca',
+        data: '0x5f575529000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000007756e69737761700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca0000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000024855454cb32d335f0000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000005fc7b7100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001f161421c8e0000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca',
         from: '0xd7440fdcb70a9fba55dfe06942ddbc17679c90ac',
         value: '0xde0b6b3a7640000',
         gas: '0xbbfd0',
@@ -48,7 +48,7 @@ describe('View Price Quote Difference', () => {
       priceSlippage: {
         ratio: 1.007876641534847,
         calculationError: '',
-        bucket: 'low',
+        bucket: GAS_RECOMMENDATIONS.LOW,
         sourceAmountInETH: 1,
         destinationAmountInETH: 0.9921849150875727,
       },
@@ -113,7 +113,7 @@ describe('View Price Quote Difference', () => {
 
   it('does not render when the item is in the low bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'low';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.LOW;
 
     renderComponent(props);
     const wrappingDiv = component.find(
@@ -124,18 +124,18 @@ describe('View Price Quote Difference', () => {
 
   it('displays an error when in medium bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'medium';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.MEDIUM;
 
     renderComponent(props);
-    expect(component.html()).toContain('medium');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.MEDIUM);
   });
 
   it('displays an error when in high bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'high';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.HIGH;
 
     renderComponent(props);
-    expect(component.html()).toContain('high');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
   });
 
   it('displays a fiat error when calculationError is present', () => {
@@ -144,6 +144,6 @@ describe('View Price Quote Difference', () => {
       'Could not determine price.';
 
     renderComponent(props);
-    expect(component.html()).toContain('high');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
   });
 });

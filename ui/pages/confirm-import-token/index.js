@@ -1,3 +1,3 @@
-import ConfirmImportToken from './confirm-import-token.container';
+import ConfirmImportToken from './confirm-import-token';
 
 export default ConfirmImportToken;

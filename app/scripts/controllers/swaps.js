@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
-import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
-import { calcGasTotal } from '../../../ui/pages/send/send.utils';
 import {
   conversionUtil,
   decGWEIToHexWEI,
@@ -19,15 +17,26 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   getBaseApi,
-} from '../../../ui/pages/swaps/swaps.util';
-import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
+} from '../../../shared/lib/swaps-utils';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -50,10 +59,12 @@ function calculateGasEstimateWithRefund(
     estimatedRefund,
     10,
   );
+  const isMaxGasMinusRefundNegative = maxGasMinusRefund.lt(0);
 
-  const gasEstimateWithRefund = maxGasMinusRefund.lt(estimatedGas, 16)
-    ? maxGasMinusRefund.toString(16)
-    : estimatedGas;
+  const gasEstimateWithRefund =
+    !isMaxGasMinusRefundNegative && maxGasMinusRefund.lt(estimatedGas, 16)
+      ? `0x${maxGasMinusRefund.toString(16)}`
+      : estimatedGas;
 
   return gasEstimateWithRefund;
 }
@@ -78,10 +89,14 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
-    useNewSwapsApi: false,
     saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+    swapsFeatureFlags: {},
   },
 };
 
@@ -91,7 +106,7 @@ export default class SwapsController {
     networkController,
     provider,
     getProviderConfig,
-    tokenRatesStore,
+    getTokenRatesState,
     fetchTradesInfo = defaultFetchTradesInfo,
     getCurrentChainId,
     getEIP1559GasFeeEstimates,
@@ -105,7 +120,7 @@ export default class SwapsController {
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
-    this.tokenRatesStore = tokenRatesStore;
+    this.getTokenRatesState = getTokenRatesState;
 
     this.pollCount = 0;
     this.getProviderConfig = getProviderConfig;
@@ -122,13 +137,13 @@ export default class SwapsController {
     });
   }
 
-  async fetchSwapsRefreshRates(chainId, useNewSwapsApi) {
+  async fetchSwapsNetworkConfig(chainId) {
     const response = await fetchWithCache(
-      getBaseApi('network', chainId, useNewSwapsApi),
+      getBaseApi('network', chainId),
       { method: 'GET' },
       { cacheRefreshTime: 600000 },
     );
-    const { refreshRates } = response || {};
+    const { refreshRates, parameters = {} } = response || {};
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
@@ -142,30 +157,42 @@ export default class SwapsController {
     return {
       quotes: refreshRates.quotes * 1000,
       quotesPrefetching: refreshRates.quotesPrefetching * 1000,
+      stxGetTransactions: refreshRates.stxGetTransactions * 1000,
+      stxBatchStatus: refreshRates.stxBatchStatus * 1000,
+      stxStatusDeadline: refreshRates.stxStatusDeadline,
+      stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
     };
   }
 
-  // Sets the refresh rate for quote updates from the MetaSwap API
-  async _setSwapsRefreshRates() {
+  // Sets the network config from the MetaSwap API.
+  async _setSwapsNetworkConfig() {
     const chainId = this._getCurrentChainId();
-    const { swapsState } = this.store.getState();
-    let swapsRefreshRates;
+    let swapsNetworkConfig;
     try {
-      swapsRefreshRates = await this.fetchSwapsRefreshRates(
-        chainId,
-        swapsState.useNewSwapsApi,
-      );
+      swapsNetworkConfig = await this.fetchSwapsNetworkConfig(chainId);
     } catch (e) {
-      console.error('Request for swaps quote refresh time failed: ', e);
+      console.error('Request for Swaps network config failed: ', e);
     }
     const { swapsState: latestSwapsState } = this.store.getState();
     this.store.updateState({
       swapsState: {
         ...latestSwapsState,
         swapsQuoteRefreshTime:
-          swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
-          swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsStxGetTransactionsRefreshTime:
+          swapsNetworkConfig?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+        swapsStxBatchStatusRefreshTime:
+          swapsNetworkConfig?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+        swapsStxStatusDeadline:
+          swapsNetworkConfig?.stxStatusDeadline ||
+          FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+        swapsStxMaxFeeMultiplier:
+          swapsNetworkConfig?.stxMaxFeeMultiplier ||
+          FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
       },
     });
   }
@@ -209,11 +236,7 @@ export default class SwapsController {
   ) {
     const { chainId } = fetchParamsMetaData;
     const {
-      swapsState: {
-        useNewSwapsApi,
-        quotesPollingLimitEnabled,
-        saveFetchedQuotes,
-      },
+      swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();
 
     if (!fetchParams) {
@@ -241,9 +264,8 @@ export default class SwapsController {
     let [newQuotes] = await Promise.all([
       this._fetchTradesInfo(fetchParams, {
         ...fetchParamsMetaData,
-        useNewSwapsApi,
       }),
-      this._setSwapsRefreshRates(),
+      this._setSwapsNetworkConfig(),
     ]);
 
     const {
@@ -277,14 +299,16 @@ export default class SwapsController {
         fetchParams.fromAddress,
         chainId,
       );
+      const [firstQuote] = Object.values(newQuotes);
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
-      // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
+      // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
       approvalRequired =
+        firstQuote.approvalNeeded &&
         allowance.eq(0) &&
-        Object.values(newQuotes)[0].aggregator !== 'wrappedNative';
+        firstQuote.aggregator !== 'wrappedNative';
       if (!approvalRequired) {
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -292,7 +316,7 @@ export default class SwapsController {
         }));
       } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn(
-          Object.values(newQuotes)[0].approvalNeeded,
+          firstQuote.approvalNeeded,
         );
 
         newQuotes = mapValues(newQuotes, (quote) => ({
@@ -316,10 +340,8 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const [
-        _topAggId,
-        quotesWithSavingsAndFeeData,
-      ] = await this._findTopQuoteAndCalculateSavings(newQuotes);
+      const [_topAggId, quotesWithSavingsAndFeeData] =
+        await this._findTopQuoteAndCalculateSavings(newQuotes);
       topAggId = _topAggId;
       newQuotes = quotesWithSavingsAndFeeData;
     }
@@ -466,10 +488,8 @@ export default class SwapsController {
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
-    const {
-      gasLimit: newGasEstimate,
-      simulationFails,
-    } = await this.timedoutGasReturn(quoteToUpdate.trade);
+    const { gasLimit: newGasEstimate, simulationFails } =
+      await this.timedoutGasReturn(quoteToUpdate.trade);
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -573,9 +593,16 @@ export default class SwapsController {
 
   setSwapsLiveness(swapsLiveness) {
     const { swapsState } = this.store.getState();
-    const { swapsFeatureIsLive, useNewSwapsApi } = swapsLiveness;
+    const { swapsFeatureIsLive } = swapsLiveness;
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive, useNewSwapsApi },
+      swapsState: { ...swapsState, swapsFeatureIsLive },
+    });
+  }
+
+  setSwapsFeatureFlags(swapsFeatureFlags) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsFeatureFlags },
     });
   }
 
@@ -587,10 +614,10 @@ export default class SwapsController {
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
-        useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);
@@ -610,7 +637,8 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const tokenConversionRates = this.tokenRatesStore.contractExchangeRates;
+    const { contractExchangeRates: tokenConversionRates } =
+      this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
@@ -623,10 +651,8 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const {
-      gasFeeEstimates,
-      gasEstimateType,
-    } = await this._getEIP1559GasFeeEstimates();
+    const { gasFeeEstimates, gasEstimateType } =
+      await this._getEIP1559GasFeeEstimates();
 
     let usedGasPrice = '0x0';
 
@@ -665,15 +691,15 @@ export default class SwapsController {
         destinationAmount = 0,
         destinationToken,
         destinationTokenInfo,
-        gasEstimate,
+        gasEstimateWithRefund,
         sourceAmount,
         sourceToken,
         trade,
         fee: metaMaskFee,
       } = quote;
 
-      const tradeGasLimitForCalculation = gasEstimate
-        ? new BigNumber(gasEstimate, 16)
+      const tradeGasLimitForCalculation = gasEstimateWithRefund
+        ? new BigNumber(gasEstimateWithRefund, 16)
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
 
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
@@ -727,18 +753,22 @@ export default class SwapsController {
       const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
         .minus(metaMaskFee, 10)
         .div(100);
-      const destinationAmountBeforeMetaMaskFee = decimalAdjustedDestinationAmount.div(
-        tokenPercentageOfPreFeeDestAmount,
-      );
+      const destinationAmountBeforeMetaMaskFee =
+        decimalAdjustedDestinationAmount.div(tokenPercentageOfPreFeeDestAmount);
       const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
         decimalAdjustedDestinationAmount,
       );
 
-      const tokenConversionRate = tokenConversionRates[destinationToken];
+      const tokenConversionRate =
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(tokenAddress, destinationToken),
+          )
+        ];
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
-        conversionRateForSorting,
+        conversionRateForSorting.toString(10),
         10,
       );
 
@@ -760,7 +790,7 @@ export default class SwapsController {
         quote.ethValueOfTokens = ethValueOfTokens.toString(10);
         quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
         quote.metaMaskFeeInEth = metaMaskFeeInTokens
-          .times(conversionRateForCalculations)
+          .times(conversionRateForCalculations.toString(10))
           .toString(10);
       }
 
@@ -777,7 +807,17 @@ export default class SwapsController {
       isSwapsDefaultTokenAddress(
         newQuotes[topAggId].destinationToken,
         chainId,
-      ) || Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
+      ) ||
+      Boolean(
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(
+              tokenAddress,
+              newQuotes[topAggId]?.destinationToken,
+            ),
+          )
+        ],
+      );
 
     let savings = null;
 
@@ -838,8 +878,8 @@ export default class SwapsController {
 /**
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @param {Array} _quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
+ * @returns {object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
@@ -916,7 +956,7 @@ function getMedianEthValueQuote(_quotes) {
  *
  * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
  * ethValueOfTokens properties
- * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * @returns {object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
  * the passed quote objects
  */
 function meansOfQuotesFeesAndValue(quotes) {

@@ -2,12 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "aboutSettingsDescription": {
-    "message": "ስሪት፣ የድጋፍ መስጫ ማዕከልና የግንኙነት መረጃ "
-  },
-  "acceleratingATransaction": {
-    "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
-  },
   "accessingYourCamera": {
     "message": "ወደ ካሜራዎ መድረስ..."
   },
@@ -41,12 +35,6 @@
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
-  "addToAddressBook": {
-    "message": "በአድራሻ መዝገብ ላይ አክል"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ለምሳሌ፡ ጆን ዲ."
-  },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -55,9 +43,6 @@
   },
   "advancedOptions": {
     "message": "የላቁ አማራጮች"
-  },
-  "advancedSettingsDescription": {
-    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
   },
   "amount": {
     "message": "ሰርዝ "
@@ -69,6 +54,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "ፍቀድ"
@@ -131,17 +124,14 @@
     "message": "መለያን በ$1እይ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon ተጠቀም"
-  },
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
   "buyWithWyre": {
-    "message": "ETH በ Wyre ይግዙ"
+    "message": "$1 በ Wyre ይግዙ"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ክሬዲት ካርድ ተጠቅመው ETH በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
+    "message": "Wyre ክሬዲት ካርድ ተጠቅመው $1 በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
   },
   "bytes": {
     "message": "ባይት"
@@ -194,17 +184,8 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToKovan": {
-    "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
-  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
-  },
-  "connectingToRinkeby": {
-    "message": "ከ Rinkeby የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
-  "connectingToRopsten": {
-    "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
   },
   "continueToWyre": {
     "message": "ወደ Wyre ይቀጥሉ"
@@ -217,9 +198,6 @@
   },
   "copiedExclamation": {
     "message": "ተቀድቷል"
-  },
-  "copiedTransactionId": {
-    "message": "የተቀዳ የግብይት መለያ ቁጥር"
   },
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
@@ -251,12 +229,6 @@
   "currentLanguage": {
     "message": "ወቅታዊ ቋንቋ"
   },
-  "customGas": {
-    "message": "ነዳጅን አብጅ"
-  },
-  "customGasSubTitle": {
-    "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },
@@ -265,9 +237,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
-  },
-  "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Mainnet ነው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -281,17 +250,8 @@
   "deleteNetworkDescription": {
     "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
-  "depositEther": {
-    "message": "Ether አስቀምጥ"
-  },
   "details": {
     "message": "ዝርዝሮች"
-  },
-  "directDepositEther": {
-    "message": "Ether በቀጥታ ያስቀምጡ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
   },
   "done": {
     "message": "ተጠናቅቋል"
@@ -347,17 +307,11 @@
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
   },
-  "enterAnAlias": {
-    "message": "ተለዋጭ ስም ያስገቡ"
-  },
   "enterPassword": {
     "message": "የይለፍ ቃል ያስገቡ"
   },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "የሚገመት የክወና ጊዜያት"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum ሕዝባዊ አድራሻ"
@@ -417,9 +371,6 @@
   },
   "general": {
     "message": "አጠቃላይ"
-  },
-  "generalSettingsDescription": {
-    "message": "የገንዘብ ልወጣ፣ ተቀዳሚ የገንዘብ ዓይነት፣ ቋንቋ፣ blockies identicon"
   },
   "getEther": {
     "message": "Ether ያግኙ"
@@ -522,9 +473,6 @@
   "knownAddressRecipient": {
     "message": "የሚታወቅ የግንኙነት አድራሻ።"
   },
-  "kovan": {
-    "message": "Kovan የሙከራ አውታረ መረብ"
-  },
   "learnMore": {
     "message": "የበለጠ ይወቁ"
   },
@@ -579,9 +527,6 @@
   "myAccounts": {
     "message": "የእኔ መለያዎች"
   },
-  "needEtherInWallet": {
-    "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
-  },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
     "description": "User is important an account and needs to add a file to continue"
@@ -591,9 +536,6 @@
   },
   "networkName": {
     "message": "የአውታረ መረብ ስም"
-  },
-  "networkSettingsDescription": {
-    "message": "ብጁ የ RPC አውታረ መረቦችን አክልና አርትዕ"
   },
   "networks": {
     "message": "አውታረ መረቦች"
@@ -622,12 +564,6 @@
   },
   "newToMetaMask": {
     "message": "ለ MetaMask አዲስ ነዎት?"
-  },
-  "newTotal": {
-    "message": "አዲስ ድምር"
-  },
-  "newTransactionFee": {
-    "message": "አዲስ የግብይት ክፍያ"
   },
   "next": {
     "message": "ቀጣይ"
@@ -775,9 +711,6 @@
   "restore": {
     "message": "እነበረበት መልስ"
   },
-  "restoreAccountWithSeed": {
-    "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
@@ -789,12 +722,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "ይህን ሐረግ ለየትኛውም ሰው አያጋሩ!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby የሙከራ አውታረ መረብ"
-  },
-  "ropsten": {
-    "message": "Ropsten የሙከራ አውታረ መረብ "
   },
   "rpcUrl": {
     "message": "አዲስ የ RPC URL"
@@ -829,23 +756,11 @@
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
-  "securitySettingsDescription": {
-    "message": "የግላዊነት ቅንብሮች እና የቋት ዘር ሐረግ"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
-  },
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },
-  "selectAHigherGasFee": {
-    "message": "የግብይትዎን ክዋኔ ለማቀላጠፍ የበለጠ የነዳጅ ዋጋ ይምረጡ።*"
-  },
   "selectAnAccount": {
     "message": "መለያ ይምረጡ"
-  },
-  "selectAnAccountHelp": {
-    "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
   },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"
@@ -862,14 +777,8 @@
   "send": {
     "message": "ላክ"
   },
-  "sendAmount": {
-    "message": "መጠኑን ላክ"
-  },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "separateEachWord": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
   "settings": {
     "message": "ቅንብሮች"
@@ -909,9 +818,6 @@
   },
   "signed": {
     "message": "ተፈርሟል"
-  },
-  "slow": {
-    "message": "ቀስ"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"

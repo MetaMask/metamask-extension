@@ -1,17 +1,21 @@
 import { connect } from 'react-redux';
-import { getShouldShowFiat } from '../../../selectors';
+import {
+  getShouldShowFiat,
+  getIsMultiLayerFeeNetwork,
+} from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction, isTokenApprove } = ownProps;
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
-    txReceipt: { gasUsed, effectiveGasPrice } = {},
+    txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
     baseFeePerGas,
   } = transaction;
 
@@ -33,7 +37,15 @@ const mapStateToProps = (state, ownProps) => {
       usedGasPrice &&
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
-  const totalInHex = sumHexes(hexGasTotal, value);
+
+  let totalInHex = sumHexes(hexGasTotal, value);
+
+  const isMultiLayerFeeNetwork =
+    getIsMultiLayerFeeNetwork(state) && l1HexGasTotal !== undefined;
+
+  if (isMultiLayerFeeNetwork) {
+    totalInHex = sumHexes(totalInHex, l1HexGasTotal);
+  }
 
   return {
     nativeCurrency: getNativeCurrency(state),
@@ -48,6 +60,8 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
+    isMultiLayerFeeNetwork,
+    l1HexGasTotal,
   };
 };
 

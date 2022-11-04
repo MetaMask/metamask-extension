@@ -24,9 +24,8 @@ export default function PrivacySettings() {
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
-  const [showIncomingTransactions, setShowIncomingTransactions] = useState(
-    true,
-  );
+  const [showIncomingTransactions, setShowIncomingTransactions] =
+    useState(true);
 
   const handleSubmit = () => {
     dispatch(
@@ -40,7 +39,7 @@ export default function PrivacySettings() {
 
   return (
     <>
-      <div className="privacy-settings">
+      <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
           <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
             {t('setAdvancedPrivacySettings')}
@@ -67,7 +66,7 @@ export default function PrivacySettings() {
                 {t('etherscan')}
               </a>,
               <a
-                href="https://cn.etherscan.com/privacyPolicy"
+                href="https://etherscan.io/privacyPolicy"
                 target="_blank"
                 rel="noreferrer"
                 key="privacyMsg"
@@ -103,7 +102,7 @@ export default function PrivacySettings() {
             value={turnOnTokenDetection}
             setValue={setTurnOnTokenDetection}
             title={t('turnOnTokenDetection')}
-            description={t('useTokenDetectionDescription')}
+            description={t('useTokenDetectionPrivacyDesc')}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>

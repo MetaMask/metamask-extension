@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejte"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Enspeksyon QR Kòd"
+  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -40,6 +46,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Apwouve"
   },
@@ -63,9 +77,6 @@
   },
   "balance": {
     "message": "Balans"
-  },
-  "blockiesIdenticon": {
-    "message": "Itilize Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
@@ -97,17 +108,8 @@
   "connectHardwareWallet": {
     "message": "Konekte Materyèl Wallet"
   },
-  "connectingToKovan": {
-    "message": "Konekte nan Kovan Tès Rezo a"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
-  },
-  "connectingToRinkeby": {
-    "message": "Konekte nan Rinkeby Tès Rezo a"
-  },
-  "connectingToRopsten": {
-    "message": "Konekte ak Ropsten Tès Rezo a"
   },
   "contractDeployment": {
     "message": "Kontra Deplwaman"
@@ -133,9 +135,6 @@
   "currentLanguage": {
     "message": "Lang Aktyèl"
   },
-  "customGas": {
-    "message": "Koutim Gaz"
-  },
   "customToken": {
     "message": "Koutim Token"
   },
@@ -145,20 +144,8 @@
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
-  "defaultNetwork": {
-    "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
-  },
-  "depositEther": {
-    "message": "Depo Ether"
-  },
   "details": {
     "message": "Detay yo"
-  },
-  "directDepositEther": {
-    "message": "Dirèkteman Depo Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ou deja gen kèk Ether, fason ki pi rapid yo ka resevwa Ether nan nouvo Wallet ou pa depo dirèk."
   },
   "done": {
     "message": "Fini"
@@ -296,10 +283,10 @@
     "message": "JSON Dosye",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "Kovan Tès Rezo"
-  },
   "learnMore": {
+    "message": "Aprann plis"
+  },
+  "learnMoreUpperCase": {
     "message": "Aprann plis"
   },
   "ledgerAccountRestriction": {
@@ -340,9 +327,6 @@
   },
   "myAccounts": {
     "message": "Kont mwen"
-  },
-  "needEtherInWallet": {
-    "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -480,9 +464,6 @@
   "restore": {
     "message": "Retabli"
   },
-  "restoreAccountWithSeed": {
-    "message": "Retabli kont ou avèk yo Seed Fraz"
-  },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
@@ -494,12 +475,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "PA pataje fraz sa a avèk nenpòt moun!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Tès Rezo"
-  },
-  "ropsten": {
-    "message": "Ropsten Tès Rezo"
   },
   "save": {
     "message": "Sove"
@@ -528,9 +503,6 @@
   "selectAnAccount": {
     "message": "Chwazi yon kont"
   },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
-  },
   "selectHdPath": {
     "message": "Chwazi chemen HD"
   },
@@ -545,9 +517,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "separateEachWord": {
-    "message": "Separe chak mo ak yon sèl espas"
   },
   "settings": {
     "message": "Paramèt"

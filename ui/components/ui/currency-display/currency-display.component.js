@@ -35,7 +35,9 @@ export default function CurrencyDisplay({
       style={style}
       title={(!hideTitle && title) || null}
     >
-      {prefixComponent}
+      <span className="currency-display-component__prefix">
+        {prefixComponent}
+      </span>
       <span className="currency-display-component__text">
         {parts.prefix}
         {parts.value}
@@ -50,17 +52,17 @@ export default function CurrencyDisplay({
 }
 
 CurrencyDisplay.propTypes = {
-  'className': PropTypes.string,
-  'currency': PropTypes.string,
+  className: PropTypes.string,
+  currency: PropTypes.string,
   'data-testid': PropTypes.string,
-  'denomination': PropTypes.oneOf([GWEI, ETH]),
-  'displayValue': PropTypes.string,
-  'hideLabel': PropTypes.bool,
-  'hideTitle': PropTypes.bool,
-  'numberOfDecimals': PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  'prefix': PropTypes.string,
-  'prefixComponent': PropTypes.node,
-  'style': PropTypes.object,
-  'suffix': PropTypes.string,
-  'value': PropTypes.string,
+  denomination: PropTypes.oneOf([GWEI, ETH]),
+  displayValue: PropTypes.string,
+  hideLabel: PropTypes.bool,
+  hideTitle: PropTypes.bool,
+  numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  prefix: PropTypes.string,
+  prefixComponent: PropTypes.node,
+  style: PropTypes.object,
+  suffix: PropTypes.string,
+  value: PropTypes.string,
 };

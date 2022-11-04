@@ -1,15 +1,17 @@
 @import 'choose-account/index';
+@import 'flask/snap-install/index';
+@import 'flask/snap-update/index';
 @import 'redirect/index';
 
 .permissions-connect {
   width: 100%;
   height: 100%;
   position: relative;
-  background: white;
+  background: var(--color-background-default);
   display: flex;
   flex-direction: column;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     .page-container {
       max-height: none;
       min-height: auto;
@@ -24,9 +26,10 @@
   }
 
   &__back {
-    @include H6;
+    @include H7;
 
-    color: $Grey-600;
+    color: var(--color-icon-default);
+    font-weight: bold;
     cursor: pointer;
 
     i {
@@ -37,7 +40,7 @@
   &__page-count {
     @include H7;
 
-    color: #6a737d;
+    color: var(--color-text-default);
     grid-column: 2;
     justify-self: end;
     font-weight: bold;

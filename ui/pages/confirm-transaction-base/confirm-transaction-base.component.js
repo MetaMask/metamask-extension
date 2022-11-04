@@ -1,42 +1,51 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { stripHexPrefix } from 'ethereumjs-util';
+///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
+import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
-import {
-  addHexes,
-  hexToDecimal,
-  hexWEIToDecGWEI,
-} from '../../helpers/utils/conversions.util';
+import { addHexes } from '../../helpers/utils/conversions.util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
-  TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import CopyRawData from '../../components/app/transaction-decoding/components/ui/copy-raw-data';
+
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
+import ActionableMessage from '../../components/ui/actionable-message';
+import Disclosure from '../../components/ui/disclosure';
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import { getMethodName } from '../../helpers/utils/metrics';
+import {
+  getTransactionTypeTitle,
+  isLegacyTransaction,
+} from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
+import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
+import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
-
+import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
+import Typography from '../../components/ui/typography/typography';
 import {
   COLORS,
   FONT_STYLE,
@@ -49,16 +58,30 @@ import {
   removePollingTokenFromAppState,
 } from '../../store/actions';
 
-import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
+import { DropdownTab, Tab } from '../../components/ui/tabs';
+///: END:ONLY_INCLUDE_IN
+
+import {
+  NETWORK_TO_NAME_MAP,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  CHAIN_ID_TO_NETWORK_ID_MAP,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../shared/constants/network';
+import TransactionAlerts from './transaction-alerts';
+
 const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+  process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -99,12 +122,17 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
+    customTokenAmount: PropTypes.string,
+    dappProposedTokenAmount: PropTypes.string,
+    currentTokenBalance: PropTypes.string,
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
@@ -129,6 +157,15 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
+    isMultiLayerFeeNetwork: PropTypes.bool,
+    eip1559V2Enabled: PropTypes.bool,
+    showBuyModal: PropTypes.func,
+    isBuyableChain: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightSnaps: PropTypes.arrayOf(PropTypes.object),
+    ///: END:ONLY_INCLUDE_IN
+    assetStandard: PropTypes.string,
   };
 
   state = {
@@ -137,6 +174,10 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
+    userAcknowledgedGasMissing: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    selectedInsightSnapId: this.props.insightSnaps[0]?.id,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   componentDidUpdate(prevProps) {
@@ -210,7 +251,7 @@ export default class ConfirmTransactionBase extends Component {
       balance,
       conversionRate,
       hexMaximumTransactionFee,
-      txData: { simulationFails, txParams: { value: amount } = {} } = {},
+      txData: { txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
       gasFeeIsCustom,
@@ -239,15 +280,6 @@ export default class ConfirmTransactionBase extends Component {
       };
     }
 
-    if (simulationFails) {
-      return {
-        valid: true,
-        errorKey: simulationFails.errorKey
-          ? simulationFails.errorKey
-          : TRANSACTION_ERROR_KEY,
-      };
-    }
-
     if (noGasPrice && !gasFeeIsCustom) {
       return {
         valid: false,
@@ -267,13 +299,12 @@ export default class ConfirmTransactionBase extends Component {
       methodData = {},
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'User clicks "Edit" on gas',
+      properties: {
         action: 'Confirm Screen',
-        name: 'User clicks "Edit" on gas',
-      },
-      customVariables: {
+        legacy_event: true,
         recipientKnown: null,
         functionType:
           actionKey ||
@@ -288,6 +319,16 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCloseEditGas() {
     this.setState({ editingGas: false });
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  handleSnapSelected(snapId) {
+    this.setState({ selectedInsightSnapId: snapId });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  setUserAcknowledgedGasMissing() {
+    this.setState({ userAcknowledgedGasMissing: true });
   }
 
   renderDetails() {
@@ -310,8 +351,24 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       supportsEIP1559,
+      isMultiLayerFeeNetwork,
+      nativeCurrency,
+      showBuyModal,
+      isBuyableChain,
     } = this.props;
     const { t } = this.context;
+    const { userAcknowledgedGasMissing } = this.state;
+
+    const { valid } = this.getErrorKey();
+    const isDisabled = () => {
+      return userAcknowledgedGasMissing ? false : !valid;
+    };
+
+    const hasSimulationError = Boolean(txData.simulationFails);
+
+    const renderSimulationFailureWarning =
+      hasSimulationError && !userAcknowledgedGasMissing;
+    const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
 
     const renderTotalMaxAmount = () => {
       if (
@@ -341,12 +398,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={hexTransactionTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={hexTransactionTotal}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -360,12 +420,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
-            value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              key="total-detail-text"
+              value={hexTransactionTotal}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -382,7 +445,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="custom-nonce-input">
             <TextField
               type="number"
-              min="0"
+              min={0}
               placeholder={
                 typeof nextNonce === 'number' ? nextNonce.toString() : null
               }
@@ -403,132 +466,200 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const renderGasDetailsItem = () => {
+      return this.supportsEIP1559V2 ? (
+        <GasDetailsItem
+          key="gas_details"
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
+      ) : (
+        <TransactionDetailItem
+          key="gas-item"
+          detailTitle={
+            txData.dappSuggestedGasFees ? (
+              <>
+                {t('transactionDetailGasHeading')}
+                <InfoTooltip
+                  contentText={t('transactionDetailDappGasTooltip')}
+                  position="top"
+                >
+                  <i className="fa fa-info-circle" />
+                </InfoTooltip>
+              </>
+            ) : (
+              <>
+                {t('transactionDetailGasHeading')}
+                <InfoTooltip
+                  contentText={
+                    <>
+                      <p>
+                        {t('transactionDetailGasTooltipIntro', [
+                          isMainnet ? t('networkNameEthereum') : '',
+                        ])}
+                      </p>
+                      <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                      <p>
+                        <a
+                          href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t('transactionDetailGasTooltipConversion')}
+                        </a>
+                      </p>
+                    </>
+                  }
+                  position="top"
+                >
+                  <i className="fa fa-info-circle" />
+                </InfoTooltip>
+              </>
+            )
+          }
+          detailText={
+            <div className="confirm-page-container-content__currency-container test">
+              {renderHeartBeatIfNotInTest()}
+              <UserPreferencedCurrencyDisplay
+                type={SECONDARY}
+                value={hexMinimumTransactionFee}
+                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              />
+            </div>
+          }
+          detailTotal={
+            <div className="confirm-page-container-content__currency-container">
+              {renderHeartBeatIfNotInTest()}
+              <UserPreferencedCurrencyDisplay
+                type={PRIMARY}
+                value={hexMinimumTransactionFee}
+                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                numberOfDecimals={6}
+              />
+            </div>
+          }
+          subText={
+            <>
+              <strong key="editGasSubTextFeeLabel">
+                {t('editGasSubTextFeeLabel')}
+              </strong>
+              <div
+                key="editGasSubTextFeeValue"
+                className="confirm-page-container-content__currency-container"
+              >
+                {renderHeartBeatIfNotInTest()}
+                <UserPreferencedCurrencyDisplay
+                  key="editGasSubTextFeeAmount"
+                  type={PRIMARY}
+                  value={hexMaximumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />
+              </div>
+            </>
+          }
+          subTitle={
+            <>
+              {txData.dappSuggestedGasFees ? (
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontStyle={FONT_STYLE.ITALIC}
+                  color={COLORS.TEXT_ALTERNATIVE}
+                >
+                  {t('transactionDetailDappGasMoreInfo')}
+                </Typography>
+              ) : (
+                ''
+              )}
+              {supportsEIP1559 && (
+                <GasTiming
+                  maxPriorityFeePerGas={hexWEIToDecGWEI(
+                    maxPriorityFeePerGas ||
+                      txData.txParams.maxPriorityFeePerGas,
+                  ).toString()}
+                  maxFeePerGas={hexWEIToDecGWEI(
+                    maxFeePerGas || txData.txParams.maxFeePerGas,
+                  ).toString()}
+                />
+              )}
+            </>
+          }
+        />
+      );
+    };
+
+    const simulationFailureWarning = () => (
+      <div className="confirm-page-container-content__error-container">
+        <ActionableMessage
+          message={t('simulationErrorMessageV2')}
+          useIcon
+          iconFillColor="var(--color-error-default)"
+          type="danger"
+          primaryActionV2={
+            userAcknowledgedGasMissing === true
+              ? undefined
+              : {
+                  label: t('proceedWithTransaction'),
+                  onClick: () => this.setUserAcknowledgedGasMissing(),
+                }
+          }
+        />
+      </div>
+    );
+
     return (
       <div className="confirm-page-container-content__details">
+        <TransactionAlerts
+          setUserAcknowledgedGasMissing={() =>
+            this.setUserAcknowledgedGasMissing()
+          }
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          nativeCurrency={nativeCurrency}
+          networkName={networkName}
+          showBuyModal={showBuyModal}
+          type={txData.type}
+          isBuyableChain={isBuyableChain}
+        />
         <TransactionDetail
-          onEdit={() => this.handleEditGas()}
+          disabled={isDisabled()}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          onEdit={
+            renderSimulationFailureWarning || isMultiLayerFeeNetwork
+              ? null
+              : () => this.handleEditGas()
+          }
           rows={[
-            <TransactionDetailItem
-              key="gas-item"
-              detailTitle={
-                txData.dappSuggestedGasFees ? (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={t('transactionDetailDappGasTooltip')}
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                ) : (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={
-                        <>
-                          <p>
-                            {t('transactionDetailGasTooltipIntro', [
-                              isMainnet ? t('networkNameEthereum') : '',
-                            ])}
-                          </p>
-                          <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                          <p>
-                            <a
-                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('transactionDetailGasTooltipConversion')}
-                            </a>
-                          </p>
-                        </>
-                      }
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                )
-              }
-              detailTitleColor={COLORS.BLACK}
-              detailText={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                  />
-                </div>
-              }
-              detailTotal={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>
-              }
-              subText={t('editGasSubTextFee', [
-                <b key="editGasSubTextFeeLabel">
-                  {t('editGasSubTextFeeLabel')}
-                </b>,
-                <div
-                  key="editGasSubTextFeeValue"
-                  className="confirm-page-container-content__currency-container"
-                >
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    key="editGasSubTextFeeAmount"
-                    type={PRIMARY}
-                    value={hexMaximumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>,
-              ])}
-              subTitle={
-                <>
-                  {txData.dappSuggestedGasFees ? (
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      fontStyle={FONT_STYLE.ITALIC}
-                      color={COLORS.UI4}
-                    >
-                      {t('transactionDetailDappGasMoreInfo')}
-                    </Typography>
-                  ) : (
-                    ''
-                  )}
-                  {supportsEIP1559 && (
-                    <GasTiming
-                      maxPriorityFeePerGas={hexWEIToDecGWEI(
-                        maxPriorityFeePerGas ||
-                          txData.txParams.maxPriorityFeePerGas,
-                      )}
-                      maxFeePerGas={hexWEIToDecGWEI(
-                        maxFeePerGas || txData.txParams.maxFeePerGas,
-                      )}
+            renderSimulationFailureWarning &&
+              !this.supportsEIP1559V2 &&
+              simulationFailureWarning(),
+            !renderSimulationFailureWarning &&
+              !isMultiLayerFeeNetwork &&
+              renderGasDetailsItem(),
+            !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
+              <MultiLayerFeeMessage
+                transaction={txData}
+                layer2fee={hexMinimumTransactionFee}
+                nativeCurrency={nativeCurrency}
+              />
+            ),
+            !isMultiLayerFeeNetwork && (
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={renderTotalDetailText()}
+                detailTotal={renderTotalDetailTotal()}
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={
+                  <div className="confirm-page-container-content__total-amount">
+                    <LoadingHeartBeat
+                      estimateUsed={this.props.txData?.userFeeLevel}
                     />
-                  )}
-                </>
-              }
-            />,
-            <TransactionDetailItem
-              key="total-item"
-              detailTitle={t('total')}
-              detailText={renderTotalDetailText()}
-              detailTotal={renderTotalDetailTotal()}
-              subTitle={t('transactionDetailGasTotalSubtitle')}
-              subText={t('editGasSubTextAmount', [
-                <b key="editGasSubTextAmountLabel">
-                  {t('editGasSubTextAmountLabel')}
-                </b>,
-                renderTotalMaxAmount(),
-              ])}
-            />,
+                    <strong key="editGasSubTextAmountLabel">
+                      {t('editGasSubTextAmountLabel')}
+                    </strong>{' '}
+                    {renderTotalMaxAmount()}
+                  </div>
+                }
+              />
+            ),
           ]}
         />
         {nonceField}
@@ -544,7 +675,7 @@ export default class ConfirmTransactionBase extends Component {
   renderData(functionType) {
     const { t } = this.context;
     const {
-      txData: { txParams: { data } = {} } = {},
+      txData: { txParams } = {},
       methodData: { params } = {},
       hideData,
       dataComponent,
@@ -554,13 +685,51 @@ export default class ConfirmTransactionBase extends Component {
       return null;
     }
 
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
+
     return (
       dataComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {functionType}
+              {`${functionType} ${functionParams}`}
+            </span>
+          </div>
+          <Disclosure>
+            <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+          </Disclosure>
+        </div>
+      )
+    );
+  }
+
+  renderDataHex(functionType) {
+    const { t } = this.context;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataHexComponent,
+    } = this.props;
+
+    if (hideData || !txParams.to) {
+      return null;
+    }
+
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
+
+    return (
+      dataHexComponent || (
+        <div className="confirm-page-container-content__data">
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('functionType')}:`}
+            <span className="confirm-page-container-content__function-type">
+              {`${functionType} ${functionParams}`}
             </span>
           </div>
           {params && (
@@ -574,13 +743,75 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           )}
           <div className="confirm-page-container-content__data-box-label">
-            {`${t('hexData')}: ${toBuffer(data).length} bytes`}
+            {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
           </div>
-          <div className="confirm-page-container-content__data-box">{data}</div>
+          <div className="confirm-page-container-content__data-box">
+            {txParams?.data}
+          </div>
+          <CopyRawData data={txParams?.data} />
         </div>
       )
     );
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  renderInsight() {
+    const { txData, insightSnaps } = this.props;
+    const { selectedInsightSnapId } = this.state;
+    const { txParams, chainId } = txData;
+
+    const selectedSnap = insightSnaps.find(
+      ({ id }) => id === selectedInsightSnapId,
+    );
+
+    const allowedTransactionTypes =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+      txData.type === TRANSACTION_TYPES.SIMPLE_SEND ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+
+    const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+    const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+
+    if (!allowedTransactionTypes || !insightSnaps.length) {
+      return null;
+    }
+
+    const dropdownOptions = insightSnaps.map(
+      ({ id, manifest: { proposedName } }) => ({
+        value: id,
+        name: proposedName,
+      }),
+    );
+
+    return insightSnaps.length > 1 ? (
+      <DropdownTab
+        className="confirm-page-container-content__tab"
+        options={dropdownOptions}
+        selectedOption={selectedInsightSnapId}
+        onChange={(snapId) => this.handleSnapSelected(snapId)}
+      >
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          selectedSnap={selectedSnap}
+        />
+      </DropdownTab>
+    ) : (
+      <Tab
+        className="confirm-page-container-content__tab"
+        name={selectedSnap.manifest.proposedName}
+      >
+        <SnapInsight
+          transaction={txParams}
+          chainId={caip2ChainId}
+          selectedSnap={selectedSnap}
+        />
+      </Tab>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   handleEdit() {
     const {
@@ -593,13 +824,12 @@ export default class ConfirmTransactionBase extends Component {
       methodData = {},
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Edit Transaction',
+      properties: {
         action: 'Confirm Screen',
-        name: 'Edit Transaction',
-      },
-      customVariables: {
+        legacy_event: true,
         recipientKnown: null,
         functionType:
           actionKey ||
@@ -660,10 +890,15 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       updateCustomNonce,
       maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
       maxPriorityFeePerGas,
       baseFeePerGas,
+      methodData,
     } = this.props;
     const { submitting } = this.state;
+    const { name } = methodData;
 
     if (submitting) {
       return;
@@ -671,6 +906,26 @@ export default class ConfirmTransactionBase extends Component {
 
     if (baseFeePerGas) {
       txData.estimatedBaseFee = baseFeePerGas;
+    }
+
+    if (name) {
+      txData.contractMethodName = name;
+    }
+
+    if (dappProposedTokenAmount) {
+      txData.dappProposedTokenAmount = dappProposedTokenAmount;
+      txData.originalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (customTokenAmount) {
+      txData.customTokenAmount = customTokenAmount;
+      txData.finalApprovalAmount = customTokenAmount;
+    } else if (dappProposedTokenAmount !== undefined) {
+      txData.finalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (currentTokenBalance) {
+      txData.currentTokenBalance = currentTokenBalance;
     }
 
     if (maxFeePerGas) {
@@ -720,20 +975,24 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   renderTitleComponent() {
-    const { title, hexTransactionAmount } = this.props;
+    const { title, hexTransactionAmount, txData } = this.props;
 
     // Title string passed in by props takes priority
     if (title) {
       return null;
     }
 
+    const isContractInteraction =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+
     return (
       <UserPreferencedCurrencyDisplay
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="26"
-        hideLabel
+        ethLogoHeight={24}
+        hideLabel={!isContractInteraction}
+        showCurrencySuffix={isContractInteraction}
       />
     );
   }
@@ -780,11 +1039,6 @@ export default class ConfirmTransactionBase extends Component {
     };
   }
 
-  _beforeUnload = () => {
-    const { txData: { id } = {}, cancelTransaction } = this.props;
-    cancelTransaction({ id });
-  };
-
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -794,9 +1048,6 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
@@ -808,21 +1059,16 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       tryReverseResolveAddress,
     } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    const { trackEvent } = this.context;
+    trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Confirm: Started',
+      properties: {
         action: 'Confirm Screen',
-        name: 'Confirm: Started',
-      },
-      customVariables: {
+        legacy_event: true,
         origin,
       },
     });
-
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
 
     getNextNonce();
     if (toAddress) {
@@ -853,6 +1099,11 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
+  supportsEIP1559V2 =
+    this.props.eip1559V2Enabled &&
+    this.props.supportsEIP1559 &&
+    !isLegacyTransaction(this.props.txData);
+
   render() {
     const { t } = this.context;
     const {
@@ -865,7 +1116,7 @@ export default class ConfirmTransactionBase extends Component {
       methodData,
       title,
       hideSubtitle,
-      identiconAddress,
+      tokenAddress,
       contentComponent,
       onEdit,
       nonce,
@@ -879,6 +1130,9 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
+      image,
+      isApprovalOrRejection,
+      assetStandard,
     } = this.props;
     const {
       submitting,
@@ -886,10 +1140,14 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
+      userAcknowledgedGasMissing,
     } = this.state;
 
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
+    const hasSimulationError = Boolean(txData.simulationFails);
+    const renderSimulationFailureWarning =
+      hasSimulationError && !userAcknowledgedGasMissing;
     const {
       totalTx,
       positionOfCurrentTx,
@@ -902,7 +1160,14 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
-    let functionType = getMethodName(name);
+    let functionType;
+    if (
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      txData.origin !== 'metamask'
+    ) {
+      functionType = getMethodName(name);
+    }
+
     if (!functionType) {
       if (type) {
         functionType = getTransactionTypeTitle(t, type, nativeCurrency);
@@ -910,68 +1175,71 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
+
     return (
-      <ConfirmPageContainer
-        fromName={fromName}
-        fromAddress={fromAddress}
-        showAccountInHeader={showAccountInHeader}
-        toName={toName}
-        toAddress={toAddress}
-        toEns={toEns}
-        toNickname={toNickname}
-        showEdit={Boolean(onEdit)}
-        action={functionType}
-        title={title}
-        titleComponent={this.renderTitleComponent()}
-        subtitleComponent={this.renderSubtitleComponent()}
-        hideSubtitle={hideSubtitle}
-        detailsComponent={this.renderDetails()}
-        dataComponent={this.renderData(functionType)}
-        contentComponent={contentComponent}
-        nonce={customNonceValue || nonce}
-        unapprovedTxCount={unapprovedTxCount}
-        identiconAddress={identiconAddress}
-        errorMessage={submitError}
-        errorKey={errorKey}
-        warning={submitWarning}
-        totalTx={totalTx}
-        positionOfCurrentTx={positionOfCurrentTx}
-        nextTxId={nextTxId}
-        prevTxId={prevTxId}
-        showNavigation={showNavigation}
-        onNextTx={(txId) => this.handleNextTx(txId)}
-        firstTx={firstTx}
-        lastTx={lastTx}
-        ofText={ofText}
-        requestsWaitingText={requestsWaitingText}
-        disabled={
-          !valid ||
-          submitting ||
-          hardwareWalletRequiresConnection ||
-          (gasIsLoading && !gasFeeIsCustom)
-        }
-        onEdit={() => this.handleEdit()}
-        onCancelAll={() => this.handleCancelAll()}
-        onCancel={() => this.handleCancel()}
-        onSubmit={() => this.handleSubmit()}
-        hideSenderToRecipient={hideSenderToRecipient}
-        origin={txData.origin}
-        ethGasPriceWarning={ethGasPriceWarning}
-        editingGas={editingGas}
-        handleCloseEditGas={() => this.handleCloseEditGas()}
-        currentTransaction={txData}
-      />
+      <TransactionModalContextProvider>
+        <ConfirmPageContainer
+          fromName={fromName}
+          fromAddress={fromAddress}
+          showAccountInHeader={showAccountInHeader}
+          toName={toName}
+          toAddress={toAddress}
+          toEns={toEns}
+          toNickname={toNickname}
+          showEdit={Boolean(onEdit)}
+          action={functionType}
+          title={title}
+          image={image}
+          titleComponent={this.renderTitleComponent()}
+          subtitleComponent={this.renderSubtitleComponent()}
+          hideSubtitle={hideSubtitle}
+          detailsComponent={this.renderDetails()}
+          dataComponent={this.renderData(functionType)}
+          dataHexComponent={this.renderDataHex(functionType)}
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          insightComponent={this.renderInsight()}
+          ///: END:ONLY_INCLUDE_IN
+          contentComponent={contentComponent}
+          nonce={customNonceValue || nonce}
+          unapprovedTxCount={unapprovedTxCount}
+          tokenAddress={tokenAddress}
+          errorMessage={submitError}
+          errorKey={errorKey}
+          hasSimulationError={hasSimulationError}
+          warning={submitWarning}
+          totalTx={totalTx}
+          positionOfCurrentTx={positionOfCurrentTx}
+          nextTxId={nextTxId}
+          prevTxId={prevTxId}
+          showNavigation={showNavigation}
+          onNextTx={(txId) => this.handleNextTx(txId)}
+          firstTx={firstTx}
+          lastTx={lastTx}
+          ofText={ofText}
+          requestsWaitingText={requestsWaitingText}
+          disabled={
+            renderSimulationFailureWarning ||
+            !valid ||
+            submitting ||
+            hardwareWalletRequiresConnection ||
+            (gasIsLoading && !gasFeeIsCustom)
+          }
+          onEdit={() => this.handleEdit()}
+          onCancelAll={() => this.handleCancelAll()}
+          onCancel={() => this.handleCancel()}
+          onSubmit={() => this.handleSubmit()}
+          hideSenderToRecipient={hideSenderToRecipient}
+          origin={txData.origin}
+          ethGasPriceWarning={ethGasPriceWarning}
+          editingGas={editingGas}
+          handleCloseEditGas={() => this.handleCloseEditGas()}
+          currentTransaction={txData}
+          supportsEIP1559V2={this.supportsEIP1559V2}
+          nativeCurrency={nativeCurrency}
+          isApprovalOrRejection={isApprovalOrRejection}
+          assetStandard={assetStandard}
+        />
+      </TransactionModalContextProvider>
     );
   }
-}
-
-export function getMethodName(camelCase) {
-  if (!camelCase || typeof camelCase !== 'string') {
-    return '';
-  }
-
-  return camelCase
-    .replace(/([a-z])([A-Z])/gu, '$1 $2')
-    .replace(/([A-Z])([a-z])/gu, ' $1$2')
-    .replace(/ +/gu, ' ');
 }

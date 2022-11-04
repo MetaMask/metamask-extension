@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { shallow, mount } from 'enzyme';
-import sinon from 'sinon';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import UnitInput from '../unit-input';
@@ -29,6 +28,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
           />
         </Provider>,
         {
@@ -67,6 +75,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
@@ -102,6 +119,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
@@ -139,6 +165,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"
@@ -178,6 +213,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             hideConversion
@@ -207,12 +251,10 @@ describe('TokenInput Component', () => {
   });
 
   describe('handling actions', () => {
-    const handleChangeSpy = sinon.spy();
-    const handleBlurSpy = sinon.spy();
+    const handleChangeSpy = jest.fn();
 
     afterEach(() => {
-      handleChangeSpy.resetHistory();
-      handleBlurSpy.resetHistory();
+      handleChangeSpy.mockClear();
     });
 
     it('should call onChange on input changes with the hex value for ETH', () => {
@@ -232,14 +274,22 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
-      expect(handleBlurSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -250,13 +300,13 @@ describe('TokenInput Component', () => {
       const input = wrapper.find('input');
       expect(input.props().value).toStrictEqual(0);
 
-      input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
-      expect(handleChangeSpy.calledWith('2710')).toStrictEqual(true);
+      input.simulate('change', { target: { value: '1' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2710');
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '2ETH',
       );
-      expect(tokenInputInstance.state.decimalValue).toStrictEqual(1);
+      expect(tokenInputInstance.state.decimalValue).toStrictEqual('1');
       expect(tokenInputInstance.state.hexValue).toStrictEqual('2710');
     });
 
@@ -277,6 +327,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"
@@ -285,8 +344,7 @@ describe('TokenInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
-      expect(handleBlurSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -297,13 +355,13 @@ describe('TokenInput Component', () => {
       const input = wrapper.find('input');
       expect(input.props().value).toStrictEqual(0);
 
-      input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
-      expect(handleChangeSpy.calledWith('2710')).toStrictEqual(true);
+      input.simulate('change', { target: { value: '1' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2710');
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '$462.12USD',
       );
-      expect(tokenInputInstance.state.decimalValue).toStrictEqual(1);
+      expect(tokenInputInstance.state.decimalValue).toStrictEqual('1');
       expect(tokenInputInstance.state.hexValue).toStrictEqual('2710');
     });
 
@@ -324,6 +382,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
@@ -343,6 +410,104 @@ describe('TokenInput Component', () => {
       expect(tokenInputInstance.find(UnitInput).props().value).toStrictEqual(
         '1',
       );
+    });
+  });
+
+  describe('Token Input Decimals Check', () => {
+    const handleChangeSpy = jest.fn();
+
+    afterEach(() => {
+      handleChangeSpy.mockClear();
+    });
+
+    it('should render incorrect hex onChange when input decimals is more than token decimals', () => {
+      const mockStore = {
+        metamask: {
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      };
+      const store = configureMockStore()(mockStore);
+      const wrapper = mount(
+        <Provider store={store}>
+          <TokenInput
+            onChange={handleChangeSpy}
+            token={{
+              address: '0x1',
+              decimals: 4,
+              symbol: 'ABC',
+            }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
+            tokenExchangeRates={{ '0x1': 2 }}
+            showFiat
+            currentCurrency="usd"
+          />
+        </Provider>,
+      );
+
+      expect(wrapper).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
+
+      const input = wrapper.find('input');
+      expect(input.props().value).toStrictEqual(0);
+
+      input.simulate('change', { target: { value: '1.11111' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual(
+        '2b67.1999999999999999999a',
+      );
+    });
+
+    it('should render correct hex onChange when input decimals is more than token decimals by omitting excess fractional part on blur', () => {
+      const mockStore = {
+        metamask: {
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      };
+      const store = configureMockStore()(mockStore);
+
+      const wrapper = mount(
+        <Provider store={store}>
+          <TokenInput
+            onChange={handleChangeSpy}
+            token={{
+              address: '0x1',
+              decimals: 4,
+              symbol: 'ABC',
+            }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
+            tokenExchangeRates={{ '0x1': 2 }}
+            showFiat
+            currentCurrency="usd"
+          />
+        </Provider>,
+      );
+      expect(wrapper).toHaveLength(1);
+
+      const input = wrapper.find('input');
+
+      input.simulate('blur', { target: { value: '1.11111' } });
+
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2b67');
     });
   });
 });

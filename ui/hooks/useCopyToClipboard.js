@@ -7,8 +7,7 @@ import { useTimeout } from './useTimeout';
  * useCopyToClipboard
  *
  * @param {number} [delay=3000] - delay in ms
- *
- * @return {[boolean, Function]}
+ * @returns {[boolean, Function]}
  */
 const DEFAULT_DELAY = SECOND * 3;
 

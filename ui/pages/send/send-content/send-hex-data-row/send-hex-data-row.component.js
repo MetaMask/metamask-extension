@@ -5,6 +5,7 @@ import SendRowWrapper from '../send-row-wrapper';
 export default class SendHexDataRow extends Component {
   static propTypes = {
     inError: PropTypes.bool,
+    data: PropTypes.string,
     updateSendHexData: PropTypes.func.isRequired,
   };
 
@@ -19,7 +20,7 @@ export default class SendHexDataRow extends Component {
   };
 
   render() {
-    const { inError } = this.props;
+    const { inError, data } = this.props;
     const { t } = this.context;
 
     return (
@@ -32,6 +33,7 @@ export default class SendHexDataRow extends Component {
           onInput={this.onInput}
           placeholder={t('optional')}
           className="send-v2__hex-data__input"
+          defaultValue={data || ''}
         />
       </SendRowWrapper>
     );

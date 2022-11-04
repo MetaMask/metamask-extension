@@ -1,0 +1,59 @@
+.collectibles-items {
+  &__collection {
+    margin-bottom: 24px;
+
+    &-accordion-title {
+      cursor: pointer;
+    }
+
+    &-wrapper {
+      background-color: transparent;
+      border: 0;
+      width: 100%;
+    }
+
+    &-image {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    &-image-alt {
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      padding: 8px;
+      background: var(--color-overlay-alternative);
+      color: var(--color-overlay-inverse);
+      text-align: center;
+    }
+  }
+
+  &__item-wrapper {
+    align-self: center;
+
+    &__card {
+      overflow: hidden;
+    }
+  }
+
+  &__item {
+    border-radius: 4px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-self: center;
+
+    &-image {
+      border-radius: 4px;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+  }
+
+  &__icon-chevron {
+    color: var(--color-icon-default);
+  }
+}

@@ -4,13 +4,37 @@ import classnames from 'classnames';
 
 export default class ButtonGroup extends PureComponent {
   static propTypes = {
+    /**
+     * change button active order
+     */
     defaultActiveButtonIndex: PropTypes.number,
+    /**
+     * no button are active before clicked by the user
+     */
     noButtonActiveByDefault: PropTypes.bool,
+    /**
+     * disabling every button inside button group
+     */
     disabled: PropTypes.bool,
+    /**
+     * Children must be an array of button components
+     */
     children: PropTypes.array,
+    /**
+     * Adds a className to the root div of the of the ButtonGroup component
+     */
     className: PropTypes.string,
+    /**
+     * adding style for button group component
+     */
     style: PropTypes.object,
+    /**
+     * updating value of active button in button group component
+     */
     newActiveButtonIndex: PropTypes.number,
+    /**
+     * options for rendering type of button, consist of 'default' and 'radiogroup'
+     */
     variant: PropTypes.oneOf(['radiogroup', 'default']),
   };
 

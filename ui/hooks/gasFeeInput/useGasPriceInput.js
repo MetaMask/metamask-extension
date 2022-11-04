@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { isEqual } from 'lodash';
 
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
+import {
+  GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
@@ -17,11 +20,20 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
 }
 
 /**
- * @typedef {Object} GasPriceInputsReturnType
+ * @typedef {object} GasPriceInputsReturnType
  * @property {DecGweiString} [gasPrice] - the gasPrice input value.
  * @property {(DecGweiString) => void} setGasPrice - state setter method to update the gasPrice.
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet
  * field gasPriceHasBeenManuallySet is used in gasPrice calculations.
+ */
+
+/**
+ * @param options
+ * @param options.estimateToUse
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.transaction
+ * @returns {GasPriceInputsReturnType}
  */
 export function useGasPriceInput({
   estimateToUse,
@@ -30,7 +42,7 @@ export function useGasPriceInput({
   transaction,
 }) {
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
-    transaction?.userFeeLevel === 'custom',
+    transaction?.userFeeLevel === CUSTOM_GAS_ESTIMATE,
   );
 
   const [gasPrice, setGasPrice] = useState(() => {

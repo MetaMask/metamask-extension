@@ -1,0 +1,64 @@
+
+.update-nickname {
+  &__wrapper {
+    height: 620px;
+    width: 360px;
+    border-radius: 10px;
+    max-height: 100vh;
+    width: auto;
+
+    .popover-header {
+      border-bottom: 1px solid var(--color-border-muted);
+      margin-bottom: 16px;
+      border-radius: 10px;
+    }
+
+    @include screen-sm-max {
+      width: 96%;
+      height: 96%;
+    }
+  }
+
+  &__cancel {
+    margin-right: 16px;
+  }
+
+  &__content {
+    padding: 0 18px 20px 18px;
+    position: relative;
+
+    &__indenticon {
+      margin-bottom: 16px;
+    }
+
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__address {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--color-text-alternative);
+      margin-bottom: 16px;
+      overflow-wrap: break-word;
+    }
+
+    &__label,
+    &__label--capitalized {
+      text-transform: capitalize;
+      margin-top: 16px;
+      color: var(--color-text-default);
+      font-size: 14px;
+    }
+
+    &__nickname-label {
+      margin-bottom: 8px;
+      color: var(--color-text-default);
+      font-size: 14px;
+    }
+  }
+}

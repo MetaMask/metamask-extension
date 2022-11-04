@@ -1,4 +1,5 @@
 import * as actionConstants from '../../store/actionConstants';
+import { DEVICE_NAMES } from '../../../shared/constants/hardware-wallets';
 import reduceApp from './app';
 
 const actions = actionConstants;
@@ -255,11 +256,12 @@ describe('App State', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
+      lattice: "m/44'/60'/0'/0",
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
       value: {
-        device: 'ledger',
+        device: DEVICE_NAMES.LEDGER,
         path: "m/44'/60'/0'",
       },
     });
@@ -326,5 +328,13 @@ describe('App State', () => {
     });
 
     expect(state.isMouseUser).toStrictEqual(true);
+  });
+
+  it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.SET_SMART_TRANSACTIONS_ERROR,
+      payload: 'Server Side Error',
+    });
+    expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
 });

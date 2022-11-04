@@ -1,0 +1,55 @@
+diff --git a/node_modules/@fortawesome/fontawesome-free/scss/_larger.scss b/node_modules/@fortawesome/fontawesome-free/scss/_larger.scss
+index 27c2ad5..5b82984 100644
+--- a/node_modules/@fortawesome/fontawesome-free/scss/_larger.scss
++++ b/node_modules/@fortawesome/fontawesome-free/scss/_larger.scss
+@@ -1,10 +1,12 @@
++@use "sass:math";
++
+ // Icon Sizes
+ // -------------------------
+ 
+ // makes the font 33% larger relative to the icon container
+ .#{$fa-css-prefix}-lg {
+-  font-size: (4em / 3);
+-  line-height: (3em / 4);
++  font-size: math.div(4em, 3);
++  line-height: math.div(3em, 4);
+   vertical-align: -.0667em;
+ }
+ 
+diff --git a/node_modules/@fortawesome/fontawesome-free/scss/_list.scss b/node_modules/@fortawesome/fontawesome-free/scss/_list.scss
+index 8ebf333..233923a 100644
+--- a/node_modules/@fortawesome/fontawesome-free/scss/_list.scss
++++ b/node_modules/@fortawesome/fontawesome-free/scss/_list.scss
+@@ -1,9 +1,11 @@
++@use "sass:math";
++
+ // List Icons
+ // -------------------------
+ 
+ .#{$fa-css-prefix}-ul {
+   list-style-type: none;
+-  margin-left: $fa-li-width * 5/4;
++  margin-left: $fa-li-width * math.div(5, 4);
+   padding-left: 0;
+ 
+   > li { position: relative; }
+diff --git a/node_modules/@fortawesome/fontawesome-free/scss/_variables.scss b/node_modules/@fortawesome/fontawesome-free/scss/_variables.scss
+index fad7705..d0da3ae 100644
+--- a/node_modules/@fortawesome/fontawesome-free/scss/_variables.scss
++++ b/node_modules/@fortawesome/fontawesome-free/scss/_variables.scss
+@@ -1,3 +1,5 @@
++@use "sass:math";
++
+ // Variables
+ // --------------------------
+ 
+@@ -9,7 +11,7 @@ $fa-version:           "5.13.0" !default;
+ $fa-border-color:      #eee !default;
+ $fa-inverse:           #fff !default;
+ $fa-li-width:          2em !default;
+-$fa-fw-width:          (20em / 16);
++$fa-fw-width:          math.div(20em, 16);
+ $fa-primary-opacity:   1 !default;
+ $fa-secondary-opacity: .4 !default;
+ 

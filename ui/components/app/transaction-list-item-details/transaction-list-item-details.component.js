@@ -4,21 +4,23 @@ import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
+import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
-import Copy from '../../ui/icon/copy-icon.component';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
+import TransactionDecoding from '../transaction-decoding';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
     trackEvent: PropTypes.func,
   };
 
@@ -44,6 +46,10 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
+    transactionStatus: PropTypes.func,
+    isCustomNetwork: PropTypes.bool,
+    history: PropTypes.object,
+    blockExplorerLinkText: PropTypes.object,
   };
 
   state = {
@@ -54,25 +60,33 @@ export default class TransactionListItemDetails extends PureComponent {
     const {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
+      isCustomNetwork,
+      history,
+      onClose,
     } = this.props;
     const blockExplorerLink = getBlockExplorerLink(
       primaryTransaction,
       rpcPrefs,
     );
 
-    this.context.trackEvent({
-      category: 'Transactions',
-      event: 'Clicked Block Explorer Link',
-      properties: {
-        link_type: 'Transaction Block Explorer',
-        action: 'Transaction Details',
-        block_explorer_domain: getURLHostName(blockExplorerLink),
-      },
-    });
+    if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
+      onClose();
+      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    } else {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.TRANSACTIONS,
+        event: 'Clicked Block Explorer Link',
+        properties: {
+          link_type: 'Transaction Block Explorer',
+          action: 'Transaction Details',
+          block_explorer_domain: getURLHostName(blockExplorerLink),
+        },
+      });
 
-    global.platform.openTab({
-      url: blockExplorerLink,
-    });
+      global.platform.openTab({
+        url: blockExplorerLink,
+      });
+    }
   };
 
   handleCancel = (event) => {
@@ -92,11 +106,12 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Navigation',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.NAVIGATION,
+      event: 'Copied Transaction ID',
+      properties: {
         action: 'Activity Log',
-        name: 'Copied Transaction ID',
+        legacy_event: true,
       },
     });
 
@@ -124,7 +139,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       recipientEns,
       recipientAddress,
-      rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
       isEarliestNonce,
       senderNickname,
@@ -132,6 +146,8 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose,
       recipientNickname,
       showCancel,
+      transactionStatus: TransactionStatus,
+      blockExplorerLinkText,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -142,8 +158,7 @@ export default class TransactionListItemDetails extends PureComponent {
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
-          <div className="transaction-list-item-details__header">
-            <div>{t('details')}</div>
+          <div className="transaction-list-item-details__operations">
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
@@ -161,43 +176,6 @@ export default class TransactionListItemDetails extends PureComponent {
                   detailsModal
                 />
               )}
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={
-                  justCopied ? t('copiedTransactionId') : t('copyTransactionId')
-                }
-              >
-                <Button
-                  type="raised"
-                  onClick={this.handleCopyTxId}
-                  disabled={!hash}
-                >
-                  <Copy size={10} color="#3098DC" />
-                </Button>
-              </Tooltip>
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={
-                  blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [
-                        t('blockExplorerTransactionAction'),
-                        blockExplorerUrl,
-                      ])
-                    : t('viewOnEtherscan', [
-                        t('blockExplorerTransactionAction'),
-                      ])
-                }
-              >
-                <Button
-                  type="raised"
-                  onClick={this.handleBlockExplorerClick}
-                  disabled={!hash}
-                >
-                  <img src="./images/arrow-popout.svg" alt="" />
-                </Button>
-              </Tooltip>
               {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
@@ -211,7 +189,47 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
             </div>
           </div>
+          <div className="transaction-list-item-details__header">
+            <div className="transaction-list-item-details__tx-status">
+              <div>{t('status')}</div>
+              <div>
+                <TransactionStatus />
+              </div>
+            </div>
+            <div className="transaction-list-item-details__tx-hash">
+              <div>
+                <Button
+                  type="link"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                    ? t('addBlockExplorer')
+                    : t('viewOnBlockExplorer')}
+                </Button>
+              </div>
+              <div>
+                <Tooltip
+                  wrapperClassName="transaction-list-item-details__header-button"
+                  containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                  title={justCopied ? t('copiedExclamation') : null}
+                >
+                  <Button
+                    type="link"
+                    onClick={this.handleCopyTxId}
+                    disabled={!hash}
+                  >
+                    {t('copyTransactionId')}
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
           <div className="transaction-list-item-details__body">
+            <div className="transaction-list-item-details__sender-to-recipient-header">
+              <div>{t('from')}</div>
+              <div>{t('to')}</div>
+            </div>
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
                 warnUserOnAccountMismatch={false}
@@ -223,20 +241,22 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: 'Copied "To" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "To" Address',
+                      legacy_event: true,
                     },
                   });
                 }}
                 onSenderClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: 'Copied "From" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "From" Address',
+                      legacy_event: true,
                     },
                   });
                 }}
@@ -245,18 +265,37 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
-                isTokenApprove={type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE}
+                isTokenApprove={
+                  type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE ||
+                  type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+                }
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
-              <TransactionActivityLog
-                transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
-                onCancel={this.handleCancel}
-                onRetry={this.handleRetry}
-                isEarliestNonce={isEarliestNonce}
-              />
+              {transactionGroup.initialTransaction.type !==
+                TRANSACTION_TYPES.INCOMING && (
+                <Disclosure title={t('activityLog')} size="small">
+                  <TransactionActivityLog
+                    transactionGroup={transactionGroup}
+                    className="transaction-list-item-details__transaction-activity-log"
+                    onCancel={this.handleCancel}
+                    onRetry={this.handleRetry}
+                    isEarliestNonce={isEarliestNonce}
+                  />
+                </Disclosure>
+              )}
+              {transactionGroup.initialTransaction?.txParams?.data ? (
+                <Disclosure title="Transaction data" size="small">
+                  <TransactionDecoding
+                    title={t('transactionData')}
+                    to={transactionGroup.initialTransaction.txParams?.to}
+                    inputData={
+                      transactionGroup.initialTransaction.txParams?.data
+                    }
+                  />
+                </Disclosure>
+              ) : null}
             </div>
           </div>
         </div>

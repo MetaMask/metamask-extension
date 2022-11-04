@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "عدم پذیرش"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "سکن کود QR"
+  },
   "about": {
     "message": "درباره"
-  },
-  "aboutSettingsDescription": {
-    "message": "نسخه، مرکز پشتیبانی و معلومات تماس."
-  },
-  "acceleratingATransaction": {
-    "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
   },
   "accessingYourCamera": {
     "message": "در حال دسترسی به کمره شما..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
-  "addToAddressBook": {
-    "message": "به کتاب آدرسها اضافه کنید"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلًا. John D."
-  },
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "گزینه های پیشرفته"
-  },
-  "advancedSettingsDescription": {
-    "message": "مشخصات توسعه دهنده دسترسی، دفترچه ثبت وضعیت دانلود، دوباره سازی حساب، شبکه های آزمایشی تنظیمات و RPC معمول."
   },
   "amount": {
     "message": "مبلغ"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "تصدیق"
@@ -131,17 +130,14 @@
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
-  },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
   "buyWithWyre": {
-    "message": "ETH را توسط Wyre خریداری نمایید"
+    "message": "$1 را توسط Wyre خریداری نمایید"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت ETH مستقیمًا به حساب MetaMask تان استفاده نمایید."
+    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت 1$ مستقیمًا به حساب MetaMask تان استفاده نمایید."
   },
   "bytes": {
     "message": "بایت ها"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToKovan": {
-    "message": "در حال اتصال به شبکه آزمایشی Kovan"
-  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
-  },
-  "connectingToRinkeby": {
-    "message": "در حال اتصال به شبکه آزمایشی Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "در حال اتصال به شبکه آزمایشی Ropsten"
   },
   "continueToWyre": {
     "message": "ادامه به Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "کپی شد!"
-  },
-  "copiedTransactionId": {
-    "message": "آی دی معامله کاپی شده"
   },
   "copyAddress": {
     "message": "کاپی آدرس به کلیپ بورد"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "زبان فعلی"
   },
-  "customGas": {
-    "message": "گاز دلخواه"
-  },
-  "customGasSubTitle": {
-    "message": "اضافه نمودن فیس ممکن زمان پروسس را کاهش دهد، اما تضمین نمیشود."
+  "custom": {
+    "message": "پیشرفته"
   },
   "customToken": {
     "message": "رمزیاب دلخواه"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
-  },
-  "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
   },
   "delete": {
     "message": "حذف"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
   },
-  "depositEther": {
-    "message": "پرداخت ایتر"
-  },
   "details": {
     "message": "جزئیات"
-  },
-  "directDepositEther": {
-    "message": "پرداخت مستقیم ایتر"
-  },
-  "directDepositEtherExplainer": {
-    "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
   },
   "done": {
     "message": "تمام"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
   },
-  "enterAnAlias": {
-    "message": "یک نام مستعار را وارد کنید"
-  },
   "enterPassword": {
     "message": "رمز عبور را وارد کنید"
   },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
-  },
-  "estimatedProcessingTimes": {
-    "message": "زمان های تخمینی پروسس"
   },
   "ethereumPublicAddress": {
     "message": "آدرس عمومی ایتریم"
@@ -417,9 +380,6 @@
   },
   "general": {
     "message": "عمومی"
-  },
-  "generalSettingsDescription": {
-    "message": "تبادل واحد پول، واحد پول اصلی، زبان، شناسا های بلوکی"
   },
   "getEther": {
     "message": "اتر را بگیرید"
@@ -522,10 +482,10 @@
   "knownAddressRecipient": {
     "message": "آدرس شناخته شده قرارداد"
   },
-  "kovan": {
-    "message": "شبکه آزمایشی Kovan"
-  },
   "learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "learnMoreUpperCase": {
     "message": "بیشتر بدانید"
   },
   "ledgerAccountRestriction": {
@@ -582,9 +542,6 @@
   "myAccounts": {
     "message": "حساب های من"
   },
-  "needEtherInWallet": {
-    "message": "برای تعامل با اپلیکیشن های غیر متمرکز شده با استفاده از MetaMask، شما نیاز به ایتر در کیف تان خواهید داشت."
-  },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
@@ -594,9 +551,6 @@
   },
   "networkName": {
     "message": "نام شبکه"
-  },
-  "networkSettingsDescription": {
-    "message": "اضافه سازی و ویرایش شبکه های دلخواه PRC"
   },
   "networks": {
     "message": "شبکه ها"
@@ -625,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "آیا به MetaMask جدید هستید؟"
-  },
-  "newTotal": {
-    "message": "مجموع جدید"
-  },
-  "newTransactionFee": {
-    "message": "فیس جدید معامله"
   },
   "next": {
     "message": "بعدی"
@@ -778,9 +726,6 @@
   "restore": {
     "message": "بازیابی"
   },
-  "restoreAccountWithSeed": {
-    "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
-  },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
@@ -792,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "این عبارت را با هیچکس شریک نسازید!"
-  },
-  "rinkeby": {
-    "message": "شبکه آزمایشی Rinkeby"
-  },
-  "ropsten": {
-    "message": "شبکه آزمایشی Ropsten"
   },
   "rpcUrl": {
     "message": "RPC URL جدید"
@@ -832,23 +771,11 @@
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
-  "securitySettingsDescription": {
-    "message": "تنظیمات حریم خصوصی و عبارت بازیاب کیف"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
-  },
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"
   },
-  "selectAHigherGasFee": {
-    "message": "یک فیس بالاتر گاز را انتخاب نمایید تا پروسس معامله تان تسریع یابد.*"
-  },
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
-  },
-  "selectAnAccountHelp": {
-    "message": "برای مشاهده MetaMask حساب را انتخاب نمایید"
   },
   "selectEachPhrase": {
     "message": "لطفًا جهت اطمینان از درستی، هر عبارت را انتخاب کنید."
@@ -865,14 +792,8 @@
   "send": {
     "message": "ارسال"
   },
-  "sendAmount": {
-    "message": "ارسال مبلغ"
-  },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "separateEachWord": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
   "settings": {
     "message": "تنظیمات"
@@ -912,9 +833,6 @@
   },
   "signed": {
     "message": "وارد شد"
-  },
-  "slow": {
-    "message": "آهسته"
   },
   "somethingWentWrong": {
     "message": "اوه! مشکلی پیش آمده."

@@ -1,14 +1,17 @@
 import { createScaffoldMiddleware, mergeMiddleware } from 'json-rpc-engine';
-import createBlockRefMiddleware from 'eth-json-rpc-middleware/block-ref';
-import createRetryOnEmptyMiddleware from 'eth-json-rpc-middleware/retryOnEmpty';
-import createBlockCacheMiddleware from 'eth-json-rpc-middleware/block-cache';
-import createInflightCacheMiddleware from 'eth-json-rpc-middleware/inflight-cache';
-import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector';
-import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware';
-import createInfuraMiddleware from 'eth-json-rpc-infura';
+import {
+  createBlockRefMiddleware,
+  createRetryOnEmptyMiddleware,
+  createBlockCacheMiddleware,
+  createInflightCacheMiddleware,
+  createBlockTrackerInspectorMiddleware,
+  providerFromMiddleware,
+} from 'eth-json-rpc-middleware';
+
+import { createInfuraMiddleware } from '@metamask/eth-json-rpc-infura';
 import { PollingBlockTracker } from 'eth-block-tracker';
 
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../../shared/constants/network';
+import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 
 export default function createInfuraClient({ network, projectId }) {
   const infuraMiddleware = createInfuraMiddleware({
@@ -33,11 +36,11 @@ export default function createInfuraClient({ network, projectId }) {
 }
 
 function createNetworkAndChainIdMiddleware({ network }) {
-  if (!NETWORK_TYPE_TO_ID_MAP[network]) {
+  if (!BUILT_IN_NETWORKS[network]) {
     throw new Error(`createInfuraClient - unknown network "${network}"`);
   }
 
-  const { chainId, networkId } = NETWORK_TYPE_TO_ID_MAP[network];
+  const { chainId, networkId } = BUILT_IN_NETWORKS[network];
 
   return createScaffoldMiddleware({
     eth_chainId: chainId,

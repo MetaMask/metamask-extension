@@ -2,11 +2,9 @@
 import React from 'react';
 import log from 'loglevel';
 import * as Sentry from '@sentry/browser';
-
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 const warned = {};
 const missingMessageErrors = {};
@@ -14,8 +12,9 @@ const missingSubstitutionErrors = {};
 
 /**
  * Returns a localized message for the given key
+ *
  * @param {string} localeCode - The code for the current locale
- * @param {Object} localeMessages - The map of messages for the current locale
+ * @param {object} localeMessages - The map of messages for the current locale
  * @param {string} key - The message key
  * @param {string[]} substitutions - A list of message substitution replacements
  * @returns {null|string} The localized message
@@ -32,7 +31,7 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         );
         Sentry.captureException(missingMessageErrors[key]);
         log.error(missingMessageErrors[key]);
-        if (process.env.IN_TEST === 'true') {
+        if (process.env.IN_TEST) {
           throw missingMessageErrors[key];
         }
       }

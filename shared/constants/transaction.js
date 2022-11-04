@@ -2,14 +2,21 @@ import { MESSAGE_TYPE } from './app';
 
 /**
  * Transaction Type is a MetaMask construct used internally
- * @typedef {Object} TransactionTypes
+ *
+ * @typedef {object} TransactionTypes
  * @property {'transfer'} TOKEN_METHOD_TRANSFER - A token transaction where the user
  *  is sending tokens that they own to another address
  * @property {'transferfrom'} TOKEN_METHOD_TRANSFER_FROM - A token transaction
  *  transferring tokens from an account that the sender has an allowance of.
  *  For more information on allowances, see the approve type.
+ * @property {'safetransferfrom'} TOKEN_METHOD_SAFE_TRANSFER_FROM - A token transaction
+ *  transferring tokens from an account that the sender has an allowance of.
+ *  The method is prefixed with safe because when calling this method the contract checks
+ *  to ensure that the receiver is an address capable of handling with the token being sent.
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
+ * @property {'setapprovalforall'} TOKEN_METHOD_SET_APPROVAL_FOR_ALL - A token transaction requesting an
+ *  allowance of all of a user's token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
  * @property {'simpleSend'} SIMPLE_SEND - A transaction sending a network's native asset to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
@@ -35,6 +42,7 @@ import { MESSAGE_TYPE } from './app';
 /**
  * This type will work anywhere you expect a string that can be one of the
  * above transaction types.
+ *
  * @typedef {TransactionTypes[keyof TransactionTypes]} TransactionTypeString
  */
 
@@ -43,21 +51,24 @@ import { MESSAGE_TYPE } from './app';
  */
 export const TRANSACTION_TYPES = {
   CANCEL: 'cancel',
-  RETRY: 'retry',
-  TOKEN_METHOD_TRANSFER: 'transfer',
-  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
-  TOKEN_METHOD_APPROVE: 'approve',
-  INCOMING: 'incoming',
-  SIMPLE_SEND: 'simpleSend',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',
-  SWAP: 'swap',
-  SWAP_APPROVAL: 'swapApproval',
-  SIGN: MESSAGE_TYPE.ETH_SIGN,
-  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
   ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
   ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  INCOMING: 'incoming',
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  RETRY: 'retry',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  SIMPLE_SEND: 'simpleSend',
+  SMART: 'smart',
+  SWAP: 'swap',
+  SWAP_APPROVAL: 'swapApproval',
+  TOKEN_METHOD_APPROVE: 'approve',
+  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
+  TOKEN_METHOD_TRANSFER: 'transfer',
+  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_SET_APPROVAL_FOR_ALL: 'setapprovalforall',
 };
 
 /**
@@ -65,7 +76,8 @@ export const TRANSACTION_TYPES = {
  * typed envelope being 'legacy' and describing the shape of the base
  * transaction params that were hitherto the only transaction type sent on
  * Ethereum.
- * @typedef {Object} TransactionEnvelopeTypes
+ *
+ * @typedef {object} TransactionEnvelopeTypes
  * @property {'0x0'} LEGACY - A legacy transaction, the very first type.
  * @property {'0x1'} ACCESS_LIST - EIP-2930 defined the access list transaction
  *  type that allowed for specifying the state that a transaction would act
@@ -90,7 +102,8 @@ export const TRANSACTION_ENVELOPE_TYPES = {
 /**
  * Transaction Status is a mix of Ethereum and MetaMask terminology, used internally
  * for transaction processing.
- * @typedef {Object} TransactionStatuses
+ *
+ * @typedef {object} TransactionStatuses
  * @property {'unapproved'} UNAPPROVED - A new transaction that the user has not
  *  approved or rejected
  * @property {'approved'} APPROVED - The user has approved the transaction in the
@@ -108,6 +121,7 @@ export const TRANSACTION_ENVELOPE_TYPES = {
 /**
  * This type will work anywhere you expect a string that can be one of the
  * above transaction statuses.
+ *
  * @typedef {TransactionStatuses[keyof TransactionStatuses]} TransactionStatusString
  */
 
@@ -123,12 +137,25 @@ export const TRANSACTION_STATUSES = {
   FAILED: 'failed',
   DROPPED: 'dropped',
   CONFIRMED: 'confirmed',
+  PENDING: 'pending',
 };
+
+/**
+ * With this list we can detect if a transaction is still in progress.
+ */
+export const IN_PROGRESS_TRANSACTION_STATUSES = [
+  TRANSACTION_STATUSES.UNAPPROVED,
+  TRANSACTION_STATUSES.APPROVED,
+  TRANSACTION_STATUSES.SIGNED,
+  TRANSACTION_STATUSES.SUBMITTED,
+  TRANSACTION_STATUSES.PENDING,
+];
 
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
- * @typedef {Object} TransactionGroupStatuses
+ *
+ * @typedef {object} TransactionGroupStatuses
  * @property {'cancelled'} CANCELLED - A cancel type transaction in the group was
  *  confirmed
  * @property {'pending'} PENDING - The primaryTransaction of the group has a status
@@ -145,9 +172,46 @@ export const TRANSACTION_GROUP_STATUSES = {
 };
 
 /**
+ * Statuses that are specific to Smart Transactions.
+ *
+ * @typedef {object} SmartTransactionStatuses
+ * @property {'cancelled'} CANCELLED - It can be cancelled for various reasons.
+ * @property {'pending'} PENDING - Smart transaction is being processed.
+ * @property {'success'} SUCCESS - Smart transaction was successfully mined.
+ */
+
+/**
+ * @type {SmartTransactionStatuses}
+ */
+export const SMART_TRANSACTION_STATUSES = {
+  CANCELLED: 'cancelled',
+  PENDING: 'pending',
+  SUCCESS: 'success',
+};
+
+/**
+ * Types that are specific to the transaction approval amount.
+ *
+ * @typedef {object} TransactionApprovalAmountType
+ * @property {'custom'} CUSTOM - The user has edited the token amount.
+ * @property {'revoke'} REVOKE - The selected amount (either CUSTOM or DAPP_PROPOSED) is 0.
+ * @property {'dapp_proposed'} DAPP_PROPOSED - The dapp proposed token amount.
+ */
+
+/**
+ * @type {TransactionApprovalAmountType}
+ */
+export const TRANSACTION_APPROVAL_AMOUNT_TYPE = {
+  CUSTOM: 'custom',
+  REVOKE: 'revoke',
+  DAPP_PROPOSED: 'dapp_proposed',
+};
+
+/**
  * Transaction Group Category is a MetaMask construct to categorize the intent
  * of a group of transactions for purposes of displaying in the UI
- * @typedef {Object} TransactionGroupCategories
+ *
+ * @typedef {object} TransactionGroupCategories
  * @property {'send'} SEND - Transaction group representing ether being sent from
  *  the user.
  * @property {'receive'} RECEIVE - Transaction group representing a deposit/incoming
@@ -171,16 +235,16 @@ export const TRANSACTION_GROUP_STATUSES = {
  * @type {TransactionGroupCategories}
  */
 export const TRANSACTION_GROUP_CATEGORIES = {
-  SEND: 'send',
-  RECEIVE: 'receive',
-  INTERACTION: 'interaction',
   APPROVAL: 'approval',
+  INTERACTION: 'interaction',
+  RECEIVE: 'receive',
+  SEND: 'send',
   SIGNATURE_REQUEST: 'signature-request',
   SWAP: 'swap',
 };
 
 /**
- * @typedef {Object} TxParams
+ * @typedef {object} TxParams
  * @property {string} from - The address the transaction is sent from
  * @property {string} to - The address the transaction is sent to
  * @property {string} value - The amount of wei, in hexadecimal, to send
@@ -191,7 +255,7 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  */
 
 /**
- * @typedef {Object} TxError
+ * @typedef {object} TxError
  * @property {string} message - The message from the encountered error.
  * @property {any} rpc - The "value" of the error.
  * @property {string} [stack] - the stack trace from the error, if available.
@@ -199,15 +263,30 @@ export const TRANSACTION_GROUP_CATEGORIES = {
 
 /**
  * An object representing a transaction, in whatever state it is in.
- * @typedef {Object} TransactionMeta
  *
+ * @typedef {object} TransactionMeta
  * @property {string} [blockNumber] - The block number this transaction was
  *  included in. Currently only present on incoming transactions!
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the transaction was first suggested, in unix
  *  epoch time (ms).
+ * @property {string} contractMethodName - A string representing a name of
+ * transaction contract method.
+ * @property {string} customTokenAmount - The custom token amount is the amount
+ * set by the user
+ * @property {string} dappProposedTokenAmount - The dapp proposed token amount
+ * @property {string} currentTokenBalance - The balance of the token that is
+ * being send
+ * @property {string} originalApprovalAmount - The original approval amount
+ * is the originally dapp proposed token amount
+ * @property {string} finalApprovalAmount - The chosen amount which will be the
+ * same as the originally proposed token amount if the user does not edit the
+ * amount or will be a custom token amount set by the user
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
+ * @property {string} originalType - When we speed up a transaction,
+ *  we set the type as Retry and we lose information about type of transaction
+ *  that is being set up, so we use original type to track that information.
  * @property {TransactionStatusString} status - The current status of the
  *  transaction.
  * @property {string} metamaskNetworkId - The transaction's network ID, used
@@ -215,11 +294,15 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {boolean} loadingDefaults - TODO: Document
  * @property {TxParams} txParams - The transaction params as passed to the
  *  network provider.
- * @property {Object[]} history - A history of mutations to this
+ * @property {object[]} history - A history of mutations to this
  *  TransactionMeta object.
  * @property {string} origin - A string representing the interface that
  *  suggested the transaction.
- * @property {Object} nonceDetails - A metadata object containing information
+ * @property {string} originalGasEstimate - A string representing the original
+ * gas estimation on the transaction metadata.
+ * @property {boolean} userEditedGasLimit - A boolean representing when the
+ * user manually edited the gas limit.
+ * @property {object} nonceDetails - A metadata object containing information
  *  used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction,
  *  ready to submit to the network.
@@ -229,3 +312,112 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  the network, in Unix epoch time (ms).
  * @property {TxError} [err] - The error encountered during the transaction
  */
+
+/**
+ * Defines the possible types
+ *
+ * @typedef {object} TransactionMetaMetricsEvents
+ * @property {'Transaction Added'} ADDED - All transactions, except incoming
+ *  ones, are added to the controller state in an unapproved status. When this
+ *  happens we fire the Transaction Added event to show that the transaction
+ *  has been added to the user's MetaMask.
+ * @property {'Transaction Approved'} APPROVED - When an unapproved transaction
+ *  is in the controller state, MetaMask will render a confirmation screen for
+ *  that transaction. If the user approves the transaction we fire this event
+ *  to indicate that the user has approved the transaction for submission to
+ *  the network.
+ * @property {'Transaction Rejected'} REJECTED - When an unapproved transaction
+ *  is in the controller state, MetaMask will render a confirmation screen for
+ *  that transaction. If the user rejects the transaction we fire this event
+ *  to indicate that the user has rejected the transaction. It will be removed
+ *  from state as a result.
+ * @property {'Transaction Submitted'} SUBMITTED - After a transaction is
+ *  approved by the user, it is then submitted to the network for inclusion in
+ *  a block. When this happens we fire the Transaction Submitted event to
+ *  indicate that MetaMask is submitting a transaction at the user's request.
+ * @property {'Transaction Finalized'} FINALIZED - All transactions that are
+ *  submitted will finalized (eventually) by either being dropped, failing
+ *  or being confirmed. When this happens we track this event, along with the
+ *  status.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above transaction event types.
+ *
+ * @typedef {TransactionMetaMetricsEvents[keyof TransactionMetaMetricsEvents]} TransactionMetaMetricsEventString
+ */
+
+/**
+ * @type {TransactionMetaMetricsEvents}
+ */
+export const TRANSACTION_EVENTS = {
+  ADDED: 'Transaction Added',
+  APPROVED: 'Transaction Approved',
+  FINALIZED: 'Transaction Finalized',
+  REJECTED: 'Transaction Rejected',
+  SUBMITTED: 'Transaction Submitted',
+};
+
+/**
+ * @typedef {object} AssetTypes
+ * @property {'NATIVE'} NATIVE - The native asset for the current network, such
+ *  as ETH
+ * @property {'TOKEN'} TOKEN - An ERC20 token.
+ * @property {'COLLECTIBLE'} COLLECTIBLE - An ERC721 or ERC1155 token.
+ * @property {'UNKNOWN'} UNKNOWN - A transaction interacting with a contract
+ *  that isn't a token method interaction will be marked as dealing with an
+ *  unknown asset type.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above asset types
+ *
+ * @typedef {AssetTypes[keyof AssetTypes]} AssetTypesString
+ */
+
+/**
+ * The types of assets that a user can send
+ *
+ * @type {AssetTypes}
+ */
+export const ASSET_TYPES = {
+  NATIVE: 'NATIVE',
+  TOKEN: 'TOKEN',
+  COLLECTIBLE: 'COLLECTIBLE',
+  UNKNOWN: 'UNKNOWN',
+};
+
+export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
+export const ERC1155 = 'ERC1155';
+
+/**
+ * @typedef {object} TokenStandards
+ * @property {'ERC20'} ERC20 - A token that conforms to the ERC20 standard.
+ * @property {'ERC721'} ERC721 - A token that conforms to the ERC721 standard.
+ * @property {'ERC1155'} ERC1155 - A token that conforms to the ERC1155
+ *  standard.
+ * @property {'NONE'} NONE - Not a token, but rather the base asset of the
+ *  selected chain.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above statuses
+ *
+ * @typedef {TokenStandards[keyof TokenStandards]} TokenStandardStrings
+ */
+
+/**
+ * Describes the standard which a token conforms to.
+ *
+ * @type {TokenStandards}
+ */
+export const TOKEN_STANDARDS = {
+  ERC20,
+  ERC721,
+  ERC1155,
+  NONE: 'NONE',
+};

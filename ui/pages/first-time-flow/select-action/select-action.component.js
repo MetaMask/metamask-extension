@@ -2,7 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
-import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  INITIALIZE_CREATE_PASSWORD_ROUTE,
+  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export default class SelectAction extends PureComponent {
   static propTypes = {
@@ -10,9 +14,11 @@ export default class SelectAction extends PureComponent {
     isInitialized: PropTypes.bool,
     setFirstTimeFlowType: PropTypes.func,
     nextRoute: PropTypes.string,
+    metaMetricsId: PropTypes.string,
   };
 
   static contextTypes = {
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -25,13 +31,45 @@ export default class SelectAction extends PureComponent {
   }
 
   handleCreate = () => {
+    const { metaMetricsId } = this.props;
+    const { trackEvent } = this.context;
     this.props.setFirstTimeFlowType('create');
-    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    trackEvent(
+      {
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_SETUP_STARTED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+        },
+      },
+      {
+        isOptIn: true,
+        metaMetricsId,
+        flushImmediately: true,
+      },
+    );
+    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
   };
 
   handleImport = () => {
+    const { metaMetricsId } = this.props;
+    const { trackEvent } = this.context;
     this.props.setFirstTimeFlowType('import');
-    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    trackEvent(
+      {
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_SETUP_STARTED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+        },
+      },
+      {
+        isOptIn: true,
+        metaMetricsId,
+        flushImmediately: true,
+      },
+    );
+    this.props.history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE);
   };
 
   render() {
@@ -50,7 +88,7 @@ export default class SelectAction extends PureComponent {
               <div className="select-action__select-button">
                 <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
-                    <img src="./images/download-alt.svg" alt="" />
+                    <i className="fa fa-download fa-2x" />
                   </div>
                   <div className="select-action__button-text-big">
                     {t('noAlreadyHaveSeed')}
@@ -63,6 +101,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
+                  data-testid="import-wallet-button"
                 >
                   {t('importWallet')}
                 </Button>
@@ -70,7 +109,7 @@ export default class SelectAction extends PureComponent {
               <div className="select-action__select-button">
                 <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
-                    <img src="./images/thin-plus.svg" alt="" />
+                    <i className="fa fa-plus fa-2x" />
                   </div>
                   <div className="select-action__button-text-big">
                     {t('letsGoSetUp')}
@@ -83,6 +122,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
+                  data-testid="create-wallet-button"
                 >
                   {t('createAWallet')}
                 </Button>

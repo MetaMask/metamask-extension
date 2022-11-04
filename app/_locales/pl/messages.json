@@ -1,12 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odrzuć"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanuj kod QR"
+  },
   "about": {
     "message": "Informacje"
-  },
-  "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
-  },
-  "acceleratingATransaction": {
-    "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
   },
   "accessingYourCamera": {
     "message": "Uruchamianie kamery..."
@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
-  "addToAddressBook": {
-    "message": "Dodaj do książki adresowej"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "np. John D."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -55,9 +49,6 @@
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
   },
   "amount": {
     "message": "Ilość"
@@ -69,6 +60,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Zatwierdź"
@@ -131,17 +130,14 @@
     "message": "Wyświetl konto w $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Użyj Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
   },
   "buyWithWyre": {
-    "message": "Kup ETH poprzez Wyre"
+    "message": "Kup $1 poprzez Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić ETH bezpośrednio na swoje konto MetaMask."
+    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić $1 bezpośrednio na swoje konto MetaMask."
   },
   "bytes": {
     "message": "Bajty"
@@ -194,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToKovan": {
-    "message": "Łączenie z siecią testową Kovan"
-  },
   "connectingToMainnet": {
     "message": "Łączenie z główną siecią Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Łączenie z siecią testową Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Łączenie z siecią testową Ropsten"
   },
   "continueToWyre": {
     "message": "Przejdź do Wyre"
@@ -217,9 +204,6 @@
   },
   "copiedExclamation": {
     "message": "Skopiowane!"
-  },
-  "copiedTransactionId": {
-    "message": "Skopiowano identyfikator transakcji"
   },
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
@@ -251,11 +235,8 @@
   "currentLanguage": {
     "message": "Obecny język"
   },
-  "customGas": {
-    "message": "Ustaw gaz"
-  },
-  "customGasSubTitle": {
-    "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
+  "custom": {
+    "message": "Zaawansowane"
   },
   "customToken": {
     "message": "Własny token"
@@ -265,9 +246,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
-  },
-  "defaultNetwork": {
-    "message": "Domyślna sieć dla Eteru to Mainnet."
   },
   "delete": {
     "message": "Usuń"
@@ -281,17 +259,8 @@
   "deleteNetworkDescription": {
     "message": "Czy na pewno chcesz usunąć tę sieć?"
   },
-  "depositEther": {
-    "message": "Zdeponuj Eter"
-  },
   "details": {
     "message": "Szczegóły"
-  },
-  "directDepositEther": {
-    "message": "Zdeponuj Eter bezpośrednio"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
   },
   "done": {
     "message": "Gotowe"
@@ -347,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
   },
-  "enterAnAlias": {
-    "message": "Wpisz alias"
-  },
   "enterPassword": {
     "message": "Wpisz hasło"
   },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Szacunkowy czas przetwarzania"
   },
   "ethereumPublicAddress": {
     "message": "Adres publiczny Ethereum"
@@ -417,9 +380,6 @@
   },
   "general": {
     "message": "Ogólne"
-  },
-  "generalSettingsDescription": {
-    "message": "Przeliczanie walut, waluta podstawowa, język, ikona (identicon) Blockies"
   },
   "getEther": {
     "message": "Zdobądź Eter"
@@ -522,10 +482,10 @@
   "knownAddressRecipient": {
     "message": "Znany adres kontraktu."
   },
-  "kovan": {
-    "message": "Sieć testowa Kovan"
-  },
   "learnMore": {
+    "message": "Dowiedz się więcej"
+  },
+  "learnMoreUpperCase": {
     "message": "Dowiedz się więcej"
   },
   "ledgerAccountRestriction": {
@@ -579,9 +539,6 @@
   "myAccounts": {
     "message": "Moje konta"
   },
-  "needEtherInWallet": {
-    "message": "Żeby skorzystać ze zdecentraliowanych aplikacji (dApps) przy pomocy MetaMask, potrzebujesz Eteru w swoim portfelu."
-  },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
@@ -591,9 +548,6 @@
   },
   "networkName": {
     "message": "Nazwa sieci"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodawaj i edytuj niestandardowe sieci RPC"
   },
   "networks": {
     "message": "Sieci"
@@ -622,12 +576,6 @@
   },
   "newToMetaMask": {
     "message": "Pierwszy raz w MetaMask?"
-  },
-  "newTotal": {
-    "message": "Nowa suma"
-  },
-  "newTransactionFee": {
-    "message": "Nowa opłata transakcyjna"
   },
   "next": {
     "message": "Dalej"
@@ -772,9 +720,6 @@
   "restore": {
     "message": "Przywróć"
   },
-  "restoreAccountWithSeed": {
-    "message": "Przywróć konto frazą seed"
-  },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"
   },
@@ -786,12 +731,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NIE pokazuj tej frazy nikomu!"
-  },
-  "rinkeby": {
-    "message": "Sieć testowa Rinkeby"
-  },
-  "ropsten": {
-    "message": "Sieć testowa Ropsten"
   },
   "rpcUrl": {
     "message": "Nowy adres URL RPC"
@@ -826,23 +765,11 @@
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
-  "securitySettingsDescription": {
-    "message": "Ustawienia prywatności i fraza seed portfela"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Oddziel słowa pojedynczą spacją"
-  },
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"
   },
-  "selectAHigherGasFee": {
-    "message": "Wybierz wyższą opłatę za gaz, aby przyspieszyć przetwarzanie transakcji.*"
-  },
   "selectAnAccount": {
     "message": "Wybierz konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Wybierz konto do przeglądania w MetaMask"
   },
   "selectEachPhrase": {
     "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."
@@ -859,14 +786,8 @@
   "send": {
     "message": "Wyślij"
   },
-  "sendAmount": {
-    "message": "Wyślij kwotę"
-  },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "separateEachWord": {
-    "message": "Oddziel słowa pojedynczą spacją"
   },
   "settings": {
     "message": "Ustawienia"
@@ -906,9 +827,6 @@
   },
   "signed": {
     "message": "Podpisane"
-  },
-  "slow": {
-    "message": "Powoli"
   },
   "somethingWentWrong": {
     "message": "Ups! Coś poszło nie tak."

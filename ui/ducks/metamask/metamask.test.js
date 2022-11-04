@@ -3,6 +3,7 @@ import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getIsNetworkBusy,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
@@ -39,10 +40,10 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
-        network: '3',
+        network: '5',
         provider: {
           type: 'testnet',
-          chainId: '0x3',
+          chainId: '0x5',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -71,11 +72,11 @@ describe('MetaMask Reducers', () => {
           },
         },
         addressBook: {
-          '0x3': {
+          '0x5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
               address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
               name: 'Address Book Account 1',
-              chainId: '0x3',
+              chainId: '0x5',
             },
           },
         },
@@ -85,13 +86,13 @@ describe('MetaMask Reducers', () => {
             time: 1487363153561,
             status: TRANSACTION_STATUSES.UNAPPROVED,
             gasMultiplier: 1,
-            metamaskNetworkId: '3',
+            metamaskNetworkId: '5',
             txParams: {
               from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
               to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
               value: '0xde0b6b3a7640000',
               metamaskId: 4768706228115573,
-              metamaskNetworkId: '3',
+              metamaskNetworkId: '5',
               gas: '0x5209',
             },
             txFee: '17e0186e60800',
@@ -352,7 +353,7 @@ describe('MetaMask Reducers', () => {
           {
             address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x3',
+            chainId: '0x5',
           },
         ]);
       });
@@ -365,13 +366,13 @@ describe('MetaMask Reducers', () => {
           time: 1487363153561,
           status: TRANSACTION_STATUSES.UNAPPROVED,
           gasMultiplier: 1,
-          metamaskNetworkId: '3',
+          metamaskNetworkId: '5',
           txParams: {
             from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
             value: '0xde0b6b3a7640000',
             metamaskId: 4768706228115573,
-            metamaskNetworkId: '3',
+            metamaskNetworkId: '5',
             gas: '0x5209',
           },
           txFee: '17e0186e60800',
@@ -412,6 +413,32 @@ describe('MetaMask Reducers', () => {
           },
         }),
       ).toStrictEqual(false);
+    });
+  });
+
+  describe('getIsNetworkBusy', () => {
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.67 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is right at the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.66 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return false if state.metamask.gasFeeEstimates.networkCongestion is not over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
+        }),
+      ).toBe(false);
     });
   });
 });

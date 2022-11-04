@@ -4,37 +4,140 @@
  * should match the property. When detailing a collection of things, it should
  * match the plural form of the thing. e.g. COLORS, TYPOGRAPHY
  */
+
+import { pick } from 'lodash';
+
 export const COLORS = {
-  UI1: 'ui-1',
-  UI2: 'ui-2',
-  UI3: 'ui-3',
-  UI4: 'ui-4',
-  BLACK: 'black',
-  GREY: 'grey',
-  WHITE: 'white',
-  PRIMARY1: 'primary-1',
-  PRIMARY2: 'primary-2',
-  PRIMARY3: 'primary-3',
-  SECONDARY1: 'secondary-1',
-  SECONDARY2: 'secondary-2',
-  SECONDARY3: 'secondary-3',
-  SUCCESS1: 'success-1',
-  SUCCESS2: 'success-2',
-  SUCCESS3: 'success-3',
-  ERROR1: 'error-1',
-  ERROR2: 'error-2',
-  ERROR3: 'error-3',
-  ALERT1: 'alert-1',
-  ALERT2: 'alert-2',
-  ALERT3: 'alert-3',
+  BACKGROUND_DEFAULT: 'background-default',
+  BACKGROUND_ALTERNATIVE: 'background-alternative',
+  TEXT_DEFAULT: 'text-default',
+  TEXT_ALTERNATIVE: 'text-alternative',
+  TEXT_MUTED: 'text-muted',
+  ICON_DEFAULT: 'icon-default',
+  ICON_ALTERNATIVE: 'icon-alternative',
+  ICON_MUTED: 'icon-muted',
+  BORDER_DEFAULT: 'border-default',
+  BORDER_MUTED: 'border-muted',
+  OVERLAY_DEFAULT: 'overlay-default',
+  OVERLAY_INVERSE: 'overlay-inverse',
+  PRIMARY_DEFAULT: 'primary-default',
+  PRIMARY_ALTERNATIVE: 'primary-alternative',
+  PRIMARY_MUTED: 'primary-muted',
+  PRIMARY_INVERSE: 'primary-inverse',
+  PRIMARY_DISABLED: 'primary-disabled',
+  ERROR_DEFAULT: 'error-default',
+  ERROR_ALTERNATIVE: 'error-alternative',
+  ERROR_MUTED: 'error-muted',
+  ERROR_INVERSE: 'error-inverse',
+  ERROR_DISABLED: 'error-disabled',
+  WARNING_DEFAULT: 'warning-default',
+  WARNING_ALTERNATIVE: 'warning-alternative',
+  WARNING_MUTED: 'warning-muted',
+  WARNING_INVERSE: 'warning-inverse',
+  WARNING_DISABLED: 'warning-disabled',
+  SUCCESS_DEFAULT: 'success-default',
+  SUCCESS_ALTERNATIVE: 'success-alternative',
+  SUCCESS_MUTED: 'success-muted',
+  SUCCESS_INVERSE: 'success-inverse',
+  SUCCESS_DISABLED: 'success-disabled',
+  INFO_DEFAULT: 'info-default',
+  INFO_ALTERNATIVE: 'info-alternative',
+  INFO_MUTED: 'info-muted',
+  INFO_INVERSE: 'info-inverse',
+  INFO_DISABLED: 'info-disabled',
   MAINNET: 'mainnet',
-  ROPSTEN: 'ropsten',
-  KOVAN: 'kovan',
-  RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
-  TRANSPARENT: 'transparent',
+  SEPOLIA: 'sepolia',
   LOCALHOST: 'localhost',
+  TRANSPARENT: 'transparent',
+  INHERIT: 'inherit',
 };
+export const BACKGROUND_COLORS = pick(COLORS, [
+  'BACKGROUND_DEFAULT',
+  'BACKGROUND_ALTERNATIVE',
+  'OVERLAY_DEFAULT',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'GOERLI',
+  'SEPOLIA',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
+
+export const BORDER_COLORS = pick(COLORS, [
+  'BORDER_DEFAULT',
+  'BORDER_MUTED',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'GOERLI',
+  'SEPOLIA',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
+
+export const TEXT_COLORS = pick(COLORS, [
+  'TEXT_DEFAULT',
+  'TEXT_ALTERNATIVE',
+  'TEXT_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
+
+export const ICON_COLORS = pick(COLORS, [
+  'ICON_DEFAULT',
+  'ICON_ALTERNATIVE',
+  'ICON_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
 
 export const TYPOGRAPHY = {
   H1: 'h1',
@@ -49,14 +152,28 @@ export const TYPOGRAPHY = {
   Paragraph: 'p',
 };
 
+export const TEXT = {
+  DISPLAY_MD: 'display-md',
+  HEADING_LG: 'heading-lg',
+  HEADING_MD: 'heading-md',
+  HEADING_SM: 'heading-sm',
+  BODY_LG: 'body-lg-medium',
+  BODY_MD: 'body-md',
+  BODY_SM: 'body-sm',
+  BODY_XS: 'body-xs',
+  INHERIT: 'inherit',
+};
+
 const NONE = 'none';
 
 export const SIZES = {
+  XXS: 'xxs',
   XS: 'xs',
   SM: 'sm',
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
+  AUTO: 'auto', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   NONE,
 };
 
@@ -66,6 +183,16 @@ export const BORDER_STYLE = {
   DOTTED: 'dotted',
   DOUBLE: 'double',
   NONE,
+};
+
+export const BORDER_RADIUS = {
+  XS: SIZES.XS,
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
+  NONE,
+  PILL: 'pill',
 };
 
 const FLEX_END = 'flex-end';
@@ -107,12 +234,14 @@ export const DISPLAY = {
   FLEX: 'flex',
   GRID: 'grid',
   INLINE_BLOCK: 'inline-block',
+  INLINE: 'inline',
   INLINE_FLEX: 'inline-flex',
   INLINE_GRID: 'inline-grid',
   LIST_ITEM: 'list-item',
+  NONE: 'none',
 };
 
-const FRACTIONS = {
+export const FRACTIONS = {
   HALF: '1/2',
   ONE_THIRD: '1/3',
   TWO_THIRDS: '2/3',
@@ -157,24 +286,26 @@ export const TEXT_ALIGN = {
   END: 'end',
 };
 
+export const TEXT_TRANSFORM = {
+  UPPERCASE: 'uppercase',
+  LOWERCASE: 'lowercase',
+  CAPITALIZE: 'capitalize',
+};
+
 export const FONT_WEIGHT = {
   BOLD: 'bold',
+  MEDIUM: 'medium',
   NORMAL: 'normal',
-  100: 100,
-  200: 200,
-  300: 300,
-  400: 400,
-  500: 500,
-  600: 600,
-  700: 700,
-  800: 800,
-  900: 900,
+};
+
+export const OVERFLOW_WRAP = {
+  BREAK_WORD: 'break-word',
+  NORMAL: 'normal',
 };
 
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',
-  OBLIQUE: 'oblique',
 };
 
 export const SEVERITIES = {
@@ -183,3 +314,14 @@ export const SEVERITIES = {
   INFO: 'info',
   SUCCESS: 'success',
 };
+
+export const RESIZE = {
+  NONE: 'none',
+  BOTH: 'both',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  INITIAL: 'initial',
+  INHERIT: 'inherit',
+};
+
+export const BREAKPOINTS = ['base', 'sm', 'md', 'lg'];
