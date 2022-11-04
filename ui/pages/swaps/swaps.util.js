@@ -8,6 +8,8 @@ import {
   BSC,
   GOERLI,
   AVALANCHE,
+  OPTIMISM,
+  ARBITRUM,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
@@ -277,6 +279,11 @@ export async function fetchSwapsFeatureFlags() {
     { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 600000 },
   );
+  // TODO: Remove this after testing.
+  response.optimism.extensionActive = true;
+  response.arbitrum = {
+    extensionActive: true,
+  };
   return response;
 }
 
@@ -611,6 +618,10 @@ export const getNetworkNameByChainId = (chainId) => {
       return GOERLI;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
+    case CHAIN_IDS.OPTIMISM:
+      return OPTIMISM;
+    case CHAIN_IDS.ARBITRUM:
+      return ARBITRUM;
     default:
       return '';
   }
