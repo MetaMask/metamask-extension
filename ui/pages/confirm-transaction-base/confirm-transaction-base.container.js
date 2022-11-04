@@ -59,7 +59,10 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
@@ -164,7 +167,12 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  const fullTxData = getFullTxData(state, txId, customTxParamsData);
+  const fullTxData = getFullTxData(
+    state,
+    txId,
+    TRANSACTION_STATUSES.UNAPPROVED,
+    customTxParamsData,
+  );
 
   const isCollectibleTransfer = Boolean(
     allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {

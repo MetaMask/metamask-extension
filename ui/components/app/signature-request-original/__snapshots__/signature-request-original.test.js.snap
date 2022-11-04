@@ -135,9 +135,11 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         <div
           class="site-origin request-signature__origin"
         >
-          <span>
+          <bdi
+            dir="ltr"
+          >
             https://happydapp.website/governance?futarchy=true
-          </span>
+          </bdi>
         </div>
       </div>
       <div
