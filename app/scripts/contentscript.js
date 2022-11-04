@@ -207,6 +207,8 @@ const destroyPhishingExtStreams = () => {
 
   phishingExtChannel.removeAllListeners();
   phishingExtChannel.destroy();
+
+  phishingExtStream = null;
 };
 
 /**
@@ -230,7 +232,9 @@ const onDisconnectDestroyPhishingStreams = () => {
  */
 const onMessageSetUpPhishingStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
-    setupPhishingExtStreams();
+    if (!phishingExtStream) {
+      setupPhishingExtStreams();
+    }
     return Promise.resolve(
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
@@ -322,6 +326,8 @@ const destroyExtensionStreams = () => {
 
   extensionChannel.removeAllListeners();
   extensionChannel.destroy();
+
+  extensionStream = null;
 };
 
 /**
@@ -428,8 +434,10 @@ const destroyLegacyExtensionStreams = () => {
  */
 const onMessageSetUpExtensionStreams = (msg) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
-    setupExtensionStreams();
-    setupLegacyExtensionStreams();
+    if (!extensionStream) {
+      setupExtensionStreams();
+      setupLegacyExtensionStreams();
+    }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
   return undefined;
