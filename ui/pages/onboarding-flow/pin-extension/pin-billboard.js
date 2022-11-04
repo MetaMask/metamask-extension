@@ -43,7 +43,7 @@ export default function OnboardingPinBillboard() {
         </tspan>
       </text>
       <text
-        fill="black"
+        fill="var(--color-text-default)"
         xmlSpace="preserve"
         style={{ 'white-space': 'pre' }}
         fontFamily="Euclid Circular B"
@@ -74,7 +74,7 @@ export default function OnboardingPinBillboard() {
         </tspan>
       </text>
       <text
-        fill="black"
+        fill="var(--color-text-default)"
         xmlSpace="preserve"
         style={{ 'white-space': 'pre' }}
         fontFamily="Euclid Circular B"

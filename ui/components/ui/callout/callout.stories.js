@@ -1,4 +1,3 @@
-import { select } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 import {
   COLORS,
@@ -12,26 +11,32 @@ import Callout from './callout';
 export default {
   title: 'Components/UI/Callout',
   id: __filename,
+  argTypes: {
+    severity: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(SEVERITIES),
+    },
+  },
 };
 
-export const PersistentCallout = () => (
-  <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+export const PersistentCallout = (args) => (
+  <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
     <Box margin={2}>
       <Typography variant={TYPOGRAPHY.H4}>This is your private key:</Typography>
       <Typography variant={TYPOGRAPHY.H6}>
         some seed words that are super important and probably deserve a callout
       </Typography>
     </Box>
-    <Callout severity={select('severity', SEVERITIES, SEVERITIES.WARNING)}>
-      Always back up your private key!
-    </Callout>
+    <Callout {...args}>Always back up your private key!</Callout>
   </Box>
 );
 
-export const DismissibleCallout = () => {
+export const DismissibleCallout = (args) => {
   const [dismissed, setDismissed] = useState(false);
   return (
-    <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+    <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
       <Box margin={2}>
         <Typography variant={TYPOGRAPHY.H4}>
           This is your private key:
@@ -42,10 +47,7 @@ export const DismissibleCallout = () => {
         </Typography>
       </Box>
       {!dismissed && (
-        <Callout
-          severity={select('severity', SEVERITIES, SEVERITIES.WARNING)}
-          dismiss={() => setDismissed(true)}
-        >
+        <Callout {...args} dismiss={() => setDismissed(true)}>
           Always back up your private key!
         </Callout>
       )}
@@ -79,7 +81,7 @@ export const MultipleDismissibleCallouts = () => {
   };
 
   return (
-    <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+    <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
       <Box margin={2}>
         <Typography variant={TYPOGRAPHY.H4}>
           This is your private key:

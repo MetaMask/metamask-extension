@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 import Tooltip from '../../../components/ui/tooltip';
 import UrlIcon from '../../../components/ui/url-icon';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import { formatSwapsValueForDisplay } from '../swaps.util';
+import {
+  calcTokenAmount,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../shared/lib/transactions-controller-utils';
 
 function getFontSizesAndLineHeights(fontSizeScore) {
   if (fontSizeScore <= 9) {
@@ -39,9 +41,8 @@ export default function MainQuoteSummary({
 
   const amountToDisplay = formatSwapsValueForDisplay(destinationAmount);
   const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length;
-  const [numberFontSize, lineHeight] = getFontSizesAndLineHeights(
-    amountDigitLength,
-  );
+  const [numberFontSize, lineHeight] =
+    getFontSizesAndLineHeights(amountDigitLength);
   let ellipsedAmountToDisplay = amountToDisplay;
 
   if (amountDigitLength > 20) {
@@ -75,10 +76,7 @@ export default function MainQuoteSummary({
               {sourceSymbol}
             </span>
           </div>
-          <img
-            className="main-quote-summary__down-arrow"
-            src="images/down-arrow-grey.svg"
-          />
+          <i className="fa fa-arrow-down main-quote-summary__down-arrow" />
           <div className="main-quote-summary__destination-row">
             <UrlIcon
               url={destinationIconUrl}
@@ -96,7 +94,6 @@ export default function MainQuoteSummary({
               position="bottom"
               html={amountToDisplay}
               disabled={ellipsedAmountToDisplay === amountToDisplay}
-              theme="white"
             >
               <span
                 className="main-quote-summary__quote-large-number"
@@ -121,7 +118,7 @@ export default function MainQuoteSummary({
             secondaryTokenValue={destinationValue}
             secondaryTokenDecimals={destinationDecimals}
             secondaryTokenSymbol={destinationSymbol}
-            arrowColor="#037DD6"
+            arrowColor="var(--color-primary-default)"
             boldSymbols={false}
             className="main-quote-summary__exchange-rate-display"
           />
@@ -132,21 +129,54 @@ export default function MainQuoteSummary({
 }
 
 MainQuoteSummary.propTypes = {
+  /**
+   * The amount that will be sent in the smallest denomination.
+   * For example, wei is the smallest denomination for ether.
+   */
   sourceValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
+
+  /**
+   * Maximum number of decimal places for the source token.
+   */
   sourceDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+  /**
+   * The ticker symbol for the source token.
+   */
   sourceSymbol: PropTypes.string.isRequired,
+
+  /**
+   * The amount that will be received in the smallest denomination.
+   * For example, wei is the smallest denomination for ether.
+   */
   destinationValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
+
+  /**
+   * Maximum number of decimal places for the destination token.
+   */
   destinationDecimals: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]),
+
+  /**
+   * The ticker symbol for the destination token.
+   */
   destinationSymbol: PropTypes.string.isRequired,
+
+  /**
+   * The location of the source token icon file.
+   */
   sourceIconUrl: PropTypes.string,
+
+  /**
+   * The location of the destination token icon file.
+   */
   destinationIconUrl: PropTypes.string,
 };

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
@@ -16,6 +16,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
+import { getSnapInstallWarnings } from '../util';
 
 export default function SnapInstall({
   request,
@@ -27,33 +28,26 @@ export default function SnapInstall({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(() => rejectSnapInstall(request.metadata.id), [
-    request,
-    rejectSnapInstall,
-  ]);
-
-  const onSubmit = useCallback(() => approveSnapInstall(request), [
-    request,
-    approveSnapInstall,
-  ]);
-
-  const npmId = useMemo(() => {
-    if (!targetSubjectMetadata.origin.startsWith('npm:')) {
-      return undefined;
-    }
-    return targetSubjectMetadata.origin.substring(4);
-  }, [targetSubjectMetadata]);
-
-  const shouldShowWarning = useMemo(
-    () =>
-      Boolean(
-        request.permissions &&
-          Object.keys(request.permissions).find((v) =>
-            v.startsWith('snap_getBip44Entropy_'),
-          ),
-      ),
-    [request.permissions],
+  const onCancel = useCallback(
+    () => rejectSnapInstall(request.metadata.id),
+    [request, rejectSnapInstall],
   );
+
+  const onSubmit = useCallback(
+    () => approveSnapInstall(request.metadata.id),
+    [request, approveSnapInstall],
+  );
+
+  const hasPermissions =
+    request?.permissions && Object.keys(request.permissions).length > 0;
+
+  const warnings = getSnapInstallWarnings(
+    request.permissions,
+    targetSubjectMetadata,
+    t,
+  );
+
+  const shouldShowWarning = warnings.length > 0;
 
   return (
     <Box
@@ -74,51 +68,35 @@ export default function SnapInstall({
           headerTitle={t('snapInstall')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
-          npmPackageName={npmId}
+          isSnapInstallOrUpdate
+          snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
-        <Typography></Typography>
-        <Box
-          className="snap-requests-permission"
-          padding={4}
-          tag={TYPOGRAPHY.H7}
-        >
-          <span>{t('snapRequestsPermission')}</span>
-        </Box>
-        <PermissionsConnectPermissionList
-          permissions={request.permissions || {}}
-        />
+        {hasPermissions && (
+          <>
+            <Typography
+              boxProps={{
+                padding: [4, 4, 0, 4],
+              }}
+              variant={TYPOGRAPHY.H7}
+              as="span"
+            >
+              {t('snapRequestsPermission')}
+            </Typography>
+            <PermissionsConnectPermissionList
+              permissions={request.permissions || {}}
+            />
+          </>
+        )}
       </Box>
       <Box
         className="footers"
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        {targetSubjectMetadata.sourceCode ? (
-          <>
-            <div className="source-code">
-              <div className="text">{t('areYouDeveloper')}</div>
-              <div
-                className="link"
-                onClick={() =>
-                  global.platform.openTab({
-                    url: targetSubjectMetadata.sourceCode,
-                  })
-                }
-              >
-                {t('openSourceCode')}
-              </div>
-            </div>
-            <Box paddingBottom={4}>
-              <PermissionsConnectFooter />
-            </Box>
-          </>
-        ) : (
-          <Box className="snap-install__footer--no-source-code" paddingTop={4}>
-            <PermissionsConnectFooter />
-          </Box>
-        )}
-
+        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
+          <PermissionsConnectFooter />
+        </Box>
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={onCancel}
@@ -126,14 +104,14 @@ export default function SnapInstall({
           onSubmit={
             shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
           }
-          submitText={t('approveAndInstall')}
+          submitText={t(hasPermissions ? 'approveAndInstall' : 'install')}
         />
       </Box>
       {isShowingWarning && (
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          snapName={targetSubjectMetadata.name}
+          warnings={warnings}
         />
       )}
     </Box>
@@ -149,5 +127,6 @@ SnapInstall.propTypes = {
     name: PropTypes.string,
     origin: PropTypes.string.isRequired,
     sourceCode: PropTypes.string,
+    version: PropTypes.string,
   }).isRequired,
 };

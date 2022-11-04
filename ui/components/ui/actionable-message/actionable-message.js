@@ -6,13 +6,13 @@ import InfoTooltipIcon from '../info-tooltip/info-tooltip-icon';
 
 const CLASSNAME_WARNING = 'actionable-message--warning';
 const CLASSNAME_DANGER = 'actionable-message--danger';
-const CLASSNAME_INFO = 'actionable-message--info';
+const CLASSNAME_SUCCESS = 'actionable-message--success';
 const CLASSNAME_WITH_RIGHT_BUTTON = 'actionable-message--with-right-button';
 
-const typeHash = {
+export const typeHash = {
   warning: CLASSNAME_WARNING,
   danger: CLASSNAME_DANGER,
-  info: CLASSNAME_INFO,
+  success: CLASSNAME_SUCCESS,
   default: '',
 };
 
@@ -26,6 +26,7 @@ export default function ActionableMessage({
   withRightButton = false,
   type = 'default',
   useIcon = false,
+  icon,
   iconFillColor = '',
   roundedButtons,
   dataTestId,
@@ -43,7 +44,7 @@ export default function ActionableMessage({
 
   return (
     <div className={actionableMessageClassName} data-testid={dataTestId}>
-      {useIcon ? <InfoTooltipIcon fillColor={iconFillColor} /> : null}
+      {useIcon ? icon || <InfoTooltipIcon fillColor={iconFillColor} /> : null}
       {infoTooltipText && (
         <InfoTooltip
           position="left"
@@ -136,7 +137,7 @@ ActionableMessage.propTypes = {
   /**
    * change color theme for the component that already predefined in css
    */
-  type: PropTypes.string,
+  type: PropTypes.oneOf(Object.keys(typeHash)),
   /**
    * change text align to left and button to bottom right
    */
@@ -149,6 +150,10 @@ ActionableMessage.propTypes = {
    * Add tooltip icon in the left component without message
    */
   useIcon: PropTypes.bool,
+  /**
+   * Custom icon component
+   */
+  icon: PropTypes.node,
   /**
    * change tooltip icon color
    */

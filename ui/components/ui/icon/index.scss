@@ -2,18 +2,18 @@
   margin: 0 4px;
 
   &--success {
-    fill: var(--success-1);
+    fill: var(--color-success-default);
   }
 
   &--info {
-    fill: var(--primary-1);
+    fill: var(--color-info-default);
   }
 
   &--warning {
-    fill: var(--alert-3);
+    fill: var(--color-warning-default);
   }
 
   &--danger {
-    fill: var(--error-1);
+    fill: var(--color-error-default);
   }
 }

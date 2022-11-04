@@ -1,22 +1,20 @@
 .permissions-connect-choose-account {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  height: 100%;
-
-  @media screen and (min-width: $break-large) {
-    width: 426px;
-  }
-
   &__title {
     @include H4;
   }
 
   &__cancel {
-    color: var(--Red-400);
+    color: var(--color-error-default);
+  }
+
+  &__content {
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-top: 2px;
   }
 
   &__footer-container {
@@ -26,7 +24,7 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       flex-direction: column-reverse;
       justify-content: space-between;
       padding-bottom: 20px;
@@ -39,10 +37,10 @@
     width: 100%;
     padding-top: 16px;
     padding-bottom: 16px;
-    margin-top: 8px;
-    border-top: 1px solid #d6d9dc;
+    margin-top: 12px;
+    border-top: 1px solid var(--color-border-muted);
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       border-top: none;
     }
 
@@ -51,7 +49,6 @@
     }
 
     .btn-secondary {
-      background: white;
       margin-left: 16px;
     }
 

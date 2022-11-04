@@ -1,14 +1,11 @@
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
-import Button from '../../ui/button';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
-  let wrapper;
-
   const mockStore = {
     metamask: {
       provider: {
@@ -57,13 +54,8 @@ describe('Account Menu', () => {
     },
   };
 
-  beforeAll(() => {
-    wrapper = mountWithRouter(
-      <Provider store={store}>
-        <AccountMenu.WrappedComponent {...props} />
-      </Provider>,
-      store,
-    );
+  beforeEach(() => {
+    renderWithProvider(<AccountMenu.WrappedComponent {...props} />, store);
   });
 
   afterEach(() => {
@@ -73,58 +65,53 @@ describe('Account Menu', () => {
 
   describe('Render Content', () => {
     it('returns account name from identities', () => {
-      const accountName = wrapper.find('.account-menu__name');
+      const accountName = screen.queryAllByTestId('account-menu__account');
       expect(accountName).toHaveLength(2);
     });
 
     it('renders user preference currency display balance from account balance', () => {
-      const accountBalance = wrapper.find(
-        '.currency-display-component.account-menu__balance',
-      );
+      const accountBalance = screen.queryAllByTestId('account-menu__balance');
+
       expect(accountBalance).toHaveLength(2);
     });
 
     it('simulate click', () => {
-      const click = wrapper.find(
-        '.account-menu__account.account-menu__item--clickable',
-      );
-      click.first().simulate('click');
+      const click = screen.getAllByTestId('account-menu__account');
+      fireEvent.click(click[0]);
 
       expect(props.showAccountDetail.calledOnce).toStrictEqual(true);
       expect(props.showAccountDetail.getCall(0).args[0]).toStrictEqual('0x00');
     });
 
     it('render imported account label', () => {
-      const importedAccount = wrapper.find('.keyring-label.allcaps');
-      expect(importedAccount.text()).toStrictEqual('[imported]');
+      const importedAccount = screen.getByText('Imported');
+      expect(importedAccount).toBeInTheDocument();
     });
   });
 
   describe('Log Out', () => {
-    let logout;
-
     it('logout', () => {
-      logout = wrapper.find(Button);
-      expect(logout).toHaveLength(1);
+      const logout = screen.getByText('Lock');
+      expect(logout).toBeInTheDocument();
     });
 
     it('simulate click', () => {
-      logout.simulate('click');
+      const logout = screen.getByText('Lock');
+      fireEvent.click(logout);
       expect(props.lockMetamask.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
     });
   });
 
   describe('Create Account', () => {
-    let createAccount;
-
     it('renders create account item', () => {
-      createAccount = wrapper.find({ text: 'createAccount' });
-      expect(createAccount).toHaveLength(1);
+      const createAccount = screen.getByText('Create account');
+      expect(createAccount).toBeInTheDocument();
     });
 
     it('calls toggle menu and push new-account route to history', () => {
-      createAccount.simulate('click');
+      const createAccount = screen.getByText('Create account');
+      fireEvent.click(createAccount);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
         '/new-account',
@@ -133,15 +120,14 @@ describe('Account Menu', () => {
   });
 
   describe('Import Account', () => {
-    let importAccount;
-
     it('renders import account item', () => {
-      importAccount = wrapper.find({ text: 'importAccount' });
-      expect(importAccount).toHaveLength(1);
+      const importAccount = screen.getByText('Import account');
+      expect(importAccount).toBeInTheDocument();
     });
 
     it('calls toggle menu and push /new-account/import route to history', () => {
-      importAccount.simulate('click');
+      const importAccount = screen.getByText('Import account');
+      fireEvent.click(importAccount);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
         '/new-account/import',
@@ -149,16 +135,15 @@ describe('Account Menu', () => {
     });
   });
 
-  describe('Connect Hardware Wallet', () => {
-    let connectHardwareWallet;
-
+  describe('Connect hardware wallet', () => {
     it('renders import account item', () => {
-      connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' });
-      expect(connectHardwareWallet).toHaveLength(1);
+      const connectHardwareWallet = screen.getByText('Connect hardware wallet');
+      expect(connectHardwareWallet).toBeInTheDocument();
     });
 
     it('calls toggle menu and push /new-account/connect route to history', () => {
-      connectHardwareWallet.simulate('click');
+      const connectHardwareWallet = screen.getByText('Connect hardware wallet');
+      fireEvent.click(connectHardwareWallet);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
         '/new-account/connect',
@@ -167,31 +152,29 @@ describe('Account Menu', () => {
   });
 
   describe('Support', () => {
-    let support;
     global.platform = { openTab: sinon.spy() };
 
     it('renders import account item', () => {
-      support = wrapper.find({ text: 'needHelpSubmitTicket' });
-      expect(support).toHaveLength(1);
+      const support = screen.getByText('Submit a ticket');
+      expect(support).toBeInTheDocument();
     });
 
     it('opens support link when clicked', () => {
-      support = wrapper.find({ text: 'needHelpSubmitTicket' });
-      support.simulate('click');
+      const support = screen.getByText('Submit a ticket');
+      fireEvent.click(support);
       expect(global.platform.openTab.calledOnce).toStrictEqual(true);
     });
   });
 
   describe('Settings', () => {
-    let settings;
-
     it('renders import account item', () => {
-      settings = wrapper.find({ text: 'settings' });
-      expect(settings).toHaveLength(1);
+      const settings = screen.getByText('Settings');
+      expect(settings).toBeInTheDocument();
     });
 
     it('calls toggle menu and push /new-account/connect route to history', () => {
-      settings.simulate('click');
+      const settings = screen.getByText('Settings');
+      fireEvent.click(settings);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual('/settings');
     });

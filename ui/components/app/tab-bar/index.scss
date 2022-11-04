@@ -3,13 +3,13 @@
   flex-direction: column;
   justify-content: flex-start;
 
-
   &__tab {
     @include Paragraph;
 
+    color: var(--color-text-default);
     display: flex;
     flex-flow: row nowrap;
-    align-items: baseline;
+    align-items: center;
     min-width: 0;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -18,7 +18,7 @@
     background-color: unset;
     text-align: start;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       &:hover {
         opacity: 0.4;
       }
@@ -28,25 +28,23 @@
       }
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H4;
 
-      border-bottom: 1px solid var(--alto);
+      border-bottom: 1px solid var(--color-border-muted);
       opacity: 1;
     }
 
     &__content {
       padding: 12px 18px;
       display: flex;
-      flex-flow: row wrap;
       align-items: center;
       position: relative;
-      z-index: 201;
 
       &__title {
         @include H4;
 
-        @media screen and (min-width: $break-large) {
+        @include screen-sm-min {
           @include H6;
         }
       }
@@ -54,7 +52,7 @@
       &__description {
         display: none;
 
-        @media screen and (max-width: $break-small) {
+        @include screen-sm-max {
           @include H6;
 
           display: block;
@@ -64,27 +62,26 @@
         }
       }
 
-
       &__icon {
-        margin-inline-end: 16px;
         display: flex;
+        justify-content: center;
+        margin-inline-end: 16px;
+        flex: 0 0 18px;
+        color: var(--color-icon-alternative);
+
+        @include screen-sm-min {
+          flex: 0 0 14px;
+        }
       }
     }
 
     &__caret {
       display: none;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         display: block;
-        background-image: url('/images/caret-right.svg');
-        width: 8.27px;
-        height: 13.64px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
         margin-inline-start: auto;
-        margin-top: 16px;
-        margin-inline-end: 16px;
+        margin-inline-end: 8px;
 
         [dir='rtl'] & {
           transform: rotate(180deg);

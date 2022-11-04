@@ -5,12 +5,11 @@ import { useSelector } from 'react-redux';
 
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { getPreferences } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box';
-import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -18,12 +17,14 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
+  const t = useI18nContext();
   const {
     estimateUsed,
     hasSimulationError,
     maximumCostInHexWei: hexMaximumTransactionFee,
     minimumCostInHexWei: hexMinimumTransactionFee,
-    transaction,
+    maxPriorityFeePerGas,
+    maxFeePerGas,
   } = useGasFeeContext();
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
@@ -36,7 +37,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     <TransactionDetailItem
       key="gas-item"
       detailTitle={<GasDetailsItemTitle />}
-      detailTitleColor={COLORS.BLACK}
+      detailTitleColor={COLORS.TEXT_DEFAULT}
       detailText={
         <div className="gas-details-item__currency-container">
           <LoadingHeartBeat estimateUsed={estimateUsed} />
@@ -70,7 +71,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
             <Box marginRight={1}>
               <strong>
                 {estimateUsed === 'high' && '⚠ '}
-                <I18nValue messageKey="editGasSubTextFeeLabel" />
+                {t('editGasSubTextFeeLabel')}
               </strong>
             </Box>
             <div
@@ -90,10 +91,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={hexWEIToDecGWEI(
-            transaction.txParams.maxPriorityFeePerGas,
-          )}
-          maxFeePerGas={hexWEIToDecGWEI(transaction.txParams.maxFeePerGas)}
+          maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
+          maxFeePerGas={maxFeePerGas.toString()}
         />
       }
     />

@@ -8,9 +8,6 @@
   "about": {
     "message": "O opcijama"
   },
-  "acceleratingATransaction": {
-    "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
-  },
   "accessingYourCamera": {
     "message": "Pristupanje vašoj kameri..."
   },
@@ -43,12 +40,6 @@
   },
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
-  },
-  "addToAddressBook": {
-    "message": "Dodaj u imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Ivan M."
   },
   "addToken": {
     "message": "Dodaj token"
@@ -139,17 +130,14 @@
     "message": "Prikaži račun u $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Upotrijebi identifikaciju blokovima"
-  },
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
   "buyWithWyre": {
-    "message": "Kupi ETH Wyerom"
+    "message": "Kupi $1 Wyerom"
   },
   "buyWithWyreDescription": {
-    "message": "Wyreom vam se omogućava korištenje kreditnom karticom za polaganje ETH-a izravno na vaš račun za MetaMask."
+    "message": "Wyreom vam se omogućava korištenje kreditnom karticom za polaganje $1 -a izravno na vaš račun za MetaMask."
   },
   "bytes": {
     "message": "Bajtovi"
@@ -202,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
-  "connectingToKovan": {
-    "message": "Povezivanje na testnu mrežu Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Povezivanje na testnu mrežu Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Povezivanje na testnu mrežu Ropsten"
   },
   "continueToWyre": {
     "message": "Nastavi na uslugu Wyre"
@@ -258,12 +237,6 @@
   },
   "custom": {
     "message": "Napredno"
-  },
-  "customGas": {
-    "message": "Prilagodi gorivo"
-  },
-  "customGasSubTitle": {
-    "message": "Povećavanjem se naknade može smanjiti vrijeme obrade, ali se ne jamči."
   },
   "customToken": {
     "message": "Prilagođeni token"
@@ -343,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
   },
-  "enterAnAlias": {
-    "message": "Upiši pseudonim"
-  },
   "enterPassword": {
     "message": "Upiši lozinku"
   },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Procijenjeno vrijeme obrade"
   },
   "ethereumPublicAddress": {
     "message": "Javna adresa Ethereum"
@@ -511,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Poznata ugovorna adresa."
   },
-  "kovan": {
-    "message": "Testna mreža Kovan"
-  },
   "learnMore": {
     "message": "Saznajte više"
   },
@@ -608,12 +572,6 @@
   },
   "newToMetaMask": {
     "message": "Novi korisnik usluge MetaMask?"
-  },
-  "newTotal": {
-    "message": "Novi ukupni zbroj"
-  },
-  "newTransactionFee": {
-    "message": "Nova naknada za transakciju"
   },
   "next": {
     "message": "Sljedeće"
@@ -761,9 +719,6 @@
   "restore": {
     "message": "Vrati"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovite svoj račun početnom rečenicom"
-  },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
@@ -775,12 +730,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE DIJELITE ovu rečenicu ni s kim!"
-  },
-  "rinkeby": {
-    "message": "Testna mreža Rinkeby"
-  },
-  "ropsten": {
-    "message": "Testna mreža Ropsten"
   },
   "rpcUrl": {
     "message": "Novi URL RPC-a"
@@ -815,14 +764,8 @@
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
-  },
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"
-  },
-  "selectAHigherGasFee": {
-    "message": "Odaberite višu naknadu za gorivo kako biste ubrzali obrađivanje vaše transakcije.*"
   },
   "selectAnAccount": {
     "message": "Odaberi račun"
@@ -841,9 +784,6 @@
   },
   "send": {
     "message": "Pošalji"
-  },
-  "sendAmount": {
-    "message": "Odaberi iznos"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
@@ -886,9 +826,6 @@
   },
   "signed": {
     "message": "Potpisano"
-  },
-  "slow": {
-    "message": "Sporo"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."

@@ -1,6 +1,5 @@
 import nanoid from 'nanoid';
 import { useFakeTimers } from 'sinon';
-import stringify from 'fast-safe-stringify';
 import { constants, getters, noop } from '../../../../test/mocks/permissions';
 import { PermissionLogController } from './permission-log';
 import { LOG_LIMIT, LOG_METHOD_TYPES } from './enums';
@@ -67,7 +66,7 @@ describe('PermissionLogController', () => {
 
       req = RPC_REQUESTS.test_method(SUBJECTS.a.origin);
       req.id = REQUEST_IDS.a;
-      res = { foo: 'bar' };
+      res = { result: 'bar' };
 
       logMiddleware({ ...req }, res);
 
@@ -143,11 +142,17 @@ describe('PermissionLogController', () => {
         false,
       );
 
-      // validate final state
+      // Validate final state
       expect(entry1).toStrictEqual(log[0]);
       expect(entry2).toStrictEqual(log[1]);
       expect(entry3).toStrictEqual(log[2]);
       expect(entry4).toStrictEqual(log[3]);
+
+      // Regression test: ensure "response" and "request" properties
+      // are not present
+      log.forEach((entry) =>
+        expect('request' in entry && 'response' in entry).toBe(false),
+      );
     });
 
     it('handles responses added out of order', () => {
@@ -163,15 +168,15 @@ describe('PermissionLogController', () => {
 
       // get make requests
       req.id = id1;
-      const res1 = { foo: id1 };
+      const res1 = { result: id1 };
       logMiddleware({ ...req }, { ...res1 }, getSavedMockNext(handlerArray));
 
       req.id = id2;
-      const res2 = { foo: id2 };
+      const res2 = { result: id2 };
       logMiddleware({ ...req }, { ...res2 }, getSavedMockNext(handlerArray));
 
       req.id = id3;
-      const res3 = { foo: id3 };
+      const res3 = { result: id3 };
       logMiddleware({ ...req }, { ...res3 }, getSavedMockNext(handlerArray));
 
       // verify log state
@@ -181,10 +186,10 @@ describe('PermissionLogController', () => {
       const entry2 = log[1];
       const entry3 = log[2];
 
-      // all entries should be in correct order, without responses
-      expect(entry1).toMatchObject({ id: id1, response: null });
-      expect(entry2).toMatchObject({ id: id2, response: null });
-      expect(entry3).toMatchObject({ id: id3, response: null });
+      // all entries should be in correct order
+      expect(entry1).toMatchObject({ id: id1, responseTime: null });
+      expect(entry2).toMatchObject({ id: id2, responseTime: null });
+      expect(entry3).toMatchObject({ id: id3, responseTime: null });
 
       // call response handlers
       for (const i of [1, 2, 0]) {
@@ -226,7 +231,7 @@ describe('PermissionLogController', () => {
     it('handles a lack of response', () => {
       let req = RPC_REQUESTS.test_method(SUBJECTS.a.origin);
       req.id = REQUEST_IDS.a;
-      let res = { foo: 'bar' };
+      let res = { result: 'bar' };
 
       // noop for next handler prevents recording of response
       logMiddleware({ ...req }, res, noop);
@@ -270,7 +275,7 @@ describe('PermissionLogController', () => {
       let log = permLog.getActivityLog();
       expect(log).toHaveLength(0);
 
-      const res = { foo: 'bar' };
+      const res = { result: 'bar' };
       const req1 = RPC_REQUESTS.metamask_sendDomainMetadata(
         SUBJECTS.c.origin,
         'foobar',
@@ -288,7 +293,7 @@ describe('PermissionLogController', () => {
 
     it('enforces log limit', () => {
       const req = RPC_REQUESTS.test_method(SUBJECTS.a.origin);
-      const res = { foo: 'bar' };
+      const res = { result: 'bar' };
 
       // max out log
       let lastId;
@@ -634,9 +639,9 @@ describe('PermissionLogController', () => {
  * Validates an activity log entry with respect to a request, response, and
  * relevant metadata.
  *
- * @param {Object} entry - The activity log entry to validate.
- * @param {Object} req - The request that generated the entry.
- * @param {Object} [res] - The response for the request, if any.
+ * @param {object} entry - The activity log entry to validate.
+ * @param {object} req - The request that generated the entry.
+ * @param {object} [res] - The response for the request, if any.
  * @param {'restricted'|'internal'} methodType - The method log controller method type of the request.
  * @param {boolean} success - Whether the request succeeded or not.
  */
@@ -647,19 +652,15 @@ function validateActivityEntry(entry, req, res, methodType, success) {
   expect(entry.method).toStrictEqual(req.method);
   expect(entry.origin).toStrictEqual(req.origin);
   expect(entry.methodType).toStrictEqual(methodType);
-  expect(entry.request).toStrictEqual(stringify(req, null, 2));
 
   expect(Number.isInteger(entry.requestTime)).toBe(true);
   if (res) {
     expect(Number.isInteger(entry.responseTime)).toBe(true);
     expect(entry.requestTime <= entry.responseTime).toBe(true);
-
     expect(entry.success).toStrictEqual(success);
-    expect(entry.response).toStrictEqual(stringify(res, null, 2));
   } else {
     expect(entry.requestTime > 0).toBe(true);
     expect(entry).toMatchObject({
-      response: null,
       responseTime: null,
       success: null,
     });

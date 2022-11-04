@@ -21,12 +21,13 @@ export default function RecoveryPhraseChips({
   setInputValue,
   inputValue,
   indicesToCheck,
+  hiddenPhrase,
 }) {
   const t = useI18nContext();
   const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
-      borderColor={COLORS.UI2}
+      borderColor={COLORS.BORDER_MUTED}
       borderStyle={BORDER_STYLE.SOLID}
       padding={4}
       borderWidth={1}
@@ -54,7 +55,7 @@ export default function RecoveryPhraseChips({
                 </div>
                 <ChipWithInput
                   dataTestId={`recovery-phrase-input-${index}`}
-                  borderColor={COLORS.PRIMARY1}
+                  borderColor={COLORS.PRIMARY_DEFAULT}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
                   setInputValue={(value) => {
@@ -72,7 +73,7 @@ export default function RecoveryPhraseChips({
               <Chip
                 dataTestId={`recovery-phrase-chip-${index}`}
                 className="recovery-phrase__chip"
-                borderColor={COLORS.UI3}
+                borderColor={COLORS.BORDER_DEFAULT}
               >
                 {word}
               </Chip>
@@ -83,14 +84,18 @@ export default function RecoveryPhraseChips({
 
       {hideSeedPhrase && (
         <div className="recovery-phrase__secret-blocker">
-          <i className="far fa-eye-slash" color="white" />
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.WHITE}
-            className="recovery-phrase__secret-blocker--text"
-          >
-            {t('makeSureNoOneWatching')}
-          </Typography>
+          {!hiddenPhrase && (
+            <>
+              <i className="far fa-eye" color="white" />
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.OVERLAY_INVERSE}
+                className="recovery-phrase__secret-blocker--text"
+              >
+                {t('makeSureNoOneWatching')}
+              </Typography>
+            </>
+          )}
         </div>
       )}
     </Box>
@@ -104,4 +109,5 @@ RecoveryPhraseChips.propTypes = {
   setInputValue: PropTypes.func,
   inputValue: PropTypes.string,
   indicesToCheck: PropTypes.array,
+  hiddenPhrase: PropTypes.bool,
 };

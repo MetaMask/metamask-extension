@@ -22,7 +22,7 @@ describe('Reveal Secret Recovery Phrase', () => {
     wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
-        metricsEvent: () => undefined,
+        trackEvent: () => undefined,
       },
     });
   });

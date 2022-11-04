@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../components/ui/button';
@@ -12,6 +12,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
 import Box from '../../../../components/ui/box';
+import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
@@ -23,21 +24,26 @@ import {
   removeSnap,
   removePermissionsFor,
 } from '../../../../store/actions';
-import { getSnaps, getSubjectsWithPermission } from '../../../../selectors';
+import {
+  getSnaps,
+  getSubjectsWithPermission,
+  getPermissions,
+} from '../../../../selectors';
+import { formatDate } from '../../../../helpers/utils/util';
 
 function ViewSnap() {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
   const { pathname } = location;
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  // The snap ID is in URI-encoded form in the last path segment of the URL.
+  const decodedSnapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
   const snaps = useSelector(getSnaps);
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
-    .find((snapState) => {
-      const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
-      return snapState.id === decoded;
-    });
+    .find((snapState) => snapState.id === decodedSnapId);
+
+  const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
 
   useEffect(() => {
     if (!snap) {
@@ -45,9 +51,11 @@ function ViewSnap() {
     }
   }, [history, snap]);
 
-  const authorshipPillUrl = `https://npmjs.com/package/${snap?.manifest.source.location.npm.packageName}`;
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
+  );
+  const permissions = useSelector(
+    (state) => snap && getPermissions(state, snap.id),
   );
   const dispatch = useDispatch();
   const onDisconnect = (connectedOrigin, snapPermissionName) => {
@@ -68,6 +76,10 @@ function ViewSnap() {
   if (!snap) {
     return null;
   }
+
+  const versionHistory = snap.versionHistory ?? [];
+  const [firstInstall] = versionHistory;
+
   return (
     <div className="view-snap">
       <div className="settings-page__content-row">
@@ -81,25 +93,38 @@ function ViewSnap() {
           </Typography>
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
-              <SnapsAuthorshipPill
-                packageName={snap.id}
-                url={authorshipPillUrl}
-              />
+              <SnapsAuthorshipPill snapId={snap.id} />
             </Box>
-            <Box
-              paddingLeft={4}
-              className="snap-settings-card__toggle-container view-snap__toggle-container"
-            >
+            <Box paddingLeft={4} className="view-snap__toggle-container">
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
                 <ToggleButton
                   value={snap.enabled}
                   onToggle={onToggle}
-                  className="snap-settings-card__toggle-container__toggle-button"
+                  className="view-snap__toggle-button"
                 />
               </Tooltip>
             </Box>
           </Box>
         </div>
+        <Box
+          className="view-snap__install-details"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          padding={2}
+        >
+          {firstInstall && (
+            <Typography variant={TYPOGRAPHY.H8}>
+              {t('snapAdded', [
+                formatDate(firstInstall.date, 'MMMM d, y'),
+                firstInstall.origin,
+              ])}
+            </Typography>
+          )}
+          <Typography className="view-snap__version" variant={TYPOGRAPHY.H7}>
+            {t('shorthandVersion', [snap.version])}
+          </Typography>
+        </Box>
         <Box
           className="view-snap__content-container"
           width={FRACTIONS.SEVEN_TWELFTHS}
@@ -107,7 +132,7 @@ function ViewSnap() {
           <div className="view-snap__section">
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginTop: 5 }}
             >
               {snap.manifest.description}
@@ -115,12 +140,12 @@ function ViewSnap() {
           </div>
           <div className="view-snap__section view-snap__permission-list">
             <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
-            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.TEXT_ALTERNATIVE}>
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
             <Box width={FRACTIONS.TEN_TWELFTHS}>
               <PermissionsConnectPermissionList
-                permissions={snap.manifest.initialPermissions}
+                permissions={permissions ?? {}}
               />
             </Box>
           </div>
@@ -129,7 +154,10 @@ function ViewSnap() {
               <Typography variant={TYPOGRAPHY.H4}>
                 {t('connectedSites')}
               </Typography>
-              <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
                 {t('connectedSnapSites', [snap.manifest.proposedName])}
               </Typography>
               <ConnectedSitesList
@@ -144,7 +172,7 @@ function ViewSnap() {
             <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ paddingBottom: 3 }}
             >
               {t('removeSnapDescription')}
@@ -155,12 +183,19 @@ function ViewSnap() {
               css={{
                 maxWidth: '175px',
               }}
-              onClick={async () => {
-                await dispatch(removeSnap(snap));
-              }}
+              onClick={() => setIsShowingRemoveWarning(true)}
             >
               {t('removeSnap')}
             </Button>
+            {isShowingRemoveWarning && (
+              <SnapRemoveWarning
+                onCancel={() => setIsShowingRemoveWarning(false)}
+                onSubmit={async () => {
+                  await dispatch(removeSnap(snap.id));
+                }}
+                snapName={snap.manifest.proposedName}
+              />
+            )}
           </div>
         </Box>
       </div>

@@ -2,16 +2,17 @@ import {
   RESIZE,
   TYPOGRAPHY,
 } from '../../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
 function getValues(pendingApproval, t, actions) {
-  const { prompt, description, textAreaContent } = pendingApproval.requestData;
+  const { title, description, textAreaContent } = pendingApproval.requestData;
 
   return {
     content: [
       {
         element: 'Typography',
         key: 'title',
-        children: prompt,
+        children: title,
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',
@@ -73,11 +74,10 @@ function getValues(pendingApproval, t, actions) {
           },
           {
             element: 'a',
-            children: t('learnMore'),
+            children: t('learnMoreUpperCase'),
             key: 'learnMore-a-href',
             props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
+              href: ZENDESK_URLS.USER_GUIDE_DAPPS,
               target: '__blank',
             },
           },

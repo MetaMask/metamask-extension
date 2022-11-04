@@ -2,16 +2,22 @@ import log from 'loglevel';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { stripHexPrefix } from 'ethereumjs-util';
 import copyToClipboard from 'copy-to-clipboard';
-import ReadOnlyInput from '../../../ui/readonly-input';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../../../../shared/modules/hexstring-utils';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static defaultProps = {
@@ -45,13 +51,32 @@ export default class ExportPrivateKeyModal extends Component {
     const { exportAccount } = this.props;
 
     exportAccount(password, address)
-      .then((privateKey) =>
+      .then((privateKey) => {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.KEYS,
+          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+          properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
+          },
+        });
+
         this.setState({
           privateKey,
           showWarning: false,
-        }),
-      )
-      .catch((e) => log.error(e));
+        });
+      })
+      .catch((e) => {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.KEYS,
+          event: EVENT_NAMES.KEY_EXPORT_FAILED,
+          properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
+            reason: 'incorrect_password',
+          },
+        });
+
+        log.error(e);
+      });
   };
 
   renderPasswordLabel(privateKey) {
@@ -78,13 +103,22 @@ export default class ExportPrivateKeyModal extends Component {
     }
 
     return (
-      <ReadOnlyInput
-        wrapperClass="export-private-key-modal__password-display-wrapper"
-        inputClass="export-private-key-modal__password-display-textarea"
-        textarea
-        value={plainKey}
-        onClick={() => copyToClipboard(plainKey)}
-      />
+      <div
+        className="export-private-key-modal__private-key-display"
+        onClick={() => {
+          copyToClipboard(plainKey);
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.KEYS,
+            event: EVENT_NAMES.KEY_EXPORT_COPIED,
+            properties: {
+              key_type: EVENT.KEY_TYPES.PKEY,
+              copy_method: 'clipboard',
+            },
+          });
+        }}
+      >
+        {plainKey}
+      </div>
     );
   }
 
@@ -96,14 +130,25 @@ export default class ExportPrivateKeyModal extends Component {
             type="secondary"
             large
             className="export-private-key-modal__button export-private-key-modal__button--cancel"
-            onClick={() => hideModal()}
+            onClick={() => {
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.KEYS,
+                event: EVENT_NAMES.KEY_EXPORT_CANCELED,
+                properties: {
+                  key_type: EVENT.KEY_TYPES.PKEY,
+                },
+              });
+              hideModal();
+            }}
           >
             {this.context.t('cancel')}
           </Button>
         )}
         {privateKey ? (
           <Button
-            onClick={() => hideModal()}
+            onClick={() => {
+              hideModal();
+            }}
             type="primary"
             large
             className="export-private-key-modal__button"
@@ -112,9 +157,17 @@ export default class ExportPrivateKeyModal extends Component {
           </Button>
         ) : (
           <Button
-            onClick={() =>
-              this.exportAccountAndGetPrivateKey(this.state.password, address)
-            }
+            onClick={() => {
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.KEYS,
+                event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+                properties: {
+                  key_type: EVENT.KEY_TYPES.PKEY,
+                },
+              });
+
+              this.exportAccountAndGetPrivateKey(this.state.password, address);
+            }}
             type="primary"
             large
             className="export-private-key-modal__button"
@@ -147,10 +200,9 @@ export default class ExportPrivateKeyModal extends Component {
         backButtonAction={() => showAccountDetailModal()}
       >
         <span className="export-private-key-modal__account-name">{name}</span>
-        <ReadOnlyInput
-          wrapperClass="ellip-address-wrapper"
-          value={toChecksumHexAddress(address)}
-        />
+        <div className="ellip-address-wrapper">
+          {toChecksumHexAddress(address)}
+        </div>
         <div className="export-private-key-modal__divider" />
         <span className="export-private-key-modal__body-title">
           {this.context.t('showPrivateKeys')}

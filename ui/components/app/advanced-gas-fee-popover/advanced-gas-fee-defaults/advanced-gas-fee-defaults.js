@@ -22,11 +22,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const {
-    gasErrors,
-    maxBaseFee,
-    maxPriorityFeePerGas,
-  } = useAdvancedGasFeePopoverContext();
+  const { gasErrors, maxBaseFee, maxPriorityFeePerGas } =
+    useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { editGasMode } = useGasFeeContext();
@@ -78,7 +75,9 @@ const AdvancedGasFeeDefaults = () => {
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.ROW}
-      margin={[4, 2, 0, 2]}
+      marginTop={4}
+      marginLeft={2}
+      marginRight={2}
       className="advanced-gas-fee-defaults"
     >
       <label className="advanced-gas-fee-defaults__label">
@@ -88,7 +87,11 @@ const AdvancedGasFeeDefaults = () => {
           onClick={handleUpdateDefaultSettings}
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          margin={0}
+        >
           {isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')
             : t('advancedGasFeeDefaultOptIn', [

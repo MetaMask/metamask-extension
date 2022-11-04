@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     margin: 0;
   }
 
@@ -19,7 +19,7 @@
 
     &--warning {
       .countdown-timer__time {
-        color: var(--Red-500);
+        color: var(--color-error-default);
       }
     }
   }

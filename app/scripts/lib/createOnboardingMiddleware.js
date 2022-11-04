@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
 
 /**
  * Returns a middleware that intercepts `wallet_registerOnboarding` messages
@@ -17,7 +17,7 @@ export default function createOnboardingMiddleware({
         next();
         return;
       }
-      if (req.tabId && req.tabId !== extension.tabs.TAB_ID_NONE) {
+      if (req.tabId && req.tabId !== browser.tabs.TAB_ID_NONE) {
         await registerOnboarding(location, req.tabId);
       } else {
         log.debug(

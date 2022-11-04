@@ -74,7 +74,7 @@ try {
      * We want to make globals non-writable, and we can't set the `writable`
      * property and accessor properties at the same time.
      *
-     * @param {Object} descriptor - The propertyName descriptor to check.
+     * @param {object} descriptor - The propertyName descriptor to check.
      * @returns {boolean} Whether the propertyName descriptor has any accessors.
      */
     function hasAccessor(descriptor) {

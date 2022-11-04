@@ -1,0 +1,45 @@
+.token-details {
+  &__title {
+    text-transform: capitalize;
+  }
+
+  &__closeButton {
+    float: right;
+    width: 10px;
+    margin-top: -17px;
+    margin-inline-end: -8px;
+
+    &::after {
+      font-size: 24px;
+      content: '\00D7';
+      color: var(--color-icon-default);
+    }
+  }
+
+  &__token-value {
+    font-size: 32px;
+  }
+
+  &__token-address {
+    width: 222px;
+  }
+
+  &__copy-icon {
+    float: right;
+    margin-inline-start: 62px;
+
+    @include screen-sm-min {
+      margin-inline-start: 112px;
+    }
+  }
+
+  &__hide-token-button {
+    width: 319px;
+    height: 39px;
+    margin-top: 70px;
+
+    @include screen-sm-min {
+      margin-inline-start: 20px;
+    }
+  }
+}

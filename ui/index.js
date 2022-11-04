@@ -3,17 +3,17 @@ import log from 'loglevel';
 import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
+import browser from 'webextension-polyfill';
+
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
+import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import switchDirection from '../shared/lib/switch-direction';
+import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from './helpers/utils/i18n-helper';
-import switchDirection from './helpers/utils/switch-direction';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
@@ -25,16 +25,38 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
+import { _setBackgroundConnection } from './store/action-queue';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
+let reduxStore;
+
+/**
+ * Method to update backgroundConnection object use by UI
+ *
+ * @param backgroundConnection - connection object to background
+ */
+export const updateBackgroundConnection = (backgroundConnection) => {
+  _setBackgroundConnection(backgroundConnection);
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
+};
+
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  actions._setBackgroundConnection(backgroundConnection);
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      cb(err);
+      cb(err, metamaskState);
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
@@ -50,15 +72,9 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.featureFlags = {};
   }
 
-  const currentLocaleMessages = metamaskState.currentLocale
-    ? await fetchLocale(metamaskState.currentLocale)
-    : {};
-  const enLocaleMessages = await fetchLocale('en');
-
-  await loadRelativeTimeFormatLocaleData('en');
-  if (metamaskState.currentLocale) {
-    await loadRelativeTimeFormatLocaleData(metamaskState.currentLocale);
-  }
+  const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
+    metamaskState.currentLocale,
+  );
 
   if (metamaskState.textDirection === 'rtl') {
     await switchDirection('rtl');
@@ -79,18 +95,17 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   };
 
+  updateBackgroundConnection(backgroundConnection);
+
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
-      draftInitialState,
-    );
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(draftInitialState);
     const selectedAddress = getSelectedAddress(draftInitialState);
-    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(
-      draftInitialState,
-    );
-    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
-      draftInitialState,
-    );
+    const unconnectedAccountAlertShownOrigins =
+      getUnconnectedAccountAlertShown(draftInitialState);
+    const unconnectedAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(draftInitialState);
 
     if (
       origin &&
@@ -107,6 +122,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const store = configureStore(draftInitialState);
+  reduxStore = store;
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
@@ -128,18 +144,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
-  backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      store.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else {
-      throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
-      );
-    }
-  });
-
   // global metamask api - used by tooling
   global.metamask = {
     updateCurrentLocale: (code) => {
@@ -159,29 +163,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   return store;
 }
 
-/**
- * Return a "masked" copy of the given object.
- *
- * The returned object includes only the properties present in the mask. The
- * mask is an object that mirrors the structure of the given object, except
- * the only values are `true` or a sub-mask. `true` implies the property
- * should be included, and a sub-mask implies the property should be further
- * masked according to that sub-mask.
- *
- * @param {Object} object - The object to mask
- * @param {Object<Object|boolean>} mask - The mask to apply to the object
- */
-function maskObject(object, mask) {
-  return Object.keys(object).reduce((state, key) => {
-    if (mask[key] === true) {
-      state[key] = object[key];
-    } else if (mask[key]) {
-      state[key] = maskObject(object[key], mask[key]);
-    }
-    return state;
-  }, {});
-}
-
 function setupDebuggingHelpers(store) {
   window.getCleanAppState = async function () {
     const state = clone(store.getState());
@@ -192,7 +173,7 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  window.getSentryState = function () {
+  window.sentryHooks.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject(fullState, SENTRY_STATE);
     return {
@@ -205,15 +186,16 @@ function setupDebuggingHelpers(store) {
 
 window.logStateString = async function (cb) {
   const state = await window.getCleanAppState();
-  global.platform.getPlatformInfo((err, platform) => {
-    if (err) {
+  browser.runtime
+    .getPlatformInfo()
+    .then((platform) => {
+      state.platform = platform;
+      const stateString = JSON.stringify(state, null, 2);
+      cb(null, stateString);
+    })
+    .catch((err) => {
       cb(err);
-      return;
-    }
-    state.platform = platform;
-    const stateString = JSON.stringify(state, null, 2);
-    cb(null, stateString);
-  });
+    });
 };
 
 window.logState = function (toClipboard) {

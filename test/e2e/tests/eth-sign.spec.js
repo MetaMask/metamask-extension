@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Eth sign', function () {
   it('can initiate and confirm a eth sign', async function () {
@@ -19,7 +20,9 @@ describe('Eth sign', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -42,7 +45,7 @@ describe('Eth sign', function () {
           '.request-signature__header__text',
         );
         const origin = await driver.findElement('.request-signature__origin');
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         const personalMessageRow = await driver.findElement(

@@ -1,21 +1,37 @@
 .dropdown {
-  @include H6;
+  position: relative;
+  display: inline-block;
+  height: 36px;
 
-  appearance: none;
+  &__select {
+    appearance: none;
+    // TODO: remove these after getting autoprefixer working in Storybook
+    -moz-appearance: none;
+    -webkit-appearance: none;
 
-  // TODO: remove these after getting autoprefixer working in Storybook
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  border: 1px solid #d2d8dd;
-  border-radius: 6px;
-  background-image: url('/images/icons/caret-down.svg');
-  background-repeat: no-repeat, repeat;
-  background-position: right 18px top 50%;
-  background-color: white;
-  padding: 8px 32px 8px 16px;
+    @include H6;
 
-  [dir='rtl'] & {
-    background-position: left 18px top 50%;
-    padding: 8px 16px 8px 32px;
+    color: var(--color-text-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    background-color: var(--color-background-default);
+    padding: 8px 40px 8px 16px;
+    width: 100%;
+
+    [dir='rtl'] & {
+      padding: 8px 16px 8px 40px;
+    }
+  }
+
+  &__icon-caret-down {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+
+    [dir='rtl'] & {
+      left: 16px;
+    }
   }
 }

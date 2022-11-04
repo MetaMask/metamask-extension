@@ -1,10 +1,32 @@
 import React from 'react';
-import { text } from '@storybook/addon-knobs';
 import UrlIcon from './url-icon';
 
 export default {
   title: 'Components/UI/UrlIcon',
   id: __filename,
+  argType: {
+    name: { control: 'text' },
+    url: { control: 'text' },
+    className: { control: 'text' },
+    fallbackClassName: { control: 'text' },
+  },
+  args: {
+    name: 'AST',
+    url: 'AST.png',
+    className: '',
+    fallbackClassName: '',
+  },
+};
+
+export const DefaultStory = (args) => {
+  return (
+    <UrlIcon
+      name={args.name}
+      url={args.url}
+      className={args.className}
+      fallbackClassName={args.fallbackClassName}
+    />
+  );
 };
 
 export const AST = () => {
@@ -13,15 +35,4 @@ export const AST = () => {
 
 export const BAT = () => {
   return <UrlIcon name="BAT" url="BAT_icon.svg" />;
-};
-
-export const CustomProps = () => {
-  return (
-    <UrlIcon
-      name={text('Symbol', '')}
-      url={text('Icon URL', '')}
-      className={text('className', '')}
-      fallbackClassName={text('fallbackClassName', '')}
-    />
-  );
 };

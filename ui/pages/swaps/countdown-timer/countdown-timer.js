@@ -5,7 +5,10 @@ import classnames from 'classnames';
 import { Duration } from 'luxon';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { getSwapsQuoteRefreshTime } from '../../../ducks/swaps/swaps';
+import {
+  getSwapsQuoteRefreshTime,
+  getSwapsQuotePrefetchingRefreshTime,
+} from '../../../ducks/swaps/swaps';
 import { SECOND } from '../../../../shared/constants/time';
 import TimerIcon from './timer-icon';
 
@@ -43,7 +46,13 @@ export default function CountdownTimer({
   const initialTimeStartedRef = useRef();
 
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
-  const timerStart = Number(timerBase) || swapsQuoteRefreshTime;
+  const swapsQuotePrefetchingRefreshTime = useSelector(
+    getSwapsQuotePrefetchingRefreshTime,
+  );
+  const refreshTime = initialTimeStartedRef.current
+    ? swapsQuoteRefreshTime
+    : swapsQuotePrefetchingRefreshTime;
+  const timerStart = Number(timerBase) || refreshTime;
 
   const [currentTime, setCurrentTime] = useState(() => Date.now());
   const [timer, setTimer] = useState(() =>
@@ -113,10 +122,38 @@ export default function CountdownTimer({
 }
 
 CountdownTimer.propTypes = {
+  /**
+   * Unix timestamp that indicates the time at which this timer has started
+   * running.
+   */
   timeStarted: PropTypes.number,
+
+  /**
+   * Boolean indicating whether to display only the time (`true`) or to also
+   * display a label (`false`), given by the `labelKey` parameter.
+   */
   timeOnly: PropTypes.bool,
+
+  /**
+   * The duration of this timer in milliseconds.
+   */
   timerBase: PropTypes.number,
+
+  /**
+   * The time at which this timer should turn red, indicating it has almost run
+   * out of time. Given in the format `mm:ss`.
+   */
   warningTime: PropTypes.string,
+
+  /**
+   * The key of the label to display next to the timer, defined in
+   * `app/_locales/`.
+   */
   labelKey: PropTypes.string,
+
+  /**
+   * The key of the label to display in the tooltip when hovering over the info
+   * icon, defined in `app/_locales/`.
+   */
   infoTooltipLabelKey: PropTypes.string,
 };

@@ -1,6 +1,6 @@
 import {
   INFURA_PROVIDER_TYPES,
-  NETWORK_TYPE_TO_ID_MAP,
+  BUILT_IN_NETWORKS,
 } from '../../../shared/constants/network';
 import migration51 from './051';
 
@@ -44,7 +44,7 @@ describe('migration #51', () => {
             },
             provider: {
               type,
-              chainId: NETWORK_TYPE_TO_ID_MAP[type].chainId,
+              chainId: BUILT_IN_NETWORKS[type].chainId,
             },
           },
           foo: 'bar',
@@ -75,7 +75,7 @@ describe('migration #51', () => {
             },
             provider: {
               type,
-              chainId: NETWORK_TYPE_TO_ID_MAP[type].chainId,
+              chainId: BUILT_IN_NETWORKS[type].chainId,
             },
           },
           foo: 'bar',

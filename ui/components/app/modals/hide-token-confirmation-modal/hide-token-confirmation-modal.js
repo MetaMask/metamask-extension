@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import Button from '../../../ui/button';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 function mapStateToProps(state) {
   return {
     token: state.appState.modal.modalState.props.token,
+    history: state.appState.modal.modalState.props.history,
   };
 }
 
@@ -15,7 +17,11 @@ function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: (address) => {
-      dispatch(actions.removeToken(address)).then(() => {
+      dispatch(
+        actions.ignoreTokens({
+          tokensToIgnore: address,
+        }),
+      ).then(() => {
         dispatch(actions.hideModal());
       });
     },
@@ -35,12 +41,13 @@ class HideTokenConfirmationModal extends Component {
       address: PropTypes.string,
       image: PropTypes.string,
     }),
+    history: PropTypes.object,
   };
 
   state = {};
 
   render() {
-    const { token, hideToken, hideModal } = this.props;
+    const { token, hideToken, hideModal, history } = this.props;
     const { symbol, address, image } = token;
 
     return (
@@ -72,7 +79,10 @@ class HideTokenConfirmationModal extends Component {
               type="primary"
               className="hide-token-confirmation__button"
               data-testid="hide-token-confirmation__hide"
-              onClick={() => hideToken(address)}
+              onClick={() => {
+                hideToken(address);
+                history.push(DEFAULT_ROUTE);
+              }}
             >
               {this.context.t('hide')}
             </Button>

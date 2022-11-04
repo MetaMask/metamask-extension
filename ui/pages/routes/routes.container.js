@@ -2,9 +2,17 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getAllAccountsOnNetworkAreEmpty,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
+  getTheme,
+  getIsTestnet,
+  getCurrentChainId,
+  getShouldShowSeedPhraseReminder,
+  getShowPortfolioTooltip,
+  isCurrentProviderCustom,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -14,6 +22,7 @@ import {
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
+import { getSendStage } from '../../ducks/send';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -36,6 +45,16 @@ function mapStateToProps(state) {
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),
     providerType: state.metamask.provider?.type,
+    theme: getTheme(state),
+    sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
+    isTestNet: getIsTestnet(state),
+    currentChainId: getCurrentChainId(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
+    forgottenPassword: state.metamask.forgottenPassword,
+    isCurrentProviderCustom: isCurrentProviderCustom(state),
   };
 }
 

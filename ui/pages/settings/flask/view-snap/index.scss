@@ -1,23 +1,21 @@
 .view-snap {
   padding: 12px 18px;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     padding: 12px;
   }
 
   &__subheader {
-    @include H4;
-
     padding: 16px 4px;
-    border-bottom: 1px solid var(--alto);
-    margin-right: 24px;
+    border-bottom: 1px solid var(--color-border-muted);
+    margin-inline-end: 24px;
     height: 72px;
     align-items: center;
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: $break-small) {
-      margin-right: 0;
+    @include screen-sm-max {
+      margin-inline-end: 0;
       padding: 0 0 16px;
       flex-direction: column;
       align-items: center;
@@ -26,8 +24,21 @@
     }
   }
 
+  &__install-details {
+    border-bottom: 1px solid var(--color-border-muted);
+    margin-inline-end: 24px;
+
+    @include screen-sm-max {
+      margin-inline-end: 0;
+    }
+  }
+
+  &__version {
+    font-family: monospace;
+  }
+
   &__title {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-bottom: 16px;
     }
   }
@@ -37,28 +48,34 @@
     display: flex;
     flex-grow: 1;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       justify-content: space-between;
     }
   }
 
   &__pill-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
   }
 
   &__toggle-container {
-    @media screen and (max-width: $break-small) {
+    margin-left: auto;
+
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
   }
 
+  &__toggle-button {
+    margin-right: -12px;
+  }
+
   &__content-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
     }
   }
@@ -68,18 +85,18 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid var(--Grey-100);
+    border-bottom: 1px solid var(--color-border-muted);
     padding-bottom: 16px;
     margin-bottom: 16px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: initial;
       padding: 5px 0 16px;
     }
 
     .connected-sites-list__content-row {
       border-top: none;
-      border-bottom: 1px solid var(--ui-2);
+      border-bottom: 1px solid var(--color-border-muted);
 
       &:last-child {
         border-bottom: none;
@@ -107,7 +124,7 @@
   &__remove-button {
     max-width: 175px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       align-self: center;
     }
   }

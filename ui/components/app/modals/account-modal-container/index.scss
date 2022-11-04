@@ -7,12 +7,12 @@
     align-items: center;
     position: relative;
     padding: 5px 0 31px 0;
-    border: 1px solid var(--silver);
+    border: 1px solid var(--color-border-default);
     border-radius: 4px;
   }
 
   &__back {
-    color: var(--dusty-gray);
+    color: var(--color-icon-default);
     position: absolute;
     top: 13px;
     left: 17px;
@@ -31,7 +31,7 @@
     @include H1;
 
     background-color: transparent;
-    color: var(--ui-black);
+    color: var(--color-text-default);
     position: absolute;
     cursor: pointer;
     top: -10px;

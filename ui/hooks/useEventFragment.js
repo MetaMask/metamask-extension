@@ -7,7 +7,7 @@ import {
   createEventFragment,
   updateEventFragment,
 } from '../store/actions';
-import { useMetaMetricsContext } from './useMetricEvent';
+import { useSegmentContext } from './useSegmentContext';
 
 /**
  * Retrieves a fragment from memory or initializes new fragment if one does not
@@ -15,7 +15,7 @@ import { useMetaMetricsContext } from './useMetricEvent';
  * fragment id.
  *
  * @param {string} existingId
- * @param {Object} fragmentOptions
+ * @param {object} fragmentOptions
  * @returns
  */
 export function useEventFragment(existingId, fragmentOptions = {}) {
@@ -59,7 +59,7 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
     }
   }, [fragment, fragmentOptions]);
 
-  const context = useMetaMetricsContext();
+  const context = useSegmentContext();
 
   /**
    * trackSuccess is used to close a fragment with the affirmative action. This

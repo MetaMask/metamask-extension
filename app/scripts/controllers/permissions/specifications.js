@@ -1,7 +1,8 @@
-import {
-  constructPermission,
-  PermissionType,
-} from '@metamask/snap-controllers';
+import { constructPermission, PermissionType } from '@metamask/controllers';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snap-controllers';
+import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -34,7 +35,7 @@ const CaveatFactories = Object.freeze({
 /**
  * A PreferencesController identity object.
  *
- * @typedef {Object} Identity
+ * @typedef {object} Identity
  * @property {string} address - The address of the identity.
  * @property {string} name - The name of the identity.
  * @property {number} [lastSelected] - Unix timestamp of when the identity was
@@ -66,6 +67,11 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getIdentities),
     },
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ...snapsCaveatsSpecifications,
+    ...snapsEndowmentCaveatSpecifications,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

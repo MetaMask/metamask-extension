@@ -10,12 +10,12 @@
   transition: opacity 0.75s 0s;
 
   a {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &--dismissible {
     &#{$self}--first {
-      box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 -5px 5px -5px var(--color-shadow-default);
     }
   }
 
@@ -37,19 +37,19 @@
   }
 
   &--warning {
-    border-left: 2px solid var(--alert-1);
+    border-left: 2px solid var(--color-warning-default);
   }
 
   &--danger {
-    border-left: 2px solid var(--error-1);
+    border-left: 2px solid var(--color-error-default);
   }
 
   &--info {
-    border-left: 2px solid var(--primary-1);
+    border-left: 2px solid var(--color-info-default);
   }
 
   &--success {
-    border-left: 2px solid var(--success-1);
+    border-left: 2px solid var(--color-success-default);
   }
 
   & .info-icon {

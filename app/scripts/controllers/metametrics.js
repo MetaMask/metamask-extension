@@ -1,13 +1,28 @@
-import { merge, omit, omitBy } from 'lodash';
+import {
+  isEqual,
+  memoize,
+  merge,
+  omit,
+  omitBy,
+  pickBy,
+  size,
+  sum,
+} from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
+import { checkAlarmExists } from '../lib/util';
+
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -30,10 +45,11 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventFragment} MetaMetricsEventFragment
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsTraits} MetaMetricsTraits
  */
 
 /**
- * @typedef {Object} MetaMetricsControllerState
+ * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
@@ -41,14 +57,17 @@ const exceptionsToFilter = {
  *  whether or not events are tracked
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
+ * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
+ *  a user opts into metrics.
+ * @property {object} [traits] - Traits that are not derived from other state keys.
  */
 
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {Object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} options.preferencesStore - The preferences controller store, used
+   * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
@@ -58,6 +77,7 @@ export default class MetaMetricsController {
    *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
+   * @param {string} options.extension - webextension-polyfill
    * @param {MetaMetricsControllerState} options.initState - State to initialized with
    * @param options.captureException
    */
@@ -70,6 +90,7 @@ export default class MetaMetricsController {
     version,
     environment,
     initState,
+    extension,
     captureException = defaultCaptureException,
   }) {
     this._captureException = (err) => {
@@ -85,12 +106,16 @@ export default class MetaMetricsController {
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
+    this.extension = extension;
+    this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      eventsBeforeMetricsOptIn: [],
+      traits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -122,16 +147,49 @@ export default class MetaMetricsController {
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
-    setInterval(() => {
-      Object.values(this.store.getState().fragments).forEach((fragment) => {
-        if (
-          fragment.timeout &&
-          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-        ) {
-          this.finalizeEventFragment(fragment.id, { abandoned: true });
+    if (isManifestV3) {
+      /* eslint-disable no-undef */
+      chrome.alarms.getAll((alarms) => {
+        const hasAlarm = checkAlarmExists(
+          alarms,
+          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+        );
+
+        if (!hasAlarm) {
+          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
+            delayInMinutes: 1,
+            periodInMinutes: 1,
+          });
         }
       });
-    }, SECOND * 30);
+      chrome.alarms.onAlarm.addListener(() => {
+        chrome.alarms.getAll((alarms) => {
+          const hasAlarm = checkAlarmExists(
+            alarms,
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+          );
+
+          if (hasAlarm) {
+            this.finalizeAbandonedFragments();
+          }
+        });
+      });
+    } else {
+      setInterval(() => {
+        this.finalizeAbandonedFragments();
+      }, SECOND * 30);
+    }
+  }
+
+  finalizeAbandonedFragments() {
+    Object.values(this.store.getState().fragments).forEach((fragment) => {
+      if (
+        fragment.timeout &&
+        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+      ) {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
+    });
   }
 
   generateMetaMetricsId() {
@@ -166,9 +224,18 @@ export default class MetaMetricsController {
         }`,
       );
     }
+
+    const existingFragment = this.getExistingEventFragment(
+      options.actionId,
+      options.uniqueIdentifier,
+    );
+    if (existingFragment) {
+      return existingFragment;
+    }
+
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
@@ -212,6 +279,26 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
+  }
+
+  /**
+   * Returns the fragment stored in memory with provided id or undefined if it
+   * does not exist.
+   *
+   * @param {string} actionId - actionId passed from UI
+   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
+   * @returns {[MetaMetricsEventFragment]}
+   */
+  getExistingEventFragment(actionId, uniqueIdentifier) {
+    const { fragments } = this.store.getState();
+
+    const existingFragment = Object.values(fragments).find(
+      (fragment) =>
+        fragment.actionId === actionId &&
+        fragment.uniqueIdentifier === uniqueIdentifier,
+    );
+
+    return existingFragment;
   }
 
   /**
@@ -281,6 +368,50 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Calls this._identify with validated metaMetricsId and user traits if user is participating
+   * in the MetaMetrics analytics program
+   *
+   * @param {object} userTraits
+   */
+  identify(userTraits) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+
+    if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
+      return;
+    }
+    if (typeof userTraits !== 'object') {
+      console.warn(
+        `MetaMetricsController#identify: userTraits parameter must be an object. Received type: ${typeof userTraits}`,
+      );
+      return;
+    }
+
+    const allValidTraits = this._buildValidTraits(userTraits);
+
+    this._identify(allValidTraits);
+  }
+
+  // It sets an uninstall URL ("Sorry to see you go!" page),
+  // which is opened if a user uninstalls the extension.
+  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
+    const query = {};
+    if (participateInMetaMetrics) {
+      // We only want to track these things if a user opted into metrics.
+      query.mmi = Buffer.from(metaMetricsId).toString('base64');
+      query.env = this.environment;
+      query.av = this.version;
+    }
+    const queryString = new URLSearchParams(query);
+
+    // this.extension not currently defined in tests
+    if (this.extension && this.extension.runtime) {
+      this.extension.runtime.setUninstallURL(
+        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+      );
+    }
+  }
+
+  /**
    * Setter for the `participateInMetaMetrics` property
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
@@ -296,155 +427,17 @@ export default class MetaMetricsController {
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    if (participateInMetaMetrics) {
+      this.trackEventsAfterMetricsOptIn();
+      this.clearEventsAfterMetricsOptIn();
+    }
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 
   get state() {
     return this.store.getState();
-  }
-
-  /**
-   * Build the context object to attach to page and track events.
-   *
-   * @private
-   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
-   *  the notification window.
-   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
-   *  view of the extension. Defaults to the background-process object.
-   * @returns {MetaMetricsContext}
-   */
-  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    return {
-      app: {
-        name: 'MetaMask Extension',
-        version: this.version,
-      },
-      userAgent: window.navigator.userAgent,
-      page,
-      referrer,
-    };
-  }
-
-  /**
-   * Build's the event payload, processing all fields into a format that can be
-   * fed to Segment's track method
-   *
-   * @private
-   * @param {
-   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
-   * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} formatted event payload for segment
-   */
-  _buildEventPayload(rawPayload) {
-    const {
-      event,
-      properties,
-      revenue,
-      value,
-      currency,
-      category,
-      page,
-      referrer,
-      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-    } = rawPayload;
-    return {
-      event,
-      properties: {
-        // These values are omitted from properties because they have special meaning
-        // in segment. https://segment.com/docs/connections/spec/track/#properties.
-        // to avoid accidentally using these inappropriately, you must add them as top
-        // level properties on the event payload. We also exclude locale to prevent consumers
-        // from overwriting this context level property. We track it as a property
-        // because not all destinations map locale from context.
-        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
-        revenue,
-        value,
-        currency,
-        category,
-        network: properties?.network ?? this.network,
-        locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
-        environment_type: environmentType,
-      },
-      context: this._buildContext(referrer, page),
-    };
-  }
-
-  /**
-   * Perform validation on the payload and update the id type to use before
-   * sending to Segment. Also examines the options to route and handle the
-   * event appropriately.
-   *
-   * @private
-   * @param {SegmentEventPayload} payload - properties to attach to event
-   * @param {MetaMetricsEventOptions} [options] - options for routing and
-   *  handling the event
-   * @returns {Promise<void>}
-   */
-  _track(payload, options) {
-    const {
-      isOptIn,
-      metaMetricsId: metaMetricsIdOverride,
-      matomoEvent,
-      flushImmediately,
-    } = options || {};
-    let idType = 'userId';
-    let idValue = this.state.metaMetricsId;
-    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
-    // This is carried over from the old implementation, and will likely need
-    // to be updated to work with the new tracking plan. I think we should use
-    // a config setting for this instead of trying to match the event name
-    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
-    if (isSendFlow) {
-      excludeMetaMetricsId = true;
-    }
-    // If we are tracking sensitive data we will always use the anonymousId
-    // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
-    // associating potentially identifiable information with a specific id.
-    // During the opt in flow we will track all events, but do so with the
-    // anonymous id. The one exception to that rule is after the user opts in
-    // to MetaMetrics. When that happens we receive back the user's new
-    // MetaMetrics id before it is fully persisted to state. To avoid a race
-    // condition we explicitly pass the new id to the track method. In that
-    // case we will track the opt in event to the user's id. In all other cases
-    // we use the metaMetricsId from state.
-    if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
-      idType = 'anonymousId';
-      idValue = METAMETRICS_ANONYMOUS_ID;
-    } else if (isOptIn && metaMetricsIdOverride) {
-      idValue = metaMetricsIdOverride;
-    }
-    payload[idType] = idValue;
-
-    // If this is an event on the old matomo schema, add a key to the payload
-    // to designate it as such
-    if (matomoEvent === true) {
-      payload.properties.legacy_event = true;
-    }
-
-    // Promises will only resolve when the event is sent to segment. For any
-    // event that relies on this promise being fulfilled before performing UI
-    // updates, or otherwise delaying user interaction, supply the
-    // 'flushImmediately' flag to the trackEvent method.
-    return new Promise((resolve, reject) => {
-      const callback = (err) => {
-        if (err) {
-          // The error that segment gives us has some manipulation done to it
-          // that seemingly breaks with lockdown enabled. Creating a new error
-          // here prevents the system from freezing when the network request to
-          // segment fails for any reason.
-          const safeError = new Error(err.message);
-          safeError.stack = err.stack;
-          return reject(safeError);
-        }
-        return resolve();
-      };
-
-      this.segment.track(payload, callback);
-      if (flushImmediately) {
-        this.segment.flush();
-      }
-    });
   }
 
   /**
@@ -572,5 +565,389 @@ export default class MetaMetricsController {
         }`,
       );
     }
+  }
+
+  handleMetaMaskStateUpdate(newState) {
+    const userTraits = this._buildUserTraitsObject(newState);
+    if (userTraits) {
+      this.identify(userTraits);
+    }
+  }
+
+  // Track all queued events after a user opted into metrics.
+  trackEventsAfterMetricsOptIn() {
+    const { eventsBeforeMetricsOptIn } = this.store.getState();
+    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
+      this.trackEvent(eventBeforeMetricsOptIn);
+    });
+  }
+
+  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
+  clearEventsAfterMetricsOptIn() {
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [],
+    });
+  }
+
+  // It adds an event into a queue, which is only tracked if a user opts into metrics.
+  addEventBeforeMetricsOptIn(event) {
+    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [...prevState, event],
+    });
+  }
+
+  // Add or update traits for tracking.
+  updateTraits(newTraits) {
+    const { traits } = this.store.getState();
+    this.store.updateState({
+      traits: { ...traits, ...newTraits },
+    });
+  }
+
+  /** PRIVATE METHODS */
+
+  /**
+   * Build the context object to attach to page and track events.
+   *
+   * @private
+   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
+   *  the notification window.
+   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
+   *  view of the extension. Defaults to the background-process object.
+   * @returns {MetaMetricsContext}
+   */
+  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    return {
+      app: {
+        name: 'MetaMask Extension',
+        version: this.version,
+      },
+      userAgent: window.navigator.userAgent,
+      page,
+      referrer,
+    };
+  }
+
+  /**
+   * Build's the event payload, processing all fields into a format that can be
+   * fed to Segment's track method
+   *
+   * @private
+   * @param {
+   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
+   * } rawPayload - raw payload provided to trackEvent
+   * @returns {SegmentEventPayload} formatted event payload for segment
+   */
+  _buildEventPayload(rawPayload) {
+    const {
+      event,
+      properties,
+      revenue,
+      value,
+      currency,
+      category,
+      page,
+      referrer,
+      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+    } = rawPayload;
+    return {
+      event,
+      properties: {
+        // These values are omitted from properties because they have special meaning
+        // in segment. https://segment.com/docs/connections/spec/track/#properties.
+        // to avoid accidentally using these inappropriately, you must add them as top
+        // level properties on the event payload. We also exclude locale to prevent consumers
+        // from overwriting this context level property. We track it as a property
+        // because not all destinations map locale from context.
+        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
+        revenue,
+        value,
+        currency,
+        category,
+        network: properties?.network ?? this.network,
+        locale: this.locale,
+        chain_id: properties?.chain_id ?? this.chainId,
+        environment_type: environmentType,
+      },
+      context: this._buildContext(referrer, page),
+    };
+  }
+
+  /**
+   * This method generates the MetaMetrics user traits object, omitting any
+   * traits that have not changed since the last invocation of this method.
+   *
+   * @param {object} metamaskState - Full metamask state object.
+   * @returns {MetaMetricsTraits | null} traits that have changed since last update
+   */
+  _buildUserTraitsObject(metamaskState) {
+    const { traits } = this.store.getState();
+    /** @type {MetaMetricsTraits} */
+    const currentTraits = {
+      [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
+        Object.values(metamaskState.addressBook).map(size),
+      ),
+      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
+      [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
+      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
+        (rpc) => rpc.chainId,
+      ),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]:
+        metamaskState.frequentRpcListDetail.reduce(
+          (networkList, currentNetwork) => {
+            if (!currentNetwork.ticker) {
+              networkList.push(currentNetwork.chainId);
+            }
+            return networkList;
+          },
+          [],
+        ),
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+        metamaskState.allCollectibles,
+      ),
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
+        metamaskState.allCollectibles,
+      ).length,
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
+      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
+      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
+      [TRAITS.THEME]: metamaskState.theme || 'default',
+      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+    };
+
+    if (!this.previousTraits) {
+      this.previousTraits = currentTraits;
+      return currentTraits;
+    }
+
+    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+      const updates = pickBy(
+        currentTraits,
+        (v, k) => !isEqual(this.previousTraits[k], v),
+      );
+      this.previousTraits = currentTraits;
+      return updates;
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
+   *
+   * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
+   * @param {object} userTraits
+   * @returns {object}
+   */
+  _buildValidTraits(userTraits) {
+    return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
+      if (this._isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this._isValidTrait(value)) {
+        validTraits[key] = value;
+      } else {
+        console.warn(
+          `MetaMetricsController: "${key}" value is not a valid trait type`,
+        );
+      }
+      return validTraits;
+    }, {});
+  }
+
+  /**
+   * Returns an array of all of the collectibles/NFTs the user
+   * possesses across all networks and accounts.
+   *
+   * @param {object} allCollectibles
+   * @returns {[]}
+   */
+  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
+    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+      return result.concat(...Object.values(chainNFTs));
+    }, []);
+  });
+
+  /**
+   * Returns the number of unique collectible/NFT addresses the user
+   * possesses across all networks and accounts.
+   *
+   * @param {object} allCollectibles
+   * @returns {number}
+   */
+  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+      (nft) => nft.address,
+    );
+    const uniqueAddresses = new Set(allNFTAddresses);
+    return uniqueAddresses.size;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
+      },
+      0,
+    );
+  }
+
+  /**
+   * Calls segment.identify with given user traits
+   *
+   * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
+   * @private
+   * @param {object} userTraits
+   */
+  _identify(userTraits) {
+    const { metaMetricsId } = this.state;
+
+    if (!userTraits || Object.keys(userTraits).length === 0) {
+      console.warn('MetaMetricsController#_identify: No userTraits found');
+      return;
+    }
+
+    try {
+      this.segment.identify({
+        userId: metaMetricsId,
+        traits: userTraits,
+      });
+    } catch (err) {
+      this._captureException(err);
+    }
+  }
+
+  /**
+   * Validates the trait value. Segment accepts any data type. We are adding validation here to
+   * support data types for our Segment destination(s) e.g. MixPanel
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTrait(value) {
+    const type = typeof value;
+
+    return (
+      type === 'string' ||
+      type === 'boolean' ||
+      type === 'number' ||
+      this._isValidTraitArray(value) ||
+      this._isValidTraitDate(value)
+    );
+  }
+
+  /**
+   * Segment accepts any data type value. We have special logic to validate arrays.
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitArray = (value) => {
+    return (
+      Array.isArray(value) &&
+      (value.every((element) => {
+        return typeof element === 'string';
+      }) ||
+        value.every((element) => {
+          return typeof element === 'boolean';
+        }) ||
+        value.every((element) => {
+          return typeof element === 'number';
+        }))
+    );
+  };
+
+  /**
+   * Returns true if the value is an accepted date type
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitDate = (value) => {
+    return Object.prototype.toString.call(value) === '[object Date]';
+  };
+
+  /**
+   * Perform validation on the payload and update the id type to use before
+   * sending to Segment. Also examines the options to route and handle the
+   * event appropriately.
+   *
+   * @private
+   * @param {SegmentEventPayload} payload - properties to attach to event
+   * @param {MetaMetricsEventOptions} [options] - options for routing and
+   *  handling the event
+   * @returns {Promise<void>}
+   */
+  _track(payload, options) {
+    const {
+      isOptIn,
+      metaMetricsId: metaMetricsIdOverride,
+      matomoEvent,
+      flushImmediately,
+    } = options || {};
+    let idType = 'userId';
+    let idValue = this.state.metaMetricsId;
+    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
+    // This is carried over from the old implementation, and will likely need
+    // to be updated to work with the new tracking plan. I think we should use
+    // a config setting for this instead of trying to match the event name
+    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
+    if (isSendFlow) {
+      excludeMetaMetricsId = true;
+    }
+    // If we are tracking sensitive data we will always use the anonymousId
+    // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
+    // associating potentially identifiable information with a specific id.
+    // During the opt in flow we will track all events, but do so with the
+    // anonymous id. The one exception to that rule is after the user opts in
+    // to MetaMetrics. When that happens we receive back the user's new
+    // MetaMetrics id before it is fully persisted to state. To avoid a race
+    // condition we explicitly pass the new id to the track method. In that
+    // case we will track the opt in event to the user's id. In all other cases
+    // we use the metaMetricsId from state.
+    if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
+      idType = 'anonymousId';
+      idValue = METAMETRICS_ANONYMOUS_ID;
+    } else if (isOptIn && metaMetricsIdOverride) {
+      idValue = metaMetricsIdOverride;
+    }
+    payload[idType] = idValue;
+
+    // If this is an event on the old matomo schema, add a key to the payload
+    // to designate it as such
+    if (matomoEvent === true) {
+      payload.properties.legacy_event = true;
+    }
+
+    // Promises will only resolve when the event is sent to segment. For any
+    // event that relies on this promise being fulfilled before performing UI
+    // updates, or otherwise delaying user interaction, supply the
+    // 'flushImmediately' flag to the trackEvent method.
+    return new Promise((resolve, reject) => {
+      const callback = (err) => {
+        if (err) {
+          // The error that segment gives us has some manipulation done to it
+          // that seemingly breaks with lockdown enabled. Creating a new error
+          // here prevents the system from freezing when the network request to
+          // segment fails for any reason.
+          const safeError = new Error(err.message);
+          safeError.stack = err.stack;
+          return reject(safeError);
+        }
+        return resolve();
+      };
+
+      this.segment.track(payload, callback);
+      if (flushImmediately) {
+        this.segment.flush();
+      }
+    });
   }
 }

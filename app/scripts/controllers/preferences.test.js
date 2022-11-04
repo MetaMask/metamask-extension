@@ -1,6 +1,10 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import {
+  ControllerMessenger,
+  TokenListController,
+} from '@metamask/controllers';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
 
@@ -9,11 +13,12 @@ describe('preferences controller', function () {
   let network;
   let currentChainId;
   let provider;
+  let tokenListController;
   const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
-    currentChainId = MAINNET_CHAIN_ID;
+    currentChainId = CHAIN_IDS.MAINNET;
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
@@ -21,6 +26,16 @@ describe('preferences controller', function () {
     network.setInfuraProjectId('foo');
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
 
     sandbox
       .stub(network, 'getLatestBlock')
@@ -35,6 +50,7 @@ describe('preferences controller', function () {
       migrateAddressBookState,
       network,
       provider,
+      tokenListController,
     });
   });
 
@@ -349,6 +365,20 @@ describe('preferences controller', function () {
         preferencesController.store.getState().advancedGasFee.priorityFee,
         '2',
       );
+    });
+  });
+
+  describe('setTheme', function () {
+    it('should default to value "light"', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'light');
+    });
+
+    it('should set the setTheme property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'light');
+      preferencesController.setTheme('dark');
+      assert.equal(preferencesController.store.getState().theme, 'dark');
     });
   });
 });

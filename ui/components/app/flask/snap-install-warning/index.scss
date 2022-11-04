@@ -5,10 +5,11 @@
     display: flex;
     align-items: flex-start;
     gap: 0 16px;
-  }
+    margin-top: 16px;
 
-  &__content {
-    padding: 0 16px 24px;
+    &--first {
+      margin-top: 0;
+    }
   }
 
   &__footer {

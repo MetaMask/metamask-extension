@@ -5,6 +5,7 @@ import {
   addHexPrefix,
   toChecksumAddress,
   zeroAddress,
+  isHexPrefixed,
 } from 'ethereumjs-util';
 
 export const BURN_ADDRESS = zeroAddress();
@@ -23,7 +24,7 @@ export function isBurnAddress(address) {
  * provided this method will validate it has the proper checksum formatting.
  *
  * @param {string} possibleAddress - Input parameter to check against
- * @param {Object} [options] - options bag
+ * @param {object} [options] - options bag
  * @param {boolean} [options.allowNonPrefixed] - If true will first ensure '0x'
  *  is prepended to the string
  * @param {boolean} [options.mixedCaseUseChecksum] - If true will treat mixed
@@ -71,5 +72,12 @@ export function toChecksumHexAddress(address) {
     // closely mimics the original behavior.
     return hexPrefixed;
   }
-  return toChecksumAddress(addHexPrefix(address));
+  return toChecksumAddress(hexPrefixed);
+}
+
+export function stripHexPrefix(str) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+  return isHexPrefixed(str) ? str.slice(2) : str;
 }

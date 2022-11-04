@@ -13,7 +13,6 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
-import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
@@ -87,7 +86,7 @@ const EditGasItem = ({ priorityLevel }) => {
         },
       });
 
-      closeModal('editGasFee');
+      closeModal(['editGasFee']);
 
       if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
         updateTransactionToTenPercentIncreasedGasFee();
@@ -121,7 +120,7 @@ const EditGasItem = ({ priorityLevel }) => {
             {PRIORITY_LEVEL_ICON_MAP[icon]}
           </span>
         )}
-        <I18nValue messageKey={title} />
+        {t(title)}
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
@@ -136,7 +135,9 @@ const EditGasItem = ({ priorityLevel }) => {
           <div className="edit-gas-item__maxfee">
             <LoadingHeartBeat
               backgroundColor={
-                priorityLevel === estimateUsed ? '#f2f3f4' : '#fff'
+                priorityLevel === estimateUsed
+                  ? 'var(--color-background-alternative)'
+                  : 'var(--color-background-default)'
               }
               estimateUsed={priorityLevel}
             />

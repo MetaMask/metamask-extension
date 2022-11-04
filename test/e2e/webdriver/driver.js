@@ -1,21 +1,23 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError, By } = require('selenium-webdriver');
+const { until, error: webdriverError, By, Key } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
- * @param {Object} element - Selenium Element
+ * @param {object} element - Selenium Element
  * @param driver
- * @returns {Object} modified Selenium Element
+ * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
-    await element.clear();
+    await element.sendKeys(
+      Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
+    );
     await element.sendKeys(input);
   };
   element.waitForElementState = async (state, timeout) => {
@@ -53,6 +55,10 @@ class Driver {
     this.Key = {
       BACK_SPACE: '\uE003',
       ENTER: '\uE007',
+      SPACE: '\uE00D',
+      CONTROL: '\uE009',
+      COMMAND: '\uE03D',
+      MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
     };
   }
 
@@ -155,6 +161,14 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+  async waitForNonEmptyElement(element) {
+    await this.driver.wait(async () => {
+      const elemText = await element.getText();
+      const empty = elemText === '';
+      return !empty;
+    }, this.timeout);
+  }
+
   async quit() {
     await this.driver.quit();
   }
@@ -248,10 +262,43 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
+  async isElementPresent(rawLocator) {
+    try {
+      await this.findElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Paste a string into a field.
+   *
+   * @param {string} rawLocator - The element locator.
+   * @param {string} contentToPaste - The content to paste.
+   */
+  async pasteIntoField(rawLocator, contentToPaste) {
+    // Throw if double-quote is present in content to paste
+    // so that we don't have to worry about escaping double-quotes
+    if (contentToPaste.includes('"')) {
+      throw new Error('Cannot paste content with double-quote');
+    }
+    // Click to focus the field
+    await this.clickElement(rawLocator);
+    await this.executeScript(
+      `navigator.clipboard.writeText("${contentToPaste}")`,
+    );
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
   }
 
   // Metrics
@@ -270,6 +317,10 @@ class Driver {
 
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+  }
+
+  async switchToFrame(element) {
+    await this.driver.switchTo().frame(element);
   }
 
   async getAllWindowHandles() {
@@ -343,6 +394,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',
@@ -358,11 +413,25 @@ class Driver {
     );
   }
 
+  async checkBrowserForLavamoatLogs() {
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    return browserLogs;
+  }
+
   async checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING'];
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors
-      'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
+      'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte

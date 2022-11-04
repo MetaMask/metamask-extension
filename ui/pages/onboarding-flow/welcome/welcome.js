@@ -32,7 +32,7 @@ export default function OnboardingWelcome() {
   };
 
   return (
-    <div className="onboarding-welcome">
+    <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Typography
@@ -42,7 +42,7 @@ export default function OnboardingWelcome() {
           >
             {t('welcomeToMetaMask')}
           </Typography>
-          <Typography align={TEXT_ALIGN.CENTER}>
+          <Typography align={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
             {t('welcomeToMetaMaskIntro')}
           </Typography>
           <div className="onboarding-welcome__mascot">

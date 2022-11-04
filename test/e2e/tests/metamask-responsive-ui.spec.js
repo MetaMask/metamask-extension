@@ -1,14 +1,15 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const FixtureBuilder = require('../fixture-builder');
 
-describe('Metamask Responsive UI', function () {
+describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
     const driverOptions = { responsive: true };
 
     await withFixtures(
       {
-        fixtures: 'onboarding',
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -87,11 +88,11 @@ describe('Metamask Responsive UI', function () {
           });
           await driver.delay(tinyDelayMs);
 
-          // clicks the "Create New Wallet" option
-          await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
-
-          // clicks the "I Agree" option on the metametrics opt-in screen
+          // clicks the "I agree" option on the metametrics opt-in screen
           await driver.clickElement('.btn-primary');
+
+          // clicks the "Create New Wallet" option
+          await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
 
           // accepts a secure password
           await driver.fill(
@@ -154,7 +155,7 @@ describe('Metamask Responsive UI', function () {
 
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -164,16 +165,13 @@ describe('Metamask Responsive UI', function () {
 
         // Import Secret Recovery Phrase
         const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link--import',
+          '.unlock-page__link',
         );
-        assert.equal(
-          await restoreSeedLink.getText(),
-          'import using Secret Recovery Phrase',
-        );
+        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
         await restoreSeedLink.click();
 
-        await driver.fill(
-          'input[placeholder="Enter your Secret Recovery Phrase"]',
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
 
@@ -203,7 +201,7 @@ describe('Metamask Responsive UI', function () {
     };
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         driverOptions,
         ganacheOptions,
         title: this.test.title,

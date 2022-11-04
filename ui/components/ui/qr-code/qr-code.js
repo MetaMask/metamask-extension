@@ -49,7 +49,7 @@ function QrCodeView(props) {
       ) : (
         header
       )}
-      {warning ? <span className="qr_code__error">{warning}</span> : null}
+      {warning ? <span className="qr-code__error">{warning}</span> : null}
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{

@@ -18,11 +18,7 @@ import {
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getAssetImageURL,
-  isEqualCaseInsensitive,
-  shortenAddress,
-} from '../../../helpers/utils/util';
+import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -37,23 +33,18 @@ import {
   checkAndUpdateSingleCollectibleOwnershipStatus,
   removeAndIgnoreCollectible,
 } from '../../../store/actions';
-import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
-import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
-import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
+import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -101,14 +92,12 @@ export default function CollectibleDetails({ collectible }) {
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         return `https://opensea.io/assets/${address}/${tokenId}`;
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
-      case GOERLI_CHAIN_ID:
-      case KOVAN_CHAIN_ID:
-      case ROPSTEN_CHAIN_ID:
-      case RINKEBY_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
+      case CHAIN_IDS.SEPOLIA:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:
         return null;
@@ -121,7 +110,7 @@ export default function CollectibleDetails({ collectible }) {
 
   const onSend = async () => {
     await dispatch(
-      updateSendAsset({
+      startNewDraftTransaction({
         type: ASSET_TYPES.COLLECTIBLE,
         details: collectible,
       }),
@@ -178,7 +167,11 @@ export default function CollectibleDetails({ collectible }) {
             justifyContent={JUSTIFY_CONTENT.CENTER}
             className="collectible-details__card"
           >
-            <img className="collectible-details__image" src={image} />
+            {image ? (
+              <img className="collectible-details__image" src={image} />
+            ) : (
+              <CollectibleDefaultImage name={name} tokenId={tokenId} />
+            )}
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
@@ -187,7 +180,7 @@ export default function CollectibleDetails({ collectible }) {
           >
             <div>
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H4}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ margin: 0, marginBottom: 2 }}
@@ -195,7 +188,7 @@ export default function CollectibleDetails({ collectible }) {
                 {name}
               </Typography>
               <Typography
-                color={COLORS.UI3}
+                color={COLORS.TEXT_MUTED}
                 variant={TYPOGRAPHY.H5}
                 boxProps={{ margin: 0, marginBottom: 4 }}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
@@ -206,7 +199,7 @@ export default function CollectibleDetails({ collectible }) {
             {description ? (
               <div>
                 <Typography
-                  color={COLORS.BLACK}
+                  color={COLORS.TEXT_DEFAULT}
                   variant={TYPOGRAPHY.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
                   className="collectible-details__description"
@@ -215,8 +208,9 @@ export default function CollectibleDetails({ collectible }) {
                   {t('description')}
                 </Typography>
                 <Typography
-                  color={COLORS.UI4}
+                  color={COLORS.TEXT_ALTERNATIVE}
                   variant={TYPOGRAPHY.H6}
+                  overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                   boxProps={{ margin: 0, marginBottom: 4 }}
                 >
                   {description}
@@ -229,7 +223,7 @@ export default function CollectibleDetails({ collectible }) {
         <Box marginBottom={2}>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
@@ -242,7 +236,7 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.PRIMARY1}
+              color={COLORS.PRIMARY_DEFAULT}
               variant={TYPOGRAPHY.H6}
               boxProps={{
                 margin: 0,
@@ -262,7 +256,7 @@ export default function CollectibleDetails({ collectible }) {
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
@@ -280,7 +274,7 @@ export default function CollectibleDetails({ collectible }) {
               className="collectible-details__contract-wrapper"
             >
               <Typography
-                color={COLORS.PRIMARY1}
+                color={COLORS.PRIMARY_DEFAULT}
                 variant={TYPOGRAPHY.H6}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                 boxProps={{
@@ -313,7 +307,7 @@ export default function CollectibleDetails({ collectible }) {
                 {copied ? (
                   t('copiedExclamation')
                 ) : (
-                  <Copy size={15} color="#6a737d" />
+                  <Copy size={15} color="var(--color-icon-alternative)" />
                 )}
               </button>
             </Box>

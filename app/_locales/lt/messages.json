@@ -8,9 +8,6 @@
   "about": {
     "message": "Apie"
   },
-  "acceleratingATransaction": {
-    "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
-  },
   "accessingYourCamera": {
     "message": "Kreipiamasi į kamerą..."
   },
@@ -43,12 +40,6 @@
   },
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
-  },
-  "addToAddressBook": {
-    "message": "Pridėti į adresų knygelę"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pvz., John D."
   },
   "addToken": {
     "message": "Pridėti žetoną"
@@ -139,17 +130,14 @@
     "message": "Peržiūrėti paskyrą $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "„Blockies Identicon“ naudojimas"
-  },
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "buyWithWyre": {
-    "message": "Pirkti ETH su „Wyre“"
+    "message": "Pirkti $1 su „Wyre“"
   },
   "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „MetaMask“ paskyrą."
+    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
   },
   "bytes": {
     "message": "Baitai"
@@ -202,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToKovan": {
-    "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
-  },
-  "connectingToRinkeby": {
-    "message": "Jungiamasi prie „Rinkeby“ bandomojo tinklo"
-  },
-  "connectingToRopsten": {
-    "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -258,12 +237,6 @@
   },
   "custom": {
     "message": "Išplėstiniai"
-  },
-  "customGas": {
-    "message": "Pritaikyti dujas"
-  },
-  "customGasSubTitle": {
-    "message": "Didinant mokestį gali mažėti apdorojimo trukmė, bet tai negarantuojama."
   },
   "customToken": {
     "message": "Pritaikytas žetonas"
@@ -343,17 +316,11 @@
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
-  "enterAnAlias": {
-    "message": "Įveskite alternatyvųjį vardą"
-  },
   "enterPassword": {
     "message": "Įveskite slaptažodį"
   },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Numatomos apdorojimo trukmės"
   },
   "ethereumPublicAddress": {
     "message": "„Ethereum“ viešasis adresas"
@@ -515,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "Žinomas sutarties adresas."
   },
-  "kovan": {
-    "message": "„Kovan“ bandomasis tinklas"
-  },
   "learnMore": {
     "message": "Sužinokite daugiau"
   },
@@ -615,12 +579,6 @@
   },
   "newToMetaMask": {
     "message": "Tik pradedate naudotis „MetaMask“?"
-  },
-  "newTotal": {
-    "message": "Nauja bendra suma"
-  },
-  "newTransactionFee": {
-    "message": "Naujas operacijos mokestis"
   },
   "next": {
     "message": "Toliau"
@@ -768,9 +726,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
@@ -782,12 +737,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Šia fraze su niekuo NESIDALINKITE!"
-  },
-  "rinkeby": {
-    "message": "„Rinkeby“ bandomasis tinklas"
-  },
-  "ropsten": {
-    "message": "„Ropsten“ bandomasis tinklas"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"
@@ -822,14 +771,8 @@
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
-  },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
-  },
-  "selectAHigherGasFee": {
-    "message": "Pasirinkite didesnį dujų mokestį, kad paspartintumėte savo operacijos apdorojimą.*"
   },
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
@@ -848,9 +791,6 @@
   },
   "send": {
     "message": "Siųsti"
-  },
-  "sendAmount": {
-    "message": "Siųsti sumą"
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
@@ -893,9 +833,6 @@
   },
   "signed": {
     "message": "Pasirašyta"
-  },
-  "slow": {
-    "message": "Lėtas"
   },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."

@@ -14,7 +14,6 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
-import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -26,14 +25,12 @@ import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
- * @param options0.primaryNumberOfDecimals
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
-  primaryNumberOfDecimals = 8,
 }) {
   const t = useContext(I18nContext);
 
@@ -47,17 +44,11 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
-
-  const shouldUseFiat = () => {
-    if (hideSecondary) {
-      return false;
-    }
-
-    return Boolean(featureSecondary);
-  };
+  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
+  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
 
   const getDecimalValue = () => {
-    const decimalValueString = shouldUseFiat()
+    const decimalValueString = shouldUseFiat
       ? getValueFromWeiHex({
           value: hexValue,
           toCurrency: secondaryCurrency,
@@ -67,32 +58,22 @@ export default function CurrencyInput({
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals:
-            primaryNumberOfDecimals <= MAX_DECIMAL
-              ? primaryNumberOfDecimals
-              : MAX_DECIMAL,
+          numberOfDecimals: 8,
         });
 
     return Number(decimalValueString) || 0;
   };
 
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
-  const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
-
-  useEffect(() => {
-    setNewHexValue(hexValue);
-    const newDecimalValue = getDecimalValue();
-    setDecimalValue(newDecimalValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hexValue]);
 
   const swap = async () => {
-    await onPreferenceToggle(!featureSecondary);
+    await onPreferenceToggle();
     setSwapped(!isSwapped);
+    setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
   const handleChange = (newDecimalValue) => {
-    const hexValueNew = shouldUseFiat()
+    const hexValueNew = shouldUseFiat
       ? getWeiHexFromDecimalValue({
           value: newDecimalValue,
           fromCurrency: secondaryCurrency,
@@ -107,17 +88,20 @@ export default function CurrencyInput({
         });
 
     setNewHexValue(hexValueNew);
-    setDecimalValue(newDecimalValue);
     onChange(hexValueNew);
     setSwapped(!isSwapped);
   };
 
   useEffect(() => {
-    if (isSwapped) {
-      handleChange(decimalValue);
+    setNewHexValue(hexValue);
+  }, [hexValue]);
+
+  useEffect(() => {
+    if (featureSecondary) {
+      handleChange(initialDecimalValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSwapped]);
+  }, [featureSecondary, initialDecimalValue]);
 
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
@@ -130,13 +114,10 @@ export default function CurrencyInput({
       );
     }
 
-    if (shouldUseFiat()) {
+    if (shouldUseFiat) {
       // Display ETH
       currency = preferredCurrency || ETH;
-      numberOfDecimals =
-        primaryNumberOfDecimals <= MAX_DECIMAL
-          ? primaryNumberOfDecimals
-          : MAX_DECIMAL;
+      numberOfDecimals = 8;
     } else {
       // Display Fiat
       currency = secondaryCurrency;
@@ -152,6 +133,7 @@ export default function CurrencyInput({
       />
     );
   };
+
   return (
     <UnitInput
       {...{
@@ -164,11 +146,18 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
-      suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
+      dataTestId="currency-input"
+      suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
-      value={decimalValue}
+      value={initialDecimalValue}
       actionComponent={
-        <div className="currency-input__swap-component" onClick={swap} />
+        <button
+          className="currency-input__swap-component"
+          data-testid="currency-swap"
+          onClick={swap}
+        >
+          <i className="fa fa-retweet fa-lg" />
+        </button>
       }
     >
       {renderConversionComponent()}
@@ -181,5 +170,4 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
-  primaryNumberOfDecimals: PropTypes.number,
 };

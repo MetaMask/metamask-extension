@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getTransactionData } from '../helpers/utils/transactions.util';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 
 /**
  * useTokenData
@@ -12,13 +12,13 @@ import { getTransactionData } from '../helpers/utils/transactions.util';
  *                                         force this hook to return null if it set as false
  *                                         which indicates the transaction is not associated
  *                                         with a token.
- * @returns {Object} Decoded token data
+ * @returns {object} Decoded token data
  */
 export function useTokenData(transactionData, isTokenTransaction = true) {
   return useMemo(() => {
     if (!isTokenTransaction || !transactionData) {
       return null;
     }
-    return getTransactionData(transactionData);
+    return parseStandardTokenTransactionData(transactionData);
   }, [isTokenTransaction, transactionData]);
 }

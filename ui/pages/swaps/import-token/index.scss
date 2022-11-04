@@ -4,20 +4,15 @@
   .actionable-message {
     margin-top: 0;
 
-    &--danger {
-      border-color: var(--Red-300);
-      background: var(--Red-000);
-    }
-
     &__message {
-      color: var(--Black-100);
+      color: var(--color-text-default);
       text-align: left;
     }
   }
 
   &__contract-address {
     border-radius: 8px;
-    background-color: var(--Grey-000);
+    background-color: var(--color-background-alternative);
     padding: 5px 10px;
   }
 

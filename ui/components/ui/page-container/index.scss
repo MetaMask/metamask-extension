@@ -1,7 +1,7 @@
 .page-container {
   width: 408px;
-  background-color: var(--white);
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   z-index: 25;
   display: flex;
   flex-flow: column;
@@ -11,7 +11,7 @@
   &__header {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid var(--geyser);
+    border-bottom: 1px solid var(--color-border-muted);
     padding: 16px;
     flex: 0 0 auto;
     position: relative;
@@ -22,7 +22,7 @@
   }
 
   &__header-close {
-    color: var(--tundora);
+    color: var(--color-icon-default);
     position: absolute;
     top: 16px;
     right: 16px;
@@ -54,7 +54,7 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid var(--geyser);
+    border-top: 1px solid var(--color-border-muted);
     flex: 0 0 auto;
 
     footer {
@@ -79,7 +79,7 @@
         text-decoration: none;
         cursor: pointer;
         text-transform: uppercase;
-        color: #2f9ae0;
+        color: var(--color-primary-alternative);
       }
     }
   }
@@ -95,14 +95,14 @@
   &__back-button {
     @include Paragraph;
 
-    color: #2f9ae0;
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
   &__title {
     @include H2;
 
-    color: var(--black);
+    color: var(--color-text-default);
     font-weight: 500;
     margin-right: 1.5rem;
 
@@ -115,7 +115,7 @@
     @include H6;
 
     padding-top: 0.5rem;
-    color: var(--gray);
+    color: var(--color-text-alternative);
   }
 
   &__tabs {
@@ -127,7 +127,7 @@
     @include Paragraph;
 
     min-width: 5rem;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
     border-bottom: none;
     margin-right: 16px;
 
@@ -152,7 +152,7 @@
   }
 
   &__warning-container {
-    background: var(--linen);
+    background: var(--color-error-muted);
     padding: 20px;
     display: flex;
     align-items: start;
@@ -168,6 +168,7 @@
 
   &__warning-icon {
     padding-top: 5px;
+    color: var(--color-error-default);
   }
 }
 
@@ -189,18 +190,18 @@
   }
 }
 
-@media screen and (max-width: $break-small) {
+@include screen-sm-max {
   .page-container {
     height: 100%;
     width: 100%;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     border-radius: 0;
     flex: 1;
     overflow-y: auto;
   }
 }
 
-@media screen and (min-width: $break-large) {
+@include screen-sm-min {
   .page-container {
     max-height: 82vh;
     min-height: 570px;

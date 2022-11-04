@@ -8,9 +8,6 @@
   "about": {
     "message": "Tungkol sa"
   },
-  "acceleratingATransaction": {
-    "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
-  },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
   },
@@ -40,12 +37,6 @@
   },
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
-  },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. Juan D."
   },
   "addToken": {
     "message": "Magdagdag ng Token"
@@ -124,17 +115,14 @@
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
   "buyWithWyre": {
-    "message": "Bumili ng ETH gamit ang Wyre"
+    "message": "Bumili ng $1 gamit ang Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng ETH nang direkta sa iyong MetaMask account."
+    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng $1 nang direkta sa iyong MetaMask account."
   },
   "cancel": {
     "message": "Kanselahin"
@@ -181,17 +169,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
   },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"
@@ -234,12 +213,6 @@
   },
   "currentLanguage": {
     "message": "Kasalukuyang Wika"
-  },
-  "customGas": {
-    "message": "I-customize ang Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Maaaring mas bumilis ang pagpoproseso kapag dinagdagan ang fee, pero hindi ito garantisado."
   },
   "customToken": {
     "message": "Custom na Token"
@@ -319,17 +292,11 @@
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
   },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
-  },
   "enterPassword": {
     "message": "Ilagay ang password"
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Tinatantiyang Tagal ng Pagproseso"
   },
   "etherscanView": {
     "message": "Tingnan ang account sa Etherscan"
@@ -550,12 +517,6 @@
   "newToMetaMask": {
     "message": "Bago ka ba sa MetaMask?"
   },
-  "newTotal": {
-    "message": "Bagong Total"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Transaction Fee"
-  },
   "next": {
     "message": "Susunod"
   },
@@ -692,9 +653,6 @@
   "restore": {
     "message": "Ipanumbalik"
   },
-  "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
@@ -740,14 +698,8 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
   "seedPhraseReq": {
     "message": "Ang mga seed phrase ay may habang 12 salita"
-  },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas mataas na gas fee para pabilisin ang pagproseso ng iyong transaksyon.*"
   },
   "selectAnAccount": {
     "message": "Pumili ng Account"
@@ -766,9 +718,6 @@
   },
   "send": {
     "message": "Ipadala"
-  },
-  "sendAmount": {
-    "message": "Magpadala ng Halaga"
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
@@ -805,9 +754,6 @@
   },
   "signed": {
     "message": "Na-sign"
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."

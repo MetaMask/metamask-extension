@@ -5,9 +5,8 @@
 
   &__button {
     font-size: $font-size-h5;
-    color: var(--tundora);
     border-style: solid;
-    border-color: var(--alto);
+    border-color: var(--color-border-default);
     border-width: 1px 1px 1px;
     border-left: 0;
     flex: 1;
@@ -17,7 +16,7 @@
     text-overflow: ellipsis;
 
     &:first-child {
-      border-left: 1px solid var(--alto);
+      border-left: 1px solid var(--color-border-default);
       border-radius: 4px 0 0 4px;
     }
 
@@ -26,8 +25,8 @@
     }
 
     &--active {
-      background-color: var(--dodger-blue);
-      color: var(--white);
+      background-color: var(--color-primary-default);
+      color: var(--color-primary-inverse);
     }
 
     &:disabled {
@@ -40,9 +39,9 @@
   .radio-button {
     @include H7;
 
-    color: var(--Grey-700);
-    border: 1px solid var(--Grey-100);
-    background: var(--white);
+    color: var(--color-text-alternative);
+    border: 1px solid var(--color-border-muted);
+    background: var(--color-background-default);
     border-radius: 25px;
     height: 25px;
     margin-right: 8px;
@@ -50,25 +49,25 @@
     padding: 0;
 
     &--active {
-      background: var(--Blue-500);
-      color: white;
+      background: var(--color-primary-default);
+      color: var(--color-primary-inverse);
       border: none;
     }
 
     &--danger {
-      border: 1px solid var(--Red-500);
-      color: var(--Red-500);
-      background: var(--white);
+      border: 1px solid var(--color-error-default);
+      color: var(--color-error-default);
+      background: var(--color-background-default);
     }
 
     &:hover {
-      box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     };
   }
 
   .radio-button--active.radio-button--danger {
-    border: 1px solid var(--Red-500);
-    color: white;
-    background: var(--Red-500);
+    border: 1px solid var(--color-error-default);
+    color: var(--color-error-inverse);
+    background: var(--color-error-default);
   }
 }

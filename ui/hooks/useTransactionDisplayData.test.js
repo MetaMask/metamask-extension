@@ -14,7 +14,7 @@ import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
@@ -117,6 +117,31 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
+  {
+    title: 'Contract deployment',
+    category: TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    subtitle: 'metamask.github.io',
+    subtitleContainsOrigin: true,
+    date: 'May 12, 2020',
+    primaryCurrency: '-0 ETH',
+    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+    recipientAddress: undefined,
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+  },
+  {
+    title: 'Safe transfer from',
+    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    subtitle: 'To: 0xe7d...dd98',
+    subtitleContainsOrigin: true,
+    primaryCurrency: '-0 ETH',
+    senderAddress: '0x806627172af48bd5b0765d3449a7def80d6576ff',
+    recipientAddress: '0xe7d522230eff653bb0a9b4385f0be0815420dd98',
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;
@@ -167,7 +192,7 @@ describe('useTransactionDisplayData', () => {
       } else if (selector === getCurrentCurrency) {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
-        return MAINNET_CHAIN_ID;
+        return CHAIN_IDS.MAINNET;
       }
       return null;
     });

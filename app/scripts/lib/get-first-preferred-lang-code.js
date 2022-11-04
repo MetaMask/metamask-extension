@@ -1,13 +1,10 @@
-import extension from 'extensionizer';
-import promisify from 'pify';
+import browser from 'webextension-polyfill';
 import allLocales from '../../_locales/index.json';
 
-const getPreferredLocales = extension.i18n
-  ? promisify(extension.i18n.getAcceptLanguages, { errorFirst: false })
-  : async () => [];
+// ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
+const existingLocaleCodes = { zh: 'zh_CN' };
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
-const existingLocaleCodes = {};
 allLocales.forEach((locale) => {
   if (locale && locale.code) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
@@ -25,7 +22,7 @@ export default async function getFirstPreferredLangCode() {
   let userPreferredLocaleCodes;
 
   try {
-    userPreferredLocaleCodes = await getPreferredLocales();
+    userPreferredLocaleCodes = await browser.i18n.getAcceptLanguages();
   } catch (e) {
     // Brave currently throws when calling getAcceptLanguages, so this handles that.
     userPreferredLocaleCodes = [];

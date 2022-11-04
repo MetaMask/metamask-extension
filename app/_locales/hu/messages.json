@@ -8,9 +8,6 @@
   "about": {
     "message": "Névjegy"
   },
-  "acceleratingATransaction": {
-    "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
-  },
   "accessingYourCamera": {
     "message": "Kamerához való hozzáférés..."
   },
@@ -43,12 +40,6 @@
   },
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
-  },
-  "addToAddressBook": {
-    "message": "Hozzáadás a címjegyzékhez"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pl. John D."
   },
   "addToken": {
     "message": "Token hozzáadása"
@@ -139,14 +130,11 @@
     "message": "Tekintse meg a fiókot a(z) $1-en",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies identikon használata"
-  },
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
   "buyWithWyre": {
-    "message": "Vásároljon ETH-t a Wyre-rel"
+    "message": "Vásároljon $1 -t a Wyre-rel"
   },
   "buyWithWyreDescription": {
     "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."
@@ -202,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToKovan": {
-    "message": "Csatlakozás a Kovan teszthálózathoz"
-  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
-  },
-  "connectingToRinkeby": {
-    "message": "Kapcsolódás a Rinkeby Teszthálózathoz"
-  },
-  "connectingToRopsten": {
-    "message": "Csatlakozás a Ropsten teszthálózathoz"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"
@@ -258,12 +237,6 @@
   },
   "custom": {
     "message": "Speciális"
-  },
-  "customGas": {
-    "message": "Gáz testreszabása"
-  },
-  "customGasSubTitle": {
-    "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
   },
   "customToken": {
     "message": "Egyéni token"
@@ -343,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
   },
-  "enterAnAlias": {
-    "message": "Adjon meg álnevet"
-  },
   "enterPassword": {
     "message": "Adja meg a jelszót"
   },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Becsült feldolgozási idők"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum nyilvános címe"
@@ -511,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Ismert szerződéses cím."
   },
-  "kovan": {
-    "message": "Kovan teszthálózat"
-  },
   "learnMore": {
     "message": "Tudjon meg többet"
   },
@@ -608,12 +572,6 @@
   },
   "newToMetaMask": {
     "message": "Új a MetaMask-on?"
-  },
-  "newTotal": {
-    "message": "Új végösszeg"
-  },
-  "newTransactionFee": {
-    "message": "Új tranzakciós költség"
   },
   "next": {
     "message": "Következő"
@@ -761,9 +719,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "restoreAccountWithSeed": {
-    "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
@@ -775,12 +730,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NE ossza meg ezt a mondatot senkivel!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby teszthálózat"
-  },
-  "ropsten": {
-    "message": "Ropsten teszthálózat"
   },
   "rpcUrl": {
     "message": "Új RPC URL"
@@ -815,14 +764,8 @@
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
-  },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"
-  },
-  "selectAHigherGasFee": {
-    "message": "Válasszon magasabb gázdíjat az ügylet feldolgozásának gyorsításához.*"
   },
   "selectAnAccount": {
     "message": "Válasszon fiókot"
@@ -841,9 +784,6 @@
   },
   "send": {
     "message": "Küldés"
-  },
-  "sendAmount": {
-    "message": "Összeg küldése"
   },
   "sendTokens": {
     "message": "Token küldése"
@@ -886,9 +826,6 @@
   },
   "signed": {
     "message": "Aláírva"
-  },
-  "slow": {
-    "message": "Lassú"
   },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."

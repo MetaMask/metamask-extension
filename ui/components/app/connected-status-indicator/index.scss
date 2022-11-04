@@ -7,12 +7,9 @@
   padding: 8px;
   border-radius: 100px;
 
-  &:hover {
-    background-color: #f2f3f4;
-  }
-
+  &:hover,
   &:active {
-    background-color: #ededed;
+    background-color: var(--color-background-alternative);
   }
 
   &__inner-circle {
@@ -35,25 +32,25 @@
   }
 
   &__green-circle {
-    border-color: #4cd964;
+    border-color: var(--color-success-default);
   }
 
   &__green-circle &__inner-circle {
-    background-color: #4cd964;
+    background-color: var(--color-success-default);
   }
 
   &__yellow-circle {
-    border-color: #ffd33d;
+    border-color: var(--color-warning-default);
   }
 
   &__grey-circle {
-    border-color: var(--Grey-500);
+    border-color: var(--color-border-default);
   }
 
   &__text {
     @include H8;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-left: 6px;
     white-space: nowrap;
   }

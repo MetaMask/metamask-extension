@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
-import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import SearchIcon from '../../../components/ui/icon/search-icon';
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -59,7 +60,7 @@ export default class TokenSearch extends Component {
   renderAdornment() {
     return (
       <InputAdornment position="start" style={{ marginRight: '12px' }}>
-        <img src="images/search.svg" width="17" height="17" alt="" />
+        <SearchIcon color="var(--color-icon-muted)" />
       </InputAdornment>
     );
   }

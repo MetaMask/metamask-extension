@@ -8,7 +8,7 @@
   right: 0;
   margin: 8px;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     width: 340px;
   }
 
@@ -22,14 +22,12 @@
       position: absolute;
       bottom: 14px;
       left: 16px;
-      color: white;
+      color: var(--color-icon-muted);
       cursor: pointer;
       visibility: visible;
 
       &:hover {
         @include H4;
-
-        color: #b0d7f2;
       }
     }
   }

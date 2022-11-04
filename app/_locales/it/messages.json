@@ -8,9 +8,6 @@
   "about": {
     "message": "Informazioni"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
-  },
   "acceptTermsOfUse": {
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
@@ -55,12 +52,6 @@
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
-  "addToAddressBook": {
-    "message": "Aggiungi alla rubrica"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Ad esempio, John D."
-  },
   "addToken": {
     "message": "Aggiungi Token"
   },
@@ -72,9 +63,6 @@
   },
   "affirmAgree": {
     "message": "Acconsento"
-  },
-  "aggregatorFeeCost": {
-    "message": "Tassa per la rete aggregatore"
   },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
@@ -122,12 +110,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Tassa di approvazione per la rete aggregatore"
-  },
-  "approvalTxGasCost": {
-    "message": "Costo Gas Approvazione Tx"
   },
   "approve": {
     "message": "Approva"
@@ -197,9 +179,6 @@
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usa le icone Blockie"
-  },
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
@@ -207,10 +186,10 @@
     "message": "Compra"
   },
   "buyWithWyre": {
-    "message": "Compra ETH con Wyre"
+    "message": "Compra $1 con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ti consente di usare la carta di credito per depositare ETH direttamente nel tuo account MetaMask."
+    "message": "Wyre ti consente di usare la carta di credito per depositare $1 direttamente nel tuo account MetaMask."
   },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."
@@ -313,17 +292,8 @@
   "connectingToGoerli": {
     "message": "Connessione alla Rete di Test Goerli"
   },
-  "connectingToKovan": {
-    "message": "Connessione alla Rete di test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Connessione alla Rete Ethereum Principale"
-  },
-  "connectingToRinkeby": {
-    "message": "Connessione alla Rete di test Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Connessione alla Rete di test Ropsten"
   },
   "contactUs": {
     "message": "Contattaci!"
@@ -385,20 +355,11 @@
   "custom": {
     "message": "Avanzate"
   },
-  "customGas": {
-    "message": "Personalizza Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Incrementare il costo potrebbe diminuire il tempo di elaborazione, ma non è garantito."
-  },
   "customSpendLimit": {
     "message": "Limite Spesa Personalizzato"
   },
   "customToken": {
     "message": "Token Personalizzato"
-  },
-  "dataBackupFoundInfo": {
-    "message": "Alcuni dati sul tuo account sono state salvate durante una installazione precedente di MetaMask. Questi includono le impostazioni, i contatti, e i token. Vuoi ripristinare questi dati?"
   },
   "decimal": {
     "message": "Precisione Decimali"
@@ -530,9 +491,6 @@
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
   },
-  "enterAnAlias": {
-    "message": "Inserisci un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
@@ -562,9 +520,6 @@
     "message": "MetaMask ha riscontrato un errore",
     "description": "Title of generic error page"
   },
-  "estimatedProcessingTimes": {
-    "message": "Tempi di Elaborazione Stimati"
-  },
   "ethereumPublicAddress": {
     "message": "Indirizzo pubblico Ethereum "
   },
@@ -580,10 +535,6 @@
   "externalExtension": {
     "message": "Estensione Esterna"
   },
-  "extraApprovalGas": {
-    "message": "+$1 gas approvazione",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Fallita"
   },
@@ -595,9 +546,6 @@
   },
   "fast": {
     "message": "Veloce"
-  },
-  "fastest": {
-    "message": "Più veloce"
   },
   "feeAssociatedRequest": {
     "message": "Una tassa è associata a questa richiesta."
@@ -615,6 +563,9 @@
   },
   "forgetDevice": {
     "message": "Dimentica questo dispositivo"
+  },
+  "forgotPassword": {
+    "message": "Hai dimenticato la password?"
   },
   "from": {
     "message": "Da"
@@ -811,9 +762,6 @@
   "knownTokenWarning": {
     "message": "Questa azione modificherà i token che sono già nel tuo portafoglio, che possono essere utilizzati per truffarti. Approva solo se sei sicuro di voler cambiare ciò che rappresentano questi token."
   },
-  "kovan": {
-    "message": "Rete di test Kovan"
-  },
   "lastConnected": {
     "message": "Ultima Connessione"
   },
@@ -956,12 +904,6 @@
   },
   "newToMetaMask": {
     "message": "Nuovo su MetaMask?"
-  },
-  "newTotal": {
-    "message": "Nuovo Totale"
-  },
-  "newTransactionFee": {
-    "message": "Costo in gas per la Transazione"
   },
   "next": {
     "message": "Avanti"
@@ -1155,13 +1097,6 @@
   "restore": {
     "message": "Ripristina"
   },
-  "restoreAccountWithSeed": {
-    "message": "Ripristina Account con la Frase Seed"
-  },
-  "restoreWalletPreferences": {
-    "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "reusedTokenNameWarning": {
     "message": "Un token usa un simbolo già usato da un altro token, ciò può confondere o ingannare."
   },
@@ -1176,12 +1111,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "NON CONDIVIDERE questa frase con nessuno!"
-  },
-  "rinkeby": {
-    "message": "Rete di test Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rete di test Ropsten"
   },
   "rpcUrl": {
     "message": "Nuovo URL RPC"
@@ -1222,17 +1151,8 @@
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separa ogni parola con un singolo spazio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Incolla frase seed dagli appunti"
-  },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
-  },
-  "selectAHigherGasFee": {
-    "message": "Seleziona un costo in gas maggiore per accelerare l'elaborazione della transazione.*"
   },
   "selectAccounts": {
     "message": "Seleziona account"
@@ -1260,9 +1180,6 @@
   },
   "send": {
     "message": "Invia"
-  },
-  "sendAmount": {
-    "message": "Invia Importo"
   },
   "sendSpecifiedTokens": {
     "message": "Invia $1",
@@ -1304,9 +1221,6 @@
   "showPrivateKeys": {
     "message": "Mostra Chiave Privata"
   },
-  "showSeedPhrase": {
-    "message": "Mostra frase seed"
-  },
   "sigRequest": {
     "message": "Firma Richiesta"
   },
@@ -1321,9 +1235,6 @@
   },
   "signed": {
     "message": "Firmata"
-  },
-  "slow": {
-    "message": "Lenta"
   },
   "somethingWentWrong": {
     "message": "Oops! Qualcosa è andato storto."
@@ -1388,9 +1299,6 @@
   },
   "swap": {
     "message": "Scambia"
-  },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si chiama “slippage” la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il “massimo slippage” impostato."
   },
   "swapAggregator": {
     "message": "Aggregatore"
@@ -1479,13 +1387,6 @@
   "swapQuoteDetails": {
     "message": "Dettagli quotazione"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si chiama \"slippage\" la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il \"massimo slippage\" impostato."
-  },
-  "swapQuoteNofN": {
-    "message": "Quotazione $1 di $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
   "swapQuoteSource": {
     "message": "Sorgente della quota"
   },
@@ -1515,9 +1416,6 @@
   },
   "swapReviewSwap": {
     "message": "Verifica Scambio"
-  },
-  "swapSearchForAToken": {
-    "message": "Cerca un token"
   },
   "swapSelect": {
     "message": "Selezione"
@@ -1627,15 +1525,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Sincronizza con dispositivo mobile"
-  },
-  "syncWithThreeBox": {
-    "message": "Sincronizza dati con 3Box (sperimentale)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Attiva per avere le tue impostazioni salvate su 3Box. Questa funzionalità è attualmente sperimentale; usala a tuo rischio."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box è stato disabilitato a causa di un errore durante la sincronizzazione iniziale"
   },
   "terms": {
     "message": "Termini di Uso"

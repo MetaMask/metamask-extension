@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -9,12 +9,16 @@ import {
   getCurrentChainId,
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
+  getIsCustomNetwork,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  TOKEN_DETAILS,
+} from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -33,16 +37,9 @@ export default function TokenAsset({ token }) {
     selectedAddress,
     rpcPrefs,
   );
+  const trackEvent = useContext(MetaMetricsContext);
 
-  const blockExplorerLinkClickedEvent = useNewMetricEvent({
-    category: 'Navigation',
-    event: 'Clicked Block Explorer Link',
-    properties: {
-      link_type: 'Token Tracker',
-      action: 'Token Options',
-      block_explorer_domain: getURLHostName(tokenTrackerLink),
-    },
-  });
+  const isCustomNetwork = useSelector(getIsCustomNetwork);
 
   return (
     <>
@@ -53,15 +50,28 @@ export default function TokenAsset({ token }) {
         optionsButton={
           <AssetOptions
             onRemove={() =>
-              dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
+              dispatch(
+                showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+              )
             }
-            isEthNetwork={!rpcPrefs.blockExplorerUrl}
+            isCustomNetwork={isCustomNetwork}
             onClickBlockExplorer={() => {
-              blockExplorerLinkClickedEvent();
+              trackEvent({
+                event: 'Clicked Block Explorer Link',
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  link_type: 'Token Tracker',
+                  action: 'Token Options',
+                  block_explorer_domain: getURLHostName(tokenTrackerLink),
+                },
+              });
               global.platform.openTab({ url: tokenTrackerLink });
             }}
             onViewAccountDetails={() => {
               dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+            }}
+            onViewTokenDetails={() => {
+              history.push(`${TOKEN_DETAILS}/${token.address}`);
             }}
             tokenSymbol={token.symbol}
           />

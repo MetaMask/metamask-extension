@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import MetaFoxHorizontalLogo from './horizontal-logo';
 
 export default class MetaFoxLogo extends PureComponent {
   static propTypes = {
@@ -25,15 +26,13 @@ export default class MetaFoxLogo extends PureComponent {
           'onboarding-app-header__logo-container': isOnboarding,
           'app-header__logo-container--clickable': Boolean(onClick),
         })}
+        data-testid="app-header-logo"
       >
-        <img
-          height="30"
-          src="./images/logo/metamask-logo-horizontal.svg"
+        <MetaFoxHorizontalLogo
           className={classnames({
             'app-header__metafox-logo--horizontal': !isOnboarding,
             'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
           })}
-          alt=""
         />
         <img
           {...iconProps}

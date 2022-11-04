@@ -8,9 +8,6 @@
   "about": {
     "message": "Mengenai"
   },
-  "acceleratingATransaction": {
-    "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera anda..."
   },
@@ -43,12 +40,6 @@
   },
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
-  },
-  "addToAddressBook": {
-    "message": "Tambah kepada buku alamat"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "cth. John D."
   },
   "addToken": {
     "message": "Tambah Token"
@@ -139,17 +130,14 @@
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
   "buyWithWyre": {
-    "message": "Beli ETH dengan Wyre"
+    "message": "Beli $1 dengan Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit ETH secara terus ke dalam akaun MetaMask anda."
+    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
   },
   "bytes": {
     "message": "Bait"
@@ -202,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToKovan": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
-  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
-  },
-  "connectingToRinkeby": {
-    "message": "Menyambung kepada Rangkaian Ujian Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"
@@ -258,12 +237,6 @@
   },
   "custom": {
     "message": "Lanjutan"
-  },
-  "customGas": {
-    "message": "Suaikan Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Meningkatkan fi mungkin akan mengurangkan masa pemprosesan, tetapi ia tidak dijamin."
   },
   "customToken": {
     "message": "Token Tersuai"
@@ -340,17 +313,11 @@
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
   },
-  "enterAnAlias": {
-    "message": "Masukkan alias"
-  },
   "enterPassword": {
     "message": "Masukkan kata laluan"
   },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Masa Pemprosesan yang Dijangka"
   },
   "ethereumPublicAddress": {
     "message": "Alamat Awam Ethereum"
@@ -504,9 +471,6 @@
   "knownAddressRecipient": {
     "message": "Alamat kontrak diketahui."
   },
-  "kovan": {
-    "message": "Rangkaian Ujian Kovan"
-  },
   "learnMore": {
     "message": "Maklumat lanjut"
   },
@@ -598,12 +562,6 @@
   },
   "newToMetaMask": {
     "message": "Baru mengenali MetaMask?"
-  },
-  "newTotal": {
-    "message": "Jumlah Keseluruhan Baru"
-  },
-  "newTransactionFee": {
-    "message": "Fi Transaksi Baru"
   },
   "next": {
     "message": "Seterusnya"
@@ -748,9 +706,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
-  },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
@@ -762,12 +717,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
-  },
-  "rinkeby": {
-    "message": "Rangkaian Ujian Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rangkaian Ujian Ropsten"
   },
   "rpcUrl": {
     "message": "URL RPC baru"
@@ -802,14 +751,8 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Pisahkan setiap perkataan dengan satu ruang"
-  },
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"
-  },
-  "selectAHigherGasFee": {
-    "message": "Pilih yuran gas yang lebih tinggi untuk mempercepatkan pemprosesan transaksi anda.*"
   },
   "selectAnAccount": {
     "message": "Pilih Akaun"
@@ -828,9 +771,6 @@
   },
   "send": {
     "message": "Hantar"
-  },
-  "sendAmount": {
-    "message": "Hantar Amaun"
   },
   "sendTokens": {
     "message": "Hantar Token"
@@ -873,9 +813,6 @@
   },
   "signed": {
     "message": "Ditandatangani"
-  },
-  "slow": {
-    "message": "Perlahan"
   },
   "somethingWentWrong": {
     "message": "Alamak! Ada yang tak kena."

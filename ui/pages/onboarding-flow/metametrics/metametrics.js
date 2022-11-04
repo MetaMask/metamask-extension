@@ -17,12 +17,9 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
-const firstTimeFlowTypeNameMap = {
-  create: 'Selected Create New Wallet',
-  import: 'Selected Import Wallet',
-};
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -33,36 +30,48 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const firstTimeSelectionMetaMetricsName =
-    firstTimeFlowTypeNameMap[firstTimeFlowType];
 
-  const metricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
+    const isInitiallyNotParticipating = !participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
-            category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt In',
+      if (isInitiallyNotParticipating) {
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.ONBOARDING,
+            event: EVENT_NAMES.METRICS_OPT_IN,
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
-      metricsEvent({
-        eventOpts: {
-          category: 'Onboarding',
-          action: 'Import or Create',
-          name: firstTimeSelectionMetaMetricsName,
+      trackEvent(
+        {
+          category: EVENT.CATEGORIES.ONBOARDING,
+          event: EVENT_NAMES.WALLET_SETUP_STARTED,
+          properties: {
+            account_type:
+              firstTimeFlowType === 'create'
+                ? EVENT.ACCOUNT_TYPES.DEFAULT
+                : EVENT.ACCOUNT_TYPES.IMPORTED,
+          },
         },
-        isOptIn: true,
-        metaMetricsId,
-        flushImmediately: true,
-      });
+        {
+          isOptIn: true,
+          metaMetricsId,
+          flushImmediately: true,
+        },
+      );
     } finally {
       history.push(nextRoute);
     }
@@ -71,17 +80,25 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
 
+    const isInitiallyParticipatingOrNotSet =
+      participateInMetaMetrics === null || participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
-            category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt Out',
+      if (isInitiallyParticipatingOrNotSet) {
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.ONBOARDING,
+            event: EVENT_NAMES.METRICS_OPT_OUT,
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
     } finally {
       history.push(nextRoute);
@@ -89,7 +106,10 @@ export default function OnboardingMetametrics() {
   };
 
   return (
-    <div className="onboarding-metametrics">
+    <div
+      className="onboarding-metametrics"
+      data-testid="onboarding-metametrics"
+    >
       <Typography
         variant={TYPOGRAPHY.H2}
         align={TEXT_ALIGN.CENTER}
@@ -97,7 +117,10 @@ export default function OnboardingMetametrics() {
       >
         {t('metametricsTitle')}
       </Typography>
-      <Typography align={TEXT_ALIGN.CENTER}>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
         {t('metametricsOptInDescription2')}
       </Typography>
       <ul>
@@ -123,7 +146,7 @@ export default function OnboardingMetametrics() {
         </li>
       </ul>
       <Typography
-        color={COLORS.UI4}
+        color={COLORS.TEXT_ALTERNATIVE}
         align={TEXT_ALIGN.CENTER}
         variant={TYPOGRAPHY.H6}
         className="onboarding-metametrics__terms"

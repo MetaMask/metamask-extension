@@ -8,9 +8,6 @@
   "about": {
     "message": "Информация"
   },
-  "acceleratingATransaction": {
-    "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
-  },
   "accessingYourCamera": {
     "message": "Достъп до вашата камера ..."
   },
@@ -43,12 +40,6 @@
   },
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
-  },
-  "addToAddressBook": {
-    "message": "Добавяне към адресната книга"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр. Джон Д."
   },
   "addToken": {
     "message": "Добавяне на жетон"
@@ -139,17 +130,14 @@
     "message": "Преглед на акаунт на $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Използване на Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
   },
   "buyWithWyre": {
-    "message": "Купете ETH с Wyre"
+    "message": "Купете $1 с Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата MetaMask сметка."
+    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате $1 право във вашата MetaMask сметка."
   },
   "bytes": {
     "message": "Байта"
@@ -202,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToKovan": {
-    "message": "Свързване с тестовата мрежа на Kovan"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Свързване с тестова мрежа на Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Свързване с тестова мрежа Ropsten"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -258,12 +237,6 @@
   },
   "custom": {
     "message": "Разширени"
-  },
-  "customGas": {
-    "message": "Персонализирайте газ"
-  },
-  "customGasSubTitle": {
-    "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
   },
   "customToken": {
     "message": "Персонализиран маркер"
@@ -343,17 +316,11 @@
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
   },
-  "enterAnAlias": {
-    "message": "Въведете псевдоним"
-  },
   "enterPassword": {
     "message": "Въведете парола"
   },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизителни времена за обработка"
   },
   "ethereumPublicAddress": {
     "message": "Публичен адрес за етереум"
@@ -511,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Известен адрес на договора."
   },
-  "kovan": {
-    "message": "Тестова мрежа на Кован"
-  },
   "learnMore": {
     "message": "Научете повече"
   },
@@ -611,12 +575,6 @@
   },
   "newToMetaMask": {
     "message": "Нови ли сте в MetaMask?"
-  },
-  "newTotal": {
-    "message": "Ново общо"
-  },
-  "newTransactionFee": {
-    "message": "Нова такса за транзакция"
   },
   "next": {
     "message": "Напред"
@@ -764,9 +722,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "restoreAccountWithSeed": {
-    "message": "Възстановете акаунта си с фраза зародиш"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -778,12 +733,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "НЕ споделяйте тази фраза с никого!"
-  },
-  "rinkeby": {
-    "message": "Тестова мрежа на Rinkeby"
-  },
-  "ropsten": {
-    "message": "Тестова мрежа Ropsten"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"
@@ -818,14 +767,8 @@
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Отделете всяка дума с един интервал"
-  },
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"
-  },
-  "selectAHigherGasFee": {
-    "message": "\nИзберете по-висока такса за газ, за ​​да ускорите обработката на Вашата транзакция.*"
   },
   "selectAnAccount": {
     "message": "Изберете акаунт"
@@ -844,9 +787,6 @@
   },
   "send": {
     "message": "Изпращане"
-  },
-  "sendAmount": {
-    "message": "Изпратете сумата"
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
@@ -889,9 +829,6 @@
   },
   "signed": {
     "message": "Подписан"
-  },
-  "slow": {
-    "message": "Бавно"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."

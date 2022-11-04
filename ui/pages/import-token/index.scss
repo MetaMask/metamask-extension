@@ -41,7 +41,7 @@
     &__edit {
       flex: 1 1 auto;
       text-align: right;
-      color: var(--primary-blue);
+      color: var(--color-primary-default);
       padding-right: 4px;
       cursor: pointer;
     }
@@ -51,7 +51,7 @@
     @include H7;
 
     display: inline;
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     padding-left: 0;
   }
 
@@ -60,12 +60,20 @@
     margin-top: 0;
   }
 
+  &__close {
+    color: var(--color-icon-default);
+    background: none;
+    flex: 0;
+    align-self: flex-start;
+    padding-right: 0;
+  }
+
   &__collectible-address-error-link {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     cursor: pointer;
 
     &:hover {
-      color: var(--Blue-400);
+      color: var(--color-primary-default);
     }
   }
 }

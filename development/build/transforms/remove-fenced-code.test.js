@@ -1,5 +1,5 @@
 const deepFreeze = require('deep-freeze-strict');
-const { BuildType } = require('../utils');
+const { BuildType } = require('../../lib/build-type');
 const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
@@ -289,9 +289,8 @@ describe('build/transforms/remove-fenced-code', () => {
           ),
         ).toStrictEqual([ignoredLine, true]);
 
-        const modifiedInputWithoutFences = testData.validInputs.withoutFences.concat(
-          ignoredLine,
-        );
+        const modifiedInputWithoutFences =
+          testData.validInputs.withoutFences.concat(ignoredLine);
 
         // These inputs will not be transformed
         expect(

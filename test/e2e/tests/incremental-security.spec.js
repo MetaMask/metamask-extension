@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Incremental Security', function () {
   const ganacheOptions = {
@@ -21,7 +22,7 @@ describe('Incremental Security', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'onboarding',
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -38,11 +39,11 @@ describe('Incremental Security', function () {
           tag: 'button',
         });
 
-        // clicks the "Create New Wallet" option
-        await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
-
         // clicks the "No thanks" option on the metametrics opt-in screen
         await driver.clickElement('.btn-secondary');
+
+        // clicks the "Create New Wallet" option
+        await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
 
         // accepts a secure password
         await driver.fill(
@@ -130,6 +131,7 @@ describe('Incremental Security', function () {
         const revealedSeedPhrase = await driver.findElement(
           '.reveal-seed-phrase__secret-words',
         );
+        await driver.waitForNonEmptyElement(revealedSeedPhrase);
         const seedPhrase = await revealedSeedPhrase.getText();
         assert.equal(seedPhrase.split(' ').length, 12);
 
@@ -156,7 +158,7 @@ describe('Incremental Security', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // can click through the success screen
-        await driver.clickElement({ text: 'All Done', tag: 'button' });
+        await driver.clickElement({ text: 'All done', tag: 'button' });
 
         // should have the correct amount of eth
         currencyDisplay = await driver.waitForSelector({

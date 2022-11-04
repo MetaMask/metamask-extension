@@ -3,8 +3,8 @@
   height: 24px;
   background-position: center;
   border-radius: 50%;
-  background-color: var(--white);
-  box-shadow: 0 2px 4px 0 rgba($black, 0.24);
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   flex: 0 0 auto;
   -moz-animation: fadein 1s;
 
@@ -18,7 +18,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #bbc0c5;
+    background: var(--color-background-alternative);
     flex: 0 1 auto;
     display: flex;
     justify-content: center;

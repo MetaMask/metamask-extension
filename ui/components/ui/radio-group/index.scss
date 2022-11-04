@@ -36,28 +36,28 @@
   &__column-start-connector {
     width: calc(50% + 0.5px);
     height: 6px;
-    border-left: 1px solid var(--ui-2);
-    border-bottom: 1px solid var(--ui-2);
+    border-left: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--color-border-muted);
     align-self: flex-end;
   }
 
   &__column-end-connector {
     width: calc(50% + 0.5px);
     height: 6px;
-    border-right: 1px solid var(--ui-2);
-    border-bottom: 1px solid var(--ui-2);
+    border-right: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--color-border-muted);
     align-self: flex-start;
   }
 
   &__column-vertical-line {
     width: 1px;
     height: 5px;
-    border-left: 1px solid var(--ui-2);
+    border-left: 1px solid var(--color-border-muted);
   }
 
   &__column-horizontal-line {
     height: 1px;
-    border-bottom: 1px solid var(--ui-2);
+    border-bottom: 1px solid var(--color-border-muted);
     width: 100%;
   }
 

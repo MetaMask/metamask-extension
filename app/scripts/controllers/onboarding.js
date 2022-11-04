@@ -2,13 +2,13 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 
 /**
- * @typedef {Object} InitState
+ * @typedef {object} InitState
  * @property {boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
  * @property {boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
  */
 
 /**
- * @typedef {Object} OnboardingOptions
+ * @typedef {object} OnboardingOptions
  * @property {InitState} initState The initial controller state
  */
 
@@ -69,7 +69,7 @@ export default class OnboardingController {
    * @param {string} tabId - The id of the tab registering
    */
   registerOnboarding = async (location, tabId) => {
-    if (this.completedOnboarding) {
+    if (this.store.getState().completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }

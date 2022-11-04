@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
   const ganacheOptions = {
@@ -14,8 +15,9 @@ describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'navigate-transactions',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -103,7 +105,10 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'navigate-transactions',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -123,26 +128,12 @@ describe('Navigate transactions', function () {
           'second transaction in focus',
         );
 
-        // connects the dapp
+        // add transaction
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        const popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-        // add transaction
-        await driver.switchToWindow(dapp);
-        await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindow(extension);
         navigationElement = await driver.waitForSelector(
           {
@@ -164,8 +155,9 @@ describe('Navigate transactions', function () {
   it('should reject and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'navigate-transactions',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -196,8 +188,9 @@ describe('Navigate transactions', function () {
   it('should confirm and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'navigate-transactions',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -228,8 +221,9 @@ describe('Navigate transactions', function () {
   it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'navigate-transactions',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -240,7 +234,7 @@ describe('Navigate transactions', function () {
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
-        await driver.clickElement({ text: 'Reject All', tag: 'button' });
+        await driver.clickElement({ text: 'Reject all', tag: 'button' });
         const balance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );

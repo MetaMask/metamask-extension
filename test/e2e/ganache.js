@@ -8,6 +8,7 @@ const defaultOptions = {
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
+  quiet: true,
 };
 
 class Ganache {
@@ -16,6 +17,10 @@ class Ganache {
     const { port } = options;
     this._server = ganache.server(options);
     await this._server.listen(port);
+  }
+
+  getProvider() {
+    return this._server.provider;
   }
 
   async quit() {

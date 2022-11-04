@@ -1,8 +1,8 @@
 .hide-token-confirmation {
   min-height: 250.72px;
   border-radius: 4px;
-  background-color: var(--white);
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   &__container {
     padding: 24px 27px 21px;
@@ -18,7 +18,7 @@
   &__symbol {
     @include Paragraph;
 
-    color: var(--tundora);
+    color: var(--color-text-alternative);
     text-align: center;
     margin-bottom: 7.5px;
   }
@@ -28,7 +28,7 @@
 
     height: 30px;
     width: 271.28px;
-    color: var(--tundora);
+    color: var(--color-text-alternative);
     text-align: center;
     margin-bottom: 10.5px;
   }
@@ -38,7 +38,7 @@
 
     min-height: 41px;
     width: 318px;
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
     text-align: center;
   }
 

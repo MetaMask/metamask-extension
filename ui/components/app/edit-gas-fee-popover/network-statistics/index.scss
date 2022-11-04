@@ -2,42 +2,37 @@
   margin: 24px 12px 12px;
 
   &__info {
-    border-top: 1px solid var(--ui-2);
-    border-bottom: 1px solid var(--ui-2);
+    border-top: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid var(--color-border-muted);
     height: 56px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+  }
 
-    &__separator {
-      border-left: 1px solid var(--ui-2);
-      height: 65%;
+  &__field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--color-border-muted);
     }
+  }
 
-    &__field {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 30%;
+  &__field-data {
+    color: var(--color-text-alternative);
+    font-size: 12px;
+    text-align: center;
+  }
 
-      &-data {
-        color: var(--ui-4);
-        font-size: 12px;
-        text-align: center;
-      }
-
-      &-label {
-        color: var(--Black-100);
-        font-size: 10px;
-        font-weight: bold;
-        margin-top: 4px;
-      }
-    }
-
-    .latest-priority-fee-field {
-      width: 40%;
-    }
+  &__field-label {
+    color: var(--color-text-default);
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 4px;
   }
 
   &__tooltip-label {

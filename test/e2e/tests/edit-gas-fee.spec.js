@@ -1,12 +1,10 @@
 const { strict: assert } = require('assert');
 const {
   convertToHexValue,
-  connectDappWithExtensionPopup,
   getWindowHandles,
-  largeDelayMs,
   withFixtures,
-  regularDelayMs,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
@@ -22,7 +20,12 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: 'eip-1559-v2',
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            eip1559V2Enabled: true,
+          })
+          .withTransactionControllerTypeTwoTransaction()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -36,13 +39,15 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '2.2');
+        assert.equal(await transactionAmount.getText(), '1');
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
         await driver.clickElement('[data-testid="edit-gas-fee-item-high"]');
-        await driver.delay(regularDelayMs);
         await driver.waitForSelector({ text: '🦍' });
         await driver.waitForSelector({
           text: 'Aggressive',
@@ -50,9 +55,7 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to medium
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="edit-gas-fee-item-medium"]');
-        await driver.delay(regularDelayMs);
         await driver.waitForSelector({ text: '🦊' });
         await driver.waitForSelector({
           text: 'Market',
@@ -60,9 +63,7 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to low
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="edit-gas-fee-item-low"]');
-        await driver.delay(regularDelayMs);
         await driver.waitForSelector({ text: '🐢' });
         await driver.waitForSelector({
           text: 'Low',
@@ -71,7 +72,6 @@ describe('Editing Confirm Transaction', function () {
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
@@ -85,7 +85,7 @@ describe('Editing Confirm Transaction', function () {
           '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
@@ -103,7 +103,12 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: 'eip-1559-v2',
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            eip1559V2Enabled: true,
+          })
+          .withTransactionControllerTypeTwoTransaction()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -117,60 +122,44 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '2.2');
+        assert.equal(await transactionAmount.getText(), '1');
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
         await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
-        await driver.delay(regularDelayMs);
 
         // enter max fee
-        const maxBaseFee = await driver.findElement(
-          '[data-testid="base-fee-input"]',
-        );
-        await maxBaseFee.clear();
-        await maxBaseFee.sendKeys('8');
-        await driver.delay(regularDelayMs);
+        await driver.fill('[data-testid="base-fee-input"]', '8.5');
 
         // enter priority fee
-        const priorityFee = await driver.findElement(
-          '[data-testid="priority-fee-input"]',
-        );
-        await priorityFee.clear();
-        await priorityFee.sendKeys('8');
-        await driver.delay(regularDelayMs);
+        await driver.fill('[data-testid="priority-fee-input"]', '8.5');
 
         // save default values
         await driver.clickElement('input[type="checkbox"]');
-        await driver.delay(regularDelayMs);
 
         // edit gas limit
         await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-        await driver.delay(regularDelayMs);
-        const gasLimit = await driver.findElement(
-          '[data-testid="gas-limit-input"]',
-        );
-        await gasLimit.clear();
-        await gasLimit.sendKeys('100000');
-        await driver.delay(regularDelayMs);
+        await driver.fill('[data-testid="gas-limit-input"]', '100000');
 
         // Submit gas fee changes
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
-        const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
-        );
-        const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.0008');
-
-        const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '2.2008');
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.00085 ETH',
+        });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          text: '1.00085 ETH',
+        });
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
@@ -184,7 +173,7 @@ describe('Editing Confirm Transaction', function () {
           '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
@@ -202,7 +191,12 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: 'eip-1559-v2-dapp',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            eip1559V2Enabled: true,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         dapp: true,
@@ -215,7 +209,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open dapp and connect
-        await connectDappWithExtensionPopup(driver);
+        await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',
@@ -224,18 +218,19 @@ describe('Editing Confirm Transaction', function () {
         // check transaction in extension popup
         const windowHandles = await getWindowHandles(driver, 3);
         await driver.switchToWindow(windowHandles.popup);
-        await driver.delay(largeDelayMs);
         await driver.waitForSelector({ text: '🌐' });
         await driver.waitForSelector({
           text: 'Site suggested',
         });
 
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-dappSuggested"]',
         );
-        await driver.delay(regularDelayMs);
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
@@ -255,7 +250,6 @@ describe('Editing Confirm Transaction', function () {
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(regularDelayMs);
 
         // transaction should correct values in activity tab
         await driver.switchToWindow(windowHandles.extension);

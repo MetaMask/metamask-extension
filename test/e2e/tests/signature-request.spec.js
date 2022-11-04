@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Sign Typed Data V4 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
@@ -16,7 +21,9 @@ describe('Sign Typed Data V4 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -51,7 +58,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
         const message = await driver.findElement(
           '.signature-request-message--node-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
@@ -61,8 +68,11 @@ describe('Sign Typed Data V4 Signature Request', function () {
           )}`,
         );
         assert.equal(await message.getText(), 'Hello, Bob!');
-
         // Approve signing typed data
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -79,6 +89,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
   });
 });
 
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Sign Typed Data V3 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
     const ganacheOptions = {
@@ -94,7 +105,9 @@ describe('Sign Typed Data V3 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -129,7 +142,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
         const messages = await driver.findElements(
           '.signature-request-message--node-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
@@ -172,7 +185,9 @@ describe('Sign Typed Data Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -200,7 +215,7 @@ describe('Sign Typed Data Signature Request', function () {
         const message = await driver.findElements(
           '.request-signature__row-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(await message[0].getText(), 'Hi, Alice!');
         assert.equal(await message[1].getText(), '1337');

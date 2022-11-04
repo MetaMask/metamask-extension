@@ -1,19 +1,20 @@
 .permissions-connect-header {
   flex: 0;
-  width: 92%;
+  width: 100%;
 
   &__icon {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 16px;
   }
 
   &__title {
     @include H3;
 
     text-align: center;
-    color: var(--Black-100);
-    margin-top: 16px;
+    color: var(--color-text-default);
     font-weight: bold;
   }
 
@@ -21,7 +22,7 @@
     @include H6;
 
     text-align: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__subtitle {

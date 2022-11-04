@@ -1,15 +1,15 @@
 import { useSelector } from 'react-redux';
+import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../shared/modules/swaps.utils';
-import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { getCurrentChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**
- * @typedef {Object} SwappedTokenValue
+ * @typedef {object} SwappedTokenValue
  * @property {string} swapTokenValue - a primary currency string formatted for display
  * @property {string} swapTokenFiatAmount - a secondary currency string formatted for display
  * @property {boolean} isViewingReceivedTokenFromSwap - true if user is on the asset page for the

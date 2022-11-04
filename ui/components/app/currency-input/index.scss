@@ -7,20 +7,12 @@
 
   &__swap-component {
     flex: 0 0 auto;
-    height: 24px;
-    width: 24px;
-    background-image: url("images/icons/swap.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-default);
     cursor: pointer;
-    opacity: 0.4;
-
-    &:hover {
-      opacity: 0.3;
-    }
-
-    &:active {
-      opacity: 0.5;
-    }
+    background: none;
+    border: none;
   }
 }

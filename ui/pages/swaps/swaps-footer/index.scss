@@ -3,16 +3,16 @@
 
   &--warning {
     .btn-primary {
-      background: var(--Red-500);
-      border-color: var(--Red-500);
+      background: var(--color-error-default);
+      border-color: var(--color-error-default);
     }
   }
 
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     &--border {
       .swaps-footer__custom-page-container-footer-class {
-        border-top: 1px solid #d2d8dd;
+        border-top: 1px solid var(--color-border-muted);
       }
     }
   }
@@ -20,7 +20,7 @@
   &__custom-page-container-footer-class {
     border-top: none;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       height: 96px;
     }
   }
@@ -38,13 +38,13 @@
   &__bottom-text {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     margin-bottom: 16px;
     cursor: pointer;
     display: flex;
     justify-content: center;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-top: 0;
     }
   }

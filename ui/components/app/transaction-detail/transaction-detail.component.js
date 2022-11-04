@@ -12,13 +12,14 @@ export default function TransactionDetail({
   rows = [],
   onEdit,
   userAcknowledgedGasMissing = false,
+  disableEditGasFeeButton = false,
 }) {
   const t = useI18nContext();
   const { supportsEIP1559V2 } = useGasFeeContext();
 
   return (
     <div className="transaction-detail">
-      {supportsEIP1559V2 && (
+      {supportsEIP1559V2 && !disableEditGasFeeButton && (
         <Box display="flex" justifyContent="flex-end" paddingTop={5}>
           <EditGasFeeButton
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -45,4 +46,5 @@ TransactionDetail.propTypes = {
    */
   onEdit: PropTypes.func,
   userAcknowledgedGasMissing: PropTypes.bool,
+  disableEditGasFeeButton: PropTypes.bool,
 };

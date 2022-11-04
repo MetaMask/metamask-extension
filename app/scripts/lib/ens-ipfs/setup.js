@@ -1,11 +1,11 @@
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
-import extension from 'extensionizer';
-import { SECOND } from '../../../../shared/constants/time';
+import browser from 'webextension-polyfill';
+
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import resolveEnsToIpfsContentId from './resolver';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];
 
@@ -16,7 +16,7 @@ export default function setupEnsIpfsResolver({
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
+  browser.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
     urls: urlPatterns,
     types: ['main_frame'],
   });
@@ -25,7 +25,7 @@ export default function setupEnsIpfsResolver({
   return {
     // uninstall listener
     remove() {
-      extension.webRequest.onErrorOccurred.removeListener(webRequestDidFail);
+      browser.webRequest.onErrorOccurred.removeListener(webRequestDidFail);
     },
   };
 
@@ -51,7 +51,7 @@ export default function setupEnsIpfsResolver({
   async function attemptResolve({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
 
-    extension.tabs.update(tabId, { url: `loading.html` });
+    browser.tabs.update(tabId, { url: `loading.html` });
     let url = `https://app.ens.domains/name/${name}`;
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({
@@ -101,7 +101,7 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
-      extension.tabs.update(tabId, { url });
+      browser.tabs.update(tabId, { url });
     }
   }
 }

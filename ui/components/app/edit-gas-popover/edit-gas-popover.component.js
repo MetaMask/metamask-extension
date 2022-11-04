@@ -11,11 +11,7 @@ import {
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexToDecimal,
-} from '../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
@@ -27,14 +23,18 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   hideModal,
-  updateTransaction,
+  updateTransactionGasFees,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
+  hideLoadingIndication,
+  showLoadingIndication,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
+import { decimalToHex } from '../../../../shared/lib/transactions-controller-utils';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -61,10 +61,8 @@ export default function EditGasPopover({
     supportsEIP1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
-  const [
-    dappSuggestedGasFeeAcknowledged,
-    setDappSuggestedGasFeeAcknowledged,
-  ] = useState(false);
+  const [dappSuggestedGasFeeAcknowledged, setDappSuggestedGasFeeAcknowledged] =
+    useState(false);
 
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
   const updatedCustomGasSettings = useIncrementedGasFees(transaction);
@@ -134,7 +132,7 @@ export default function EditGasPopover({
     }
   }, [onClose, dispatch]);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!updatedTransaction || !mode) {
       closePopover();
     }
@@ -187,7 +185,14 @@ export default function EditGasPopover({
         );
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
-        dispatch(updateTransaction(updatedTxMeta));
+        newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
+        newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
+
+        dispatch(showLoadingIndication());
+        await dispatch(
+          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        );
+        dispatch(hideLoadingIndication());
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.

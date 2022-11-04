@@ -162,8 +162,8 @@ DefaultStory.args = {
   padding: 4,
   border: true,
   borderWidth: 1,
-  borderColor: COLORS.UI2,
+  borderColor: COLORS.BORDER_DEFAULT,
   borderStyle: BORDER_STYLE.SOLID,
-  backgroundColor: COLORS.WHITE,
+  backgroundColor: COLORS.BACKGROUND_DEFAULT,
   display: DISPLAY.BLOCK,
 };

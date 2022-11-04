@@ -16,6 +16,8 @@ export default function NumericInput({
   disabled = false,
   dataTestId,
   placeholder,
+  id,
+  name,
 }) {
   return (
     <div
@@ -42,9 +44,15 @@ export default function NumericInput({
         disabled={disabled}
         data-testid={dataTestId}
         placeholder={placeholder}
+        id={id}
+        name={name}
       />
       {detailText && (
-        <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H7} tag="span">
+        <Typography
+          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TYPOGRAPHY.H7}
+          as="span"
+        >
           {detailText}
         </Typography>
       )}
@@ -62,4 +70,12 @@ NumericInput.propTypes = {
   disabled: PropTypes.bool,
   dataTestId: PropTypes.string,
   placeholder: PropTypes.string,
+  /**
+   * The name of the input
+   */
+  name: PropTypes.string,
+  /**
+   * The id of the input element. Should be used with htmlFor with a label element.
+   */
+  id: PropTypes.string,
 };

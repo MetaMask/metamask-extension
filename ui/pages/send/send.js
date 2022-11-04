@@ -1,22 +1,26 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
+  addHistoryEntry,
+  getDraftTransactionExists,
   getIsUsingMyAccountForRecipientSearch,
   getRecipient,
   getRecipientUserInput,
   getSendStage,
-  initializeSendState,
   resetRecipientInput,
   resetSendState,
   SEND_STAGES,
+  startNewDraftTransaction,
   updateRecipient,
   updateRecipientUserInput,
 } from '../../ducks/send';
-import { getCurrentChainId, isCustomPriceExcessive } from '../../selectors';
+import { isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
-import { useMetricEvent } from '../../hooks/useMetricEvent';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { EVENT } from '../../../shared/constants/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
@@ -28,7 +32,7 @@ const sendSliceIsCustomPriceExcessive = (state) =>
 
 export default function SendTransactionScreen() {
   const history = useHistory();
-  const chainId = useSelector(getCurrentChainId);
+  const startedNewDraftTransaction = useRef(false);
   const stage = useSelector(getSendStage);
   const gasIsExcessive = useSelector(sendSliceIsCustomPriceExcessive);
   const isUsingMyAccountsForRecipientSearch = useSelector(
@@ -37,14 +41,9 @@ export default function SendTransactionScreen() {
   const recipient = useSelector(getRecipient);
   const showHexData = useSelector(getSendHexDataFeatureFlagState);
   const userInput = useSelector(getRecipientUserInput);
+  const draftTransactionExists = useSelector(getDraftTransactionExists);
   const location = useLocation();
-  const trackUsedQRScanner = useMetricEvent({
-    eventOpts: {
-      category: 'Transactions',
-      action: 'Edit Screen',
-      name: 'Used QR scanner',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const dispatch = useDispatch();
 
@@ -52,12 +51,26 @@ export default function SendTransactionScreen() {
     dispatch(resetSendState());
   }, [dispatch]);
 
+  /**
+   * It is possible to route to this page directly, either by typing in the url
+   * or by clicking the browser back button after progressing to the confirm
+   * screen. In the case where a draft transaction does not yet exist, this
+   * hook is responsible for creating it. We will assume that this is a native
+   * asset send.
+   */
   useEffect(() => {
-    if (chainId !== undefined) {
-      dispatch(initializeSendState());
-      window.addEventListener('beforeunload', cleanup);
+    if (
+      draftTransactionExists === false &&
+      startedNewDraftTransaction.current === false
+    ) {
+      startedNewDraftTransaction.current = true;
+      dispatch(startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }));
     }
-  }, [chainId, dispatch, cleanup]);
+  }, [draftTransactionExists, dispatch]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', cleanup);
+  }, [cleanup]);
 
   useEffect(() => {
     if (location.search === '?scan=true') {
@@ -79,7 +92,10 @@ export default function SendTransactionScreen() {
 
   let content;
 
-  if ([SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(stage)) {
+  if (
+    draftTransactionExists &&
+    [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(stage)
+  ) {
     content = (
       <>
         <SendContent
@@ -100,16 +116,33 @@ export default function SendTransactionScreen() {
         userInput={userInput}
         className="send__to-row"
         onChange={(address) => dispatch(updateRecipientUserInput(address))}
-        onValidAddressTyped={(address) =>
-          dispatch(updateRecipient({ address, nickname: '' }))
-        }
+        onValidAddressTyped={async (address) => {
+          dispatch(
+            addHistoryEntry(`sendFlow - Valid address typed ${address}`),
+          );
+          await dispatch(updateRecipientUserInput(address));
+          dispatch(updateRecipient({ address, nickname: '' }));
+        }}
         internalSearch={isUsingMyAccountsForRecipientSearch}
         selectedAddress={recipient.address}
         selectedName={recipient.nickname}
-        onPaste={(text) => updateRecipient({ address: text, nickname: '' })}
+        onPaste={(text) => {
+          dispatch(
+            addHistoryEntry(
+              `sendFlow - User pasted ${text} into address field`,
+            ),
+          );
+        }}
         onReset={() => dispatch(resetRecipientInput())}
         scanQrCode={() => {
-          trackUsedQRScanner();
+          trackEvent({
+            event: 'Used QR scanner',
+            category: EVENT.CATEGORIES.TRANSACTIONS,
+            properties: {
+              action: 'Edit Screen',
+              legacy_event: true,
+            },
+          });
           dispatch(showQrScanner());
         }}
       />

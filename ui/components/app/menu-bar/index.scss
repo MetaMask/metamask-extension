@@ -3,7 +3,7 @@
   grid-template-columns: 30% minmax(30%, 1fr) 30%;
   column-gap: 5px;
   padding: 0 8px;
-  border-bottom: 1px solid var(--Grey-100);
+  border-bottom: 1px solid var(--color-border-muted);
   height: 64px;
 
   .menu-bar__account-options {
@@ -11,6 +11,7 @@
     font-size: inherit;
     padding: 0 8px 0 5px;
     place-self: center end;
+    color: var(--color-text-default);
   }
 
   .selected-account {
@@ -20,18 +21,9 @@
 }
 
 .account-options-menu {
-  &__connected-sites::before {
-    content: "";
-    background-image: url(/images/icons/connected-sites.svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    padding: 8px;
-  }
-
   &__explorer-origin {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 }

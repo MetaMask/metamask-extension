@@ -20,25 +20,6 @@
   &__token-list {
     display: flex;
     flex-flow: column nowrap;
-
-    .token-balance {
-      display: flex;
-      flex-flow: row nowrap;
-      align-items: flex-start;
-
-      &__amount {
-        @include H1;
-
-        color: var(--scorpion);
-        margin-right: 8px;
-      }
-
-      &__symbol {
-        @include H5;
-
-        color: var(--scorpion);
-      }
-    }
   }
 
   &__token-list-item {

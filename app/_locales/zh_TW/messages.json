@@ -2,9 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "acceleratingATransaction": {
-    "message": "* 提高交易費 Gas 價格將可加速處理時間，但不保證會有顯著效果"
-  },
   "accessingYourCamera": {
     "message": "正在存取您的攝影鏡頭..."
   },
@@ -40,12 +37,6 @@
   },
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
-  },
-  "addToAddressBook": {
-    "message": "新增至位址簿中"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如 John D。"
   },
   "addToken": {
     "message": "加入代幣"
@@ -139,9 +130,6 @@
     "message": "在 $1 觀看帳號 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用像素風格代表圖案"
-  },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
@@ -149,10 +137,10 @@
     "message": "買"
   },
   "buyWithWyre": {
-    "message": "用 Wyre 購買 ETH"
+    "message": "用 Wyre 購買 $1"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 MetaMask 帳號中直接存入 ETH。"
+    "message": "Wyre 讓你使用信用卡在 MetaMask 帳號中直接存入 $1 。"
   },
   "bytes": {
     "message": "位元組"
@@ -205,17 +193,8 @@
   "connectingToGoerli": {
     "message": "連接至 Goerli 測試網路"
   },
-  "connectingToKovan": {
-    "message": "連線到 Kovan 測試網路"
-  },
   "connectingToMainnet": {
     "message": "連線到主 Ethereum 網路"
-  },
-  "connectingToRinkeby": {
-    "message": "連線到 Rinkeby 測試網路"
-  },
-  "connectingToRopsten": {
-    "message": "連線到 Ropsten 測試網路"
   },
   "continueToWyre": {
     "message": "繼續至 Wyre"
@@ -258,12 +237,6 @@
   },
   "currentLanguage": {
     "message": "當前語言"
-  },
-  "customGas": {
-    "message": "自訂 Gas"
-  },
-  "customGasSubTitle": {
-    "message": "提升費用可能會加快處理時間，但不保證"
   },
   "customToken": {
     "message": "自訂代幣"
@@ -343,17 +316,11 @@
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
   },
-  "enterAnAlias": {
-    "message": "輸入化名"
-  },
   "enterPassword": {
     "message": "請輸入密碼"
   },
   "enterPasswordContinue": {
     "message": "請輸入密碼"
-  },
-  "estimatedProcessingTimes": {
-    "message": "預估處理時間"
   },
   "ethereumPublicAddress": {
     "message": "以太坊公開位址"
@@ -515,9 +482,6 @@
   "knownAddressRecipient": {
     "message": "已知合約位址"
   },
-  "kovan": {
-    "message": "Kovan 測試網路"
-  },
   "learnMore": {
     "message": "了解更多"
   },
@@ -609,12 +573,6 @@
   },
   "newToMetaMask": {
     "message": "新來到 MetaMask？"
-  },
-  "newTotal": {
-    "message": "總費用"
-  },
-  "newTransactionFee": {
-    "message": "自訂交易費"
   },
   "next": {
     "message": "下一頁"
@@ -750,9 +708,6 @@
   "resetAccountDescription": {
     "message": "重置帳戶將清除您的交易紀錄"
   },
-  "restoreAccountWithSeed": {
-    "message": "透過助憶詞還原您的帳戶"
-  },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
@@ -764,12 +719,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "請勿將助憶詞洩漏予他人"
-  },
-  "rinkeby": {
-    "message": "Rinkeby 測試網路"
-  },
-  "ropsten": {
-    "message": "Ropsten 測試網路"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"
@@ -804,14 +753,8 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhrasePlaceholder": {
-    "message": "單詞之間請用空白分隔"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"
-  },
-  "selectAHigherGasFee": {
-    "message": "選擇更高的交易費可加速您的交易處理時間 *"
   },
   "selectAnAccount": {
     "message": "選擇帳戶"
@@ -827,9 +770,6 @@
   },
   "send": {
     "message": "發送"
-  },
-  "sendAmount": {
-    "message": "發送數量"
   },
   "sendTokens": {
     "message": "發送代幣"
@@ -872,9 +812,6 @@
   },
   "signed": {
     "message": "已簽署"
-  },
-  "slow": {
-    "message": "慢"
   },
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"

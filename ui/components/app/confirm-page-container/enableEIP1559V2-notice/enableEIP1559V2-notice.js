@@ -34,7 +34,9 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
 
   return (
     <Box
-      margin={[0, 4, 4, 4]}
+      marginRight={4}
+      marginBottom={4}
+      marginLeft={4}
       marginTop={isFirstAlert ? 4 : 0}
       className="enableEIP1559V2-notice"
     >
@@ -50,7 +52,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
           </Box>
           <Box paddingLeft={4}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
@@ -58,7 +60,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
               {t('enableEIP1559V2Header')}
             </Typography>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H7}
               boxProps={{ marginBottom: 2 }}

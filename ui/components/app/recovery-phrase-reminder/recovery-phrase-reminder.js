@@ -29,21 +29,26 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
 
   return (
     <Popover centerTitle title={t('recoveryPhraseReminderTitle')}>
-      <Box padding={[0, 4, 6, 4]} className="recovery-phrase-reminder">
+      <Box
+        paddingRight={4}
+        paddingBottom={6}
+        paddingLeft={4}
+        className="recovery-phrase-reminder"
+      >
         <Typography
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           align={TEXT_ALIGN.CENTER}
           variant={TYPOGRAPHY.Paragraph}
           boxProps={{ marginTop: 0, marginBottom: 4 }}
         >
           {t('recoveryPhraseReminderSubText')}
         </Typography>
-        <Box margin={[4, 0, 8, 0]}>
+        <Box marginTop={4} marginBottom={8}>
           <ul className="recovery-phrase-reminder__list">
             <li>
               <Typography
-                tag="span"
-                color={COLORS.BLACK}
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
               >
                 {t('recoveryPhraseReminderItemOne')}

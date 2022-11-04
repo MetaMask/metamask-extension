@@ -1,23 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../modal';
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ADD_COLLECTIBLE_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  ADD_COLLECTIBLE_ROUTE,
+  ASSET_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { getCollectibles } from '../../../../ducks/metamask/metamask';
+import { ignoreTokens } from '../../../../store/actions';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const allCollectibles = useSelector(getCollectibles);
+  const tokenAddedAsNFT = allCollectibles.find(({ address }) =>
+    isEqualCaseInsensitive(address, tokenAddress),
+  );
+
   return (
     <Modal
-      onSubmit={() => {
-        history.push({
-          pathname: ADD_COLLECTIBLE_ROUTE,
-          state: { tokenAddress },
-        });
+      onSubmit={async () => {
+        if (tokenAddedAsNFT) {
+          await dispatch(
+            ignoreTokens({
+              tokensToIgnore: tokenAddress,
+              dontShowLoadingIndicator: true,
+            }),
+          );
+          const { tokenId } = tokenAddedAsNFT;
+          history.push({
+            pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
+          });
+        } else {
+          history.push({
+            pathname: ADD_COLLECTIBLE_ROUTE,
+            state: { tokenAddress },
+          });
+        }
         hideModal();
       }}
       submitText={t('yes')}
@@ -31,7 +57,9 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             marginTop: 2,
           }}
         >
-          {t('convertTokenToNFTDescription')}
+          {tokenAddedAsNFT
+            ? t('convertTokenToNFTExistDescription')
+            : t('convertTokenToNFTDescription')}
         </Typography>
       </div>
     </Modal>

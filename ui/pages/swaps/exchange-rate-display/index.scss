@@ -4,7 +4,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  color: var(--Black-100);
+  color: var(--color-text-default);
   width: 100%;
   flex-wrap: wrap;
 
@@ -45,9 +45,5 @@
     100% {
       -webkit-transform: rotate(180deg);
     }
-  }
-
-  &--white {
-    color: var(--white);
   }
 }

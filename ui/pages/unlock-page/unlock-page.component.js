@@ -5,12 +5,17 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
-import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -24,7 +29,7 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * onClick handler for "import using Secret Recovery Phrase" link
+     * onClick handler for "Forgot password?" link
      */
     onRestore: PropTypes.func,
     /**
@@ -47,6 +52,8 @@ export default class UnlockPage extends Component {
   };
 
   submitting = false;
+
+  failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
 
@@ -75,14 +82,18 @@ export default class UnlockPage extends Component {
     try {
       await onSubmit(password);
       const newState = await forceUpdateMetamaskState();
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
-          action: 'Unlock',
-          name: 'Success',
+      this.context.trackEvent(
+        {
+          category: EVENT.CATEGORIES.NAVIGATION,
+          event: EVENT_NAMES.APP_UNLOCKED,
+          properties: {
+            failed_attempts: this.failed_attempts,
+          },
         },
-        isNewVisit: true,
-      });
+        {
+          isNewVisit: true,
+        },
+      );
 
       if (
         newState.participateInMetaMetrics === null ||
@@ -91,17 +102,16 @@ export default class UnlockPage extends Component {
         showOptInModal();
       }
     } catch ({ message }) {
+      this.failed_attempts += 1;
+
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState();
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Unlock',
-            name: 'Incorrect Password',
-          },
-          customVariables: {
-            numberOfTokens: newState.tokens.length,
-            numberOfAccounts: Object.keys(newState.accounts).length,
+        await forceUpdateMetamaskState();
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.NAVIGATION,
+          event: EVENT_NAMES.APP_UNLOCKED_FAILED,
+          properties: {
+            reason: 'incorrect_password',
+            failed_attempts: this.failed_attempts,
           },
         });
       }
@@ -128,8 +138,8 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#037dd6',
-      color: 'white',
+      backgroundColor: 'var(--color-primary-default)',
+      color: 'var(--color-primary-inverse)',
       marginTop: '20px',
       height: '60px',
       fontWeight: '400',
@@ -140,6 +150,7 @@ export default class UnlockPage extends Component {
     return (
       <Button
         type="submit"
+        data-testid="unlock-submit"
         style={style}
         disabled={!this.state.password}
         variant="contained"
@@ -158,7 +169,7 @@ export default class UnlockPage extends Component {
 
     return (
       <div className="unlock-page__container">
-        <div className="unlock-page">
+        <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
             <Mascot
               animationEventEmitter={this.animationEventEmitter}
@@ -171,6 +182,7 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
+              data-testid="unlock-password"
               label={t('password')}
               type="password"
               value={password}
@@ -184,15 +196,14 @@ export default class UnlockPage extends Component {
           </form>
           {this.renderSubmitButton()}
           <div className="unlock-page__links">
-            {t('importAccountText', [
-              <button
-                key="import-account"
-                className="unlock-page__link unlock-page__link--import"
-                onClick={() => onRestore()}
-              >
-                {t('importAccountLinkText')}
-              </button>,
-            ])}
+            <Button
+              type="link"
+              key="import-account"
+              className="unlock-page__link"
+              onClick={() => onRestore()}
+            >
+              {t('forgotPassword')}
+            </Button>
           </div>
           <div className="unlock-page__support">
             {t('needHelp', [
@@ -201,6 +212,22 @@ export default class UnlockPage extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
                 key="need-help-link"
+                onClick={() => {
+                  this.context.trackEvent(
+                    {
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                      properties: {
+                        url: SUPPORT_LINK,
+                      },
+                    },
+                    {
+                      contextPropsIntoEventProperties: [
+                        CONTEXT_PROPS.PAGE_TITLE,
+                      ],
+                    },
+                  );
+                }}
               >
                 {t('needHelpLinkText')}
               </a>,

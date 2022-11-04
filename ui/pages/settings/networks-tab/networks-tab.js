@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import classnames from 'classnames';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../store/actions';
@@ -16,7 +17,10 @@ import {
   getNetworksTabSelectedRpcUrl,
   getProvider,
 } from '../../../selectors';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPES,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
@@ -25,17 +29,21 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
+  isATestNetwork: TEST_CHAINS.includes(network.chainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  const history = useHistory();
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+    isFullScreen ||
+    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
+    window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
@@ -44,12 +52,13 @@ const NetworksTab = ({ addNewNetwork }) => {
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
-      iconColor: '#6A737D',
-      providerType: NETWORK_TYPE_RPC,
+      iconColor: 'var(--color-icon-alternative)',
+      providerType: NETWORK_TYPES.RPC,
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
+      isATestNetwork: TEST_CHAINS.includes(rpc.chainId),
     };
   });
 
@@ -69,7 +78,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       networksToRender.find((network) => {
         return (
           network.rpcUrl === provider.rpcUrl ||
-          (network.providerType !== NETWORK_TYPE_RPC &&
+          (network.providerType !== NETWORK_TYPES.RPC &&
             network.providerType === provider.type)
         );
       }) || {};
@@ -87,7 +96,12 @@ const NetworksTab = ({ addNewNetwork }) => {
       {isFullScreen ? (
         <NetworksFormSubheader addNewNetwork={addNewNetwork} />
       ) : null}
-      <div className="networks-tab__content">
+      <div
+        className={classnames('networks-tab__content', {
+          'networks-tab__content--with-networks-list-popup-footer':
+            !isFullScreen && !shouldRenderNetworkForm,
+        })}
+      >
         {addNewNetwork ? (
           <NetworksForm
             networksToRender={networksToRender}
@@ -107,9 +121,12 @@ const NetworksTab = ({ addNewNetwork }) => {
               <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+                  onClick={() => {
+                    isFullScreen
+                      ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
+                      : global.platform.openExtensionInBrowser(
+                          ADD_POPULAR_CUSTOM_NETWORK,
+                        );
                   }}
                 >
                   {t('addNetwork')}

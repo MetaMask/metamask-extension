@@ -35,21 +35,26 @@ export default function SeedPhraseIntro() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
+    de: 'German',
+    el: 'Greek',
+    fr: 'French',
+    tr: 'Turkish',
+    zh: 'Chinese - China',
   };
 
   return (
-    <div className="seed-phrase-intro">
+    <div className="seed-phrase-intro" data-testid="seed-phrase-intro">
       <div className="seed-phrase-intro__sections">
         <div className="seed-phrase-intro__left">
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             variant={TYPOGRAPHY.H1}
             boxProps={{ marginTop: 0, marginBottom: 4 }}
           >
             {t('seedPhraseIntroTitle')}
           </Typography>
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             boxProps={{ marginBottom: 4 }}
             variant={TYPOGRAPHY.Paragraph}
             className="seed-phrase-intro__copy"
@@ -87,13 +92,13 @@ export default function SeedPhraseIntro() {
             padding={4}
             borderWidth={1}
             borderRadius={SIZES.MD}
-            borderColor={COLORS.UI2}
+            borderColor={COLORS.BORDER_MUTED}
             borderStyle={BORDER_STYLE.SOLID}
           >
             <Box marginBottom={4}>
               <Typography
-                tag="span"
-                color={COLORS.BLACK}
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >
@@ -103,8 +108,8 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
-                color={COLORS.BLACK}
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >
@@ -119,8 +124,8 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
-                color={COLORS.BLACK}
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >

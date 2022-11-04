@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: var(--black);
+    color: var(--color-text-default);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -25,7 +25,7 @@
   &__address {
     @include H7;
 
-    color: #989a9b;
+    color: var(--color-text-alternative);
     display: flex;
     align-items: center;
   }
@@ -42,12 +42,9 @@
     width: 100%;
     background-color: unset;
 
-    &:hover {
-      background-color: var(--Grey-000);
-    }
-
+    &:hover,
     &:active {
-      background-color: #d9d7da;
+      background-color: var(--color-background-alternative);
     }
   }
 

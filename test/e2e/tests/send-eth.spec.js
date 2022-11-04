@@ -1,9 +1,6 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  regularDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
   const ganacheOptions = {
@@ -18,7 +15,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -47,7 +44,12 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
-        await driver.delay(regularDelayMs);
+        await driver.wait(async () => {
+          const sendDialogMsgs = await driver.findElements(
+            '.send-v2__form div.dialog',
+          );
+          return sendDialogMsgs.length === 1;
+        }, 10000);
 
         await driver.assertElementNotPresent('.send-v2__error-amount');
 
@@ -91,6 +93,61 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   });
 });
 
+describe('Send ETH non-contract address with data that matches ERC20 transfer data signature', function () {
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+  it('renders the correct recipient on the confirmation screen', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.clickElement('[data-testid="eth-overview-send"]');
+
+        await driver.fill(
+          'input[placeholder="Search, public address (0x), or ENS"]',
+          '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+        );
+
+        await driver.fill(
+          'textarea[placeholder="Optional',
+          '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+        );
+
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.clickElement({ text: '0xc42...cd28' });
+
+        const recipientAddress = await driver.findElements({
+          text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+        });
+
+        assert.equal(recipientAddress.length, 1);
+      },
+    );
+  });
+});
+
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   const ganacheOptions = {
     accounts: [
@@ -104,7 +161,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -157,10 +214,6 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
 });
 
 describe('Send ETH from dapp using advanced gas controls', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -175,7 +228,9 @@ describe('Send ETH from dapp using advanced gas controls', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -189,7 +244,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement(
-          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
+          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > label > div',
         );
         const advancedGasTitle = await driver.findElement({
           text: 'Advanced gas controls',
@@ -197,53 +252,46 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         });
         await driver.scrollToElement(advancedGasTitle);
         await driver.clickElement(
-          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div',
+          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > label > div',
         );
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        await driver.closeAllWindowHandlesExcept([extension]);
         await driver.clickElement('.app-header__logo-container');
 
-        // connects the dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(dapp);
-
         // initiates a send from the dapp
+        await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Send', tag: 'button' });
-        await driver.delay(2000);
-        windowHandles = await driver.getAllWindowHandles();
+        await driver.waitUntilXWindowHandles(3);
+        const windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          css: '.transaction-total-banner',
+          text: '0.00021 ETH',
+        });
         await driver.clickElement(
           { text: 'Edit suggested gas fee', tag: 'button' },
           10000,
         );
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          css: '.transaction-total-banner',
+          text: '0.00021 ETH',
+        });
         const inputs = await driver.findElements('input[type="number"]');
         const gasPriceInput = inputs[1];
         await gasPriceInput.fill('100');
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          css: '.transaction-total-banner',
+          text: '0.0021 ETH',
+        });
         await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.0021 ETH',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

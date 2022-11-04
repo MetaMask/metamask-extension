@@ -5,10 +5,10 @@
   flex-flow: row nowrap;
   align-items: center;
   min-height: 54px;
-  border: 1px solid #dedede;
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
-  background-color: #fff;
-  color: #4d4d4d;
+  background-color: var(--color-background-default);
+  color: var(--color-text-default);
   padding: 8px 10px;
   position: relative;
 
@@ -37,16 +37,13 @@
   &__input {
     @include Paragraph;
 
-    color: #4d4d4d;
+    color: var(--color-text-default);
+    background: transparent;
     border: none;
     max-width: 15ch;
     overflow: hidden;
     text-overflow: ellipsis;
     height: 16px;
-
-    &__disabled {
-      background-color: rgb(222, 222, 222);
-    }
   }
 
   &__input-container {
@@ -62,10 +59,6 @@
   }
 
   &--error {
-    border-color: var(--red);
-  }
-
-  &__disabled {
-    background-color: #f2f3f4;
+    border-color: var(--color-error-default);
   }
 }

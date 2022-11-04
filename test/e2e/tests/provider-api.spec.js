@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask', function () {
   const ganacheOptions = {
@@ -17,7 +18,9 @@ describe('MetaMask', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -47,7 +50,7 @@ describe('MetaMask', function () {
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const switchedNetworkDiv = await driver.waitForSelector({
           css: '#network',
-          text: '1',
+          text: '0x1',
         });
         const switchedChainIdDiv = await driver.waitForSelector({
           css: '#chainId',
@@ -55,7 +58,7 @@ describe('MetaMask', function () {
         });
         const accountsDiv = await driver.findElement('#accounts');
 
-        assert.equal(await switchedNetworkDiv.getText(), '1');
+        assert.equal(await switchedNetworkDiv.getText(), '0x1');
         assert.equal(await switchedChainIdDiv.getText(), '0x1');
         assert.equal(
           await accountsDiv.getText(),
@@ -70,7 +73,9 @@ describe('MetaMask', function () {
       {
         dapp: true,
         failOnConsoleError: false,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },

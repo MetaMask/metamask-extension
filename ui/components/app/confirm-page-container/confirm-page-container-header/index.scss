@@ -6,7 +6,7 @@
   &__row {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid var(--geyser);
+    border-bottom: 1px solid var(--color-border-muted);
     padding: 4px 13px 4px 13px;
     flex: 0 0 auto;
     align-items: center;
@@ -21,6 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: var(--color-primary-default);
 
     [dir='rtl'] & img {
       transform: rotate(180deg);
@@ -30,7 +31,7 @@
   &__back-button {
     @include Paragraph;
 
-    color: #2f9ae0;
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-left: 5px;
   }

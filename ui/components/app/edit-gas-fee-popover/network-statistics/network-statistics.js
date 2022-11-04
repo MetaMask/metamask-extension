@@ -1,53 +1,79 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
 import {
   COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
+import { isNullish } from '../../../../helpers/utils/util';
+import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
+import { I18nContext } from '../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
-
-import { BaseFeeTooltip } from './tooltips';
-import LatestPriorityFeeField from './latest-priority-fee-field';
+import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = () => {
+  const t = useContext(I18nContext);
   const { gasFeeEstimates } = useGasFeeContext();
+  const formattedLatestBaseFee = formatGasFeeOrFeeRange(
+    gasFeeEstimates?.estimatedBaseFee,
+    {
+      precision: 0,
+    },
+  );
+  const formattedLatestPriorityFeeRange = formatGasFeeOrFeeRange(
+    gasFeeEstimates?.latestPriorityFeeRange,
+    { precision: [1, 0] },
+  );
+  const networkCongestion = gasFeeEstimates?.networkCongestion;
 
   return (
     <div className="network-statistics">
       <Typography
-        color={COLORS.UI4}
+        color={COLORS.TEXT_ALTERNATIVE}
         fontWeight={FONT_WEIGHT.BOLD}
-        margin={[3, 0]}
+        marginTop={3}
+        marginBottom={3}
         variant={TYPOGRAPHY.H8}
       >
-        <I18nValue messageKey="networkStatus" />
+        {t('networkStatus')}
       </Typography>
       <div className="network-statistics__info">
-        <div className="network-statistics__info__field">
-          <BaseFeeTooltip>
-            <span className="network-statistics__info__field-data">
-              {gasFeeEstimates?.estimatedBaseFee &&
-                `${roundToDecimalPlacesRemovingExtraZeroes(
-                  gasFeeEstimates?.estimatedBaseFee,
-                  0,
-                )} GWEI`}
-            </span>
-            <span className="network-statistics__info__field-label">
-              <I18nValue messageKey="baseFee" />
-            </span>
-          </BaseFeeTooltip>
-        </div>
-        <div className="network-statistics__info__separator" />
-        <LatestPriorityFeeField />
-        <div className="network-statistics__info__separator" />
-        <div className="network-statistics__info__field">
-          <StatusSlider />
-        </div>
+        {isNullish(formattedLatestBaseFee) ? null : (
+          <div
+            className="network-statistics__field"
+            data-testid="formatted-latest-base-fee"
+          >
+            <BaseFeeTooltip>
+              <span className="network-statistics__field-data">
+                {formattedLatestBaseFee}
+              </span>
+              <span className="network-statistics__field-label">
+                {t('baseFee')}
+              </span>
+            </BaseFeeTooltip>
+          </div>
+        )}
+        {isNullish(formattedLatestPriorityFeeRange) ? null : (
+          <div
+            className="network-statistics__field"
+            data-testid="formatted-latest-priority-fee-range"
+          >
+            <PriorityFeeTooltip>
+              <span className="network-statistics__field-data">
+                {formattedLatestPriorityFeeRange}
+              </span>
+              <span className="network-statistics__field-label">
+                {t('priorityFee')}
+              </span>
+            </PriorityFeeTooltip>
+          </div>
+        )}
+        {isNullish(networkCongestion) ? null : (
+          <div className="network-statistics__field">
+            <StatusSlider />
+          </div>
+        )}
       </div>
     </div>
   );

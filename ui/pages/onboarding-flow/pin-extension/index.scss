@@ -1,18 +1,16 @@
 .onboarding-pin-extension {
-  max-width: 800px;
-
   .control-dots .dot {
-    background: var(--ui-2);
+    background: var(--color-icon-muted);
     box-shadow: none;
 
     &.selected {
-      background: var(--ui-4);
+      background: var(--color-icon-default);
     }
   }
 
   &__diagram {
     margin: 24px auto;
-    width: 799px;
+    max-width: 799px;
     height: 320px;
   }
 

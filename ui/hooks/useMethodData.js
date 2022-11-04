@@ -15,7 +15,7 @@ import { getKnownMethodData } from '../selectors/selectors';
  * hit the action more frequently, it should only ever result in a single store update
  *
  * @param {string} data - the transaction data to find method data for
- * @returns {Object} contract method data
+ * @returns {object} contract method data
  */
 export function useMethodData(data) {
   const dispatch = useDispatch();

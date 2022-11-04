@@ -15,6 +15,7 @@ module.exports = {
 };
 
 const { setupTaskDisplay } = require('./display');
+const { logError } = require('./utils');
 
 async function runTask(taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
@@ -30,7 +31,7 @@ async function runTask(taskName, { skipStats } = {}) {
     console.error(
       `MetaMask build: Encountered an error while running task "${taskName}".`,
     );
-    console.error(err);
+    logError(err);
     process.exit(1);
   }
   taskEvents.emit('complete');
@@ -50,7 +51,7 @@ function createTask(taskName, taskFn) {
 
 function runInChildProcess(
   task,
-  { buildType, isLavaMoat, policyOnly, shouldLintFenceFiles },
+  { applyLavaMoat, buildType, isLavaMoat, policyOnly, shouldLintFenceFiles },
 ) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
@@ -60,44 +61,23 @@ function runInChildProcess(
   }
 
   return instrumentForTaskStats(taskName, async () => {
-    let childProcess;
-    // Use the same build type for subprocesses, and only run them in LavaMoat
-    // if the parent process also ran in LavaMoat.
-    if (isLavaMoat) {
-      childProcess = spawn(
-        'yarn',
-        [
-          'build',
-          taskName,
-          '--build-type',
-          buildType,
-          '--lint-fence-files',
-          shouldLintFenceFiles,
-          '--skip-stats',
-          ...(policyOnly ? ['--policy-only'] : []),
-        ],
-        {
-          env: process.env,
-        },
-      );
-    } else {
-      childProcess = spawn(
-        'yarn',
-        [
-          'build:dev',
-          taskName,
-          '--build-type',
-          buildType,
-          '--lint-fence-files',
-          shouldLintFenceFiles,
-          '--skip-stats',
-          ...(policyOnly ? ['--policy-only'] : []),
-        ],
-        {
-          env: process.env,
-        },
-      );
-    }
+    const childProcess = spawn(
+      'yarn',
+      [
+        // Use the same build type for subprocesses, and only run them in
+        // LavaMoat if the parent process also ran in LavaMoat.
+        isLavaMoat ? 'build' : 'build:dev',
+        taskName,
+        `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
+        `--build-type=${buildType}`,
+        `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
+        `--policyOnly=${policyOnly ? 'true' : 'false'}`,
+        '--skip-stats=true',
+      ],
+      {
+        env: process.env,
+      },
+    );
 
     // forward logs to main process
     // skip the first stdout event (announcing the process command)

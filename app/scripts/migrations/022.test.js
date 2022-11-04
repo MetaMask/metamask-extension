@@ -18,11 +18,8 @@ const storage = {
 describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
   it('should add submittedTime key on the txMeta if appropriate', async () => {
     const migratedData = await migration22.migrate(storage);
-    const [
-      txMeta1,
-      txMeta2,
-      txMeta3,
-    ] = migratedData.data.TransactionController.transactions;
+    const [txMeta1, txMeta2, txMeta3] =
+      migratedData.data.TransactionController.transactions;
 
     expect(migratedData.meta.version).toStrictEqual(22);
     // should have written a submitted time

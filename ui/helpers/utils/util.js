@@ -3,18 +3,13 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { util } from '@metamask/controllers';
+import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
@@ -52,25 +47,15 @@ export function formatDateWithYearContext(
 export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
-    chainId === MAINNET_CHAIN_ID ||
-    chainId === ROPSTEN_CHAIN_ID ||
-    chainId === RINKEBY_CHAIN_ID ||
-    chainId === KOVAN_CHAIN_ID ||
-    chainId === GOERLI_CHAIN_ID ||
-    chainId === LOCALHOST_CHAIN_ID
+    chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.GOERLI ||
+    chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
   }
 
   return false;
-}
-
-// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
-export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
-    return false;
-  }
-  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -93,7 +78,7 @@ export function addressSummary(
   }
   let checked = toChecksumHexAddress(address);
   if (!includeHex) {
-    checked = ethUtil.stripHexPrefix(checked);
+    checked = stripHexPrefix(checked);
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
@@ -127,7 +112,7 @@ export function numericBalance(balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16);
   }
-  const stripped = ethUtil.stripHexPrefix(balance);
+  const stripped = stripHexPrefix(balance);
   return new ethUtil.BN(stripped, 16);
 }
 
@@ -199,24 +184,6 @@ export function getRandomFileName() {
   }
 
   return fileName;
-}
-
-export function exportAsFile(filename, data, type = 'text/csv') {
-  // eslint-disable-next-line no-param-reassign
-  filename = filename || getRandomFileName();
-  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new window.Blob([data], { type });
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(blob, filename);
-  } else {
-    const elem = window.document.createElement('a');
-    elem.target = '_blank';
-    elem.href = window.URL.createObjectURL(blob);
-    elem.download = filename;
-    document.body.appendChild(elem);
-    elem.click();
-    document.body.removeChild(elem);
-  }
 }
 
 /**
@@ -323,71 +290,6 @@ export function checkExistingAddresses(address, list = []) {
   };
 
   return list.some(matchesAddress);
-}
-
-/**
- * Given a number and specified precision, returns that number in base 10 with a maximum of precision
- * significant digits, but without any trailing zeros after the decimal point To be used when wishing
- * to display only as much digits to the user as necessary
- *
- * @param {string | number | BigNumber} n - The number to format
- * @param {number} precision - The maximum number of significant digits in the return value
- * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
- */
-export function toPrecisionWithoutTrailingZeros(n, precision) {
-  return new BigNumber(n)
-    .toPrecision(precision)
-    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
-}
-
-/**
- * Given and object where all values are strings, returns the same object with all values
- * now prefixed with '0x'
- *
- * @param obj
- */
-export function addHexPrefixToObjectValues(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: addHexPrefix(obj[key]) };
-  }, {});
-}
-
-/**
- * Given the standard set of information about a transaction, returns a transaction properly formatted for
- * publishing via JSON RPC and web3
- *
- * @param {object} options
- * @param {boolean} [options.sendToken] - Indicates whether or not the transaciton is a token transaction
- * @param {string} options.data - A hex string containing the data to include in the transaction
- * @param {string} options.to - A hex address of the tx recipient address
- * @param options.amount
- * @param {string} options.from - A hex address of the tx sender address
- * @param {string} options.gas - A hex representation of the gas value for the transaction
- * @param {string} options.gasPrice - A hex representation of the gas price for the transaction
- * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
- */
-export function constructTxParams({
-  sendToken,
-  data,
-  to,
-  amount,
-  from,
-  gas,
-  gasPrice,
-}) {
-  const txParams = {
-    data,
-    from,
-    value: '0',
-    gas,
-    gasPrice,
-  };
-
-  if (!sendToken) {
-    txParams.value = amount;
-    txParams.to = to;
-  }
-  return addHexPrefixToObjectValues(txParams);
 }
 
 export function bnGreaterThan(a, b) {
@@ -565,7 +467,7 @@ export function getAssetImageURL(image, ipfsGateway) {
   }
 
   if (image.startsWith('ipfs://')) {
-    return util.getFormattedIpfsUrl(ipfsGateway, image, true);
+    return getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;
 }
@@ -595,4 +497,15 @@ export function coinTypeToProtocolName(coinType) {
     return 'Test Networks';
   }
   return slip44[coinType]?.name || undefined;
+}
+
+/**
+ * Tests "nullishness". Used to guard a section of a component from being
+ * rendered based on a value.
+ *
+ * @param {any} value - A value (literally anything).
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ */
+export function isNullish(value) {
+  return value === null || value === undefined;
 }

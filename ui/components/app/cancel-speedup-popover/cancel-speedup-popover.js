@@ -20,7 +20,6 @@ import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import I18nValue from '../../ui/i18n-value';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
@@ -84,7 +83,7 @@ const CancelSpeedupPopover = () => {
     } else {
       speedUpTransaction();
     }
-    closeModal('cancelSpeedUpTransaction');
+    closeModal(['cancelSpeedUpTransaction']);
   };
 
   return (
@@ -96,7 +95,7 @@ const CancelSpeedupPopover = () => {
             : `🚀${t('speedUp')}`}
         </>
       }
-      onClose={() => closeModal('cancelSpeedUpTransaction')}
+      onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
     >
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
@@ -104,22 +103,20 @@ const CancelSpeedupPopover = () => {
         <Typography
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
           variant={TYPOGRAPHY.H6}
-          margin={[0, 0, 2, 0]}
+          marginTop={0}
+          marginBottom={2}
         >
-          <I18nValue
-            messageKey="cancelSpeedUpLabel"
-            options={[
-              <strong key="cancelSpeedupReplace">
-                <I18nValue messageKey="replace" />
-              </strong>,
-            ]}
-          />
+          {t('cancelSpeedUpLabel', [
+            <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
+          ])}
           <InfoTooltip
             position="top"
             contentText={
               <Box>
                 {t('cancelSpeedUpTransactionTooltip', [
-                  EDIT_GAS_MODES.CANCEL ? t('cancel') : t('speedUp'),
+                  editGasMode === EDIT_GAS_MODES.CANCEL
+                    ? t('cancel')
+                    : t('speedUp'),
                 ])}
                 <div>
                   <a
@@ -149,7 +146,7 @@ const CancelSpeedupPopover = () => {
           </Box>
         </Box>
         <Button type="primary" onClick={submitTransactionChange}>
-          <I18nValue messageKey="submit" />
+          {t('submit')}
         </Button>
       </div>
     </Popover>

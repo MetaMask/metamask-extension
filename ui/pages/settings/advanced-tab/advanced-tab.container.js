@@ -8,12 +8,13 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setAutoLockTimeLimit,
-  setThreeBoxSyncingPermission,
-  turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setUseTokenDetection,
+  backupUserData,
+  restoreUserData,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
@@ -26,17 +27,16 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
     useNonceField,
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    useTokenDetection,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit,
+    autoLockTimeLimit = 0,
   } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
@@ -48,18 +48,19 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit,
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
     useNonceField,
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
+    useTokenDetection,
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return {
+    backupUserData: () => backupUserData(),
+    restoreUserData: (jsonString) => restoreUserData(jsonString),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
     displayWarning: (warning) => dispatch(displayWarning(warning)),
@@ -77,13 +78,6 @@ export const mapDispatchToProps = (dispatch) => {
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
-    setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
-      if (newThreeBoxSyncingState) {
-        dispatch(turnThreeBoxSyncingOnAndInitialize());
-      } else {
-        dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState));
-      }
-    },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
     },
@@ -92,6 +86,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setUseTokenDetection: (value) => {
+      return dispatch(setUseTokenDetection(value));
     },
   };
 };

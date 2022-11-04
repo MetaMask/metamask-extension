@@ -13,7 +13,7 @@ const SECTIONS = {
   props: {
     margin: 4,
     padding: 8,
-    borderColor: COLORS.PRIMARY1,
+    borderColor: COLORS.PRIMARY_DEFAULT,
     borderWidth: 2,
   },
   children: [
@@ -22,7 +22,7 @@ const SECTIONS = {
       key: 'A Test String',
       children: 'A Test String',
       props: {
-        color: COLORS.UI3,
+        color: COLORS.TEXT_MUTED,
         variant: TYPOGRAPHY.H2,
       },
     },
@@ -31,7 +31,7 @@ const SECTIONS = {
       key: 'Some more text',
       children: 'Some more text as a paragraph',
       props: {
-        color: COLORS.UI4,
+        color: COLORS.TEXT_ALTERNATIVE,
         variant: TYPOGRAPHY.Paragraph,
       },
     },
@@ -40,8 +40,7 @@ const SECTIONS = {
       key: 'TDL',
       props: {
         dictionary: {
-          term:
-            'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
+          term: 'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
           definition:
             'a statement of the exact meaning of a word, especially in a dictionary.',
           dl: 'HTML tag denoting a definition list',

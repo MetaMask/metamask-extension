@@ -5,9 +5,9 @@ import {
   GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
@@ -20,7 +20,7 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
 }
 
 /**
- * @typedef {Object} GasPriceInputsReturnType
+ * @typedef {object} GasPriceInputsReturnType
  * @property {DecGweiString} [gasPrice] - the gasPrice input value.
  * @property {(DecGweiString) => void} setGasPrice - state setter method to update the gasPrice.
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet

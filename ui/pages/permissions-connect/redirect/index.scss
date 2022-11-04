@@ -4,34 +4,53 @@
   justify-content: center;
 
   &__result {
-    @include H3;
-
     position: absolute;
     top: 30%;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
     text-align: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__icons {
     display: flex;
+    position: relative;
+  }
+
+  .icon-border {
+    max-width: 64px;
+    flex: 0 0 64px;
   }
 
   &__center-icon {
-    @include H7;
-
-    display: flex;
     position: relative;
-    justify-content: center;
-    align-items: center;
+    height: 64px;
+  }
+
+  &__icon {
+    width: 64px;
   }
 
   &__check {
-    width: 40px;
-    height: 40px;
-    background: white url("/images/permissions-check.svg") no-repeat;
+    width: 32px;
+    height: 32px;
+    color: var(--color-success-inverse);
+    background-color: var(--color-success-default);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 18%;
+      top: 25%;
+    }
+  }
+
+  &__dashed-line {
+    width: 130px;
+    border-bottom: 1px solid var(--color-border-muted);
+    border-style: dashed;
   }
 }

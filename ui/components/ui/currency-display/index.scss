@@ -1,6 +1,7 @@
 .currency-display-component {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
   &__text {
     /*rtl:ignore*/
@@ -8,6 +9,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &__prefix {
+    padding-right: 4px;
   }
 
   &__suffix {

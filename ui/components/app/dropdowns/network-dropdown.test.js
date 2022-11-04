@@ -1,15 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import Button from '../../ui/button';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
-import ColorIndicator from '../../ui/color-indicator';
+import { screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { LOCALHOST_RPC_URL } from '../../../../shared/constants/network';
 import NetworkDropdown from './network-dropdown';
-import { DropdownMenuItem } from './dropdown';
 
 describe('Network Dropdown', () => {
-  let wrapper;
   const createMockStore = configureMockStore([thunk]);
 
   describe('NetworkDropdown in appState in false', () => {
@@ -19,6 +16,7 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
+        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -31,15 +29,17 @@ describe('Network Dropdown', () => {
     const store = createMockStore(mockState);
 
     beforeEach(() => {
-      wrapper = mountWithRouter(<NetworkDropdown store={store} />);
+      renderWithProvider(<NetworkDropdown />, store);
+    });
+
+    it('should not render menu dropdown when network dropdown is in false state', () => {
+      const menuDropdown = screen.queryByTestId('menu-dropdown');
+      expect(menuDropdown).not.toBeInTheDocument();
     });
 
     it('checks for network droppo class', () => {
-      expect(wrapper.find('.network-droppo')).toHaveLength(1);
-    });
-
-    it('renders only one child when networkDropdown is false in state', () => {
-      expect(wrapper.children()).toHaveLength(1);
+      const networkDropdown = screen.queryByTestId('network-droppo');
+      expect(networkDropdown).toBeInTheDocument();
     });
   });
 
@@ -50,6 +50,7 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
+        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -70,86 +71,41 @@ describe('Network Dropdown', () => {
 
     const store = createMockStore(mockState);
 
-    let testNetworkIndex = 1;
-
-    const findTestNetworkFirstIndex = (_wrapper) => {
-      let i = 1;
-      let found = false;
-      while (!found) {
-        if (_wrapper.find(ColorIndicator).at(i).prop('color') === 'ui-2') {
-          i += 1;
-        } else {
-          found = true;
-        }
-      }
-
-      testNetworkIndex = i;
-    };
-
-    beforeAll(() => {
-      wrapper = mountWithRouter(<NetworkDropdown store={store} />);
-      findTestNetworkFirstIndex(wrapper);
+    beforeEach(() => {
+      renderWithProvider(<NetworkDropdown />, store);
     });
 
     it('checks background color for first ColorIndicator', () => {
-      const colorIndicator = wrapper.find(ColorIndicator).at(0);
-      expect(colorIndicator.prop('color')).toStrictEqual('mainnet');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('mainnet');
-    });
-
-    it('checks background color for second ColorIndicator', () => {
-      // find where test networks start in case there are custom RPCs
-      const colorIndicator = wrapper.find(ColorIndicator).at(testNetworkIndex);
-      expect(colorIndicator.prop('color')).toStrictEqual('ropsten');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('ropsten');
-    });
-
-    it('checks background color for third ColorIndicator', () => {
-      const colorIndicator = wrapper
-        .find(ColorIndicator)
-        .at(testNetworkIndex + 1);
-      expect(colorIndicator.prop('color')).toStrictEqual('kovan');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('kovan');
+      const mainnetColorIndicator = screen.queryByTestId('color-icon-mainnet');
+      expect(mainnetColorIndicator).toBeInTheDocument();
     });
 
     it('checks background color for fourth ColorIndicator', () => {
-      const colorIndicator = wrapper
-        .find(ColorIndicator)
-        .at(testNetworkIndex + 2);
-      expect(colorIndicator.prop('color')).toStrictEqual('rinkeby');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('rinkeby');
+      const goerliColorIndicator = screen.queryByTestId('color-icon-goerli');
+      expect(goerliColorIndicator).toBeInTheDocument();
     });
 
     it('checks background color for fifth ColorIndicator', () => {
-      const colorIndicator = wrapper
-        .find(ColorIndicator)
-        .at(testNetworkIndex + 3);
-      expect(colorIndicator.prop('color')).toStrictEqual('goerli');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('goerli');
+      const sepoliaColorIndicator = screen.queryByTestId('color-icon-sepolia');
+      expect(sepoliaColorIndicator).toBeInTheDocument();
     });
 
     it('checks background color for sixth ColorIndicator', () => {
-      const colorIndicator = wrapper
-        .find(ColorIndicator)
-        .at(testNetworkIndex + 4);
-      expect(colorIndicator.prop('color')).toStrictEqual('localhost');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('localhost');
-      expect(
-        wrapper
-          .find(DropdownMenuItem)
-          .at(testNetworkIndex + 4)
-          .text(),
-      ).toStrictEqual('✓localhost');
+      const localhostColorIndicator = screen.queryByTestId(
+        'color-icon-localhost',
+      );
+      expect(localhostColorIndicator).toBeInTheDocument();
     });
 
     it('checks that Add Network button is rendered', () => {
-      expect(wrapper.find(Button).at(0).children().text()).toStrictEqual(
-        'addNetwork',
-      );
+      const addNetworkButton = screen.queryByText('Add network');
+      expect(addNetworkButton).toBeInTheDocument();
     });
 
     it('shows test networks in the dropdown', () => {
-      expect(wrapper.find('.network-dropdown-list li')).toHaveLength(8);
+      const networkItems = screen.queryAllByTestId(/network-item/u);
+
+      expect(networkItems).toHaveLength(6);
     });
   });
 
@@ -160,6 +116,7 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
+        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: false,
         },
@@ -179,27 +136,24 @@ describe('Network Dropdown', () => {
 
     const store = createMockStore(mockState);
 
-    beforeAll(() => {
-      wrapper = mountWithRouter(<NetworkDropdown store={store} />);
+    beforeEach(() => {
+      renderWithProvider(<NetworkDropdown />, store);
     });
 
     it('checks background color for first ColorIndicator', () => {
-      const colorIndicator = wrapper.find(ColorIndicator).at(0);
-      expect(colorIndicator.prop('color')).toStrictEqual('mainnet');
-      expect(colorIndicator.prop('borderColor')).toStrictEqual('mainnet');
-      expect(wrapper.find(DropdownMenuItem).at(0).text()).toStrictEqual(
-        '✓mainnet',
-      );
+      const mainnetColorIndicator = screen.queryByTestId('color-icon-mainnet');
+      expect(mainnetColorIndicator).toBeInTheDocument();
     });
 
     it('checks that Add Network button is rendered', () => {
-      expect(wrapper.find(Button).at(0).children().text()).toStrictEqual(
-        'addNetwork',
-      );
+      const addNetworkButton = screen.queryByText('Add network');
+      expect(addNetworkButton).toBeInTheDocument();
     });
 
     it('does not show test networks in the dropdown', () => {
-      expect(wrapper.find('.network-dropdown-list li')).toHaveLength(3);
+      const networkItems = screen.queryAllByTestId(/network-item/u);
+
+      expect(networkItems).toHaveLength(3);
     });
   });
 });

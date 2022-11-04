@@ -70,24 +70,35 @@ export const Type = (args) => (
     <Button {...args} type="default">
       {args.children || 'Default'}
     </Button>
+    <br />
     <Button {...args} type="primary">
       {args.children || 'Primary'}
     </Button>
+    <br />
     <Button {...args} type="secondary">
       {args.children || 'Secondary'}
     </Button>
+    <br />
     <Button {...args} type="warning">
       {args.children || 'Warning'}
     </Button>
+    <br />
     <Button {...args} type="danger">
       {args.children || 'Danger'}
     </Button>
+    <br />
     <Button {...args} type="danger-primary">
       {args.children || 'Danger primary'}
     </Button>
+    <br />
+    <Button {...args} type="raised">
+      {args.children || 'Raised'}
+    </Button>
+    <br />
     <Button {...args} type="link">
       {args.children || 'Link'}
     </Button>
+    <br />
     <Button {...args} type="inline">
       {args.children || 'Inline'}
     </Button>

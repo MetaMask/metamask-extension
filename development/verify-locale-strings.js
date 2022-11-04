@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // //////////////////////////////////////////////////////////////////////////////
 //
 // Locale verification script
@@ -95,6 +96,7 @@ async function main() {
   }
 }
 
+// eslint-disable-next-line consistent-return
 async function writeLocale(code, locale) {
   try {
     const localeFilePath = getLocalePath(code);
@@ -175,14 +177,18 @@ async function verifyEnglishLocale() {
     'ui/pages/confirmation/templates/*.js',
   ];
   const testGlob = '**/*.test.js';
-  const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
-    ignore: [...globsToStrictSearch, testGlob],
-  });
+  const javascriptFiles = await glob(
+    ['ui/**/*.js', 'shared/**/*.js', 'app/scripts/constants/**/*.js'],
+    {
+      ignore: [...globsToStrictSearch, testGlob],
+    },
+  );
   const javascriptFilesToStrictSearch = await glob(globsToStrictSearch, {
     ignore: [testGlob],
   });
 
-  const strictSearchRegex = /\bt\(\s*'(\w+)'\s*\)|\btranslationKey:\s*'(\w+)'/gu;
+  const strictSearchRegex =
+    /\bt\(\s*'(\w+)'\s*\)|\btranslationKey:\s*'(\w+)'/gu;
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them

@@ -2,14 +2,18 @@ import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
 import { BuildType } from '../../../shared/constants/app';
+import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
-const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_DEV =
+  process.env.SENTRY_DSN_DEV ||
+  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496';
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
+const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
 
 // This describes the subset of Redux state attached to errors sent to Sentry
@@ -49,11 +53,6 @@ export const SENTRY_STATE = {
       type: true,
     },
     seedPhraseBackedUp: true,
-    showRestorePrompt: true,
-    threeBoxDisabled: true,
-    threeBoxLastUpdated: true,
-    threeBoxSynced: true,
-    threeBoxSyncingAllowed: true,
     unapprovedDecryptMsgCount: true,
     unapprovedEncryptionPublicKeyMsgCount: true,
     unapprovedMsgCount: true,
@@ -68,9 +67,15 @@ export const SENTRY_STATE = {
 };
 
 export default function setupSentry({ release, getState }) {
-  let sentryTarget;
-
-  if (METAMASK_DEBUG) {
+  if (!release) {
+    throw new Error('Missing release');
+  } else if (METAMASK_DEBUG && !IN_TEST) {
+    /**
+     * Workaround until the following issue is resolved
+     * https://github.com/MetaMask/metamask-extension/issues/15691
+     * The IN_TEST condition allows the e2e tests to run with both
+     * yarn start:test and yarn build:test
+     */
     return undefined;
   }
 
@@ -79,6 +84,7 @@ export default function setupSentry({ release, getState }) {
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 
+  let sentryTarget;
   if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
       throw new Error(
@@ -96,13 +102,52 @@ export default function setupSentry({ release, getState }) {
     sentryTarget = SENTRY_DSN_DEV;
   }
 
+  /**
+   * A function that returns whether MetaMetrics is enabled. This should also
+   * return `false` if state has not yet been initialzed.
+   *
+   * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+   * is enabled, `false` otherwise.
+   */
+  function getMetaMetricsEnabled() {
+    if (getState) {
+      const appState = getState();
+      if (!appState?.store?.metamask?.participateInMetaMetrics) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     environment,
-    integrations: [new Dedupe(), new ExtraErrorData()],
+    integrations: [
+      new FilterEvents({ getMetaMetricsEnabled }),
+      new Dedupe(),
+      new ExtraErrorData(),
+    ],
     release,
     beforeSend: (report) => rewriteReport(report),
+    beforeBreadcrumb(breadcrumb) {
+      if (getState) {
+        const appState = getState();
+        if (
+          Object.values(appState).length &&
+          (!appState?.store?.metamask?.participateInMetaMetrics ||
+            !appState?.store?.metamask?.completedOnboarding ||
+            breadcrumb?.category === 'ui.input')
+        ) {
+          return null;
+        }
+      } else {
+        return null;
+      }
+      return breadcrumb;
+    },
   });
 
   function rewriteReport(report) {
@@ -176,7 +221,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
+  const filePath = origUrl.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }

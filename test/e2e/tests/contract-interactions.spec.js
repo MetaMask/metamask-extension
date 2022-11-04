@@ -1,15 +1,9 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  regularDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -19,90 +13,56 @@ describe('Deploy contract and call contract methods', function () {
       },
     ],
   };
+  const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
+        smartContract,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // connects the dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        // deploy contract
+        await driver.openNewPage(
+          `http://127.0.0.1:8080/?contract=${contractAddress}`,
+        );
+
+        // wait for deployed contract, calls and confirms a contract method where ETH is sent
+        await driver.findClickableElement('#deployButton');
+        await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        let windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
 
-        // creates a deploy contract transaction
-        await driver.switchToWindow(dapp);
-        await driver.clickElement('#deployButton');
-
-        // displays the contract creation data
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({ text: 'Data', tag: 'button' });
-        await driver.findElement({ text: '127.0.0.1', tag: 'div' });
-        const confirmDataDiv = await driver.findElement(
-          '.confirm-page-container-content__data-box',
-        );
-        const confirmDataText = await confirmDataDiv.getText();
-        assert.ok(confirmDataText.includes('Origin:'));
-        assert.ok(confirmDataText.includes('127.0.0.1'));
-        assert.ok(confirmDataText.includes('Bytes:'));
-        assert.ok(confirmDataText.includes('675'));
-
-        // confirms a deploy contract transaction
-        await driver.clickElement({ text: 'Details', tag: 'button' });
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
-        );
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Contract Deployment');
-
-        // calls and confirms a contract method where ETH is sent
-        await driver.switchToWindow(dapp);
-        await driver.clickElement('#depositButton');
-        await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
           { timeout: 10000 },
         );
         await driver.waitForSelector(
@@ -117,18 +77,20 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(3)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
           { timeout: 10000 },
         );
         await driver.waitForSelector(

@@ -1,10 +1,10 @@
 .asset {
   &__container {
-    background-color: white;
+    background-color: var(--color-background-default);
   }
 
   &__overview {
-    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
@@ -19,7 +19,7 @@
 .asset-breadcrumb {
   @include H6;
 
-  color: var(--Black-100);
+  color: var(--color-text-default);
   background-color: inherit;
 
   &__chevron {
@@ -35,7 +35,7 @@
 .asset-options {
   &__button {
     font-size: $font-size-paragraph;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     background-color: inherit;
     padding: 2px 0 2px 8px;
   }

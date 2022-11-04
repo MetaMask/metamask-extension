@@ -1,5 +1,4 @@
 import React from 'react';
-import { text, number } from '@storybook/addon-knobs';
 import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
@@ -7,22 +6,50 @@ export default {
   id: __filename,
 };
 
-export const DefaultStory = () => {
-  return (
-    <ExchangeRateDisplay
-      primaryTokenValue={text('primaryTokenValue', '2000000000000000000')}
-      primaryTokenDecimals={number('primaryTokenDecimals', 18)}
-      primaryTokenSymbol={text('primaryTokenSymbol', 'ETH')}
-      secondaryTokenValue={text('secondaryTokenValue', '200000000000000000')}
-      secondaryTokenDecimals={number('secondaryTokenDecimals', 18)}
-      secondaryTokenSymbol={text('secondaryTokenSymbol', 'ABC')}
-    />
-  );
+export const DefaultStory = (args) => {
+  return <ExchangeRateDisplay {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
-export const WhiteOnBlue = () => {
+DefaultStory.argTypes = {
+  primaryTokenValue: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: '2000000000000000000',
+  },
+  primaryTokenDecimals: {
+    control: {
+      type: 'number',
+    },
+    defaultValue: 18,
+  },
+  primaryTokenSymbol: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: 'ETH',
+  },
+  secondaryTokenValue: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: '200000000000000000',
+  },
+  secondaryTokenDecimals: {
+    control: 'number',
+    defaultValue: 18,
+  },
+  secondaryTokenSymbol: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: 'ABC',
+  },
+};
+
+export const WhiteOnBlue = (args) => {
   return (
     <div
       style={{
@@ -32,19 +59,50 @@ export const WhiteOnBlue = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(90deg, #037DD6 0%, #1098FC 101.32%)',
+        background:
+          'linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-muted) 101.32%)',
       }}
     >
-      <ExchangeRateDisplay
-        primaryTokenValue={text('primaryTokenValue', '2000000000000000000')}
-        primaryTokenDecimals={number('primaryTokenDecimals', 18)}
-        primaryTokenSymbol={text('primaryTokenSymbol', 'ETH')}
-        secondaryTokenValue={text('secondaryTokenValue', '200000000000000000')}
-        secondaryTokenDecimals={number('secondaryTokenDecimals', 18)}
-        secondaryTokenSymbol={text('secondaryTokenSymbol', 'ABC')}
-        className="exchange-rate-display--white"
-        arrowColor="white"
-      />
+      <ExchangeRateDisplay {...args} />
     </div>
   );
+};
+
+WhiteOnBlue.argTypes = {
+  primaryTokenValue: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: '2000000000000000000',
+  },
+  primaryTokenDecimals: {
+    control: {
+      type: 'number',
+    },
+    defaultValue: 18,
+  },
+  primaryTokenSymbol: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: 'ETH',
+  },
+  secondaryTokenValue: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: '200000000000000000',
+  },
+  secondaryTokenDecimals: {
+    control: {
+      type: 'number',
+    },
+    defaultValue: 18,
+  },
+  secondaryTokenSymbol: {
+    control: {
+      type: 'text',
+    },
+    defaultValue: 'ABC',
+  },
 };

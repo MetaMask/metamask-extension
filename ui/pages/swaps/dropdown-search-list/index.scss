@@ -10,7 +10,7 @@
   &__token-container {
     margin: 0;
     min-height: auto;
-    border: 1px solid #d6d9dc;
+    border: 1px solid var(--color-border-default);
     box-sizing: border-box;
     box-shadow: none;
     border-radius: 6px;
@@ -18,8 +18,8 @@
   }
 
   &--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid var(--Grey-100);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    border: 1px solid var(--color-border-default);
   }
 
   &__close-area {
@@ -40,18 +40,18 @@
     transition: 200ms ease-in-out;
     border-radius: 6px;
     box-shadow: none;
-    border: 1px solid #d6d9dc;
+    border: 1px solid var(--color-border-default);
     height: 60px;
 
     &:hover {
-      background: var(--Grey-000);
+      background: var(--color-background-alternative);
     }
   }
 
   &__caret {
     position: absolute;
     right: 16px;
-    color: var(--Grey-200);
+    color: var(--color-icon-muted);
   }
 
   &__selector-closed {
@@ -83,7 +83,7 @@
   &__closed-primary-label {
     @include H4;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -91,15 +91,15 @@
   }
 
   &__search-list--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid var(--Grey-100);
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    border: 1px solid var(--color-border-muted);
   }
 
   &__default-dropdown-icon {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--Grey-200);
+    background: var(--color-background-alternative);
     flex: 0 1 auto;
   }
 
@@ -118,18 +118,18 @@
   }
 
   &__select-default {
-    color: var(--Grey-200);
+    color: var(--color-text-muted);
   }
 
   &__placeholder {
     @include H6;
 
     padding: 16px;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     min-height: 300px;
     position: relative;
     z-index: 1002;
-    background: white;
+    background: var(--color-background-default);
     border-radius: 6px;
     min-height: 194px;
     overflow: hidden;
@@ -149,10 +149,10 @@
     padding: 16px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--color-border-muted);
     position: relative;
     z-index: 1;
-    background: var(--white);
+    background: var(--color-background-default);
   }
 
   &__loading-item-text-container {

@@ -2,7 +2,7 @@
   &__popover-wrap {
     height: 232px;
     border-radius: 4px;
-    background: var(--ui-white);
+    background: var(--color-background-default);
     display: flex;
     justify-content: center;
     width: auto;
@@ -23,7 +23,7 @@
     font-weight: bold;
     display: flex;
     align-items: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     padding-top: 8px;
   }
 
@@ -34,7 +34,7 @@
     flex-direction: row;
     align-items: center;
     min-height: 25px;
-    background: var(--Grey-000);
+    background: var(--color-background-alternative);
     border-radius: 40px;
     padding-left: 8px;
     padding-right: 2px;
@@ -47,14 +47,14 @@
     &__constant {
       @include H8;
 
-      color: var(--Grey-500);
+      color: var(--color-text-alternative);
     }
   }
 
   &__view-on-block-explorer {
     @include H7;
 
-    color: var(--primary-1);
+    color: var(--color-primary-default);
     margin-top: 12px;
   }
 
@@ -69,6 +69,6 @@
     width: 152px;
     height: 40px;
     border-radius: 100px;
-    background: var(--primary-1);
+    background: var(--color-primary-default);
   }
 }

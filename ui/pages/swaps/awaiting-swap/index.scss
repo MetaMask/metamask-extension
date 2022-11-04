@@ -20,10 +20,6 @@
     justify-content: center;
   }
 
-  a {
-    color: var(--Blue-500);
-  }
-
   &__status-image {
     margin-top: 12px;
     margin-bottom: 16px;
@@ -32,13 +28,13 @@
   &__header {
     @include H3;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__main-description {
     @include H6;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 16px;
     width: 100%;
   }
@@ -46,7 +42,7 @@
   &__time-estimate {
     @include H7;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
     margin-top: 20px;
     font-style: italic;
 
@@ -64,9 +60,8 @@
     font-weight: bold;
   }
 
-  &__view-on-etherscan,
   &__support-link {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     margin-top: 24px;
     cursor: pointer;
   }
@@ -75,22 +70,8 @@
     @include H6;
   }
 
-  &__view-on-etherscan {
-    @include H7;
-
-    transition: opacity 1s ease-in-out;
-  }
-
-  &__view-on-etherscan--invisible {
-    opacity: 0;
-  }
-
-  &__view-on-etherscan--visible {
-    opacity: 1;
-  }
-
   &__amount-and-symbol {
-    color: var(--Black-100);
+    color: var(--color-text-default);
     font-weight: bold;
   }
 }
