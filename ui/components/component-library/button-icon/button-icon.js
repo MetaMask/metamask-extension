@@ -32,7 +32,6 @@ export const ButtonIcon = ({
     <Box
       aria-label={ariaLabel}
       as={Tag}
-      padding={1}
       className={classnames(
         'mm-button-icon',
         `mm-button-icon--size-${size}`,
