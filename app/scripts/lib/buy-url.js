@@ -12,6 +12,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 import { formatMoonpaySymbol } from '../../../ui/helpers/utils/moonpay';
+import { toSardineNetworkName } from 'ui/helpers/utils/sardine';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -74,6 +75,29 @@ const createTransakUrl = (walletAddress, chainId, symbol) => {
   });
 
   return `https://global.transak.com/?${queryParams}`;
+};
+
+/**
+ * Create a Sardine Checkout URL.
+ * API docs here: https://docs.sardine.ai/docs/crypto-on-ramp/ea665da985773-web-checkout
+ *
+ * @param {string} walletAddress - destination address
+ * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
+ * @returns String
+ */
+ const createSardineUrl = (walletAddress, chainId, symbol) => {
+  const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
+
+  const queryParams = new URLSearchParams({
+    client_id: "1b15facb-b4e0-4dd9-bd6c-c128ac66de0f", // TODO finalize this
+    address: walletAddress,
+    fixed_asset_type: symbol || nativeCurrency,
+    network: toSardineNetworkName(network),
+    walletAddress,
+  });
+
+  return `https://crypto.sardine.ai?${queryParams}`;
 };
 
 /**
@@ -170,6 +194,8 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
       return createMoonPayUrl(address, chainId, symbol);
     case 'coinbase':
       return createCoinbasePayUrl(address, chainId, symbol);
+    case 'sardine':
+      return createSardineUrl(address, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'goerli-faucet':

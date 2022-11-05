@@ -515,6 +515,13 @@
   "buyCryptoWithMoonPayDescription": {
     "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
   },
+  "buyCryptoWithSardine": {
+    "message": "Buy $1 with Sardine",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithSardineDescription": {
+    "message": "Instantly fund your wallet at lower fees through a seamless buying experience with Sardine."
+  },
   "buyCryptoWithTransak": {
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -733,6 +740,9 @@
   },
   "continueToMoonPay": {
     "message": "Continue to MoonPay"
+  },
+  "continueToSardine": {
+    "message": "Continue to Sardine"
   },
   "continueToTransak": {
     "message": "Continue to Transak"

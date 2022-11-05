@@ -10,6 +10,7 @@ import Typography from '../typography';
 import LogoCoinbasePay from './logo-coinbasepay';
 import LogoMoonPay from './logo-moonpay';
 import LogoWyre from './logo-wyre';
+import LogoSardine from './logo-sardine';
 import LogoTransak from './logo-transak';
 import LogoDepositEth from './logo-deposit-eth';
 import LogoLedger from './logo-ledger';
@@ -71,6 +72,7 @@ export const DefaultStory = (args) => (
   >
     <LogoItem Component={<LogoCoinbasePay {...args} />} />
     <LogoItem Component={<LogoWyre {...args} />} />
+    <LogoItem Component={<LogoSardine {...args} />} />
     <LogoItem Component={<LogoTransak {...args} />} />
     <LogoItem Component={<LogoDepositEth {...args} />} />
     <LogoItem Component={<LogoMoonPay {...args} />} />

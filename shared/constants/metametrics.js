@@ -383,6 +383,7 @@ export const EVENT = {
   },
   ONRAMP_PROVIDER_TYPES: {
     COINBASE: 'coinbase',
+    SARDINE: 'sardine',
     MOONPAY: 'moonpay',
     WYRE: 'wyre',
     TRANSAK: 'transak',

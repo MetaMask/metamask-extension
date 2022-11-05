@@ -762,6 +762,7 @@ export function getIsBuyableWyreChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
 }
+
 export function getIsBuyableCoinbasePayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
@@ -771,6 +772,18 @@ export function getIsBuyableCoinbasePayToken(state, symbol) {
   const chainId = getCurrentChainId(state);
   return Boolean(
     BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
+  );
+}
+
+export function getIsBuyableSardineChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.sardineCurrencies);
+}
+
+export function getIsBuyableSardineToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.sardineCurrencies?.includes(symbol),
   );
 }
 

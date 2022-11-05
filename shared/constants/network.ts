@@ -149,6 +149,10 @@ type BuyableChainSettings = {
    * The list of supported currencies for the CoinbasePay onramp provider
    */
   coinbasePayCurrencies?: SupportedCurrencySymbol[];
+  /**
+   * The list of supported currencies for the Sardine onramp provider
+   */
+  sardineCurrencies?: SupportedCurrencySymbol[];
 };
 
 /**
@@ -766,6 +770,30 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.YFII,
       SUPPORTED_CURRENCY_SYMBOLS.ZRX,
     ],
+    sardineCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+      SUPPORTED_CURRENCY_SYMBOLS.AXS,
+      SUPPORTED_CURRENCY_SYMBOLS.BAT,
+      SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+      SUPPORTED_CURRENCY_SYMBOLS.COMP,
+      SUPPORTED_CURRENCY_SYMBOLS.DAI,
+      SUPPORTED_CURRENCY_SYMBOLS.ENJ,
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS.GRT,
+      SUPPORTED_CURRENCY_SYMBOLS.KNC,
+      SUPPORTED_CURRENCY_SYMBOLS.LINK,
+      SUPPORTED_CURRENCY_SYMBOLS.MANA,
+      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+      SUPPORTED_CURRENCY_SYMBOLS.MKR,
+      SUPPORTED_CURRENCY_SYMBOLS.OMG,
+      SUPPORTED_CURRENCY_SYMBOLS.SAND,
+      SUPPORTED_CURRENCY_SYMBOLS.SHIB,
+      SUPPORTED_CURRENCY_SYMBOLS.UNI,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDT,
+      SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+      SUPPORTED_CURRENCY_SYMBOLS.ZRX,
+    ],
   },
   [CHAIN_IDS.GOERLI]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
@@ -833,11 +861,13 @@ export const BUYABLE_CHAINS_MAP: {
       ],
     },
     coinbasePayCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
+    sardineCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
   },
   [CHAIN_IDS.FANTOM]: {
     nativeCurrency: CURRENCY_SYMBOLS.FANTOM,
     network: 'fantom',
     transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.FANTOM],
+    sardineCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.FANTOM],
   },
   [CHAIN_IDS.CELO]: {
     nativeCurrency: CURRENCY_SYMBOLS.CELO,

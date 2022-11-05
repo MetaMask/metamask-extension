@@ -14,6 +14,7 @@ import LogoMoonPay from '../../ui/logo/logo-moonpay';
 import LogoWyre from '../../ui/logo/logo-wyre';
 import LogoTransak from '../../ui/logo/logo-transak';
 import LogoCoinbasePay from '../../ui/logo/logo-coinbasepay';
+import LogoSardine from '../../ui/logo/logo-sardine';
 import LogoDepositEth from '../../ui/logo/logo-deposit-eth';
 import Popover from '../../ui/popover';
 
@@ -27,9 +28,11 @@ import {
   getIsBuyableWyreChain,
   getIsBuyableCoinbasePayChain,
   getIsBuyableCoinbasePayToken,
+  getIsBuyableSardineChain,
   getIsBuyableTransakToken,
   getIsBuyableMoonpayToken,
   getIsBuyableWyreToken,
+  getIsBuyableSardineToken,
 } from '../../../selectors/selectors';
 
 import OnRampItem from './on-ramp-item';
@@ -48,9 +51,13 @@ const DepositPopover = ({ onClose, token }) => {
   const isBuyableMoonPayChain = useSelector(getIsBuyableMoonPayChain);
   const isBuyableWyreChain = useSelector(getIsBuyableWyreChain);
   const isBuyableCoinbasePayChain = useSelector(getIsBuyableCoinbasePayChain);
+  const isBuyableSardineChain = useSelector(getIsBuyableSardineChain);
 
   const isTokenBuyableCoinbasePay = useSelector((state) =>
     getIsBuyableCoinbasePayToken(state, token?.symbol),
+  );
+  const isTokenBuyableSardine = useSelector((state) =>
+    getIsBuyableSardineToken(state, token?.symbol),
   );
   const isTokenBuyableTransak = useSelector((state) =>
     getIsBuyableTransakToken(state, token?.symbol),
@@ -77,6 +84,11 @@ const DepositPopover = ({ onClose, token }) => {
   const toCoinbasePay = () => {
     dispatch(
       buy({ service: 'coinbase', address, chainId, symbol: token?.symbol }),
+    );
+  };
+  const toSardine = () => {
+    dispatch(
+      buy({ service: 'sardine', address, chainId, symbol: token?.symbol }),
     );
   };
   const toTransak = () => {
@@ -108,6 +120,27 @@ const DepositPopover = ({ onClose, token }) => {
       className="deposit-popover"
     >
       <ul>
+        <OnRampItem
+          logo={<LogoSardine />}
+          title={t('buyCryptoWithSardine', [symbol])}
+          text={t('buyCryptoWithSardineDescription', [symbol])}
+          buttonLabel={t('continueToSardine')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SARDINE,
+              },
+            });
+            toSardine();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableSardineChain || !isTokenBuyableSardine
+              : !isBuyableSardineChain
+          }
+        />
         <OnRampItem
           logo={<LogoCoinbasePay />}
           title={t('buyCryptoWithCoinbasePay', [symbol])}
