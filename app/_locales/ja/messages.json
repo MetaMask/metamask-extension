@@ -3133,6 +3133,12 @@
   "showTestnetNetworksDescription": {
     "message": "ネットワークリストにテストネットワークを表示するには、こちらを選択してください"
   },
+  "showTestnetNetworks": {
+    "message": "テストネットワークを表示する"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "これを選択すると、テストネットワークがネットワークリストに表示されます"
+  },
   "sigRequest": {
     "message": "署名の要求"
   },
