@@ -12,7 +12,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 import { formatMoonpaySymbol } from '../../../ui/helpers/utils/moonpay';
-import { toSardineNetworkName } from 'ui/helpers/utils/sardine';
+import { toSardineNetworkName } from '../../../ui/helpers/utils/sardine';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
