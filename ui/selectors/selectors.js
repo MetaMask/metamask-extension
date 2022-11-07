@@ -1307,3 +1307,7 @@ export function getShouldShowSeedPhraseReminder(state) {
     dismissSeedBackUpReminder === false
   );
 }
+
+export function getCustomTokenAmount(state) {
+  return state.appState.customTokenAmount;
+}
