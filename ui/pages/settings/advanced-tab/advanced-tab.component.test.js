@@ -66,4 +66,5 @@ describe('AdvancedTab Component', () => {
 
     expect(mockSetUseTokenDetection).toHaveBeenCalled();
   });
+
 });
