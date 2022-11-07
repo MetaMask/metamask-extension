@@ -28,10 +28,6 @@ Button.propTypes = {
    */
   type: PropTypes.oneOf(Object.values(BUTTON_TYPES)),
   /**
-   * Addition style properties to apply to the button.
-   */
-  style: PropTypes.object,
-  /**
    * Button accepts all the props from ButtonPrimary (same props as ButtonSecondary & ButtonLink)
    */
   ...ButtonPrimary.propTypes,
