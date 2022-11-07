@@ -109,7 +109,14 @@ const initApp = async (remotePort) => {
 const sendReadyMessageToTabs = async () => {
   const tabs = await browser.tabs
     .query({
-      // Query tabs with a url. New tabs and DevTool tabs have no url value. e.g. chrome://extensions, chrome://inspect
+      /**
+       * Only query tabs that our extension can be injected in. To do this, we query for all URLs
+       * and __without__ the "tabs" manifest permission. If we included the "tabs" permission,
+       * this would also fetch URLs that we would not be able to inject our extension on
+       * e.g. chrome://pages, chrome://extension, which is not what we'd want.
+       *
+       * @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1}
+       */
       url: '<all_urls>',
       windowType: 'normal',
     })
