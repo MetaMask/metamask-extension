@@ -1371,6 +1371,50 @@
         "watchify>xtend": true
       }
     },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "packages": {
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "@storybook/api>util-deprecate": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "vinyl>cloneable-readable>process-nextick-args": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
+      }
+    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -1616,10 +1660,10 @@
       },
       "packages": {
         "@metamask/controllers": true,
+        "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
-        "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
         "@metamask/snap-controllers>gunzip-maybe": true,
@@ -1645,45 +1689,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream": {
-      "globals": {
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "location.origin": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/snap-controllers>@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "vinyl>cloneable-readable>process-nextick-args": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
@@ -1787,38 +1792,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "readable-stream": true
       }
     },
     "@metamask/snap-controllers>nanoid": {

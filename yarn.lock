@@ -3105,13 +3105,6 @@
     pump "^3.0.0"
     ses "0.12.4"
 
-"@metamask/post-message-stream@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/post-message-stream/-/post-message-stream-4.0.0.tgz#72f120e562346ca86ccc9b3684023ad44265f0df"
-  integrity sha512-r0JcoWXNuHycProx8ClxiIElJY/GVb/0/WWXTMsZu7qDejLo52VNXlwfydCdVjbMXeoT2nK1Yt3d5gjmHy5BWw==
-  dependencies:
-    readable-stream "2.3.3"
-
 "@metamask/post-message-stream@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/post-message-stream/-/post-message-stream-5.1.0.tgz#3e9a2ed11b540b3868a0a28ffa8ec5a6e5fca29d"

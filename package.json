@@ -122,7 +122,7 @@
     "@metamask/logo": "^3.1.1",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/obs-store": "^5.0.0",
-    "@metamask/post-message-stream": "^4.0.0",
+    "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.0.0",
     "@metamask/rpc-methods": "^0.23.0",
     "@metamask/slip44": "^2.1.0",
