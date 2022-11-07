@@ -2,8 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+import Box from '../../ui/box/box';
 import Typography from '../../ui/typography/typography';
-import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  COLORS,
+  BLOCK_SIZES,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { getShowBetaHeader } from '../../../selectors';
@@ -18,7 +24,13 @@ const BetaHomeHeader = () => {
   }
 
   return (
-    <div className="beta-header">
+    <Box
+      display={DISPLAY.FLEX}
+      width={BLOCK_SIZES.FULL}
+      backgroundColor={COLORS.WARNING_DEFAULT}
+      padding={2}
+      className="beta-header"
+    >
       <Typography
         variant={TYPOGRAPHY.H7}
         marginTop={0}
@@ -40,7 +52,7 @@ const BetaHomeHeader = () => {
       >
         <i className="fa fa-times" />
       </button>
-    </div>
+    </Box>
   );
 };
 
