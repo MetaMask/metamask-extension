@@ -74,7 +74,6 @@ export default {
     iconProps: {
       control: 'object',
     },
-
     loading: {
       control: 'boolean',
     },
