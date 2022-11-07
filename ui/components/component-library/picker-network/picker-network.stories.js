@@ -20,7 +20,7 @@ export default {
     },
   },
   args: {
-    label: 'Imported',
+    label: 'Avalanche C-Chain',
     src: './images/avax-token.png',
   },
 };

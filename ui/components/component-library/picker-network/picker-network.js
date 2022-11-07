@@ -17,7 +17,7 @@ import {
 export const PickerNetwork = ({
   className,
   avatarNetworkProps,
-  fallbackIconProps,
+  iconProps,
   label,
   src,
   ...props
@@ -49,7 +49,7 @@ export const PickerNetwork = ({
         name={ICON_NAMES.ARROW_DOWN}
         color={COLORS.ICON_DEFAULT}
         size={SIZES.XS}
-        {...fallbackIconProps}
+        {...iconProps}
       />
     </Box>
   );
@@ -71,7 +71,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from Icon
    */
-  fallbackIconProps: PropTypes.shape(Icon.PropTypes),
+  iconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The text content of the PickerNetwork component
    */
