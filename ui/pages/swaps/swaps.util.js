@@ -279,11 +279,6 @@ export async function fetchSwapsFeatureFlags() {
     { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 600000 },
   );
-  // TODO: Remove this after testing.
-  response.optimism.extensionActive = true;
-  response.arbitrum = {
-    extensionActive: true,
-  };
   return response;
 }
 

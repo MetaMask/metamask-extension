@@ -102,8 +102,6 @@ import BuildQuote from './build-quote';
 import ViewQuote from './view-quote';
 
 export default function Swap() {
-  // TODO: Remove this after testing.
-  process.env.SWAPS_USE_DEV_APIS = true;
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
