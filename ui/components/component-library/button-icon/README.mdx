@@ -91,6 +91,44 @@ import { ButtonIcon } from '../ui/component-library';
 <ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--href" />
+</Canvas>
+
+```jsx
+import { ButtonIcon } from '../ui/component-library';
+
+<ButtonIcon
+  href="https://metamask.io/"
+  target="_blank"
+  icon={ICON_NAMES.EXPORT}
+  color={COLORS.PRIMARY_DEFAULT}
+  ariaLabel="Visit MetaMask.io"
+/>;
+```
+
+### Color
+
+Use the `color` prop and the `COLORS` object to change the color of the `ButtonIcon`. Defaults to `COLORS.ICON_DEFAULT`.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--color" />
+</Canvas>
+
+```jsx
+import { ButtonIcon } from '../ui/component-library';
+
+<ButtonIcon
+  icon={ICON_NAMES.EXPORT}
+  color={COLORS.PRIMARY_DEFAULT}
+  ariaLabel="Visit MetaMask.io"
+/>;
+```
+
 ### Disabled
 
 Use the boolean `disabled` prop to disable button

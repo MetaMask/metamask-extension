@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 import { ButtonIcon } from './button-icon';
 
@@ -67,6 +68,31 @@ describe('ButtonIcon', () => {
     );
     expect(getByTestId(BUTTON_ICON_SIZES.LG)).toHaveClass(
       `mm-button-icon--size-${BUTTON_ICON_SIZES.LG}`,
+    );
+  });
+
+  it('should render with different colors', () => {
+    const { getByTestId } = render(
+      <>
+        <ButtonIcon
+          icon="add-square-filled"
+          ariaLabel="add"
+          color={COLORS.ICON_DEFAULT}
+          data-testid={COLORS.ICON_DEFAULT}
+        />
+        <ButtonIcon
+          icon="add-square-filled"
+          ariaLabel="add"
+          color={COLORS.ERROR_DEFAULT}
+          data-testid={COLORS.ERROR_DEFAULT}
+        />
+      </>,
+    );
+    expect(getByTestId(COLORS.ICON_DEFAULT)).toHaveClass(
+      `box--color-${COLORS.ICON_DEFAULT}`,
+    );
+    expect(getByTestId(COLORS.ERROR_DEFAULT)).toHaveClass(
+      `box--color-${COLORS.ERROR_DEFAULT}`,
     );
   });
 

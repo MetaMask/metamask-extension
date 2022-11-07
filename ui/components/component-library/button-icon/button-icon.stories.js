@@ -166,18 +166,27 @@ export const As = (args) => (
   </Box>
 );
 
-export const Disabled = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
-);
-
-Disabled.args = {
-  disabled: true,
-};
-
 export const Href = (args) => (
   <ButtonIcon icon={ICON_NAMES.EXPORT} {...args} target="_blank" />
 );
 
 Href.args = {
   href: 'https://metamask.io/',
+  color: COLORS.PRIMARY_DEFAULT,
+};
+
+export const Color = (args) => (
+  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+);
+
+Color.args = {
+  color: COLORS.PRIMARY_DEFAULT,
+};
+
+export const Disabled = (args) => (
+  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+);
+
+Disabled.args = {
+  disabled: true,
 };
