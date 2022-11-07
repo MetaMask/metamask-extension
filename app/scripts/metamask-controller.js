@@ -1131,10 +1131,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        addSnap: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:add',
-        ),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
