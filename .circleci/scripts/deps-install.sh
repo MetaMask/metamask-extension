@@ -5,7 +5,7 @@ set -x
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-yarn install --frozen-lockfile --har
+yarn install --frozen-lockfile
 
 # Move HAR file into directory with consistent name so that we can cache it
 mkdir -p build-artifacts/yarn-install-har
