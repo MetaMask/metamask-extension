@@ -205,6 +205,7 @@ export default class AdvancedTab extends PureComponent {
             </label>
             <input
               id="restore-file"
+              data-testid="restore-file"
               style={{ visibility: 'hidden' }}
               type="file"
               accept=".json"
@@ -260,6 +261,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
+              data-testid="backup-button"
               type="secondary"
               large
               onClick={() => this.backupUserData()}
@@ -544,6 +546,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="number"
               id="autoTimeout"
+              data-testid="auto-lockout-time"
               placeholder="5"
               value={this.state.autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
@@ -554,6 +557,7 @@ export default class AdvancedTab extends PureComponent {
             />
             <Button
               type="primary"
+              data-testid="auto-lockout-button"
               className="settings-tab__rpc-save-button"
               disabled={lockTimeError !== ''}
               onClick={() => {
