@@ -1090,7 +1090,6 @@ export default class MetamaskController extends EventEmitter {
       },
       controllerMessenger: this.controllerMessenger,
     });
-    this.memStore.subscribe(this.sendUpdate.bind(this));
 
     if (
       !this.isUnlocked() &&
@@ -1099,6 +1098,7 @@ export default class MetamaskController extends EventEmitter {
       this._loginUser();
     } else {
       this.emit('startUISync');
+      this.memStore.subscribe(this.sendUpdate.bind(this));
     }
 
     // Lazily update the store with the current extension environment
@@ -2338,6 +2338,7 @@ export default class MetamaskController extends EventEmitter {
       await this.submitEncryptionKey();
     }
     this.emit('startUISync');
+    this.memStore.subscribe(this.sendUpdate.bind(this));
   }
 
   /**
