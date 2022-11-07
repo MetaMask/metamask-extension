@@ -6,18 +6,6 @@ Thanks for the pull request. Take a moment to answer these questions so that rev
 * What is the current state of things and why does it need to change?
 * What is the solution your changes offer and how does it work?
 
-Below is a template to give you some ideas. Feel free to use your own words!
-
-Currently, ...
-
-This is a problem because ...
-
-In order to solve this problem, this pull request ...
--->
-
-## More Information
-
-<!--
 Are there any issues, Slack conversations, Zendesk issues, user stories, etc. reviewers should consult to understand this pull request better? For instance:
 
 * Fixes #12345
@@ -46,14 +34,20 @@ How should reviewers and QA manually test your changes? For instance:
 - Then do this
 -->
 
-## Pre-Merge Checklist
+## Pre-merge author checklist
 
-- [ ] PR template is filled out
-- [ ] **IF** this PR fixes a bug, a test that _would have_ caught the bug has been added
+- [ ] I've clearly explained:
+  - [ ] What problem this PR is solving
+  - [ ] How this problem was solved
+  - [ ] How reviewers can test my changes
+- [ ] Sufficient automated test coverage has been added
+
+## Pre-merge reviewer checklist
+
+- [ ] Manual testing (e.g. pull and build branch, run in browser, test code being changed)
 - [ ] PR is linked to the appropriate GitHub issue
-- [ ] PR has been added to the appropriate release Milestone
+- [ ] **IF** this PR fixes a bug in the release milestone, add this PR to the release milestone
 
-### + If there are functional changes:
+If further QA is required (e.g. new feature, complex testing steps, large refactor), add the `Extension QA Board` label.
 
-- [ ] Manual testing complete & passed
-- [ ] "Extension QA Board" label has been applied
+In this case, a QA Engineer approval will be be required.

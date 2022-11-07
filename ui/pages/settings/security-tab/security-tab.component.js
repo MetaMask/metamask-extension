@@ -59,6 +59,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
+              data-testid="reveal-seed-words"
               type="danger"
               large
               onClick={(event) => {

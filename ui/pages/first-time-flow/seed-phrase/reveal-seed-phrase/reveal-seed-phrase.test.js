@@ -1,11 +1,11 @@
 import React from 'react';
 import sinon from 'sinon';
-import { mount } from 'enzyme';
-import RevealSeedPhrase from './reveal-seed-phrase.container';
+import { fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import RevealSeedPhrase from '.';
 
 describe('Reveal Secret Recovery Phrase', () => {
-  let wrapper;
-
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -18,31 +18,29 @@ describe('Reveal Secret Recovery Phrase', () => {
     setCompletedOnboarding: sinon.spy(),
   };
 
-  beforeEach(() => {
-    wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-        trackEvent: () => undefined,
-      },
-    });
-  });
+  const mockState = {
+    metamask: {},
+  };
 
-  it('secret recovery phrase', () => {
-    const seedPhrase = wrapper.find(
-      '.reveal-seed-phrase__secret-words--hidden',
+  const mockStore = configureMockStore()(mockState);
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <RevealSeedPhrase {...props} />,
+      mockStore,
     );
-    expect(seedPhrase).toHaveLength(1);
-    expect(seedPhrase.text()).toStrictEqual(TEST_SEED);
+
+    expect(container).toMatchSnapshot();
   });
 
-  it('clicks to reveal', () => {
-    const reveal = wrapper.find('.reveal-seed-phrase__secret-blocker');
+  it('clicks to reveal shows seed phrase', () => {
+    const { queryByTestId } = renderWithProvider(
+      <RevealSeedPhrase {...props} />,
+      mockStore,
+    );
 
-    expect(wrapper.state().isShowingSeedPhrase).toStrictEqual(false);
-    reveal.simulate('click');
-    expect(wrapper.state().isShowingSeedPhrase).toStrictEqual(true);
+    fireEvent.click(queryByTestId('reveal-seed-blocker'));
 
-    const showSeed = wrapper.find('.reveal-seed-phrase__secret-words');
-    expect(showSeed).toHaveLength(1);
+    expect(queryByTestId('showing-seed-phrase')).toBeInTheDocument();
   });
 });

@@ -162,17 +162,10 @@ export default class MetaMetricsController {
           });
         }
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = checkAlarmExists(
-            alarms,
-            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-          );
-
-          if (hasAlarm) {
-            this.finalizeAbandonedFragments();
-          }
-        });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
+          this.finalizeAbandonedFragments();
+        }
       });
     } else {
       setInterval(() => {
@@ -714,7 +707,7 @@ export default class MetaMetricsController {
       ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
