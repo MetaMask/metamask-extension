@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [10.21.2]
+### Fixed
+- Fix undefined txParams when calling approveTransaction, by adding the id on the txMeta argument ([#16382](https://github.com/MetaMask/metamask-extension/pull/16382))
 
 ## [10.21.1]
 ### Changed
@@ -3253,7 +3256,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...HEAD
+[10.21.2]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...v10.21.2
 [10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
 [10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
 [10.20.0]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...v10.20.0
