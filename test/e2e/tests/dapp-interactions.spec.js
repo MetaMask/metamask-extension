@@ -112,11 +112,11 @@ describe('Dapp interactions', function () {
         await driver.clickElement({ text: 'Connected sites', tag: 'span' });
         const connectedDapp1 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8080',
-          tag: 'span',
+          tag: 'bdi',
         });
         const connectedDapp2 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8081',
-          tag: 'span',
+          tag: 'bdi',
         });
 
         assert.ok(connectedDapp1, 'Account not connected to Dapp1');
