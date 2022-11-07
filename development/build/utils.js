@@ -130,7 +130,7 @@ function wrapAgainstScuttling(file) {
     }
     return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
   }
-  const allowed = {fetch, Object, Symbol, Function, Array, Boolean, Request, Date, setTimeout: setTimeout.bind(window), crypto, __SENTRY__: {logger: undefined}};
+  const allowed = {fetch, String, Object, Symbol, Function, Array, Boolean, Request, Date, setTimeout: setTimeout.bind(window), crypto, __SENTRY__: {logger: undefined}};
   allowed.window = allowed;
   const p = new Proxy(allowed, {
     get: function (a,b,c) {
