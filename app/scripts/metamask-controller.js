@@ -1096,15 +1096,9 @@ export default class MetamaskController extends EventEmitter {
       !this.isUnlocked() &&
       this.onboardingController.store.getState().completedOnboarding
     ) {
-      // Automatic login via config password
-      const password = process.env.CONF?.PASSWORD;
-      if (password) {
-        this.submitPassword(password);
-      }
-      // Automatic login via storage encryption key
-      else if (isManifestV3) {
-        this.submitEncryptionKey();
-      }
+      this._loginUser();
+    } else {
+      this.emit('startUISync');
     }
 
     // Lazily update the store with the current extension environment
@@ -2333,6 +2327,19 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.fullUpdate();
   }
 
+  async _loginUser() {
+    // Automatic login via config password
+    const password = process.env.CONF?.PASSWORD;
+    if (password) {
+      await this.submitPassword(password);
+    }
+    // Automatic login via storage encryption key
+    else if (isManifestV3) {
+      await this.submitEncryptionKey();
+    }
+    this.emit('startUISync');
+  }
+
   /**
    * Submits a user's encryption key to log the user in via login token
    */
@@ -3488,6 +3495,17 @@ export default class MetamaskController extends EventEmitter {
       });
     };
     this.on('update', handleUpdate);
+    const startUISync = () => {
+      if (outStream._writableState.ended) {
+        return;
+      }
+      // send notification to client-side
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'startUISync',
+      });
+    };
+    this.on('startUISync', startUISync);
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
