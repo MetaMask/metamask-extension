@@ -6,10 +6,11 @@ import { TagUrl } from './tag-url';
 
 describe('TagUrl', () => {
   it('should render the label inside the TagUrl', () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <TagUrl data-testid="tag-url" label="https://app.uniswap.org" />,
     );
     expect(getByTestId('tag-url')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render the button if there is a actionButtonLabel inside the tag', () => {
