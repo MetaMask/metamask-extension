@@ -30,6 +30,7 @@ const bifyModuleGroups = require('bify-module-groups');
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
+const phishingWarningManifest = require('../../node_modules/@metamask/phishing-warning/package.json');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -112,7 +113,7 @@ function getPhishingWarningPageUrl({ config, testing }) {
   if (!phishingWarningPageUrl) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
-      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
+      : `https://metamask.github.io/phishing-warning/v${phishingWarningManifest.version}/`;
   }
 
   // We add a hash/fragment to the URL dynamically, so we need to ensure it

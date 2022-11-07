@@ -15,7 +15,6 @@ import {
   ethErrors,
 } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
-import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -40,6 +39,8 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  PermissionsRequestNotFoundError,
+  ApprovalRequestNotFoundError,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
   NotificationController,
@@ -51,7 +52,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
-import { satisfies as satisfiesSemver } from 'semver';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -78,8 +78,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { MILLISECOND } from '../../shared/constants/time';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../shared/modules/hexstring-utils';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -122,7 +125,6 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
-import ThreeBoxController from './controllers/threebox';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
@@ -154,6 +156,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { checkSnapsBlockList } from './flask/snaps-utilities';
+import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -195,6 +201,9 @@ export default class MetamaskController extends EventEmitter {
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
     this.controllerMessenger = new ControllerMessenger();
+
+    // instance of a class that wraps the extension's storage local API.
+    this.localStoreApiWrapper = opts.localStore;
 
     // observable state store
     this.store = new ComposableObservableStore({
@@ -242,7 +251,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      preventPollingOnNetworkRestart: true,
+      preventPollingOnNetworkRestart: initState.TokenListController
+        ? initState.TokenListController.preventPollingOnNetworkRestart
+        : true,
       onNetworkStateChange: (cb) => {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
@@ -465,6 +476,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.phishingController = new PhishingController();
+    this.phishingController.updatePhishingLists();
+    if (process.env.IN_TEST) {
+      this.phishingController.setRefreshInterval(5 * SECOND);
+    }
 
     this.announcementController = new AnnouncementController(
       { allAnnouncements: UI_NOTIFICATIONS },
@@ -522,6 +537,9 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+      getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
       ),
     });
@@ -649,7 +667,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.7.0',
+        'https://metamask.github.io/iframe-execution-environment/0.9.1',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -683,13 +701,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const SNAP_BLOCKLIST = [
-      {
-        id: 'npm:@consensys/starknet-snap',
-        versionRange: '<0.1.11',
-      },
-    ];
-
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
@@ -699,27 +710,7 @@ export default class MetamaskController extends EventEmitter {
         return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
       },
       checkBlockList: async (snapsToCheck) => {
-        return Object.entries(snapsToCheck).reduce(
-          (acc, [snapId, snapVersion]) => {
-            const blockInfo = SNAP_BLOCKLIST.find(
-              (blocked) =>
-                blocked.id === snapId &&
-                satisfiesSemver(snapVersion, blocked.versionRange, {
-                  includePrerelease: true,
-                }),
-            );
-
-            const cur = blockInfo
-              ? {
-                  blocked: true,
-                  reason: blockInfo.reason,
-                  infoUrl: blockInfo.infoUrl,
-                }
-              : { blocked: false };
-            return { ...acc, [snapId]: cur };
-          },
-          {},
-        );
+        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -783,20 +774,6 @@ export default class MetamaskController extends EventEmitter {
     this.alertController = new AlertController({
       initState: initState.AlertController,
       preferencesStore: this.preferencesController.store,
-    });
-
-    this.threeBoxController = new ThreeBoxController({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      keyringController: this.keyringController,
-      initState: initState.ThreeBoxController,
-      getKeyringControllerState: this.keyringController.memStore.getState.bind(
-        this.keyringController.memStore,
-      ),
-      version,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
     });
 
     this.backupController = new BackupController({
@@ -1056,7 +1033,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
-      ThreeBoxController: this.threeBoxController.store,
       BackupController: this.backupController,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
@@ -1095,7 +1071,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
-        ThreeBoxController: this.threeBoxController.store,
         BackupController: this.backupController,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
@@ -1511,7 +1486,6 @@ export default class MetamaskController extends EventEmitter {
     const {
       addressBookController,
       alertController,
-      approvalController,
       appStateController,
       collectiblesController,
       collectibleDetectionController,
@@ -1528,7 +1502,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       qrHardwareKeyring,
       swapsController,
-      threeBoxController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -1660,10 +1633,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setCustomNetworkListEnabled:
-        preferencesController.setCustomNetworkListEnabled.bind(
-          preferencesController,
-        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -1821,32 +1790,10 @@ export default class MetamaskController extends EventEmitter {
       setWeb3ShimUsageAlertDismissed:
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
-      // 3Box
-      setThreeBoxSyncingPermission:
-        threeBoxController.setThreeBoxSyncingPermission.bind(
-          threeBoxController,
-        ),
-      restoreFromThreeBox:
-        threeBoxController.restoreFromThreeBox.bind(threeBoxController),
-      setShowRestorePromptToFalse:
-        threeBoxController.setShowRestorePromptToFalse.bind(threeBoxController),
-      getThreeBoxLastUpdated:
-        threeBoxController.getLastUpdated.bind(threeBoxController),
-      turnThreeBoxSyncingOn:
-        threeBoxController.turnThreeBoxSyncingOn.bind(threeBoxController),
-      initializeThreeBox: this.initializeThreeBox.bind(this),
-
       // permissions
-      removePermissionsFor:
-        permissionController.revokePermissions.bind(permissionController),
-      approvePermissionsRequest:
-        permissionController.acceptPermissionsRequest.bind(
-          permissionController,
-        ),
-      rejectPermissionsRequest:
-        permissionController.rejectPermissionsRequest.bind(
-          permissionController,
-        ),
+      removePermissionsFor: this.removePermissionsFor,
+      approvePermissionsRequest: this.acceptPermissionsRequest,
+      rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1964,14 +1911,8 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // approval controller
-      resolvePendingApproval:
-        approvalController.accept.bind(approvalController),
-      rejectPendingApproval: async (id, error) => {
-        approvalController.reject(
-          id,
-          new EthereumRpcError(error.code, error.message, error.data),
-        );
-      },
+      resolvePendingApproval: this.resolvePendingApproval,
+      rejectPendingApproval: this.rejectPendingApproval,
 
       // Notifications
       updateViewedNotifications: announcementController.updateViewed.bind(
@@ -2161,6 +2102,11 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionController.clearState();
 
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      // Clear snap state
+      this.snapController.clearState();
+      ///: END:ONLY_INCLUDE_IN
+
       // clear accounts in accountTracker
       this.accountTracker.clearAccounts();
 
@@ -2183,8 +2129,8 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const primaryKeyring =
-        keyringController.getKeyringsByType('HD Key Tree')[0];
+      const [primaryKeyring] =
+        keyringController.getKeyringsByType('HD Key Tree');
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2309,8 +2255,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const hdKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [hdKeyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     const simpleKeyPairKeyrings =
       this.keyringController.getKeyringsByType('Simple Key Pair');
     const hdAccounts = await hdKeyring.getAccounts();
@@ -2368,20 +2313,6 @@ export default class MetamaskController extends EventEmitter {
       log.error('Error while unlocking extension.', error);
     }
 
-    try {
-      const threeBoxSyncingAllowed =
-        this.threeBoxController.getThreeBoxSyncingState();
-      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-        // 'await' intentionally omitted to avoid waiting for initialization
-        this.threeBoxController.init();
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      }
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block MetaMask login due to
@@ -2407,7 +2338,6 @@ export default class MetamaskController extends EventEmitter {
    * @type Identity
    * @property {string} name - The account nickname.
    * @property {string} address - The account's ethereum address, in lower case.
-   * @property {boolean} mayBeFauceting - Whether this account is currently
    * receiving funds from our automatic Ropsten faucet.
    */
 
@@ -2416,7 +2346,7 @@ export default class MetamaskController extends EventEmitter {
    */
   selectFirstIdentity() {
     const { identities } = this.preferencesController.store.getState();
-    const address = Object.keys(identities)[0];
+    const [address] = Object.keys(identities);
     this.preferencesController.setSelectedAddress(address);
   }
 
@@ -2424,7 +2354,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const keyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [keyring] = this.keyringController.getKeyringsByType('HD Key Tree');
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
@@ -2455,9 +2385,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
     }
-    let keyring = await this.keyringController.getKeyringsByType(
-      keyringName,
-    )[0];
+    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName);
     }
@@ -2657,8 +2585,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2701,8 +2629,8 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const [primaryKeyring] =
+      this.keyringController.getKeyringsByType('HD Key Tree');
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2826,12 +2754,12 @@ export default class MetamaskController extends EventEmitter {
       'Simple Key Pair',
       [privateKey],
     );
-    const accounts = await keyring.getAccounts();
+    const [firstAccount] = await keyring.getAccounts();
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(allAccounts);
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(accounts[0]);
+    await this.preferencesController.setSelectedAddress(firstAccount);
   }
 
   // ---------------------------------------------------------------------------
@@ -2897,7 +2825,7 @@ export default class MetamaskController extends EventEmitter {
     if (requestedAccount) {
       account = requestedAccount;
     } else {
-      account = (await this.keyringController.getAccounts())[0];
+      [account] = await this.keyringController.getAccounts();
     }
 
     return this.keyringController.exportAppKeyForAddress(account, subject);
@@ -3397,6 +3325,10 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
+      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
+      if (phishingListsAreOutOfDate) {
+        this.phishingController.updatePhishingLists();
+      }
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
@@ -3506,7 +3438,15 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
+    outStream.on(
+      'data',
+      createMetaRPCHandler(
+        api,
+        outStream,
+        this.store,
+        this.localStoreApiWrapper,
+      ),
+    );
     const handleUpdate = (update) => {
       if (outStream._writableState.ended) {
         return;
@@ -3770,7 +3710,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getSnaps',
+          'SnapController:getPermitted',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
@@ -4248,10 +4188,6 @@ export default class MetamaskController extends EventEmitter {
     return null;
   }
 
-  async initializeThreeBox() {
-    await this.threeBoxController.init();
-  }
-
   /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    *
@@ -4365,4 +4301,57 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.setLocked();
   }
+
+  removePermissionsFor = (subjects) => {
+    try {
+      this.permissionController.revokePermissions(subjects);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  rejectPermissionsRequest = (requestId) => {
+    try {
+      this.permissionController.rejectPermissionsRequest(requestId);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  acceptPermissionsRequest = (request) => {
+    try {
+      this.permissionController.acceptPermissionsRequest(request);
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  resolvePendingApproval = (id, value) => {
+    try {
+      this.approvalController.accept(id, value);
+    } catch (exp) {
+      if (!(exp instanceof ApprovalRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
+  rejectPendingApproval = (id, error) => {
+    try {
+      this.approvalController.reject(
+        id,
+        new EthereumRpcError(error.code, error.message, error.data),
+      );
+    } catch (exp) {
+      if (!(exp instanceof ApprovalRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
 }

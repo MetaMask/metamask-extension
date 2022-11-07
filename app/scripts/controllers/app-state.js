@@ -2,6 +2,8 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
+import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -40,9 +42,6 @@ export default class AppStateController extends EventEmitter {
       collectiblesDropdownState: {},
       usedNetworks: {
         '0x1': true,
-        '0x2a': true,
-        '0x3': true,
-        '0x4': true,
         '0x5': true,
         '0x539': true,
       },
@@ -187,21 +186,37 @@ export default class AppStateController extends EventEmitter {
    *
    * @private
    */
+  /* eslint-disable no-undef */
   _resetTimer() {
     const { timeoutMinutes } = this.store.getState();
 
     if (this.timer) {
       clearTimeout(this.timer);
+    } else if (isManifestV3) {
+      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
       return;
     }
 
-    this.timer = setTimeout(
-      () => this.onInactiveTimeout(),
-      timeoutMinutes * MINUTE,
-    );
+    if (isManifestV3) {
+      chrome.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+        delayInMinutes: timeoutMinutes,
+        periodInMinutes: timeoutMinutes,
+      });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+          this.onInactiveTimeout();
+          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+        }
+      });
+    } else {
+      this.timer = setTimeout(
+        () => this.onInactiveTimeout(),
+        timeoutMinutes * MINUTE,
+      );
+    }
   }
 
   /**

@@ -20,11 +20,6 @@
         "fetch": true
       }
     },
-    "3box>graphql-request>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "lodash": {
       "globals": {
         "setTimeout": true,
@@ -93,6 +88,11 @@
       }
     },
     "@metamask/snap-controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

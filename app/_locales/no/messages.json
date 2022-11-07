@@ -8,9 +8,6 @@
   "about": {
     "message": "Info"
   },
-  "acceleratingATransaction": {
-    "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
-  },
   "accessingYourCamera": {
     "message": "Oppretter tilgang til kameraet ditt..."
   },
@@ -190,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kobler til Kovan testnettverk"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
-  },
-  "connectingToRinkeby": {
-    "message": "Kobler til Rinkeby Test Network "
-  },
-  "connectingToRopsten": {
-    "message": "Kobler til Ropsten testnettverk"
   },
   "continueToWyre": {
     "message": "Fortsett til Wyre "
@@ -246,12 +234,6 @@
   },
   "custom": {
     "message": "Avansert"
-  },
-  "customGas": {
-    "message": "Tilpass Gass"
-  },
-  "customGasSubTitle": {
-    "message": "Økt gebyr kan redusere behandlingstiden, men det er ikke garantert."
   },
   "customToken": {
     "message": "Egendefinert token "
@@ -336,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Anslått behandlingstid"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum offentlig adresse"
@@ -490,9 +469,6 @@
   "knownAddressRecipient": {
     "message": "Kjent kontaktadresse"
   },
-  "kovan": {
-    "message": "Kovan testnettverk"
-  },
   "learnMore": {
     "message": "Lær mer"
   },
@@ -590,12 +566,6 @@
   },
   "newToMetaMask": {
     "message": "Ny på MetaMask? "
-  },
-  "newTotal": {
-    "message": "Ny total"
-  },
-  "newTransactionFee": {
-    "message": "Ny transaksjonsavgift"
   },
   "next": {
     "message": "Neste"
@@ -755,9 +725,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "IKKE del denne frasen med noen! "
   },
-  "rinkeby": {
-    "message": "Rinkeby testnettverk"
-  },
   "rpcUrl": {
     "message": "NY RPC-URL "
   },
@@ -794,9 +761,6 @@
   "seedPhraseReq": {
     "message": "Mnemoniske gjenopprettingsfraser består av 12 ord "
   },
-  "selectAHigherGasFee": {
-    "message": "Velg en høyere gassavgift for å fremskynde transaksjonsbehandlingen.*"
-  },
   "selectAnAccount": {
     "message": "Velg en konto"
   },
@@ -811,9 +775,6 @@
   },
   "selectType": {
     "message": "Velg type "
-  },
-  "sendAmount": {
-    "message": "Send beløp"
   },
   "sendTokens": {
     "message": "Send tokener"
@@ -856,9 +817,6 @@
   },
   "signed": {
     "message": "Signert"
-  },
-  "slow": {
-    "message": "Lav"
   },
   "somethingWentWrong": {
     "message": "Oisann! Noe gikk galt. "

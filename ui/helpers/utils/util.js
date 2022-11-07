@@ -6,7 +6,10 @@ import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
@@ -45,9 +48,6 @@ export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.ROPSTEN ||
-    chainId === CHAIN_IDS.RINKEBY ||
-    chainId === CHAIN_IDS.KOVAN ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
     chainId === CHAIN_IDS.LOCALHOST
@@ -78,7 +78,7 @@ export function addressSummary(
   }
   let checked = toChecksumHexAddress(address);
   if (!includeHex) {
-    checked = ethUtil.stripHexPrefix(checked);
+    checked = stripHexPrefix(checked);
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
@@ -112,7 +112,7 @@ export function numericBalance(balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16);
   }
-  const stripped = ethUtil.stripHexPrefix(balance);
+  const stripped = stripHexPrefix(balance);
   return new ethUtil.BN(stripped, 16);
 }
 

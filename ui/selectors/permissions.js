@@ -291,8 +291,7 @@ export function getSnapInstallOrUpdateRequests(state) {
 }
 
 export function getFirstSnapInstallOrUpdateRequest(state) {
-  const requests = getSnapInstallOrUpdateRequests(state);
-  return requests && requests[0] ? requests[0] : null;
+  return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
 ///: END:ONLY_INCLUDE_IN
 
@@ -308,5 +307,5 @@ export function getFirstPermissionRequest(state) {
 }
 
 export function getPermissions(state, origin) {
-  return getPermissionSubjects(state)[origin].permissions;
+  return getPermissionSubjects(state)[origin]?.permissions;
 }

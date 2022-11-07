@@ -2,6 +2,7 @@
 @import 'account-list-item/index';
 @import 'account-menu/index';
 @import 'add-network/index';
+@import 'advanced-gas-inputs/index';
 @import 'app-loading-spinner/index';
 @import 'import-token-link/index';
 @import 'advanced-gas-controls/index';
@@ -22,6 +23,8 @@
 @import 'connected-sites-list/index';
 @import 'connected-status-indicator/index';
 @import 'create-new-vault/create-new-vault.scss';
+@import 'custom-spending-cap/index';
+@import 'deposit-popover/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-display-education/index';
 @import 'edit-gas-fee-button/index';
@@ -37,9 +40,6 @@
 @import 'flask/snap-remove-warning/index';
 @import 'flask/snap-settings-card/index';
 @import 'flask/update-snap-permission-list/index';
-@import 'gas-customization/gas-modal-page-container/index';
-@import 'gas-customization/gas-price-button-group/index';
-@import 'gas-customization/index';
 @import 'gas-details-item/index';
 @import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
@@ -97,3 +97,4 @@
 @import 'detected-token/detected-token-ignored-popover/index';
 @import 'detected-token/detected-token-selection-popover/index';
 @import 'network-account-balance-header/index';
+@import 'approve-content-card/index';

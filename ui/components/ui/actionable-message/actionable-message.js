@@ -26,6 +26,7 @@ export default function ActionableMessage({
   withRightButton = false,
   type = 'default',
   useIcon = false,
+  icon,
   iconFillColor = '',
   roundedButtons,
   dataTestId,
@@ -43,7 +44,7 @@ export default function ActionableMessage({
 
   return (
     <div className={actionableMessageClassName} data-testid={dataTestId}>
-      {useIcon ? <InfoTooltipIcon fillColor={iconFillColor} /> : null}
+      {useIcon ? icon || <InfoTooltipIcon fillColor={iconFillColor} /> : null}
       {infoTooltipText && (
         <InfoTooltip
           position="left"
@@ -149,6 +150,10 @@ ActionableMessage.propTypes = {
    * Add tooltip icon in the left component without message
    */
   useIcon: PropTypes.bool,
+  /**
+   * Custom icon component
+   */
+  icon: PropTypes.node,
   /**
    * change tooltip icon color
    */

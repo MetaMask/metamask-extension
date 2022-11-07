@@ -5,6 +5,7 @@ const {
   withFixtures,
   createDownloadFolder,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
@@ -31,7 +32,7 @@ describe('State logs', function () {
   it('should download state logs for the account', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

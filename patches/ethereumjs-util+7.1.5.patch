@@ -1,0 +1,48 @@
+diff --git a/node_modules/ethereumjs-util/dist.browser/internal.js b/node_modules/ethereumjs-util/dist.browser/internal.js
+index 9f3888b..3803958 100644
+--- a/node_modules/ethereumjs-util/dist.browser/internal.js
++++ b/node_modules/ethereumjs-util/dist.browser/internal.js
+@@ -43,8 +43,9 @@ exports.isHexPrefixed = isHexPrefixed;
+  * @returns the string without 0x prefix
+  */
+ var stripHexPrefix = function (str) {
+-    if (typeof str !== 'string')
+-        throw new Error("[stripHexPrefix] input must be type 'string', received ".concat(typeof str));
++    if (typeof str !== 'string'){
++        return str;
++    }
+     return isHexPrefixed(str) ? str.slice(2) : str;
+ };
+ exports.stripHexPrefix = stripHexPrefix;
+diff --git a/node_modules/ethereumjs-util/dist/internal.js b/node_modules/ethereumjs-util/dist/internal.js
+index 01a90a0..9f1d8cd 100644
+--- a/node_modules/ethereumjs-util/dist/internal.js
++++ b/node_modules/ethereumjs-util/dist/internal.js
+@@ -43,8 +43,9 @@ exports.isHexPrefixed = isHexPrefixed;
+  * @returns the string without 0x prefix
+  */
+ const stripHexPrefix = (str) => {
+-    if (typeof str !== 'string')
+-        throw new Error(`[stripHexPrefix] input must be type 'string', received ${typeof str}`);
++    if (typeof str !== 'string'){
++        return str;
++    }
+     return isHexPrefixed(str) ? str.slice(2) : str;
+ };
+ exports.stripHexPrefix = stripHexPrefix;
+diff --git a/node_modules/ethereumjs-util/src/internal.ts b/node_modules/ethereumjs-util/src/internal.ts
+index 52032f5..8f6f5f8 100644
+--- a/node_modules/ethereumjs-util/src/internal.ts
++++ b/node_modules/ethereumjs-util/src/internal.ts
+@@ -42,8 +42,9 @@ export function isHexPrefixed(str: string): boolean {
+  * @returns the string without 0x prefix
+  */
+ export const stripHexPrefix = (str: string): string => {
+-  if (typeof str !== 'string')
+-    throw new Error(`[stripHexPrefix] input must be type 'string', received ${typeof str}`)
++  if (typeof str !== 'string') {
++    return str;
++  }
+ 
+   return isHexPrefixed(str) ? str.slice(2) : str
+ }

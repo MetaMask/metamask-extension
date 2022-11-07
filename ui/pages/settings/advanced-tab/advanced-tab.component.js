@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
@@ -21,7 +20,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import { exportAsFile } from '../../../../shared/modules/export-utils';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
@@ -50,9 +49,6 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
-    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
-    threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
@@ -155,7 +151,6 @@ export default class AdvancedTab extends PureComponent {
     /**
      * so that we can restore same file again if we want to.
      * chrome blocks uploading same file twice.
-     *
      */
     event.target.value = '';
     try {
@@ -237,6 +232,17 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  backupUserData = async () => {
+    const { fileName, data } = await this.props.backupUserData();
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'User Data Exported',
+      category: 'Backup',
+      properties: {},
+    });
+  };
+
   renderUserDataBackup() {
     const { t } = this.context;
     return (
@@ -256,9 +262,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={() => {
-                this.props.backupUserData();
-              }}
+              onClick={() => this.backupUserData()}
             >
               {t('backup')}
             </Button>
@@ -564,55 +568,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderThreeBoxControl() {
-    const { t } = this.context;
-    const {
-      threeBoxSyncingAllowed,
-      setThreeBoxSyncingPermission,
-      threeBoxDisabled,
-    } = this.props;
-
-    let allowed = threeBoxSyncingAllowed;
-    let description = t('syncWithThreeBoxDescription');
-
-    if (threeBoxDisabled) {
-      allowed = false;
-      description = t('syncWithThreeBoxDisabled');
-    }
-    return (
-      <div
-        ref={this.settingsRefs[9]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-3box"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithThreeBox')}</span>
-          <div className="settings-page__content-description">
-            {description}
-          </div>
-        </div>
-        <div
-          className={classnames('settings-page__content-item', {
-            'settings-page__content-item--disabled': threeBoxDisabled,
-          })}
-        >
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={allowed}
-              onToggle={(value) => {
-                if (!threeBoxDisabled) {
-                  setThreeBoxSyncingPermission(!value);
-                }
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderLedgerLiveControl() {
     const { t } = this.context;
     const {
@@ -876,7 +831,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderRestoreUserData()}
-        {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}

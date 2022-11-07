@@ -625,7 +625,7 @@ export const getNetworkNameByChainId = (chainId) => {
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
-  // Use old APIs for testnet and Rinkeby.
+  // Use old APIs for testnet and Goerli.
   if ([CHAIN_IDS.LOCALHOST, CHAIN_IDS.GOERLI].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
@@ -638,14 +638,14 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
     };
   }
   const isNetworkEnabledForNewApi =
-    swapsFeatureFlags[networkName].extension_active;
+    swapsFeatureFlags[networkName].extensionActive;
   if (isNetworkEnabledForNewApi) {
     return {
       swapsFeatureIsLive: true,
     };
   }
   return {
-    swapsFeatureIsLive: swapsFeatureFlags[networkName].fallback_to_v1,
+    swapsFeatureIsLive: swapsFeatureFlags[networkName].fallbackToV1,
   };
 };
 
