@@ -1,9 +1,10 @@
+/* eslint-disable-next-line */
+import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
-import { TextEncoder, TextDecoder } from 'util'
 
 process.env.IN_TEST = true;
 
@@ -104,8 +105,8 @@ if (!window.crypto.getRandomValues) {
 }
 
 // TextEncoder/TextDecoder
-window.TextEncoder = TextEncoder
-window.TextDecoder = TextDecoder
+window.TextEncoder = TextEncoder;
+window.TextDecoder = TextDecoder;
 
 // Used to test `clearClipboard` function
 if (!window.navigator.clipboard) {
