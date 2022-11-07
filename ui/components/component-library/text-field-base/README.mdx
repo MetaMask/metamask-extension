@@ -188,6 +188,42 @@ const handleOnChange = (e) => {
 </Box>
 ```
 
+### Input Component
+
+Use the `InputComponent` prop change the component used for the input element. This is useful for replacing the base input with a custom input while retaining the functionality of the `TextFieldBase`.
+
+To function fully the custom component should accept the following props:
+
+- `aria-invalid`
+- `as`
+- `autoComplete`
+- `autoFocus`
+- ` backgroundColor`
+- `defaultValue`
+- `disabled`
+- ` focused`
+- `id`
+- `margin`
+- ` maxLength`
+- `name`
+- `onBlur`
+- ` onChange`
+- `onFocus`
+- `padding`
+- ` paddingLeft`
+- `paddingRight`
+- `placeholder`
+- ` readOnly`
+- `ref`
+- `required`
+- ` value`
+- `variant`
+- `type`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--input-component" />
+</Canvas>
+
 ### Auto Complete
 
 Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
