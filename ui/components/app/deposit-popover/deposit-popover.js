@@ -121,27 +121,6 @@ const DepositPopover = ({ onClose, token }) => {
     >
       <ul>
         <OnRampItem
-          logo={<LogoSardine />}
-          title={t('buyCryptoWithSardine', [symbol])}
-          text={t('buyCryptoWithSardineDescription', [symbol])}
-          buttonLabel={t('continueToSardine')}
-          onButtonClick={() => {
-            trackEvent({
-              category: EVENT.CATEGORIES.ACCOUNTS,
-              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-              properties: {
-                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SARDINE,
-              },
-            });
-            toSardine();
-          }}
-          hide={
-            isTokenDeposit
-              ? !isBuyableSardineChain || !isTokenBuyableSardine
-              : !isBuyableSardineChain
-          }
-        />
-        <OnRampItem
           logo={<LogoCoinbasePay />}
           title={t('buyCryptoWithCoinbasePay', [symbol])}
           text={t('buyCryptoWithCoinbasePayDescription', [symbol])}
@@ -225,7 +204,27 @@ const DepositPopover = ({ onClose, token }) => {
               : !isBuyableWyreChain
           }
         />
-
+        <OnRampItem
+          logo={<LogoSardine />}
+          title={t('buyCryptoWithSardine', [symbol])}
+          text={t('buyCryptoWithSardineDescription', [symbol])}
+          buttonLabel={t('continueToSardine')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SARDINE,
+              },
+            });
+            toSardine();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableSardineChain || !isTokenBuyableSardine
+              : !isBuyableSardineChain
+          }
+        />
         <OnRampItem
           logo={<LogoDepositEth width="50px" />}
           title={t('directDepositCrypto', [symbol])}
