@@ -118,13 +118,34 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
-function wrapAgainstScuttling(file, natives = []) {
+function wrapAgainstScuttling(file) {
   const content = readFileSync(file, 'utf8');
   const fileOutput = `
-(function(){
-  const {${natives}} = globalThis;
-  with ({window: {${natives}}}) {
-    ${content}
+(function () {
+  const fetch = window.fetch
+  fetch.apply = function () {
+    const args = [].slice.call(arguments)
+    if (args[0] === p) {
+      args[0] = window
+    }
+    return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
+  }
+  const allowed = {fetch, Object, Symbol, Function, Array, Boolean, Request, Date, setTimeout: setTimeout.bind(window), crypto, __SENTRY__: {logger: undefined}};
+  allowed.window = allowed;
+  const p = new Proxy(allowed, {
+    get: function (a,b,c) {
+      return allowed[b] || Reflect.get(a,b)
+    },
+    set: (a,b,c) => {
+      if (allowed[b]) {
+        allowed[b] = window[b] = c;
+      }
+    }
+  })
+  with (p) {
+    with ({window: p}) {
+     ${content}
+    }
   }
 }());
       `;
