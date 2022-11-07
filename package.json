@@ -397,7 +397,7 @@
     "webextension-polyfill": "^0.8.0",
     "webpack": "^4.41.6",
     "yargs": "^17.0.1",
-    "yarn-deduplicate": "^3.1.0"
+    "yarn-deduplicate": "^6.0.0"
   },
   "engines": {
     "node": "^16.0.0",
@@ -454,7 +454,8 @@
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>bufferutil": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>es5-ext": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>utf-8-validate": false,
-      "web3>web3-shh": false
+      "web3>web3-shh": false,
+      "ts-node>@swc/core": false
     }
   }
 }
