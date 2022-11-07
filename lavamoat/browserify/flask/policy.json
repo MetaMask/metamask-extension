@@ -1907,13 +1907,8 @@
     },
     "@metamask/snap-utils>cron-parser": {
       "packages": {
-        "@metamask/snap-utils>cron-parser>luxon": true,
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/snap-utils>cron-parser>luxon": {
-      "globals": {
-        "Intl": true
+        "browserify>browser-resolve": true,
+        "luxon": true
       }
     },
     "@metamask/snap-utils>rfdc": {
