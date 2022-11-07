@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import PortStream from 'extension-port-stream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
@@ -208,8 +207,6 @@ export default class MetamaskController extends EventEmitter {
 
     // instance of a class that wraps the extension's storage local API.
     this.localStoreApiWrapper = opts.localStore;
-
-    this.remotePort = opts.remoteSourcePort;
 
     // observable state store
     this.store = new ComposableObservableStore({
@@ -1106,9 +1103,6 @@ export default class MetamaskController extends EventEmitter {
       }
       // Automatic login via storage encryption key
       else if (isManifestV3) {
-        const portStream = new PortStream(this.remotePort);
-        // we need to setup this stream before we can communicate with UI
-        this.setupTrustedCommunication(portStream, this.remotePort.sender);
         this.submitEncryptionKeyAndNotifyStateReady();
       }
     }
@@ -2341,14 +2335,7 @@ export default class MetamaskController extends EventEmitter {
 
   async submitEncryptionKeyAndNotifyStateReady() {
     await this.submitEncryptionKey();
-    await this.notifyStateReady();
-  }
-
-  async notifyStateReady() {
-    // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-    // This ensures that UI is initialised only after background is ready
-    // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-    this.remotePort.postMessage({ name: 'CONNECTION_READY' });
+    this.emit('storeReady');
   }
 
   /**
@@ -3506,6 +3493,20 @@ export default class MetamaskController extends EventEmitter {
       });
     };
     this.on('update', handleUpdate);
+
+    const handleStoreReady = (update) => {
+      if (outStream._writableState.ended) {
+        return;
+      }
+      // send notification to client-side
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'storeReady',
+        params: [update],
+      });
+    };
+    this.on('storeReady', handleStoreReady);
+
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
