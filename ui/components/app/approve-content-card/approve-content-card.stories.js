@@ -1,99 +1,94 @@
 import React from 'react';
-import TokenAllowance from './token-allowance';
+import ApproveContentCard from './approve-content-card';
 
 export default {
-  title: 'Pages/TokenAllowance',
+  title: 'Components/App/ApproveContentCard',
   id: __filename,
   argTypes: {
-    origin: {
-      control: 'text',
-    },
-    siteImage: {
-      control: 'text',
-    },
-    showCustomizeGasModal: {
-      action: 'showCustomizeGasModal',
-    },
-    useNonceField: {
+    showHeader: {
       control: 'boolean',
     },
-    currentCurrency: {
+    symbol: {
+      control: 'array',
+    },
+    title: {
+      control: 'text',
+    },
+    showEdit: {
+      control: 'boolean',
+    },
+    showAdvanceGasFeeOptions: {
+      control: 'boolean',
+    },
+    footer: {
+      control: 'array',
+    },
+    noBorder: {
+      control: 'boolean',
+    },
+    supportsEIP1559V2: {
+      control: 'boolean',
+    },
+    renderTransactionDetailsContent: {
+      control: 'boolean',
+    },
+    renderDataContent: {
+      control: 'boolean',
+    },
+    isMultiLayerFeeNetwork: {
+      control: 'boolean',
+    },
+    ethTransactionTotal: {
       control: 'text',
     },
     nativeCurrency: {
       control: 'text',
     },
-    ethTransactionTotal: {
+    fullTxData: {
+      control: 'object',
+    },
+    hexTransactionTotal: {
       control: 'text',
     },
     fiatTransactionTotal: {
       control: 'text',
     },
-    hexTransactionTotal: {
-      control: 'text',
-    },
-    isMultiLayerFeeNetwork: {
-      control: 'text',
-    },
-    supportsEIP1559V2: {
-      control: 'boolean',
-    },
-    userAddress: {
-      control: 'text',
-    },
-    tokenAddress: {
-      control: 'text',
-    },
-    data: {
+    currentCurrency: {
       control: 'text',
     },
     isSetApproveForAll: {
       control: 'boolean',
     },
-    setApproveForAllArg: {
+    isApprovalOrRejection: {
       control: 'boolean',
     },
-    decimals: {
+    data: {
       control: 'text',
     },
-    dappProposedTokenAmount: {
-      control: 'text',
-    },
-    currentTokenBalance: {
-      control: 'text',
-    },
-    toAddress: {
-      control: 'text',
-    },
-    tokenSymbol: {
-      control: 'text',
-    },
-    txData: {
-      control: 'object',
+    onEditClick: {
+      control: 'onEditClick',
     },
   },
   args: {
-    origin: 'https://metamask.github.io',
-    siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-    useNonceField: false,
-    currentCurrency: 'usd',
-    nativeCurrency: 'RopstenETH',
-    ethTransactionTotal: '0.0012',
-    fiatTransactionTotal: '1.6',
-    hexTransactionTotal: '0x44364c5bb0000',
-    isMultiLayerFeeNetwork: false,
+    showHeader: true,
+    symbol: <i className="fa fa-tag" />,
+    title: 'Transaction fee',
+    showEdit: true,
+    showAdvanceGasFeeOptions: true,
+    noBorder: true,
     supportsEIP1559V2: false,
-    userAddress: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
-    tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
-    data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+    renderTransactionDetailsContent: true,
+    renderDataContent: false,
+    isMultiLayerFeeNetwork: false,
+    ethTransactionTotal: '0.0012',
+    nativeCurrency: 'GoerliETH',
+    hexTransactionTotal: '0x44364c5bb0000',
+    fiatTransactionTotal: '1.54',
+    currentCurrency: 'usd',
     isSetApproveForAll: false,
-    setApproveForAllArg: false,
-    decimals: '4',
-    dappProposedTokenAmount: '7',
-    currentTokenBalance: '10',
-    toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
-    tokenSymbol: 'TST',
-    txData: {
+    isApprovalOrRejection: false,
+    data: '',
+    fullTxData: {
       id: 3049568294499567,
       time: 1664449552289,
       status: 'unapproved',
@@ -195,7 +190,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <TokenAllowance {...args} />;
+  return <ApproveContentCard {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
