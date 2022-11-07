@@ -120,11 +120,10 @@ function logError(error) {
 
 function wrapAgainstScuttling(file, natives = []) {
   const content = readFileSync(file, 'utf8');
-  const native = `{${natives.map((n) => `${n}, `)}}`;
   const fileOutput = `
 (function(){
-  const ${native} = globalThis;
-  with ({window: ${native}}) {
+  const {${natives}} = globalThis;
+  with ({window: {${natives}}}) {
     ${content}
   }
 }());
