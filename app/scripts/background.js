@@ -72,6 +72,7 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
+let portStream;
 
 // state persistence
 const inTest = process.env.IN_TEST;
@@ -333,7 +334,11 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       return openMetamaskTabsIDs;
     },
     localStore,
+    remoteSourcePort,
   });
+
+  // We can initialize portStream in one location.
+  portStream = new PortStream(remoteSourcePort);
 
   setupEnsIpfsResolver({
     getCurrentChainId: controller.networkController.getCurrentChainId.bind(
@@ -429,17 +434,19 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       : null;
 
     if (isMetaMaskInternalProcess) {
-      const portStream = new PortStream(remotePort);
-      // communication with popup
-      controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
-
-      if (isManifestV3) {
-        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-        // This ensures that UI is initialised only after background is ready
-        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
+      // only do this if we are in V3, We already did for V3 in MetaMaskController
+      if (!isManifestV3) {
+        // communication with popup
+        controller.isClientOpen = true;
+        controller.setupTrustedCommunication(portStream, remotePort.sender);
       }
+
+      // if (isManifestV3) {
+      //   // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+      //   // This ensures that UI is initialised only after background is ready
+      //   // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
+      //   remotePort.postMessage({ name: 'CONNECTION_READY' });
+      // }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -484,7 +491,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream = new PortStream(remotePort);
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -506,7 +512,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
   // communication with page or other extension
   function connectExternal(remotePort) {
-    const portStream = new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
