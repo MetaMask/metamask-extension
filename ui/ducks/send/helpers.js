@@ -21,6 +21,8 @@ import {
 } from '../../pages/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
 import { estimateGas } from '../../store/actions';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+// import fetch from 'node-fetch';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -291,4 +293,34 @@ export async function getERC20Balance(token, accountAddress) {
     token.decimals,
   ).toString(16);
   return addHexPrefix(amount);
+}
+
+export async function transactionSecurityCheck(data) {
+  // console.log('data: ', data);
+  // (1) 
+  const queryString = new URLSearchParams(data).toString();
+  console.log('queryString: ', queryString);
+  const response = await fetchWithCache('http://localhost:3000/security/3');  // or fetch()
+  return response;
+  // (2)
+  // const fetchWithTimeout = getFetchWithTimeout();
+  // const response = await fetchWithTimeout(data.host_name, {
+  //   method: 'POST',
+  //   body: JSON.stringify(data),
+  // });
+
+  // (3)
+  // const response = await jsonRpcRequest(data.host_name, 'POST', data);
+  // return await response.json();
+
+  // (4)
+  // const response = await fetch('http://localhost:3000/security', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify(data),
+  // });
+  // return await response.json();
 }

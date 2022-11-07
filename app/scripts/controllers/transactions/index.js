@@ -780,6 +780,7 @@ export default class TransactionController extends EventEmitter {
     txMethodType,
     txParams,
     origin,
+    method,
     transactionType,
     sendFlowHistory = [],
     actionId,
@@ -873,6 +874,12 @@ export default class TransactionController extends EventEmitter {
     this.emit('newUnapprovedTx', txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
+
+    const dataValidation = await this.securityProviderRequest(txMeta, method);
+
+    txMeta.dataValidation = dataValidation;
+
+    console.log('txMeta: ', txMeta);
 
     return txMeta;
   }

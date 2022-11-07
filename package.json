@@ -297,6 +297,7 @@
     "jest-junit": "^14.0.1",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^2.1.1",
+    "json-server": "^0.17.0",
     "jsonschema": "^1.2.4",
     "labeled-stream-splicer": "^2.0.2",
     "localforage": "^1.9.0",
