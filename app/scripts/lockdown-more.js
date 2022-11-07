@@ -8,7 +8,7 @@ try {
    * universalPropertyNames constant specified in 'ses/src/whitelist'. This
    * function makes all function and object properties on the start compartment
    * global non-configurable and non-writable, unless they are already
-   * non-configurable.
+   * non-configurable, or they were scuttled by LavaMoat runtime (LavaMoat#360)
    *
    * It is critical that this function runs at the right time during
    * initialization, which should always be immediately after `lockdown` has been
@@ -23,9 +23,6 @@ try {
    */
   (function protectIntrinsics() {
     const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
-
-    // These named intrinsics are not automatically hardened by `lockdown`
-    const shouldHardenManually = new Set(['eval', 'Function']);
 
     const globalProperties = new Set([
       // universalPropertyNames is a constant added by lockdown to global scope
@@ -59,10 +56,6 @@ try {
               writable: false,
             });
           }
-        }
-
-        if (shouldHardenManually.has(propertyName)) {
-          harden(globalThis[propertyName]);
         }
       }
     });
