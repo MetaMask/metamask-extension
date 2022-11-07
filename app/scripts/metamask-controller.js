@@ -168,6 +168,8 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
+import { securityProviderCheck } from './lib/security-provider-helpers';
+import fetch from 'node-fetch';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -872,6 +874,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getTokenStandardAndDetails.bind(
           this.assetsContractController,
         ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -4529,4 +4532,49 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+  
+  async securityProviderRequest(requestData, methodName) {
+    const transactionSecurityCheckEnabled = this.preferencesController.store.getState().useTokenDetection;  // transactionSecurityCheckEnabled when ready instead of useTokenDetection
+
+    // if (transactionSecurityCheckEnabled) {
+      // console.log('requestData: ', requestData);
+      // const response = await fetch('http://localhost:3000/security/1', {
+      //       method: 'GET',
+      //       headers: {
+      //         'Accept': 'application/json',
+      //         'Content-Type': 'application/json'
+      //       },
+      //       // body: JSON.stringify(requestData),
+      // });
+    
+      // return await response.json(); 
+    // }
+
+
+
+    // if (transactionSecurityCheckEnabled) {
+      const dataToValidate = [
+          {
+          "host_name": requestData.origin, 
+          "rpc_method_name": methodName,
+          "chain_id": requestData.chainId,
+          "data": {
+            "from_address": requestData.txParams.from,
+            "to_address": requestData.txParams.to,
+            "gas": requestData.defaultGasEstimates.gas,  
+            "gasPrice": requestData.defaultGasEstimates.gasPrice,
+            "value": requestData.txParams.value,  
+            "data": requestData.txParams.data,
+          }
+        }
+      ]
+
+    const response = await securityProviderCheck(dataToValidate);
+    console.log('response: ', response);
+
+    return await response;
+   // }
+
+   // return null;
+  }
 }
