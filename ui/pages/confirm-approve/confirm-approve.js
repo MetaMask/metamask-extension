@@ -180,14 +180,14 @@ export default function ConfirmApprove({
             supportsEIP1559V2={supportsEIP1559V2}
             userAddress={userAddress}
             tokenAddress={tokenAddress}
-            data={customData || transactionData}
+            data={transactionData}
             isSetApproveForAll={isSetApproveForAll}
             isApprovalOrRejection={isApprovalOrRejection}
-            customTxParamsData={customData}
             dappProposedTokenAmount={tokenAmount}
             currentTokenBalance={tokenBalance}
             toAddress={toAddress}
             tokenSymbol={tokenSymbol}
+            decimals={decimals}
           />
           {showCustomizeGasPopover && !supportsEIP1559V2 && (
             <EditGasPopover
