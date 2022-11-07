@@ -42,25 +42,20 @@ export const TagUrl = ({
       {...props}
     >
       <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
-      {showLockIcon ? (
-        <>
-          <Icon
-            className="tag-url__lock-icon"
-            name={ICON_NAMES.LOCK_FILLED}
-            color={COLORS.ICON_ALTERNATIVE}
-            size={SIZES.SM}
-            aria-label="https://"
-            {...lockIconProps}
-          />
-          <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
-            {label}
-          </Text>{' '}
-        </>
-      ) : (
-        <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
-          {label}
-        </Text>
+      {showLockIcon && (
+        <Icon
+          className="tag-url__lock-icon"
+          name={ICON_NAMES.LOCK_FILLED}
+          color={COLORS.ICON_ALTERNATIVE}
+          size={SIZES.SM}
+          aria-label="https://"
+          {...lockIconProps}
+        />
       )}
+      <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
+        {label}
+      </Text>
+
       {actionButtonLabel && (
         <ButtonLink
           as="a"
