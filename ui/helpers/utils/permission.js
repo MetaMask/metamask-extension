@@ -79,6 +79,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-download',
     rightIcon: null,
   },
+  [RestrictedMethods.snap_cronjob]: {
+    label: (t) => t('permission_cronjob'),
+    leftIcon: 'fas fa-clock-rotate-left',
+    rightIcon: null,
+  },
   [RestrictedMethods['wallet_snap_*']]: {
     label: (t, permissionName) => {
       const snapId = permissionName.split('_').slice(-1);
