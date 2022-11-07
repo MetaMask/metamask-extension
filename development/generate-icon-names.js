@@ -22,12 +22,12 @@ const getIconNameInSnakeCase = (fileName) =>
     .replace(/-/gu, '_')
     .toUpperCase();
 
-const generateIconNames = async () => {
+const generateIconNames = () => {
   const iconNames = {};
 
   const svgIconsFolderPath = path.join(__dirname, `../${SVG_ICONS_FOLDER}`);
 
-  const fileList = await fs.promises.readdir(svgIconsFolderPath);
+  const fileList = fs.readdirSync(svgIconsFolderPath);
 
   const svgIconsFileList = fileList.filter(
     (fileName) => path.extname(fileName) === ASSET_EXT,
@@ -39,7 +39,9 @@ const generateIconNames = async () => {
         getIconNameKebabCase(fileName)),
   );
 
-  return iconNames;
+  const iconNamesStringified = JSON.stringify(iconNames);
+
+  return iconNamesStringified;
 };
 
 module.exports = { generateIconNames };
