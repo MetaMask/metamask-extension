@@ -464,8 +464,41 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/controllers>@ethersproject/contracts": true,
+        "@metamask/controllers>@ethersproject/providers": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-json-rpc-infura": true,
+        "@metamask/controllers>eth-method-registry": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>ethereumjs-wallet": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>nanoid": true,
+        "@metamask/controllers>web3": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/metamask-eth-abis": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "eth-keyring-controller": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true
       }
     },
     "@metamask/address-book-controller>@metamask/base-controller": {
@@ -529,22 +562,23 @@
         "AbortController": true
       }
     },
-    "@metamask/assets-controllers>async-mutex": {
+    "@metamask/controllers>async-mutex": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
-        "enzyme>cheerio>tslib": true
+        "@metamask/controllers>async-mutex>tslib": true
       }
     },
-    "@metamask/assets-controllers>multiformats": {
+    "@metamask/controllers>async-mutex>tslib": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "console.warn": true
+        "define": true
       }
     },
-    "@metamask/base-controller": {
+    "@metamask/controllers>eth-json-rpc-infura": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }
@@ -2182,18 +2216,30 @@
         "results": "write"
       },
       "packages": {
-        "await-semaphore": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "eth-json-rpc-filters>eth-json-rpc-middleware": true,
-        "eth-json-rpc-filters>eth-json-rpc-middleware>pify": true,
-        "eth-json-rpc-filters>json-rpc-engine": true,
-        "eth-json-rpc-filters>lodash.flatmap": true,
         "eth-query": true,
-        "safe-event-emitter": true
+        "json-rpc-engine": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "pify": true
+      }
+    },
+    "eth-json-rpc-filters>async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "eth-json-rpc-filters>async-mutex>tslib": true
+      }
+    },
+    "eth-json-rpc-filters>async-mutex>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "eth-json-rpc-filters>eth-json-rpc-middleware": {
       "packages": {
-        "eth-json-rpc-filters>json-rpc-engine": true
+        "eth-json-rpc-filters>eth-json-rpc-middleware>json-rpc-engine": true
       }
     },
     "eth-json-rpc-middleware": {
