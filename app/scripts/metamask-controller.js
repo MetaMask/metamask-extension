@@ -2041,7 +2041,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async addCustomNetwork(customRpc) {
+  async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
     await this.preferencesController.addToFrequentRpcList(
@@ -2077,6 +2077,7 @@ export default class MetamaskController extends EventEmitter {
       sensitiveProperties: {
         rpc_url: rpcUrlOrigin,
       },
+      actionId,
     });
   }
 
