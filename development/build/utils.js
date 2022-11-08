@@ -122,7 +122,11 @@ function wrapAgainstScuttling(file) {
   const content = readFileSync(file, 'utf8');
   const fileOutput = `
 (function () {
+
   const fetch = window.fetch
+  fetch.bind = function (b) {
+    return Function.prototype.bind.call(this, window)
+  }
   fetch.apply = function () {
     const args = [].slice.call(arguments)
     if (args[0] === p) {
@@ -130,20 +134,41 @@ function wrapAgainstScuttling(file) {
     }
     return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
   }
-  const allowed = {fetch, String, Object, Symbol, Function, Array, Boolean, Request, Date, setTimeout: setTimeout.bind(window), crypto, __SENTRY__: {logger: undefined}};
+  const allowed = {
+    Uint16Array,
+    fetch,
+    String,
+    Math,
+    Object,
+    Symbol,
+    Function,
+    Array,
+    Boolean,
+    Request,
+    Date,
+    document,
+    JSON,
+    encodeURIComponent,
+    clearTimeout: clearTimeout.bind(window),
+    setTimeout: setTimeout.bind(window),
+    crypto,
+    __SENTRY__: {logger: undefined},
+    sentryHooks: 1,
+    sentry: 1,
+  };
   allowed.window = allowed;
   const p = new Proxy(allowed, {
-    get: function (a,b,c) {
-      return allowed[b] || Reflect.get(a,b)
+    get: function (a, b, c) {
+      return allowed[b] || Reflect.get(a, b)
     },
-    set: (a,b,c) => {
-      if (allowed[b]) {
-        allowed[b] = window[b] = c;
+    set: (a, b, c) => {
+      if (allowed[b] || b.startsWith('on')) {
+        return allowed[b] = window[b] = c;
       }
     }
   })
   with (p) {
-    with ({window: p}) {
+    with ({window: p, self: p}) {
      ${content}
     }
   }
