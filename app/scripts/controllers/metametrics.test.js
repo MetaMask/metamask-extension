@@ -9,6 +9,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
 
@@ -124,9 +125,10 @@ function getMetaMetricsController({
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
+  segmentInstance,
 } = {}) {
   return new MetaMetricsController({
-    segment,
+    segment: segmentInstance || segment,
     getNetworkIdentifier:
       networkController.getNetworkIdentifier.bind(networkController),
     getCurrentChainId:
@@ -145,10 +147,17 @@ function getMetaMetricsController({
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
       },
+      events: {},
     },
   });
 }
 describe('MetaMetricsController', function () {
+  const now = new Date();
+  let clock;
+  beforeEach(function () {
+    clock = sinon.useFakeTimers(now.getTime());
+    sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
+  });
   describe('constructor', function () {
     it('should properly initialize', function () {
       const mock = sinon.mock(segment);
@@ -163,6 +172,8 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
@@ -233,15 +244,18 @@ describe('MetaMetricsController', function () {
       });
       const mock = sinon.mock(segment);
 
-      mock
-        .expects('identify')
-        .once()
-        .withArgs({ userId: TEST_META_METRICS_ID, traits: MOCK_TRAITS });
+      mock.expects('identify').once().withArgs({
+        userId: TEST_META_METRICS_ID,
+        traits: MOCK_TRAITS,
+        messageId: Utils.generateRandomId(),
+        timestamp: new Date(),
+      });
 
       metaMetricsController.identify({
         ...MOCK_TRAITS,
         ...MOCK_INVALID_TRAITS,
       });
+
       mock.verify();
     });
 
@@ -263,6 +277,8 @@ describe('MetaMetricsController', function () {
           traits: {
             test_date: mockDateISOString,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
 
       metaMetricsController.identify({
@@ -358,6 +374,8 @@ describe('MetaMetricsController', function () {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -388,6 +406,8 @@ describe('MetaMetricsController', function () {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -417,6 +437,8 @@ describe('MetaMetricsController', function () {
             legacy_event: true,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent(
         {
@@ -439,12 +461,14 @@ describe('MetaMetricsController', function () {
         .once()
         .withArgs({
           event: 'Fake Event',
-          userId: TEST_META_METRICS_ID,
-          context: DEFAULT_TEST_CONTEXT,
           properties: {
             test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          context: DEFAULT_TEST_CONTEXT,
+          userId: TEST_META_METRICS_ID,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.submitEvent({
         event: 'Fake Event',
@@ -519,6 +543,8 @@ describe('MetaMetricsController', function () {
             foo: 'bar',
             ...DEFAULT_EVENT_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         }),
       );
       assert.ok(
@@ -527,6 +553,8 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: DEFAULT_EVENT_PROPERTIES,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         }),
       );
     });
@@ -547,6 +575,8 @@ describe('MetaMetricsController', function () {
             params: null,
             ...DEFAULT_PAGE_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.trackPage({
         name: 'home',
@@ -590,6 +620,8 @@ describe('MetaMetricsController', function () {
             params: null,
             ...DEFAULT_PAGE_PROPERTIES,
           },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
         });
       metaMetricsController.trackPage(
         {
@@ -788,9 +820,35 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('submitting segmentApiCalls to segment SDK', function () {
+    it('should add event to store when submitting to SDK', function () {
+      const metaMetricsController = getMetaMetricsController({});
+      metaMetricsController.trackPage({}, { isOptIn: true });
+      const { segmentApiCalls } = metaMetricsController.store.getState();
+      assert(Object.keys(segmentApiCalls).length > 0);
+    });
+
+    it('should remove event from store when callback is invoked', function () {
+      const segmentInstance = createSegmentMock(2, 10000);
+      const stubFn = (_, cb) => {
+        cb();
+      };
+      sinon.stub(segmentInstance, 'track').callsFake(stubFn);
+      sinon.stub(segmentInstance, 'page').callsFake(stubFn);
+
+      const metaMetricsController = getMetaMetricsController({
+        segmentInstance,
+      });
+      metaMetricsController.trackPage({}, { isOptIn: true });
+      const { segmentApiCalls } = metaMetricsController.store.getState();
+      assert(Object.keys(segmentApiCalls).length === 0);
+    });
+  });
+
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();
+    clock.restore();
     sinon.restore();
   });
 });
