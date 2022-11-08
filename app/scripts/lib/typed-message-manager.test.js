@@ -25,7 +25,7 @@ describe('Typed Message Manager', () => {
         { type: 'string', name: 'unit test', value: 'hello there' },
         {
           type: 'uint32',
-          name: 'A number, but not really a number',
+          name: 'A number',
           value: '1234',
         },
       ],
