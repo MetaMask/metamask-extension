@@ -8,6 +8,8 @@ import {
   BSC,
   GOERLI,
   AVALANCHE,
+  OPTIMISM,
+  ARBITRUM,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
@@ -38,6 +40,7 @@ import {
   validateData,
 } from '../../../shared/lib/swaps-utils';
 import { SECOND } from '../../../shared/constants/time';
+import { sumHexes } from '../../helpers/utils/transactions.util';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -384,11 +387,18 @@ export function getRenderableNetworkFeesForQuote({
   sourceAmount,
   chainId,
   nativeCurrencySymbol,
+  multiLayerL1FeeTotal,
 }) {
   const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
     .plus(approveGas || '0x0', 16)
     .toString(16);
-  const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
+  let gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
+  if (multiLayerL1FeeTotal !== null) {
+    gasTotalInWeiHex = sumHexes(
+      gasTotalInWeiHex || '0x0',
+      multiLayerL1FeeTotal || '0x0',
+    );
+  }
 
   const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(
@@ -449,6 +459,7 @@ export function quotesToRenderableData(
   chainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
+  multiLayerL1FeeTotal,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -489,6 +500,7 @@ export function quotesToRenderableData(
         sourceSymbol: sourceTokenInfo.symbol,
         sourceAmount,
         chainId,
+        multiLayerL1FeeTotal,
       }));
 
     if (smartTransactionEstimatedGas) {
@@ -611,6 +623,10 @@ export const getNetworkNameByChainId = (chainId) => {
       return GOERLI;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
+    case CHAIN_IDS.OPTIMISM:
+      return OPTIMISM;
+    case CHAIN_IDS.ARBITRUM:
+      return ARBITRUM;
     default:
       return '';
   }

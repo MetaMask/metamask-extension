@@ -2143,6 +2143,9 @@
   "networkName": {
     "message": "Network name"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2157,6 +2160,9 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
+  },
+  "networkNameOptimism": {
+    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
