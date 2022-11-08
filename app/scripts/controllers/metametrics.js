@@ -32,6 +32,22 @@ const defaultCaptureException = (err) => {
   });
 };
 
+// The function is used to build a unique messageId for segment messages
+// It uses actionId and uniqueIdentifier from event if present
+const buildUniqueMessageId = (args) => {
+  let messageId = '';
+  if (args.uniqueIdentifier) {
+    messageId += `${args.uniqueIdentifier}-`;
+  }
+  if (args.actionId) {
+    messageId += args.actionId;
+  }
+  if (messageId.length) {
+    return messageId;
+  }
+  return generateRandomId();
+};
+
 const exceptionsToFilter = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
@@ -231,14 +247,6 @@ export default class MetaMetricsController {
       );
     }
 
-    const existingFragment = this.getExistingEventFragment(
-      options.actionId,
-      options.uniqueIdentifier,
-    );
-    if (existingFragment) {
-      return existingFragment;
-    }
-
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
@@ -266,6 +274,8 @@ export default class MetaMetricsController {
         value: fragment.value,
         currency: fragment.currency,
         environmentType: fragment.environmentType,
+        actionId: options.actionId,
+        uniqueIdentifier: options.uniqueIdentifier,
       });
     }
 
@@ -285,26 +295,6 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
-  }
-
-  /**
-   * Returns the fragment stored in memory with provided id or undefined if it
-   * does not exist.
-   *
-   * @param {string} actionId - actionId passed from UI
-   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
-   * @returns {[MetaMetricsEventFragment]}
-   */
-  getExistingEventFragment(actionId, uniqueIdentifier) {
-    const { fragments } = this.store.getState();
-
-    const existingFragment = Object.values(fragments).find(
-      (fragment) =>
-        fragment.actionId === actionId &&
-        fragment.uniqueIdentifier === uniqueIdentifier,
-    );
-
-    return existingFragment;
   }
 
   /**
@@ -367,6 +357,8 @@ export default class MetaMetricsController {
       value: fragment.value,
       currency: fragment.currency,
       environmentType: fragment.environmentType,
+      actionId: fragment.actionId,
+      uniqueIdentifier: fragment.uniqueIdentifier,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -453,7 +445,10 @@ export default class MetaMetricsController {
    * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
    */
-  trackPage({ name, params, environmentType, page, referrer }, options) {
+  trackPage(
+    { name, params, environmentType, page, referrer, actionId },
+    options,
+  ) {
     try {
       if (this.state.participateInMetaMetrics === false) {
         return;
@@ -469,6 +464,7 @@ export default class MetaMetricsController {
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
       this._submitSegmentAPICall('page', {
+        messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
         name,
         properties: {
@@ -659,6 +655,7 @@ export default class MetaMetricsController {
     } = rawPayload;
     return {
       event,
+      messageId: buildUniqueMessageId(rawPayload),
       properties: {
         // These values are omitted from properties because they have special meaning
         // in segment. https://segment.com/docs/connections/spec/track/#properties.
