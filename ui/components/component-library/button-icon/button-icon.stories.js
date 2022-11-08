@@ -64,9 +64,6 @@ export default {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
-    loading: {
-      control: 'boolean',
-    },
     size: {
       control: 'select',
       options: Object.values(BUTTON_ICON_SIZES),
