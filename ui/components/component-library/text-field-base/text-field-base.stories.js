@@ -6,7 +6,6 @@ import {
   COLORS,
   FLEX_DIRECTION,
   ALIGN_ITEMS,
-  BORDER_STYLE,
   TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -351,16 +350,15 @@ export const InputRef = (args) => {
     </>
   );
 };
+
 const CustomInputComponent = ({
   as,
   autoComplete,
   autoFocus,
-  backgroundColor,
   defaultValue,
   disabled,
   focused,
   id,
-  margin,
   maxLength,
   name,
   onBlur,
@@ -421,6 +419,8 @@ const CustomInputComponent = ({
     </Box>
   );
 };
+
+CustomInputComponent.propTypes = { ...TextFieldBase.propTypes };
 
 export const InputComponent = (args) => (
   <TextFieldBase
