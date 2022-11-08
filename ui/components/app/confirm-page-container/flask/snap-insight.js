@@ -32,7 +32,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
   const data = response?.insights;
 
   const hasNoData =
-    !error && (loading || !data || (data && !Object.keys(data).length));
+    !error && (loading || !data || (data && Object.keys(data).length === 0));
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
