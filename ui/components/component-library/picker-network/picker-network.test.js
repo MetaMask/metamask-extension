@@ -5,11 +5,12 @@ import { PickerNetwork } from './picker-network';
 
 describe('PickerNetwork', () => {
   it('should render the label inside the PickerNetwork', () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <PickerNetwork data-testid="picker-network" label="Imported" />,
     );
     expect(getByTestId('picker-network')).toBeDefined();
     expect(getByTestId('picker-network')).toHaveTextContent('Imported');
+    expect(container).toMatchSnapshot();
   });
   it('should render correct Avatar inside Picker Network', () => {
     render(
