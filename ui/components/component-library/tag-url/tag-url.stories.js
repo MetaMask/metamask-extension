@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
 import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
@@ -46,3 +52,22 @@ export const ShowLockIcon = Template.bind({});
 ShowLockIcon.args = {
   showLockIcon: true,
 };
+
+export const Label = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <TagUrl {...args} label="https://widget.getacute.io" />
+    <TagUrl {...args} label="app.uniswap.org" />
+    <TagUrl {...args} label="https://metamask.github.io" />
+  </Box>
+);
+
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <TagUrl {...args} src="https://peepeth.com/favicon-32x32.png" />
+    <TagUrl
+      {...args}
+      src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+    />
+    <TagUrl {...args} src="https://uniswap.org/favicon.ico" />
+  </Box>
+);
