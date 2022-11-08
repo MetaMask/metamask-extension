@@ -118,13 +118,13 @@ DefaultStory.storyName = 'Default';
 export const Type = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <Button type={BUTTON_TYPES.PRIMARY} {...args}>
-     Button Primary
+      Button Primary
     </Button>
     <Button type={BUTTON_TYPES.SECONDARY} {...args}>
       Button Secondary
     </Button>
     <Button type={BUTTON_TYPES.LINK} {...args}>
-     Button Link
+      Button Link
     </Button>
   </Box>
 );
