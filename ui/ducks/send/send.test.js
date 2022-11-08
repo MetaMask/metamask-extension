@@ -75,7 +75,7 @@ import { draftTransactionInitialState, editExistingTransaction } from '.';
 
 const mockStore = createMockStore([thunk]);
 
-const mockAddress1 = '0xdafea492d9c6733ae3d56b7ed1adb60692c98123'
+const mockAddress1 = '0xdafea492d9c6733ae3d56b7ed1adb60692c98123';
 
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
