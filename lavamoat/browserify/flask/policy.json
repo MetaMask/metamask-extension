@@ -306,7 +306,7 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true,
-        "@ethersproject/bignumber>bn.js": true
+        "bn.js": true
       }
     },
     "@ethersproject/bignumber>@ethersproject/bytes": {
@@ -317,14 +317,6 @@
     "@ethersproject/bignumber>@ethersproject/logger": {
       "globals": {
         "console": true
-      }
-    },
-    "@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@formatjs/intl-relativetimeformat": {
@@ -793,10 +785,10 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
         "@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
         "@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -808,7 +800,7 @@
     },
     "@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -826,7 +818,7 @@
     },
     "@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1243,10 +1235,10 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-abi": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-contract": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-query": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1258,7 +1250,7 @@
     },
     "@metamask/eth-token-tracker>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1276,7 +1268,7 @@
     },
     "@metamask/eth-token-tracker>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1447,10 +1439,10 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1462,7 +1454,7 @@
     },
     "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1480,7 +1472,7 @@
     },
     "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1633,10 +1625,10 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1648,7 +1640,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1666,7 +1658,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1830,10 +1822,10 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
         "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
         "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1845,7 +1837,7 @@
     },
     "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1863,7 +1855,7 @@
     },
     "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -2344,13 +2336,13 @@
         "@truffle/codec>@truffle/abi-utils": true,
         "@truffle/codec>@truffle/compile-common": true,
         "@truffle/codec>big.js": true,
-        "@truffle/codec>bn.js": true,
         "@truffle/codec>cbor": true,
         "@truffle/codec>lodash.escaperegexp": true,
         "@truffle/codec>lodash.partition": true,
         "@truffle/codec>lodash.sum": true,
         "@truffle/codec>utf8": true,
         "@truffle/codec>web3-utils": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "browserify>util": true,
         "gulp-dart-sass>lodash.clonedeep": true,
@@ -2514,14 +2506,6 @@
         "define": true
       }
     },
-    "@truffle/codec>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@truffle/codec>cbor": {
       "globals": {
         "TextDecoder": true
@@ -2584,7 +2568,7 @@
         "@truffle/codec>@truffle/compile-common": true,
         "@truffle/codec>web3-utils": true,
         "@truffle/decoder>@truffle/source-map-utils": true,
-        "@truffle/decoder>bn.js": true,
+        "bn.js": true,
         "nock>debug": true
       }
     },
@@ -2612,14 +2596,6 @@
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
         "react-dnd>shallowequal": true
-      }
-    },
-    "@truffle/decoder>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@zxing/browser": {
@@ -3220,18 +3196,13 @@
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
@@ -3365,12 +3336,12 @@
         "setInterval": true
       },
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "browserify>events": true,
         "eth-lattice-keyring>@ethereumjs/tx": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
-        "eth-lattice-keyring>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk": true,
         "eth-lattice-keyring>rlp": true
       }
@@ -3415,14 +3386,6 @@
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": {
       "globals": {
         "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "eth-lattice-keyring>bn.js": {
-      "globals": {
-        "Buffer": true
       },
       "packages": {
         "browserify>browser-resolve": true
@@ -3528,17 +3491,9 @@
         "intToBuffer": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": true,
+        "bn.js": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>js-sha3": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
@@ -3779,21 +3734,13 @@
     },
     "ethereumjs-util": {
       "packages": {
+        "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>bn.js": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
-      }
-    },
-    "ethereumjs-util>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethereumjs-util>create-hash": {
@@ -3897,16 +3844,8 @@
     },
     "ethereumjs-util>rlp": {
       "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>rlp>bn.js": true
-      }
-    },
-    "ethereumjs-util>rlp>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "bn.js": true,
+        "browserify>buffer": true
       }
     },
     "ethereumjs-wallet": {
@@ -4054,17 +3993,9 @@
     },
     "ethers>@ethersproject/abi>@ethersproject/bignumber": {
       "packages": {
-        "ethers>@ethersproject/abi>@ethersproject/bignumber>bn.js": true,
+        "bn.js": true,
         "ethers>@ethersproject/abi>@ethersproject/bytes": true,
         "ethers>@ethersproject/abi>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/abi>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/abi>@ethersproject/bytes": {
@@ -4127,17 +4058,9 @@
     },
     "ethers>@ethersproject/address>@ethersproject/bignumber": {
       "packages": {
-        "ethers>@ethersproject/address>@ethersproject/bignumber>bn.js": true,
+        "bn.js": true,
         "ethers>@ethersproject/address>@ethersproject/bytes": true,
         "ethers>@ethersproject/address>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/address>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/address>@ethersproject/bytes": {
@@ -4236,9 +4159,9 @@
     },
     "ethers>@ethersproject/constants>@ethersproject/bignumber": {
       "packages": {
+        "bn.js": true,
         "ethers>@ethersproject/constants>@ethersproject/bignumber>@ethersproject/bytes": true,
-        "ethers>@ethersproject/constants>@ethersproject/bignumber>@ethersproject/logger": true,
-        "ethers>@ethersproject/constants>@ethersproject/bignumber>bn.js": true
+        "ethers>@ethersproject/constants>@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/constants>@ethersproject/bignumber>@ethersproject/bytes": {
@@ -4249,14 +4172,6 @@
     "ethers>@ethersproject/constants>@ethersproject/bignumber>@ethersproject/logger": {
       "globals": {
         "console": true
-      }
-    },
-    "ethers>@ethersproject/constants>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/contracts": {
@@ -4335,17 +4250,9 @@
     },
     "ethers>@ethersproject/contracts>@ethersproject/bignumber": {
       "packages": {
-        "ethers>@ethersproject/contracts>@ethersproject/bignumber>bn.js": true,
+        "bn.js": true,
         "ethers>@ethersproject/contracts>@ethersproject/bytes": true,
         "ethers>@ethersproject/contracts>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/contracts>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/contracts>@ethersproject/bytes": {
@@ -4616,17 +4523,9 @@
     },
     "ethers>@ethersproject/providers>@ethersproject/bignumber": {
       "packages": {
-        "ethers>@ethersproject/providers>@ethersproject/bignumber>bn.js": true,
+        "bn.js": true,
         "ethers>@ethersproject/providers>@ethersproject/bytes": true,
         "ethers>@ethersproject/providers>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/providers>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/providers>@ethersproject/bytes": {
@@ -4861,17 +4760,9 @@
     },
     "ethers>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber": {
       "packages": {
+        "bn.js": true,
         "ethers>@ethersproject/strings>@ethersproject/bytes": true,
-        "ethers>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber>bn.js": true,
         "ethers>@ethersproject/strings>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/strings>@ethersproject/logger": {
@@ -4906,17 +4797,9 @@
     },
     "ethers>@ethersproject/transactions>@ethersproject/bignumber": {
       "packages": {
-        "ethers>@ethersproject/transactions>@ethersproject/bignumber>bn.js": true,
+        "bn.js": true,
         "ethers>@ethersproject/transactions>@ethersproject/bytes": true,
         "ethers>@ethersproject/transactions>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/transactions>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethers>@ethersproject/transactions>@ethersproject/bytes": {
@@ -5066,17 +4949,9 @@
     },
     "ethers>@ethersproject/web>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber": {
       "packages": {
+        "bn.js": true,
         "ethers>@ethersproject/web>@ethersproject/bytes": true,
-        "ethers>@ethersproject/web>@ethersproject/logger": true,
-        "ethers>@ethersproject/web>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber>bn.js": true
-      }
-    },
-    "ethers>@ethersproject/web>@ethersproject/strings>@ethersproject/constants>@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "ethers>@ethersproject/web>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/wordlists": {
@@ -5094,10 +4969,10 @@
         "setInterval": true
       },
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs-contract": true,
         "ethjs-query": true,
-        "ethjs>bn.js": true,
         "ethjs>ethjs-abi": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -5119,8 +4994,8 @@
     },
     "ethjs-contract>ethjs-abi": {
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
-        "ethjs-contract>ethjs-abi>bn.js": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
@@ -5167,8 +5042,8 @@
     },
     "ethjs>ethjs-abi": {
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
-        "ethjs>bn.js": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
@@ -5191,7 +5066,7 @@
     },
     "ethjs>ethjs-unit": {
       "packages": {
-        "ethjs>ethjs-unit>bn.js": true,
+        "bn.js": true,
         "ethjs>number-to-bn": true
       }
     },
@@ -5214,8 +5089,8 @@
     },
     "ethjs>number-to-bn": {
       "packages": {
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn>bn.js": true
+        "bn.js": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "extension-port-stream": {
