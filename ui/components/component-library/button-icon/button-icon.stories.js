@@ -95,6 +95,7 @@ export const DefaultStory = (args) => <ButtonIcon {...args} />;
 
 DefaultStory.args = {
   icon: ICON_NAMES.CLOSE_OUTLINE,
+  ariaLabel: 'Close',
 };
 
 DefaultStory.storyName = 'Default';
