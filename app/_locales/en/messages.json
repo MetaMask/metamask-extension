@@ -439,7 +439,7 @@
   },
   "betaHomeHeaderText": {
     "message": "This is a BETA version. Please report bugs $1",
-    "description": "$1 represents the word 'here'"
+    "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."

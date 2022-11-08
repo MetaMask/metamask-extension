@@ -24,6 +24,9 @@ export default class AppHeader extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount: PropTypes.number,
     ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(beta)
+    showBetaHeader: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
   };
 
@@ -113,13 +116,14 @@ export default class AppHeader extends PureComponent {
       disableNetworkIndicator,
       disabled,
       onClick,
+      showBetaHeader,
     } = this.props;
 
     return (
       <>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(beta)
-          <BetaHomeHeader />
+          showBetaHeader ? <BetaHomeHeader /> : null
           ///: END:ONLY_INCLUDE_IN(beta)
         }
 
