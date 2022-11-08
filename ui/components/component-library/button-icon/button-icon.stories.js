@@ -67,9 +67,6 @@ export default {
     loading: {
       control: 'boolean',
     },
-    primary: {
-      control: 'boolean',
-    },
     size: {
       control: 'select',
       options: Object.values(BUTTON_ICON_SIZES),
