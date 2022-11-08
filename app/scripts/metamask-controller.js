@@ -2355,10 +2355,6 @@ export default class MetamaskController extends EventEmitter {
       // remove it and the user will get shown back to the unlock screen
       await browser.storage.session.remove(['loginToken']);
       throw e;
-    } finally {
-      this.appStateController.store.updateState({
-        isAttemptingSessionLogin: false,
-      });
     }
   }
 
