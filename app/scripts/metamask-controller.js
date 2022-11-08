@@ -972,11 +972,13 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.personalMessageManager = new PersonalMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -995,6 +997,7 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
     this.swapsController = new SwapsController({
@@ -4535,6 +4538,7 @@ export default class MetamaskController extends EventEmitter {
   
   async securityProviderRequest(requestData, methodName) {
     const transactionSecurityCheckEnabled = this.preferencesController.store.getState().useTokenDetection;  // transactionSecurityCheckEnabled when ready instead of useTokenDetection
+    const chainId = this.networkController.getCurrentChainId();
 
     // if (transactionSecurityCheckEnabled) {
       // console.log('requestData: ', requestData);
@@ -4553,23 +4557,50 @@ export default class MetamaskController extends EventEmitter {
 
 
     // if (transactionSecurityCheckEnabled) {
-      const dataToValidate = [
-          {
-          "host_name": requestData.origin, 
-          "rpc_method_name": methodName,
-          "chain_id": requestData.chainId,
-          "data": {
-            "from_address": requestData.txParams.from,
-            "to_address": requestData.txParams.to,
-            "gas": requestData.defaultGasEstimates.gas,  
-            "gasPrice": requestData.defaultGasEstimates.gasPrice,
-            "value": requestData.txParams.value,  
-            "data": requestData.txParams.data,
-          }
-        }
-      ]
 
-    const response = await securityProviderCheck(dataToValidate);
+      // transaction 
+      // const dataToValidate = [
+      //     {
+      //     "host_name": requestData.origin, 
+      //     "rpc_method_name": methodName,
+      //     "chain_id": requestData.chainId,
+      //     "data": {
+      //       "from_address": requestData.txParams.from,
+      //       "to_address": requestData.txParams.to,
+      //       "gas": requestData.defaultGasEstimates.gas,  
+      //       "gasPrice": requestData.defaultGasEstimates.gasPrice,
+      //       "value": requestData.txParams.value,  
+      //       "data": requestData.txParams.data,
+      //     }
+      //   }
+      // ]
+
+      // eth_sign, personal_sign
+      // const dataToValidate = [
+      //     {
+      //     "host_name": requestData.msgParams.origin, 
+      //     "rpc_method_name": methodName,
+      //     "chain_id": chainId,
+      //     "data": {
+      //       "signer_address": requestData.msgParams.from,
+      //       "msg_to_sign": requestData.msgParams.data,
+      //     }
+      //   }
+      // ]
+
+      // eth_signTypedData
+      // const dataToValidate = [
+      //     {
+      //     "host_name": requestData.msgParams.origin, 
+      //     "rpc_method_name": methodName,
+      //     "chain_id": chainId,
+      //     "data": {
+      //        requestData.msgParams.data
+      //     }
+      //   }
+      // ]
+
+    const response = await securityProviderCheck(requestData);  // dataToValidate instead of requestData
     console.log('response: ', response);
 
     return await response;

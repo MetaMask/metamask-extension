@@ -36,7 +36,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param options.getCurrentChainId
    * @param options.metricsEvent
    */
-  constructor({ getCurrentChainId, metricsEvent }) {
+  constructor({ getCurrentChainId, metricsEvent, securityProviderRequest }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
@@ -53,6 +53,7 @@ export default class TypedMessageManager extends EventEmitter {
 
     this.messages = [];
     this.metricsEvent = metricsEvent;
+    this.securityProviderRequest = securityProviderRequest;
   }
 
   /**
@@ -129,7 +130,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param version
    * @returns {number} The id of the newly created TypedMessage.
    */
-  addUnapprovedMessage(msgParams, req, version) {
+  async addUnapprovedMessage(msgParams, req, version) {
     msgParams.version = version;
     if (req) {
       msgParams.origin = req.origin;
@@ -139,7 +140,7 @@ export default class TypedMessageManager extends EventEmitter {
     log.debug(
       `TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`,
     );
-
+      console.log('HERE');
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
@@ -152,6 +153,8 @@ export default class TypedMessageManager extends EventEmitter {
     };
     this.addMsg(msgData);
 
+    console.log('msgData: ', msgData);
+    await this.securityProviderRequest(msgData, msgData.type);
     // signal update
     this.emit('update');
     return msgId;

@@ -37,7 +37,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param options
    * @param options.metricsEvent
    */
-  constructor({ metricsEvent }) {
+  constructor({ metricsEvent, securityProviderRequest }) {
     super();
     this.memStore = new ObservableStore({
       unapprovedPersonalMsgs: {},
@@ -53,6 +53,7 @@ export default class PersonalMessageManager extends EventEmitter {
 
     this.messages = [];
     this.metricsEvent = metricsEvent;
+    this.securityProviderRequest = securityProviderRequest;
   }
 
   /**
@@ -134,7 +135,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created PersonalMessage.
    */
-  addUnapprovedMessage(msgParams, req) {
+  async addUnapprovedMessage(msgParams, req) {
     log.debug(
       `PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(
         msgParams,
@@ -145,7 +146,7 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
-
+    console.log('HERE');
     // check for SIWE message
     const siwe = detectSIWE(msgParams);
     msgParams.siwe = siwe;
@@ -161,6 +162,8 @@ export default class PersonalMessageManager extends EventEmitter {
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     };
     this.addMsg(msgData);
+
+    await this.securityProviderRequest(msgData, msgData.type);
 
     // signal update
     this.emit('update');
