@@ -19,7 +19,11 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 
 export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
   const t = useI18nContext();
-  const { data: response, error } = useTransactionInsightSnap({
+  const {
+    data: response,
+    error,
+    loading,
+  } = useTransactionInsightSnap({
     transaction,
     chainId,
     snapId: selectedSnap.id,
@@ -27,8 +31,8 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
 
   const data = response?.insights;
 
-  const hasNoData = (!data || (data && !Object.keys(data).length)) && !error;
-
+  const hasNoData =
+    !error && (loading || !data || (data && !Object.keys(data).length));
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -40,7 +44,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
       textAlign={hasNoData && TEXT_ALIGN.CENTER}
       className="snap-insight"
     >
-      {response && !error && (
+      {!loading && !error && (
         <Box
           height="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
@@ -96,19 +100,8 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
           )}
         </Box>
       )}
-      {!response && !error && (
-        <>
-          <Preloader size={40} />
-          <Typography
-            marginTop={3}
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H6}
-          >
-            {t('snapsInsightLoading')}
-          </Typography>
-        </>
-      )}
-      {!response && error && (
+
+      {!loading && error && (
         <Box
           paddingTop={0}
           paddingRight={6}
@@ -126,6 +119,19 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
             iconFillColor="var(--color-error-default)"
           />
         </Box>
+      )}
+
+      {loading && (
+        <>
+          <Preloader size={40} />
+          <Typography
+            marginTop={3}
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H6}
+          >
+            {t('snapsInsightLoading')}
+          </Typography>
+        </>
       )}
     </Box>
   );

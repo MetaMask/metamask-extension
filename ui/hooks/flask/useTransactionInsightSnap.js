@@ -12,6 +12,8 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
       'This snap does not have the transaction insight endowment.',
     );
   }
+
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
   const [error, setError] = useState(undefined);
 
@@ -31,6 +33,8 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
         setData(d);
       } catch (err) {
         setError(err);
+      } finally {
+        setLoading(false);
       }
     }
     if (transaction) {
@@ -38,5 +42,5 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
     }
   }, [snapId, transaction, chainId]);
 
-  return { data, error };
+  return { data, error, loading };
 }
