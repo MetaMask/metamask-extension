@@ -142,7 +142,7 @@ export default class TypedMessageManager extends EventEmitter {
     log.debug(
       `TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`,
     );
-
+      console.log('HERE');
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
