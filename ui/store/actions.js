@@ -3789,6 +3789,20 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
+export function setImprovedTokenAllowanceEnabled(
+  improvedTokenAllowanceEnabled,
+) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
+        improvedTokenAllowanceEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 export function setFirstTimeUsedNetwork(chainId) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
