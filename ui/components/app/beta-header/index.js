@@ -48,6 +48,7 @@ const BetaHeader = () => {
         onClick={() => {
           hideBetaHeader();
         }}
+        aria-label={t('close')}
       >
         <i className="fa fa-times" />
       </button>

@@ -23,6 +23,7 @@ exports[`Beta Header should match snapshot 1`] = `
       </span>
     </h6>
     <button
+      aria-label="Close"
       class="beta-header__button"
       data-testid="beta-header-close"
     >

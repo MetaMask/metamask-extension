@@ -10,7 +10,9 @@ const mockHideBetaHeader = jest.fn();
 
 jest.mock('../../../store/actions', () => {
   return {
-    hideBetaHeader: () => mockHideBetaHeader,
+    hideBetaHeader: () => {
+      mockHideBetaHeader();
+    },
   };
 });
 
