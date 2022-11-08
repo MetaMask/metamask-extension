@@ -9,6 +9,13 @@ import pump from 'pump';
  */
 export function setupMultiplex(connectionStream) {
   const mux = new ObjectMultiplex();
+  /**
+   * We are using this streams to send keep alive message between backend/ui without setting up a multiplexer
+   * We need to tell the multiplexer to ignore them, else we get the " orphaned data for stream " warnings
+   */
+  mux.ignoreStream('CONNECTION_READY');
+  mux.ignoreStream('ACK_KEEP_ALIVE_MESSAGE');
+  mux.ignoreStream('WORKER_KEEP_ALIVE_MESSAGE');
   pump(connectionStream, mux, connectionStream, (err) => {
     if (err) {
       console.error(err);
