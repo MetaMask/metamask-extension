@@ -89,7 +89,6 @@ export default {
       table: { category: 'box props' },
     },
   },
-  args: {},
 };
 
 export const DefaultStory = (args) => <ButtonIcon {...args} />;
