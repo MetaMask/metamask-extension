@@ -434,13 +434,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3) {
-        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-        // This ensures that UI is initialised only after background is ready
-        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
-      }
-
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
