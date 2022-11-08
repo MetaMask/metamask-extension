@@ -2649,7 +2649,7 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
-    "message": "Schedule and execute periodic actions",
+    "message": "Schedule and execute periodic actions.",
     "description": "The description for the `snap_cronjob` permission"
   },
   "permission_customConfirmation": {

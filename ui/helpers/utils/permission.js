@@ -104,7 +104,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   },
   [EndowmentPermissions['endowment:cronjob']]: {
     label: (t) => t('permission_cronjob'),
-    leftIcon: 'fas fa-clock-rotate-left',
+    leftIcon: 'fas fa-clock',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN
