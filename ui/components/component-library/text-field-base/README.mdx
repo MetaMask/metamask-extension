@@ -224,6 +224,23 @@ To function fully the custom component should accept the following props:
   <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--input-component" />
 </Canvas>
 
+```jsx
+import { TextFieldBase, Icon, ICON_NAMES } from '../../ui/component-library';
+
+// should map the props to the custom input component
+const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
+
+const TextFieldCustomInput = (args) => (
+  <TextFieldBase
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    leftAccessory={
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+    }
+  />
+);
+```
+
 ### Auto Complete
 
 Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.

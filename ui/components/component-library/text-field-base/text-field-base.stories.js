@@ -422,23 +422,18 @@ const CustomInputComponent = ({
   );
 };
 
-export const InputComponent = (args) => {
-  return (
-    <>
-      <TextFieldBase
-        {...args}
-        size={SIZES.LG}
-        InputComponent={CustomInputComponent}
-        leftAccessory={
-          <Icon
-            color={COLORS.ICON_ALTERNATIVE}
-            name={ICON_NAMES.WALLET_FILLED}
-          />
-        }
-      />
-    </>
-  );
-};
+export const InputComponent = (args) => (
+  <TextFieldBase
+    {...args}
+    placeholder="0"
+    type="number"
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    leftAccessory={
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+    }
+  />
+);
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
