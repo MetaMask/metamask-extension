@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Identicon should match snapshot with address prop div 1`] = `
+<div>
+  <div
+    class=""
+  >
+    <div
+      class="identicon test-address"
+      style="height: 46px; width: 46px; border-radius: 23px;"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 46px; height: 46px; display: inline-block; background: rgb(24, 151, 242);"
+      >
+        <svg
+          height="46"
+          width="46"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#2362E1"
+            height="46"
+            transform="translate(5.159662140639244 -7.668071520898189) rotate(458.4 23 23)"
+            width="46"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#F94301"
+            height="46"
+            transform="translate(-22.084972728872177 11.489005476012034) rotate(268.8 23 23)"
+            width="46"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#FA7900"
+            height="46"
+            transform="translate(-13.047115238995795 42.377522828482356) rotate(117.3 23 23)"
+            width="46"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Identicon should match snapshot with custom image and className props 1`] = `
+<div>
+  <img
+    alt=""
+    class="identicon test-image"
+    src="test-image"
+    style="height: 46px; width: 46px; border-radius: 23px;"
+  />
+</div>
+`;
+
+exports[`Identicon should match snapshot with default props 1`] = `
+<div>
+  <div
+    class="identicon__image-border"
+    style="height: 46px; width: 46px; border-radius: 23px;"
+  />
+</div>
+`;

@@ -28,5 +28,8 @@ export const EndowmentPermissions = Object.freeze({
 
 // Methods / permissions in external packages that we are temporarily excluding.
 export const ExcludedSnapPermissions = new Set(['snap_dialog']);
-export const ExcludedSnapEndowments = new Set(['endowment:keyring']);
+export const ExcludedSnapEndowments = new Set([
+  'endowment:keyring',
+  'endowment:cronjob',
+]);
 ///: END:ONLY_INCLUDE_IN

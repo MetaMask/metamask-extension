@@ -20,7 +20,7 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists } from '../lib/util';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -110,6 +110,7 @@ export default class MetaMetricsController {
     this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
+    const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
@@ -119,6 +120,9 @@ export default class MetaMetricsController {
       ...initState,
       fragments: {
         ...initState?.fragments,
+      },
+      segmentApiCalls: {
+        ...segmentApiCalls,
       },
     });
 
@@ -141,6 +145,15 @@ export default class MetaMetricsController {
     Object.values(abandonedFragments).forEach((fragment) => {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
+
+    // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
+    if (isManifestV3) {
+      Object.values(segmentApiCalls).forEach(
+        ({ eventType, payload, callback }) => {
+          this._submitSegmentAPICall(eventType, payload, callback);
+        },
+      );
+    }
 
     // Close out event fragments that were created but not progressed. An
     // interval is used to routinely check if a fragment has not been updated
@@ -455,7 +468,7 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this.segment.page({
+      this._submitSegmentAPICall('page', {
         [idTrait]: idValue,
         name,
         properties: {
@@ -808,7 +821,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this.segment.identify({
+      this._submitSegmentAPICall('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -937,10 +950,49 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this.segment.track(payload, callback);
+      this._submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
     });
+  }
+
+  // Method below submits the request to analytics SDK.
+  // It will also add event to controller store
+  // and pass a callback to remove it from store once request is submitted to segment
+  // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
+  // even if service worker terminates before events are submiteed to segment.
+  _submitSegmentAPICall(eventType, payload, callback) {
+    const messageId = payload.messageId || generateRandomId();
+    let timestamp = new Date();
+    if (payload.timestamp) {
+      const payloadDate = new Date(payload.timestamp);
+      if (isValidDate(payloadDate)) {
+        timestamp = payloadDate;
+      }
+    }
+    const modifiedPayload = { ...payload, messageId, timestamp };
+    this.store.updateState({
+      segmentApiCalls: {
+        ...this.store.getState().segmentApiCalls,
+        [messageId]: {
+          eventType,
+          payload: {
+            ...modifiedPayload,
+            timestamp: modifiedPayload.timestamp.toString(),
+          },
+          callback,
+        },
+      },
+    });
+    const modifiedCallback = (result) => {
+      const { segmentApiCalls } = this.store.getState();
+      delete segmentApiCalls[messageId];
+      this.store.updateState({
+        segmentApiCalls,
+      });
+      return callback?.(result);
+    };
+    this.segment[eventType](modifiedPayload, modifiedCallback);
   }
 }

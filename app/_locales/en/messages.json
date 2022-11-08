@@ -1685,6 +1685,12 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "improvedTokenAllowance": {
+    "message": "Improved token allowance experience"
+  },
+  "improvedTokenAllowanceDescription": {
+    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -2930,6 +2936,9 @@
   "revokeApproveForAllDescription": {
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "Revoke spending cap for your"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."

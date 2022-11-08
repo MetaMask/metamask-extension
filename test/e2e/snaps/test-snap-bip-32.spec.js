@@ -136,7 +136,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await publicKeyResult.getText(),
-          'Public key: "043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
+          'Public key: "0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
         );
 
         // wait then run compressed public key test
@@ -149,7 +149,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await compressedPublicKeyResult.getText(),
-          'Public key: "033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
+          'Public key: "0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
         );
       },
     );
