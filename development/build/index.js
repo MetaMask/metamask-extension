@@ -95,6 +95,7 @@ async function defineAndRunBuildTasks() {
       'harden',
       'console',
       '__SENTRY__',
+      'appState',
     ],
   });
 
