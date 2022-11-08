@@ -23,7 +23,6 @@ import {
 } from '../../../../shared/modules/network.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
-import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
@@ -351,8 +350,13 @@ export default class NetworkController extends EventEmitter {
   // Private
   //
 
+  _makeInfuraRpcUrl(network, projectId) {
+    const pid = projectId || this._infuraProjectId;
+    return `https://${network}.infura.io/v3/${pid}`;
+  }
+
   async _checkInfuraAvailability(network) {
-    const rpcUrl = `https://${network}.infura.io/v3/${this._infuraProjectId}`;
+    const rpcUrl = this._makeInfuraRpcUrl(network);
 
     let networkChanged = false;
     this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -420,9 +424,9 @@ export default class NetworkController extends EventEmitter {
 
   _configureInfuraProvider(type, projectId) {
     log.info('NetworkController - configureInfuraProvider', type);
-    const networkClient = createInfuraClient({
+    const networkClient = createJsonRpcClient({
+      rpcUrl: this._makeInfuraRpcUrl(type, projectId),
       network: type,
-      projectId,
     });
     this._setNetworkClient(networkClient);
   }
