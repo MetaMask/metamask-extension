@@ -88,6 +88,9 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
+const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
 /**
  * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
  * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
@@ -439,6 +442,14 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
         remotePort.postMessage({ name: 'CONNECTION_READY' });
+
+        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
+        remotePort.onMessage.addListener((message) => {
+          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
+            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
+            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+          }
+        });
       }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {

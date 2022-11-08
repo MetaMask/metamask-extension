@@ -191,17 +191,10 @@ export default class MetaMetricsController {
           });
         }
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = checkAlarmExists(
-            alarms,
-            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-          );
-
-          if (hasAlarm) {
-            this.finalizeAbandonedFragments();
-          }
-        });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
+          this.finalizeAbandonedFragments();
+        }
       });
     } else {
       setInterval(() => {
@@ -470,7 +463,7 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this._submitSegmentEvent('page', {
+      this._submitSegmentAPICall('page', {
         messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
         name,

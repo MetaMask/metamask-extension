@@ -1,45 +1,46 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import * as reactRedux from 'react-redux';
-import CurrencyDisplay from './currency-display.component';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import CurrencyDisplay from '.';
 
 describe('CurrencyDisplay Component', () => {
-  beforeEach(() => {
-    const stub = sinon.stub(reactRedux, 'useSelector');
-    stub.callsFake(() => ({
-      currentCurrency: 'usd',
-      nativeCurrency: 'ETH',
-      conversionRate: 280.45,
-    }));
+  const mockStore = configureMockStore()(mockState);
+
+  it('should match default snapshot', () => {
+    const { container } = renderWithProvider(<CurrencyDisplay />, mockStore);
+
+    expect(container).toMatchSnapshot();
   });
-  afterEach(() => {
-    sinon.restore();
-  });
+
   it('should render text with a className', () => {
-    const wrapper = shallow(
-      <CurrencyDisplay
-        displayValue="$123.45"
-        className="currency-display"
-        hideLabel
-      />,
+    const props = {
+      displayValue: '$123.45',
+      className: 'currency-display',
+      hideLabel: true,
+    };
+
+    const { container } = renderWithProvider(
+      <CurrencyDisplay {...props} />,
+      mockStore,
     );
 
-    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('$123.45');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render text with a prefix', () => {
-    const wrapper = shallow(
-      <CurrencyDisplay
-        displayValue="$123.45"
-        className="currency-display"
-        prefix="-"
-        hideLabel
-      />,
+    const props = {
+      displayValue: '$123.45',
+      className: 'currency-display',
+      prefix: '-',
+      hideLabel: true,
+    };
+
+    const { container } = renderWithProvider(
+      <CurrencyDisplay {...props} />,
+      mockStore,
     );
 
-    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('-$123.45');
+    expect(container).toMatchSnapshot();
   });
 });
