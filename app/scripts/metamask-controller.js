@@ -2337,6 +2337,7 @@ export default class MetamaskController extends EventEmitter {
     else if (isManifestV3) {
       await this.submitEncryptionKey();
     }
+    await this.accountTracker._updateAccounts();
     this.emit('startUISync');
     this.memStore.subscribe(this.sendUpdate.bind(this));
   }
