@@ -456,7 +456,8 @@
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>bufferutil": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>es5-ext": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>utf-8-validate": false,
-      "web3>web3-shh": false
+      "web3>web3-shh": false,
+      "ts-node>@swc/core": false
     }
   }
 }
