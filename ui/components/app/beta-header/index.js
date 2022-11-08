@@ -13,7 +13,7 @@ import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
 
-const BetaHomeHeader = () => {
+const BetaHeader = () => {
   const t = useI18nContext();
 
   return (
@@ -46,7 +46,6 @@ const BetaHomeHeader = () => {
         className="beta-header__button"
         data-testid="beta-header-close"
         onClick={() => {
-          console.log('clicked!');
           hideBetaHeader();
         }}
       >
@@ -56,4 +55,4 @@ const BetaHomeHeader = () => {
   );
 };
 
-export default BetaHomeHeader;
+export default BetaHeader;
