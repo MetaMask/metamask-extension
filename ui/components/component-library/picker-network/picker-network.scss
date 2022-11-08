@@ -1,6 +1,6 @@
 .mm-picker-network {
   --picker-network-height: 32px;
 
-  max-width: 100%;
+  max-width: fit-content;
   height: var(--picker-network-height);
 }
