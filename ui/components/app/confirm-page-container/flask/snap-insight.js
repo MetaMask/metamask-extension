@@ -27,7 +27,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
 
   const data = response?.insights;
 
-  const hasNoData = (!data || !Object.keys(data).length) && !error;
+  const hasNoData = (!data || (data && !Object.keys(data).length)) && !error;
 
   return (
     <Box
@@ -40,13 +40,13 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
       textAlign={hasNoData && TEXT_ALIGN.CENTER}
       className="snap-insight"
     >
-      {data && !error && (
+      {response && !error && (
         <Box
           height="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {Object.keys(data).length ? (
+          {data && Object.keys(data).length ? (
             <>
               <Box
                 flexDirection={FLEX_DIRECTION.COLUMN}
@@ -96,7 +96,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
           )}
         </Box>
       )}
-      {!data && !error && (
+      {!response && !error && (
         <>
           <Preloader size={40} />
           <Typography
@@ -108,7 +108,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
           </Typography>
         </>
       )}
-      {!data && error && (
+      {!response && error && (
         <Box
           paddingTop={0}
           paddingRight={6}
