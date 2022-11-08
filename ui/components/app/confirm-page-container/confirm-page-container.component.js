@@ -63,6 +63,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
     // Content
@@ -118,6 +119,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toMetadataName,
       toEns,
       toNickname,
       toAddress,
@@ -231,6 +233,7 @@ export default class ConfirmPageContainer extends Component {
                   senderName={fromName}
                   senderAddress={fromAddress}
                   recipientName={toName}
+                  recipientMetadataName={toMetadataName}
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
