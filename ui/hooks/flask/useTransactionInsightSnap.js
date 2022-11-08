@@ -20,6 +20,9 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
   useEffect(() => {
     async function fetchInsight() {
       try {
+        setError(undefined);
+        setLoading(true);
+
         const d = await handleSnapRequest({
           snapId,
           origin: '',
