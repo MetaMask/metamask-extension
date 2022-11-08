@@ -50,7 +50,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {data && Object.keys(data).length ? (
+          {data && Object.keys(data).length > 0 ? (
             <>
               <Box
                 flexDirection={FLEX_DIRECTION.COLUMN}
