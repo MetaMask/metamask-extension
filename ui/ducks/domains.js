@@ -148,14 +148,17 @@ export function initializeDomainSlice() {
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
-      provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
-        name: networkName,
-        ensAddress,
-      });
+      web3Provider = new ethers.providers.Web3Provider(
+        global.ethereumProvider,
+        {
+          chainId: parseInt(network, 10),
+          name: networkName,
+          ensAddress,
+        },
+      );
       dispatch(enabledomainLookup(network));
     } else {
-      provider = null;
+      web3Provider = null;
       dispatch(disabledomainLookup());
     }
   };
@@ -183,7 +186,7 @@ export function lookupEnsName(domainName) {
       let address;
       let error;
       try {
-        address = await provider.resolveName(trimmedDomainName);
+        address = await web3Provider.resolveName(trimmedDomainName);
       } catch (err) {
         error = err;
       }
