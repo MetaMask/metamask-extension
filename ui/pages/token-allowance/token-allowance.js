@@ -284,7 +284,7 @@ export default function TokenAllowance({
             t('setSpendingCap', [renderContractTokenValues])
           ) : (
             <Box>
-              {customTokenAmount === 0 ? (
+              {customTokenAmount === '0' ? (
                 t('revokeSpendingCap', [renderContractTokenValues])
               ) : (
                 <Box>
