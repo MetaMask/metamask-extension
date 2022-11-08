@@ -1103,6 +1103,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },

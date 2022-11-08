@@ -79,11 +79,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-download',
     rightIcon: null,
   },
-  [RestrictedMethods.snap_cronjob]: {
-    label: (t) => t('permission_cronjob'),
-    leftIcon: 'fas fa-clock-rotate-left',
-    rightIcon: null,
-  },
   [RestrictedMethods['wallet_snap_*']]: {
     label: (t, permissionName) => {
       const snapId = permissionName.split('_').slice(-1);
@@ -105,6 +100,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:transaction-insight']]: {
     label: (t) => t('permission_transactionInsight'),
     leftIcon: 'fas fa-info',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:cronjob']]: {
+    label: (t) => t('permission_cronjob'),
+    leftIcon: 'fas fa-clock-rotate-left',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN
