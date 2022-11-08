@@ -184,6 +184,17 @@ export default function TokenAllowance({
   };
 
   const isEmpty = customTokenAmount === '';
+  
+  const renderContractTokenValues = (
+    <Box marginTop={4} key={tokenAddress}>
+      <ContractTokenValues
+        tokenName={tokenSymbol}
+        address={tokenAddress}
+        chainId={fullTxData.chainId}
+        rpcPrefs={rpcPrefs}
+      />
+    </Box>
+  );
 
   return (
     <Box className="token-allowance-container page-container">
@@ -270,27 +281,17 @@ export default function TokenAllowance({
           align={TEXT_ALIGN.CENTER}
         >
           {isFirstPage ? (
-            t('setSpendingCap', [
-              <Box marginTop={4} key={tokenAddress}>
-                <ContractTokenValues
-                  tokenName={tokenSymbol}
-                  address={tokenAddress}
-                  chainId={fullTxData.chainId}
-                  rpcPrefs={rpcPrefs}
-                />
-              </Box>,
-            ])
+            t('setSpendingCap', [renderContractTokenValues])
           ) : (
             <Box>
-             {customTokenAmount === '0' ? t('revokeSpendingCap') : t('reviewSpendingCap')}
-              <Box marginTop={4} key={tokenAddress}>
-                <ContractTokenValues
-                  tokenName={tokenSymbol}
-                  address={tokenAddress}
-                  chainId={fullTxData.chainId}
-                  rpcPrefs={rpcPrefs}
-                />
-              </Box>
+              {customTokenAmount === 0 ? (
+                t('revokeSpendingCap', [renderContractTokenValues])
+              ) : (
+                <Box>
+                  {t('reviewSpendingCap')}
+                  {renderContractTokenValues}
+                </Box>
+              )}
             </Box>
           )}
         </Typography>
