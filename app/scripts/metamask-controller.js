@@ -2363,14 +2363,17 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitEncryptionKey() {
     try {
-      const { loginToken } = await browser.storage.session.get(['loginToken']);
-      if (loginToken) {
-        await this.keyringController.submitEncryptionKey(loginToken);
+      const { loginToken, loginSalt } = await browser.storage.session.get([
+        'loginToken',
+        'loginSalt',
+      ]);
+      if (loginToken && loginSalt) {
+        await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
       }
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
-      await browser.storage.session.remove(['loginToken']);
+      await browser.storage.session.remove(['loginToken', 'loginSalt']);
       throw e;
     } finally {
       this.appStateController.store.updateState({
@@ -3956,14 +3959,18 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const { keyrings, encryptionKey: loginToken } = state;
+    const {
+      keyrings,
+      encryptionKey: loginToken,
+      encryptionSalt: loginSalt,
+    } = state;
     const addresses = keyrings.reduce(
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
 
     if (isManifestV3) {
-      await browser.storage.session.set({ loginToken });
+      await browser.storage.session.set({ loginToken, loginSalt });
     }
 
     if (!addresses.length) {
@@ -4358,7 +4365,7 @@ export default class MetamaskController extends EventEmitter {
     ledgerKeyring?.destroy?.();
 
     if (isManifestV3) {
-      browser.storage.session.remove(['loginToken']);
+      browser.storage.session.remove(['loginToken', 'loginSalt']);
     }
 
     return this.keyringController.setLocked();
