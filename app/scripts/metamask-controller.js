@@ -765,6 +765,7 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         `${this.permissionController.name}:getPermissions`,
         'SnapController:handleRequest',
+        'SnapController:getAll',
       ],
     });
     this.cronjobController = new CronjobController({
