@@ -8,7 +8,7 @@ import { obj as createThoughStream } from 'through2';
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { checkForErrorAndWarn } from './lib/util';
+import { checkForError, checkForErrorAndWarn } from './lib/util';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -452,12 +452,24 @@ const onMessageSetUpExtensionStreams = (msg) => {
  * so that streams may be re-established later the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
-  checkForErrorAndWarn();
+  const err = checkForError();
 
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
 
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready.
+   */
+  if (err) {
+    console.warn(`${err}. Resetting the streams.`);
+    setTimeout(setupExtensionStreams, 1000);
+  }
 };
 
 /**
