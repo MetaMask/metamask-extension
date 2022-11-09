@@ -983,12 +983,12 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
+        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
-        "nyc>convert-source-map": true,
-        "through2": true
+        "nyc>convert-source-map": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -1040,6 +1040,11 @@
         "@storybook/api>util-deprecate": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "@lavamoat/lavapack>through2": {
+      "packages": {
+        "@lavamoat/lavapack>readable-stream": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
@@ -6228,9 +6233,9 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
-        "duplexify": true,
         "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
+        "lavamoat-browserify>duplexify": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
@@ -6255,10 +6260,23 @@
     "lavamoat-browserify>concat-stream": {
       "globals": {
         "Buffer.concat": true,
-        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
+        "browserify>concat-stream>typedarray": true,
+        "lavamoat-browserify>readable-stream": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "lavamoat-browserify>duplexify": {
+      "globals": {
+        "Buffer": true,
+        "process.nextTick": true
+      },
+      "packages": {
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "pumpify>inherits": true
       }
@@ -6283,14 +6301,12 @@
       }
     },
     "lavamoat-browserify>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
       "globals": {
         "process.nextTick": true
       },
       "packages": {
-        "lavamoat-browserify>readable-stream": true
+        "lavamoat-browserify>readable-stream": true,
+        "pumpify>inherits": true
       }
     },
     "lavamoat>@babel/highlight": {

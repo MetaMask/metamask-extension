@@ -159,8 +159,6 @@ function wrapAgainstScuttling(file) {
     document,
     JSON,
     encodeURIComponent,
-    clearTimeout: clearTimeout.bind(window),
-    setTimeout: setTimeout.bind(window),
     crypto,
     __SENTRY__: {logger: undefined},
     sentryHooks: 1,
@@ -168,7 +166,7 @@ function wrapAgainstScuttling(file) {
     appState: 1,
     extra: {appState: undefined},
   };
-  allowed.window = allowed;
+
   const p = new Proxy(allowed, {
     get: function (a, b, c) {
       return allowed[b] || Reflect.get(a, b)
@@ -179,6 +177,11 @@ function wrapAgainstScuttling(file) {
       }
     }
   })
+
+  allowed.clearTimeout = clearTimeout.bind(window);
+  allowed.setTimeout = setTimeout.bind(window);
+  allowed.window = allowed;
+
   with (p) {
     with ({window: p, self: p, globalThis: p}) {
      ${content}
