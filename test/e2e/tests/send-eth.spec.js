@@ -272,10 +272,10 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           css: '.transaction-total-banner',
           text: '0.00021 ETH',
         });
-        await driver.clickElement(
-          { text: 'Edit suggested gas fee', tag: 'button' },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Edit suggested gas fee',
+          tag: 'button',
+        });
         await driver.waitForSelector({
           css: '.transaction-total-banner',
           text: '0.00021 ETH',
