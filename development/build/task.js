@@ -84,7 +84,8 @@ function runInChildProcess(
       env: process.env,
       prefixColor: task.color,
     };
-    await concurrently([command]);
+    const { result: resultPromise } = concurrently([command]);
+    await resultPromise;
   });
 }
 
