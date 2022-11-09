@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix crash on snaps settings page if snap has no permissions ([#16354](https://github.com/MetaMask/metamask-extension/pull/16354))
 - [FLASK] Improve transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
 - [FLASK] Fix crash after restoring MetaMask if you had snaps installed ([#16228](https://github.com/MetaMask/metamask-extension/pull/16228))
-- [FLASK] Fix transaction insight data display ([#16023](https://github.com/MetaMask/metamask-extension/pull/16023))
+- [FLASK] Fix a problem with displaying snaps transaction insight data ([#16023](https://github.com/MetaMask/metamask-extension/pull/16023))
 
 
 ## [10.21.2]
