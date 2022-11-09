@@ -16,7 +16,7 @@
     'icon head     head     head     head     head     head     head     right right right right'
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
     '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
-  align-items: start;
+  align-items: flex-start;
   cursor: pointer;
 
   &:hover,
