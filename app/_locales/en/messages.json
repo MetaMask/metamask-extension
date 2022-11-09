@@ -3273,6 +3273,10 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsInsightError": {
+    "message": "An error occured with $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
