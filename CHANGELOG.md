@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: fix tokens being removed from the Asset lists, after canceling a Swap ([#16167](https://github.com/MetaMask/metamask-extension/pull/16167))
 - Swaps: add debouncing for the `Swap from` and `Swap to` form fields ([#16326](https://github.com/MetaMask/metamask-extension/pull/16326))
 - [FLASK] Fix crash on snaps settings page if snap has no permissions ([#16354](https://github.com/MetaMask/metamask-extension/pull/16354))
-- [FLASK] Improve transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
+- Improve transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
 - [FLASK] Fix crash after restoring MetaMask if you had snaps installed ([#16228](https://github.com/MetaMask/metamask-extension/pull/16228))
 - [FLASK] Fix a problem with displaying snaps transaction insight data ([#16023](https://github.com/MetaMask/metamask-extension/pull/16023))
 
