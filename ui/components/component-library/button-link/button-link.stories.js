@@ -139,7 +139,7 @@ export const Size = (args) => (
   </>
 );
 
-export const Type = (args) => (
+export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <ButtonLink {...args}>Normal</ButtonLink>
     {/* Test Anchor tag to match exactly as button */}
