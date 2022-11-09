@@ -2,17 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import {
-  SIZES,
-  DISPLAY,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
-  COLORS,
-} from '../../../helpers/constants/design-system';
+import { SIZES } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { ICON_NAMES } from '../icon';
 import { ButtonIcon } from '../button-icon';
 
 import { TextFieldBase } from '../text-field-base';
