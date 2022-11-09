@@ -209,6 +209,13 @@ ShowClearButton.args = {
   showClearButton: true,
 };
 
+export const ClearButtonOnClick = Template.bind({});
+
+ShowClearButton.args = {
+  placeholder: 'Enter text to show clear',
+  showClearButton: true,
+};
+
 export const ClearButtonProps = Template.bind({});
 ClearButtonProps.args = {
   value: 'clear button props',
