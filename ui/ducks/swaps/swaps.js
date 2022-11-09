@@ -335,11 +335,9 @@ export const getSwapsRedesignEnabled = (state) => {
   const swapsRedesign =
     state.metamask.swapsState?.swapsFeatureFlags?.swapsRedesign;
   if (!swapsRedesign) {
-    return true;
+    return false;
   }
-  return true; // TODO: This is only temporary, will use the lines below later.
-  // const swapsRedesignEnabled = swapsRedesign.extensionActive;
-  // return swapsRedesignEnabled;
+  return swapsRedesign.extensionActive;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>

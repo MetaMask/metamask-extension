@@ -288,6 +288,10 @@ export const createSwapsMockStore = () => {
             mobileActive: true,
             extensionActive: true,
           },
+          swapsRedesign: {
+            mobileActive: true,
+            extensionActive: true,
+          },
         },
         quotes: {
           TEST_AGG_1: {

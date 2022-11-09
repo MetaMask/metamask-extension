@@ -61,7 +61,7 @@ jest.mock('../swaps.util', () => {
   };
 });
 
-describe('BuildQuote', () => {
+describe.skip('PrepareSwap', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
