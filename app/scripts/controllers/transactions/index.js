@@ -771,6 +771,7 @@ export default class TransactionController extends EventEmitter {
    * @param txMethodType
    * @param txParams
    * @param origin
+   * @param method
    * @param transactionType
    * @param sendFlowHistory
    * @param actionId
