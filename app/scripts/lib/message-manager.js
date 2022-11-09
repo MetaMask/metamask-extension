@@ -136,7 +136,6 @@ export default class MessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
     };
-    this.addMsg(msgData);
 
     const securityProviderResponse = await this.securityProviderRequest(
       msgData,

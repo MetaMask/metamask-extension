@@ -11,7 +11,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
-  getCurrentChainId,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -41,7 +40,6 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     isLedgerWallet,
     nativeCurrency: getNativeCurrency(state),
-    chainId,
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     subjectMetadata: getSubjectMetadata(state),

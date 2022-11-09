@@ -148,7 +148,6 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
-    console.log('HERE');
     // check for SIWE message
     const siwe = detectSIWE(msgParams);
     msgParams.siwe = siwe;
@@ -163,7 +162,6 @@ export default class PersonalMessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     };
-    this.addMsg(msgData);
 
     const securityProviderResponse = await this.securityProviderRequest(
       msgData,

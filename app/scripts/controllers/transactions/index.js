@@ -875,12 +875,6 @@ export default class TransactionController extends EventEmitter {
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
 
-    const dataValidation = await this.securityProviderRequest(txMeta, method);
-
-    txMeta.dataValidation = dataValidation;
-
-    console.log('txMeta: ', txMeta);
-
     return txMeta;
   }
 
