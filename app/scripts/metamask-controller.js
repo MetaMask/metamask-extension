@@ -169,7 +169,6 @@ import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
 import { securityProviderCheck } from './lib/security-provider-helpers';
-import fetch from 'node-fetch';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4537,70 +4536,11 @@ export default class MetamaskController extends EventEmitter {
   };
   
   async securityProviderRequest(requestData, methodName) {
-    const transactionSecurityCheckEnabled = this.preferencesController.store.getState().useTokenDetection;  // transactionSecurityCheckEnabled when ready instead of useTokenDetection
+    const isTransactionSecurityCheckEnabled = this.preferencesController.store.getState().useTokenDetection;  // transactionSecurityCheckEnabled when ready instead of useTokenDetection
     const chainId = this.networkController.getCurrentChainId();
 
-    // if (transactionSecurityCheckEnabled) {
-      // console.log('requestData: ', requestData);
-      // const response = await fetch('http://localhost:3000/security/1', {
-      //       method: 'GET',
-      //       headers: {
-      //         'Accept': 'application/json',
-      //         'Content-Type': 'application/json'
-      //       },
-      //       // body: JSON.stringify(requestData),
-      // });
-    
-      // return await response.json(); 
-    // }
-
-
-
-    // if (transactionSecurityCheckEnabled) {
-
-      // transaction 
-      // const dataToValidate = [
-      //     {
-      //     "host_name": requestData.origin, 
-      //     "rpc_method_name": methodName,
-      //     "chain_id": requestData.chainId,
-      //     "data": {
-      //       "from_address": requestData.txParams.from,
-      //       "to_address": requestData.txParams.to,
-      //       "gas": requestData.defaultGasEstimates.gas,  
-      //       "gasPrice": requestData.defaultGasEstimates.gasPrice,
-      //       "value": requestData.txParams.value,  
-      //       "data": requestData.txParams.data,
-      //     }
-      //   }
-      // ]
-
-      // eth_sign, personal_sign
-      // const dataToValidate = [
-      //     {
-      //     "host_name": requestData.msgParams.origin, 
-      //     "rpc_method_name": methodName,
-      //     "chain_id": chainId,
-      //     "data": {
-      //       "signer_address": requestData.msgParams.from,
-      //       "msg_to_sign": requestData.msgParams.data,
-      //     }
-      //   }
-      // ]
-
-      // eth_signTypedData
-      // const dataToValidate = [
-      //     {
-      //     "host_name": requestData.msgParams.origin, 
-      //     "rpc_method_name": methodName,
-      //     "chain_id": chainId,
-      //     "data": {
-      //        requestData.msgParams.data
-      //     }
-      //   }
-      // ]
-
-    const response = await securityProviderCheck(requestData);  // dataToValidate instead of requestData
+    // if (isTransactionSecurityCheckEnabled) {
+    const response = await securityProviderCheck(requestData, methodName, chainId);
     console.log('response: ', response);
 
     return await response;

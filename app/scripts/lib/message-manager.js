@@ -29,6 +29,7 @@ export default class MessageManager extends EventEmitter {
    *
    * @param {object} opts - Controller options
    * @param {Function} opts.metricsEvent - A function for emitting a metric event.
+   * @param {Function} opts.securityProviderRequest - A function for verifying a message, whether it is malicious or not.
    */
   constructor({ metricsEvent, securityProviderRequest }) {
     super();
@@ -135,9 +136,12 @@ export default class MessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
     };
-    this.addMsg(msgData);
 
-    await this.securityProviderRequest(msgData, msgData.type);
+    const flagAsDangerous = await this.securityProviderRequest(msgData, msgData.type);
+
+    msgData.flagAsDangerous = flagAsDangerous;
+
+    this.addMsg(msgData);
 
     // signal update
     this.emit('update');

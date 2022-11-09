@@ -19,7 +19,6 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { transactionSecurityCheck } from '../../../ducks/send/helpers';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -78,32 +77,6 @@ export default class SignatureRequest extends PureComponent {
     hasScrolledMessage: false,
     showContractDetails: false,
   };
-
-  async componentDidMount() {
-    const { chainId, txData } = this.props;
-
-    var data = [
-      {
-        'host_name': txData.msgParams.origin,
-        'rpc_method_name': txData.type,
-        'chain_id': chainId,
-        'data': {
-          'typedDataObject': '',
-        },
-      },
-    ]
-
-    const checkSignature = await transactionSecurityCheck(data);
-
-    this.setState({ isSignatureMalicious: checkSignature.flagAsDangerous });
-
-    // console.log('host_name : ', txData.msgParams.origin);
-    // console.log('rpc_method_name : ', txData.type);
-    // console.log('chain_id : ', chainId);
-    // console.log('signer_address : ', txData.msgParams.from);
-    // console.log('msg_to_sign : ', txData.msgParams.data);
-    // console.log('txData : ', txData);
-  }
 
   setMessageRootRef(ref) {
     this.messageRootRef = ref;

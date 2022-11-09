@@ -858,16 +858,15 @@ export default class TransactionController extends EventEmitter {
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
 
+
+    const flagAsDangerous = await this.securityProviderRequest(txMeta, method);
+
+    txMeta.flagAsDangerous = flagAsDangerous;
+
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
-
-    const dataValidation = await this.securityProviderRequest(txMeta, method);
-
-    txMeta.dataValidation = dataValidation;
-
-    console.log('txMeta: ', txMeta);
 
     return txMeta;
   }
