@@ -69,7 +69,7 @@ describe('TextField', () => {
   it('should render showClearButton button when showClearButton is true and value exists', () => {
     // As TextField is a controlled input we need to pass in a value for the clear button to appear
     const { getByRole } = render(<TextField value="text" showClearButton />);
-    expect(getByRole('button', { name: /clear/u })).toBeDefined();
+    expect(getByRole('button', { name: /Clear/u })).toBeDefined();
     expect(getByRole('textbox')).toBeDefined();
   });
   it('should render with the rightAccessory', () => {
@@ -98,7 +98,7 @@ describe('TextField', () => {
     const { user, getByRole } = setup(
       <TextField value="text" clearButtonOnClick={fn} showClearButton />,
     );
-    await user.click(getByRole('button', { name: /clear/u }));
+    await user.click(getByRole('button', { name: /Clear/u }));
     expect(fn).toHaveBeenCalledTimes(1); // clear button onClick is fired
   });
   it('should fire clearButtonProps.onClick event when passed to clearButtonProps.onClick prop', async () => {
@@ -111,7 +111,7 @@ describe('TextField', () => {
         showClearButton
       />,
     );
-    await user.click(getByRole('button', { name: /clear/u }));
+    await user.click(getByRole('button', { name: /Clear/u }));
     expect(fn).toHaveBeenCalledTimes(1);
   });
   it('should be able to accept inputProps', () => {
