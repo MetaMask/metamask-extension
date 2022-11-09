@@ -286,6 +286,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-info-circle',
   },
   {
+    tabMessage: (t) => t('about'),
+    sectionMessage: (t) => t('betaTerms'),
+    descriptionMessage: (t) => t('betaTerms'),
+    route: `${ABOUT_US_ROUTE}#beta-terms`,
+    icon: 'fa fa-info-circle',
+  },
+  {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('enableEIP1559V2'),
     descriptionMessage: (t) => t('enableEIP1559V2Description'),
