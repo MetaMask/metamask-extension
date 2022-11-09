@@ -2820,6 +2820,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-3.0.0.tgz#c06744e66a968ffa13f70cc71a7d3b15d86b0ee7"
   integrity sha512-hD10mgvhcDkZX8wnauw8udp1K2MzcbZfrN7Yon9sQ+OqVK9kiQ4VhZAyZNZTy9KJLtfoVD9Y2F6L4gEese7hDA==
 
+"@metamask/browser-passworder@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.1.tgz#bb2613bb1886774e18da4107ab94a21042e5e3da"
+  integrity sha512-mtekzCKph/S/15hRfWFDIUrpvz9mNoIU0CmH0SOlTHpLhalonEsZ+56MbQQUDshXbytzHp1eKr29OHrIx0u9iQ==
+
 "@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.35.0":
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
@@ -7547,10 +7552,6 @@ browser-pack@^6.0.1:
     through2 "^2.0.0"
     umd "^3.0.0"
 
-browser-passworder@MetaMask/browser-passworder#export-key:
-  version "3.0.0"
-  resolved "https://codeload.github.com/MetaMask/browser-passworder/tar.gz/91c43409191b849314956372ecd3907d11bf8463"
-
 browser-passworder@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/browser-passworder/-/browser-passworder-2.0.3.tgz#6fdd2082e516a176edbcb3dcee0b7f9fce4f7917"
@@ -11211,17 +11212,6 @@ eth-json-rpc-middleware@^9.0.1:
     node-fetch "^2.6.7"
     pify "^3.0.0"
 
-eth-keyring-controller@MetaMask/KeyringController#export-key:
-  version "7.0.2"
-  resolved "https://codeload.github.com/MetaMask/KeyringController/tar.gz/a9aa2be216bc5fa8af8c7454217755fac5cd47f3"
-  dependencies:
-    "@metamask/bip39" "^4.0.0"
-    "@metamask/eth-hd-keyring" "^4.0.2"
-    browser-passworder MetaMask/browser-passworder#export-key
-    eth-sig-util "^3.0.1"
-    eth-simple-keyring "^4.2.0"
-    obs-store "^4.0.3"
-
 eth-keyring-controller@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-7.0.2.tgz#c4d7f9be179f08b3bb18410066bc4c8e91f50552"
@@ -11230,6 +11220,18 @@ eth-keyring-controller@^7.0.2:
     "@metamask/bip39" "^4.0.0"
     "@metamask/eth-hd-keyring" "^4.0.2"
     browser-passworder "^2.0.3"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    obs-store "^4.0.3"
+
+eth-keyring-controller@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-8.0.0.tgz#0a57c337da1af82874a0209cc0daf3bcbcc4a103"
+  integrity sha512-ajEa7T1MctQ4F1Rrg6DkwfsR9CHXxvNW1ERyPCMlu94QOMLAGs2kQFhM0Wsjt1n1vA7EiJBu5zg1OyzI/Y77rw==
+  dependencies:
+    "@metamask/bip39" "^4.0.0"
+    "@metamask/browser-passworder" "^4.0.1"
+    "@metamask/eth-hd-keyring" "^4.0.2"
     eth-sig-util "^3.0.1"
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
