@@ -434,6 +434,9 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "beta": {
+    "message": "Beta"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
