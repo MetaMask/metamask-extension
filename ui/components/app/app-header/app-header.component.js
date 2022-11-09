@@ -6,7 +6,10 @@ import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
+
+///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeHeader from '../beta-header';
+///: END:ONLY_INCLUDE_IN(beta)
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -116,7 +119,9 @@ export default class AppHeader extends PureComponent {
       disableNetworkIndicator,
       disabled,
       onClick,
+      ///: BEGIN:ONLY_INCLUDE_IN(beta)
       showBetaHeader,
+      ///: END:ONLY_INCLUDE_IN(beta)
     } = this.props;
 
     return (
