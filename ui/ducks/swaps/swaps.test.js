@@ -958,10 +958,10 @@ describe('Ducks - Swaps', () => {
     });
 
     describe('getSwapsRedesignEnabled', () => {
-      it('returns false if feature flags for swaps redesign are missing', () => {
+      it('returns true if feature flags are not returned from backend yet', () => {
         const state = createSwapsMockStore();
         delete state.metamask.swapsState.swapsFeatureFlags.swapsRedesign;
-        expect(swaps.getSwapsRedesignEnabled(state)).toBe(false);
+        expect(swaps.getSwapsRedesignEnabled(state)).toBe(true);
       });
 
       it('returns false if the extension feature flag for swaps redesign is false', () => {

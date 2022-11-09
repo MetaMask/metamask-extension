@@ -335,7 +335,7 @@ export const getSwapsRedesignEnabled = (state) => {
   const swapsRedesign =
     state.metamask.swapsState?.swapsFeatureFlags?.swapsRedesign;
   if (!swapsRedesign) {
-    return false;
+    return true; // By default show the redesign if we don't have feature flags returned yet.
   }
   return swapsRedesign.extensionActive;
 };
