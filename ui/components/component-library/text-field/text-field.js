@@ -13,6 +13,7 @@ import {
 import Box from '../../ui/box';
 
 import { Icon, ICON_NAMES } from '../icon';
+import { ButtonIcon } from '../button-icon';
 
 import { TextFieldBase } from '../text-field-base';
 
@@ -34,21 +35,14 @@ export const TextField = ({
     rightAccessory={
       value && showClearButton ? (
         <>
-          {/* TODO: replace with ButtonIcon */}
-          <Box
+          <ButtonIcon
             className="mm-text-field__button-clear"
-            as="button"
-            display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
-            backgroundColor={COLORS.TRANSPARENT}
-            padding={0}
+            ariaLabel="Clear" // TODO: i18n
+            icon={ICON_NAMES.CLOSE_OUTLINE}
+            size={SIZES.SM}
             onClick={clearButtonOnClick}
             {...clearButtonProps}
-            aria-label="Clear" // TODO: i18n
-          >
-            <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-          </Box>
+          />
           {rightAccessory}
         </>
       ) : (
