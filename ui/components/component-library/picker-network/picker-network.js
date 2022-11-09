@@ -25,6 +25,7 @@ export const PickerNetwork = ({
   return (
     <Box
       className={classnames('mm-picker-network', className)}
+      as="button"
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderColor={COLORS.BORDER_DEFAULT}
       borderWidth={1}
