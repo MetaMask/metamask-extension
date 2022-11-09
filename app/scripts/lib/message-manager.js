@@ -137,7 +137,10 @@ export default class MessageManager extends EventEmitter {
       type: MESSAGE_TYPE.ETH_SIGN,
     };
 
-    const flagAsDangerous = await this.securityProviderRequest(msgData, msgData.type);
+    const flagAsDangerous = await this.securityProviderRequest(
+      msgData,
+      msgData.type,
+    );
 
     msgData.flagAsDangerous = flagAsDangerous;
 

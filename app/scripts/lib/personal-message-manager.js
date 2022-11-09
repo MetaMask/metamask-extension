@@ -162,7 +162,10 @@ export default class PersonalMessageManager extends EventEmitter {
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     };
 
-    const flagAsDangerous = await this.securityProviderRequest(msgData, msgData.type);
+    const flagAsDangerous = await this.securityProviderRequest(
+      msgData,
+      msgData.type,
+    );
 
     msgData.flagAsDangerous = flagAsDangerous;
 

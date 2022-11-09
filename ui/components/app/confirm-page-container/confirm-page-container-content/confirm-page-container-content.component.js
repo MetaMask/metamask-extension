@@ -161,7 +161,7 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
     } = this.props;
-    console.log("HERE");
+    console.log('HERE');
     console.log('currentTransaction: ', currentTransaction);
     const { t } = this.context;
 
