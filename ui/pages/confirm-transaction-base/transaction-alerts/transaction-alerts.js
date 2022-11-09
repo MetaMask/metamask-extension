@@ -7,28 +7,16 @@ import { submittedPendingTransactionsSelector } from '../../../selectors/transac
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
-  isBuyableChain,
-  nativeCurrency,
-  networkName,
-  showBuyModal,
-  type,
 }) => {
-  const {
-    balanceError,
-    estimateUsed,
-    hasSimulationError,
-    supportsEIP1559V2,
-    isNetworkBusy,
-  } = useGasFeeContext();
+  const { estimateUsed, hasSimulationError, supportsEIP1559V2, isNetworkBusy } =
+    useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
 
@@ -89,39 +77,6 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {balanceError && type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
-        <ActionableMessage
-          className="actionable-message--warning"
-          message={
-            isBuyableChain ? (
-              <Typography variant={TYPOGRAPHY.H7} align="left">
-                {t('insufficientCurrencyBuyOrDeposit', [
-                  nativeCurrency,
-                  networkName,
-                  <Button
-                    type="inline"
-                    className="confirm-page-container-content__link"
-                    onClick={showBuyModal}
-                    key={`${nativeCurrency}-buy-button`}
-                  >
-                    {t('buyAsset', [nativeCurrency])}
-                  </Button>,
-                ])}
-              </Typography>
-            ) : (
-              <Typography variant={TYPOGRAPHY.H7} align="left">
-                {t('insufficientCurrencyDeposit', [
-                  nativeCurrency,
-                  networkName,
-                ])}
-              </Typography>
-            )
-          }
-          useIcon
-          iconFillColor="var(--color-error-default)"
-          type="danger"
-        />
-      ) : null}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
           dataTestId="low-gas-fee-alert"
@@ -164,11 +119,6 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
-  nativeCurrency: PropTypes.string,
-  networkName: PropTypes.string,
-  showBuyModal: PropTypes.func,
-  type: PropTypes.string,
-  isBuyableChain: PropTypes.bool,
 };
 
 export default TransactionAlerts;
