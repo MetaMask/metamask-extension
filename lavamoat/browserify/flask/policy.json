@@ -1080,11 +1080,22 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-json-rpc-infura>@metamask/utils": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "node-fetch": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-json-rpc-infura>@metamask/utils>superstruct": true,
+        "eslint>fast-deep-equal": true,
+        "nock>debug": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
@@ -1434,8 +1445,8 @@
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snap-utils": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "@metamask/snap-utils>superstruct": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
       }
     },
@@ -1444,9 +1455,9 @@
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "@metamask/snap-utils>@noble/hashes": true,
-        "@metamask/snap-utils>@scure/base": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/snap-utils>@scure/base": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
@@ -1672,7 +1683,7 @@
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
         "@metamask/snap-utils": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
@@ -1852,7 +1863,8 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/core>@babel/types": true,
+        "@metamask/snap-utils>@babel/types": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "@metamask/snap-utils>@noble/hashes": true,
         "@metamask/snap-utils>@scure/base": true,
         "@metamask/snap-utils>cron-parser": true,
@@ -1864,8 +1876,29 @@
         "browserify>events": true,
         "browserify>path-browserify": true,
         "eslint>fast-deep-equal": true,
-        "eth-block-tracker>@metamask/utils": true,
         "semver": true
+      }
+    },
+    "@metamask/snap-utils>@babel/types": {
+      "globals": {
+        "console.trace": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "@metamask/snap-utils>@babel/types>@babel/helper-string-parser": true,
+        "@metamask/snap-utils>@babel/types>@babel/helper-validator-identifier": true,
+        "browserify>process": true
+      }
+    },
+    "@metamask/snap-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snap-utils>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true
       }
     },
     "@metamask/snap-utils>@noble/hashes": {
@@ -2878,8 +2911,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snap-utils>superstruct": true,
-        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-block-tracker>@metamask/utils>superstruct": true,
         "nock>debug": true
       }
     },
@@ -2936,8 +2969,8 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -2982,6 +3015,17 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "eth-json-rpc-middleware>@metamask/utils>superstruct": true,
+        "nock>debug": true
       }
     },
     "eth-keyring-controller": {

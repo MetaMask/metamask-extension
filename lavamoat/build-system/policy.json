@@ -1846,54 +1846,95 @@
         "chokidar>is-binary-path>binary-extensions": true
       }
     },
-    "cross-spawn": {
+    "concurrently": {
+      "builtin": {
+        "assert": true,
+        "fs": true
+      },
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "concurrently>chalk": true,
+        "concurrently>date-fns": true,
+        "concurrently>rxjs": true,
+        "concurrently>shell-quote": true,
+        "concurrently>spawn-command": true,
+        "concurrently>supports-color": true,
+        "concurrently>tree-kill": true,
+        "lodash": true
+      }
+    },
+    "concurrently>chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "concurrently>chalk>supports-color": true
+      }
+    },
+    "concurrently>chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "concurrently>supports-color>has-flag": true
+      }
+    },
+    "concurrently>date-fns": {
+      "globals": {
+        "console": true
+      }
+    },
+    "concurrently>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
+      }
+    },
+    "concurrently>spawn-command": {
       "builtin": {
         "child_process.spawn": true,
-        "child_process.spawnSync": true,
-        "fs.closeSync": true,
-        "fs.openSync": true,
-        "fs.readSync": true,
-        "path.delimiter": true,
-        "path.normalize": true,
-        "path.resolve": true
+        "util._extend": true
       },
       "globals": {
-        "Buffer.alloc": true,
-        "process.chdir": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
-      }
-    },
-    "cross-spawn>path-key": {
-      "globals": {
-        "process.env": true,
         "process.platform": true
       }
     },
-    "cross-spawn>shebang-command": {
-      "packages": {
-        "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
+    "concurrently>supports-color": {
       "builtin": {
-        "path.join": true
+        "os.release": true,
+        "tty.isatty": true
       },
       "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
+        "process.env": true,
         "process.platform": true
       },
       "packages": {
-        "mocha>which>isexe": true
+        "concurrently>supports-color>has-flag": true
+      }
+    },
+    "concurrently>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "concurrently>tree-kill": {
+      "builtin": {
+        "child_process.exec": true,
+        "child_process.spawn": true
+      },
+      "globals": {
+        "process.kill": true,
+        "process.platform": true
       }
     },
     "debounce-stream>duplexer": {

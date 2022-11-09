@@ -1,8 +1,10 @@
 const EventEmitter = require('events');
-const spawn = require('cross-spawn');
+const randomColor = require('randomcolor');
+const concurrently = require('concurrently');
 
 const tasks = {};
 const taskEvents = new EventEmitter();
+const colors = randomColor({ count: 16 });
 
 module.exports = {
   tasks,
@@ -43,7 +45,10 @@ function createTask(taskName, taskFn) {
       `MetaMask build: task "${taskName}" already exists. Refusing to redefine`,
     );
   }
-  const task = instrumentForTaskStats(taskName, taskFn);
+  const index = Object.keys(tasks).length;
+  const color = colors[index % colors.length];
+  const task = instrumentForTaskStats(taskName, color, taskFn);
+  task.color = color;
   task.taskName = taskName;
   tasks[taskName] = task;
   return task;
@@ -60,61 +65,36 @@ function runInChildProcess(
     );
   }
 
-  return instrumentForTaskStats(taskName, async () => {
-    const childProcess = spawn(
+  return instrumentForTaskStats(taskName, task.color, async () => {
+    const commandString = [
       'yarn',
-      [
-        // Use the same build type for subprocesses, and only run them in
-        // LavaMoat if the parent process also ran in LavaMoat.
-        isLavaMoat ? 'build' : 'build:dev',
-        taskName,
-        `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
-        `--build-type=${buildType}`,
-        `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
-        `--policyOnly=${policyOnly ? 'true' : 'false'}`,
-        '--skip-stats=true',
-      ],
-      {
-        env: process.env,
-      },
-    );
-
-    // forward logs to main process
-    // skip the first stdout event (announcing the process command)
-    childProcess.stdout.once('data', () => {
-      childProcess.stdout.on('data', (data) =>
-        process.stdout.write(`${taskName}: ${data}`),
-      );
-    });
-
-    childProcess.stderr.on('data', (data) =>
-      process.stderr.write(`${taskName}: ${data}`),
-    );
-
-    // await end of process
-    await new Promise((resolve, reject) => {
-      childProcess.once('exit', (errCode) => {
-        if (errCode !== 0) {
-          reject(
-            new Error(
-              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
-            ),
-          );
-          return;
-        }
-        resolve();
-      });
-    });
+      // Use the same build type for subprocesses, and only run them in
+      // LavaMoat if the parent process also ran in LavaMoat.
+      isLavaMoat ? 'build' : 'build:dev',
+      taskName,
+      `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
+      `--build-type=${buildType}`,
+      `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
+      `--policyOnly=${policyOnly ? 'true' : 'false'}`,
+      '--skip-stats=true',
+    ].join(' ');
+    const command = {
+      command: commandString,
+      name: taskName,
+      env: process.env,
+      prefixColor: task.color,
+    };
+    await concurrently([command]);
   });
 }
 
-function instrumentForTaskStats(taskName, asyncFn) {
+function instrumentForTaskStats(taskName, color, asyncFn) {
   return async () => {
     const start = Date.now();
-    taskEvents.emit('start', [taskName, start]);
+    taskEvents.emit('start', [taskName, start, color]);
     await asyncFn();
     const end = Date.now();
-    taskEvents.emit('end', [taskName, start, end]);
+    taskEvents.emit('end', [taskName, start, end, color]);
   };
 }
 
