@@ -20,6 +20,7 @@ const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -627,6 +628,50 @@ describe('MetaMetricsController', function () {
         {
           name: 'home',
           params: null,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      mock.verify();
+    });
+
+    it('multiple trackPage call with same actionId should result in same messageId being sent to segment', function () {
+      const mock = sinon.mock(segment);
+      const metaMetricsController = getMetaMetricsController({
+        preferencesStore: getMockPreferencesStore({
+          participateInMetaMetrics: null,
+        }),
+      });
+      mock
+        .expects('page')
+        .twice()
+        .withArgs({
+          name: 'home',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            params: null,
+            ...DEFAULT_PAGE_PROPERTIES,
+          },
+          messageId: DUMMY_ACTION_ID,
+          timestamp: new Date(),
+        });
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
         },

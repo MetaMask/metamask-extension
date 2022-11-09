@@ -516,6 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -540,9 +541,10 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-    
+
   test-e2e-chrome-mv3:
     executor: node-browsers
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -570,6 +572,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -597,6 +600,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -624,6 +628,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -792,6 +797,11 @@ jobs:
       - store_artifacts:
           path: development/ts-migration-dashboard/build
           destination: ts-migration-dashboard
+      - run:
+          name: Set branch parent commit env var
+          command: |
+            echo "export PARENT_COMMIT=$(git rev-parse "$(git rev-list --topo-order --reverse HEAD ^origin/develop | head -1)"^)" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
