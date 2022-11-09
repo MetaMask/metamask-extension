@@ -2660,6 +2660,10 @@
     "message": "Connect to the $1 Snap.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "Schedule and execute periodic actions.",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
