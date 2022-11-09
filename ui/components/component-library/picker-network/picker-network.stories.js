@@ -43,9 +43,13 @@ export const Label = (args) => (
 
 export const Src = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <PickerNetwork {...args} src="./images/arbitrum.svg" />
-    <PickerNetwork {...args} src="./images/matic-token.png" />
-    <PickerNetwork {...args} src="./images/optimism.svg" />
+    <PickerNetwork {...args} label="Arbitrum One" src="./images/arbitrum.svg" />
+    <PickerNetwork
+      {...args}
+      label="Polygon Mainnet"
+      src="./images/matic-token.png"
+    />
+    <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
   </Box>
 );
 
