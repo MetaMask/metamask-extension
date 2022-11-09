@@ -1855,10 +1855,10 @@
         "process": true
       },
       "packages": {
+        "browserify>shell-quote": true,
         "concurrently>chalk": true,
         "concurrently>date-fns": true,
         "concurrently>rxjs": true,
-        "concurrently>shell-quote": true,
         "concurrently>spawn-command": true,
         "concurrently>supports-color": true,
         "concurrently>tree-kill": true,
