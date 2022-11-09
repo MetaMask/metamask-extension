@@ -117,11 +117,11 @@ async function start() {
   if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-     * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
+     * Code below ensures that UI is rendered only after startUISync message is received thus background is ready.
      * In case the UI is already rendered, only update the streams.
      */
     const messageListener = async (message) => {
-      if (message?.name === EXTENSION_MESSAGES.CONNECTION_READY) {
+      if (message?.data?.method === 'startUISync') {
         if (isUIInitialised) {
           // Currently when service worker is revived we create new streams
           // in later version we might try to improve it by reviving same streams.
