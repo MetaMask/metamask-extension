@@ -795,7 +795,7 @@ jobs:
       - run:
           name: Set branch parent commit env var
           command: |
-            echo "export PARENT_COMMIT=$(diff -u <(git rev-list --first-parent "${1:-origin/HEAD}") <(git rev-list --first-parent "${2:-HEAD}") | sed -ne "s/^ //p" | head -1)" >> $BASH_ENV
+            echo "export PARENT_COMMIT=$(git rev-parse "$(git rev-list --topo-order --reverse HEAD ^origin/develop | head -1)"^)" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: build:announce
