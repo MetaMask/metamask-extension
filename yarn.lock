@@ -7547,9 +7547,9 @@ browser-pack@^6.0.1:
     through2 "^2.0.0"
     umd "^3.0.0"
 
-browser-passworder@MetaMask/browser-passworder#e37802b66135a9769177a7df237bf78cd99858ce:
+browser-passworder@MetaMask/browser-passworder#export-key:
   version "3.0.0"
-  resolved "https://codeload.github.com/MetaMask/browser-passworder/tar.gz/e37802b66135a9769177a7df237bf78cd99858ce"
+  resolved "https://codeload.github.com/MetaMask/browser-passworder/tar.gz/91c43409191b849314956372ecd3907d11bf8463"
 
 browser-passworder@^2.0.3:
   version "2.0.3"
@@ -11211,13 +11211,13 @@ eth-json-rpc-middleware@^9.0.1:
     node-fetch "^2.6.7"
     pify "^3.0.0"
 
-eth-keyring-controller@MetaMask/KeyringController#7c0e55856ac49a4a3b9f7d864053a2e6d2e0b35e:
+eth-keyring-controller@MetaMask/KeyringController#export-key:
   version "7.0.2"
-  resolved "https://codeload.github.com/MetaMask/KeyringController/tar.gz/7c0e55856ac49a4a3b9f7d864053a2e6d2e0b35e"
+  resolved "https://codeload.github.com/MetaMask/KeyringController/tar.gz/a9aa2be216bc5fa8af8c7454217755fac5cd47f3"
   dependencies:
     "@metamask/bip39" "^4.0.0"
     "@metamask/eth-hd-keyring" "^4.0.2"
-    browser-passworder MetaMask/browser-passworder#e37802b66135a9769177a7df237bf78cd99858ce
+    browser-passworder MetaMask/browser-passworder#export-key
     eth-sig-util "^3.0.1"
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"

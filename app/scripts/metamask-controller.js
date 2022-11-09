@@ -2327,18 +2327,28 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _loginUser() {
-    // Automatic login via config password
-    const password = process.env.CONF?.PASSWORD;
-    if (password) {
-      await this.submitPassword(password);
+    try {
+      // Automatic login via config password
+      const password = process.env.CONF?.PASSWORD;
+      if (password) {
+        await this.submitPassword(password);
+      }
+      // Automatic login via storage encryption key
+      else if (isManifestV3) {
+        await this.submitEncryptionKey();
+      }
+      // Updating accounts in this.accountTracker before starting UI syncing ensure that
+      // state has account balance before it is synced with UI
+      await this.accountTracker._updateAccounts();
+    } finally {
+      // Message startUISync is used in MV3 to start syncing state with UI
+      // Sending this message after login is completed helps to ensure that incomplete state without
+      // account details is not flused to UI.
+      this.emit('startUISync');
+      // During controllers initialisation memstore updates a lot, delaying this subscription
+      // helps to delay early flusing of state to UI.
+      this.memStore.subscribe(this.sendUpdate.bind(this));
     }
-    // Automatic login via storage encryption key
-    else if (isManifestV3) {
-      await this.submitEncryptionKey();
-    }
-    await this.accountTracker._updateAccounts();
-    this.emit('startUISync');
-    this.memStore.subscribe(this.sendUpdate.bind(this));
   }
 
   /**
