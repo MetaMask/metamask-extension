@@ -467,7 +467,7 @@ const onDisconnectDestroyStreams = () => {
    * once the port and connections are ready.
    */
   if (err) {
-    console.warn(`${err}. Resetting the streams.`);
+    console.warn(`${err} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
 };
