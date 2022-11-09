@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../../../components/ui/button';
-import Chip from '../../../components/ui/chip/chip';
+import { Tag } from '../../../components/component-library/tag';
+
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
-import { COLORS } from '../../../helpers/constants/design-system';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
@@ -85,12 +85,7 @@ export default class InfoTab extends PureComponent {
               className="info-tab__link-text"
             >
               {t('betaTerms')}
-              <Chip
-                borderColor={COLORS.PRIMARY_DEFAULT}
-                backgroundColor={COLORS.PRIMARY_DEFAULT}
-                color={COLORS.PRIMARY_INVERSE}
-                label={t('new')}
-              />
+              <Tag label={t('new')} className="info-tab__tag" />
             </Button>
           </div>
         ) : null}
