@@ -156,6 +156,7 @@ function wrapAgainstScuttling(file) {
     sentryHooks: 1,
     sentry: 1,
     appState: 1,
+    extra: {appState: undefined},
   };
   allowed.window = allowed;
   const p = new Proxy(allowed, {
