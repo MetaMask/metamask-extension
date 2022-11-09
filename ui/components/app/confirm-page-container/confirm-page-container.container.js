@@ -5,8 +5,9 @@ import {
   getIsBuyableChain,
   getNetworkIdentifier,
   getSwapsDefaultToken,
+  getMetadataContractName,
+  getAccountName,
 } from '../../../selectors';
-import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
@@ -16,11 +17,14 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
+  const toName = getAccountName(state, to);
+  const toMetadataName = getMetadataContractName(to);
 
   return {
     isBuyableChain,
     contact,
-    toName: contact?.name || ownProps.toName,
+    toName,
+    toMetadataName,
     isOwnedAccount: getAccountsWithLabels(state)
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
@@ -30,13 +34,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConfirmPageContainer);
+export default connect(mapStateToProps)(ConfirmPageContainer);

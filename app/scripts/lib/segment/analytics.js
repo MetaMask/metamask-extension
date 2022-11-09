@@ -2,20 +2,9 @@ import removeSlash from 'remove-trailing-slash';
 import looselyValidate from '@segment/loosely-validate-event';
 import { isString } from 'lodash';
 import isRetryAllowed from 'is-retry-allowed';
+import { generateRandomId } from '../util';
 
 const noop = () => ({});
-
-// Taken from https://stackoverflow.com/a/1349426/3696652
-const characters =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const generateRandomId = () => {
-  let result = '';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 20; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
 
 // Method below is inspired from axios-retry https://github.com/softonic/axios-retry
 function isNetworkError(error) {

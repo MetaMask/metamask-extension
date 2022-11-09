@@ -434,6 +434,9 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "beta": {
+    "message": "Beta"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
@@ -1685,6 +1688,12 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "improvedTokenAllowance": {
+    "message": "Improved token allowance experience"
+  },
+  "improvedTokenAllowanceDescription": {
+    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -2137,6 +2146,9 @@
   "networkName": {
     "message": "Network name"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2151,6 +2163,9 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
+  },
+  "networkNameOptimism": {
+    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2648,6 +2663,10 @@
     "message": "Connect to the $1 Snap.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "Schedule and execute periodic actions.",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
@@ -2930,6 +2949,9 @@
   "revokeApproveForAllDescription": {
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "Revoke spending cap for your"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
@@ -3253,6 +3275,10 @@
   },
   "snaps": {
     "message": "Snaps"
+  },
+  "snapsInsightError": {
+    "message": "An error occured with $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
