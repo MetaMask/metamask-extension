@@ -253,6 +253,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${ABOUT_US_ROUTE}#terms`,
     icon: 'fa fa-info-circle',
   },
+
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('attributions'),
