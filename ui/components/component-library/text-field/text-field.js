@@ -81,6 +81,10 @@ TextField.propTypes = {
    */
   showClearButton: PropTypes.bool,
   /**
+   * The onClick handler for the clear button
+   */
+  clearButtonOnClick: PropTypes.func,
+  /**
    * The props to pass to the clear button
    */
   clearButtonProps: PropTypes.shape(Box.PropTypes),
