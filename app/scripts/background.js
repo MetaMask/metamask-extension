@@ -133,7 +133,7 @@ const sendReadyMessageToTabs = async () => {
       return result;
     });
 
-  /* TODO we should only sendMessage to dapp tabs, not all tabs. */
+  /** @todo we should only sendMessage to dapp tabs, not all tabs. */
   for (const tab of tabs) {
     browser.tabs
       .sendMessage(tab.id, {

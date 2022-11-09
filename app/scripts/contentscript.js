@@ -90,11 +90,10 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
 
 /**
- * Don't run the keep worker alive logic for JSON RPC methods called on initial load.
- * If accounts are connected to the dapp, additional JSON RPC methods will be called on
- * initial load that are not included in this list. This is to prevent the service worker
- * from being kept alive when accounts are not connected to the dapp or when the user is not
- * interacting with the extension. The keep-alive logic should not work for non-dapp pages.
+ * Don't run the keep-worker-alive logic for JSON-RPC methods called on initial load.
+ * This is to prevent the service worker from being kept alive when accounts are not
+ * connected to the dapp or when the user is not interacting with the extension.
+ * The keep-alive logic should not work for non-dapp pages.
  */
 const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
   MESSAGE_TYPE.GET_PROVIDER_STATE,
@@ -105,8 +104,9 @@ let keepAliveInterval;
 let keepAliveTimer;
 
 /**
- * Running this method will ensure the service worker is kept alive for 45 minutes
- * First message is sent immediately, subsequent messages are sent at interval of WORKER_KEEP_ALIVE_INTERVAL
+ * Running this method will ensure the service worker is kept alive for 45 minutes.
+ * The first message is sent immediately and subsequent messages are sent at an
+ * interval of WORKER_KEEP_ALIVE_INTERVAL.
  */
 const runWorkerKeepAliveInterval = () => {
   clearTimeout(keepAliveTimer);
@@ -449,7 +449,7 @@ const onMessageSetUpExtensionStreams = (msg) => {
 
 /**
  * This listener destroys the extension streams when the extension port is disconnected,
- * so that streams may be re-established later the extension port is reconnected.
+ * so that streams may be re-established later when the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
   const err = checkForError();
@@ -464,7 +464,7 @@ const onDisconnectDestroyStreams = () => {
    * worker may cause the error, "Error: Could not establish connection. Receiving end does not
    * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
    * may cause issues. We suspect that this is a chromium bug as this event should only be called
-   * once the port and connections are ready.
+   * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
     console.warn(`${err} Resetting the streams.`);
