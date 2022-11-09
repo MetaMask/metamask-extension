@@ -16,38 +16,39 @@ The `TextField` accepts all props below as well as all [Box](/docs/ui-components
 
 <ArgsTable of={TextField} />
 
-### Show Clear
+### Show Clear Button
 
-Use the `showClear` prop to display a clear button when `TextField` has a value. Clicking the button will clear the value.
-You can also attach an `onClear` handler to the `TextField` to perform additional actions when the clear button is clicked.
+Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonProps` to add an `onClick` handler to clear the value of the input.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear" />
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear-button" />
 </Canvas>
 
 ```jsx
 import { TextField } from '../../ui/component-library/text-field';
 
-<TextField showClear />;
-```
+const [value, setValue] = useState('show clear');
 
-### On Clear
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
 
-Use the `onClear` prop to perform additional actions when the clear button is clicked.
+const handleOnClear = () => {
+  setValue('');
+};
 
-<Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--on-clear" />
-</Canvas>
-
-```jsx
-import { TextField } from '../../ui/component-library/text-field';
-
-<TextField showClear onClear={() => console.log('cleared input')} />;
+<TextField
+  placeholder="Enter text to show clear"
+  value={value}
+  onChange={handleOnChange}
+  showClearButton
+  clearButtonProps={{ onClick: handleOnClear }}
+/>;
 ```
 
 ### Clear Button Props and Clear Button Icon Props
 
-Use the `clearButtonProps` and `clearButtonIconProps` props to pass props to the clear button and clear button icon respectively.
+Use the `clearButtonProps` props to pass props to the clear button.
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-text-field-stories-js--clear-button-props-clear-button-icon-props" />
@@ -62,12 +63,11 @@ import {
 import { TextField } from '../../ui/component-library/text-field';
 
 <TextField
-  showClear
+  showClearButton
   clearButtonProps={{
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderRadius: BORDER_RADIUS.XS,
     'data-testid': 'clear-button',
   }}
-  clearButtonIconProps={{ size: SIZES.MD }}
 />;
 ```
