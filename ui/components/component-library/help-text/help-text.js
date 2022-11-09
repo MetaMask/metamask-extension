@@ -38,7 +38,7 @@ HelpText.propTypes = {
    * The color of the HelpText will be overridden if error is true
    * Defaults to COLORS.TEXT_DEFAULT
    */
-  color: PropTypes.oneOf(Object.values[TEXT_COLORS]),
+  color: PropTypes.oneOf(Object.values(TEXT_COLORS)),
   /**
    * The content of the help-text
    */
