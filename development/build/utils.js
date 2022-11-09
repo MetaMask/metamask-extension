@@ -123,17 +123,24 @@ function wrapAgainstScuttling(file) {
   const fileOutput = `
 (function () {
 
-  const fetch = window.fetch
-  fetch.bind = function (b) {
-    return Function.prototype.bind.call(this, window)
-  }
-  fetch.apply = function () {
-    const args = [].slice.call(arguments)
-    if (args[0] === p) {
-      args[0] = window
-    }
-    return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
-  }
+  (function(){
+    'use strict';
+    const realBind = Function.prototype.bind;
+    const realApply = Function.prototype.apply;
+
+    Function.prototype.bind = function(that) {
+      if (that === p) that = window;
+      const args = [].slice.call(arguments, 1);
+      return realBind.call(this, that, ...args);
+    };
+
+    Function.prototype.apply = function(that) {
+      if (that === p) that = window;
+      const args = [].slice.call(arguments, 1);
+      return realApply.call(this, that, ...args);
+    };
+  }())
+
   const allowed = {
     navigator,
     location,
@@ -146,6 +153,7 @@ function wrapAgainstScuttling(file) {
     Function,
     Array,
     Boolean,
+    Number,
     Request,
     Date,
     document,
@@ -172,7 +180,7 @@ function wrapAgainstScuttling(file) {
     }
   })
   with (p) {
-    with ({window: p, self: p}) {
+    with ({window: p, self: p, globalThis: p}) {
      ${content}
     }
   }
