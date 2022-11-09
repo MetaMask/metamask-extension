@@ -8,7 +8,7 @@ try {
    * universalPropertyNames constant specified in 'ses/src/whitelist'. This
    * function makes all function and object properties on the start compartment
    * global non-configurable and non-writable, unless they are already
-   * non-configurable, or they were scuttled by LavaMoat runtime (LavaMoat#360).
+   * non-configurable, or they were scuttled by LM runtime (LavaMoat#360).
    *
    * It is critical that this function runs at the right time during
    * initialization, which should always be immediately after `lockdown` has been
