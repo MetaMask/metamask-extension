@@ -1,7 +1,8 @@
 import EventEmitter from 'events';
-import { isFunction, noop, pullAllBy, throttle } from 'lodash';
+import { isFunction, isString, noop, pullAllBy, throttle } from 'lodash';
 import nanoid from 'nanoid';
-import { Transaction } from '@ethereumjs/tx';
+import { TransactionFactory } from '@ethereumjs/tx';
+import { bufferToHex, toBuffer } from 'ethereumjs-util';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import {
   HARDWARE_KEYRING_INIT_OPTS,
@@ -16,6 +17,8 @@ const ENFORCE_CLIENT_INVOCATION_METHODS = {
     'signTypedData',
     'addAccounts',
     'signTransaction',
+    'signPersonalMessage',
+    'signMessage',
     // TrezorKeyring.model isn't a part of serialised data returned
     // back-and-forth, therefore we defer to clientside for this
     // data, by intercepting TrezorKeyring.getModel
@@ -25,10 +28,11 @@ const ENFORCE_CLIENT_INVOCATION_METHODS = {
     'updateTransportMethod',
     'signTypedData',
     'signTransaction',
+    'signPersonalMessage',
+    'signMessage',
     'getFirstPage',
     'addAccounts',
     'attemptMakeApp',
-    'getFirstPage',
   ],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
@@ -39,6 +43,84 @@ const IGNORE_METHODS = {
   [KEYRING_TYPES.LEDGER]: ['init'],
   [KEYRING_TYPES.QR]: [],
   [KEYRING_TYPES.LATTICE]: [],
+};
+
+/**
+ * Returns methods contained in instanstiated classes
+ * without the constructor method.
+ *
+ * @param classInstance
+ * @returns {string[]}
+ */
+const getClassInstanceMethods = (classInstance) =>
+  Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance)).filter(
+    (method) => method !== 'constructor',
+  );
+
+/**
+ * Some methods require args that can't be serialised appropriately
+ * via JSON-RPC (i.e., via JSON.stringify). This method is used to
+ * assist in the serialization process.
+ *
+ * @param {*[]} args
+ * @param {Keyring} keyring
+ * @param {string|number|symbol} method
+ * @returns {*[]}
+ */
+const processClientArgs = (args, keyring, method) => {
+  if (method === 'signTransaction') {
+    console.log('processClientArgs', method, keyring.type);
+    const [address, transaction] = args;
+    const transactionHex = bufferToHex(transaction.serialize());
+    const commonMeta = {
+      chain: transaction.common.chainName(),
+      hardfork: transaction.common.hardfork(),
+      eips: transaction.common.eips(),
+    };
+
+    return [
+      address,
+      {
+        transactionHex,
+        commonMeta,
+      },
+      ...args.slice(2),
+    ];
+  }
+
+  return args;
+};
+
+/**
+ * Some client-side methods return responses that can't be serialised/deserialised
+ * appropriately via JSON-RPC (i.e., via JSON.stringify). This method is used to
+ * assist in the deserialization process.
+ *
+ * @param {*} response
+ * @param {*[]} args - the args that were first passed to the background method
+ * @param {Keyring} keyring
+ * @param {string|number|symbol} method
+ */
+const processClientResponse = (response, args, keyring, method) => {
+  if (method === 'signTransaction') {
+    console.log('processClientResponse', method, keyring.type);
+    // All Keyrings return a Transaction object client-side when signing a tx
+    if (isString(response)) {
+      const bufferData = toBuffer(response);
+      const [, unsignedTx] = args;
+
+      // recreate signed transaction
+      return TransactionFactory.fromSerializedData(bufferData, {
+        common: unsignedTx._getCommon(),
+      });
+    }
+
+    throw new Error(
+      'KeyringController - signTransaction - response is not a string',
+    );
+  }
+
+  return response;
 };
 
 /**
@@ -85,33 +167,6 @@ const isServiceWorkerMv3Error = (error) => {
 
   return isMv3ErrorMessage(errorText);
 };
-
-/**
- * Returns methods contained in instanstiated classes
- * without the constructor method.
- *
- * @param classInstance
- * @returns {string[]}
- */
-const getClassInstanceMethods = (classInstance) =>
-  Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance)).filter(
-    (method) => method !== 'constructor',
-  );
-
-function getSerializedArgs(args, method) {
-  if (method === 'signTransaction') {
-    return args.map((arg) => {
-      if (arg instanceof Transaction) {
-        // return arg.serialize();
-        return arg.toJSON();
-      }
-
-      return arg;
-    });
-  }
-
-  return args;
-}
 
 export default class KeyringEventsController extends EventEmitter {
   constructor({ sendPromisifiedHardwareCall }) {
@@ -200,16 +255,23 @@ export default class KeyringEventsController extends EventEmitter {
    */
   _getKeyringInstanceProxy(instance) {
     const keyringInstanceProxy = new Proxy(instance, {
-      get: (target, prop) => {
-        if (isFunction(target[prop])) {
+      get: (keyring, prop) => {
+        if (isFunction(keyring[prop])) {
           const wrappedFunction = (...args) => {
-            return this._catchKeyringMethodErrors(target, prop, args);
+            const shouldIgnoreMethod =
+              IGNORE_METHODS[keyring.type]?.includes(prop);
+
+            if (shouldIgnoreMethod) {
+              return noop;
+            }
+
+            return this._catchKeyringMethodErrors(keyring, prop, args);
           };
 
           return wrappedFunction;
         }
 
-        return target[prop];
+        return keyring[prop];
       },
     });
 
@@ -250,15 +312,19 @@ export default class KeyringEventsController extends EventEmitter {
    * us to update the state of the keyring background-side
    * after a keyring method has been fired client-side.
    *
-   * @param {keyring} keyring
+   * @param {Keyring} keyring
+   * @param {*[]} args - The args which were first attempted to be used by the method
+   * @param method
    * @param {(value: *) => void} resolve
    * @private
    */
   _resolveWrapper =
-    (keyring, resolve) =>
-    async ({ newState, response }) => {
+    (args, keyring, method, resolve) =>
+    async ({ newState, response: _response }) => {
+      // Sync the state of the background-side keyring with client-side data
       await keyring.deserialize(newState);
       console.log('⬆️ State update for keyring', keyring.type, newState);
+      const response = processClientResponse(_response, args, keyring, method);
 
       resolve(response);
     };
@@ -277,28 +343,18 @@ export default class KeyringEventsController extends EventEmitter {
     // @TODO, delay this function .serialize call until there are no
     // remaining pending promises in the event pool
 
-    const shouldAlwaysRunClientSide =
-      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
-    const shouldIgnoreMethod = IGNORE_METHODS[keyring.type]?.includes(method);
-
-    if (shouldIgnoreMethod) {
-      return noop;
-    }
-
     // Ensure that we serialize the state before we try
     // to call the method in the background-script
     const prevState = await keyring.serialize();
-    const getClientSidePromise = () => {
-      const serializedArgs = getSerializedArgs(args);
+    const shouldAlwaysRunClientSide =
+      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
 
-      return this._createClientSidePromise(
-        keyring,
-        method,
-        serializedArgs,
-        prevState,
-      );
+    const getClientSidePromise = () => {
+      return this._createClientSidePromise(keyring, method, args, prevState);
     };
+
     if (shouldAlwaysRunClientSide) {
+      // Intentionally not wrapped in a try/catch
       const clientSideResult = await getClientSidePromise();
 
       return clientSideResult;
@@ -339,23 +395,25 @@ export default class KeyringEventsController extends EventEmitter {
    * Creates a promise that will be only be resolved by
    * client-side instantiation of the specified keyring.
    *
-   * @param keyring
-   * @param method
-   * @param args
-   * @param prevState
+   * @param {Keyring} keyring
+   * @param {string|number|symbol} method
+   * @param {*[]} _args
+   * @param {object} prevState
    * @returns {Promise<unknown>}
    * @private
    */
-  _createClientSidePromise(keyring, method, args, prevState) {
+  _createClientSidePromise(keyring, method, _args, prevState) {
     return new Promise((resolve, reject) => {
-      console.log(`🏹💾 Sending method ${keyring.type}.${method}`, args);
+      console.log(`🏹💾 Sending method ${keyring.type}.${method}`, _args);
+
+      const args = processClientArgs(_args, keyring, method);
 
       this._addToEventPool({
         type: keyring.type,
         method, // @TODO, create a test for calling a symbol method
         args,
         prevState,
-        resolve: this._resolveWrapper(keyring, resolve),
+        resolve: this._resolveWrapper(_args, keyring, method, resolve),
         reject, // if rejected again then just allow for error to be thrown
       });
       // Allow the promise to hang as it will be resolved by the event pool

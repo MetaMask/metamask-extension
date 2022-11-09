@@ -1,16 +1,24 @@
 import EventEmitter from 'events';
 import { bufferToHex } from 'ethereumjs-util';
 import { HARDWARE_KEYRINGS } from '../../shared/constants/hardware-wallets';
-import { buildUnserializedUnsignedTransaction } from '../helpers/utils/optimism/buildUnserializedTransaction';
+import { buildUnserializedTxFromHex } from '../helpers/utils/optimism/buildUnserializedTransaction';
 import { callBackgroundMethod } from './action-queue';
 
-function getSerializedResponse(res, method) {
+const processKeyringResponse = (res, method) => {
   if (method === 'signTransaction') {
     return res?.serialize ? bufferToHex(res.serialize()) : res;
   }
 
   return res;
-}
+};
+
+const processArgs = (args, method) => {
+  if (method === 'signTransaction') {
+    return [args[0], buildUnserializedTxFromHex(args[1]), ...args.slice(2)];
+  }
+
+  return args;
+};
 
 export class ClientKeyringController extends EventEmitter {
   constructor() {
@@ -69,12 +77,12 @@ export class ClientKeyringController extends EventEmitter {
       console.log('closeBackgroundPromise callback', res, err);
     await this.updateKeyringData(type, prevState);
 
-    const args = this.processArgs(_args, method);
+    const args = processArgs(_args, method);
     const keyring = this.getKeyringInstanceForType(type);
 
     try {
       const _res = await keyring[method](...args);
-      const res = getSerializedResponse(_res, method);
+      const res = processKeyringResponse(_res, method);
       const newState = await this.getUpdatedKeyringData(type);
 
       console.log(`✅🖥️ successful hardware call`, {
@@ -114,15 +122,6 @@ export class ClientKeyringController extends EventEmitter {
         callback,
       );
     }
-  }
-
-  processArgs(args, method) {
-    if (method === 'signTransaction') {
-      // Find a better solution for this
-      return [args[0], buildUnserializedUnsignedTransaction(args[1])];
-    }
-
-    return args;
   }
 }
 

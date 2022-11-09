@@ -8,19 +8,8 @@ import {
   BUILT_IN_NETWORKS,
 } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { getInitLedgerTransportType } from '../../../shared/lib/preferences-utils';
 import { NETWORK_EVENTS } from './network';
-
-const getInitLedgerTransportType = () => {
-  if (isManifestV3) {
-    return LEDGER_TRANSPORT_TYPES.WEBHID;
-  }
-
-  return window.navigator.hid
-    ? LEDGER_TRANSPORT_TYPES.WEBHID
-    : LEDGER_TRANSPORT_TYPES.U2F;
-};
 
 export default class PreferencesController {
   /**

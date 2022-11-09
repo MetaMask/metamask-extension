@@ -1476,14 +1476,7 @@ export default class TransactionController extends EventEmitter {
     const fromAddress = txParams.from;
     const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
-    let signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
-
-    if (isString(signedEthTx)) {
-      const bufferData = toBuffer(signedEthTx);
-      signedEthTx = TransactionFactory.fromSerializedData(bufferData, {
-        common,
-      });
-    }
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation

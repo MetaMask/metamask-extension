@@ -1,0 +1,27 @@
+diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
+index 2c6a7de..1480f4b 100644
+--- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
++++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
+@@ -37,11 +37,20 @@ class LedgerBridgeKeyring extends EventEmitter {
+     this.deserialize(opts)
+ 
+     this.iframeLoaded = false
+-    this._setupIframe()
+-
+     this.currentMessageId = 0
+     this.messageCallbacks = {}
++
++    if(!opts.delayInit){
++      this.init(opts);
++    }
++  }
++
++  init(opts = {}){
++    this._setupIframe()
+     this._setupListener()
++
++    // @TODO, is the below necessary?
++    this.updateTransportMethod('hdk');
+   }
+ 
+   serialize () {

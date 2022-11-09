@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
-import { BN } from 'ethereumjs-util';
+import { BN, toBuffer } from 'ethereumjs-util';
+
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
@@ -31,4 +32,14 @@ export default function buildUnserializedTransaction(txMeta) {
   const txParams = buildTxParams(txMeta);
   const common = buildTransactionCommon(txMeta);
   return TransactionFactory.fromTxData(txParams, { common });
+}
+
+export function buildUnserializedTxFromHex({ transactionHex, commonMeta }) {
+  const buffer = toBuffer(transactionHex);
+
+  const rebuiltEthTx = TransactionFactory.fromSerializedData(buffer, {
+    common: new Common(commonMeta),
+  });
+
+  return rebuiltEthTx;
 }
