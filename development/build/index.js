@@ -97,6 +97,7 @@ async function defineAndRunBuildTasks() {
       '__SENTRY__',
       'appState',
       'extra',
+      'navigator',
     ],
   });
 

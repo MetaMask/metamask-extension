@@ -135,6 +135,8 @@ function wrapAgainstScuttling(file) {
     return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
   }
   const allowed = {
+    navigator,
+    location,
     Uint16Array,
     fetch,
     String,
