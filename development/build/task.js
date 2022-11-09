@@ -4,7 +4,11 @@ const concurrently = require('concurrently');
 
 const tasks = {};
 const taskEvents = new EventEmitter();
-const colors = randomColor({ count: 16 });
+const colors = randomColor({
+  count: 8,
+  luminosity: 'light',
+  seed: 1663224162006,
+});
 
 module.exports = {
   tasks,
