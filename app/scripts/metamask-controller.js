@@ -4537,8 +4537,10 @@ export default class MetamaskController extends EventEmitter {
   
   async securityProviderRequest(requestData, methodName) {
     // const isTransactionSecurityCheckEnabled =
-    //   this.preferencesController.store.getState().useTokenDetection; // transactionSecurityCheckEnabled when ready instead of useTokenDetection
-    const chainId = this.networkController.getCurrentChainId();
+    //   this.preferencesController.store.getState().transactionSecurityCheckEnabled;
+    const chainId = Number(
+      hexToDecimal(this.networkController.getCurrentChainId()),
+    );
 
     // if (isTransactionSecurityCheckEnabled) {
     const response = await securityProviderCheck(
