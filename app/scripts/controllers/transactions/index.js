@@ -1359,7 +1359,6 @@ export default class TransactionController extends EventEmitter {
         txMeta,
         'transactions#approveTransaction',
       );
-      // throw new Error();
       // sign transaction
       const rawTx = await this.signTransaction(txId);
       await this.publishTransaction(txId, rawTx, actionId);
