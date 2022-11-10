@@ -10,6 +10,12 @@ import { TYPES } from './avatar-account.constants';
 
 import README from './README.mdx';
 
+export const AvatarAccountProps = {
+  address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+  size: SIZES.MD,
+  type: TYPES.JAZZICON,
+};
+
 export default {
   title: 'Components/ComponentLibrary/AvatarAccount',
   id: __filename,
@@ -30,11 +36,7 @@ export default {
       options: Object.values(TYPES),
     },
   },
-  args: {
-    address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-    size: SIZES.MD,
-    type: TYPES.JAZZICON,
-  },
+  args: AvatarAccountProps,
 };
 
 export const DefaultStory = (args) => <AvatarAccount {...args} />;

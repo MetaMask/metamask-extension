@@ -14,6 +14,13 @@ import Box from '../../ui/box/box';
 import README from './README.mdx';
 import { AvatarToken } from './avatar-token';
 
+export const AvatarTokenProps = {
+  tokenName: 'ast',
+  tokenImageUrl: './AST.png',
+  size: SIZES.MD,
+  showHalo: false,
+};
+
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
   id: __filename,
@@ -50,12 +57,7 @@ export default {
       control: 'boolean',
     },
   },
-  args: {
-    tokenName: 'ast',
-    tokenImageUrl: './AST.png',
-    size: SIZES.MD,
-    showHalo: false,
-  },
+  args: AvatarTokenProps,
 };
 
 const Template = (args) => {

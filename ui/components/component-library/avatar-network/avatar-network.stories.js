@@ -14,6 +14,13 @@ import Box from '../../ui/box/box';
 import README from './README.mdx';
 import { AvatarNetwork } from './avatar-network';
 
+export const AvatarNetworkProps = {
+  networkName: 'Arbitrum One',
+  networkImageUrl: './images/arbitrum.svg',
+  size: SIZES.MD,
+  showHalo: false,
+};
+
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
   id: __filename,
@@ -50,12 +57,7 @@ export default {
       control: 'boolean',
     },
   },
-  args: {
-    networkName: 'Arbitrum One',
-    networkImageUrl: './images/arbitrum.svg',
-    size: SIZES.MD,
-    showHalo: false,
-  },
+  args: AvatarNetworkProps,
 };
 
 const Template = (args) => {

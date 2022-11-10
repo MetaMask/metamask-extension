@@ -11,6 +11,11 @@ import Box from '../../ui/box/box';
 import README from './README.mdx';
 import { AvatarFavicon } from './avatar-favicon';
 
+export const AvatarFaviconProps = {
+  imageSource: 'https://uniswap.org/favicon.ico',
+  size: SIZES.MD,
+};
+
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon',
   id: __filename,
@@ -33,10 +38,7 @@ export default {
       control: 'select',
     },
   },
-  args: {
-    imageSource: 'https://uniswap.org/favicon.ico',
-    size: SIZES.MD,
-  },
+  args: AvatarFaviconProps,
 };
 
 const Template = (args) => {
