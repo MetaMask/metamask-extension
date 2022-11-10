@@ -3229,40 +3229,12 @@
       },
       "packages": {
         "addons-linter>postcss>picocolors": true,
-        "gulp-autoprefixer>autoprefixer>browserslist": true,
-        "gulp-autoprefixer>autoprefixer>caniuse-lite": true,
         "gulp-autoprefixer>autoprefixer>fraction.js": true,
-        "gulp-autoprefixer>autoprefixer>postcss-value-parser": true,
         "gulp-autoprefixer>postcss": true,
-        "stylelint>autoprefixer>normalize-range": true
-      }
-    },
-    "gulp-autoprefixer>autoprefixer>browserslist": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
-        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
-        "process.env.BROWSERSLIST_ENV": true,
-        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
-        "process.env.BROWSERSLIST_STATS": true,
-        "process.env.NODE_ENV": true,
-        "process.versions.node": true
-      },
-      "packages": {
-        "gulp-autoprefixer>autoprefixer>browserslist>electron-to-chromium": true,
-        "gulp-autoprefixer>autoprefixer>caniuse-lite": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true
+        "stylelint>autoprefixer>browserslist": true,
+        "stylelint>autoprefixer>caniuse-lite": true,
+        "stylelint>autoprefixer>normalize-range": true,
+        "stylelint>postcss-value-parser": true
       }
     },
     "gulp-autoprefixer>autoprefixer>fraction.js": {
@@ -6471,9 +6443,9 @@
         "process.versions.node": true
       },
       "packages": {
-        "gulp-autoprefixer>autoprefixer>caniuse-lite": true,
         "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true
+        "stylelint>autoprefixer>browserslist>node-releases": true,
+        "stylelint>autoprefixer>caniuse-lite": true
       }
     },
     "stylelint>autoprefixer>picocolors": {

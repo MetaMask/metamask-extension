@@ -5871,9 +5871,9 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>process": true,
-        "gulp-autoprefixer>autoprefixer>caniuse-lite": true,
         "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true
+        "stylelint>autoprefixer>browserslist>node-releases": true,
+        "stylelint>autoprefixer>caniuse-lite": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
