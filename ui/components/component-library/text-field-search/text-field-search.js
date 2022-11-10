@@ -6,8 +6,7 @@ import { SIZES } from '../../../helpers/constants/design-system';
 
 import { ButtonIcon } from '../button-icon';
 import { Icon, ICON_NAMES } from '../icon';
-import { TEXT_FIELD_BASE_TYPES } from '../text-field-base';
-import { TextFieldBase } from '../text-field-base';
+import { TextFieldBase, TEXT_FIELD_BASE_TYPES } from '../text-field-base';
 import { TextField } from '../text-field';
 
 export const TextFieldSearch = ({
