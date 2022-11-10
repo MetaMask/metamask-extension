@@ -325,7 +325,7 @@
     "fast-glob": "^3.2.2",
     "fs-extra": "^8.1.0",
     "ganache": "^v7.0.4",
-    "geckodriver": "^1.21.0",
+    "geckodriver": "^3.2.0",
     "gh-pages": "^3.2.3",
     "globby": "^11.0.4",
     "gulp": "^4.0.2",

@@ -456,6 +456,15 @@
   "betaPortfolioSite": {
     "message": "beta portfolio site"
   },
+  "betaTerms": {
+    "message": "BETA Terms of use"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+  },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
