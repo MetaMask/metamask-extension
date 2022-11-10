@@ -161,7 +161,6 @@ export default class TransactionController extends EventEmitter {
       getNetwork: this.getNetwork.bind(this),
       getCurrentChainId: opts.getCurrentChainId,
     });
-    this._onBootCleanUp();
 
     this.store = this.txStateManager.store;
     this.nonceTracker = new NonceTracker({
@@ -208,6 +207,7 @@ export default class TransactionController extends EventEmitter {
 
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock();
+    this._onBootCleanUp();
   }
 
   /**
@@ -1359,6 +1359,7 @@ export default class TransactionController extends EventEmitter {
         txMeta,
         'transactions#approveTransaction',
       );
+      // throw new Error();
       // sign transaction
       const rawTx = await this.signTransaction(txId);
       await this.publishTransaction(txId, rawTx, actionId);
