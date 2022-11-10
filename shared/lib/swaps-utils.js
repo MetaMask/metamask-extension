@@ -146,7 +146,6 @@ export const getBaseApi = function (type, chainId = CHAIN_IDS.MAINNET) {
   // eslint-disable-next-line no-param-reassign
   chainId = TEST_CHAIN_IDS.includes(chainId) ? CHAIN_IDS.MAINNET : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
-  const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
@@ -164,8 +163,7 @@ export const getBaseApi = function (type, chainId = CHAIN_IDS.MAINNET) {
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
     case 'network':
-      // Only use v2 for this endpoint.
-      return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
+      return baseUrl;
     default:
       throw new Error('getBaseApi requires an api call type');
   }

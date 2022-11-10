@@ -9,7 +9,6 @@ import {
   getAccountName,
   getMetaMaskIdentities,
 } from '../../../selectors';
-import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
@@ -37,13 +36,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConfirmPageContainer);
+export default connect(mapStateToProps)(ConfirmPageContainer);
