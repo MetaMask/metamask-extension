@@ -4543,14 +4543,14 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // if (isTransactionSecurityCheckEnabled) {
-    const response = await securityProviderCheck(
+    const { flagAsDangerous } = await securityProviderCheck(
       requestData,
       methodName,
       chainId,
     );
-    console.log('response: ', response);
+    console.log('flagAsDangerous: ', flagAsDangerous);
 
-    return await response;
+    return await flagAsDangerous;
     // }
 
     // return null;

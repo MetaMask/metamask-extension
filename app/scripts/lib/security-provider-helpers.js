@@ -5,9 +5,6 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 export async function securityProviderCheck(requestData, methodName, chainId) {
   console.log('requestData: ', requestData);
-  console.log('methodName: ', methodName);
-  console.log('chainId: ', chainId);
-
   let dataToValidate;
 
   if (methodName === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
@@ -45,8 +42,6 @@ export async function securityProviderCheck(requestData, methodName, chainId) {
       },
     };
   }
-
-  console.log('dataToValidate: ', dataToValidate);
 
   const response = await fetchWithTimeout(
     'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',

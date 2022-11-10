@@ -17,6 +17,7 @@ describe('Typed Message Manager', () => {
     typedMessageManager = new TypedMessageManager({
       getCurrentChainId: sinon.fake.returns('0x1'),
       metricsEvent: sinon.fake(),
+      securityProviderRequest: sinon.fake(),
     });
 
     msgParamsV1 = {
