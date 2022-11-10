@@ -2401,7 +2401,7 @@
       },
       "packages": {
         "@metamask/snap-utils>superstruct": true,
-        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
         "nock>debug": true
       }
     },
