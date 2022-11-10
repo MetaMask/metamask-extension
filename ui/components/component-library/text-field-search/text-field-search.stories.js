@@ -41,23 +41,18 @@ export default {
   },
   argTypes: {
     value: {
-      table: { category: 'text field base' },
       control: 'text',
     },
     onChange: {
-      table: { category: 'text field base' },
       action: 'onChange',
     },
     showClearButton: {
-      table: { category: 'text field base' },
       control: 'boolean',
     },
     clearButtonOnClick: {
-      table: { category: 'text field base' },
       action: 'clearButtonOnClick',
     },
     clearButtonProps: {
-      table: { category: 'text field base' },
       control: 'object',
     },
     autoComplete: {
