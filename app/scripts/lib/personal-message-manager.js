@@ -148,6 +148,7 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
+
     // check for SIWE message
     const siwe = detectSIWE(msgParams);
     msgParams.siwe = siwe;
