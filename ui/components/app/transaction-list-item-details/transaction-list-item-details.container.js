@@ -8,6 +8,8 @@ import {
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
   getEnsResolutionByAddress,
+  getAccountName,
+  getMetadataContractName,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -20,6 +22,8 @@ const mapStateToProps = (state, ownProps) => {
     recipientEns = getEnsResolutionByAddress(state, address);
   }
   const addressBook = getAddressBook(state);
+  const recipientName = getAccountName(state, recipientAddress);
+  const recipientMetadataName = getMetadataContractName(recipientAddress);
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
@@ -38,6 +42,8 @@ const mapStateToProps = (state, ownProps) => {
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
+    recipientName,
+    recipientMetadataName,
   };
 };
 

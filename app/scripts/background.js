@@ -79,7 +79,7 @@ const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.metamaskGetState = localStore.get.bind(localStore);
+  global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -753,7 +753,7 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.sentryHooks.getSentryState = function () {
+  global.stateHooks.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {

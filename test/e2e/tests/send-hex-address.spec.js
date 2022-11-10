@@ -57,7 +57,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -108,7 +108,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -212,7 +212,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -302,7 +302,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
