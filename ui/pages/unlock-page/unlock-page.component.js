@@ -12,6 +12,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { isBeta } from '../../helpers/utils/build-types';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -176,6 +177,11 @@ export default class UnlockPage extends Component {
               width="120"
               height="120"
             />
+            {isBeta() ? (
+              <div className="unlock-page__mascot-container__beta">
+                {t('beta')}
+              </div>
+            ) : null}
           </div>
           <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
           <div>{t('unlockMessage')}</div>

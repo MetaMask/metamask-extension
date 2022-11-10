@@ -28,7 +28,7 @@ ButtonPrimary.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Boolean to change button color to Danger when true
+   * When true, `ButtonPrimary` color becomes Danger.
    */
   danger: PropTypes.bool,
   /**

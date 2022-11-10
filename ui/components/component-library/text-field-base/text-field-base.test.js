@@ -235,4 +235,20 @@ describe('TextFieldBase', () => {
       '',
     );
   });
+  it('should render with a custom input and still work', () => {
+    const CustomInputComponent = (props) => <input {...props} />;
+    const { getByTestId } = render(
+      <TextFieldBase
+        InputComponent={CustomInputComponent}
+        inputProps={{ 'data-testid': 'text-field-base', className: 'test' }}
+      />,
+    );
+    const textFieldBase = getByTestId('text-field-base');
+
+    expect(textFieldBase.value).toBe(''); // initial value is empty string
+    fireEvent.change(textFieldBase, { target: { value: 'text value' } });
+    expect(textFieldBase.value).toBe('text value');
+    fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
+    expect(textFieldBase.value).toBe(''); // value is empty string after reset
+  });
 });

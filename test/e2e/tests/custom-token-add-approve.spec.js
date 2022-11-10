@@ -221,10 +221,10 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.clickElement(
             '.confirm-approve-content__small-blue-text',
           );
-          await driver.clickElement(
-            { text: 'Edit suggested gas fee', tag: 'button' },
-            10000,
-          );
+          await driver.clickElement({
+            text: 'Edit suggested gas fee',
+            tag: 'button',
+          });
           const [gasLimitInput, gasPriceInput] = await driver.findElements(
             'input[type="number"]',
           );
