@@ -18,6 +18,20 @@
 
   &__mascot-container {
     margin-top: 24px;
+    position: relative;
+
+    &__beta {
+      /* these colors should be used on both light and dark mode */
+      background: var(--brand-colors-blue-blue500);
+      color: var(--brand-colors-white-white000);
+      padding: 3px 6px;
+      font-size: 16px;
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
   }
 
   &__title {

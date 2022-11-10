@@ -1844,7 +1844,7 @@ export default class TransactionController extends EventEmitter {
       .forEach((txMeta) => {
         // Line below will try to publish transaction which is in
         // APPROVED state at the time of controller bootup
-        this.approveTransaction(txMeta);
+        this.approveTransaction(txMeta.id);
       });
   }
 

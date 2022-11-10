@@ -49,6 +49,7 @@ import {
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
+  CronjobController,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
@@ -125,7 +126,6 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
-import ThreeBoxController from './controllers/threebox';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
@@ -540,6 +540,9 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
+      getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
+        this.networkController,
+      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -665,7 +668,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.9.1',
+        'https://metamask.github.io/iframe-execution-environment/0.10.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -751,6 +754,24 @@ export default class MetamaskController extends EventEmitter {
         },
       },
     });
+    // --- Snaps Cronjob Controller configuration
+    const cronjobControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'CronjobController',
+      allowedEvents: [
+        'SnapController:snapInstalled',
+        'SnapController:snapUpdated',
+        'SnapController:snapRemoved',
+      ],
+      allowedActions: [
+        `${this.permissionController.name}:getPermissions`,
+        'SnapController:handleRequest',
+        'SnapController:getAll',
+      ],
+    });
+    this.cronjobController = new CronjobController({
+      state: initState.CronjobController,
+      messenger: cronjobControllerMessenger,
+    });
     ///: END:ONLY_INCLUDE_IN
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
@@ -772,20 +793,6 @@ export default class MetamaskController extends EventEmitter {
     this.alertController = new AlertController({
       initState: initState.AlertController,
       preferencesStore: this.preferencesController.store,
-    });
-
-    this.threeBoxController = new ThreeBoxController({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      keyringController: this.keyringController,
-      initState: initState.ThreeBoxController,
-      getKeyringControllerState: this.keyringController.memStore.getState.bind(
-        this.keyringController.memStore,
-      ),
-      version,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
     });
 
     this.backupController = new BackupController({
@@ -1045,7 +1052,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
-      ThreeBoxController: this.threeBoxController.store,
       BackupController: this.backupController,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
@@ -1055,6 +1061,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
@@ -1084,7 +1091,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
-        ThreeBoxController: this.threeBoxController.store,
         BackupController: this.backupController,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
@@ -1097,6 +1103,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
@@ -1145,10 +1152,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        addSnap: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:add',
-        ),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
@@ -1516,7 +1519,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       qrHardwareKeyring,
       swapsController,
-      threeBoxController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -1648,6 +1650,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
+      setImprovedTokenAllowanceEnabled:
+        preferencesController.setImprovedTokenAllowanceEnabled.bind(
+          preferencesController,
+        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -1804,21 +1810,6 @@ export default class MetamaskController extends EventEmitter {
         alertController.setUnconnectedAccountAlertShown.bind(alertController),
       setWeb3ShimUsageAlertDismissed:
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
-
-      // 3Box
-      setThreeBoxSyncingPermission:
-        threeBoxController.setThreeBoxSyncingPermission.bind(
-          threeBoxController,
-        ),
-      restoreFromThreeBox:
-        threeBoxController.restoreFromThreeBox.bind(threeBoxController),
-      setShowRestorePromptToFalse:
-        threeBoxController.setShowRestorePromptToFalse.bind(threeBoxController),
-      getThreeBoxLastUpdated:
-        threeBoxController.getLastUpdated.bind(threeBoxController),
-      turnThreeBoxSyncingOn:
-        threeBoxController.turnThreeBoxSyncingOn.bind(threeBoxController),
-      initializeThreeBox: this.initializeThreeBox.bind(this),
 
       // permissions
       removePermissionsFor: this.removePermissionsFor,
@@ -2071,7 +2062,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async addCustomNetwork(customRpc) {
+  async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
     await this.preferencesController.addToFrequentRpcList(
@@ -2107,6 +2098,7 @@ export default class MetamaskController extends EventEmitter {
       sensitiveProperties: {
         rpc_url: rpcUrlOrigin,
       },
+      actionId,
     });
   }
 
@@ -2339,20 +2331,6 @@ export default class MetamaskController extends EventEmitter {
 
     try {
       await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
-    try {
-      const threeBoxSyncingAllowed =
-        this.threeBoxController.getThreeBoxSyncingState();
-      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-        // 'await' intentionally omitted to avoid waiting for initialization
-        this.threeBoxController.init();
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      }
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
@@ -4230,10 +4208,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
     return null;
-  }
-
-  async initializeThreeBox() {
-    await this.threeBoxController.init();
   }
 
   /**

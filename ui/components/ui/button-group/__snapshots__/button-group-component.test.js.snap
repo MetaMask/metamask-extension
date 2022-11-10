@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonGroup Component should match snapshot 1`] = `
+<div>
+  <div
+    class="someClassName"
+    style="color: red;"
+  >
+    <button
+      aria-checked="false"
+      class="button-group__button"
+      data-testid="button-group__button0"
+    >
+      <div
+        class="mockClass"
+      />
+    </button>
+    <button
+      aria-checked="true"
+      class="button-group__button button-group__button--active"
+      data-testid="button-group__button1"
+    />
+    <button
+      aria-checked="false"
+      class="button-group__button"
+      data-testid="button-group__button2"
+    />
+  </div>
+</div>
+`;

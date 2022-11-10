@@ -20,11 +20,6 @@
         "fetch": true
       }
     },
-    "3box>graphql-request>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "lodash": {
       "globals": {
         "setTimeout": true,
