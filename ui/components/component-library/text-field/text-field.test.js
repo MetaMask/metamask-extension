@@ -16,7 +16,7 @@ function setup(jsx) {
 
 // Custom userEvent setup function that renders the component in a controlled environment.
 // This is used for the showClearButton and related props as the clearButton will only show in a controlled environment.
-function setupControlled(FormComponent, props) {
+export default function setupControlled(FormComponent, props) {
   const ControlledWrapper = () => {
     const [value, setValue] = useState('');
     return (
