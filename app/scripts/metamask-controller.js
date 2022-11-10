@@ -1028,7 +1028,7 @@ export default class MetamaskController extends EventEmitter {
      * All controllers in Memstore but not in store. They are not persisted.
      * On chrome profile re-start, they will be re-initialized.
      */
-    const resetOnRestartStore = {
+    this.resetOnRestartStore = {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
@@ -1040,6 +1040,7 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
+      GasFeeController: this.gasFeeController,
     };
 
     this.store.updateStructure({
@@ -1060,7 +1061,6 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: this.subjectMetadataController,
       BackupController: this.backupController,
       AnnouncementController: this.announcementController,
-      GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       SmartTransactionsController: this.smartTransactionsController,
@@ -1069,7 +1069,7 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
-      ...resetOnRestartStore,
+      ...this.resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -1100,7 +1100,7 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
-        ...resetOnRestartStore,
+        ...this.resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -1516,9 +1516,17 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.store.getState();
     const isInitialized = Boolean(vault);
 
+    let persistAfterRestartState = {};
+    for (const key of Object.keys(this.resetOnRestartStore)) {
+      // get the state from store
+      const state = this.store.getState()[key];
+      persistAfterRestartState = { ...persistAfterRestartState, ...state };
+    }
+
     return {
       isInitialized,
       ...this.memStore.getFlatState(),
+      ...persistAfterRestartState,
     };
   }
 
