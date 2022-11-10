@@ -51,6 +51,9 @@ async function withFixtures(options, testSuite) {
   const phishingPageServer = new PhishingWarningPageServer();
 
   let webDriver;
+  let driver;
+  const errors = [];
+  const exceptions = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
@@ -110,8 +113,18 @@ async function withFixtures(options, testSuite) {
     ) {
       await ensureXServerIsRunning();
     }
-    const { driver } = await buildWebDriver(driverOptions);
-    webDriver = driver;
+    driver = (await buildWebDriver(driverOptions)).driver;
+    webDriver = driver.driver;
+
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      const cdpConnection = await webDriver.createCDPConnection('page');
+      await webDriver.onLogException(cdpConnection, function (exception) {
+        const { description } = exception.exceptionDetails.exception;
+        const message = description.substring(0, description.indexOf('\n'));
+        exception.message = exception.message || message;
+        exceptions.push(exception);
+      });
+    }
 
     await testSuite({
       driver,
@@ -120,7 +133,7 @@ async function withFixtures(options, testSuite) {
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await driver.checkBrowserForConsoleErrors(driver);
+      errors.concat(await driver.checkBrowserForConsoleErrors(driver));
       if (errors.length) {
         const errorReports = errors.map((err) => err.message);
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
@@ -137,10 +150,14 @@ async function withFixtures(options, testSuite) {
     failed = true;
     if (webDriver) {
       try {
-        await webDriver.verboseReportOnFailure(title);
+        await driver.verboseReportOnFailure(title);
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
+    }
+    if (errors.length === 0 && exceptions.length > 0 && failOnConsoleError) {
+      const [exception] = exceptions;
+      throw Error(exception.message);
     }
     throw error;
   } finally {
@@ -151,7 +168,7 @@ async function withFixtures(options, testSuite) {
         await secondaryGanacheServer.quit();
       }
       if (webDriver) {
-        await webDriver.quit();
+        await driver.quit();
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
