@@ -11185,10 +11185,10 @@ eth-keyring-controller@^7.0.2:
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
 
-eth-keyring-controller@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-8.0.0.tgz#0a57c337da1af82874a0209cc0daf3bcbcc4a103"
-  integrity sha512-ajEa7T1MctQ4F1Rrg6DkwfsR9CHXxvNW1ERyPCMlu94QOMLAGs2kQFhM0Wsjt1n1vA7EiJBu5zg1OyzI/Y77rw==
+eth-keyring-controller@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-8.0.1.tgz#02bddda96251aadc739179802ab3dd2f9415d12a"
+  integrity sha512-6LDnvOIxbA+P6lAAAzde4Kb6hyB70Zs8gPp/enuDrvvFO79LCWGCzP0rre7OQC+agwFsU0gSHJXkRZK8llgPSg==
   dependencies:
     "@metamask/bip39" "^4.0.0"
     "@metamask/browser-passworder" "^4.0.1"
