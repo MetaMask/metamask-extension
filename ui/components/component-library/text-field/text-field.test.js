@@ -67,8 +67,10 @@ describe('TextField', () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
   it('should render showClearButton button when showClearButton is true and value exists', () => {
-    // As TextField is a controlled input we need to pass in a value for the clear button to appear
-    const { getByRole } = render(<TextField value="text" showClearButton />);
+    // As showClearButton is intended to only work with a controlled input we need to pass a value and onChange prop
+    const { getByRole } = render(
+      <TextField value="text" onChange={() => {}} showClearButton />,
+    );
     expect(getByRole('button', { name: /Clear/u })).toBeDefined();
     expect(getByRole('textbox')).toBeDefined();
   });
@@ -80,9 +82,10 @@ describe('TextField', () => {
   });
   it('should still render with the rightAccessory when showClearButton is true', () => {
     const { getByRole, getByTestId, getByText } = render(
-      // As TextField is a controlled input we need to pass in a value for the clear button to appear
+      // As showClearButton is intended to only work with a controlled input we need to pass a value and onChange prop
       <TextField
         value="text"
+        onChange={() => {}}
         clearButtonProps={{ 'data-testid': 'clear-button' }}
         rightAccessory={<div>right-accessory</div>}
         showClearButton
@@ -93,20 +96,26 @@ describe('TextField', () => {
     expect(getByRole('textbox')).toBeDefined();
   });
   it('should fire onClick event when passed to clearButtonProps when clear button is clicked', async () => {
-    // As TextField is a controlled input we need to pass in a value for the clear button to appear
+    // As showClearButton is intended to only work with a controlled input we need to pass a value and onChange prop
     const fn = jest.fn();
     const { user, getByRole } = setup(
-      <TextField value="text" clearButtonOnClick={fn} showClearButton />,
+      <TextField
+        value="text"
+        onChange={() => {}}
+        clearButtonOnClick={fn}
+        showClearButton
+      />,
     );
     await user.click(getByRole('button', { name: /Clear/u }));
     expect(fn).toHaveBeenCalledTimes(1); // clear button onClick is fired
   });
   it('should fire clearButtonProps.onClick event when passed to clearButtonProps.onClick prop', async () => {
-    // As TextField is a controlled input we need to pass in a value for the clear button to appear
+    // As showClearButton is intended to only work with a controlled input we need to pass a value and onChange prop
     const fn = jest.fn();
     const { user, getByRole } = setup(
       <TextField
         value="text"
+        onChange={() => {}}
         clearButtonProps={{ onClick: fn }}
         showClearButton
       />,

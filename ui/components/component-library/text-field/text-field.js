@@ -13,7 +13,7 @@ import { TextFieldBase } from '../text-field-base';
 
 export const TextField = ({
   className,
-  showClearButton,
+  showClearButton, // only works with a controlled input
   clearButtonOnClick,
   clearButtonProps,
   rightAccessory,
