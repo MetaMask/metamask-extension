@@ -162,7 +162,7 @@ export default class ConfirmPageContainerContent extends Component {
       isBuyableChain,
     } = this.props;
     console.log('HERE');
-    console.log('currentTransaction: ', currentTransaction);
+    // console.log('currentTransaction: ', currentTransaction);
     const { t } = this.context;
 
     const showInsuffienctFundsError =
