@@ -131,6 +131,9 @@ const sendReadyMessageToTabs = async () => {
     .then((result) => {
       checkForErrorAndLog();
       return result;
+    })
+    .catch(() => {
+      checkForErrorAndLog();
     });
 
   /** @todo we should only sendMessage to dapp tabs, not all tabs. */
@@ -140,6 +143,9 @@ const sendReadyMessageToTabs = async () => {
         name: EXTENSION_MESSAGES.READY,
       })
       .then(() => {
+        checkForErrorAndLog();
+      })
+      .catch(() => {
         checkForErrorAndLog();
       });
   }
