@@ -53,7 +53,6 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   const errors = [];
-  const exceptions = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
@@ -117,11 +116,7 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const cdpConnection = await webDriver.createCDPConnection('page');
-      await webDriver.onLogException(cdpConnection, function (exception) {
-        const { description } = exception.exceptionDetails.exception;
-        exceptions.push(description);
-      });
+      await driver.checkBrowserForExceptions();
     }
 
     await testSuite({
@@ -152,10 +147,12 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-    }
-    if (errors.length === 0 && exceptions.length > 0 && failOnConsoleError) {
-      const [exception] = exceptions;
-      throw Error(exception);
+      if (errors.length === 0 && driver.exceptions.length > 0 && failOnConsoleError) {
+        const errorMessage = `Errors found in browser console:\n${driver.exceptions.join(
+          '\n',
+        )}`;
+        throw Error(errorMessage);
+      }
     }
     throw error;
   } finally {
