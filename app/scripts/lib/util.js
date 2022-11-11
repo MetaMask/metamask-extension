@@ -123,17 +123,6 @@ function checkForErrorAndLog() {
   return error;
 }
 
-/** @returns {Error|undefined} */
-function checkForErrorAndWarn() {
-  const error = checkForError();
-
-  if (error) {
-    console.warn(error);
-  }
-
-  return error;
-}
-
 /**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *

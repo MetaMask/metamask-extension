@@ -8,7 +8,6 @@ import { obj as createThoughStream } from 'through2';
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { checkForError, checkForErrorAndWarn } from './lib/util';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -79,6 +78,41 @@ function injectScript(content) {
   } catch (error) {
     console.error('MetaMask: Provider injection failed.', error);
   }
+}
+
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object that's used
+ *
+ * This method is a copy of checkForError() in app/scripts/lib/util.js. We
+ * can't import that file because it contains resources that are blocked
+ * by the FireFox CSP: script-src, and will prevent contentscript.js from
+ * loading. We also don't want to include unused code to the content script.
+ *
+ * @returns {Error|undefined}
+ */
+function checkForLastError() {
+  const { lastError } = browser.runtime;
+  if (!lastError) {
+    return undefined;
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError;
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message);
+}
+
+/** @returns {Error|undefined} */
+function checkForLastErrorAndWarn() {
+  const error = checkForLastError();
+
+  if (error) {
+    console.warn(error);
+  }
+
+  return error;
 }
 
 /**
@@ -217,7 +251,7 @@ const destroyPhishingExtStreams = () => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = () => {
-  checkForErrorAndWarn();
+  checkForLastErrorAndWarn();
 
   phishingExtPort.onDisconnect.removeListener(
     onDisconnectDestroyPhishingStreams,
@@ -452,7 +486,7 @@ const onMessageSetUpExtensionStreams = (msg) => {
  * so that streams may be re-established later when the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
-  const err = checkForError();
+  const err = checkForLastError();
 
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
 
