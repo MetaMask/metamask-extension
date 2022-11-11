@@ -481,6 +481,7 @@ export default function BuildQuote({
         className="build-quote__token-etherscan-link build-quote__underline"
         key="build-quote-etherscan-link"
         onClick={() => {
+          /* istanbul ignore next */
           trackEvent({
             event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
             category: EVENT.CATEGORIES.SWAPS,
@@ -678,6 +679,7 @@ export default function BuildQuote({
           onSelect={onFromSelect}
           itemsToSearch={tokensToSearchSwapFrom}
           onInputChange={(value) => {
+            /* istanbul ignore next */
             onInputChange(value, fromTokenBalance);
           }}
           inputValue={fromTokenInputValue}
@@ -732,6 +734,7 @@ export default function BuildQuote({
         <div className="build-quote__swap-arrows-row">
           <button
             className="build-quote__swap-arrows"
+            data-testid="build-quote__swap-arrows"
             onClick={() => {
               onToSelect(selectedFromToken);
               onFromSelect(selectedToToken);
@@ -781,6 +784,7 @@ export default function BuildQuote({
                 </div>
               }
               primaryAction={
+                /* istanbul ignore next */
                 verificationClicked
                   ? null
                   : {
@@ -809,6 +813,7 @@ export default function BuildQuote({
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
+                        /* istanbul ignore next */
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
                           category: EVENT.CATEGORIES.SWAPS,
@@ -861,30 +866,33 @@ export default function BuildQuote({
         )}
       </div>
       <SwapsFooter
-        onSubmit={async () => {
-          // We need this to know how long it took to go from clicking on the Review swap button to rendered View Quote page.
-          dispatch(setReviewSwapClickedTimestamp(Date.now()));
-          // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
-          // we want to cancel it and fetch quotes from here.
-          if (timeoutIdForQuotesPrefetching) {
-            clearTimeout(timeoutIdForQuotesPrefetching);
-            dispatch(
-              fetchQuotesAndSetQuoteState(
-                history,
-                fromTokenInputValue,
-                maxSlippage,
-                trackEvent,
-              ),
-            );
-          } else if (areQuotesPresent) {
-            // If there are prefetched quotes already, go directly to the View Quote page.
-            history.push(VIEW_QUOTE_ROUTE);
-          } else {
-            // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
-            await dispatch(setBackgroundSwapRouteState('loading'));
-            history.push(LOADING_QUOTES_ROUTE);
+        onSubmit={
+          /* istanbul ignore next */
+          async () => {
+            // We need this to know how long it took to go from clicking on the Review swap button to rendered View Quote page.
+            dispatch(setReviewSwapClickedTimestamp(Date.now()));
+            // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
+            // we want to cancel it and fetch quotes from here.
+            if (timeoutIdForQuotesPrefetching) {
+              clearTimeout(timeoutIdForQuotesPrefetching);
+              dispatch(
+                fetchQuotesAndSetQuoteState(
+                  history,
+                  fromTokenInputValue,
+                  maxSlippage,
+                  trackEvent,
+                ),
+              );
+            } else if (areQuotesPresent) {
+              // If there are prefetched quotes already, go directly to the View Quote page.
+              history.push(VIEW_QUOTE_ROUTE);
+            } else {
+              // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
+              await dispatch(setBackgroundSwapRouteState('loading'));
+              history.push(LOADING_QUOTES_ROUTE);
+            }
           }
-        }}
+        }
         submitText={t('swapReviewSwap')}
         disabled={isReviewSwapButtonDisabled}
         hideCancel

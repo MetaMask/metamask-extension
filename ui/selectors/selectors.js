@@ -1,7 +1,14 @@
-import { createSelector } from 'reselect';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { memoize } from 'lodash';
-///: END:ONLY_INCLUDE_IN
+import {
+  createSelector,
+  createSelectorCreator,
+  defaultMemoize,
+} from 'reselect';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  memoize,
+  ///: END:ONLY_INCLUDE_IN
+  isEqual,
+} from 'lodash';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -551,9 +558,12 @@ export function getShowTestNetworks(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
+  return Boolean(
+    (isMainNet || isCustomNetwork || showFiatInTestnets) && conversionRate,
+  );
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
@@ -776,6 +786,45 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+
+export const getUnapprovedTransactions = (state) =>
+  state.metamask.unapprovedTxs;
+
+export const getTxData = (state) => state.confirmTransaction.txData;
+
+export const getUnapprovedTransaction = createDeepEqualSelector(
+  getUnapprovedTransactions,
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
+export const getFullTxData = createDeepEqualSelector(
+  getTxData,
+  (state, transactionId) => getUnapprovedTransaction(state, transactionId),
+  (_state, _transactionId, customTxParamsData) => customTxParamsData,
+  (txData, transaction, customTxParamsData) => {
+    let fullTxData = { ...txData, ...transaction };
+    if (transaction && transaction.simulationFails) {
+      txData.simulationFails = transaction.simulationFails;
+    }
+    if (customTxParamsData) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          data: customTxParamsData,
+        },
+      };
+    }
+    return fullTxData;
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -862,7 +911,6 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
-  const { threeBoxSyncingAllowed } = state.metamask;
 
   return {
     1: false,
@@ -878,7 +926,7 @@ function getAllowedAnnouncementIds(state) {
     11: true,
     12: false,
     13: false,
-    14: threeBoxSyncingAllowed,
+    14: false,
     15: true,
   };
 }

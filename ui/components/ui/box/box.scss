@@ -134,23 +134,27 @@ $attributesToApplyExtraProperties: margin;
   }
 
   &--rounded-xs {
-    border-radius: 0.125rem;
+    border-radius: 2px;
   }
 
   &--rounded-sm {
-    border-radius: 0.25rem;
+    border-radius: 4px;
   }
 
   &--rounded-md {
-    border-radius: 0.375rem;
+    border-radius: 6px;
   }
 
   &--rounded-lg {
-    border-radius: 0.5rem;
+    border-radius: 8px;
   }
 
   &--rounded-xl {
-    border-radius: 0.75rem;
+    border-radius: 12px;
+  }
+
+  &--rounded-pill {
+    border-radius: 9999px;
   }
 
   // breakpoint classes

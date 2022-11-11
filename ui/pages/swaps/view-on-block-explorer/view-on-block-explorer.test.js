@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider, fireEvent } from '../../../../test/jest';
 import ViewOnBlockExplorer from '.';
 
 const createProps = (customProps = {}) => {
@@ -19,5 +19,18 @@ describe('ViewOnBlockExplorer', () => {
     );
     expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('clicks on the block explorer link', () => {
+    global.platform = { openTab: jest.fn() };
+    const { getByText } = renderWithProvider(
+      <ViewOnBlockExplorer {...createProps()} />,
+    );
+    const link = getByText('View Swap at etherscan.io');
+    expect(link).toBeInTheDocument();
+    fireEvent.click(link);
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://etherscan.io',
+    });
   });
 });

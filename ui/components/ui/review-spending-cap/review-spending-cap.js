@@ -70,7 +70,7 @@ export default function ReviewSpendingCap({
                         key="tooltip-text"
                         variant={TYPOGRAPHY.H7}
                         fontWeight={FONT_WEIGHT.BOLD}
-                        color={COLORS.WARNING_DEFAULT}
+                        color={COLORS.ERROR_DEFAULT}
                       >
                         <i className="fa fa-exclamation-circle" />{' '}
                         {t('beCareful')}
@@ -110,7 +110,7 @@ export default function ReviewSpendingCap({
           as={TYPOGRAPHY.H6}
           color={
             tokenValue > currentTokenBalance
-              ? COLORS.WARNING_DEFAULT
+              ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }
           variant={TYPOGRAPHY.H6}

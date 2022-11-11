@@ -120,13 +120,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('syncWithThreeBox'),
-    descriptionMessage: (t) => t('syncWithThreeBoxDescription'),
-    route: `${ADVANCED_ROUTE}#sync-with3box`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('ipfsGateway'),
     descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${ADVANCED_ROUTE}#ipfs-gateway`,
@@ -290,6 +283,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contactUs'),
     descriptionMessage: (t) => t('contactUs'),
     route: `${ABOUT_US_ROUTE}#contactus`,
+    icon: 'fa fa-info-circle',
+  },
+  {
+    tabMessage: (t) => t('about'),
+    sectionMessage: (t) => t('betaTerms'),
+    descriptionMessage: (t) => t('betaTerms'),
+    route: `${ABOUT_US_ROUTE}#beta-terms`,
     icon: 'fa fa-info-circle',
   },
   {

@@ -66,6 +66,7 @@ export default function ExchangeRateDisplay({
       <span>1</span>
       <span
         className={classnames({ 'exchange-rate-display__bold': boldSymbols })}
+        data-testid="exchange-rate-display__base-symbol"
       >
         {baseSymbol}
       </span>
@@ -80,6 +81,7 @@ export default function ExchangeRateDisplay({
         className={classnames('exchange-rate-display__switch-arrows', {
           'exchange-rate-display__switch-arrows-rotate': rotating,
         })}
+        data-testid="exchange-rate-display__switch-arrows"
         onClick={() => {
           setShowPrimaryToSecondary(!showPrimaryToSecondary);
           setRotating(true);

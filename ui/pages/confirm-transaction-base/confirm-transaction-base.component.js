@@ -159,9 +159,8 @@ export default class ConfirmTransactionBase extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
-    showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
-    setApproveForAllArg: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps: PropTypes.arrayOf(PropTypes.object),
     ///: END:ONLY_INCLUDE_IN
@@ -353,7 +352,6 @@ export default class ConfirmTransactionBase extends Component {
       supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
-      showBuyModal,
       isBuyableChain,
     } = this.props;
     const { t } = this.context;
@@ -614,7 +612,6 @@ export default class ConfirmTransactionBase extends Component {
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           nativeCurrency={nativeCurrency}
           networkName={networkName}
-          showBuyModal={showBuyModal}
           type={txData.type}
           isBuyableChain={isBuyableChain}
         />
@@ -764,13 +761,17 @@ export default class ConfirmTransactionBase extends Component {
       ({ id }) => id === selectedInsightSnapId,
     );
 
+    const allowedTransactionTypes =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+      txData.type === TRANSACTION_TYPES.SIMPLE_SEND ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+
     const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
 
-    if (
-      txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-      !insightSnaps.length
-    ) {
+    if (!allowedTransactionTypes || !insightSnaps.length) {
       return null;
     }
 
@@ -1127,7 +1128,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       hardwareWalletRequiresConnection,
       image,
-      setApproveForAllArg,
+      isApprovalOrRejection,
       assetStandard,
     } = this.props;
     const {
@@ -1232,7 +1233,7 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
-          setApproveForAllArg={setApproveForAllArg}
+          isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
         />
       </TransactionModalContextProvider>

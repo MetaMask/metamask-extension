@@ -1,11 +1,5 @@
 {
   "resources": {
-    "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": {
-      "packages": {
-        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object>for-in": true,
-        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
-      }
-    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -2279,7 +2273,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2392,7 +2386,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -2873,21 +2867,7 @@
       },
       "packages": {
         "eslint>file-entry-cache>flat-cache>flatted": true,
-        "eslint>file-entry-cache>flat-cache>rimraf": true
-      }
-    },
-    "eslint>file-entry-cache>flat-cache>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
+        "nyc>rimraf": true
       }
     },
     "eslint>glob-parent": {
@@ -3456,8 +3436,8 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
-        "gulp-livereload>chalk>supports-color": true
+        "gulp-livereload>chalk>supports-color": true,
+        "gulp-livereload>debug>ms": true
       }
     },
     "gulp-livereload>event-stream": {
@@ -3583,7 +3563,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -3908,7 +3888,7 @@
         "process": true
       },
       "packages": {
-        "analytics-node>ms": true,
+        "gulp-livereload>debug>ms": true,
         "sinon>supports-color": true
       }
     },
@@ -4124,9 +4104,9 @@
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic": {
       "packages": {
-        "3box>ipfs>kind-of": true,
         "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": true,
-        "gulp>undertaker>bach>array-last>is-number": true
+        "gulp>undertaker>bach>array-last>is-number": true,
+        "webpack>micromatch>kind-of": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic>math-random": {
@@ -4796,7 +4776,6 @@
         "process.platform": true
       },
       "packages": {
-        "3box>ipfs>kind-of": true,
         "gulp>glob-watcher>anymatch>micromatch>define-property": true,
         "gulp>glob-watcher>anymatch>micromatch>extend-shallow": true,
         "gulp>glob-watcher>chokidar>braces": true,
@@ -4804,6 +4783,7 @@
         "webpack>micromatch>array-unique": true,
         "webpack>micromatch>extglob": true,
         "webpack>micromatch>fragment-cache": true,
+        "webpack>micromatch>kind-of": true,
         "webpack>micromatch>nanomatch": true,
         "webpack>micromatch>object.pick": true,
         "webpack>micromatch>regex-not": true,
@@ -5018,7 +4998,7 @@
     },
     "gulp>undertaker>arr-map>make-iterator": {
       "packages": {
-        "3box>ipfs>kind-of": true
+        "webpack>micromatch>kind-of": true
       }
     },
     "gulp>undertaker>bach": {
@@ -5644,9 +5624,9 @@
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
       "packages": {
-        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true,
         "webpack>micromatch>extglob>extend-shallow>is-extendable": true
       }
     },
@@ -5661,6 +5641,12 @@
     "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
       "globals": {
         "process.env.UNLAZY": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
+      "packages": {
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
+        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>kind-of": {
@@ -5869,6 +5855,20 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
+      }
+    },
+    "nyc>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "nyc>signal-exit": {
@@ -7216,19 +7216,19 @@
     },
     "webpack>micromatch>define-property>is-descriptor": {
       "packages": {
-        "3box>ipfs>kind-of": true,
         "webpack>micromatch>define-property>is-descriptor>is-accessor-descriptor": true,
-        "webpack>micromatch>define-property>is-descriptor>is-data-descriptor": true
+        "webpack>micromatch>define-property>is-descriptor>is-data-descriptor": true,
+        "webpack>micromatch>kind-of": true
       }
     },
     "webpack>micromatch>define-property>is-descriptor>is-accessor-descriptor": {
       "packages": {
-        "3box>ipfs>kind-of": true
+        "webpack>micromatch>kind-of": true
       }
     },
     "webpack>micromatch>define-property>is-descriptor>is-data-descriptor": {
       "packages": {
-        "3box>ipfs>kind-of": true
+        "webpack>micromatch>kind-of": true
       }
     },
     "webpack>micromatch>extglob": {
@@ -7331,11 +7331,11 @@
         "util.inspect": true
       },
       "packages": {
-        "3box>ipfs>kind-of": true,
         "nyc>spawn-wrap>is-windows": true,
         "webpack>micromatch>arr-diff": true,
         "webpack>micromatch>array-unique": true,
         "webpack>micromatch>fragment-cache": true,
+        "webpack>micromatch>kind-of": true,
         "webpack>micromatch>nanomatch>define-property": true,
         "webpack>micromatch>nanomatch>extend-shallow": true,
         "webpack>micromatch>nanomatch>is-odd": true,
@@ -7648,7 +7648,7 @@
     },
     "webpack>micromatch>snapdragon>use": {
       "packages": {
-        "3box>ipfs>kind-of": true
+        "webpack>micromatch>kind-of": true
       }
     },
     "webpack>micromatch>to-regex": {

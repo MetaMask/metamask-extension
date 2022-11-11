@@ -34,6 +34,8 @@ import {
   getSwapsLivenessForNetwork,
   countDecimals,
   showRemainingTimeInMinAndSec,
+  getFeeForSmartTransaction,
+  formatSwapsValueForDisplay,
 } from './swaps.util';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
@@ -534,6 +536,10 @@ describe('Swaps Util', () => {
         shouldEnableDirectWrapping(CHAIN_IDS.MAINNET, WETH_CONTRACT_ADDRESS),
       ).toBe(false);
     });
+
+    it('returns false if source and destination tokens are undefined', () => {
+      expect(shouldEnableDirectWrapping(CHAIN_IDS.MAINNET)).toBe(false);
+    });
   });
 
   describe('showRemainingTimeInMinAndSec', () => {
@@ -551,9 +557,48 @@ describe('Swaps Util', () => {
   });
 
   describe('getFeeForSmartTransaction', () => {
-    it('returns estimated for for STX', () => {
-      // TODO: Implement tests for this function.
-      expect(true).toBe(true);
+    it('returns estimated fee for STX', () => {
+      const expected = {
+        feeInUsd: '0.02',
+        feeInFiat: '$0.02',
+        feeInEth: '0.00323 ETH',
+        rawEthFee: '0.00323',
+      };
+      const actual = getFeeForSmartTransaction({
+        chainId: CHAIN_IDS.MAINNET,
+        currentCurrency: 'usd',
+        conversionRate: 5,
+        USDConversionRate: 5,
+        nativeCurrencySymbol: 'ETH',
+        feeInWeiDec: 3225623412028924,
+      });
+      expect(actual).toMatchObject(expected);
+    });
+
+    it('returns estimated fee for STX for JPY currency', () => {
+      const expected = {
+        feeInUsd: '0.02',
+        feeInFiat: '£0.02',
+        feeInEth: '0.00323 ETH',
+        rawEthFee: '0.00323',
+      };
+      const actual = getFeeForSmartTransaction({
+        chainId: CHAIN_IDS.MAINNET,
+        currentCurrency: 'gbp',
+        conversionRate: 5,
+        USDConversionRate: 5,
+        nativeCurrencySymbol: 'ETH',
+        feeInWeiDec: 3225623412028924,
+      });
+      expect(actual).toMatchObject(expected);
+    });
+  });
+
+  describe('formatSwapsValueForDisplay', () => {
+    it('gets swaps value for display', () => {
+      expect(formatSwapsValueForDisplay('39.6493201125465000000')).toBe(
+        '39.6493201125',
+      );
     });
   });
 

@@ -4,6 +4,7 @@ exports[`DropdownSearchList renders the component with initial props 1`] = `
 <div>
   <div
     class="dropdown-search-list"
+    data-testid="dropdown-search-list"
     tabindex="0"
   >
     <div
