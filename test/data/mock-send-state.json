@@ -1,4 +1,7 @@
 {
+  "ENS": {
+    "resolution": ""
+  },
   "appState": {
     "networkDropdownOpen": false,
     "gasIsLoading": false,
@@ -1276,9 +1279,6 @@
         "origin": "tmashuang.github.io"
       }
     ]
-  },
-  "ENS": {
-    "resolution": ""
   },
   "send": {
     "amountMode": "INPUT",
