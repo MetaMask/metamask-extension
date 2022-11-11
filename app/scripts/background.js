@@ -146,6 +146,8 @@ const sendReadyMessageToTabs = async () => {
         checkForErrorAndLog();
       })
       .catch(() => {
+        // An error may happen if the contentscript is blocked from loading,
+        // and thus there is no runtime.onMessage handler to listen to the message.
         checkForErrorAndLog();
       });
   }
