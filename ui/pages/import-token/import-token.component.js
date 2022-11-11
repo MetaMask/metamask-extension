@@ -502,11 +502,11 @@ class ImportToken extends Component {
           label={
             <div className="import-token__custom-symbol__label-wrapper">
               <span
-                className={
+                className={`import-token__custom-symbol__label ${
                   symbolAutoFilled && !forceEditSymbol
                     ? 'import-token__custom-symbol__label--disabled'
-                    : 'import-token__custom-symbol__label'
-                }
+                    : ''
+                }`}
               >
                 {t('tokenSymbol')}
               </span>
@@ -531,15 +531,17 @@ class ImportToken extends Component {
         <TextField
           id="custom-decimals"
           label={
-            <span
-              className={
-                decimalAutoFilled
-                  ? 'import-token__custom-decimals__label--disabled'
-                  : 'import-token__custom-decimals__label'
-              }
-            >
-              {t('decimal')}
-            </span>
+            <div className="import-token__custom-decimals__label-wrapper">
+              <span
+                className={`import-token__custom-decimals__label ${
+                  decimalAutoFilled
+                    ? 'import-token__custom-decimals__label--disabled'
+                    : ''
+                }`}
+              >
+                {t('decimal')}
+              </span>
+            </div>
           }
           type="number"
           value={customDecimals}
