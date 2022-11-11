@@ -979,9 +979,6 @@
   "editGasFeeModalTitle": {
     "message": "Modificare la tariffa del gas"
   },
-  "editPermission": {
-    "message": "Modifica Permessi"
-  },
   "editGasHigh": {
     "message": "Alta"
   },
@@ -1006,6 +1003,9 @@
   },
   "editGasMaxBaseFeeLow": {
     "message": "La tariffa base massima è bassa per le condizioni di rete attuali"
+  },
+  "editPermission": {
+    "message": "Modifica Permessi"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 vorrebbe la tua chiave di cifratura pubblica. Consentendo, questo sito sarà in grado di comporre messaggi criptati per te.",
