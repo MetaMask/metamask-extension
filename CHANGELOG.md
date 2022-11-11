@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix squeezing avatar, by adding a flex property to keep always the same ratio ([#16047](https://github.com/MetaMask/metamask-extension/pull/16047))
 - Fix domain names not always being rendered correctly in the connected sites list ([#16074](https://github.com/MetaMask/metamask-extension/pull/16074))
 - Fix transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
+- Fix Add Network form by blocking the submission when `chainId` does not match the one returned by the `rpcUrl` ([#16452](https://github.com/MetaMask/metamask-extension/pull/16452))
 - Swaps: fix tokens being removed from the Asset lists, after canceling a Swap ([#16167](https://github.com/MetaMask/metamask-extension/pull/16167))
 - Swaps: add debouncing for the `Swap from` and `Swap to` form fields ([#16326](https://github.com/MetaMask/metamask-extension/pull/16326))
 - [FLASK] Fix crash on snaps settings page if snap has no permissions ([#16354](https://github.com/MetaMask/metamask-extension/pull/16354))
