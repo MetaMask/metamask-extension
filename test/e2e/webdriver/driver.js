@@ -405,7 +405,9 @@ class Driver {
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
+      () =>
+        window.stateHooks.getCleanAppState &&
+        window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
       `${filepathBase}-state.json`,

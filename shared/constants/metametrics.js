@@ -178,8 +178,8 @@
  * identify the new number_of_tokens trait
  * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
  * we identify the opensea_api_enabled trait
- * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
- *  toggled we identify the 3box_enabled trait
+ * @property {'three_box_enabled'} THREE_BOX_ENABLED - When 3Box feature is
+ *  toggled we identify the 3box_enabled trait. This trait has been deprecated.
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
@@ -231,8 +231,8 @@ export const TRAITS = {
  *  the user has across all networks and accounts.
  * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
  *  API enabled?
- * @property {boolean} [three_box_enabled] - does the user have 3box sync
- *  enabled?
+ * @property {boolean} [three_box_enabled] - Does the user have 3box sync
+ *  enabled? (deprecated)
  * @property {string} [theme] - which theme the user has selected
  * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
