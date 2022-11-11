@@ -1,6 +1,4 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-const { PAGES } = require('../webdriver/driver');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -18,7 +16,7 @@ describe('Test Snap Error', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
+          // .withPermissionControllerConnectedToSnapDapp()
           .build(),
         ganacheOptions,
         failOnConsoleError: false,
@@ -39,7 +37,7 @@ describe('Test Snap Error', function () {
         await driver.clickElement('#connectErrorSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(3, 3000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
@@ -57,7 +55,6 @@ describe('Test Snap Error', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -68,12 +65,12 @@ describe('Test Snap Error', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 3000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+        await driver.delay(500);
 
-        //find and click on send error
+        // find and click on send error
         await driver.clickElement('#sendError');
 
         // switch back to the extension page

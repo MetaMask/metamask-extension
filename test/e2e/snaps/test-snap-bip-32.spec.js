@@ -16,7 +16,7 @@ describe('Test Snap bip-32', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
+          // .withPermissionControllerConnectedToSnapDapp()
           .build(),
         ganacheOptions,
         failOnConsoleError: false,
@@ -42,7 +42,6 @@ describe('Test Snap bip-32', function () {
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(3, 3000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
-        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -58,8 +57,6 @@ describe('Test Snap bip-32', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,

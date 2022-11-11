@@ -17,7 +17,7 @@ describe('Test Snap bip-44', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
+          // .withPermissionControllerConnectedToSnapDapp()
           .build(),
         ganacheOptions,
         failOnConsoleError: false,
@@ -40,7 +40,6 @@ describe('Test Snap bip-44', function () {
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(3, 3000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
-        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -99,7 +98,6 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
-        // approve install of snap
         await driver.waitUntilXWindowHandles(3, 3000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(

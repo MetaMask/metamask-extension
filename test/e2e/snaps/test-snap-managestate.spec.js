@@ -18,7 +18,7 @@ describe('Test Snap manageState', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
+          // .withPermissionControllerConnectedToSnapDapp()
           .build(),
         ganacheOptions,
         failOnConsoleError: false,
