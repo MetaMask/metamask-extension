@@ -96,6 +96,14 @@ module.exports = {
       parserOptions: {
         sourceType: 'module',
       },
+      rules: {
+        "import/extensions": [
+          "error",
+          "ignorePackages", {
+            "js": "never",
+          }
+       ]
+      },
       settings: {
         'import/resolver': {
           // When determining the location of an `import`, use Node's resolution
@@ -105,7 +113,9 @@ module.exports = {
           // packages like `prop-types` (where we would otherwise get "No
           // default export found in imported module 'prop-types'" from
           // TypeScript because imports work differently there).
-          node: {},
+          node: {
+            extensions: [".js", ".jsx", ".ts", ".tsx"],
+          },
           typescript: {
             // Always try to resolve types under `<root>/@types` directory even
             // it doesn't contain any source code, like `@types/unist`
