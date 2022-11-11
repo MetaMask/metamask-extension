@@ -15,6 +15,7 @@
       -webkit-appearance: none;
       display: none;
     }
+
     & #{$self}__decimal-warning {
       margin-top: 5px;
     }
@@ -51,7 +52,14 @@
   }
 
   &__custom-decimals {
+    &__label-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+    }
+
     &__label {
+      flex: 0 0 auto;
+
       &--disabled {
         color: var(--color-text-muted);
       }
