@@ -57,7 +57,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -337,7 +337,7 @@ export default function TokenAllowance({
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
@@ -385,7 +385,7 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
@@ -464,7 +464,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */

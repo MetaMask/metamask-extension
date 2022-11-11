@@ -30,7 +30,7 @@ export default function ApproveContentCard({
   onEditClick,
   footer,
   noBorder,
-  supportsEIP1559V2,
+  supportsEIP1559,
   renderTransactionDetailsContent,
   renderDataContent,
   isMultiLayerFeeNetwork,
@@ -61,7 +61,7 @@ export default function ApproveContentCard({
           justifyContent={JUSTIFY_CONTENT.FLEX_END}
           className="approve-content-card-container__card-header"
         >
-          {supportsEIP1559V2 && title === t('transactionFee') ? null : (
+          {supportsEIP1559 && title === t('transactionFee') ? null : (
             <>
               <Box className="approve-content-card-container__card-header__symbol">
                 {symbol}
@@ -79,7 +79,7 @@ export default function ApproveContentCard({
               </Box>
             </>
           )}
-          {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
+          {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button type="link" onClick={() => onEditClick()}>
                 <Typography
@@ -91,7 +91,7 @@ export default function ApproveContentCard({
               </Button>
             </Box>
           )}
-          {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+          {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
             <EditGasFeeButton />
           )}
         </Box>
@@ -102,7 +102,7 @@ export default function ApproveContentCard({
         className="approve-content-card-container__card-content"
       >
         {renderTransactionDetailsContent &&
-          (!isMultiLayerFeeNetwork && supportsEIP1559V2 ? (
+          (!isMultiLayerFeeNetwork && supportsEIP1559 ? (
             <GasDetailsItem />
           ) : (
             <Box
@@ -252,7 +252,7 @@ ApproveContentCard.propTypes = {
   /**
    * Is enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * Whether to render transaction details content or not
    */

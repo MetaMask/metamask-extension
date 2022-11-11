@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Gaz fiyatı"
   },
-  "advancedOptions": {
-    "message": "Gelişmiş Seçenekler"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "Kişiyi Düzenle"
   },
-  "editGasEducationButtonText": {
-    "message": "Nasıl seçim yapmalıyım?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Başarılı işlem şansını artırdığı için zamana duyarlı işlemler (Takaslar gibi) için en iyi seçenektir. Bir Takas işleminin gerçekleşmesi çok uzun sürerse başarısız olabilir ya da gaz ücretinizin bir kısmını kaybetmenize neden olabilir."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Maks. ücret maks. öncelik ücretinden daha düşük olamaz"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Maks. ücret ödeyeceğiniz en yüksek ücrettir (baz ücret + öncelik ücreti)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Maks. öncelik ücreti 0 GWEI üzerinde olmalıdır"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Öncelik ücreti mevcut ağ koşulları için düşük"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder. Sıklıkla maks. ayarınızda ödeme yaparsınız"
   },
   "editGasMedium": {
     "message": "Orta"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Bilinmeyen işlem süresi"
   },
-  "editGasTooLowTooltip": {
-    "message": "Maks. ücretiniz veya maks. öncelik ücretiniz mevcut piyasa koşulları için düşük olabilir. İşleminizin ne zaman gerçekleştirileceğini (ya da gerçekleştirilip gerçekleştirilmeyeceğini) bilmeyiz. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Bu, maksimum ücretinizi düşürür ancak ağ trafiğiniz artarsa işleminiz gecikebilir ya da gerçekleşmeyebilir."
-  },
   "editNonceField": {
     "message": "Geçici anahtarı düzenle"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
-  },
-  "enableEIP1559V2": {
-    "message": "Gelişmiş Gas Ücreti Kullanıcı Arayüzü'nü Etkinleştir"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Gas ücreti tahmini ve özelleştirmenin nasıl çalıştığını güncelledik."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Ayarlarda Gelişmiş Gas Ücreti Kullanıcı Arayüzü'nü aç"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Gas tahmini ve özelleştirmenin nasıl çalıştığını güncelledik. Yeni gas deneyimini kullanmak istiyorsan aç. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Yeni gas deneyimi"
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Bu gaz ücreti $1 tarafından önerilmiştir. Bu değerin başka bir değerle değiştirilmesi işleminizle ilgili bir soruna neden olabilir. Sorularınız olursa lütfen $1 ile iletişime geçin.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Düşük, orta ve yüksek tahminlerimiz mevcut değil."
   },
   "gasFee": {
     "message": "Gaz Ücreti"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Özel Anahtarları Göster"
-  },
-  "showRecommendations": {
-    "message": "Önerileri Göster"
   },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"

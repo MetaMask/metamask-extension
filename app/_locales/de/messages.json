@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Gaspreis"
   },
-  "advancedOptions": {
-    "message": "Erweiterte Optionen"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "Kontakt bearbeiten"
   },
-  "editGasEducationButtonText": {
-    "message": "Wie soll ich wählen?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Dies ist am besten für zeitsensible Transaktionen (wie Swaps), da es die Wahrscheinlichkeit einer erfolgreichen Transaktion erhöht. Wenn es zu lange dauert, einen Swap zu verarbeiten, kann dies fehlschlagen und dazu führen, dass ein Teil Ihrer Gasgebühr verloren geht."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Die maximale Gebühr darf nicht niedriger sein als die maximale Prioritätsgebühr"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Die Maximalgebühr  ist der Höchstbetrag, den Sie zahlen müssen (Basisgebühr + Prioritätsgebühr)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Die maximale Prioritätsgebühr muss größer als 0 GWEI sein"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Die Prioritätsgebühr ist niedrig für aktuelle Netzwerkbedingungen"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Die max. Prioritätsgebühr (alias „Miner Tip“) geht direkt an die Miner und veranlasst sie, Ihre Transaktion zu priorisieren. Sie zahlen meist Ihre maximale Einstellung"
   },
   "editGasMedium": {
     "message": "Mittel"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Unbekannte Bearbeitungszeit"
   },
-  "editGasTooLowTooltip": {
-    "message": "Ihre Maximalgebühr oder die maximale Prioritätsgebühr kann für die aktuellen Marktbedingungen niedrig sein. Wir wissen nicht, wann (oder ob Ihre Transaktion verarbeitet wird). "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Dies senkt Ihre maximale Gebühr, aber wenn der Netzwerktraffic steigt, kann Ihre Transaktion sich verzögern oder scheitern."
-  },
   "editNonceField": {
     "message": "Nonce bearbeiten"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Auto-Erkennung aktivieren"
-  },
-  "enableEIP1559V2": {
-    "message": "Verbesserte Gasgebühr-UI aktivieren"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Wir haben die Funktionsweise der Gaspreisschätzung und -anpassung aktualisiert."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Verbesserte Gaspreis-UI in Einstellungen einschalten"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Wir haben die Funktionsweise der Gasschätzung und -anpassung aktualisiert. Schalten Sie ein, wenn Sie das neue Gaserlebnis nutzen möchten. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Neues Gaserlebnis"
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Diese Gasgebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Unsere niedrigen, mittleren und hohen Schätzungen sind nicht verfügbar."
   },
   "gasFee": {
     "message": "Gasgebühr"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Private Keys anzeigen"
-  },
-  "showRecommendations": {
-    "message": "Empfehlungen anzeigen"
   },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"

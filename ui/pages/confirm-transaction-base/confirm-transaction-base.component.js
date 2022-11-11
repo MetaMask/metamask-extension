@@ -158,7 +158,6 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -465,7 +464,7 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return this.supportsEIP1559V2 ? (
+      return this.supportsEIP1559 ? (
         <GasDetailsItem
           key="gas_details"
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -625,7 +624,7 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning &&
-              !this.supportsEIP1559V2 &&
+              !this.supportsEIP1559 &&
               simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
@@ -1096,10 +1095,8 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
-  supportsEIP1559V2 =
-    this.props.eip1559V2Enabled &&
-    this.props.supportsEIP1559 &&
-    !isLegacyTransaction(this.props.txData);
+  supportsEIP1559 =
+    this.props.supportsEIP1559 && !isLegacyTransaction(this.props.txData);
 
   render() {
     const { t } = this.context;
@@ -1231,7 +1228,7 @@ export default class ConfirmTransactionBase extends Component {
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={this.supportsEIP1559V2}
+          supportsEIP1559={this.supportsEIP1559}
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}

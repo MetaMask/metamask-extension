@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Presyo ng gas"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Ang priority fee (kilala rin bilang “tip ng miner”) ay direktang napupunta sa mga miner at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "I-edit ang contact"
   },
-  "editGasEducationButtonText": {
-    "message": "Paano ako pipili?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Pinakamainam ito para sa mga transaksyong sensitibo sa oras (tulad ng Swap) dahil pinapataas nito ang posibilidad ng isang matagumpay na transaksyon. Kung ang isang Swap ay tumatagal ng masyadong mahaba upang maproseso ito ay maaaring mabigo at magresulta sa pagkawala ng ilan sa iyong gas fee."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Ang max fee ay hindi dapat mas mababa kaysa max priority fee"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Ang max fee ay ang pinakamataas na babayaran mo (base fee + priority fee)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Ang max priority fee ay dapat mas mataas sa 0 GWEI"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Ang priority fee ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Ang max priority fee (kilala rin bilang “tip ng miner”) ay direktang napupunta sa mga miner at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon. Madalas kang magbabayad sa iyong max setting"
   },
   "editGasMedium": {
     "message": "Medium"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Hindi kilalang oras ng pagproseso"
   },
-  "editGasTooLowTooltip": {
-    "message": "Ang iyong max fee o max priority fee ay maaaring mababa para sa kasalukuyang kondisyon ng market. Hindi namin alam kung kailan (o kung) ipoproseso ang iyong transaksyon. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Pinapababa nito ang iyong maximum fee ngunit kung network traffic ay maaaring maantala o mabigo ang iyong transaksyon."
-  },
   "editNonceField": {
     "message": "I-edit sa Nonce"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
-  },
-  "enableEIP1559V2": {
-    "message": "Paganahin ang Pinahusay na UI ng Singil sa Gas"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Na-update na namin kung paano gumagana ang pagtantiya at pag-customize ng singil sa gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "I-on sa Settings ang pinahusay na UI ng singil sa gas"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Na-update na namin kung paano gumagana ang pagtantiya at pag-customize ng gas. I-on kung gusto mong gamitin ang bagong karanasan sa gas. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Bagong karanasan sa gas"
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Settings."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Ang gas fee na ito ay iminungkahi ng $1. Ang pag-override dito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga tanong.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Ang aming low, medium at high na mga pagtantiya ay hindi available."
   },
   "gasFee": {
     "message": "Bayarin sa Gas"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Ipakita ang Mga Pribadong Key"
-  },
-  "showRecommendations": {
-    "message": "Ipakita ang mga Rekomendasyon"
   },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"

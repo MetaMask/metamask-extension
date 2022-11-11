@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Giá gas"
   },
-  "advancedOptions": {
-    "message": "Tùy chọn nâng cao"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"phí khích lệ thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "Chỉnh sửa địa chỉ liên hệ"
   },
-  "editGasEducationButtonText": {
-    "message": "Tôi nên chọn như thế nào?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Đây là lựa chọn tốt nhất cho các giao dịch nhạy cảm với thời gian (chẳng hạn như Hoán đổi) vì nó làm tăng khả năng giao dịch thành công. Quá trình Hoán đổi diễn ra quá lâu có thể khiến giao dịch thất bại và bạn bị mất một phần phí gas."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Phí tối đa không thể thấp hơn phí ưu tiên tối đa"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Phí tối đa là phí cao nhất mà bạn sẽ trả (phí cơ bản + phí ưu tiên)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Phí ưu tiên tối đa phải lớn hơn 0 GWEI"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Phí ưu tiên thấp so với tình trạng mạng hiện tại"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Phí ưu tiên tối đa (hay còn được gọi là \"phí khích lệ thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn. Thường thì bạn sẽ chi trả theo mức thiết lập tối đa của mình"
   },
   "editGasMedium": {
     "message": "Trung bình"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Thời gian xử lý không rõ"
   },
-  "editGasTooLowTooltip": {
-    "message": "Phí tối đa hoặc phí ưu tiên tối đa của bạn có thể thấp so với tình trạng mạng hiện tại. Chúng tôi không biết khi nào (hoặc liệu) giao dịch của bạn được xử lý. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Việc này sẽ giảm mức phí tối đa, nhưng nếu lưu lượng mạng tăng lên, giao dịch của bạn có thể bị trì hoãn hoặc thất bại."
-  },
   "editNonceField": {
     "message": "Chỉnh sửa số chỉ dùng một lần"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
-  },
-  "enableEIP1559V2": {
-    "message": "Bật giao diện phí gas nâng cao"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Chúng tôi đã cập nhật cách thức hoạt động của việc ước tính và tùy chỉnh phí gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Bật giao diện phí gas nâng cao trong phần Cài đặt"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Chúng tôi đã cập nhật cách thức hoạt động của việc ước tính và tùy chỉnh phí gas. Bật lên nếu bạn muốn sử dụng trải nghiệm gas mới. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Trải nghiệm gas mới"
   },
   "enableFromSettings": {
     "message": " Bật lên trong Cài Đặt."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Phí gas này đã được gợi ý bởi $1. Việc sửa đổi có thể khiến giao dịch của bạn gặp sự cố. Vui lòng liên hệ với $1 nếu bạn có câu hỏi.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Các ước tính thấp, trung bình và cao của chúng tôi hiện không có sẵn."
   },
   "gasFee": {
     "message": "Phí gas"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Hiện khóa riêng tư"
-  },
-  "showRecommendations": {
-    "message": "Hiển thị các đề xuất"
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"

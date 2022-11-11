@@ -293,13 +293,6 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-info-circle',
   },
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableEIP1559V2'),
-    descriptionMessage: (t) => t('enableEIP1559V2Description'),
-    route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
-    icon: 'fa fa-flask',
-  },
-  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('enhancedTokenDetection'),
     descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),

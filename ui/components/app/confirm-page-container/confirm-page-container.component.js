@@ -29,7 +29,6 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import DepositPopover from '../deposit-popover/deposit-popover';
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -107,7 +106,7 @@ export default class ConfirmPageContainer extends Component {
     currentTransaction: PropTypes.object.isRequired,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
@@ -163,7 +162,7 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction,
       contact = {},
       isOwnedAccount,
-      supportsEIP1559V2,
+      supportsEIP1559,
       nativeCurrency,
       isBuyableChain,
       networkIdentifier,
@@ -264,7 +263,6 @@ export default class ConfirmPageContainer extends Component {
               </>
             )}
           </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
@@ -295,7 +293,7 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               hasTopBorder={showAddToAddressDialog}
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
@@ -391,14 +389,14 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && !supportsEIP1559V2 && (
+          {editingGas && !supportsEIP1559 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
           )}
-          {supportsEIP1559V2 && (
+          {supportsEIP1559 && (
             <>
               <EditGasFeePopover />
               <AdvancedGasFeePopover />

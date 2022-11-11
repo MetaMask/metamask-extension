@@ -10,8 +10,34 @@ describe('Gas API fallback', function () {
       )
       .thenCallback(() => {
         return {
-          statusCode: 500,
-          json: {},
+          statusCode: 200,
+          json: {
+            low: {
+              minWaitTimeEstimate: 180000,
+              maxWaitTimeEstimate: 300000,
+              suggestedMaxPriorityFeePerGas: '3',
+              suggestedMaxFeePerGas: '53',
+            },
+            medium: {
+              minWaitTimeEstimate: 15000,
+              maxWaitTimeEstimate: 60000,
+              suggestedMaxPriorityFeePerGas: '7',
+              suggestedMaxFeePerGas: '70',
+            },
+            high: {
+              minWaitTimeEstimate: 0,
+              maxWaitTimeEstimate: 15000,
+              suggestedMaxPriorityFeePerGas: '10',
+              suggestedMaxFeePerGas: '100',
+            },
+            estimatedBaseFee: '50',
+            networkCongestion: 0.9,
+            latestPriorityFeeRange: ['1', '20'],
+            historicalPriorityFeeRange: ['2', '125'],
+            historicalBaseFeeRange: ['50', '100'],
+            priorityFeeTrend: 'up',
+            baseFeeTrend: 'down',
+          },
         };
       });
   }
@@ -27,7 +53,7 @@ describe('Gas API fallback', function () {
     ],
   };
 
-  it('error message is displayed but gas recommendation is not displayed', async function () {
+  it('network error message is displayed if network is congested', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -51,19 +77,12 @@ describe('Gas API fallback', function () {
         await inputAmount.fill('1');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Edit', tag: 'button' });
 
-        const error = await driver.isElementPresent('.error-message__text');
-        const gasRecommendation = await driver.isElementPresent(
-          '[data-testid="gas-recommendation"]',
-        );
+        const error = await driver.isElementPresent({
+          text: 'Network is busy. Gas prices are high and estimates are less accurate.',
+        });
 
-        assert.equal(error, true, 'Error message is not displayed');
-        assert.equal(
-          gasRecommendation,
-          false,
-          'Gas recommendation is displayed',
-        );
+        assert.equal(error, true, 'Network error is present');
       },
     );
   });

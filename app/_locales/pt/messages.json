@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Preço do Gas"
   },
-  "advancedOptions": {
-    "message": "Opções avançadas"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "Editar contato"
   },
-  "editGasEducationButtonText": {
-    "message": "Como eu escolho?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Essa é a melhor opção para transações suscetíveis ao tempo (como swaps), pois aumenta a probabilidade de sucesso da transação. Se um swap demorar demais para ser processado, ele pode falhar e resultar na perda de parte da taxa de Gas."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "A taxa máxima não pode ser inferior à taxa de prioridade máxima"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "A taxa máxima é o valor máximo que você pagará (taxa base + taxa de prioridade)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "A taxa de prioridade máxima deve ser superior a 0 GWEI"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "A taxa máxima de prioridade (também conhecida como \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar sua transação. Na maioria dos casos, você paga o valor máximo definido"
   },
   "editGasMedium": {
     "message": "Média"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
   },
-  "editGasTooLowTooltip": {
-    "message": "Sua taxa máxima ou taxa de prioridade máxima pode estar baixa para as condições atuais do mercado. Não sabemos quando (ou se) a sua transação será processada. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Isso reduz sua taxa máxima, mas, se o tráfego na rede aumentar, sua transação pode ser postergada ou falhar."
-  },
   "editNonceField": {
     "message": "Editar nonce"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
-  },
-  "enableEIP1559V2": {
-    "message": "Ativar UI aprimorada para taxa de gás"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Atualizamos o funcionamento da estimativa e personalização da taxa de gás."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Ative a UI aprimorada para taxa de gás nas configurações"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Atualizamos o funcionamento da estimativa e personalização de gás. Ative se quiser desfrutar a nova experiência de gás. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Nova experiência de gás"
   },
   "enableFromSettings": {
     "message": " Habilite-a nas configurações."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nossas estimativas baixas, médias e altas não estão disponíveis."
   },
   "gasFee": {
     "message": "Taxa de gás"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostrar Chaves Privadas"
-  },
-  "showRecommendations": {
-    "message": "Mostrar recomendações"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"

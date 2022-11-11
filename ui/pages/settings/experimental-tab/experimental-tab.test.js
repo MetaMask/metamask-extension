@@ -1,5 +1,4 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -15,8 +14,9 @@ const render = () => {
 };
 
 describe('ExperimentalTab', () => {
-  it('renders ExperimentalTab component and shows Enable enhanced gas fee UI text', () => {
-    render();
-    expect(screen.getByText('Enable enhanced gas fee UI')).toBeInTheDocument();
+  it('renders ExperimentalTab component without error', () => {
+    expect(() => {
+      render();
+    }).not.toThrow();
   });
 });

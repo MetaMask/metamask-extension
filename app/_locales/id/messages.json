@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Harga gas"
   },
-  "advancedOptions": {
-    "message": "Opsi lanjutan"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
@@ -1011,9 +1008,6 @@
   "editContact": {
     "message": "Edit kontak"
   },
-  "editGasEducationButtonText": {
-    "message": "Bagaimana saya harus memilih?"
-  },
   "editGasEducationHighExplanation": {
     "message": "Ini adalah pilihan terbaik untuk transaksi di waktu sensitif (seperti Swap) karena meningkatkan kemungkinan keberhasilan transaksi. Jika pemrosesan Swap terlalu lama, maka berpotensi gagal dan mengakibatkan hilangnya sebagian biaya gas Anda."
   },
@@ -1066,9 +1060,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Biaya maks tidak boleh lebih rendah dari biaya prioritas maks"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Biaya maks merupakan biaya tertinggi yang akan Anda bayarkan (biaya dasar + biaya prioritas)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Biaya prioritas maks harus lebih besar dari 0 GWEI"
   },
@@ -1086,9 +1077,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Biaya prioritas rendah untuk kondisi jaringan saat ini"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Biaya prioritas maks (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda. Pengaturan maks akan menjadi yang paling sering Anda bayar"
   },
   "editGasMedium": {
     "message": "Sedang"
@@ -1112,12 +1100,6 @@
   "editGasTooLow": {
     "message": "Waktu pemrosesan tak diketahui"
   },
-  "editGasTooLowTooltip": {
-    "message": "Biaya maks atau biaya prioritas maks Anda mungkin rendah untuk kondisi pasar saat ini. Kami tidak tahu kapan (atau jika) transaksi Anda akan diproses. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Ini akan menurunkan biaya maks Anda, tetapi jika lalu lintas jaringan meningkat, transaksi Anda mungkin tertunda atau gagal."
-  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1132,22 +1114,6 @@
   },
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
-  },
-  "enableEIP1559V2": {
-    "message": "Aktifkan UI biaya gas yang ditingkatkan"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Kami telah memperbarui cara kerja estimasi dan penyesuaian biaya gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Aktifkan UI biaya gas yang ditingkatkan di Pengaturan"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Kami telah memperbarui cara kerja estimasi dan penyesuaian gas. Aktifkan jika Anda ingin menggunakan pengalaman gas baru. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Pengalaman gas baru"
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
@@ -1404,9 +1370,6 @@
   "gasDisplayDappWarning": {
     "message": "Biaya gas ini telah disarankan oleh $1. Pengabaian dapat menyebabkan masalah pada transaksi Anda. Hubungi $1 jika ada pertanyaan.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Estimasi rendah, sedang, dan tinggi kami tidak tersedia."
   },
   "gasFee": {
     "message": "Biaya gas"
@@ -3123,9 +3086,6 @@
   },
   "showPrivateKeys": {
     "message": "Tampilkan Kunci Privat"
-  },
-  "showRecommendations": {
-    "message": "Tampilkan rekomendasi"
   },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"

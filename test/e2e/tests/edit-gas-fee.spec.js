@@ -21,9 +21,6 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
@@ -104,9 +101,6 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
@@ -193,9 +187,6 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
           .build(),
         ganacheOptions,
         title: this.test.title,

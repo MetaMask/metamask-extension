@@ -232,9 +232,6 @@
   "advancedGasPriceTitle": {
     "message": "Prezzo gas"
   },
-  "advancedOptions": {
-    "message": "Opzioni Avanzate"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
   },
@@ -957,9 +954,6 @@
   },
   "editContact": {
     "message": "Modifica contatto"
-  },
-  "editGasEducationButtonText": {
-    "message": "Come devo scegliere?"
   },
   "editGasEducationHighExplanation": {
     "message": "Questo è il migliore per le transazioni sensibili al tempo (come gli swap) in quanto aumenta la probabilità di una transazione riuscita. Se uno Swap impiega troppo tempo per l'elaborazione, potrebbe non riuscire e comportare la perdita di parte della tariffa del gas."
