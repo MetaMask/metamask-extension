@@ -182,7 +182,6 @@ export {
   BnMultiplyByFraction,
   checkForError,
   checkForErrorAndLog,
-  checkForErrorAndWarn,
   addHexPrefix,
   bnToHex,
   getChainType,
