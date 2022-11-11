@@ -120,9 +120,7 @@ async function withFixtures(options, testSuite) {
       const cdpConnection = await webDriver.createCDPConnection('page');
       await webDriver.onLogException(cdpConnection, function (exception) {
         const { description } = exception.exceptionDetails.exception;
-        const message = description.substring(0, description.indexOf('\n'));
-        exception.message = exception.message || message;
-        exceptions.push(exception);
+        exceptions.push(description);
       });
     }
 
@@ -157,7 +155,7 @@ async function withFixtures(options, testSuite) {
     }
     if (errors.length === 0 && exceptions.length > 0 && failOnConsoleError) {
       const [exception] = exceptions;
-      throw Error(exception.message);
+      throw Error(exception);
     }
     throw error;
   } finally {
