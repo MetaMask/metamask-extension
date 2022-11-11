@@ -26,6 +26,7 @@ import {
   EVENT_NAMES,
   TRAITS,
 } from '../../shared/constants/metametrics';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import migrations from './migrations';
@@ -46,7 +47,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { checkForErrorAndLog, getPlatform } from './lib/util';
+import { getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -129,11 +130,11 @@ const sendReadyMessageToTabs = async () => {
       windowType: 'normal',
     })
     .then((result) => {
-      checkForErrorAndLog();
+      checkForLastErrorAndLog();
       return result;
     })
     .catch(() => {
-      checkForErrorAndLog();
+      checkForLastErrorAndLog();
     });
 
   /** @todo we should only sendMessage to dapp tabs, not all tabs. */
@@ -143,12 +144,12 @@ const sendReadyMessageToTabs = async () => {
         name: EXTENSION_MESSAGES.READY,
       })
       .then(() => {
-        checkForErrorAndLog();
+        checkForLastErrorAndLog();
       })
       .catch(() => {
         // An error may happen if the contentscript is blocked from loading,
         // and thus there is no runtime.onMessage handler to listen to the message.
-        checkForErrorAndLog();
+        checkForLastErrorAndLog();
       });
   }
 };
