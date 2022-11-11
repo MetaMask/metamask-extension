@@ -28,6 +28,7 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+import DepositPopover from '../deposit-popover/deposit-popover';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -38,6 +39,7 @@ import {
 export default class ConfirmPageContainer extends Component {
   state = {
     showNicknamePopovers: false,
+    setShowDepositPopover: false,
   };
 
   static contextTypes = {
@@ -63,6 +65,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
     // Content
@@ -106,7 +109,6 @@ export default class ConfirmPageContainer extends Component {
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
-    showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
   };
@@ -118,6 +120,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toMetadataName,
       toEns,
       toNickname,
       toAddress,
@@ -162,7 +165,6 @@ export default class ConfirmPageContainer extends Component {
       isOwnedAccount,
       supportsEIP1559V2,
       nativeCurrency,
-      showBuyModal,
       isBuyableChain,
       networkIdentifier,
       isApprovalOrRejection,
@@ -190,6 +192,8 @@ export default class ConfirmPageContainer extends Component {
     const isSetApproveForAll =
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
+    const { setShowDepositPopover } = this.state;
 
     const { t } = this.context;
 
@@ -231,6 +235,7 @@ export default class ConfirmPageContainer extends Component {
                   senderName={fromName}
                   senderAddress={fromAddress}
                   recipientName={toName}
+                  recipientMetadataName={toMetadataName}
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
@@ -295,7 +300,6 @@ export default class ConfirmPageContainer extends Component {
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
-              showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
@@ -313,7 +317,9 @@ export default class ConfirmPageContainer extends Component {
                         <Button
                           type="inline"
                           className="confirm-page-container-content__link"
-                          onClick={showBuyModal}
+                          onClick={() =>
+                            this.setState({ setShowDepositPopover: true })
+                          }
                           key={`${nativeCurrency}-buy-button`}
                         >
                           {t('buyAsset', [nativeCurrency])}
@@ -334,6 +340,11 @@ export default class ConfirmPageContainer extends Component {
                 type="danger"
               />
             </div>
+          )}
+          {setShowDepositPopover && (
+            <DepositPopover
+              onClose={() => this.setState({ setShowDepositPopover: false })}
+            />
           )}
           {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
