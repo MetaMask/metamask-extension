@@ -31,7 +31,7 @@ describe('Test Snap update', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#connectUpdate');
+        const snapButton = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton);
         await driver.delay(500);
         await driver.clickElement('#connectUpdate');
@@ -99,6 +99,7 @@ describe('Test Snap update', function () {
 
         // look for the correct version text
         const versionResult = await driver.findElement('#updateSnapVersion');
+        await driver.delay(500);
         assert.equal(await versionResult.getText(), '"2.0.0"');
       },
     );
