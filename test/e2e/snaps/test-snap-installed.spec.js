@@ -111,9 +111,7 @@ describe('Test Snap Installed', function () {
         await driver.delay(1000);
         assert.equal(
           await result.getText(),
-          // use this for live tests
           'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
-          // 'local:http://localhost:8001, local:http://localhost:8002',
         );
       },
     );
