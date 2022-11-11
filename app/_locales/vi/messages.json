@@ -3104,12 +3104,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Chọn tùy chọn này để hiển thị các quyền kiểm soát giá gas và giới hạn ngay trên màn hình gửi và xác nhận."
   },
-  "showCustomNetworkList": {
-    "message": "Hiển thị danh sách mạng tùy chỉnh"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Chọn tùy chọn này để hiển thị danh sách các mạng có thông tin được điền sẵn khi thêm mạng mới."
-  },
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
   },

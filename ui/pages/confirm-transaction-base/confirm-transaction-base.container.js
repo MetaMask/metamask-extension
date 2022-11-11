@@ -35,6 +35,8 @@ import {
   getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
+  getUnapprovedTransaction,
+  getFullTxData,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getInsightSnaps,
   ///: END:ONLY_INCLUDE_IN
@@ -98,10 +100,8 @@ const mapStateToProps = (state, ownProps) => {
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
-  const transaction =
-    Object.values(unapprovedTxs).find(
-      ({ id }) => id === (transactionId || Number(paramsTransactionId)),
-    ) || {};
+  const txId = transactionId || Number(paramsTransactionId);
+  const transaction = getUnapprovedTransaction(state, txId);
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -148,10 +148,6 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
-  if (transaction && transaction.simulationFails) {
-    txData.simulationFails = transaction.simulationFails;
-  }
-
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
       transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
@@ -168,16 +164,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  let fullTxData = { ...txData, ...transaction };
-  if (customTxParamsData) {
-    fullTxData = {
-      ...fullTxData,
-      txParams: {
-        ...fullTxData.txParams,
-        data: customTxParamsData,
-      },
-    };
-  }
+  const fullTxData = getFullTxData(state, txId, customTxParamsData);
 
   const isCollectibleTransfer = Boolean(
     allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {

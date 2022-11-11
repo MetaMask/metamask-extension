@@ -3147,12 +3147,6 @@
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
-  "showCustomNetworkList": {
-    "message": "Show custom network list"
-  },
-  "showCustomNetworkListDescription": {
-    "message": "Select this to show a list of networks with prefilled details when adding a new network."
-  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },

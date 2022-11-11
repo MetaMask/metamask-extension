@@ -323,13 +323,6 @@ export const SETTINGS_CONSTANTS = [
     featureFlag: 'COLLECTIBLES_V1',
   },
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('showCustomNetworkList'),
-    descriptionMessage: (t) => t('showCustomNetworkListDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
-    icon: 'fa fa-flask',
-  },
-  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('backupUserData'),
     descriptionMessage: (t) => t('backupUserDataDescription'),

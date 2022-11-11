@@ -18,7 +18,7 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
     async function fetchInsight() {
       const d = await handleSnapRequest({
         snapId,
-        origin: 'test',
+        origin: '',
         handler: 'onTransaction',
         request: {
           jsonrpc: '2.0',

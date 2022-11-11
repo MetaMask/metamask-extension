@@ -1,63 +1,62 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import sinon from 'sinon';
-import * as i18nHook from '../../../hooks/useI18nContext';
-import Tooltip from '../../ui/tooltip';
-import TransactionStatus from './transaction-status.component';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import TransactionStatus from '.';
 
 describe('TransactionStatus Component', () => {
-  beforeAll(() => {
-    sinon.stub(i18nHook, 'useI18nContext').returns((str) => str.toUpperCase());
-  });
-
-  afterAll(() => {
-    sinon.restore();
-  });
-
   it('should render CONFIRMED properly', () => {
-    const wrapper = mount(
-      <TransactionStatus status="confirmed" date="June 1" />,
+    const confirmedProps = {
+      status: 'confirmed',
+      date: 'June 1',
+    };
+
+    const { container } = renderWithProvider(
+      <TransactionStatus {...confirmedProps} />,
     );
 
-    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
-    expect(wrapper.text()).toStrictEqual('June 1');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render PENDING properly when status is APPROVED', () => {
-    const wrapper = mount(
-      <TransactionStatus
-        status="approved"
-        isEarliestNonce
-        error={{ message: 'test-title' }}
-      />,
-    );
+    const props = {
+      status: 'approved',
+      isEarliestNonce: true,
+      error: { message: 'test-title' },
+    };
 
-    expect(wrapper.text()).toStrictEqual('PENDING');
-    expect(wrapper.find(Tooltip).props().title).toStrictEqual('test-title');
+    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render PENDING properly', () => {
-    const wrapper = mount(
-      <TransactionStatus date="June 1" status="submitted" isEarliestNonce />,
-    );
+    const props = {
+      date: 'June 1',
+      status: 'submitted',
+      isEarliestNonce: true,
+    };
 
-    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
-    expect(wrapper.text()).toStrictEqual('PENDING');
+    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render QUEUED properly', () => {
-    const wrapper = mount(<TransactionStatus status="queued" />);
+    const props = {
+      status: 'queued',
+    };
 
-    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
-    expect(wrapper.find('.transaction-status--queued')).toHaveLength(1);
-    expect(wrapper.text()).toStrictEqual('QUEUED');
+    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render UNAPPROVED properly', () => {
-    const wrapper = mount(<TransactionStatus status="unapproved" />);
+    const props = {
+      status: 'unapproved',
+    };
 
-    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
-    expect(wrapper.find('.transaction-status--unapproved')).toHaveLength(1);
-    expect(wrapper.text()).toStrictEqual('UNAPPROVED');
+    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 });

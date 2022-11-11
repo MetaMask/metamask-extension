@@ -1,5 +1,6 @@
 const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Threebox', function () {
   const ganacheOptions = {
@@ -23,7 +24,7 @@ describe('Threebox', function () {
   it('Set up data to be restored by 3box', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -67,7 +68,16 @@ describe('Threebox', function () {
   it('Restore from 3box', async function () {
     await withFixtures(
       {
-        fixtures: 'threebox-enabled',
+        fixtures: new FixtureBuilder()
+          .withThreeBoxController({
+            threeBoxSyncingAllowed: true,
+            showRestorePrompt: true,
+            threeBoxLastUpdated: 0,
+            threeBoxAddress: '0x64480aa2768ef12f3f19c5a01206ceb0f82d06b9',
+            threeBoxSynced: true,
+            threeBoxDisabled: false,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
