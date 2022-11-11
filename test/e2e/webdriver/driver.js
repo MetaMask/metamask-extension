@@ -431,7 +431,7 @@ class Driver {
   }
 
   async checkBrowserForExceptions() {
-    const exceptions = this.exceptions;
+    const { exceptions } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
     await this.driver.onLogException(cdpConnection, function (exception) {
       const { description } = exception.exceptionDetails.exception;

@@ -147,7 +147,11 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (errors.length === 0 && driver.exceptions.length > 0 && failOnConsoleError) {
+      if (
+        errors.length === 0 &&
+        driver.exceptions.length > 0 &&
+        failOnConsoleError
+      ) {
         const errorMessage = `Errors found in browser console:\n${driver.exceptions.join(
           '\n',
         )}`;
