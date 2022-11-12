@@ -21,7 +21,7 @@
 		"message": "Ottieni firma"
 	},
 	"QRHardwareSignRequestSubtitle": {
-		"message": "Scansiona il QR code con il tuo wallet"
+		"message": "Scansiona il QR code con il tuo portafoglio"
 	},
 	"QRHardwareSignRequestTitle": {
 		"message": "Richiedi firma"
@@ -111,7 +111,7 @@
 		"message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
 	},
 	"accessYourWalletWithSRPDescription": {
-		"message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci sia tuo il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
+		"message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci tu sia il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
 		"description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
 	},
 	"accessingYourCamera": {
@@ -206,7 +206,7 @@
 		"message": "Aggiungi Rete"
 	},
 	"addNetworkTooltipWarning": {
-		"message": "Questarete si basa su terze parti. La connessione potrebbe essere meno affidabile o consentire a terzi di tracciare le tue attività. $1",
+		"message": "Questa rete si basa su terze parti. La connessione potrebbe essere meno affidabile o consentire a terzi di tracciare le tue attività. $1",
 		"description": "$1 is Learn more link"
 	},
 	"addSuggestedTokens": {
@@ -746,7 +746,7 @@
 		"message": "Crea Account"
 	},
 	"createNewWallet": {
-		"message": "Crea un nuovo wallet"
+		"message": "Crea un nuovo portafoglio"
 	},
 	"createPassword": {
 		"message": "Crea Password"
@@ -2341,4 +2341,3 @@
 		"message": "Prezzo del gas maggiore di zero"
 	}
 }
-
