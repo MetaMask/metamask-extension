@@ -94,7 +94,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await retrievePublicKeyResult1.getText(),
-          '"043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
+          '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
         );
 
         // scroll to and click get compressed public key
@@ -113,7 +113,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await retrievePublicKeyResult2.getText(),
-          '"033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
+          '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
         );
 
         // wait then run SECP256K1 test
