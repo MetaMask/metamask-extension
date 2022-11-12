@@ -161,7 +161,6 @@ export default class TransactionController extends EventEmitter {
       getNetwork: this.getNetwork.bind(this),
       getCurrentChainId: opts.getCurrentChainId,
     });
-    this._onBootCleanUp();
 
     this.store = this.txStateManager.store;
     this.nonceTracker = new NonceTracker({
@@ -208,6 +207,7 @@ export default class TransactionController extends EventEmitter {
 
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock();
+    this._onBootCleanUp();
   }
 
   /**
@@ -1844,7 +1844,7 @@ export default class TransactionController extends EventEmitter {
       .forEach((txMeta) => {
         // Line below will try to publish transaction which is in
         // APPROVED state at the time of controller bootup
-        this.approveTransaction(txMeta);
+        this.approveTransaction(txMeta.id);
       });
   }
 

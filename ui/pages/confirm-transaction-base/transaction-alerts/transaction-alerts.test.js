@@ -2,7 +2,6 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import TransactionAlerts from './transaction-alerts';
@@ -139,29 +138,6 @@ describe('TransactionAlerts', () => {
         expect(
           queryByText('You have (0) pending transactions.'),
         ).not.toBeInTheDocument();
-      });
-    });
-
-    describe('if balanceError from useGasFeeContext is true', () => {
-      it('informs the user that they have insufficient funds', () => {
-        const { getByText } = render({
-          useGasFeeContextValue: {
-            supportsEIP1559V2: true,
-            balanceError: true,
-          },
-          componentProps: {
-            nativeCurrency: 'ETH',
-            networkName: 'Goerli',
-            showBuyModal: jest.fn(),
-            chainId: '0x5',
-            type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
-          },
-        });
-        expect(
-          getByText(
-            /You do not have enough ETH in your account to pay for transaction fees on Goerli network./u,
-          ),
-        ).toBeInTheDocument();
       });
     });
 

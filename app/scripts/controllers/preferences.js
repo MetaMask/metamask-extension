@@ -67,6 +67,7 @@ export default class PreferencesController {
       infuraBlocked: null,
       ledgerTransportType: getInitLedgerTransportType(),
       theme: 'light',
+      improvedTokenAllowanceEnabled: false,
       ...opts.initState,
     };
 
@@ -183,6 +184,17 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
+  }
+
+  /**
+   * Setter for the `improvedTokenAllowanceEnabled` property
+   *
+   * @param improvedTokenAllowanceEnabled
+   */
+  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
+    this.store.updateState({
+      improvedTokenAllowanceEnabled,
+    });
   }
 
   /**

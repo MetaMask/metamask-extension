@@ -24,3 +24,9 @@ export default {
 export const DefaultStory = (args) => <Tag {...args} />;
 
 DefaultStory.storyName = 'Default';
+
+export const Label = (args) => <Tag {...args}>Anchor Element</Tag>;
+
+Label.args = {
+  label: 'Label Story',
+};

@@ -182,12 +182,12 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        1,
+        2,
       );
     });
 
     it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(8);
+      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
     });
   });
 
