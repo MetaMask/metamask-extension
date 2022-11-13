@@ -620,6 +620,7 @@ function createFactoredBuild({
         const sentryPath = `./dist/${browser}/sentry-install.js`;
         const content = readFileSync(sentryPath, 'utf8');
         const wrappedContent = wrapAgainstScuttling(content, {
+          // globals sentry need to function
           window: '',
           navigator: '',
           location: '',
@@ -639,8 +640,10 @@ function createFactoredBuild({
           JSON: '',
           encodeURIComponent: '',
           crypto: '',
+          // {clear/set}Timeout are "this sensitive"
           clearTimeout: 'window',
           setTimeout: 'window',
+          // sentry special props
           __SENTRY__: '',
           sentryHooks: '',
           sentry: '',

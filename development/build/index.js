@@ -72,11 +72,11 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
-
   // build lavamoat runtime file
   await lavapack.buildRuntime({
     scuttleGlobalThis: true,
     scuttleGlobalThisExceptions: [
+      // globals used by different mm deps outside of lm compartment
       'toString',
       'getComputedStyle',
       'addEventListener',
@@ -93,6 +93,7 @@ async function defineAndRunBuildTasks() {
       'navigator',
       'harden',
       'console',
+      // globals sentry need to function
       '__SENTRY__',
       'appState',
       'extra',
