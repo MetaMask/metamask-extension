@@ -1,6 +1,9 @@
 import { MethodRegistry } from 'eth-method-registry';
 import log from 'loglevel';
 
+import { toBuffer } from 'ethereumjs-util';
+import { TransactionFactory } from '@ethereumjs/tx';
+import Common from '@ethereumjs/common';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   TRANSACTION_TYPES,
@@ -228,3 +231,24 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
+
+/**
+ * Accepts a transaction buffer that's converted to a hex string and all
+ * common data.
+ *
+ * Returns the transaction in its prior form.
+ *
+ * @param opts
+ * @param opts.transactionHex
+ * @param opts.commonMeta - EIPs, chainId, hardfork, etc.
+ * @returns {TypedTransaction}
+ */
+export const buildUnserializedTxFromHex = ({ transactionHex, commonMeta }) => {
+  const buffer = toBuffer(transactionHex);
+
+  const rebuiltEthTx = TransactionFactory.fromSerializedData(buffer, {
+    common: new Common(commonMeta),
+  });
+
+  return rebuiltEthTx;
+};

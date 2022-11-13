@@ -178,7 +178,8 @@ export default class KeyringEventsController extends EventEmitter {
     // use _.throttle to clear the eventPool every X milliseconds, as there
     // are some limitations as there are some limitations in various browsers
     // based on how often we can emit RPC events.
-    this._sendEvents = throttle(this.__sendEvents, 10 * MILLISECOND);
+    // this._sendEvents = throttle(this.__sendEvents, 10 * MILLISECOND);
+    this._sendEvents = this.__sendEvents;
   }
 
   /**

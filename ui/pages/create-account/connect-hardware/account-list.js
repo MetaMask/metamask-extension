@@ -256,7 +256,7 @@ AccountList.propTypes = {
   onUnlockAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
-  hdPaths: PropTypes.array.isRequired,
+  hdPaths: PropTypes.object.isRequired,
 };
 
 AccountList.contextTypes = {

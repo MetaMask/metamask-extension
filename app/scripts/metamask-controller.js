@@ -4097,7 +4097,7 @@ export default class MetamaskController extends EventEmitter {
     console.log(
       `closing background promise: ${promiseId}`,
       this._clientMessagePromises,
-      result,
+      { result, data },
     );
 
     if (this._clientMessagePromises[promiseId]) {

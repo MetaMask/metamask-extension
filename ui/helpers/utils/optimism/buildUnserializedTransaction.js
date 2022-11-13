@@ -33,13 +33,3 @@ export default function buildUnserializedTransaction(txMeta) {
   const common = buildTransactionCommon(txMeta);
   return TransactionFactory.fromTxData(txParams, { common });
 }
-
-export function buildUnserializedTxFromHex({ transactionHex, commonMeta }) {
-  const buffer = toBuffer(transactionHex);
-
-  const rebuiltEthTx = TransactionFactory.fromSerializedData(buffer, {
-    common: new Common(commonMeta),
-  });
-
-  return rebuiltEthTx;
-}

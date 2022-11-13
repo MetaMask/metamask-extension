@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { bufferToHex } from 'ethereumjs-util';
 import { HARDWARE_KEYRINGS } from '../../shared/constants/hardware-wallets';
-import { buildUnserializedTxFromHex } from '../helpers/utils/optimism/buildUnserializedTransaction';
+import { buildUnserializedTxFromHex } from '../helpers/utils/transactions.util';
 import { callBackgroundMethod } from './action-queue';
 
 const processKeyringResponse = (res, method) => {
@@ -63,6 +63,8 @@ export class ClientKeyringController extends EventEmitter {
     }
 
     await keyring.deserialize(data);
+
+    console.log(`🖥️ updated keyring data`, data);
   }
 
   async getUpdatedKeyringData(type) {
@@ -116,7 +118,7 @@ export class ClientKeyringController extends EventEmitter {
           {
             promiseId,
             result: 'reject',
-            data: e,
+            data: e.message || e.cause || String(e),
           },
         ],
         callback,
@@ -128,15 +130,19 @@ export class ClientKeyringController extends EventEmitter {
 let clientKeyringController; // poc purposes only
 
 export const initializeClientKeyringController = () => {
-  if (!clientKeyringController) {
-    clientKeyringController = new ClientKeyringController();
-  } else {
-    console.warn('ClientKeyringController already initialized, skipping.');
+  if (clientKeyringController) {
+    console.log('ClientKeyringController already initialized, skipping.');
+    return;
   }
+
+  clientKeyringController = new ClientKeyringController();
 };
 
 export const handleHardwareCall = (params) => {
   initializeClientKeyringController();
 
-  clientKeyringController.handleMethodCall(params);
+  if (document.hasFocus()) {
+    // Only process the request on the focused client
+    clientKeyringController.handleMethodCall(params);
+  }
 };
