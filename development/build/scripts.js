@@ -616,7 +616,40 @@ function createFactoredBuild({
       }
 
       // wrap sentry so it will still have access to natives after LM scuttling
-      wrapAgainstScuttling('./dist/chrome/sentry-install.js', ['Object']);
+      for (const browser of browserPlatforms) {
+        const sentryPath = `./dist/${browser}/sentry-install.js`;
+        const content = readFileSync(sentryPath, 'utf8');
+        const wrappedContent = wrapAgainstScuttling(content, {
+          window: '',
+          navigator: '',
+          location: '',
+          Uint16Array: '',
+          fetch: '',
+          String: '',
+          Math: '',
+          Object: '',
+          Symbol: '',
+          Function: '',
+          Array: '',
+          Boolean: '',
+          Number: '',
+          Request: '',
+          Date: '',
+          document: '',
+          JSON: '',
+          encodeURIComponent: '',
+          crypto: '',
+          clearTimeout: 'window',
+          setTimeout: 'window',
+          __SENTRY__: '',
+          sentryHooks: '',
+          sentry: '',
+          appState: '',
+          extra: '',
+          stateHooks: '',
+        });
+        writeFileSync(sentryPath, wrappedContent);
+      }
 
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file

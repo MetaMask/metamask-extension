@@ -77,8 +77,6 @@ async function defineAndRunBuildTasks() {
   await lavapack.buildRuntime({
     scuttleGlobalThis: true,
     scuttleGlobalThisExceptions: [
-      'sentryHooks',
-      'sentry',
       'toString',
       'getComputedStyle',
       'addEventListener',
@@ -92,13 +90,15 @@ async function defineAndRunBuildTasks() {
       'Reflect',
       'Set',
       'Object',
-      'sentry',
+      'navigator',
       'harden',
       'console',
       '__SENTRY__',
       'appState',
       'extra',
-      'navigator',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
     ],
   });
 

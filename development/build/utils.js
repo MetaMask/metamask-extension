@@ -118,78 +118,64 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
-function wrapAgainstScuttling(file) {
-  const content = readFileSync(file, 'utf8');
-  const fileOutput = `
-(function () {
+function wrapAgainstScuttling(content, bag = {}) {
+  return `
+{
+  function setupProxy(global) {
+    // bag of properties to allow vetted shim to access,
+    // mapped to their correct this value if needed
+    const bag = ${JSON.stringify(bag)};
 
-  (function(){
-    'use strict';
-    const realBind = Function.prototype.bind;
-    const realApply = Function.prototype.apply;
-
-    Function.prototype.bind = function(that) {
-      if (that === p) that = window;
-      const args = [].slice.call(arguments, 1);
-      return realBind.call(this, that, ...args);
-    };
-
-    Function.prototype.apply = function(that) {
-      if (that === p) that = window;
-      const args = [].slice.call(arguments, 1);
-      return realApply.call(this, that, ...args);
-    };
-  }())
-
-  const allowed = {
-    navigator,
-    location,
-    Uint16Array,
-    fetch,
-    String,
-    Math,
-    Object,
-    Symbol,
-    Function,
-    Array,
-    Boolean,
-    Number,
-    Request,
-    Date,
-    document,
-    JSON,
-    encodeURIComponent,
-    crypto,
-    __SENTRY__: {logger: undefined},
-    sentryHooks: 1,
-    sentry: 1,
-    appState: 1,
-    extra: {appState: undefined},
-  };
-
-  const p = new Proxy(allowed, {
-    get: function (a, b, c) {
-      return allowed[b] || Reflect.get(a, b)
-    },
-    set: (a, b, c) => {
-      if (allowed[b] || b.startsWith('on')) {
-        return allowed[b] = window[b] = c;
-      }
+    // setup vetted shim bag of properties
+    for (const prop in bag) {
+      const that = bag[prop];
+      let api = global[prop];
+      if (that) api = api.bind(global[that]);
+      bag[prop] = api;
     }
-  })
 
-  allowed.clearTimeout = clearTimeout.bind(window);
-  allowed.setTimeout = setTimeout.bind(window);
-  allowed.window = allowed;
+    // setup proxy for the vetted shim to go through
+    const proxy = new Proxy(bag, {
+      get: function get(target, prop) {
+        return bag[prop] || Reflect.get(target, prop);
+      },
+      set: function set(target, prop, value) {
+        if (bag.hasOwnProperty(prop) || prop.startsWith('on')) {
+          return bag[prop] = global[prop] = value;
+        }
+      },
+    });
 
-  with (p) {
-    with ({window: p, self: p, globalThis: p}) {
+    // make sure bind() and apply() are applied with
+    // proxy target rather than proxy receiver
+    (function(target, receiver) {
+      'use strict'; // to work with ses lockdown
+
+      function wrap(obj, prop, target, receiver) {
+        const real = obj[prop];
+        obj[prop] = function(that) {
+          if (that === receiver) that = target;
+          const args = [].slice.call(arguments, 1);
+          return real.call(this, that, ...args);
+        };
+      }
+
+      wrap(Function.prototype, 'bind', target, receiver);
+      wrap(Function.prototype, 'apply', target, receiver);
+    } (global, proxy));
+
+    return proxy;
+  }
+
+  const proxy = setupProxy(globalThis);
+
+  with (proxy) {
+    with ({window: proxy, self: proxy, globalThis: proxy}) {
      ${content}
     }
   }
-}());
+};
       `;
-  writeFileSync(file, fileOutput);
 }
 
 module.exports = {
