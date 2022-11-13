@@ -434,6 +434,9 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "beta": {
+    "message": "Beta"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
@@ -452,6 +455,15 @@
   },
   "betaPortfolioSite": {
     "message": "beta portfolio site"
+  },
+  "betaTerms": {
+    "message": "BETA Terms of use"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -3272,6 +3284,10 @@
   },
   "snaps": {
     "message": "Snaps"
+  },
+  "snapsInsightError": {
+    "message": "An error occured with $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
   },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."

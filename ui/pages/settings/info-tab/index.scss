@@ -53,4 +53,8 @@
     color: var(--color-text-muted);
     margin-bottom: 15px;
   }
+
+  &__tag {
+    margin-inline-start: 8px;
+  }
 }

@@ -239,23 +239,6 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // goes to the settings screen
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        await driver.clickElement(
-          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > label > div',
-        );
-        const advancedGasTitle = await driver.findElement({
-          text: 'Advanced gas controls',
-          tag: 'span',
-        });
-        await driver.scrollToElement(advancedGasTitle);
-        await driver.clickElement(
-          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > label > div',
-        );
-        await driver.clickElement('.app-header__logo-container');
-
         // initiates a send from the dapp
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Send', tag: 'button' });
@@ -272,10 +255,10 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           css: '.transaction-total-banner',
           text: '0.00021 ETH',
         });
-        await driver.clickElement(
-          { text: 'Edit suggested gas fee', tag: 'button' },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Edit suggested gas fee',
+          tag: 'button',
+        });
         await driver.waitForSelector({
           css: '.transaction-total-banner',
           text: '0.00021 ETH',
