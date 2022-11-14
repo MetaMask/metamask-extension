@@ -422,6 +422,7 @@ export default class MetamaskController extends EventEmitter {
       : GAS_API_BASE_URL;
 
     this.gasFeeController = new GasFeeController({
+      state: initState.GasFeeController,
       interval: 10000,
       messenger: gasFeeMessenger,
       clientId: SWAPS_CLIENT_ID,
@@ -486,26 +487,30 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      onTokensStateChange: (listener) =>
-        this.tokensController.subscribe(listener),
-      onCurrencyRateStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `${this.currencyRateController.name}:stateChange`,
-          listener,
-        ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            provider: {
-              ...networkState.provider,
-              chainId: hexToDecimal(networkState.provider.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
-    });
+    this.tokenRatesController = new TokenRatesController(
+      {
+        onTokensStateChange: (listener) =>
+          this.tokensController.subscribe(listener),
+        onCurrencyRateStateChange: (listener) =>
+          this.controllerMessenger.subscribe(
+            `${this.currencyRateController.name}:stateChange`,
+            listener,
+          ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              provider: {
+                ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
+      },
+      undefined,
+      initState.TokenRatesController,
+    );
 
     this.ensController = new EnsController({
       provider: this.provider,
@@ -724,6 +729,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.rateLimitController = new RateLimitController({
+      state: initState.RateLimitController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'RateLimitController',
       }),
