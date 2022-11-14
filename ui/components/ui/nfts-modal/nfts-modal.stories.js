@@ -13,6 +13,7 @@ export default {
     total: { control: 'number' },
     tokenId: { control: 'text' },
     tokenImage: { control: 'text' },
+    isERC721: { control: 'boolean' },
     isSetApproveForAll: { control: 'boolean' },
     onClose: { action: 'onClose' },
   },
@@ -24,6 +25,7 @@ export default {
     tokenId: '1',
     tokenImage:
       'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
+    isERC721: true,
     isSetApproveForAll: false,
   },
 };

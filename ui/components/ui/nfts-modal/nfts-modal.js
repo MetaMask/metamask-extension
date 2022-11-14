@@ -31,6 +31,7 @@ export default function NftsModal({
   tokenId,
   total,
   isSetApproveForAll,
+  isERC721,
   onClose,
 }) {
   const t = useI18nContext();
@@ -82,7 +83,7 @@ export default function NftsModal({
             <b>{accountName}</b> {` (${shortenAddress(senderAddress)})`}
           </Typography>
         </Box>
-        {isSetApproveForAll && (
+        {isSetApproveForAll && isERC721 && (
           <Typography>{`${t('total')}: ${total}`}</Typography>
         )}
       </Box>
@@ -144,12 +145,40 @@ export default function NftsModal({
 }
 
 NftsModal.propTypes = {
+  /**
+   * Address of a current user that is approving collection
+   */
   senderAddress: PropTypes.string,
+  /**
+   * Name of a current user that is approving collection
+   */
   accountName: PropTypes.string,
+  /**
+   * NFT collection name that is being approved
+   */
   assetName: PropTypes.string,
+  /**
+   * Token image for individial NFT approval
+   */
   tokenImage: PropTypes.string,
+  /**
+   * The token id of the collectible
+   */
   tokenId: PropTypes.string,
+  /**
+   * Total number of items that are being approved
+   */
   total: PropTypes.number,
+  /**
+   * Transaction type
+   */
   isSetApproveForAll: PropTypes.bool,
+  /**
+   * Is asset standard ERC721
+   */
+  isERC721: PropTypes.bool,
+  /**
+   * Function that close NFT's modal
+   */
   onClose: PropTypes.func,
 };

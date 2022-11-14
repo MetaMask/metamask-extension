@@ -574,8 +574,9 @@ export default class ConfirmApproveContent extends Component {
   }
 
   async componentDidMount() {
-    const { tokenAddress, fromAddress, isSetApproveForAll } = this.props;
-    if (isSetApproveForAll) {
+    const { tokenAddress, fromAddress, isSetApproveForAll, assetStandard } =
+      this.props;
+    if (isSetApproveForAll && assetStandard === ERC721) {
       const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
       this.setState({
         collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
@@ -840,6 +841,7 @@ export default class ConfirmApproveContent extends Component {
             assetName={assetName}
             tokenImage={tokenImage}
             tokenId={tokenId}
+            isERC721={assetStandard === ERC721}
             isSetApproveForAll={isSetApproveForAll}
             onClose={() => this.setState({ showViewNftModal: false })}
           />
