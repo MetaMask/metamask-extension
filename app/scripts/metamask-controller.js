@@ -161,7 +161,6 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
-import LocalStore from './lib/local-store';
 import { isManifestV3 } from 'shared/modules/mv3.utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -183,8 +182,6 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     this.defaultMaxListeners = 20;
-
-    this.localStore = new LocalStore();
 
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
