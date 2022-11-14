@@ -412,15 +412,16 @@ export function getAddressBookEntryOrAccountName(state, address) {
   return entry && entry.name !== '' ? entry.name : address;
 }
 
-export function getAccountName(state, address) {
-  const entry = Object.values(state.metamask.identities).find((identity) =>
+export function getAccountName(identities, address) {
+  const entry = Object.values(identities).find((identity) =>
     isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
 
-export function getMetadataContractName(address) {
-  const entry = Object.values(STATIC_MAINNET_TOKEN_LIST).find((identity) =>
+export function getMetadataContractName(state, address) {
+  const tokenList = getTokenList(state);
+  const entry = Object.values(tokenList).find((identity) =>
     isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
   );
   return entry && entry.name !== '' ? entry.name : '';

@@ -15,7 +15,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 ## Building locally
 
 - Install [Node.js](https://nodejs.org) version 16
-    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
+    - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Install [Yarn](https://yarnpkg.com/en/docs/install)
 - Install dependencies: `yarn setup` (not the usual install command)
 - Copy the `.metamaskrc.dist` file to `.metamaskrc`
