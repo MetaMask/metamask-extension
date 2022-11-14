@@ -157,6 +157,10 @@ $attributesToApplyExtraProperties: margin;
     border-radius: 9999px;
   }
 
+  &--rounded-full {
+    border-radius: 50%;
+  }
+
   // breakpoint classes
   @each $breakpoint, $min-width in $screen-sizes-map {
     @media screen and (min-width: $min-width) {
