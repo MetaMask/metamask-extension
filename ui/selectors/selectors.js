@@ -412,6 +412,21 @@ export function getAddressBookEntryOrAccountName(state, address) {
   return entry && entry.name !== '' ? entry.name : address;
 }
 
+export function getAccountName(identities, address) {
+  const entry = Object.values(identities).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
+export function getMetadataContractName(state, address) {
+  const tokenList = getTokenList(state);
+  const entry = Object.values(tokenList).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
   const identities = getMetaMaskIdentities(state);
@@ -1238,6 +1253,16 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
+}
+
+/**
+ * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsImprovedTokenAllowanceEnabled(state) {
+  return state.metamask.improvedTokenAllowanceEnabled;
 }
 
 export function getIsCustomNetwork(state) {

@@ -20,6 +20,8 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
+    improvedTokenAllowanceEnabled: PropTypes.bool,
+    setImprovedTokenAllowanceEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -190,9 +192,47 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderImprovedTokenAllowanceToggle() {
+    const { t } = this.context;
+    const { improvedTokenAllowanceEnabled, setImprovedTokenAllowanceEnabled } =
+      this.props;
+
+    return (
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('improvedTokenAllowance')}</span>
+          <div className="settings-page__content-description">
+            {t('improvedTokenAllowanceDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={improvedTokenAllowanceEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Enabled/Disable ImprovedTokenAllowance',
+                  properties: {
+                    action: 'Enabled/Disable ImprovedTokenAllowance',
+                    legacy_event: true,
+                  },
+                });
+                setImprovedTokenAllowanceEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}

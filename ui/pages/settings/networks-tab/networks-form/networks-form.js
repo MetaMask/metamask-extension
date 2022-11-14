@@ -232,6 +232,8 @@ const NetworksForm = ({
       const formChainId = chainArg.trim();
       let errorKey = '';
       let errorMessage = '';
+      let warningKey = '';
+      let warningMessage = '';
       let radix = 10;
       let hexChainId = formChainId;
 
@@ -240,8 +242,10 @@ const NetworksForm = ({
           hexChainId = `0x${decimalToHex(hexChainId)}`;
         } catch (err) {
           return {
-            key: 'invalidHexNumber',
-            msg: t('invalidHexNumber'),
+            error: {
+              key: 'invalidHexNumber',
+              msg: t('invalidHexNumber'),
+            },
           };
         }
       }
@@ -253,8 +257,8 @@ const NetworksForm = ({
       if (formChainId === '') {
         return null;
       } else if (matchingChainId) {
-        errorKey = 'chainIdExistsErrorMsg';
-        errorMessage = t('chainIdExistsErrorMsg', [
+        warningKey = 'chainIdExistsErrorMsg';
+        warningMessage = t('chainIdExistsErrorMsg', [
           matchingChainId.label ?? matchingChainId.labelKey,
         ]);
       } else if (formChainId.startsWith('0x')) {
@@ -316,8 +320,18 @@ const NetworksForm = ({
       }
       if (errorKey) {
         return {
-          key: errorKey,
-          msg: errorMessage,
+          error: {
+            key: errorKey,
+            msg: errorMessage,
+          },
+        };
+      }
+      if (warningKey) {
+        return {
+          warning: {
+            key: warningKey,
+            msg: warningMessage,
+          },
         };
       }
 
@@ -447,7 +461,8 @@ const NetworksForm = ({
       return;
     }
     async function validate() {
-      const chainIdError = await validateChainId(chainId);
+      const { error: chainIdError, warning: chainIdWarning } =
+        (await validateChainId(chainId)) || {};
       const tickerWarning = await validateTickerSymbol(chainId, ticker);
       const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
       const rpcUrlError = validateRPCUrl(rpcUrl);
@@ -455,10 +470,11 @@ const NetworksForm = ({
         ...errors,
         blockExplorerUrl: blockExplorerError,
         rpcUrl: rpcUrlError,
+        chainId: chainIdError,
       });
       setWarnings({
         ...warnings,
-        chainId: chainIdError,
+        chainId: chainIdWarning,
         ticker: tickerWarning,
       });
     }
@@ -632,6 +648,7 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.chainId?.msg || ''}
+          error={errors.chainId?.msg || ''}
           onChange={(value) => {
             setIsEditing(true);
             setChainId(value);

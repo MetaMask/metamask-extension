@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
 
 import {
   SIZES,
   COLORS,
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
-
-import { Text } from '../text';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 import { TextField } from './text-field';
@@ -41,21 +40,17 @@ export default {
     },
   },
   argTypes: {
-    showClear: {
-      control: 'boolean',
-    },
     value: {
       control: 'text',
     },
     onChange: {
       action: 'onChange',
-      table: { category: 'text field base props' },
     },
-    onClear: {
-      action: 'onClear',
+    showClearButton: {
+      control: 'boolean',
     },
-    clearButtonIconProps: {
-      control: 'object',
+    clearButtonOnClick: {
+      action: 'clearButtonOnClick',
     },
     clearButtonProps: {
       control: 'object',
@@ -172,7 +167,7 @@ export default {
     },
   },
   args: {
-    showClear: false,
+    showClearButton: false,
     placeholder: 'Placeholder...',
     autoFocus: false,
     disabled: false,
@@ -186,62 +181,48 @@ export default {
   },
 };
 
-const Template = (args) => <TextField {...args} />;
-
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
-
-export const ShowClear = (args) => {
-  const [value, setValue] = useState('show clear');
+const Template = (args) => {
+  const [{ value }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
-    setValue(e.target.value);
+    updateArgs({ value: e.target.value });
+  };
+  const handleOnClear = () => {
+    updateArgs({ value: '' });
   };
   return (
     <TextField
       {...args}
-      placeholder="Enter text to show clear"
       value={value}
       onChange={handleOnChange}
-      showClear
+      clearButtonOnClick={handleOnClear}
     />
   );
 };
 
-export const OnClear = (args) => {
-  const [value, setValue] = useState('onClear example');
-  const [showOnClearMessage, setShowOnClearMessage] = useState(false);
-  const handleOnChange = (e) => {
-    setValue(e.target.value);
-    showOnClearMessage && setShowOnClearMessage(false);
-  };
-  const handleOnClear = () => {
-    setShowOnClearMessage(true);
-  };
-  return (
-    <>
-      <TextField
-        {...args}
-        placeholder="Clear text to show onClear message"
-        value={value}
-        onChange={handleOnChange}
-        onClear={handleOnClear}
-        showClear
-      />
-      {showOnClearMessage && <Text marginTop={4}>onClear called</Text>}
-    </>
-  );
+export const DefaultStory = Template.bind({});
+DefaultStory.storyName = 'Default';
+
+export const ShowClearButton = Template.bind({});
+
+ShowClearButton.args = {
+  placeholder: 'Enter text to show clear',
+  showClearButton: true,
 };
 
-export const ClearButtonPropsClearButtonIconProps = Template.bind({});
-ClearButtonPropsClearButtonIconProps.args = {
+export const ClearButtonOnClick = Template.bind({});
+
+ShowClearButton.args = {
+  placeholder: 'Enter text to show clear',
+  showClearButton: true,
+};
+
+export const ClearButtonProps = Template.bind({});
+ClearButtonProps.args = {
   value: 'clear button props',
   size: SIZES.LG,
-  showClear: true,
+  showClearButton: true,
   clearButtonProps: {
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderRadius: BORDER_RADIUS.XS,
-  },
-  clearButtonIconProps: {
-    size: SIZES.MD,
   },
 };
