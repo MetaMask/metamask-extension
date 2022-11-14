@@ -56,3 +56,6 @@ tsout/
 
 # Test results
 test-results/
+
+# Test @metamask package publishing
+.npmrc
