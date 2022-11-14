@@ -3121,7 +3121,7 @@
     "@metamask/utils" "^2.0.0"
     readable-stream "2.3.3"
 
-"@metamask/providers@^10.0.0":
+"@metamask/providers@^10.2.0":
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/providers/-/providers-10.2.0.tgz#8131de667db0c55a61a150438c2a7f17b2d53615"
   integrity sha512-qO3cOZZr/YJ8LLOqhR+51GGBiRknalfV/na7hwXyqZ1R/uxeLeNdqCyg+g8l3Z8JcLoEiaKGNJOEV3FFyLw8mQ==
