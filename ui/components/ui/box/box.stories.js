@@ -550,6 +550,15 @@ export const BorderRadius = () => {
       >
         BORDER_RADIUS.PILL 9999px
       </Box>
+      <Box
+        padding={3}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_DEFAULT}
+        borderWidth={2}
+        borderRadius={BORDER_RADIUS.FULL}
+      >
+        BORDER_RADIUS.FULL 50%
+      </Box>
     </Box>
   );
 };
