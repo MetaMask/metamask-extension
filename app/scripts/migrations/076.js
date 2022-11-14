@@ -26,15 +26,17 @@ function transformState(state) {
       ...remainingState
     } = state.CollectiblesController;
     state.NftController = {
-      allNftContracts: allCollectibleContracts,
-      allNfts: allCollectibles,
-      ignoredNfts: ignoredCollectibles,
+      ...(allCollectibleContracts
+        ? { allNftContracts: allCollectibleContracts }
+        : {}),
+      ...(allCollectibles ? { allNfts: allCollectibles } : {}),
+      ...(ignoredCollectibles ? { ignoredNfts: ignoredCollectibles } : {}),
       ...remainingState,
     };
     delete state.CollectiblesController;
   }
 
-  if (state.PreferencesController) {
+  if (state.PreferencesController?.useCollectibleDetection) {
     state.PreferencesController.useNftDetection =
       state.PreferencesController.useCollectibleDetection;
     delete state.PreferencesController.useCollectibleDetection;
