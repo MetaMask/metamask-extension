@@ -17,11 +17,15 @@ jest.mock('../../../store/actions', () => {
 });
 
 describe('Beta Header', () => {
+  let store;
+
+  beforeEach(() => {
+    store = configureMockStore([thunk])(mockState);
+  });
+
   afterEach(() => {
     mockHideBetaHeader.mockClear();
   });
-
-  const store = configureMockStore([thunk])(mockState);
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(<BetaHeader />, store);
