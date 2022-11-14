@@ -162,6 +162,7 @@ import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
 import LocalStore from './lib/local-store';
+import { isManifestV3 } from 'shared/modules/mv3.utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1139,8 +1140,10 @@ export default class MetamaskController extends EventEmitter {
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
-    if (globalThis.isFirstTimeProfileLoaded === true) {
-      this.resetStates(resetMethods);
+    if (isManifestV3) {
+      if (globalThis.isFirstTimeProfileLoaded === true) {
+        this.resetStates(resetMethods);
+      }
     }
 
     const password = process.env.CONF?.PASSWORD;
