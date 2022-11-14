@@ -25,6 +25,15 @@
   }
 
   &__description {
+    text-align: center;
+
+    p {
+      @include Paragraph;
+
+      text-align: start;
+      margin-bottom: 22px;
+    }
+
     a {
       color: var(--color-primary-default);
     }
