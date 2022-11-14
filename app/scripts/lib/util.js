@@ -96,6 +96,7 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
  *
+ * @deprecated use checkForLastError in shared/modules/browser-runtime.utils.js
  * @returns {Error|undefined}
  */
 function checkForError() {
