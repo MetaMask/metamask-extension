@@ -5,13 +5,13 @@ import {
   setUseCollectibleDetection,
   setOpenSeaEnabled,
   setEIP1559V2Enabled,
-  setCustomNetworkListEnabled,
+  setImprovedTokenAllowanceEnabled,
 } from '../../../store/actions';
 import {
   getUseCollectibleDetection,
   getOpenSeaEnabled,
   getEIP1559V2Enabled,
-  getIsCustomNetworkListEnabled,
+  getIsImprovedTokenAllowanceEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
     useCollectibleDetection: getUseCollectibleDetection(state),
     openSeaEnabled: getOpenSeaEnabled(state),
     eip1559V2Enabled: getEIP1559V2Enabled(state),
-    customNetworkListEnabled: getIsCustomNetworkListEnabled(state),
+    improvedTokenAllowanceEnabled: getIsImprovedTokenAllowanceEnabled(state),
   };
 };
 
@@ -30,8 +30,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseCollectibleDetection(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setEIP1559V2Enabled: (val) => dispatch(setEIP1559V2Enabled(val)),
-    setCustomNetworkListEnabled: (val) =>
-      dispatch(setCustomNetworkListEnabled(val)),
+    setImprovedTokenAllowanceEnabled: (val) =>
+      dispatch(setImprovedTokenAllowanceEnabled(val)),
   };
 };
 

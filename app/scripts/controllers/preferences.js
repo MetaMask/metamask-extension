@@ -69,7 +69,7 @@ export default class PreferencesController {
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
-      customNetworkListEnabled: false,
+      improvedTokenAllowanceEnabled: false,
       ...opts.initState,
     };
 
@@ -189,13 +189,13 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `customNetworkListEnabled` property
+   * Setter for the `improvedTokenAllowanceEnabled` property
    *
-   * @param customNetworkListEnabled
+   * @param improvedTokenAllowanceEnabled
    */
-  setCustomNetworkListEnabled(customNetworkListEnabled) {
+  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
     this.store.updateState({
-      customNetworkListEnabled,
+      improvedTokenAllowanceEnabled,
     });
   }
 

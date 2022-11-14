@@ -53,7 +53,7 @@ describe('ButtonLink', () => {
     );
   });
 
-  it('should render with different types', () => {
+  it('should render as danger', () => {
     const { getByTestId } = render(
       <>
         <ButtonLink danger data-testid="danger" />

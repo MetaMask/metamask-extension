@@ -46,6 +46,10 @@ export default function FeeCard({
         return t('networkNameGoerli');
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
+      case CHAIN_IDS.OPTIMISM:
+        return t('networkNameOptimism');
+      case CHAIN_IDS.ARBITRUM:
+        return t('networkNameArbitrum');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -192,5 +196,5 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
-  isBestQuote: PropTypes.bool.isRequired,
+  isBestQuote: PropTypes.bool,
 };

@@ -20,8 +20,8 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
-    customNetworkListEnabled: PropTypes.bool,
-    setCustomNetworkListEnabled: PropTypes.func,
+    improvedTokenAllowanceEnabled: PropTypes.bool,
+    setImprovedTokenAllowanceEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -192,33 +192,33 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  renderCustomNetworkListToggle() {
+  renderImprovedTokenAllowanceToggle() {
     const { t } = this.context;
-    const { customNetworkListEnabled, setCustomNetworkListEnabled } =
+    const { improvedTokenAllowanceEnabled, setImprovedTokenAllowanceEnabled } =
       this.props;
 
     return (
-      <div ref={this.settingsRefs[5]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('showCustomNetworkList')}</span>
+          <span>{t('improvedTokenAllowance')}</span>
           <div className="settings-page__content-description">
-            {t('showCustomNetworkListDescription')}
+            {t('improvedTokenAllowanceDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={customNetworkListEnabled}
+              value={improvedTokenAllowanceEnabled}
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable CustomNetworkList',
+                  event: 'Enabled/Disable ImprovedTokenAllowance',
                   properties: {
-                    action: 'Enabled/Disable CustomNetworkList',
+                    action: 'Enabled/Disable ImprovedTokenAllowance',
                     legacy_event: true,
                   },
                 });
-                setCustomNetworkListEnabled(!value);
+                setImprovedTokenAllowanceEnabled(!value);
               }}
               offLabel={t('off')}
               onLabel={t('on')}
@@ -232,10 +232,10 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
-        {this.renderCustomNetworkListToggle()}
       </div>
     );
   }

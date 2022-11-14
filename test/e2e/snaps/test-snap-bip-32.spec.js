@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap bip-32', function () {
@@ -14,7 +15,9 @@ describe('Test Snap bip-32', function () {
     };
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToSnapDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -25,8 +28,9 @@ describe('Test Snap bip-32', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // open a new tab and navigate to test snaps page and connect
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        // navigate to test snaps page and connect
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
 
         // find and scroll to the correct card and click first
         const snapButton = await driver.findElement('#sendUpdateHello');
@@ -35,25 +39,9 @@ describe('Test Snap bip-32', function () {
         await driver.fill('#snapId6', 'npm:@metamask/test-snap-bip32');
         await driver.clickElement('#connectBip32');
 
-        // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
-
-        await driver.delay(1000);
-
         // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -73,7 +61,7 @@ describe('Test Snap bip-32', function () {
         });
 
         // switch back to test-snaps window
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -94,7 +82,7 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -124,7 +112,7 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -148,7 +136,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await publicKeyResult.getText(),
-          'Public key: "043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
+          'Public key: "0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"',
         );
 
         // wait then run compressed public key test
@@ -161,7 +149,7 @@ describe('Test Snap bip-32', function () {
         );
         assert.equal(
           await compressedPublicKeyResult.getText(),
-          'Public key: "033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
+          'Public key: "0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
         );
       },
     );

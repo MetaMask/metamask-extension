@@ -12,12 +12,15 @@
       "previousModalState": {
         "name": null
       }
-    }
+    },
+    "warning": null
   },
   "history": {
-    "mostRecentOverviewPage": "/"
+    "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "usePhishDetect": true,
+    "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "gasFeeEstimates": {
       "low": {
@@ -46,6 +49,7 @@
       "priorityFeeTrend": "down",
       "networkCongestion": 0.90625
     },
+    "snaps": [{}],
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
@@ -241,20 +245,6 @@
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
-    "send": {
-      "gasLimit": "0x5208",
-      "gasPrice": "0xee6b2800",
-      "gasTotal": "0x4c65c6294000",
-      "tokenBalance": null,
-      "from": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-      "to": "",
-      "amount": "1bc16d674ec80000",
-      "memo": "",
-      "errors": {},
-      "maxModeOn": false,
-      "editingTransactionId": null,
-      "toNickname": ""
-    },
     "useTokenDetection": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
@@ -1284,5 +1274,24 @@
         "origin": "tmashuang.github.io"
       }
     ]
+  },
+  "send": {
+    "amountMode": "INPUT",
+    "currentTransactionUUID": null,
+    "draftTransactions": {},
+    "eip1559support": false,
+    "gasEstimateIsLoading": true,
+    "gasEstimatePollToken": null,
+    "gasIsSetInModal": false,
+    "gasPriceEstimate": "0x0",
+    "gasLimitMinimum": "0x5208",
+    "gasTotalForLayer1": "0x0",
+    "recipientMode": "CONTACT_LIST",
+    "recipientInput": "",
+    "selectedAccount": {
+      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+      "balance": "0x0"
+    },
+    "stage": "INACTIVE"
   }
 }

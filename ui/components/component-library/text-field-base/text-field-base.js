@@ -42,8 +42,9 @@ export const TextFieldBase = ({
   required,
   size = SIZES.MD,
   type = 'text',
-  truncate,
+  truncate = true,
   value,
+  InputComponent = Text,
   ...props
 }) => {
   const internalInputRef = useRef(null);
@@ -95,7 +96,7 @@ export const TextFieldBase = ({
         'mm-text-field-base',
         `mm-text-field-base--size-${size}`,
         {
-          'mm-text-field-base--focused': focused && !disabled,
+          'mm-text-field-base--focused': focused && !disabled && !readOnly,
           'mm-text-field-base--error': error,
           'mm-text-field-base--disabled': disabled,
           'mm-text-field-base--truncate': truncate,
@@ -107,13 +108,13 @@ export const TextFieldBase = ({
       alignItems={ALIGN_ITEMS.CENTER}
       borderWidth={1}
       borderRadius={SIZES.SM}
-      paddingLeft={4}
-      paddingRight={4}
+      paddingLeft={leftAccessory ? 4 : 0}
+      paddingRight={rightAccessory ? 4 : 0}
       onClick={handleClick}
       {...props}
     >
       {leftAccessory}
-      <Text
+      <InputComponent
         aria-invalid={error}
         as="input"
         autoComplete={autoComplete ? 'on' : 'off'}
@@ -130,8 +131,8 @@ export const TextFieldBase = ({
         onChange={onChange}
         onFocus={handleFocus}
         padding={0}
-        paddingLeft={leftAccessory ? 2 : null}
-        paddingRight={leftAccessory ? 2 : null}
+        paddingLeft={leftAccessory ? 2 : 4}
+        paddingRight={rightAccessory ? 2 : 4}
         placeholder={placeholder}
         readOnly={readOnly}
         ref={handleInputRef}
@@ -180,6 +181,11 @@ TextFieldBase.propTypes = {
    */
   id: PropTypes.string,
   /**
+   * The the component that is rendered as the input
+   * Defaults to the Text component
+   */
+  InputComponent: PropTypes.elementType,
+  /**
    * Attributes applied to the `input` element.
    */
   inputProps: PropTypes.object,
@@ -212,6 +218,10 @@ TextFieldBase.propTypes = {
    */
   onChange: PropTypes.func,
   /**
+   * Callback fired when the TextField is clicked on
+   */
+  onClick: PropTypes.func,
+  /**
    * Callback fired on focus
    */
   onFocus: PropTypes.func,
@@ -237,6 +247,11 @@ TextFieldBase.propTypes = {
    * Defaults to TEXT_FIELD_BASE_TYPES.TEXT ('text')
    */
   type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
+  /**
+   * If true will ellipse the text of the input
+   * Defaults to true
+   */
+  truncate: PropTypes.bool,
   /**
    * The input value, required for a controlled component.
    */

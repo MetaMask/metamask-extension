@@ -22,7 +22,7 @@ The `ButtonBase` accepts all props below as well as all [Box](/docs/ui-component
 Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js`
 to change the size of `ButtonBase`. Defaults to `SIZES.MD`
 
-Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `SIZES`.
+Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
@@ -84,6 +84,20 @@ import { ButtonBase } from '../ui/component-library';
 <ButtonBase as="a" href="#">
   Anchor Element
 </ButtonBase>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--href" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../ui/component-library';
+
+<ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
 
 ### Disabled
