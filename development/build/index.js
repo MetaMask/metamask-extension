@@ -74,7 +74,7 @@ async function defineAndRunBuildTasks() {
 
   // build lavamoat runtime file
   await lavapack.buildRuntime({
-    scuttleGlobalThis: true,
+    scuttleGlobalThis: !!!true,
     scuttleGlobalThisExceptions: [
       // globals used by different mm deps outside of lm compartment
       'toString',
