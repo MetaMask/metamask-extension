@@ -918,7 +918,7 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
-        const metamaskState = await this.getState();
+        const metamaskState = this.getState();
 
         if (txReceipt && txReceipt.status === '0x0') {
           this.metaMetricsController.trackEvent(
@@ -2065,7 +2065,7 @@ export default class MetamaskController extends EventEmitter {
   async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
-    await this.preferencesController.addToFrequentRpcList(
+    this.preferencesController.addToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
@@ -2781,7 +2781,7 @@ export default class MetamaskController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(allAccounts);
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(firstAccount);
+    this.preferencesController.setSelectedAddress(firstAccount);
   }
 
   // ---------------------------------------------------------------------------
@@ -3243,7 +3243,7 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = await this.getState();
+    const state = this.getState();
     return state;
   }
 
@@ -3266,7 +3266,7 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = await this.getState();
+    const state = this.getState();
     return state;
   }
 
