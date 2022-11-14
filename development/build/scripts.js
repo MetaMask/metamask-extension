@@ -616,7 +616,7 @@ function createFactoredBuild({
       }
 
       // wrap sentry so it will still have access to natives after LM scuttling
-      for (const browser of browserPlatforms) {
+      for (const browser of []) {
         const sentryPath = `./dist/${browser}/sentry-install.js`;
         const content = readFileSync(sentryPath, 'utf8');
         const wrappedContent = wrapAgainstScuttling(content, {
