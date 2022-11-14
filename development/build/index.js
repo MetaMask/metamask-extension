@@ -72,7 +72,6 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
-
   // build lavamoat runtime file
   await lavapack.buildRuntime({
     scuttleGlobalThis: true,
