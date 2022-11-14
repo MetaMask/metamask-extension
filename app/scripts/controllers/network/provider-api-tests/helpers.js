@@ -5,6 +5,10 @@ import { providerFromEngine } from 'eth-json-rpc-middleware';
 import EthQuery from 'eth-query';
 import createInfuraClient from '../createInfuraClient';
 import createJsonRpcClient from '../createJsonRpcClient';
+import {
+  LOCALHOST_RPC_URL,
+  BUILT_IN_NETWORKS,
+} from '../../../../../shared/constants/network';
 
 /**
  * @typedef {import('nock').Scope} NockScope
@@ -109,7 +113,7 @@ function buildScopeForMockingRequests({
   if (type === 'infura') {
     rpcUrl = `https://${network}.infura.io`;
   } else {
-    rpcUrl = `http://localhost:8545/`;
+    rpcUrl = LOCALHOST_RPC_URL;
   }
 
   return nock(rpcUrl).filteringRequestBody((body) => {
@@ -308,8 +312,9 @@ export async function withClient(...args) {
     });
   } else {
     clientUnderTest = createJsonRpcClient({
-      rpcUrl: 'http://localhost:8545',
-      chain_id: '0x1',
+      rpcUrl: LOCALHOST_RPC_URL,
+      chainId: BUILT_IN_NETWORKS[network].chainId || '0x1',
+      networkId: BUILT_IN_NETWORKS[network].chainId || '0x1',
     });
   }
   const { networkMiddleware, blockTracker } = clientUnderTest;

@@ -16,6 +16,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  CHAIN_ID_TO_NETWORK_ID_MAP,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -410,7 +411,11 @@ export default class NetworkController extends EventEmitter {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
-      this._configureStandardProvider(rpcUrl, chainId);
+      this._configureStandardProvider(
+        rpcUrl,
+        chainId,
+        CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
+      );
     } else {
       throw new Error(
         `NetworkController - _configureProvider - unknown type "${type}"`,
@@ -427,9 +432,9 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient);
   }
 
-  _configureStandardProvider(rpcUrl, chainId) {
+  _configureStandardProvider(rpcUrl, chainId, networkId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
-    const networkClient = createJsonRpcClient({ rpcUrl, chainId });
+    const networkClient = createJsonRpcClient({ rpcUrl, chainId, networkId });
     this._setNetworkClient(networkClient);
   }
 

@@ -99,7 +99,7 @@ import {
     describe('eth_chainId', () => {
       it('does not hit custom provider, instead returning the chain id that maps to the custom providers network, as a hex string', async () => {
         const chainId = await withClient(
-          { network: 'goerli', providerType },
+          { network: 'goerli', type: providerType },
           ({ makeRpcCall }) => {
             return makeRpcCall({
               method: 'eth_chainId',
@@ -117,29 +117,32 @@ import {
       testsForRpcMethodsThatCheckForBlockHashInResponse(method);
 
       it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
-        await withMockedCommunications({ providerType }, async (comms) => {
-          const request = { method };
+        await withMockedCommunications(
+          { type: providerType },
+          async (comms) => {
+            const request = { method };
 
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          // This is our request.
-          comms.mockRpcCall({
-            request,
-            response: {
-              result: {
-                blockNumber: '0x200',
+            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+            // This is our request.
+            comms.mockRpcCall({
+              request,
+              response: {
+                result: {
+                  blockNumber: '0x200',
+                },
               },
-            },
-          });
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
+            });
+            comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
 
-          await withClient(
-            { providerType },
-            async ({ makeRpcCall, blockTracker }) => {
-              await makeRpcCall(request);
-              expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
-            },
-          );
-        });
+            await withClient(
+              { type: providerType },
+              async ({ makeRpcCall, blockTracker }) => {
+                await makeRpcCall(request);
+                expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
+              },
+            );
+          },
+        );
       });
     });
 
@@ -149,37 +152,40 @@ import {
       testsForRpcMethodsThatCheckForBlockHashInResponse(method);
 
       it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
-        await withMockedCommunications({ providerType }, async (comms) => {
-          const request = { method };
+        await withMockedCommunications(
+          { type: providerType },
+          async (comms) => {
+            const request = { method };
 
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          comms.mockRpcCall({
-            request,
-            response: {
-              result: {
-                blockNumber: '0x200',
+            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+            comms.mockRpcCall({
+              request,
+              response: {
+                result: {
+                  blockNumber: '0x200',
+                },
               },
-            },
-          });
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
+            });
+            comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
 
-          await withClient(
-            { providerType },
-            async ({ makeRpcCall, blockTracker }) => {
-              await makeRpcCall(request);
-              expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
-            },
-          );
-        });
+            await withClient(
+              { type: providerType },
+              async ({ makeRpcCall, blockTracker }) => {
+                await makeRpcCall(request);
+                expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
+              },
+            );
+          },
+        );
       });
     });
 
-    describe('net_version', () => {
-      it('does not hit custom provider, instead returning the chain id that maps to the custom rpc network, as a decimal string', async () => {
-        const chainId = await withClient(
+    describe('net_version and eth_chainId', () => {
+      it(`does not hit ${providerType} provider, instead returning the networkId that maps to the rpc network, as a decimal string`, async () => {
+        const networkId = await withClient(
           {
             network: 'goerli',
-            providerType,
+            type: providerType,
           },
           ({ makeRpcCall }) => {
             return makeRpcCall({
@@ -187,8 +193,23 @@ import {
             });
           },
         );
+        const result = providerType === 'infura' ? '5' : '0x5'; // bad
+        expect(networkId).toStrictEqual(result);
+      });
 
-        expect(chainId).toStrictEqual('5');
+      it(`does not hit ${providerType} provider, instead returning the chainId that maps to the rpc network, as a hex string`, async () => {
+        const networkId = await withClient(
+          {
+            network: 'goerli',
+            type: providerType,
+          },
+          ({ makeRpcCall }) => {
+            return makeRpcCall({
+              method: 'eth_chainId',
+            });
+          },
+        );
+        expect(networkId).toStrictEqual('0x5');
       });
     });
   });

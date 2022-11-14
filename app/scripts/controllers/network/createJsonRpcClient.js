@@ -1,4 +1,4 @@
-import { mergeMiddleware } from 'json-rpc-engine';
+import { createScaffoldMiddleware, mergeMiddleware } from 'json-rpc-engine';
 import {
   createFetchMiddleware,
   createBlockRefRewriteMiddleware,
@@ -13,7 +13,7 @@ import { SECOND } from '../../../../shared/constants/time';
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 
-export default function createJsonRpcClient({ rpcUrl, chainId }) {
+export default function createJsonRpcClient({ rpcUrl, chainId, networkId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
@@ -21,8 +21,16 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
     provider: blockProvider,
   });
 
+  const scaffolded = {
+    eth_chainId: chainId,
+  };
+
+  if (networkId) {
+    scaffolded.net_version = networkId;
+  }
+
   const networkMiddleware = mergeMiddleware([
-    createChainIdMiddleware(chainId),
+    createScaffoldMiddleware(scaffolded),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),
     createInflightCacheMiddleware(),
@@ -31,14 +39,4 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
   ]);
 
   return { networkMiddleware, blockTracker };
-}
-
-function createChainIdMiddleware(chainId) {
-  return (req, res, next, end) => {
-    if (req.method === 'eth_chainId') {
-      res.result = chainId;
-      return end();
-    }
-    return next();
-  };
 }
