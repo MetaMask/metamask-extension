@@ -8,7 +8,7 @@ import { checkForError } from './util';
  */
 export default class ExtensionStore {
   constructor() {
-    this.isSupported = Boolean(browser.storage?.local);
+    this.isSupported = Boolean(browser.storage.local);
     if (!this.isSupported) {
       log.error('Storage local API not available.');
     }
@@ -56,19 +56,13 @@ export default class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    *
-   * This method originally gets all keys,
-   * this is not ideal if we want to manage keys outside the state object.
-   * The keys needed for state management are passed as defaut arguments ([data, meta])
-   * any other implementer can pass in their own key(s).
-   *
-   * @param key
    * @returns {Promise<*>}
    */
-  async get(key = ['data', 'meta']) {
+  async get() {
     if (!this.isSupported) {
       return undefined;
     }
-    const result = await this._get(key);
+    const result = await this._get();
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
     if (isEmpty(result)) {
@@ -80,14 +74,13 @@ export default class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    *
-   * @param key
    * @private
    * @returns {object} the key-value map from local storage
    */
-  _get(key) {
+  _get() {
     const { local } = browser.storage;
     return new Promise((resolve, reject) => {
-      local.get(key).then((/** @type {any} */ result) => {
+      local.get(null).then((/** @type {any} */ result) => {
         const err = checkForError();
         if (err) {
           reject(err);
