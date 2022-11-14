@@ -138,11 +138,7 @@ function setupPhishingPageStreams() {
   });
 
   if (isManifestV3) {
-    phishingPageStream.on('data', ({ data: { method } }) => {
-      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-        runWorkerKeepAliveInterval();
-      }
-    });
+    runWorkerKeepAliveInterval();
   }
 
   // create and connect channel muxers
