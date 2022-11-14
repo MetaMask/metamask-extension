@@ -1,7 +1,7 @@
 // Make all "object" and "function" own properties of globalThis
 // non-configurable and non-writable, when possible.
 // We call a property that is non-configurable and non-writable,
-// "non-modifiable".
+// "non-modifiable". GAL TEST
 try {
   /**
    * `lockdown` only hardens the properties enumerated by the
