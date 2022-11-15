@@ -52,10 +52,9 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
-        const editTransactionButton = await driver.isElementPresent({
-          text: 'Edit',
-          tag: 'span',
-        });
+        const editTransactionButton = await driver.isElementPresent(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
         assert.equal(
           editTransactionButton,
           false,
@@ -95,10 +94,9 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           css: '.confirm-page-container-summary__action__name',
           text: 'Sending ETH',
         });
-        const editTransactionButton = await driver.isElementPresent({
-          text: 'Edit',
-          tag: 'span',
-        });
+        const editTransactionButton = await driver.isElementPresent(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
         assert.equal(
           editTransactionButton,
           true,
