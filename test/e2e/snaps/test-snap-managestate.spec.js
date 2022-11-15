@@ -33,16 +33,16 @@ describe('Test Snap manageState', function () {
 
         // navigate to test snaps page, then fill in the snapId
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // find and scroll to the connect button and click it
         const snapButton1 = await driver.findElement('#connectManageState');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectManageState');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -58,7 +58,7 @@ describe('Test Snap manageState', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -78,14 +78,14 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#sendManageState');
 
         // check the results of the public key test
-        await driver.delay(500);
+        await driver.delay(1000);
         const manageStateResult = await driver.findElement(
           '#sendManageStateResult',
         );
         assert.equal(await manageStateResult.getText(), 'true');
 
         // check the results
-        await driver.delay(500);
+        await driver.delay(1000);
         const retrieveManageStateResult = await driver.findElement(
           '#retrieveManageStateResult',
         );
@@ -98,14 +98,14 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#clearManageState');
 
         // check if true
-        await driver.delay(500);
+        await driver.delay(1000);
         const clearManageStateResult = await driver.findElement(
           '#clearManageStateResult',
         );
         assert.equal(await clearManageStateResult.getText(), 'true');
 
         // check result array is empty
-        await driver.delay(500);
+        await driver.delay(1000);
         const retrieveManageStateResult2 = await driver.findElement(
           '#retrieveManageStateResult',
         );

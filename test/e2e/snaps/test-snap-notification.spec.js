@@ -32,7 +32,7 @@ describe('Test Snap Notification', function () {
 
         // navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // find and scroll down to snapId5 and connect
         const snapButton = await driver.findElement('#connectNotification');
@@ -41,7 +41,7 @@ describe('Test Snap Notification', function () {
         await driver.clickElement('#connectNotification');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
@@ -58,7 +58,7 @@ describe('Test Snap Notification', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -70,7 +70,7 @@ describe('Test Snap Notification', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
@@ -88,14 +88,14 @@ describe('Test Snap Notification', function () {
 
         // try to click on the account menu icon (via xpath)
         await driver.clickElement('.account-menu__icon');
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
           text: 'Notifications',
           tag: 'div',
         });
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // look for the correct text in notifications (via xpath)
         const notificationResultMessage = await driver.findElement(

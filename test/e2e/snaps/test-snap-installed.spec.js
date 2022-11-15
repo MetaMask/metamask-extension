@@ -32,13 +32,13 @@ describe('Test Snap Installed', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(500);
+        await driver.delay(1000);
         const confirmButton = await driver.findElement('#connectConfirmSnap');
         await driver.scrollToElement(confirmButton);
         await driver.clickElement('#connectConfirmSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -55,7 +55,7 @@ describe('Test Snap Installed', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -67,7 +67,7 @@ describe('Test Snap Installed', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -77,7 +77,7 @@ describe('Test Snap Installed', function () {
         await driver.clickElement('#connectErrorSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -104,7 +104,7 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 

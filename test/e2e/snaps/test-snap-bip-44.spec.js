@@ -34,11 +34,11 @@ describe('Test Snap bip-44', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         const snapButton1 = await driver.findElement('#connectBip44Snap');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectBip44Snap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -55,7 +55,7 @@ describe('Test Snap bip-44', function () {
         await driver.delay(1000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -75,7 +75,7 @@ describe('Test Snap bip-44', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
@@ -91,14 +91,14 @@ describe('Test Snap bip-44', function () {
 
         // enter a message to sign
         await driver.fill('#bip44Message', '1234');
-        await driver.delay(500);
+        await driver.delay(1000);
         const snapButton3 = await driver.findElement('#signBip44Message');
         await driver.scrollToElement(snapButton3);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -110,10 +110,10 @@ describe('Test Snap bip-44', function () {
         });
 
         // switch back to test-snaps page
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // check the results of the message signature
         const bip44SignResult = await driver.findElement('#bip44SignResult');

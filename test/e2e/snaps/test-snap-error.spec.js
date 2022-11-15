@@ -33,11 +33,11 @@ describe('Test Snap Error', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         const snapButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectErrorSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 3000, 10000);
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
@@ -65,10 +65,10 @@ describe('Test Snap Error', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 3000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // find and click on send error
         await driver.clickElement('#sendError');
