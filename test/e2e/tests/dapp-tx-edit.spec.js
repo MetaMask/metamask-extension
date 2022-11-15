@@ -81,8 +81,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.openNewPage(`http://127.0.0.1:8080/`);
-
-        await driver.clickElement('#sendEIP1559Button');
+        await driver.clickElement('#sendButton');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
 
