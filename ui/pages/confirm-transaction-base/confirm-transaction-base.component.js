@@ -1158,11 +1158,13 @@ export default class ConfirmTransactionBase extends Component {
     } = this.getNavigateTxData();
 
     let functionType;
+    let isContractInteractionFromDapp = false;
     if (
       txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
       txData.origin !== 'metamask'
     ) {
       functionType = getMethodName(name);
+      isContractInteractionFromDapp = true;
     }
 
     if (!functionType) {
@@ -1183,7 +1185,7 @@ export default class ConfirmTransactionBase extends Component {
           toAddress={toAddress}
           toEns={toEns}
           toNickname={toNickname}
-          showEdit={Boolean(onEdit)}
+          showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
           action={functionType}
           title={title}
           image={image}
