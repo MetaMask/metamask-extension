@@ -40,6 +40,7 @@ export default function ContractDetailsModal({
   tokenId,
   assetName,
   assetStandard,
+  isContractRequestingSignature,
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
@@ -80,75 +81,42 @@ export default function ContractDetailsModal({
         >
           {t('contractDescription')}
         </Typography>
-        <Typography
-          variant={TYPOGRAPHY.H6}
-          display={DISPLAY.FLEX}
-          marginTop={4}
-          marginBottom={2}
-        >
-          {nft ? t('contractNFT') : t('contractToken')}
-        </Typography>
-        <Box
-          display={DISPLAY.FLEX}
-          borderRadius={SIZES.SM}
-          borderStyle={BORDER_STYLE.SOLID}
-          borderColor={COLORS.BORDER_DEFAULT}
-          className="contract-details-modal__content__contract"
-        >
-          {nft ? (
-            <Box margin={4}>
-              <NftCollectionImage
-                assetName={assetName}
-                tokenAddress={tokenAddress}
-              />
-            </Box>
-          ) : (
-            <Identicon
-              className="contract-details-modal__content__contract__identicon"
-              address={tokenAddress}
-              diameter={24}
-            />
-          )}
-          <Box data-testid="recipient">
+        {!isContractRequestingSignature && (
+          <>
             <Typography
               variant={TYPOGRAPHY.H6}
               display={DISPLAY.FLEX}
               marginTop={4}
               marginBottom={2}
             >
-              {t('contractToken')}
+              {nft ? t('contractNFT') : t('contractToken')}
             </Typography>
-            {tokenName && (
-              <Typography
-                variant={TYPOGRAPHY.H6}
-                display={DISPLAY.FLEX}
-                color={COLORS.TEXT_ALTERNATIVE}
-                marginTop={0}
-                marginBottom={4}
-              >
-                {ellipsify(tokenAddress)}
-              </Typography>
-            )}
-          </Box>
-          <Box
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            className="contract-details-modal__content__contract__buttons"
-          >
-            <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedTokenAddress
-                    ? t('copiedExclamation')
-                    : t('copyToClipboard')
-                }
-              >
-                <Button
-                  className="contract-details-modal__content__contract__buttons__copy"
-                  type="link"
-                  onClick={() => {
-                    handleCopyTokenAddress(tokenAddress);
-                  }}
+            <Box
+              display={DISPLAY.FLEX}
+              borderRadius={SIZES.SM}
+              borderStyle={BORDER_STYLE.SOLID}
+              borderColor={COLORS.BORDER_DEFAULT}
+              className="contract-details-modal__content__contract"
+            >
+              {nft ? (
+                <Box margin={4}>
+                  <NftCollectionImage
+                    assetName={assetName}
+                    tokenAddress={tokenAddress}
+                  />
+                </Box>
+              ) : (
+                <Identicon
+                  className="contract-details-modal__content__contract__identicon"
+                  address={tokenAddress}
+                  diameter={24}
+                />
+              )}
+              <Box data-testid="recipient">
+                <Typography
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H5}
+                  marginTop={4}
                 >
                   {tokenName || ellipsify(tokenAddress)}
                 </Typography>
@@ -157,6 +125,8 @@ export default function ContractDetailsModal({
                     variant={TYPOGRAPHY.H6}
                     display={DISPLAY.FLEX}
                     color={COLORS.TEXT_ALTERNATIVE}
+                    marginTop={0}
+                    marginBottom={4}
                   >
                     {ellipsify(tokenAddress)}
                   </Typography>
@@ -223,9 +193,11 @@ export default function ContractDetailsModal({
           marginTop={4}
           marginBottom={2}
         >
-          {nft
-            ? t('contractRequestingAccess')
-            : t('contractRequestingSpendingCap')}
+          {nft && t('contractRequestingAccess')}
+          {isContractRequestingSignature && t('contractRequestingSignature')}
+          {!nft &&
+            !isContractRequestingSignature &&
+            t('contractRequestingSpendingCap')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
@@ -391,4 +363,8 @@ ContractDetailsModal.propTypes = {
    * The name of the collection
    */
   assetName: PropTypes.string,
+  /**
+   * Whether contract requesting signature flow has started
+   */
+  isContractRequestingSignature: PropTypes.bool,
 };
