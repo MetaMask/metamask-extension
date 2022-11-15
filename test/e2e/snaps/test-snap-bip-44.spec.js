@@ -54,9 +54,11 @@ describe('Test Snap bip-44', function () {
 
         await driver.delay(1000);
 
-        // approve install of snap
+        // switch to metamask extension
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
+
+        // approve install of snap
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
