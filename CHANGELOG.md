@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.22.2]
-### Uncategorized
-- This reverts commit d91ce9c4b5044e906f254516a95d87ed74f794d6. ([#16353](https://github.com/MetaMask/metamask-extension/pull/16353))
-- Revert "Ignore advisary related to 3Box"
-- Revert "Fix e2e test"
+### Changed
+- Restore changes from v10.22.0
 
 ## [10.22.1]
 ### Changed
