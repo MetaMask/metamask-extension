@@ -31,7 +31,7 @@ const BetaHeader = () => {
         className="beta-header__message"
         color={COLORS.WARNING_INVERSE}
       >
-        {t('betaHomeHeaderText', [
+        {t('betaHeaderText', [
           <a
             href={BETA_BUGS_URL}
             key="link"

@@ -437,7 +437,7 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHomeHeaderText": {
+  "betaHeaderText": {
     "message": "This is a BETA version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },

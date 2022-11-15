@@ -8,7 +8,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
 
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
-import BetaHomeHeader from '../beta-header';
+import BetaHeader from '../beta-header';
 ///: END:ONLY_INCLUDE_IN(beta)
 
 export default class AppHeader extends PureComponent {
@@ -128,7 +128,7 @@ export default class AppHeader extends PureComponent {
       <>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(beta)
-          showBetaHeader ? <BetaHomeHeader /> : null
+          showBetaHeader ? <BetaHeader /> : null
           ///: END:ONLY_INCLUDE_IN(beta)
         }
 
