@@ -32,6 +32,7 @@ import {
   ERC721,
 } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -82,6 +83,7 @@ export default class ConfirmApproveContent extends Component {
   state = {
     showFullTxDetails: false,
     copied: false,
+    setshowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -588,8 +590,11 @@ export default class ConfirmApproveContent extends Component {
       isContract,
       assetStandard,
       userAddress,
+      tokenId,
+      tokenAddress,
+      assetName,
     } = this.props;
-    const { showFullTxDetails } = this.state;
+    const { showFullTxDetails, setshowContractDetails } = this.state;
 
     return (
       <div
@@ -632,6 +637,33 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
+        {(assetStandard === ERC721 ||
+          assetStandard === ERC1155 ||
+          (assetName && tokenId) ||
+          (tokenSymbol && tokenId)) && (
+          <Box marginBottom={4} marginTop={2}>
+            <Button
+              type="link"
+              className="confirm-approve-content__verify-contract-details"
+              onClick={() => this.setState({ setshowContractDetails: true })}
+            >
+              {t('verifyContractDetails')}
+            </Button>
+            {setshowContractDetails && (
+              <ContractDetailsModal
+                onClose={() => this.setState({ setshowContractDetails: false })}
+                tokenName={tokenSymbol}
+                tokenAddress={tokenAddress}
+                toAddress={toAddress}
+                chainId={chainId}
+                rpcPrefs={rpcPrefs}
+                tokenId={tokenId}
+                assetName={assetName}
+                assetStandard={assetStandard}
+              />
+            )}
+          </Box>
+        )}
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
             <Identicon

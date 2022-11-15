@@ -217,25 +217,88 @@ export default function ApproveContentCard({
 }
 
 ApproveContentCard.propTypes = {
+  /**
+   * Whether to show header including icon, transaction fee text and edit button
+   */
   showHeader: PropTypes.bool,
+  /**
+   * Symbol icon
+   */
   symbol: PropTypes.node,
+  /**
+   * Title to be included in the header
+   */
   title: PropTypes.string,
+  /**
+   * Whether to show edit button or not
+   */
   showEdit: PropTypes.bool,
+  /**
+   * Whether to show advanced gas fee options or not
+   */
   showAdvanceGasFeeOptions: PropTypes.bool,
+  /**
+   * Should open customize gas modal when edit button is clicked
+   */
   onEditClick: PropTypes.func,
+  /**
+   * Footer to be shown
+   */
   footer: PropTypes.node,
+  /**
+   * Whether to include border-bottom or not
+   */
   noBorder: PropTypes.bool,
+  /**
+   * Is enhanced gas fee enabled or not
+   */
   supportsEIP1559V2: PropTypes.bool,
+  /**
+   * Whether to render transaction details content or not
+   */
   renderTransactionDetailsContent: PropTypes.bool,
+  /**
+   * Whether to render data content or not
+   */
   renderDataContent: PropTypes.bool,
+  /**
+   * Is multi-layer fee network or not
+   */
   isMultiLayerFeeNetwork: PropTypes.bool,
+  /**
+   * Total sum of the transaction in native currency
+   */
   ethTransactionTotal: PropTypes.string,
+  /**
+   * Current native currency
+   */
   nativeCurrency: PropTypes.string,
+  /**
+   * Current transaction
+   */
   fullTxData: PropTypes.object,
+  /**
+   * Total sum of the transaction converted to hex value
+   */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Total sum of the transaction in fiat currency
+   */
   fiatTransactionTotal: PropTypes.string,
+  /**
+   * Current fiat currency
+   */
   currentCurrency: PropTypes.string,
+  /**
+   * Is set approve for all or not
+   */
   isSetApproveForAll: PropTypes.bool,
+  /**
+   * Whether a current set approval for all transaction will approve or revoke access
+   */
   isApprovalOrRejection: PropTypes.bool,
+  /**
+   * Current transaction data
+   */
   data: PropTypes.string,
 };
