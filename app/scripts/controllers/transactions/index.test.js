@@ -96,6 +96,7 @@ describe('Transaction Controller', function () {
       getEIP1559GasFeeEstimates: () => undefined,
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
+      securityProviderRequest: () => undefined,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });

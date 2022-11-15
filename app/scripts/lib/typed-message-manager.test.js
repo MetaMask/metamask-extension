@@ -81,8 +81,8 @@ describe('Typed Message Manager', () => {
     numberMsgId = parseInt(msgId, 10);
   });
 
-  it('supports version 1 of signedTypedData', () => {
-    typedMessageManager.addUnapprovedMessage(msgParamsV1, null, 'V1');
+  it('supports version 1 of signedTypedData', async () => {
+    await typedMessageManager.addUnapprovedMessage(msgParamsV1, null, 'V1');
     expect(messages[messages.length - 1].msgParams.data).toStrictEqual(
       msgParamsV1.data,
     );
