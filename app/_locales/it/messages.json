@@ -104,7 +104,7 @@
     "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci sia tuo il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
+    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci tu sia il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -874,7 +874,7 @@
     "message": "Scopri di più"
   },
   "deprecatedTestNetworksMsg": {
-    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto ritirate."
+    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto rimosse."
   },
   "description": {
     "message": "Descrizione"
