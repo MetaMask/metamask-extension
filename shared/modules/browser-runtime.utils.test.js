@@ -51,18 +51,4 @@ describe('Browser Runtime Utils', () => {
       log.error.restore();
     });
   });
-
-  describe('checkForLastErrorAndWarn', () => {
-    it('should log and return error if error was found', () => {
-      sinon.stub(browser.runtime, 'lastError').value({ ...mockLastError });
-      sinon.stub(console, 'warn');
-
-      const result = BrowserRuntimeUtil.checkForLastErrorAndWarn();
-
-      expect(console.warn.calledWith(result)).toBeTruthy();
-      expect(result).toStrictEqual(mockLastError);
-
-      console.warn.restore();
-    });
-  });
 });
