@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.22.1]
+### Uncategorized
+- This reverts commit 308033edbf0fcda8d15c0c0c3b230463983232c3, reversing ([#16353](https://github.com/MetaMask/metamask-extension/pull/16353))
+
 ## [10.21.2]
 ### Fixed
 - Fix undefined txParams when calling approveTransaction, by adding the id on the txMeta argument ([#16382](https://github.com/MetaMask/metamask-extension/pull/16382))
@@ -3257,7 +3261,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...HEAD
+[10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.1
 [10.21.2]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...v10.21.2
 [10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
 [10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
