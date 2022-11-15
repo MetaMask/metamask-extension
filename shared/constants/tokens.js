@@ -12,11 +12,11 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
 /**
  * @typedef {object} TokenDetails
  * @property {string} address - The address of the selected 'TOKEN' or
- *  'COLLECTIBLE' contract.
+ *  'NFT' contract.
  * @property {string} [symbol] - The symbol of the token.
  * @property {number} [decimals] - The number of decimals of the selected
  *  'ERC20' asset.
- * @property {number} [tokenId] - The id of the selected 'COLLECTIBLE' asset.
+ * @property {number} [tokenId] - The id of the selected 'NFT' asset.
  * @property {TokenStandardStrings} [standard] - The standard of the selected
  *  asset.
  * @property {boolean} [isERC721] - True when the asset is a ERC721 token.

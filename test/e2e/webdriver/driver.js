@@ -272,6 +272,15 @@ class Driver {
     }
   }
 
+  async isElementPresentAndVisible(rawLocator) {
+    try {
+      await this.findVisibleElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   /**
    * Paste a string into a field.
    *

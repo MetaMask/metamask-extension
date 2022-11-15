@@ -1,12 +1,15 @@
 .contract-details-modal {
-  width: 360px !important;
+  width: 100% !important;
+  max-width: 408px;
 
   &__content {
     border-bottom: 1px solid var(--color-border-muted);
 
     &__contract {
       &__identicon {
-        margin: 16px 16px 38px 16px;
+        margin: 16px;
+        box-shadow: none;
+        background: none;
       }
 
       &__identicon-for-unknown-contact {
