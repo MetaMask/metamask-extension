@@ -52,7 +52,7 @@ describe('Test Snap bip-44', function () {
           10000,
         );
 
-        await driver.delay(1000);
+        await driver.delay(2000);
 
         // switch to metamask extension
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
