@@ -161,14 +161,6 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
-  async waitForNonEmptyElement(element) {
-    await this.driver.wait(async () => {
-      const elemText = await element.getText();
-      const empty = elemText === '';
-      return !empty;
-    }, this.timeout);
-  }
-
   async quit() {
     await this.driver.quit();
   }
@@ -265,6 +257,15 @@ class Driver {
   async isElementPresent(rawLocator) {
     try {
       await this.findElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async isElementPresentAndVisible(rawLocator) {
+    try {
+      await this.findVisibleElement(rawLocator);
       return true;
     } catch (err) {
       return false;

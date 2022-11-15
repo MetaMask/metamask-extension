@@ -47,6 +47,10 @@
   "SIWEAddressInvalid": {
     "message": "Alamat pada permintaan masuk tidak sesuai dengan alamat akun yang Anda gunakan untuk masuk."
   },
+  "SIWEDomainInvalid": {
+    "message": "Situs web yang Anda coba masuki ($1) tidak sesuai dengan domain pada permintaan masuk. Lanjutkan dengan hati-hati.",
+    "description": "$1 represents the website domain"
+  },
   "SIWEDomainWarningBody": {
     "message": "Situs web ($1) meminta Anda untuk masuk ke domain yang salah. Kemungkinan ini merupakan serangan pengelabuan.",
     "description": "$1 represents the website domain"
@@ -877,6 +881,9 @@
   },
   "data": {
     "message": "Data"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Beberapa data akun Anda telah dicadangkan selama pemasangan MetaMask yang lalu. Ini bisa mencakup pengaturan, kontak, dan token Anda. Apakah Anda ingin memulihkan data ini sekarang?"
   },
   "dataBackupSeemsCorrupt": {
     "message": "Tidak dapat memulihkan data Anda. File tampaknya rusak."
@@ -2862,6 +2869,10 @@
   "restoreUserDataDescription": {
     "message": "Anda dapat memulihkan pengaturan pengguna yang berisi preferensi dan alamat akun dari berkas JSON yang dicadangkan sebelumnya."
   },
+  "restoreWalletPreferences": {
+    "message": "Cadangan data Anda dari $1 telah ditemukan. Pulihkan preferensi dompet Anda?",
+    "description": "$1 is the date at which the data was backed up"
+  },
   "retryTransaction": {
     "message": "Coba lagi transaksi"
   },
@@ -3833,6 +3844,15 @@
   },
   "syncWithMobileTitle": {
     "message": "Sinkronkan dengan seluler"
+  },
+  "syncWithThreeBox": {
+    "message": "Sinkronkan data dengan 3Box (eksperimen)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Aktifkan agar pengaturan Anda dicadangkan dengan 3Box. Fitur ini sekarang sedang dalam masa percobaan; risiko ditanggung sendiri."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box telah dinonaktifkan karena terjadi galat selama sinkronisasi awal"
   },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"

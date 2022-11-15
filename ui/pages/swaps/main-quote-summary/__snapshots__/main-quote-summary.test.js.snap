@@ -85,7 +85,6 @@ exports[`MainQuoteSummary renders the component with initial props 4`] = `
     </span>
     <span
       class=""
-      data-testid="exchange-rate-display__base-symbol"
     >
       ETH
     </span>
@@ -102,7 +101,6 @@ exports[`MainQuoteSummary renders the component with initial props 4`] = `
     </span>
     <div
       class="exchange-rate-display__switch-arrows"
-      data-testid="exchange-rate-display__switch-arrows"
     >
       <svg
         fill="none"

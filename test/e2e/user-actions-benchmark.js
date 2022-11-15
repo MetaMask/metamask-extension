@@ -8,7 +8,6 @@ const {
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
 const { convertToHexValue, withFixtures } = require('./helpers');
-const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
   accounts: [
@@ -25,7 +24,7 @@ async function loadNewAccount() {
 
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: 'imported-account',
       ganacheOptions,
     },
     async ({ driver }) => {
@@ -53,7 +52,7 @@ async function confirmTx() {
   let loadingTimes;
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: 'imported-account',
       ganacheOptions,
     },
     async ({ driver }) => {

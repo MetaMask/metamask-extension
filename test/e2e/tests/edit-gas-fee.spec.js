@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const {
   convertToHexValue,
+  connectDappWithExtensionPopup,
   getWindowHandles,
   withFixtures,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
@@ -20,12 +20,7 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: 'eip-1559-v2',
         ganacheOptions,
         title: this.test.title,
       },
@@ -39,7 +34,7 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        assert.equal(await transactionAmount.getText(), '2.2');
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
@@ -85,7 +80,7 @@ describe('Editing Confirm Transaction', function () {
           '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
@@ -103,12 +98,7 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: 'eip-1559-v2',
         ganacheOptions,
         title: this.test.title,
       },
@@ -122,7 +112,7 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        assert.equal(await transactionAmount.getText(), '2.2');
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
@@ -155,7 +145,7 @@ describe('Editing Confirm Transaction', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '1.00085 ETH',
+          text: '2.20085 ETH',
         });
 
         // confirms the transaction
@@ -173,7 +163,7 @@ describe('Editing Confirm Transaction', function () {
           '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
@@ -191,12 +181,7 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            eip1559V2Enabled: true,
-          })
-          .build(),
+        fixtures: 'eip-1559-v2-dapp',
         ganacheOptions,
         title: this.test.title,
         dapp: true,
@@ -209,7 +194,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open dapp and connect
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await connectDappWithExtensionPopup(driver);
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',

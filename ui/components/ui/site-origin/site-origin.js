@@ -12,7 +12,6 @@ export default function SiteOrigin({
   chip,
   className,
   title,
-  leftIcon,
   rightIcon,
 }) {
   return (
@@ -23,14 +22,12 @@ export default function SiteOrigin({
           label={siteOrigin}
           maxContent={false}
           leftIcon={
-            leftIcon || (
-              <IconWithFallback icon={iconSrc} name={iconName} size={24} />
-            )
+            <IconWithFallback icon={iconSrc} name={iconName} size={24} />
           }
           rightIcon={rightIcon}
         />
       ) : (
-        <bdi dir="ltr">{siteOrigin}</bdi>
+        <span>{siteOrigin}</span>
       )}
     </div>
   );
@@ -64,10 +61,6 @@ SiteOrigin.propTypes = {
    * if false iconSrc and iconName props will not be used.
    */
   chip: PropTypes.bool,
-  /**
-   * The icon to display on the left side of the chip. If not provided, the iconSrc and iconName will be used.
-   */
-  leftIcon: PropTypes.node,
   /**
    * The icon to display on the right side of the chip.
    */

@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 const PHISHFORT_CDN_URL =
   'https://static.metafi.codefi.network/api/v1/lists/phishfort_hotlist.json';
@@ -44,7 +43,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -68,7 +67,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -104,7 +103,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -143,7 +142,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page with the correct new issue link if the issue was detected from the phishfort list', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishfortPhishingDetection,

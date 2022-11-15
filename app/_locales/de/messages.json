@@ -47,6 +47,10 @@
   "SIWEAddressInvalid": {
     "message": "Die Adresse in der Anmeldeanfrage entspricht nicht der Adresse des Kontos, mit dem Sie sich anmelden."
   },
+  "SIWEDomainInvalid": {
+    "message": "Die Webseite, auf der Sie sich anmelden möchten ($1) entspricht nicht der Domain der Anmeldeanfrage. Bitte seien Sie vorsichtig.",
+    "description": "$1 represents the website domain"
+  },
   "SIWEDomainWarningBody": {
     "message": "Die Webseite ($1) bittet Sie, sich in der falschen Domain anzumelden. Dies könnte ein Phishing-Angriff sein.",
     "description": "$1 represents the website domain"
@@ -877,6 +881,9 @@
   },
   "data": {
     "message": "Daten"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Einige Ihrer Kontodaten wurden während einer früheren MetaMask-Installation gesichert. Dies könnte Ihre Einstellungen, Kontakte und Token umfassen. Möchten Sie diese Daten jetzt wiederherstellen?"
   },
   "dataBackupSeemsCorrupt": {
     "message": "Ihre Daten konnten nicht wiederhergestellt werden. Die Datei scheint beschädigt zu sein."
@@ -2862,6 +2869,10 @@
   "restoreUserDataDescription": {
     "message": "Sie können die Benutzereinstellungen, die bevorzugte Einstellungen und Kontoadressen umfassen, aus einer vormals gesicherten JSON-Datei wiederherstellen."
   },
+  "restoreWalletPreferences": {
+    "message": "$1 hat ein Backup Ihrer Daten gefunden. Möchten Sie die Präferenzen Ihrer Wallet wiederherstellen?",
+    "description": "$1 is the date at which the data was backed up"
+  },
   "retryTransaction": {
     "message": "Transaktion wiederholen"
   },
@@ -3833,6 +3844,15 @@
   },
   "syncWithMobileTitle": {
     "message": "Mit Mobilgerät synchronisieren"
+  },
+  "syncWithThreeBox": {
+    "message": "Daten mit 3Box synchronisieren (experimentell)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Aktivieren Sie, um Ihre Einstellungen mit 3Box zu sichern. Diese Funktion ist derzeit experimentell; verwenden Sie diese auf eigene Gefahr."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box wurde aufgrund eines Fehlers während der ersten Synchronisation deaktiviert"
   },
   "tenPercentIncreased": {
     "message": "10% Erhöhung"

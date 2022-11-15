@@ -71,6 +71,7 @@ function blockedDomainCheck() {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
+    'docs.google.com',
     'harbourair.com',
     'ani.gamer.com.tw',
     'blueskybooking.com',

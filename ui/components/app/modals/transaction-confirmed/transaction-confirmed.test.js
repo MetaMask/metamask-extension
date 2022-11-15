@@ -1,30 +1,26 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import TransactionConfirmed from '.';
+import sinon from 'sinon';
+import { mount } from 'enzyme';
+import TransactionConfirmed from './transaction-confirmed.container';
 
 describe('Transaction Confirmed', () => {
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <TransactionConfirmed.WrappedComponent />,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('clicks ok to submit and hide modal', () => {
     const props = {
-      onSubmit: jest.fn(),
-      hideModal: jest.fn(),
+      onSubmit: sinon.spy(),
+      hideModal: sinon.spy(),
     };
-
-    const { queryByText } = renderWithProvider(
+    const wrapper = mount(
       <TransactionConfirmed.WrappedComponent {...props} />,
+      {
+        context: {
+          t: (str) => str,
+        },
+      },
     );
+    const submit = wrapper.find('.btn-primary.modal-container__footer-button');
+    submit.simulate('click');
 
-    fireEvent.click(queryByText('[ok]'));
-
-    expect(props.onSubmit).toHaveBeenCalled();
-    expect(props.hideModal).toHaveBeenCalled();
+    expect(props.onSubmit.calledOnce).toStrictEqual(true);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

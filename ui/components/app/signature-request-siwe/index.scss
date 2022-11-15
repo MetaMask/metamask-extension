@@ -1,6 +1,5 @@
 @import 'signature-request-siwe-header/index';
 @import 'signature-request-siwe-message/index';
-@import 'signature-request-siwe-icon/index';
 
 .signature-request-siwe {
   display: flex;
@@ -22,18 +21,20 @@
   }
 
   .signature-request-siwe__actionable-message {
-    margin: 0 16px 16px;
+    margin: 4px 16px;
 
-    .icon {
-      position: absolute;
-      left: 17px;
-      top: 13px;
+    svg {
+      width: 13px;
+      height: 13px;
+      left: 10px;
+      top: 20px;
     }
   }
+}
 
-  .actionable-message--with-icon.actionable-message--with-right-button {
-    padding-left: 48px;
-  }
+
+.signature-request-siwe__page-container-footer.page-container__footer {
+  border-top: none;
 }
 
 .signature-request-siwe__warning-popover {

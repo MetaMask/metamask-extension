@@ -4,7 +4,6 @@ const {
   withFixtures,
   regularDelayMs,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Sign Typed Data V4 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
@@ -21,9 +20,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -105,9 +102,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -185,9 +180,7 @@ describe('Sign Typed Data Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },

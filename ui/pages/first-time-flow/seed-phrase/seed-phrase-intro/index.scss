@@ -27,7 +27,10 @@
 
   video {
     border-radius: 8px;
-    width: calc(100% - 16px);
+
+    @include screen-md-max {
+      width: 95%;
+    }
   }
 
   &__copy {

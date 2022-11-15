@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Chain Interactions', function () {
   const port = 8546;
@@ -19,7 +18,7 @@ describe('Chain Interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -71,7 +70,7 @@ describe('Chain Interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -100,9 +99,7 @@ describe('Chain Interactions', function () {
         await driver.switchToWindow(extension);
 
         // verify current network
-        const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"]',
-        );
+        const networkDisplay = await driver.findElement('.network-display');
         assert.equal(await networkDisplay.getText(), `Localhost ${port}`);
       },
     );

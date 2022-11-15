@@ -6,7 +6,6 @@ const {
   completeImportSRPOnboardingFlow,
 } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Add account', function () {
   const testSeedPhrase =
@@ -25,7 +24,7 @@ describe('Add account', function () {
   it('should display correct new account name after create', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },
@@ -51,7 +50,7 @@ describe('Add account', function () {
   it('should add the same account addresses when a secret recovery phrase is imported, the account is locked, and the same secret recovery phrase is imported again', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -206,7 +205,7 @@ describe('Add account', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },

@@ -1,3 +1,5 @@
+const { promises: fs } = require('fs');
+const path = require('path');
 const Koa = require('koa');
 const { isObject, mapValues } = require('lodash');
 
@@ -55,6 +57,7 @@ class FixtureServer {
   constructor() {
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
+    this._initialStateCache = new Map();
 
     this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
@@ -91,8 +94,19 @@ class FixtureServer {
     });
   }
 
-  loadJsonState(rawState) {
-    const state = performStateSubstitutions(rawState);
+  async loadState(directory) {
+    const statePath = path.resolve(__dirname, directory, 'state.json');
+
+    let state;
+    if (this._initialStateCache.has(statePath)) {
+      state = this._initialStateCache.get(statePath);
+    } else {
+      const data = await fs.readFile(statePath);
+      const rawState = JSON.parse(data.toString('utf-8'));
+      state = performStateSubstitutions(rawState);
+      this._initialStateCache.set(statePath, state);
+    }
+
     this._stateMap.set(CURRENT_STATE_KEY, state);
   }
 

@@ -8,7 +8,6 @@ const {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
@@ -28,7 +27,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -146,7 +145,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -193,10 +192,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
-          .build(),
+        fixtures: 'import-ui',
         ganacheOptions,
         title: this.test.title,
       },
@@ -299,10 +295,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
-          .build(),
+        fixtures: 'import-ui',
         ganacheOptions,
         title: this.test.title,
       },
@@ -322,6 +315,7 @@ describe('MetaMask Import UI', function () {
         const importJsonFile = path.join(
           __dirname,
           '..',
+          'fixtures',
           'import-utc-json',
           'test-json-import-account-file.json',
         );
@@ -374,10 +368,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
-          .build(),
+        fixtures: 'import-ui',
         ganacheOptions,
         title: this.test.title,
       },
@@ -416,7 +407,7 @@ describe('MetaMask Import UI', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'import-ui',
         ganacheOptions,
         title: this.test.title,
       },

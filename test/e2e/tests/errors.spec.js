@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Sentry errors', function () {
   async function mockSegment(mockServer) {
@@ -27,12 +26,7 @@ describe('Sentry errors', function () {
   it('should send error events', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
+        fixtures: 'metrics-enabled',
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

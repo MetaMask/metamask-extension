@@ -1,12 +1,18 @@
 import React from 'react';
 import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mount } from 'enzyme';
+import sinon from 'sinon';
+import { MemoryRouter } from 'react-router-dom';
+
+import Identicon from '../../ui/identicon';
 import TokenCell from '.';
 
 describe('Token Cell', () => {
-  const mockState = {
+  let wrapper;
+
+  const state = {
     metamask: {
       currentCurrency: 'usd',
       selectedAddress: '0xAddress',
@@ -23,33 +29,60 @@ describe('Token Cell', () => {
     },
   };
 
-  const mockStore = configureMockStore([thunk])(mockState);
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const store = mockStore(state);
 
-  const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    onClick: jest.fn(),
-  };
+  let onClick;
 
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <TokenCell {...props} />,
-      mockStore,
+  beforeEach(() => {
+    onClick = sinon.stub();
+    wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <TokenCell
+            address="0xAnotherToken"
+            symbol="TEST"
+            string="5.000"
+            currentCurrency="usd"
+            onClick={onClick}
+          />
+        </MemoryRouter>
+      </Provider>,
     );
+  });
 
-    expect(container).toMatchSnapshot();
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('renders Identicon with props from token cell', () => {
+    expect(wrapper.find(Identicon).prop('address')).toStrictEqual(
+      '0xAnotherToken',
+    );
+  });
+
+  it('renders token balance', () => {
+    expect(wrapper.find('.asset-list-item__token-value').text()).toStrictEqual(
+      '5.000',
+    );
+  });
+
+  it('renders token symbol', () => {
+    expect(wrapper.find('.asset-list-item__token-symbol').text()).toStrictEqual(
+      'TEST',
+    );
+  });
+
+  it('renders converted fiat amount', () => {
+    expect(wrapper.find('.list-item__subheading').text()).toStrictEqual(
+      '$0.52 USD',
+    );
   });
 
   it('calls onClick when clicked', () => {
-    const { queryByTestId } = renderWithProvider(
-      <TokenCell {...props} />,
-      mockStore,
-    );
-
-    fireEvent.click(queryByTestId('token-button'));
-
-    expect(props.onClick).toHaveBeenCalled();
+    expect(!onClick.called).toStrictEqual(true);
+    wrapper.simulate('click');
+    expect(onClick.called).toStrictEqual(true);
   });
 });

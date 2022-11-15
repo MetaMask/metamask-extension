@@ -259,17 +259,12 @@ export const Ellipsis = (args) => (
 
 export const As = (args) => (
   <>
-    {ValidTags.map((tag) => {
-      if (tag === 'input') {
-        return <Text key={tag} {...args} as={tag} placeholder={tag} />;
-      }
-      return (
-        <div key={tag}>
-          <Text {...args} as={tag}>
-            {tag}
-          </Text>
-        </div>
-      );
-    })}
+    {Object.values(ValidTags).map((tag) => (
+      <div key={tag}>
+        <Text {...args} as={tag}>
+          {tag}
+        </Text>
+      </div>
+    ))}
   </>
 );

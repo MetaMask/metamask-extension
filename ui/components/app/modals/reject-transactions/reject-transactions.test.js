@@ -1,44 +1,45 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import RejectTransactionsModal from '.';
+import sinon from 'sinon';
+import { mount } from 'enzyme';
+import RejectTransactionsModal from './reject-transactions.container';
 
 describe('Reject Transactions Model', () => {
+  let wrapper;
+
   const props = {
-    onSubmit: jest.fn(),
-    hideModal: jest.fn(),
+    onSubmit: sinon.spy(),
+    hideModal: sinon.spy(),
     unapprovedTxCount: 2,
   };
 
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <RejectTransactionsModal.WrappedComponent {...props} />,
-    );
+  beforeEach(() => {
+    wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+      },
+    });
+  });
 
-    expect(container).toMatchSnapshot();
+  afterEach(() => {
+    props.hideModal.resetHistory();
   });
 
   it('hides modal when cancel button is clicked', () => {
-    const { queryByText } = renderWithProvider(
-      <RejectTransactionsModal.WrappedComponent {...props} />,
+    const cancelButton = wrapper.find(
+      '.btn-secondary.modal-container__footer-button',
     );
+    cancelButton.simulate('click');
 
-    fireEvent.click(queryByText('[cancel]'));
-
-    expect(props.onSubmit).not.toHaveBeenCalled();
-    expect(props.hideModal).toHaveBeenCalled();
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
   it('onSubmit is called and hides modal when reject all clicked', async () => {
-    const { queryByText } = renderWithProvider(
-      <RejectTransactionsModal.WrappedComponent {...props} />,
+    const rejectAllButton = wrapper.find(
+      '.btn-primary.modal-container__footer-button',
     );
+    rejectAllButton.simulate('click');
 
-    fireEvent.click(queryByText('[rejectAll]'));
-
-    await waitFor(() => {
-      expect(props.onSubmit).toHaveBeenCalled();
-      expect(props.hideModal).toHaveBeenCalled();
-    });
+    expect(await props.onSubmit.calledOnce).toStrictEqual(true);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

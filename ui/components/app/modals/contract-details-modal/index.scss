@@ -9,10 +9,6 @@
         margin: 16px 16px 38px 16px;
       }
 
-      &__identicon-for-unknown-contact {
-        margin: 16px;
-      }
-
       &__buttons {
         flex-grow: 1;
 
@@ -24,6 +20,12 @@
           padding: 0;
         }
       }
+    }
+  }
+
+  &__footer {
+    button + button {
+      margin-inline-start: 1rem;
     }
   }
 }

@@ -170,7 +170,6 @@ export default function SlippageButtons({
                         )}
                       >
                         <input
-                          data-testid="slippage-buttons__custom-slippage"
                           onChange={(event) => {
                             const { value } = event.target;
                             const isValueNumeric = !isNaN(Number(value));

@@ -150,7 +150,6 @@ export default class UnlockPage extends Component {
     return (
       <Button
         type="submit"
-        data-testid="unlock-submit"
         style={style}
         disabled={!this.state.password}
         variant="contained"
@@ -182,7 +181,6 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
-              data-testid="unlock-password"
               label={t('password')}
               type="password"
               value={password}

@@ -39,8 +39,6 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
-  PermissionsRequestNotFoundError,
-  ApprovalRequestNotFoundError,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
   NotificationController,
@@ -125,6 +123,7 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
+import ThreeBoxController from './controllers/threebox';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
@@ -202,9 +201,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = new ControllerMessenger();
 
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.localStore;
-
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -251,9 +247,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      preventPollingOnNetworkRestart: initState.TokenListController
-        ? initState.TokenListController.preventPollingOnNetworkRestart
-        : true,
+      preventPollingOnNetworkRestart: true,
       onNetworkStateChange: (cb) => {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
@@ -773,6 +767,20 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
+    this.threeBoxController = new ThreeBoxController({
+      preferencesController: this.preferencesController,
+      addressBookController: this.addressBookController,
+      keyringController: this.keyringController,
+      initState: initState.ThreeBoxController,
+      getKeyringControllerState: this.keyringController.memStore.getState.bind(
+        this.keyringController.memStore,
+      ),
+      version,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1030,6 +1038,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
+      ThreeBoxController: this.threeBoxController.store,
       BackupController: this.backupController,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
@@ -1068,6 +1077,7 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
+        ThreeBoxController: this.threeBoxController.store,
         BackupController: this.backupController,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
@@ -1483,6 +1493,7 @@ export default class MetamaskController extends EventEmitter {
     const {
       addressBookController,
       alertController,
+      approvalController,
       appStateController,
       collectiblesController,
       collectibleDetectionController,
@@ -1499,6 +1510,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       qrHardwareKeyring,
       swapsController,
+      threeBoxController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -1787,10 +1799,32 @@ export default class MetamaskController extends EventEmitter {
       setWeb3ShimUsageAlertDismissed:
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
+      // 3Box
+      setThreeBoxSyncingPermission:
+        threeBoxController.setThreeBoxSyncingPermission.bind(
+          threeBoxController,
+        ),
+      restoreFromThreeBox:
+        threeBoxController.restoreFromThreeBox.bind(threeBoxController),
+      setShowRestorePromptToFalse:
+        threeBoxController.setShowRestorePromptToFalse.bind(threeBoxController),
+      getThreeBoxLastUpdated:
+        threeBoxController.getLastUpdated.bind(threeBoxController),
+      turnThreeBoxSyncingOn:
+        threeBoxController.turnThreeBoxSyncingOn.bind(threeBoxController),
+      initializeThreeBox: this.initializeThreeBox.bind(this),
+
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.acceptPermissionsRequest,
-      rejectPermissionsRequest: this.rejectPermissionsRequest,
+      removePermissionsFor:
+        permissionController.revokePermissions.bind(permissionController),
+      approvePermissionsRequest:
+        permissionController.acceptPermissionsRequest.bind(
+          permissionController,
+        ),
+      rejectPermissionsRequest:
+        permissionController.rejectPermissionsRequest.bind(
+          permissionController,
+        ),
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1908,8 +1942,14 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // approval controller
-      resolvePendingApproval: this.resolvePendingApproval,
-      rejectPendingApproval: this.rejectPendingApproval,
+      resolvePendingApproval:
+        approvalController.accept.bind(approvalController),
+      rejectPendingApproval: async (id, error) => {
+        approvalController.reject(
+          id,
+          new EthereumRpcError(error.code, error.message, error.data),
+        );
+      },
 
       // Notifications
       updateViewedNotifications: announcementController.updateViewed.bind(
@@ -2098,11 +2138,6 @@ export default class MetamaskController extends EventEmitter {
 
       // clear permissions
       this.permissionController.clearState();
-
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      // Clear snap state
-      this.snapController.clearState();
-      ///: END:ONLY_INCLUDE_IN
 
       // clear accounts in accountTracker
       this.accountTracker.clearAccounts();
@@ -2306,6 +2341,20 @@ export default class MetamaskController extends EventEmitter {
 
     try {
       await this.blockTracker.checkForLatestBlock();
+    } catch (error) {
+      log.error('Error while unlocking extension.', error);
+    }
+
+    try {
+      const threeBoxSyncingAllowed =
+        this.threeBoxController.getThreeBoxSyncingState();
+      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+        // 'await' intentionally omitted to avoid waiting for initialization
+        this.threeBoxController.init();
+        this.threeBoxController.turnThreeBoxSyncingOn();
+      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+        this.threeBoxController.turnThreeBoxSyncingOn();
+      }
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
@@ -3435,15 +3484,7 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on(
-      'data',
-      createMetaRPCHandler(
-        api,
-        outStream,
-        this.store,
-        this.localStoreApiWrapper,
-      ),
-    );
+    outStream.on('data', createMetaRPCHandler(api, outStream));
     const handleUpdate = (update) => {
       if (outStream._writableState.ended) {
         return;
@@ -4185,6 +4226,10 @@ export default class MetamaskController extends EventEmitter {
     return null;
   }
 
+  async initializeThreeBox() {
+    await this.threeBoxController.init();
+  }
+
   /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    *
@@ -4298,57 +4343,4 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.setLocked();
   }
-
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  rejectPermissionsRequest = (requestId) => {
-    try {
-      this.permissionController.rejectPermissionsRequest(requestId);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  resolvePendingApproval = (id, value) => {
-    try {
-      this.approvalController.accept(id, value);
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  rejectPendingApproval = (id, error) => {
-    try {
-      this.approvalController.reject(
-        id,
-        new EthereumRpcError(error.code, error.message, error.data),
-      );
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
 }

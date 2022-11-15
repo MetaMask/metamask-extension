@@ -1,8 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getAccountLink } from '@metamask/etherscan-link';
-import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import Box from '../../../ui/box';
 import IconCopy from '../../../ui/icon/icon-copy';
 import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
@@ -22,27 +19,9 @@ import {
   SIZES,
   BORDER_STYLE,
 } from '../../../../helpers/constants/design-system';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import UrlIcon from '../../../ui/url-icon/url-icon';
-import { getAddressBookEntry } from '../../../../selectors';
 
-export default function ContractDetailsModal({
-  onClose,
-  tokenName,
-  tokenAddress,
-  toAddress,
-  chainId,
-  rpcPrefs,
-  origin,
-  siteImage,
-}) {
+export default function ContractDetailsModal({ onClose, address, tokenName }) {
   const t = useI18nContext();
-  const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
-  const [copiedToAddress, handleCopyToAddress] = useCopyToClipboard();
-
-  const addressBookEntry = useSelector((state) => ({
-    data: getAddressBookEntry(state, toAddress),
-  }));
 
   return (
     <Popover className="contract-details-modal">
@@ -86,7 +65,7 @@ export default function ContractDetailsModal({
         >
           <Identicon
             className="contract-details-modal__content__contract__identicon"
-            address={tokenAddress}
+            address={address}
             diameter={24}
           />
           <Box data-testid="recipient">
@@ -95,7 +74,7 @@ export default function ContractDetailsModal({
               variant={TYPOGRAPHY.H5}
               marginTop={4}
             >
-              {tokenName || ellipsify(tokenAddress)}
+              {tokenName || ellipsify(address)}
             </Typography>
             {tokenName && (
               <Typography
@@ -103,7 +82,7 @@ export default function ContractDetailsModal({
                 display={DISPLAY.FLEX}
                 color={COLORS.TEXT_ALTERNATIVE}
               >
-                {ellipsify(tokenAddress)}
+                {ellipsify(address)}
               </Typography>
             )}
           </Box>
@@ -112,20 +91,10 @@ export default function ContractDetailsModal({
             className="contract-details-modal__content__contract__buttons"
           >
             <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedTokenAddress
-                    ? t('copiedExclamation')
-                    : t('copyToClipboard')
-                }
-              >
+              <Tooltip position="top" title={t('copyToClipboard')}>
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
-                  onClick={() => {
-                    handleCopyTokenAddress(tokenAddress);
-                  }}
                 >
                   <IconCopy color="var(--color-icon-muted)" />
                 </Button>
@@ -136,19 +105,6 @@ export default function ContractDetailsModal({
                 <Button
                   className="contract-details-modal__content__contract__buttons__block-explorer"
                   type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      tokenAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
                 >
                   <IconBlockExplorer
                     size={16}
@@ -175,21 +131,10 @@ export default function ContractDetailsModal({
           borderColor={COLORS.BORDER_DEFAULT}
           className="contract-details-modal__content__contract"
         >
-          <UrlIcon
-            className={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            fallbackClassName={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            name={origin}
-            url={siteImage}
+          <Identicon
+            className="contract-details-modal__content__contract__identicon"
+            address={address}
+            diameter={24}
           />
           <Box data-testid="recipient">
             <Typography
@@ -197,15 +142,15 @@ export default function ContractDetailsModal({
               variant={TYPOGRAPHY.H5}
               marginTop={4}
             >
-              {addressBookEntry?.data?.name || ellipsify(toAddress)}
+              {tokenName || ellipsify(address)}
             </Typography>
-            {addressBookEntry?.data?.name && (
+            {tokenName && (
               <Typography
                 variant={TYPOGRAPHY.H6}
                 display={DISPLAY.FLEX}
                 color={COLORS.TEXT_ALTERNATIVE}
               >
-                {ellipsify(toAddress)}
+                {ellipsify(address)}
               </Typography>
             )}
           </Box>
@@ -214,20 +159,10 @@ export default function ContractDetailsModal({
             className="contract-details-modal__content__contract__buttons"
           >
             <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedToAddress
-                    ? t('copiedExclamation')
-                    : t('copyToClipboard')
-                }
-              >
+              <Tooltip position="top" title={t('copyToClipboard')}>
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
-                  onClick={() => {
-                    handleCopyToAddress(toAddress);
-                  }}
                 >
                   <IconCopy color="var(--color-icon-muted)" />
                 </Button>
@@ -238,19 +173,6 @@ export default function ContractDetailsModal({
                 <Button
                   className="contract-details-modal__content__contract__buttons__block-explorer"
                   type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      toAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
                 >
                   <IconBlockExplorer
                     size={16}
@@ -268,46 +190,24 @@ export default function ContractDetailsModal({
         paddingRight={4}
         paddingBottom={6}
         paddingLeft={4}
+        className="contract-details-modal__footer"
       >
-        <Button type="primary" onClick={() => onClose()}>
-          {t('recoveryPhraseReminderConfirm')}
+        <Button
+          type="secondary"
+          onClick={() => {
+            onClose();
+          }}
+        >
+          {t('cancel')}
         </Button>
+        <Button type="primary">{t('confirm')}</Button>
       </Box>
     </Popover>
   );
 }
 
 ContractDetailsModal.propTypes = {
-  /**
-   * Function that should close the modal
-   */
   onClose: PropTypes.func,
-  /**
-   * Name of the token that is waiting to be allowed
-   */
+  address: PropTypes.string,
   tokenName: PropTypes.string,
-  /**
-   * Address of the token that is waiting to be allowed
-   */
-  tokenAddress: PropTypes.string,
-  /**
-   * Contract address requesting spending cap
-   */
-  toAddress: PropTypes.string,
-  /**
-   * Current network chainId
-   */
-  chainId: PropTypes.string,
-  /**
-   * RPC prefs of the current network
-   */
-  rpcPrefs: PropTypes.object,
-  /**
-   * Dapp URL
-   */
-  origin: PropTypes.string,
-  /**
-   * Dapp image
-   */
-  siteImage: PropTypes.string,
 };

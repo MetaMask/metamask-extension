@@ -26,7 +26,6 @@ export default class PermissionsConnectHeader extends Component {
     headerTitle: PropTypes.node,
     boxProps: PropTypes.shape({ ...Box.propTypes }),
     headerText: PropTypes.string,
-    leftIcon: PropTypes.node,
     rightIcon: PropTypes.node,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapVersion: PropTypes.string,
@@ -46,7 +45,6 @@ export default class PermissionsConnectHeader extends Component {
       iconUrl,
       iconName,
       siteOrigin,
-      leftIcon,
       rightIcon,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       isSnapInstallOrUpdate,
@@ -66,7 +64,6 @@ export default class PermissionsConnectHeader extends Component {
           siteOrigin={siteOrigin}
           iconSrc={iconUrl}
           name={iconName}
-          leftIcon={leftIcon}
           rightIcon={rightIcon}
         />
       </div>
