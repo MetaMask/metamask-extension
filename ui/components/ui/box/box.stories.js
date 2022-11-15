@@ -607,6 +607,35 @@ export const ResponsiveProps = () => {
         >
           example
         </Box>
+        <>
+          <Box
+            padding={[4, 8]}
+            borderRadius={[
+              BORDER_RADIUS.XS,
+              BORDER_RADIUS.SM,
+              BORDER_RADIUS.MD,
+              BORDER_RADIUS.LG,
+            ]}
+            backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+            borderColor={COLORS.BORDER_MUTED}
+          >
+            Responsive Border Radius 1
+          </Box>
+          <Box
+            padding={[4, 8]}
+            borderRadius={[
+              BORDER_RADIUS.XL,
+              BORDER_RADIUS.PILL,
+              BORDER_RADIUS.NONE,
+              BORDER_RADIUS.FULL,
+            ]}
+            backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+            borderColor={COLORS.BORDER_MUTED}
+          >
+            Responsive Border Radius 2
+          </Box>
+        </>
+        ,
       </Box>
     </>
   );
