@@ -84,7 +84,6 @@
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
-    "**/caniuse-lite": "^1.0.30001312",
     "**/cross-fetch": "^3.1.5",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
@@ -329,7 +328,7 @@
     "gh-pages": "^3.2.3",
     "globby": "^11.0.4",
     "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^5.0.0",
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-dart-sass": "^1.0.2",
     "gulp-livereload": "4.0.0",
     "gulp-rename": "^2.0.0",
