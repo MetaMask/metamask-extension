@@ -26,8 +26,8 @@ The `children` of the `HelpText` can be plain text or react nodes.
 
 ```jsx
 import { SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../ui/component-library/icon';
-import { HelpText } from '../../ui/component-library/help-text';
+import { Icon, ICON_NAMES } from '../../ui/components/component-library';
+import { HelpText } from '../../ui/components/component-library';
 
 <HelpText>Plain text</HelpText>
 <HelpText>
@@ -50,7 +50,7 @@ Use the `error` prop to show the `HelpText` in error state.
 </Canvas>
 
 ```jsx
-import { HelpText } from '../../ui/component-library/help-text';
+import { HelpText } from '../../ui/components/component-library';
 
 <HelpText error>This HelpText in error state</HelpText>;
 ```
@@ -65,7 +65,7 @@ It may be useful to change the color of the `HelpText`. Use the `color` prop and
 
 ```jsx
 import { COLORS } from '../../../helpers/constants/design-system';
-import { HelpText } from '../../ui/component-library/help-text';
+import { HelpText } from '../../ui/components/component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
   <HelpText color={COLORS.TEXT_DEFAULT}>

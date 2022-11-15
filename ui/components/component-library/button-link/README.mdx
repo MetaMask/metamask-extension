@@ -35,7 +35,7 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonLink } from '../ui/component-library/button/button-link/button-link';
+import { ButtonLink } from '../../ui/components/component-library';
 
 <ButtonLink size={SIZES.AUTO} />
 <ButtonLink size={SIZES.SM} />
@@ -52,7 +52,7 @@ Use the `danger` boolean prop to change the `ButtonPrimary` to danger color.
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../ui/component-library/button/button-link/button-link';
+import { ButtonLink } from '../../ui/components/component-library';
 
 <ButtonLink>Normal</ButtonLink>
 <ButtonLink danger>Danger</ButtonLink>
@@ -67,7 +67,7 @@ When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../ui/component-library/button/button-link/button-link';
+import { ButtonLink } from '../../ui/components/component-library';
 
 <ButtonLink href="/">Href Example</ButtonLink>;
 ```

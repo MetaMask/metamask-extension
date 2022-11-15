@@ -35,7 +35,7 @@ Defaults to `md`
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 import { SIZES } from '../../../helpers/constants/design-system';
 
 <TextFieldBase size={SIZES.SM} />
@@ -60,7 +60,7 @@ Defaults to `text`.
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase type="text" /> // (Default)
 <TextFieldBase type="number" />
@@ -76,7 +76,7 @@ Use the `truncate` prop to truncate the text of the the `TextFieldBase`. Default
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase truncate />; // truncate is set to `true` by default
 <TextFieldBase truncate={false} />;
@@ -92,9 +92,9 @@ Use the `leftAccessory` and `rightAccessory` props to add components such as ico
 
 ```jsx
 import { COLORS, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../ui/component-library/icons';
+import { Icon, ICON_NAMES } from '../../ui/components/component-library';
 
-import { TextFieldBase } from '../../ui/component-library/text-field';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase
   placeholder="Search"
@@ -156,7 +156,7 @@ Use the `inputRef` prop to access the ref of the `<input />` html element of `Te
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 const inputRef = useRef(null);
 const [value, setValue] = useState('');
@@ -252,7 +252,7 @@ Use the `autoComplete` prop to set the autocomplete html attribute. It allows th
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase type="password" autoComplete />;
 ```
@@ -266,7 +266,7 @@ Use the `autoFocus` prop to focus the `TextFieldBase` during the first mount
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase autoFocus />;
 ```
@@ -280,7 +280,7 @@ Use the `defaultValue` prop to set the default value of the `TextFieldBase`
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase defaultValue="default value" />;
 ```
@@ -294,7 +294,7 @@ Use the `disabled` prop to set the disabled state of the `TextFieldBase`
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase disabled />;
 ```
@@ -308,7 +308,7 @@ Use the `error` prop to set the error state of the `TextFieldBase`
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase error />;
 ```
@@ -322,7 +322,7 @@ Use the `maxLength` prop to set the maximum allowed input characters for the `Te
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase maxLength={10} />;
 ```
@@ -336,7 +336,7 @@ Use the `readOnly` prop to set the `TextFieldBase` to read only. When `readOnly`
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 <TextFieldBase readOnly />;
 ```
@@ -350,7 +350,7 @@ Use the `required` prop to set the `TextFieldBase` to required. Currently there 
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/components/component-library';
 
 // Currently no visual difference
 <TextFieldBase required />;
