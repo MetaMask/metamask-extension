@@ -77,6 +77,23 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/token')
+    .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          symbol: 'AGLT',
+          type: 'erc20',
+          decimals: '18',
+          address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
+          occurences: 1,
+          aggregators: ['dynamic'],
+        },
+      };
+    });
+
+  await server
     .forGet(
       'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
     )
