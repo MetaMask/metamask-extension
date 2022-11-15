@@ -138,7 +138,7 @@ $attributesToApplyExtraProperties: margin;
   @each $breakpoint, $min-width in $screen-sizes-map {
     @each $radius, $value in design-system.$border-radius {
       @media screen and (min-width: $min-width) {
-        &--#{$breakpoint}\:rounded-#{$radius} yo {
+        &--#{$breakpoint}\:rounded-#{$radius} {
           border-radius: $value;
         }
       }
