@@ -1014,7 +1014,9 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
       },
-      undefined,
+      {
+        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+      },
       initState.SmartTransactionsController,
     );
 
