@@ -28,7 +28,6 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import DepositPopover from '../deposit-popover/deposit-popover';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -39,7 +38,6 @@ import {
 export default class ConfirmPageContainer extends Component {
   state = {
     showNicknamePopovers: false,
-    setShowDepositPopover: false,
   };
 
   static contextTypes = {
@@ -108,8 +106,9 @@ export default class ConfirmPageContainer extends Component {
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
+    showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
-    isApprovalOrRejection: PropTypes.bool,
+    setApproveForAllArg: PropTypes.bool,
   };
 
   render() {
@@ -163,9 +162,10 @@ export default class ConfirmPageContainer extends Component {
       isOwnedAccount,
       supportsEIP1559V2,
       nativeCurrency,
+      showBuyModal,
       isBuyableChain,
       networkIdentifier,
-      isApprovalOrRejection,
+      setApproveForAllArg,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
@@ -190,8 +190,6 @@ export default class ConfirmPageContainer extends Component {
     const isSetApproveForAll =
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
-
-    const { setShowDepositPopover } = this.state;
 
     const { t } = this.context;
 
@@ -297,6 +295,7 @@ export default class ConfirmPageContainer extends Component {
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
+              showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
@@ -314,9 +313,7 @@ export default class ConfirmPageContainer extends Component {
                         <Button
                           type="inline"
                           className="confirm-page-container-content__link"
-                          onClick={() =>
-                            this.setState({ setShowDepositPopover: true })
-                          }
+                          onClick={showBuyModal}
                           key={`${nativeCurrency}-buy-button`}
                         >
                           {t('buyAsset', [nativeCurrency])}
@@ -338,17 +335,12 @@ export default class ConfirmPageContainer extends Component {
               />
             </div>
           )}
-          {setShowDepositPopover && (
-            <DepositPopover
-              onClose={() => this.setState({ setShowDepositPopover: false })}
-            />
-          )}
           {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && isApprovalOrRejection && (
+          {isSetApproveForAll && setApproveForAllArg && (
             <Dialog type="error" className="confirm-page-container__dialog">
               {/*
                 TODO: https://github.com/MetaMask/metamask-extension/issues/15745

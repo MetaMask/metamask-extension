@@ -17,7 +17,6 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { isBeta } from '../../../helpers/utils/build-types';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -53,16 +52,12 @@ export default function CreationSuccessful() {
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
-            {isBeta()
-              ? t('betaWalletCreationSuccessReminder1')
-              : t('walletCreationSuccessReminder1')}
+            {t('walletCreationSuccessReminder1')}
           </Typography>
         </li>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
-            {isBeta()
-              ? t('betaWalletCreationSuccessReminder2')
-              : t('walletCreationSuccessReminder2')}
+            {t('walletCreationSuccessReminder2')}
           </Typography>
         </li>
         <li>

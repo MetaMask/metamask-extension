@@ -34,7 +34,6 @@ export default function ImportToken({
         type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
-        data-testid="page-container__import-button"
       >
         {t('import')}
       </Button>
@@ -67,7 +66,7 @@ export default function ImportToken({
           fontWeight={FONT_WEIGHT.BOLD}
           boxProps={{ marginTop: 2, marginBottom: 3 }}
         >
-          {tokenForImport.name || ''}
+          {tokenForImport.name}
         </Typography>
         <Typography variant={TYPOGRAPHY.H6}>{t('contract')}:</Typography>
         <Typography
@@ -75,7 +74,7 @@ export default function ImportToken({
           variant={TYPOGRAPHY.H7}
           boxProps={{ marginBottom: 6 }}
         >
-          {tokenForImport.address || ''}
+          {tokenForImport.address}
         </Typography>
       </Box>
     </Popover>

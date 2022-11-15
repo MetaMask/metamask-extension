@@ -93,6 +93,6 @@ SearchableItemList.propTypes = {
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   shouldSearchForImports: PropTypes.bool,
-  searchQuery: PropTypes.string,
+  searchQuery: PropTypes.func,
   setSearchQuery: PropTypes.func,
 };

@@ -18,9 +18,6 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -65,7 +62,7 @@ const exceptionsToFilter = {
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {object} options.segment - an instance of analytics for tracking
+   * @param {object} options.segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
    * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
@@ -147,49 +144,16 @@ export default class MetaMetricsController {
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
-    if (isManifestV3) {
-      /* eslint-disable no-undef */
-      chrome.alarms.getAll((alarms) => {
-        const hasAlarm = checkAlarmExists(
-          alarms,
-          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-        );
-
-        if (!hasAlarm) {
-          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+    setInterval(() => {
+      Object.values(this.store.getState().fragments).forEach((fragment) => {
+        if (
+          fragment.timeout &&
+          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+        ) {
+          this.finalizeEventFragment(fragment.id, { abandoned: true });
         }
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = checkAlarmExists(
-            alarms,
-            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-          );
-
-          if (hasAlarm) {
-            this.finalizeAbandonedFragments();
-          }
-        });
-      });
-    } else {
-      setInterval(() => {
-        this.finalizeAbandonedFragments();
-      }, SECOND * 30);
-    }
-  }
-
-  finalizeAbandonedFragments() {
-    Object.values(this.store.getState().fragments).forEach((fragment) => {
-      if (
-        fragment.timeout &&
-        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-      ) {
-        this.finalizeEventFragment(fragment.id, { abandoned: true });
-      }
-    });
+    }, SECOND * 30);
   }
 
   generateMetaMetricsId() {
@@ -714,7 +678,7 @@ export default class MetaMetricsController {
       ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
+      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };

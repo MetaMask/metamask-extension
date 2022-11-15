@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Lock and unlock', function () {
   const ganacheOptions = {
@@ -15,7 +14,7 @@ describe('Lock and unlock', function () {
   it('successfully unlocks after lock', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },

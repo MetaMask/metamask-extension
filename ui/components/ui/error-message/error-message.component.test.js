@@ -1,23 +1,33 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import ErrorMessage from '.';
+import { shallow } from 'enzyme';
+import ErrorMessage from './error-message.component';
 
 describe('ErrorMessage Component', () => {
-  it('should render a message from props.errorMessage', () => {
-    const props = {
-      errorMessage: 'This is an error.',
-    };
-    const { container } = renderWithProvider(<ErrorMessage {...props} />);
+  const t = (key) => `translate ${key}`;
 
-    expect(container).toMatchSnapshot();
+  it('should render a message from props.errorMessage', () => {
+    const wrapper = shallow(<ErrorMessage errorMessage="This is an error." />, {
+      context: { t },
+    });
+
+    expect(wrapper).toHaveLength(1);
+    expect(wrapper.find('.error-message')).toHaveLength(1);
+    expect(wrapper.find('.error-message__icon')).toHaveLength(1);
+    expect(wrapper.find('.error-message__text').text()).toStrictEqual(
+      'This is an error.',
+    );
   });
 
   it('should render a message translated from props.errorKey', () => {
-    const props = {
-      errorKey: 'testKey',
-    };
-    const { container } = renderWithProvider(<ErrorMessage {...props} />);
+    const wrapper = shallow(<ErrorMessage errorKey="testKey" />, {
+      context: { t },
+    });
 
-    expect(container).toMatchSnapshot();
+    expect(wrapper).toHaveLength(1);
+    expect(wrapper.find('.error-message')).toHaveLength(1);
+    expect(wrapper.find('.error-message__icon')).toHaveLength(1);
+    expect(wrapper.find('.error-message__text').text()).toStrictEqual(
+      'translate testKey',
+    );
   });
 });

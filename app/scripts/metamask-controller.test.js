@@ -49,6 +49,36 @@ const firstTimeState = {
 
 const ganacheServer = new Ganache();
 
+const threeBoxSpies = {
+  _registerUpdates: sinon.spy(),
+  init: sinon.stub(),
+  getLastUpdated: sinon.stub(),
+  getThreeBoxSyncingState: sinon.stub().returns(true),
+  restoreFromThreeBox: sinon.stub(),
+  setShowRestorePromptToFalse: sinon.stub(),
+  setThreeBoxSyncingPermission: sinon.stub(),
+  turnThreeBoxSyncingOn: sinon.stub(),
+};
+
+class ThreeBoxControllerMock {
+  constructor() {
+    this._registerUpdates = threeBoxSpies._registerUpdates;
+    this.init = threeBoxSpies.init;
+    this.getLastUpdated = threeBoxSpies.getLastUpdated;
+    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState;
+    this.restoreFromThreeBox = threeBoxSpies.restoreFromThreeBox;
+    this.setShowRestorePromptToFalse =
+      threeBoxSpies.setShowRestorePromptToFalse;
+    this.setThreeBoxSyncingPermission =
+      threeBoxSpies.setThreeBoxSyncingPermission;
+    this.store = {
+      subscribe: () => undefined,
+      getState: () => ({}),
+    };
+    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn;
+  }
+}
+
 const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
@@ -86,6 +116,7 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 
 const MetaMaskController = proxyquire('./metamask-controller', {
+  './controllers/threebox': { default: ThreeBoxControllerMock },
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
@@ -214,10 +245,15 @@ describe('MetaMaskController', function () {
   });
 
   describe('submitPassword', function () {
-    it('removes any identities that do not correspond to known accounts.', async function () {
-      const password = 'password';
-      await metamaskController.createNewVaultAndKeychain(password);
+    const password = 'password';
 
+    beforeEach(async function () {
+      await metamaskController.createNewVaultAndKeychain(password);
+      threeBoxSpies.init.reset();
+      threeBoxSpies.turnThreeBoxSyncingOn.reset();
+    });
+
+    it('removes any identities that do not correspond to known accounts.', async function () {
       const fakeAddress = '0xbad0';
       metamaskController.preferencesController.addAddresses([fakeAddress]);
       await metamaskController.submitPassword(password);
@@ -241,6 +277,23 @@ describe('MetaMaskController', function () {
           `identities should include all Addresses: ${address}`,
         );
       });
+    });
+
+    it('gets the address from threebox and creates a new 3box instance', async function () {
+      await metamaskController.submitPassword(password);
+      assert(threeBoxSpies.init.calledOnce);
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce);
+    });
+
+    it('succeeds even if blockTracker or threeBoxController throw', async function () {
+      const throwErr = sinon.fake.throws('foo');
+      metamaskController.blockTracker.checkForLatestBlock = throwErr;
+      metamaskController.threeBoxController.getThreeBoxSyncingState = throwErr;
+      await metamaskController.submitPassword(password);
+      assert.ok(
+        throwErr.calledTwice,
+        'should have called checkForLatestBlock and getThreeBoxSyncingState',
+      );
     });
   });
 

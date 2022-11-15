@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Advanced Settings', function () {
   const ganacheOptions = {
@@ -17,7 +16,7 @@ describe('Advanced Settings', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },
@@ -54,7 +53,7 @@ describe('Advanced Settings', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },

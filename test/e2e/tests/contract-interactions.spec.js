@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
   const ganacheOptions = {
@@ -18,9 +17,7 @@ describe('Deploy contract and call contract methods', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         smartContract,
         title: this.test.title,

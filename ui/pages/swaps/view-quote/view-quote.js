@@ -659,7 +659,6 @@ export default function ViewQuote() {
 
   const metaMaskFee = usedQuote.fee;
 
-  /* istanbul ignore next */
   const onFeeCardTokenApprovalClick = () => {
     trackEditSpendLimitOpened();
     dispatch(
@@ -741,7 +740,7 @@ export default function ViewQuote() {
   const priceSlippageUnknownFiatValue =
     !priceSlippageFromSource ||
     !priceSlippageFromDestination ||
-    Boolean(usedQuote?.priceSlippage?.calculationError);
+    usedQuote?.priceSlippage?.calculationError;
 
   let priceDifferencePercentage = 0;
   if (usedQuote?.priceSlippage?.ratio) {
@@ -892,22 +891,19 @@ export default function ViewQuote() {
           'view-quote__content_modal': disableSubmissionDueToPriceWarning,
         })}
       >
-        {
-          /* istanbul ignore next */
-          selectQuotePopoverShown && (
-            <SelectQuotePopover
-              quoteDataRows={renderablePopoverData}
-              onClose={() => setSelectQuotePopoverShown(false)}
-              onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
-              swapToSymbol={destinationTokenSymbol}
-              initialAggId={usedQuote.aggregator}
-              onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
-              hideEstimatedGasFee={
-                smartTransactionsEnabled && smartTransactionsOptInStatus
-              }
-            />
-          )
-        }
+        {selectQuotePopoverShown && (
+          <SelectQuotePopover
+            quoteDataRows={renderablePopoverData}
+            onClose={() => setSelectQuotePopoverShown(false)}
+            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
+            swapToSymbol={destinationTokenSymbol}
+            initialAggId={usedQuote.aggregator}
+            onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
+            hideEstimatedGasFee={
+              smartTransactionsEnabled && smartTransactionsOptInStatus
+            }
+          />
+        )}
 
         <div
           className={classnames('view-quote__warning-wrapper', {
@@ -918,10 +914,7 @@ export default function ViewQuote() {
           {(showInsufficientWarning || tokenBalanceUnavailable) && (
             <ActionableMessage
               message={actionableBalanceErrorMessage}
-              onClose={
-                /* istanbul ignore next */
-                () => setWarningHidden(true)
-              }
+              onClose={() => setWarningHidden(true)}
             />
           )}
         </div>
@@ -978,13 +971,10 @@ export default function ViewQuote() {
               onTokenApprovalClick={onFeeCardTokenApprovalClick}
               metaMaskFee={String(metaMaskFee)}
               numberOfQuotes={Object.values(quotes).length}
-              onQuotesClick={
-                /* istanbul ignore next */
-                () => {
-                  trackAllAvailableQuotesOpened();
-                  setSelectQuotePopoverShown(true);
-                }
-              }
+              onQuotesClick={() => {
+                trackAllAvailableQuotesOpened();
+                setSelectQuotePopoverShown(true);
+              }}
               chainId={chainId}
               isBestQuote={isBestQuote}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
@@ -996,39 +986,37 @@ export default function ViewQuote() {
         )}
       </div>
       <SwapsFooter
-        onSubmit={
-          /* istanbul ignore next */ () => {
-            setSubmitClicked(true);
-            if (!balanceError) {
-              if (
-                currentSmartTransactionsEnabled &&
-                smartTransactionsOptInStatus &&
-                smartTransactionFees?.tradeTxFees
-              ) {
-                dispatch(
-                  signAndSendSwapsSmartTransaction({
-                    unsignedTransaction,
-                    trackEvent,
-                    history,
-                    additionalTrackingParams,
-                  }),
-                );
-              } else {
-                dispatch(
-                  signAndSendTransactions(
-                    history,
-                    trackEvent,
-                    additionalTrackingParams,
-                  ),
-                );
-              }
-            } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-              history.push(DEFAULT_ROUTE);
+        onSubmit={() => {
+          setSubmitClicked(true);
+          if (!balanceError) {
+            if (
+              currentSmartTransactionsEnabled &&
+              smartTransactionsOptInStatus &&
+              smartTransactionFees?.tradeTxFees
+            ) {
+              dispatch(
+                signAndSendSwapsSmartTransaction({
+                  unsignedTransaction,
+                  trackEvent,
+                  history,
+                  additionalTrackingParams,
+                }),
+              );
             } else {
-              history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
+              dispatch(
+                signAndSendTransactions(
+                  history,
+                  trackEvent,
+                  additionalTrackingParams,
+                ),
+              );
             }
+          } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
+            history.push(DEFAULT_ROUTE);
+          } else {
+            history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
           }
-        }
+        }}
         submitText={
           currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
@@ -1038,7 +1026,7 @@ export default function ViewQuote() {
         }
         hideCancel
         disabled={isSwapButtonDisabled}
-        className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
+        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
       />
     </div>

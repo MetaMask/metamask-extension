@@ -1,25 +1,16 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { shallow } from 'enzyme';
 import Alert from '.';
 
 describe('Alert', () => {
-  it('renders nothing with no visible boolean in state', () => {
-    const props = {
-      visible: false,
-    };
+  let wrapper;
 
-    const { container } = renderWithProvider(<Alert {...props} />);
-
-    expect(container).toMatchSnapshot();
+  beforeEach(() => {
+    wrapper = shallow(<Alert visible={false} />);
   });
 
-  it('renders with visible boolean in state', () => {
-    const props = {
-      visible: true,
-    };
-
-    const { container } = renderWithProvider(<Alert {...props} />);
-
-    expect(container).toMatchSnapshot();
+  it('renders nothing with no visible boolean in state', () => {
+    const alert = wrapper.find('.global-alert');
+    expect(alert).toHaveLength(0);
   });
 });

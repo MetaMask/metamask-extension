@@ -1,6 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  connectDappWithExtensionPopup,
+} = require('../helpers');
 
 describe('Dapp interactions', function () {
   let windowHandles;
@@ -19,7 +22,7 @@ describe('Dapp interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions: {
           ...ganacheOptions,
           concurrent: { port: 8546, chainId: 1338 },
@@ -31,7 +34,8 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        // Connect to Dapp0
+        await connectDappWithExtensionPopup(driver, 0);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -64,9 +68,7 @@ describe('Dapp interactions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.title,
@@ -76,7 +78,8 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        // Connect to Dapp0
+        await connectDappWithExtensionPopup(driver, 0);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
@@ -112,11 +115,11 @@ describe('Dapp interactions', function () {
         await driver.clickElement({ text: 'Connected sites', tag: 'span' });
         const connectedDapp1 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8080',
-          tag: 'bdi',
+          tag: 'span',
         });
         const connectedDapp2 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8081',
-          tag: 'bdi',
+          tag: 'span',
         });
 
         assert.ok(connectedDapp1, 'Account not connected to Dapp1');

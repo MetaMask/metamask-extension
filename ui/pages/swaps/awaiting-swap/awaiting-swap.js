@@ -283,7 +283,6 @@ export default function AwaitingSwap({
       ) : null}
       <SwapsFooter
         onSubmit={async () => {
-          /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
             history.push(DEFAULT_ROUTE);

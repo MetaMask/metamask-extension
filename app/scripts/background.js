@@ -7,8 +7,9 @@ import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
+import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
+import { captureException } from '@sentry/browser';
 
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -288,11 +289,16 @@ async function loadStateFromPersistence() {
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   }
-  // this initializes the meta/version data as a class variable to be used for future writes
-  localStore.setMetadata(versionedData.meta);
 
   // write to disk
-  localStore.set(versionedData.data);
+  if (localStore.isSupported) {
+    localStore.set(versionedData);
+  } else {
+    // throw in setTimeout so as to not block boot
+    setTimeout(() => {
+      throw new Error('MetaMask - Localstore not supported');
+    });
+  }
 
   // return just the data
   return versionedData.data;
@@ -332,7 +338,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    localStore,
   });
 
   setupEnsIpfsResolver({
@@ -349,13 +354,51 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    createStreamSink((state) => localStore.set(state)),
+    storeTransformStream(versionifyData),
+    createStreamSink(persistData),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
   );
 
   setupSentryGetStateGlobal(controller);
+
+  /**
+   * Assigns the given state to the versioned object (with metadata), and returns that.
+   *
+   * @param {object} state - The state object as emitted by the MetaMaskController.
+   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
+   */
+  function versionifyData(state) {
+    versionedData.data = state;
+    return versionedData;
+  }
+
+  let dataPersistenceFailing = false;
+
+  async function persistData(state) {
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing');
+    }
+    if (!state.data) {
+      throw new Error('MetaMask - updated state does not have data');
+    }
+    if (localStore.isSupported) {
+      try {
+        await localStore.set(state);
+        if (dataPersistenceFailing) {
+          dataPersistenceFailing = false;
+        }
+      } catch (err) {
+        // log error so we dont break the pipeline
+        if (!dataPersistenceFailing) {
+          dataPersistenceFailing = true;
+          captureException(err);
+        }
+        log.error('error setting state in local store:', err);
+      }
+    }
+  }
 
   //
   // connect to other contexts

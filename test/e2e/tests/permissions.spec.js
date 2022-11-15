@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Permissions', function () {
   it('sets permissions and connect to Dapp', async function () {
@@ -17,7 +16,7 @@ describe('Permissions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },

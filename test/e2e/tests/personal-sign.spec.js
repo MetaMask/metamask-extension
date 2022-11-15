@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
@@ -17,9 +16,7 @@ describe('Personal sign', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
