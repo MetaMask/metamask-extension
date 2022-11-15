@@ -236,6 +236,7 @@ describe('TextFieldBase', () => {
     const CustomInputComponent = React.forwardRef((props, ref) => (
       <Box ref={ref} as="input" {...props} />
     ));
+    CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
     const { getByTestId } = render(
       <TextFieldBase
         InputComponent={CustomInputComponent}
