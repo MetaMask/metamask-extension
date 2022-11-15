@@ -7,8 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.22.1]
-### Uncategorized
-- This reverts commit 308033edbf0fcda8d15c0c0c3b230463983232c3, reversing ([#16353](https://github.com/MetaMask/metamask-extension/pull/16353))
+### Changed
+- Temporarily revert v10.22.0
+
+## [10.22.0]
+### Added
+- Add Aurora network to the Popular Custom Network list ([#16039](https://github.com/MetaMask/metamask-extension/pull/16039))
+- Add array of valid sizes for Box `height` and `width` to support responsive layout ([#16111](https://github.com/MetaMask/metamask-extension/pull/16111))
+- [FLASK] Allow snaps insights to show on regular EOA transactions ([#16093](https://github.com/MetaMask/metamask-extension/pull/16093))
+
+### Changed
+- Update `eth-lattice-keyring` to `v0.12.3` ([#15997](https://github.com/MetaMask/metamask-extension/pull/15997))
+  - Updates `@ethereumjs/util` to `v8.0.0` to reduce bundle size
+  - Removes `secp256k1` and `@ethereumjs/common` to reduce bundle size
+  - Updates `gridplus-sdk` to v2.2.9
+    - Adds caching for calls to block explorers to improve UX ([PR](https://github.com/GridPlus/gridplus-sdk/pull/469))
+- Remove unused `zh` locales directory in favor of `zh_CN` for Chinese translations ([#16322](https://github.com/MetaMask/metamask-extension/pull/16322))
+- Remove 3box sync feature and delete the `ThreeBoxController` ([#14571](https://github.com/MetaMask/metamask-extension/pull/14571))
+
+### Fixed
+- Fix Secret Recovery Phrase video overlapping lateral box for smaller viewports ([#16345](https://github.com/MetaMask/metamask-extension/pull/16345))
+- Fix "Learn more" link on Connected Account notification ([#16339](https://github.com/MetaMask/metamask-extension/pull/16339))
+- Fix default users with browser language code `zh` to point the supported `zh_CN` language code ([#16329](https://github.com/MetaMask/metamask-extension/pull/16329))
+- Fix Forgot Password flow after Wallet Creation ([#16156](https://github.com/MetaMask/metamask-extension/pull/16156))
+- Fix fiat conversion for Popular Custom networks displaying it by default ([#16132](https://github.com/MetaMask/metamask-extension/pull/16132))
+- Fix restricted injection, by removing docs.google.com from blocked domains list ([#16154](https://github.com/MetaMask/metamask-extension/pull/16154))
+- Fix squeezing avatar, by adding a flex property to keep always the same ratio ([#16047](https://github.com/MetaMask/metamask-extension/pull/16047))
+- Fix domain names not always being rendered correctly in the connected sites list ([#16074](https://github.com/MetaMask/metamask-extension/pull/16074))
+- Fix transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
+- Fix Add Network form by blocking the submission when `chainId` does not match the one returned by the `rpcUrl` ([#16452](https://github.com/MetaMask/metamask-extension/pull/16452))
+- Swaps: fix tokens being removed from the Asset lists, after canceling a Swap ([#16167](https://github.com/MetaMask/metamask-extension/pull/16167))
+- Swaps: add debouncing for the `Swap from` and `Swap to` form fields ([#16326](https://github.com/MetaMask/metamask-extension/pull/16326))
+- [FLASK] Fix crash on snaps settings page if snap has no permissions ([#16354](https://github.com/MetaMask/metamask-extension/pull/16354))
+- [FLASK] Fix crash after restoring MetaMask if you had snaps installed ([#16228](https://github.com/MetaMask/metamask-extension/pull/16228))
+- [FLASK] Fix a problem with displaying snaps transaction insight data ([#16023](https://github.com/MetaMask/metamask-extension/pull/16023))
 
 ## [10.21.2]
 ### Fixed
@@ -3262,7 +3294,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...HEAD
-[10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.1
+[10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1
+[10.22.0]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.0
 [10.21.2]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...v10.21.2
 [10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
 [10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
