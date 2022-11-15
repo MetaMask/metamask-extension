@@ -117,65 +117,63 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
-function wrapAgainstScuttling(content) {
+function wrapAgainstScuttling(content, bag = {}) {
   return `
-(function () {
+{
+  function setupProxy(global) {
+    // bag of properties to allow vetted shim to access,
+    // mapped to their correct this value if needed
+    const bag = ${JSON.stringify(bag)};
 
-  const fetch = window.fetch
-  fetch.bind = function (b) {
-    return Function.prototype.bind.call(this, window)
-  }
-  fetch.apply = function () {
-    const args = [].slice.call(arguments)
-    if (args[0] === p) {
-      args[0] = window
+    // setup vetted shim bag of properties
+    for (const prop in bag) {
+      const that = bag[prop];
+      let api = global[prop];
+      if (that) api = api.bind(global[that]);
+      bag[prop] = api;
     }
-    return fetch.call(args[0], args[1][0], args[1][1], args[1][2])
-  }
-  const allowed = {
-    navigator,
-    location,
-    Uint16Array,
-    fetch,
-    String,
-    Math,
-    Object,
-    Symbol,
-    Function,
-    Array,
-    Boolean,
-    Request,
-    Date,
-    document,
-    JSON,
-    encodeURIComponent,
-    clearTimeout: clearTimeout.bind(window),
-    setTimeout: setTimeout.bind(window),
-    crypto,
-    __SENTRY__: {logger: undefined},
-    sentryHooks: 1,
-    sentry: 1,
-    appState: 1,
-    stateHooks: 1,
-    extra: {appState: undefined},
-  };
-  allowed.window = allowed;
-  const p = new Proxy(allowed, {
-    get: function (a, b, c) {
-      return allowed[b] || Reflect.get(a, b)
-    },
-    set: (a, b, c) => {
-      if (allowed[b] || b.startsWith('on')) {
-        return allowed[b] = window[b] = c;
+
+    // setup proxy for the vetted shim to go through
+    const proxy = new Proxy(bag, {
+      get: function get(target, prop) {
+        return bag[prop] || Reflect.get(target, prop);
+      },
+      set: function set(target, prop, value) {
+        if (bag.hasOwnProperty(prop) || prop.startsWith('on')) {
+          return bag[prop] = global[prop] = value;
+        }
+      },
+    });
+
+    // make sure bind() and apply() are applied with
+    // proxy target rather than proxy receiver
+    (function(target, receiver) {
+      'use strict'; // to work with ses lockdown
+
+      function wrap(obj, prop, target, receiver) {
+        const real = obj[prop];
+        obj[prop] = function(that) {
+          if (that === receiver) that = target;
+          const args = [].slice.call(arguments, 1);
+          return real.call(this, that, ...args);
+        };
       }
-    }
-  })
-  with (p) {
-    with ({window: p, self: p}) {
+
+      wrap(Function.prototype, 'bind', target, receiver);
+      wrap(Function.prototype, 'apply', target, receiver);
+    } (global, proxy));
+
+    return proxy;
+  }
+
+  const proxy = setupProxy(globalThis);
+
+  with (proxy) {
+    with ({window: proxy, self: proxy, globalThis: proxy}) {
      ${content}
     }
   }
-}());
+};
       `;
 }
 
