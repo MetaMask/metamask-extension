@@ -1,0 +1,70 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TagUrl } from './tag-url';
+
+# Tag Url
+
+The `TagUrl` is a component used to display dApp information within a container.
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `TagUrl` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+
+<ArgsTable of={TagUrl} />
+
+### Src
+
+Use the `src` prop with an image url to render the `AvatarFavicon`.
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--src" />
+</Canvas>
+
+```jsx
+
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+  <TagUrl src="https://peepeth.com/favicon-32x32.png" />
+  <TagUrl src="https://1inch.exchange/assets/favicon/favicon-32x32.png"/>
+  <TagUrl src="https://uniswap.org/favicon.ico" />
+
+```
+
+### Label
+
+Use the `label` prop for the text content of the `TagUrl` component
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--label" />
+</Canvas>
+
+```jsx
+
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+  <TagUrl label="https://widget.getacute.io" />
+  <TagUrl label="app.uniswap.org" />
+  <TagUrl label="https://metamask.github.io" />
+
+```
+
+### Action Button Label
+
+If we want to have a button in `TagUrl` component. You can update the `ButtonLink` component props used for the action button using `actionButtonProps`
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--action-button-label" />
+</Canvas>
+
+### Show Lock Icon
+
+Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. Props for the lock icon can be changed using the `lockIconProps`.
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--show-lock-icon" />
+</Canvas>
+
