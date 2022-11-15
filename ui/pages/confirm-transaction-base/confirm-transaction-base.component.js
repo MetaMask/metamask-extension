@@ -1157,14 +1157,12 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
-    let functionType;
-    let isContractInteractionFromDapp = false;
-    if (
+    const isContractInteractionFromDapp =
       txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
-      txData.origin !== 'metamask'
-    ) {
+      txData.origin !== 'metamask';
+    let functionType;
+    if (isContractInteractionFromDapp) {
       functionType = getMethodName(name);
-      isContractInteractionFromDapp = true;
     }
 
     if (!functionType) {
