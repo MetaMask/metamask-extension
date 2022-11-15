@@ -218,4 +218,9 @@ describe('Text', () => {
       'text--text-transform-capitalize',
     );
   });
+  it('should accept a ref prop that is passed down to the html element', () => {
+    const mockRef = jest.fn();
+    render(<Text ref={mockRef} />);
+    expect(mockRef).toHaveBeenCalledTimes(1);
+  });
 });

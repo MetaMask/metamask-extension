@@ -1,0 +1,79 @@
+.mm-button {
+  position: relative;
+  height: 40px;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-default);
+  background-color: var(--brand-colors-grey-grey100);
+  vertical-align: middle;
+  user-select: none;
+
+  &:active,
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &--block {
+    display: block;
+    width: 100%;
+  }
+
+  &__content {
+    height: 100%;
+  }
+
+
+  &--size-sm {
+    height: 32px;
+  }
+
+  &--size-md {
+    height: 40px;
+  }
+
+  &--size-lg {
+    height: 48px;
+  }
+
+  &--size-auto {
+    height: auto;
+    background-color: transparent;
+    border-radius: 0;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+
+  &--loading {
+    cursor: not-allowed;
+  }
+
+  &--loading &__content {
+    color: transparent;
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &__icon-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spinner 1.2s linear infinite;
+  }
+}
+
+
+
+@keyframes spinner {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+

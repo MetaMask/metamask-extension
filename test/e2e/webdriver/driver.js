@@ -161,6 +161,14 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+  async waitForNonEmptyElement(element) {
+    await this.driver.wait(async () => {
+      const elemText = await element.getText();
+      const empty = elemText === '';
+      return !empty;
+    }, this.timeout);
+  }
+
   async quit() {
     await this.driver.quit();
   }

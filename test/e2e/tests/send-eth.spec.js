@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
   const ganacheOptions = {
@@ -14,7 +15,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -105,7 +106,13 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
   it('renders the correct recipient on the confirmation screen', async function () {
     await withFixtures(
       {
-        fixtures: 'special-settings',
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -154,7 +161,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -221,7 +228,9 @@ describe('Send ETH from dapp using advanced gas controls', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },

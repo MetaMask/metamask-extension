@@ -20,7 +20,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
     history: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
     setSeedPhraseBackedUp: PropTypes.func,
-    initializeThreeBox: PropTypes.func,
   };
 
   UNSAFE_componentWillMount() {
@@ -43,8 +42,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   handleImport = async (password, seedPhrase) => {
-    const { history, onSubmit, setSeedPhraseBackedUp, initializeThreeBox } =
-      this.props;
+    const { history, onSubmit, setSeedPhraseBackedUp } = this.props;
 
     await onSubmit(password, seedPhrase);
     this.context.trackEvent({
@@ -57,7 +55,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
     });
 
     await setSeedPhraseBackedUp(true);
-    initializeThreeBox();
     history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
   };
 

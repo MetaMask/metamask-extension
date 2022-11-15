@@ -43,7 +43,7 @@ export const ensInitialState = initialState;
 
 const name = 'ENS';
 
-let provider = null;
+let web3Provider = null;
 
 const slice = createSlice({
   name,
@@ -115,7 +115,7 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.currentChainId) {
         state.stage = 'UNINITIALIZED';
-        provider = null;
+        web3Provider = null;
       }
     });
   },
@@ -142,14 +142,17 @@ export function initializeEnsSlice() {
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
-      provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
-        name: networkName,
-        ensAddress,
-      });
+      web3Provider = new ethers.providers.Web3Provider(
+        global.ethereumProvider,
+        {
+          chainId: parseInt(network, 10),
+          name: networkName,
+          ensAddress,
+        },
+      );
       dispatch(enableEnsLookup(network));
     } else {
-      provider = null;
+      web3Provider = null;
       dispatch(disableEnsLookup());
     }
   };
@@ -177,7 +180,13 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       try {
-        address = await provider.resolveName(trimmedEnsName);
+        // the writable property on the 'provider' object on the 'web3Provider' flips to false when stale
+        // This helps handle the case where the provider is becomes unresponsive if/when, in MV3, the service worker dies after the ENS slice is instantiated
+        const isProviderActive = web3Provider.provider?.writable;
+        if (!isProviderActive) {
+          await dispatch(initializeEnsSlice());
+        }
+        address = await web3Provider.resolveName(trimmedEnsName);
       } catch (err) {
         error = err;
       }

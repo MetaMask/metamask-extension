@@ -6,6 +6,7 @@ const {
   withFixtures,
   getWindowHandles,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe.skip('Create token, approve token and approve token without gas', function () {
   describe('Add a custom token from a dapp', function () {
@@ -23,7 +24,9 @@ describe.skip('Create token, approve token and approve token without gas', funct
       await withFixtures(
         {
           dapp: true,
-          fixtures: 'connected-state',
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
           ganacheOptions,
           title: this.test.title,
         },
@@ -114,7 +117,9 @@ describe.skip('Create token, approve token and approve token without gas', funct
       await withFixtures(
         {
           dapp: true,
-          fixtures: 'connected-state',
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
           ganacheOptions,
           title: this.test.title,
         },
@@ -182,7 +187,9 @@ describe.skip('Create token, approve token and approve token without gas', funct
       await withFixtures(
         {
           dapp: true,
-          fixtures: 'connected-state',
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
           ganacheOptions,
           title: this.test.title,
         },
@@ -292,7 +299,9 @@ describe.skip('Create token, approve token and approve token without gas', funct
       await withFixtures(
         {
           dapp: true,
-          fixtures: 'connected-state',
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
           ganacheOptions,
           title: this.test.title,
         },

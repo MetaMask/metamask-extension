@@ -47,10 +47,6 @@
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
   },
-  "SIWEDomainInvalid": {
-    "message": "您尝试登录的网站（$1）与登录请求中的域名不匹配。请谨慎行事。",
-    "description": "$1 represents the website domain"
-  },
   "SIWEDomainWarningBody": {
     "message": "网站（$1）要求您登录到错误的域名。这可能是网络钓鱼攻击。",
     "description": "$1 represents the website domain"
@@ -881,9 +877,6 @@
   },
   "data": {
     "message": "数据"
-  },
-  "dataBackupFoundInfo": {
-    "message": "您的部分账户数据已在之前安装 MetaMask 时备份。其中可能包括您的设置、联系人和代币。您现在想恢复这些数据吗？"
   },
   "dataBackupSeemsCorrupt": {
     "message": "无法还原数据。文件似乎已损坏。"
@@ -2869,10 +2862,6 @@
   "restoreUserDataDescription": {
     "message": "您可以使用以前备份的JSON文件来恢复包含首选项和账户地址的用户设置。"
   },
-  "restoreWalletPreferences": {
-    "message": "已找到 $1 的数据备份。您想恢复您的钱包偏好设置吗？",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "重试交易"
   },
@@ -3844,15 +3833,6 @@
   },
   "syncWithMobileTitle": {
     "message": "与移动设备同步"
-  },
-  "syncWithThreeBox": {
-    "message": "与 3Box 同步数据（实验功能）"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "开启以使用 3Box 备份您的设置。此功能目前是实验功能，使用时风险自负。"
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "由于初始同步过程中出现错误，3Box 已被禁用"
   },
   "tenPercentIncreased": {
     "message": "增加10%"
