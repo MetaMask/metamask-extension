@@ -33,11 +33,11 @@ export const TextFieldSearch = ({
 
 TextFieldSearch.propTypes = {
   /**
-   * The value af the TextFieldSearch
+   * The value of the TextFieldSearch
    */
   value: TextFieldBase.propTypes.value,
   /**
-   * The onChange handler af the TextFieldSearch
+   * The onChange handler of the TextFieldSearch
    */
   onChange: TextFieldBase.propTypes.onChange,
   /**
