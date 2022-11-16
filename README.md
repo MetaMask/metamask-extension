@@ -15,7 +15,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 ## Building locally
 
 - Install [Node.js](https://nodejs.org) version 16
-    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
+    - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Install [Yarn](https://yarnpkg.com/en/docs/install)
 - Install dependencies: `yarn setup` (not the usual install command)
 - Copy the `.metamaskrc.dist` file to `.metamaskrc`
@@ -61,13 +61,16 @@ You can run the linter by itself with `yarn lint`, and you can automatically fix
 
 ### Running E2E Tests
 
-Our e2e test suite can be run on either Firefox or Chrome. In either case, start by creating a test build by running `yarn build:test`.
+Our e2e test suite can be run on either Firefox or Chrome.
 
-- Firefox e2e tests can be run with `yarn test:e2e:firefox`.
+1. **required** `yarn build:test` to create a test build.
+2. run tests, targetting the browser:
+ * Firefox e2e tests can be run with `yarn test:e2e:firefox`.
+ * Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
 
-- Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
+#### Running a single e2e test
 
-- Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
+Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
 --browser             Set the browser used; either 'chrome' or 'firefox'.

@@ -1,0 +1,10 @@
+.mm-text-field {
+  // TOD: remove most of these styles when replaced by ButtonIcon
+  &__button-clear {
+    height: 24px;
+    width: 24px;
+    max-width: 24px;
+    flex: 0 0 24px;
+    margin-left: -24px;
+  }
+}

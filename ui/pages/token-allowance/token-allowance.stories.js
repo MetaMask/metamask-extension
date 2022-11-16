@@ -53,8 +53,8 @@ export default {
     setApproveForAllArg: {
       control: 'boolean',
     },
-    customTxParamsData: {
-      control: 'object',
+    decimals: {
+      control: 'text',
     },
     dappProposedTokenAmount: {
       control: 'text',
@@ -88,7 +88,7 @@ export default {
     data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
     isSetApproveForAll: false,
     setApproveForAllArg: false,
-    customTxParamsData: {},
+    decimals: '4',
     dappProposedTokenAmount: '7',
     currentTokenBalance: '10',
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',

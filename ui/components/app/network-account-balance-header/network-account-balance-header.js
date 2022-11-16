@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import IconWithFallback from '../../ui/icon-with-fallback';
 import Identicon from '../../ui/identicon';
 import {
   DISPLAY,
@@ -14,15 +15,21 @@ import {
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
   accountName,
   accountBalance,
-  tokenName,
+  tokenName, // Derived from nativeCurrency
   accountAddress,
+  chainId,
 }) {
   const t = useContext(I18nContext);
+  const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+  const networkIconWrapperClass = networkIcon
+    ? 'network-account-balance-header__network-account__ident-icon-ethereum'
+    : 'network-account-balance-header__network-account__ident-icon-ethereum--gray';
 
   return (
     <Box
@@ -45,12 +52,11 @@ export default function NetworkAccountBalanceHeader({
           alignItems={ALIGN_ITEMS.CENTER}
         >
           <Identicon address={accountAddress} diameter={32} />
-          <Identicon
-            address={accountAddress}
-            diameter={16}
-            imageBorder
-            image="./images/eth_badge.svg"
-            className="network-account-balance-header__network-account__ident-icon-ethereum"
+          <IconWithFallback
+            name={networkName}
+            size={16}
+            icon={networkIcon}
+            wrapperClassName={networkIconWrapperClass}
           />
         </Box>
         <Box
@@ -109,4 +115,5 @@ NetworkAccountBalanceHeader.propTypes = {
   accountBalance: PropTypes.string,
   tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
+  chainId: PropTypes.string,
 };

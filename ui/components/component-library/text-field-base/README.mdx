@@ -69,7 +69,7 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
 ### Truncate
 
-Use the `truncate` prop to truncate the text of the the `TextFieldBase`
+Use the `truncate` prop to truncate the text of the the `TextFieldBase`. Defaults to `true`.
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--truncate" />
@@ -78,7 +78,8 @@ Use the `truncate` prop to truncate the text of the the `TextFieldBase`
 ```jsx
 import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
-<TextFieldBase truncate />;
+<TextFieldBase truncate />; // truncate is set to `true` by default
+<TextFieldBase truncate={false} />;
 ```
 
 ### Left Accessory Right Accessory
@@ -90,10 +91,10 @@ Use the `leftAccessory` and `rightAccessory` props to add components such as ico
 </Canvas>
 
 ```jsx
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { COLORS, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../ui/component-library/icons';
 
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
+import { TextFieldBase } from '../../ui/component-library/text-field';
 
 <TextFieldBase
   placeholder="Search"
@@ -106,39 +107,42 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 />
 
 <TextFieldBase
-  placeholder="MetaMask"
+  placeholder="Public address (0x), or ENS"
   rightAccessory={
     // TODO: replace with ButtonIcon
-    <button>
-      <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-    </button>
-  }
-/>
-
-<TextFieldBase
-  truncate
-  leftAccessory={<AvatarToken tokenName="ast" size={SIZES.SM} />}
-  rightAccessory={
-    // TODO: replace with ButtonIcon
-    <button>
-      <Icon name={ICON_NAMES.CLOSE_OUTLINE} size={SIZES.SM} />
-    </button>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      style={{ padding: 0 }}
+      backgroundColor={COLORS.TRANSPARENT}
+    >
+      <Icon
+        color={COLORS.PRIMARY_DEFAULT}
+        name={ICON_NAMES.SCAN_BARCODE_FILLED}
+      />
+    </Box>
   }
 />
 
 <TextFieldBase
   placeholder="Enter amount"
   type="number"
-  leftAccessory={
-    <AvatarToken
-      tokenName="ast"
-      tokenImageUrl="./AST.png"
-      size={SIZES.SM}
-    />
-  }
+  truncate
+  leftAccessory={<SelectTokenComponent />}
+  rightAccessory={<TokenValueInUSDComponent />}
+/>
+
+<TextFieldBase
+  placeholder="Public address (0x), or ENS"
+  truncate
+  leftAccessory={<AvatarAccount />}
   rightAccessory={
-    // TODO: replace with ButtonLink
-    <button>Max</button>
+    isAddressValid && (
+      <Icon
+        name={ICON_NAMES.CHECK_OUTLINE}
+        color={COLORS.SUCCESS_DEFAULT}
+      />
+    )
   }
 />
 ```
@@ -182,6 +186,61 @@ const handleOnChange = (e) => {
 >
   Edit
 </Box>
+```
+
+### Input Component
+
+Use the `InputComponent` prop change the component used for the input element. This is useful for replacing the base input with a custom input while retaining the functionality of the `TextFieldBase`.
+
+Defaults to the [Text](/docs/ui-components-component-library-text-text-stories-js--default-story) component
+
+To function fully the custom component should accept the following props:
+
+- `aria-invalid`
+- `as`
+- `autoComplete`
+- `autoFocus`
+- `backgroundColor`
+- `defaultValue`
+- `disabled`
+- `focused`
+- `id`
+- `margin`
+- `maxLength`
+- `name`
+- `onBlur`
+- `onChange`
+- `onFocus`
+- `padding`
+- `paddingLeft`
+- `paddingRight`
+- `placeholder`
+- `readOnly`
+- `ref`
+- `required`
+- `value`
+- `variant`
+- `type`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--input-component" />
+</Canvas>
+
+```jsx
+import { TextFieldBase, Icon, ICON_NAMES } from '../../ui/component-library';
+
+// should map the props to the custom input component
+const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
+
+const TextFieldCustomInput = (args) => (
+  <TextFieldBase
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    leftAccessory={
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+    }
+  />
+);
 ```
 
 ### Auto Complete
@@ -270,7 +329,7 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base';
 
 ### Read Only
 
-Use the `readOnly` prop to set the `TextFieldBase` to read only
+Use the `readOnly` prop to set the `TextFieldBase` to read only. When `readOnly` is true `TextFieldBase` will not have a focus state.
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--read-only" />

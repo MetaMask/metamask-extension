@@ -1,7 +1,14 @@
-import { createSelector } from 'reselect';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { memoize } from 'lodash';
-///: END:ONLY_INCLUDE_IN
+import {
+  createSelector,
+  createSelectorCreator,
+  defaultMemoize,
+} from 'reselect';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  memoize,
+  ///: END:ONLY_INCLUDE_IN
+  isEqual,
+} from 'lodash';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -64,6 +71,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
+import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -100,6 +108,14 @@ export function getMetricsNetworkIdentifier(state) {
 export function getCurrentChainId(state) {
   const { chainId } = state.metamask.provider;
   return chainId;
+}
+
+export function isCurrentProviderCustom(state) {
+  const provider = getProvider(state);
+  return (
+    provider.type === NETWORK_TYPES.RPC &&
+    !Object.values(CHAIN_IDS).includes(provider.chainId)
+  );
 }
 
 export function getCurrentQRHardwareState(state) {
@@ -394,6 +410,21 @@ export function getAddressBookEntryOrAccountName(state, address) {
       isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
     );
   return entry && entry.name !== '' ? entry.name : address;
+}
+
+export function getAccountName(identities, address) {
+  const entry = Object.values(identities).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
+export function getMetadataContractName(state, address) {
+  const tokenList = getTokenList(state);
+  const entry = Object.values(tokenList).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -771,6 +802,63 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+
+export const getUnapprovedTransactions = (state) =>
+  state.metamask.unapprovedTxs;
+
+const getCurrentNetworkTransactionList = (state) =>
+  state.metamask.currentNetworkTxList;
+
+export const getTxData = (state) => state.confirmTransaction.txData;
+
+export const getUnapprovedTransaction = createDeepEqualSelector(
+  getUnapprovedTransactions,
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
+export const getTransaction = createDeepEqualSelector(
+  getCurrentNetworkTransactionList,
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
+export const getFullTxData = createDeepEqualSelector(
+  getTxData,
+  (state, transactionId, status) => {
+    if (status === TRANSACTION_STATUSES.UNAPPROVED) {
+      return getUnapprovedTransaction(state, transactionId);
+    }
+    return getTransaction(state, transactionId);
+  },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
+  (txData, transaction, _status, customTxParamsData) => {
+    let fullTxData = { ...txData, ...transaction };
+    if (transaction && transaction.simulationFails) {
+      txData.simulationFails = transaction.simulationFails;
+    }
+    if (customTxParamsData) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          data: customTxParamsData,
+        },
+      };
+    }
+    return fullTxData;
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -857,7 +945,6 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
-  const { threeBoxSyncingAllowed } = state.metamask;
 
   return {
     1: false,
@@ -869,12 +956,13 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
-    13: true,
-    14: threeBoxSyncingAllowed,
-    15: true,
+    13: false,
+    14: false,
+    15: false,
+    16: true,
   };
 }
 
@@ -925,6 +1013,10 @@ export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
 
+export function getShowBetaHeader(state) {
+  return state.metamask.showBetaHeader;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -936,13 +1028,13 @@ export function getUseTokenDetection(state) {
 }
 
 /**
- * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * To get the useNftDetection flag which determines whether we autodetect NFTs
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getUseCollectibleDetection(state) {
-  return Boolean(state.metamask.useCollectibleDetection);
+export function getUseNftDetection(state) {
+  return Boolean(state.metamask.useNftDetection);
 }
 
 /**
@@ -1169,13 +1261,13 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
- * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getIsCustomNetworkListEnabled(state) {
-  return state.metamask.customNetworkListEnabled;
+export function getIsImprovedTokenAllowanceEnabled(state) {
+  return state.metamask.improvedTokenAllowanceEnabled;
 }
 
 export function getIsCustomNetwork(state) {
@@ -1244,4 +1336,8 @@ export function getShouldShowSeedPhraseReminder(state) {
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
     dismissSeedBackUpReminder === false
   );
+}
+
+export function getCustomTokenAmount(state) {
+  return state.appState.customTokenAmount;
 }
