@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-const version = 76;
+const version = 77;
 
 /**
  * Prior to token detection v2 the data property in tokensChainsCache was an array,

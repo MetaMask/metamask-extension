@@ -6,7 +6,6 @@ describe('migration #77', () => {
       meta: {
         version: 76,
       },
-      data: {},
     };
 
     const newStorage = await migration77.migrate(oldStorage);
