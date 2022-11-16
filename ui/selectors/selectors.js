@@ -956,12 +956,13 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
     13: false,
     14: false,
-    15: true,
+    15: false,
+    16: true,
   };
 }
 
@@ -1027,13 +1028,13 @@ export function getUseTokenDetection(state) {
 }
 
 /**
- * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * To get the useNftDetection flag which determines whether we autodetect NFTs
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getUseCollectibleDetection(state) {
-  return Boolean(state.metamask.useCollectibleDetection);
+export function getUseNftDetection(state) {
+  return Boolean(state.metamask.useNftDetection);
 }
 
 /**
