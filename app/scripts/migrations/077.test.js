@@ -9,7 +9,7 @@ describe('migration #77', () => {
       data: {},
     };
 
-    const newStorage = await migration76.migrate(oldStorage);
+    const newStorage = await migration77.migrate(oldStorage);
     expect(newStorage.meta).toStrictEqual({
       version: 77,
     });
@@ -48,7 +48,7 @@ describe('migration #77', () => {
         },
       },
     };
-    const newStorage = await migration76.migrate(oldStorage);
+    const newStorage = await migration77.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 77,
@@ -132,7 +132,7 @@ describe('migration #77', () => {
         },
       },
     };
-    const newStorage = await migration76.migrate(oldStorage);
+    const newStorage = await migration77.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 77,
@@ -216,7 +216,7 @@ describe('migration #77', () => {
         },
       },
     };
-    const newStorage = await migration76.migrate(oldStorage);
+    const newStorage = await migration77.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 77,
@@ -285,7 +285,7 @@ describe('migration #77', () => {
         },
       },
     };
-    const newStorage = await migration76.migrate(oldStorage);
+    const newStorage = await migration77.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 77,
