@@ -14,7 +14,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../../../helpers/utils/util';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',

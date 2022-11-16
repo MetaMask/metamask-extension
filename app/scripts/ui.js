@@ -20,11 +20,11 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
+import { getURL } from '../../ui/helpers/utils/util';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
-import { getURL } from 'ui/helpers/utils/util';
 
 const container = document.getElementById('app-content');
 

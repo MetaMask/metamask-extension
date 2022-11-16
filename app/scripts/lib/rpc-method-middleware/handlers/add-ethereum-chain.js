@@ -12,7 +12,7 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../../../../../ui/helpers/utils/util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],

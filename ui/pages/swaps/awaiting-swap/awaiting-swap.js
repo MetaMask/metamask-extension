@@ -66,7 +66,7 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../../../helpers/utils/util';
 
 export default function AwaitingSwap({
   swapComplete,

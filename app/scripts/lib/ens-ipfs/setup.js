@@ -5,6 +5,8 @@ import browser from 'webextension-polyfill';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import resolveEnsToIpfsContentId from './resolver';
 
+import { getURL } from '../../../../ui/helpers/utils/util';
+
 const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];

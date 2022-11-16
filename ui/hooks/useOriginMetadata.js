@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { getTargetSubjectMetadata } from '../selectors';
 import { SUBJECT_TYPES } from '../../shared/constants/app';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../helpers/utils/util';
 
 /**
  * @typedef {object} OriginMetadata

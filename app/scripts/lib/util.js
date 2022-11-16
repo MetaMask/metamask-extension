@@ -15,7 +15,7 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../../../ui/helpers/utils/util';
 
 /**
  * @see {@link getEnvironmentType}

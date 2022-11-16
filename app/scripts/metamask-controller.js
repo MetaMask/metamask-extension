@@ -102,6 +102,7 @@ import {
   getTokenValueParam,
   hexToDecimal,
 } from '../../shared/lib/metamask-controller-utils';
+import { getURL } from '../../ui/helpers/utils/util';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -161,7 +162,6 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
-import { getURL } from 'ui/helpers/utils/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

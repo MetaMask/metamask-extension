@@ -8,8 +8,8 @@ import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SECOND } from '../../../../shared/constants/time';
+import { getURL } from '../../../helpers/utils/util';
 import EnhancedReader from './enhanced-reader';
-import { getURL } from 'ui/helpers/utils/util';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',

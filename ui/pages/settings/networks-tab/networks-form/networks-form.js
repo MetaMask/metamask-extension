@@ -42,7 +42,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
-import { getURL } from 'ui/helpers/utils/util';
+import { getURL } from '../../../../helpers/utils/util';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
