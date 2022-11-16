@@ -1704,6 +1704,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowPortfolioTooltip:
         appStateController.setShowPortfolioTooltip.bind(appStateController),
+      setShowBetaHeader:
+        appStateController.setShowBetaHeader.bind(appStateController),
       setCollectiblesDetectionNoticeDismissed:
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
           appStateController,
