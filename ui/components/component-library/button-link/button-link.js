@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonBase } from '../button-base';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { BUTTON_LINK_SIZES } from './button-link.constants';
 
 export const ButtonLink = ({
@@ -17,6 +18,7 @@ export const ButtonLink = ({
         'mm-button-link--type-danger': danger,
       })}
       size={size}
+      backgroundColor={COLORS.TRANSPARENT}
       {...props}
     />
   );
