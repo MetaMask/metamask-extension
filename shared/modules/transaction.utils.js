@@ -259,7 +259,7 @@ export async function determineTransactionAssetType(
           assetType:
             details.standard === TOKEN_STANDARDS.ERC20
               ? ASSET_TYPES.TOKEN
-              : ASSET_TYPES.COLLECTIBLE,
+              : ASSET_TYPES.NFT,
           tokenStandard: details.standard,
         };
       }

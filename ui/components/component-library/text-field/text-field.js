@@ -4,8 +4,6 @@ import classnames from 'classnames';
 
 import { SIZES } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-
 import { ICON_NAMES } from '../icon';
 import { ButtonIcon } from '../button-icon';
 
@@ -55,11 +53,11 @@ TextField.propTypes = {
   /**
    * The value af the TextField
    */
-  value: TextFieldBase.propTypes.value.isRequired,
+  value: TextFieldBase.propTypes.value,
   /**
    * The onChange handler af the TextField
    */
-  onChange: TextFieldBase.propTypes.onChange.isRequired,
+  onChange: TextFieldBase.propTypes.onChange,
   /**
    * An additional className to apply to the text-field
    */
@@ -75,7 +73,7 @@ TextField.propTypes = {
   /**
    * The props to pass to the clear button
    */
-  clearButtonProps: PropTypes.shape(Box.PropTypes),
+  clearButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
   /**
    * TextField accepts all the props from TextFieldBase and Box
    */
