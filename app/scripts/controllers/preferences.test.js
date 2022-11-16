@@ -4,7 +4,7 @@ import {
   ControllerMessenger,
   TokenListController,
 } from '@metamask/controllers';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
 
@@ -18,7 +18,7 @@ describe('preferences controller', function () {
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
-    currentChainId = MAINNET_CHAIN_ID;
+    currentChainId = CHAIN_IDS.MAINNET;
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
@@ -308,21 +308,21 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('setUseCollectibleDetection', function () {
+  describe('setUseNftDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useCollectibleDetection, false);
+      assert.equal(state.useNftDetection, false);
     });
 
-    it('should set the useCollectibleDetection property in state', function () {
+    it('should set the useNftDetection property in state', function () {
       assert.equal(
-        preferencesController.store.getState().useCollectibleDetection,
+        preferencesController.store.getState().useNftDetection,
         false,
       );
       preferencesController.setOpenSeaEnabled(true);
-      preferencesController.setUseCollectibleDetection(true);
+      preferencesController.setUseNftDetection(true);
       assert.equal(
-        preferencesController.store.getState().useCollectibleDetection,
+        preferencesController.store.getState().useNftDetection,
         true,
       );
     });

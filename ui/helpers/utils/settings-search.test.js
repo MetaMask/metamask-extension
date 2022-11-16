@@ -57,10 +57,6 @@ const t = (key) => {
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
       return 'Set the idle time in minutes before MetaMask will become locked.';
-    case 'syncWithThreeBox':
-      return 'Sync data with 3Box (experimental)';
-    case 'syncWithThreeBoxDescription':
-      return 'Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk.';
     case 'ipfsGateway':
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
@@ -99,22 +95,18 @@ const t = (key) => {
       return 'Networks';
     case 'mainnet':
       return 'Ethereum Mainnet';
-    case 'ropsten':
-      return 'Ropsten Test Network';
-    case 'rinkeby':
-      return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
-    case 'kovan':
-      return 'Kovan test network';
+    case 'sepolia':
+      return 'Sepolia test network';
     case 'localhost':
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    case 'tokenDetection':
-      return 'Token detection';
-    case 'tokenDetectionDescription':
-      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list.";
+    case 'enhancedTokenDetection':
+      return 'Enhanced token detection';
+    case 'enhancedTokenDetectionDescription':
+      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet.";
     case 'enableEIP1559V2':
       return 'Enable enhanced gas fee UI';
     case 'enableEIP1559V2Description':
@@ -163,11 +155,11 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingsInSection', () => {
     it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(5);
+      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(16);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(15);
     });
 
     it('should get good contact section number', () => {
@@ -185,17 +177,17 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(4);
     });
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        2,
       );
     });
 
     it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(8);
+      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
     });
   });
 

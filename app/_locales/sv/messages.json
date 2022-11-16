@@ -8,9 +8,6 @@
   "about": {
     "message": "Om"
   },
-  "acceleratingATransaction": {
-    "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
-  },
   "accessingYourCamera": {
     "message": "Begär åtkomst till din kamera..."
   },
@@ -187,17 +184,8 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Ansluter till Kovans testnätverk"
-  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
-  },
-  "connectingToRinkeby": {
-    "message": "Ansluter till Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Ansluter till Ropsten Test Network"
   },
   "continueToWyre": {
     "message": "Fortsätt till Wyre"
@@ -243,12 +231,6 @@
   },
   "custom": {
     "message": "Avancerat"
-  },
-  "customGas": {
-    "message": "Anpassa gas"
-  },
-  "customGasSubTitle": {
-    "message": "Att öka avgiften kan minska behandlingstiden, men det är inte garanterat att göra det."
   },
   "customToken": {
     "message": "Anpassad token"
@@ -333,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Uppskattade behandlingstider"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum offentlig adress"
@@ -493,9 +472,6 @@
   "knownAddressRecipient": {
     "message": "Känd kontraktadress."
   },
-  "kovan": {
-    "message": "Kovan testnätverk"
-  },
   "learnMore": {
     "message": "Läs mer"
   },
@@ -587,12 +563,6 @@
   },
   "newToMetaMask": {
     "message": "Ny på MetaMask?"
-  },
-  "newTotal": {
-    "message": "Ny totalsumma"
-  },
-  "newTransactionFee": {
-    "message": "Ingen transaktionsavgift"
   },
   "next": {
     "message": "Nästa"
@@ -752,12 +722,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "DELA INTE frasen med någon!"
   },
-  "rinkeby": {
-    "message": "Rinkeby testnätverk"
-  },
-  "ropsten": {
-    "message": "Ropsten testnätverk"
-  },
   "rpcUrl": {
     "message": "Ny RPC-URL"
   },
@@ -794,9 +758,6 @@
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."
   },
-  "selectAHigherGasFee": {
-    "message": "Välj en högre bränsleavgift för att accelerera transaktionsprocessen.*"
-  },
   "selectAnAccount": {
     "message": "Välj ett konto"
   },
@@ -814,9 +775,6 @@
   },
   "send": {
     "message": "Skicka"
-  },
-  "sendAmount": {
-    "message": "Skicka belopp"
   },
   "sendTokens": {
     "message": "Skicka tokens"
@@ -859,9 +817,6 @@
   },
   "signed": {
     "message": "Signerat"
-  },
-  "slow": {
-    "message": "Långsamt"
   },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."

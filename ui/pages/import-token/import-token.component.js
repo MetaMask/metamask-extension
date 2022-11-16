@@ -581,7 +581,7 @@ class ImportToken extends Component {
       <div className="import-token__search-token">
         {!useTokenDetection && (
           <ActionableMessage
-            message={t('tokenDetectionAlertMessage', [
+            message={t('enhancedTokenDetectionAlertMessage', [
               networkName,
               <Button
                 type="link"

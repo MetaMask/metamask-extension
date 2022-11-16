@@ -1,6 +1,6 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone, memoize } from 'lodash';
+import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
@@ -10,13 +10,10 @@ import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import switchDirection from '../shared/lib/switch-direction';
+import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from './helpers/utils/i18n-helper';
-import switchDirection from './helpers/utils/switch-direction';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
@@ -28,6 +25,7 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
+import { _setBackgroundConnection } from './store/action-queue';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
@@ -39,7 +37,7 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  actions._setBackgroundConnection(backgroundConnection);
+  _setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
@@ -67,22 +65,6 @@ export default function launchMetamaskUi(opts, cb) {
     });
   });
 }
-
-const _setupLocale = async (currentLocale) => {
-  const currentLocaleMessages = currentLocale
-    ? await fetchLocale(currentLocale)
-    : {};
-  const enLocaleMessages = await fetchLocale('en');
-
-  await loadRelativeTimeFormatLocaleData('en');
-  if (currentLocale) {
-    await loadRelativeTimeFormatLocaleData(currentLocale);
-  }
-
-  return { currentLocaleMessages, enLocaleMessages };
-};
-
-export const setupLocale = memoize(_setupLocale);
 
 async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
@@ -112,6 +94,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       en: enLocaleMessages,
     },
   };
+
+  updateBackgroundConnection(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
@@ -160,8 +144,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
-  updateBackgroundConnection(backgroundConnection);
-
   // global metamask api - used by tooling
   global.metamask = {
     updateCurrentLocale: (code) => {
@@ -182,7 +164,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 function setupDebuggingHelpers(store) {
-  window.getCleanAppState = async function () {
+  window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
@@ -191,10 +173,7 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  if (!window.rootGlobals) {
-    window.rootGlobals = {};
-  }
-  window.rootGlobals.getSentryState = function () {
+  window.stateHooks.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject(fullState, SENTRY_STATE);
     return {
@@ -206,7 +185,7 @@ function setupDebuggingHelpers(store) {
 }
 
 window.logStateString = async function (cb) {
-  const state = await window.getCleanAppState();
+  const state = await window.stateHooks.getCleanAppState();
   browser.runtime
     .getPlatformInfo()
     .then((platform) => {

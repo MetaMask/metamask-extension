@@ -2,6 +2,12 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
+import {
+  ApprovalRequestNotFoundError,
+  PermissionsRequestNotFoundError,
+} from '@metamask/controllers';
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
+
 const Ganache = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
@@ -207,6 +213,167 @@ describe('MetaMaskController', function () {
         metamaskController.preferencesController.store.getState()
           .frequentRpcListDetail.length;
       assert.equal(rpcList1Length, rpcList2Length);
+    });
+  });
+
+  describe('#updateTransactionSendFlowHistory', function () {
+    it('two sequential calls with same history give same result', async function () {
+      const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      const accounts = await metamaskController.keyringController.getAccounts();
+      const txMeta = await metamaskController.getApi().addUnapprovedTransaction(
+        {
+          from: accounts[0],
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+      );
+
+      const [transaction1, transaction2] = await Promise.all([
+        metamaskController
+          .getApi()
+          .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
+        Promise.resolve(1).then(() =>
+          metamaskController
+            .getApi()
+            .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
+        ),
+      ]);
+      assert.deepEqual(transaction1, transaction2);
+    });
+  });
+
+  describe('#removePermissionsFor', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        revokePermissions: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.removePermissionsFor({ subject: 'test_subject' });
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        revokePermissions: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      }, error);
+    });
+  });
+
+  describe('#rejectPermissionsRequest', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        rejectPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.rejectPermissionsRequest('DUMMY_ID');
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        rejectPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.rejectPermissionsRequest('DUMMY_ID');
+      }, error);
+    });
+  });
+
+  describe('#acceptPermissionsRequest', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        acceptPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.acceptPermissionsRequest('DUMMY_ID');
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        acceptPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.acceptPermissionsRequest('DUMMY_ID');
+      }, error);
+    });
+  });
+
+  describe('#resolvePendingApproval', function () {
+    it('should not propagate ApprovalRequestNotFoundError', function () {
+      const error = new ApprovalRequestNotFoundError('123');
+      metamaskController.approvalController = {
+        accept: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+    });
+
+    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.approvalController = {
+        accept: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+      }, error);
+    });
+  });
+
+  describe('#rejectPendingApproval', function () {
+    it('should not propagate ApprovalRequestNotFoundError', function () {
+      const error = new ApprovalRequestNotFoundError('123');
+      metamaskController.approvalController = {
+        reject: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.rejectPendingApproval('DUMMY_ID', {
+        code: 1,
+        message: 'DUMMY_MESSAGE',
+        data: 'DUMMY_DATA',
+      });
+    });
+
+    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.approvalController = {
+        reject: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.rejectPendingApproval('DUMMY_ID', {
+          code: 1,
+          message: 'DUMMY_MESSAGE',
+          data: 'DUMMY_DATA',
+        });
+      }, error);
     });
   });
 });

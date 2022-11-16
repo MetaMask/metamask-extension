@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transaction Confirmed should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__content"
+    >
+      <div
+        class="transaction-confirmed__content"
+      >
+        <i
+          class="fa fa-check-circle fa-3x"
+        />
+        <div
+          class="transaction-confirmed__title"
+        >
+          [confirmed]!
+        </div>
+        <div
+          class="transaction-confirmed__description"
+        >
+          [initialTransactionConfirmed]
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        [ok]
+      </button>
+    </div>
+  </div>
+</div>
+`;

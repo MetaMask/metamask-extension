@@ -4,7 +4,10 @@ import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
-import { MAINNET, getRpcUrl } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TYPES,
+  getRpcUrl,
+} from '../../../../../shared/constants/network';
 import NetworksForm from '.';
 
 const renderComponent = (props) => {
@@ -75,7 +78,13 @@ describe('NetworkForm Component', () => {
       encodedQueryParams: true,
     })
       .post('/')
-      .reply(200, { jsonrpc: '2.0', id: '1643927040523', result: '0x38' });
+      .reply(200, { jsonrpc: '2.0', result: '0x38' });
+
+    nock('https://rpc.flashbots.net:443', {
+      encodedQueryParams: true,
+    })
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', result: '0x1' });
   });
 
   afterEach(() => {
@@ -169,7 +178,10 @@ describe('NetworkForm Component', () => {
 
     await fireEvent.change(rpcUrlField, {
       target: {
-        value: getRpcUrl({ network: MAINNET, excludeProjectId: true }),
+        value: getRpcUrl({
+          network: NETWORK_TYPES.MAINNET,
+          excludeProjectId: true,
+        }),
       },
     });
 
@@ -184,9 +196,20 @@ describe('NetworkForm Component', () => {
     renderComponent(propNewNetwork);
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
+    const currencySymbolField = screen.getByRole('textbox', {
+      name: 'Currency symbol',
+    });
 
     fireEvent.change(chainIdField, {
       target: { value: '1' },
+    });
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'test' },
+    });
+
+    fireEvent.change(rpcUrlField, {
+      target: { value: 'https://rpc.flashbots.net' },
     });
 
     expect(
@@ -195,6 +218,8 @@ describe('NetworkForm Component', () => {
       ),
     ).toBeInTheDocument();
 
+    expect(screen.getByText('Save')).not.toBeDisabled();
+
     fireEvent.change(rpcUrlField, {
       target: { value: 'https://bsc-dataseed.binance.org/' },
     });
@@ -202,6 +227,8 @@ describe('NetworkForm Component', () => {
     const expectedWarning =
       'The RPC URL you have entered returned a different chain ID (56). Please update the Chain ID to match the RPC URL of the network you are trying to add.';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
+
+    expect(screen.getByText('Save')).toBeDisabled();
 
     fireEvent.change(chainIdField, {
       target: { value: 'a' },

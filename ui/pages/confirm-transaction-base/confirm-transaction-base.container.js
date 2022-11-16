@@ -14,7 +14,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
+import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -35,6 +35,11 @@ import {
   getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
+  getUnapprovedTransaction,
+  getFullTxData,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getInsightSnaps,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -54,9 +59,13 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
+import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -88,16 +97,14 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allCollectibleContracts,
+    allNftContracts,
     selectedAddress,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
-  const transaction =
-    Object.values(unapprovedTxs).find(
-      ({ id }) => id === (transactionId || Number(paramsTransactionId)),
-    ) || {};
+  const txId = transactionId || Number(paramsTransactionId);
+  const transaction = getUnapprovedTransaction(state, txId);
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -144,10 +151,6 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
-  if (transaction && transaction.simulationFails) {
-    txData.simulationFails = transaction.simulationFails;
-  }
-
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
       transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
@@ -164,19 +167,15 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  let fullTxData = { ...txData, ...transaction };
-  if (customTxParamsData) {
-    fullTxData = {
-      ...fullTxData,
-      txParams: {
-        ...fullTxData.txParams,
-        data: customTxParamsData,
-      },
-    };
-  }
+  const fullTxData = getFullTxData(
+    state,
+    txId,
+    TRANSACTION_STATUSES.UNAPPROVED,
+    customTxParamsData,
+  );
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );
@@ -196,6 +195,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const eip1559V2Enabled = getEIP1559V2Enabled(state);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const insightSnaps = getInsightSnaps(state);
+  ///: END:ONLY_INCLUDE_IN
 
   return {
     balance,
@@ -249,6 +252,9 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     eip1559V2Enabled,
     isBuyableChain,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightSnaps,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -283,7 +289,6 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   };
 };
 
