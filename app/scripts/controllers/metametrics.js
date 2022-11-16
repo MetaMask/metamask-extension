@@ -76,6 +76,8 @@ const exceptionsToFilter = {
  * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
  *  a user opts into metrics.
  * @property {object} [traits] - Traits that are not derived from other state keys.
+ * @property {Record<string any>} [previousUserTraits] - The user traits the last
+ *  time they were computed.
  */
 
 export default class MetaMetricsController {
@@ -685,7 +687,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    const { traits } = this.store.getState();
+    const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
@@ -721,17 +723,17 @@ export default class MetaMetricsController {
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
-    if (!this.previousTraits) {
-      this.previousTraits = currentTraits;
+    if (!previousUserTraits) {
+      this.store.updateState({ previousUserTraits: currentTraits });
       return currentTraits;
     }
 
-    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(
         currentTraits,
-        (v, k) => !isEqual(this.previousTraits[k], v),
+        (v, k) => !isEqual(previousUserTraits[k], v),
       );
-      this.previousTraits = currentTraits;
+      this.store.updateState({ previousUserTraits: currentTraits });
       return updates;
     }
 
