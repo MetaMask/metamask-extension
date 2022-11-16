@@ -25,10 +25,8 @@ const loadSwaps = async (driver) => {
 };
 
 const buildQuote = async (driver, options) => {
-  await driver.clickElement(
-    '[class*="dropdown-search-list"] + div[class*="MuiFormControl-root MuiTextField-root"]',
-  );
   await driver.fill('input[placeholder*="0"]', options.amount);
+  await driver.delay(1000); // Need an extra delay after typing an amount.
   await driver.clickElement(
     '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
   );

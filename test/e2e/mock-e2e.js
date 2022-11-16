@@ -198,6 +198,116 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+            type: 'native',
+            iconUrl:
+              'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+            coingeckoId: 'ethereum',
+            address: '0x0000000000000000000000000000000000000000',
+            occurrences: 100,
+            aggregators: [],
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+            type: 'erc20',
+            aggregators: [
+              'aave',
+              'bancor',
+              'cmc',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'pmm',
+              'zerion',
+              'lifi',
+            ],
+            occurrences: 9,
+            fees: {
+              '0xb0da5965d43369968574d399dbe6374683773a65': 0,
+            },
+            storage: {
+              balance: 2,
+            },
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
+            type: 'erc20',
+            aggregators: [
+              'aave',
+              'bancor',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'pmm',
+              'zerion',
+              'lifi',
+            ],
+            occurrences: 8,
+            fees: {},
+            storage: {
+              balance: 9,
+            },
+          },
+          {
+            address: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
+            symbol: 'INUINU',
+            decimals: 18,
+            name: 'Inu Inu',
+            iconUrl:
+              'https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596',
+            type: 'erc20',
+            aggregators: ['coinGecko'],
+            occurrences: 1,
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+          },
+          {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+          },
+        ],
+      };
+    });
+
+  await server
     .forGet('https://token-api.metaswap.codefi.network/token/0x539')
     .thenCallback(() => {
       return {

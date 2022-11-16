@@ -16,7 +16,12 @@ describe('Swap Eth for another Token', function () {
           amount: 2,
           swapTo: 'DAI',
         });
-        await driver.clickElement({ text: 'Review swap', tag: 'button' });
+        const reviewSwapButton = await driver.findElement(
+          '[data-testid="page-container-footer-next"]',
+        );
+        assert.equal(await reviewSwapButton.getText(), 'Review swap');
+        assert.equal(await reviewSwapButton.isEnabled(), true);
+        await reviewSwapButton.click();
         await driver.waitForSelector('[class*="box--align-items-center"]');
         const estimatedEth = await driver.waitForSelector({
           css: '[class*="box--align-items-center"]',
