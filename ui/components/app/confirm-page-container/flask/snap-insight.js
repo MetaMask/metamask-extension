@@ -15,10 +15,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 import SnapContentFooter from '../../flask/snap-content-footer/snap-content-footer';
 import Box from '../../../ui/box/box';
+import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 
 export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
   const t = useI18nContext();
-  const response = useTransactionInsightSnap({
+  const {
+    data: response,
+    error,
+    loading,
+  } = useTransactionInsightSnap({
     transaction,
     chainId,
     snapId: selectedSnap.id,
@@ -26,8 +31,8 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
 
   const data = response?.insights;
 
-  const hasNoData = !data || !Object.keys(data).length;
-
+  const hasNoData =
+    !error && (loading || !data || (data && Object.keys(data).length === 0));
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -39,13 +44,13 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
       textAlign={hasNoData && TEXT_ALIGN.CENTER}
       className="snap-insight"
     >
-      {data ? (
+      {!loading && !error && (
         <Box
           height="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {Object.keys(data).length ? (
+          {data && Object.keys(data).length > 0 ? (
             <>
               <Box
                 flexDirection={FLEX_DIRECTION.COLUMN}
@@ -94,7 +99,29 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
             </Typography>
           )}
         </Box>
-      ) : (
+      )}
+
+      {!loading && error && (
+        <Box
+          paddingTop={0}
+          paddingRight={6}
+          paddingBottom={3}
+          paddingLeft={6}
+          className="snap-insight__container__error"
+        >
+          <ActionableMessage
+            message={t('snapsInsightError', [
+              selectedSnap.manifest.proposedName,
+              error.message,
+            ])}
+            type="danger"
+            useIcon
+            iconFillColor="var(--color-error-default)"
+          />
+        </Box>
+      )}
+
+      {loading && (
         <>
           <Preloader size={40} />
           <Typography

@@ -14,7 +14,10 @@ import log from 'loglevel';
 import pify from 'pify';
 import { ethers } from 'ethers';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  LOCALHOST_RPC_URL,
+} from '../../../shared/constants/network';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -50,6 +53,7 @@ export default class AccountTracker {
    * @param {object} opts.provider - An EIP-1193 provider instance that uses the current global network
    * @param {object} opts.blockTracker - A block tracker, which emits events for each new block
    * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
+   * @param {Function} opts.getNetworkIdentifier - A function that returns the current network
    */
   constructor(opts = {}) {
     const initState = {
@@ -69,6 +73,7 @@ export default class AccountTracker {
     // bind function for easier listener syntax
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
+    this.getNetworkIdentifier = opts.getNetworkIdentifier;
 
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
   }
@@ -199,73 +204,79 @@ export default class AccountTracker {
     const { accounts } = this.store.getState();
     const addresses = Object.keys(accounts);
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkIdentifier();
+    const rpcUrl = 'http://127.0.0.1:8545';
 
-    switch (chainId) {
-      case CHAIN_IDS.MAINNET:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS,
-        );
-        break;
+    if (networkId === LOCALHOST_RPC_URL || networkId === rpcUrl) {
+      await Promise.all(addresses.map(this._updateAccount.bind(this)));
+    } else {
+      switch (chainId) {
+        case CHAIN_IDS.MAINNET:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS,
+          );
+          break;
 
-      case CHAIN_IDS.GOERLI:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
-        );
-        break;
+        case CHAIN_IDS.GOERLI:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+          );
+          break;
 
-      case CHAIN_IDS.SEPOLIA:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
-        );
-        break;
+        case CHAIN_IDS.SEPOLIA:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
+          );
+          break;
 
-      case CHAIN_IDS.BSC:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_BSC,
-        );
-        break;
+        case CHAIN_IDS.BSC:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_BSC,
+          );
+          break;
 
-      case CHAIN_IDS.OPTIMISM:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
-        );
-        break;
+        case CHAIN_IDS.OPTIMISM:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
+          );
+          break;
 
-      case CHAIN_IDS.POLYGON:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
-        );
-        break;
+        case CHAIN_IDS.POLYGON:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+          );
+          break;
 
-      case CHAIN_IDS.AVALANCHE:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
-        );
-        break;
+        case CHAIN_IDS.AVALANCHE:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
+          );
+          break;
 
-      case CHAIN_IDS.FANTOM:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
-        );
-        break;
+        case CHAIN_IDS.FANTOM:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
+          );
+          break;
 
-      case CHAIN_IDS.ARBITRUM:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
-        );
-        break;
+        case CHAIN_IDS.ARBITRUM:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
+          );
+          break;
 
-      default:
-        await Promise.all(addresses.map(this._updateAccount.bind(this)));
+        default:
+          await Promise.all(addresses.map(this._updateAccount.bind(this)));
+      }
     }
   }
 

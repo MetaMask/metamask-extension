@@ -96,6 +96,7 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
  *
+ * @deprecated use checkForLastError in shared/modules/browser-runtime.utils.js
  * @returns {Error|undefined}
  */
 function checkForError() {
@@ -173,4 +174,20 @@ export {
   bnToHex,
   getChainType,
   checkAlarmExists,
+};
+
+// Taken from https://stackoverflow.com/a/1349426/3696652
+const characters =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+export const generateRandomId = () => {
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 20; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+export const isValidDate = (d) => {
+  return d instanceof Date && !isNaN(d);
 };
