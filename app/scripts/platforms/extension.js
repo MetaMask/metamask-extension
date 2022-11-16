@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEnvironmentType, checkForError } from '../lib/util';
+import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
@@ -15,44 +15,24 @@ export default class ExtensionPlatform {
 
   async openTab(options) {
     const newTab = await browser.tabs.create(options);
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
     return newTab;
   }
 
   async openWindow(options) {
     const newWindow = await browser.windows.create(options);
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
     return newWindow;
   }
 
   async focusWindow(windowId) {
     await browser.windows.update(windowId, { focused: true });
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
   }
 
   async updateWindowPosition(windowId, left, top) {
     await browser.windows.update(windowId, { left, top });
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
   }
 
   async getLastFocusedWindow() {
     const windowObject = await browser.windows.getLastFocused();
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
     return windowObject;
   }
 
@@ -153,47 +133,26 @@ export default class ExtensionPlatform {
 
   async getAllWindows() {
     const windows = await browser.windows.getAll();
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
     return windows;
   }
 
   async getActiveTabs() {
     const tabs = await browser.tabs.query({ active: true });
-    const error = checkForError();
-    if (error) {
-      throw error;
-    }
     return tabs;
   }
 
   async currentTab() {
     const tab = await browser.tabs.getCurrent();
-    const err = checkForError();
-    if (err) {
-      throw err;
-    } else {
-      return tab;
-    }
+    return tab;
   }
 
   async switchToTab(tabId) {
     const tab = await browser.tabs.update(tabId, { highlighted: true });
-    const err = checkForError();
-    if (err) {
-      throw err;
-    }
     return tab;
   }
 
   async closeTab(tabId) {
     await browser.tabs.remove(tabId);
-    const err = checkForError();
-    if (err) {
-      throw err;
-    }
   }
 
   _showConfirmedTransaction(txMeta, rpcPrefs) {
