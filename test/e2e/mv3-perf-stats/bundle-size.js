@@ -20,14 +20,12 @@ const backgroundFiles = [
   'runtime-lavamoat.js',
   'lockdown-more.js',
   'globalthis.js',
-  'setup.js',
   'sentry-install.js',
   'policy-load.js',
 ];
 
 const uiFiles = [
   'globalthis.js',
-  'setup.js',
   'sentry-install.js',
   'runtime-lavamoat.js',
   'lockdown-more.js',
