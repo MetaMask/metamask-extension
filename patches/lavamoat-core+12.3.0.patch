@@ -19,10 +19,10 @@ index a72db51..caa4368 100644
              console.error(`failed to delete ${subPath}`, err);
            } else {
 diff --git a/node_modules/lavamoat-core/src/generateKernel.js b/node_modules/lavamoat-core/src/generateKernel.js
-index 7afeb73..1a6f3d3 100644
+index 7afeb73..5a276c0 100644
 --- a/node_modules/lavamoat-core/src/generateKernel.js
 +++ b/node_modules/lavamoat-core/src/generateKernel.js
-@@ -24,21 +24,22 @@ function getSesShimSrc () {
+@@ -24,21 +24,28 @@ function getSesShimSrc () {
  }
  
  // takes the kernelTemplate and populates it with the libraries
@@ -47,6 +47,12 @@ index 7afeb73..1a6f3d3 100644
 +    // scuttleGlobalThis config placeholder should be set only if ordered so explicitly.
 +    // if not, should be left as is to be replaced by a later processor (e.g. LavaPack).
 +    const {scuttleGlobalThis, scuttleGlobalThisExceptions} = opts
++    if (scuttleGlobalThisExceptions) {
++      // toString regexps if there's any
++      for (let i = 0; i < scuttleGlobalThisExceptions.length; i++) {
++        scuttleGlobalThisExceptions[i] = String(scuttleGlobalThisExceptions[i])
++      }
++    }
 +    output = stringReplace(output, '__lavamoatSecurityOptions__', JSON.stringify({
 +      scuttleGlobalThis,
 +      scuttleGlobalThisExceptions,
@@ -56,10 +62,10 @@ index 7afeb73..1a6f3d3 100644
    return output
  }
 diff --git a/node_modules/lavamoat-core/src/kernelCoreTemplate.js b/node_modules/lavamoat-core/src/kernelCoreTemplate.js
-index 71243fe..c38de1a 100644
+index 71243fe..37848c4 100644
 --- a/node_modules/lavamoat-core/src/kernelCoreTemplate.js
 +++ b/node_modules/lavamoat-core/src/kernelCoreTemplate.js
-@@ -99,13 +99,13 @@
+@@ -99,23 +99,31 @@
      return kernel
  
      function performScuttleGlobalThis (globalRef, extraPropsToAvoid = new Array()) {
@@ -71,6 +77,15 @@ index 71243fe..c38de1a 100644
 +      getPrototypeChain(globalRef)
 +        .forEach(proto =>
 +          props.push(...Object.getOwnPropertyNames(proto)))
++
++      for (let i = 0; i < extraPropsToAvoid.length; i++) {
++        const prop = extraPropsToAvoid[i]
++        if (!prop.startsWith('/')) {
++          continue
++        }
++        const parts = prop.split('/');
++        extraPropsToAvoid[i] = new RegExp(parts.slice(1, -1).join('/'), parts[parts.length - 1])
++      }
  
        // support LM,SES exported APIs and polyfills
 -      const avoidForLavaMoatCompatibility = ['LavaPack', 'Compartment', 'Error', 'globalThis']
@@ -78,7 +93,10 @@ index 71243fe..c38de1a 100644
        const propsToAvoid = new Set([...avoidForLavaMoatCompatibility, ...extraPropsToAvoid])
  
        for (const prop of props) {
-@@ -115,7 +115,6 @@
+-        if (propsToAvoid.has(prop)) {
++        if (shouldAvoidProp(propsToAvoid, prop)) {
+           continue
+         }
          if (Object.getOwnPropertyDescriptor(globalRef, prop)?.configurable === false) {
            continue
          }
@@ -86,6 +104,24 @@ index 71243fe..c38de1a 100644
          const desc = {
            set: () => {
              console.warn(
+@@ -461,5 +469,17 @@
+       }
+       return protoChain
+     }
++
++    function shouldAvoidProp(propsToAvoid, prop) {
++      for (const avoid of propsToAvoid) {
++        if (avoid instanceof RegExp && avoid.test(prop)) {
++          return true
++        }
++        if (propsToAvoid.has(prop)) {
++          return true
++        }
++      }
++      return false
++    }
+   }
+ })()
 diff --git a/node_modules/lavamoat-core/src/kernelTemplate.js b/node_modules/lavamoat-core/src/kernelTemplate.js
 index acde3cc..a88f8a3 100644
 --- a/node_modules/lavamoat-core/src/kernelTemplate.js
@@ -159,10 +195,10 @@ index 54f9780..a2ea8fa 100644
  async function * loadScenarios () {
 diff --git a/node_modules/lavamoat-core/test/scenarios/scuttle.js b/node_modules/lavamoat-core/test/scenarios/scuttle.js
 new file mode 100644
-index 0000000..e51daa7
+index 0000000..d8f785f
 --- /dev/null
 +++ b/node_modules/lavamoat-core/test/scenarios/scuttle.js
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,38 @@
 +const { createScenarioFromScaffold, autoConfigForScenario } = require('../util.js')
 +
 +const one = () => {
@@ -170,7 +206,10 @@ index 0000000..e51daa7
 +  if (globalThis.getTrueGlobalThisForTestsOnly) {
 +    globalObject = globalThis.getTrueGlobalThisForTestsOnly()
 +  }
-+  module.exports = globalObject.Math.SQRT2
++  // this will throw if regex scuttling fails
++  if (globalObject.Float32Array) {
++    module.exports = globalObject.Math.PI
++  }
 +}
 +
 +module.exports = [
@@ -178,9 +217,9 @@ index 0000000..e51daa7
 +    const scenario = createScenarioFromScaffold({
 +      name: 'scuttle - host env global object is scuttled to work',
 +      defineOne: one,
-+      expectedResult: Math.SQRT2,
++      expectedResult: Math.PI,
 +      scuttleGlobalThis: true,
-+      scuttleGlobalThisExceptions: ['process', 'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'],
++      scuttleGlobalThisExceptions: ['process', /[0-9]+/, 'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'],
 +    })
 +    await autoConfigForScenario({ scenario })
 +    return scenario
@@ -190,9 +229,9 @@ index 0000000..e51daa7
 +      name: 'scuttle - host env global object is too scuttled to work',
 +      defineOne: one,
 +      scuttleGlobalThis: true,
-+      scuttleGlobalThisExceptions: ['process', /*'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'*/],
++      scuttleGlobalThisExceptions: ['process', '/[0-9]+/', /*'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'*/],
 +      expectedFailure: true,
-+      expectedFailureMessageRegex: /LavaMoat - property "[A-Za-z]*" of globalThis is inaccessible under scuttling mode/,
++      expectedFailureMessageRegex: /LavaMoat - property "[A-Za-z0-9]*" of globalThis is inaccessible under scuttling mode/,
 +    })
 +    await autoConfigForScenario({ scenario })
 +    return scenario
