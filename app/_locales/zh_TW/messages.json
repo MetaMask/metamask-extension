@@ -2,47 +2,11 @@
   "QRHardwareInvalidTransactionTitle": {
     "message": "錯誤"
   },
-  "QRHardwareMismatchedSignId": {
-    "message": "Incongruent transaction data. Please check the transaction details."
-  },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
-  },
-  "QRHardwareScanInstructions": {
-    "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
-  },
   "QRHardwareSignRequestCancel": {
     "message": "拒絕"
   },
-  "QRHardwareSignRequestDescription": {
-    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
-  },
-  "QRHardwareSignRequestGetSignature": {
-    "message": "Get Signature"
-  },
-  "QRHardwareSignRequestSubtitle": {
-    "message": "Scan the QR code with your wallet"
-  },
-  "QRHardwareSignRequestTitle": {
-    "message": "Request Signature"
-  },
   "QRHardwareUnknownQRCodeTitle": {
     "message": "錯誤"
-  },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "Scan QR Code"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "QR-based HW Wallet"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (Coming Soon)"
   },
   "about": {
     "message": "關於"
@@ -136,9 +100,6 @@
   },
   "advanced": {
     "message": "進階"
-  },
-  "advancedBaseGasFeeToolTip": {
-    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
   "advancedGasFeeModalTitle": {
     "message": "進階 Gas 價格"
@@ -265,40 +226,6 @@
   "basic": {
     "message": "基本"
   },
-  "betaMetamaskDescription": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
-  },
-  "betaMetamaskVersion": {
-    "message": "MetaMask Beta Version"
-  },
-  "betaWelcome": {
-    "message": "Welcome to MetaMask Beta"
-  },
-  "blockExplorerAccountAction": {
-    "message": "Account",
-    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
-  },
-  "blockExplorerAssetAction": {
-    "message": "Asset",
-    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
-  },
-  "blockExplorerSwapAction": {
-    "message": "Swap",
-    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
-  },
-  "blockExplorerUrl": {
-    "message": "區塊鏈瀏覽器"
-  },
   "blockExplorerUrlDefinition": {
     "message": "這個網路的區塊鏈瀏覽器網址。"
   },
@@ -350,10 +277,6 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
-  },
-  "clickToConnectLedgerViaWebHID": {
-    "message": "Click here to connect your Ledger via WebHID",
-    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clickToRevealSeed": {
     "message": "點選顯示助憶詞"
@@ -536,20 +459,6 @@
   },
   "customToken": {
     "message": "自訂代幣"
-  },
-  "dappSuggested": {
-    "message": "Site suggested"
-  },
-  "dappSuggestedGasSettingToolTipMessage": {
-    "message": "$1 has suggested this price.",
-    "description": "$1 is url for the dapp that has suggested gas settings"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
-  },
-  "dappSuggestedTooltip": {
-    "message": "$1 has recommended this price.",
-    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "資料"
@@ -891,9 +800,6 @@
   "goerli": {
     "message": "Goerli 測試網路"
   },
-  "grantedToWithColon": {
-    "message": "Granted to:"
-  },
   "happyToSeeYou": {
     "message": "我們很高興看到你。"
   },
@@ -946,9 +852,6 @@
   "importAccount": {
     "message": "匯入帳戶"
   },
-  "importAccountError": {
-    "message": "Error importing account."
-  },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
@@ -974,9 +877,6 @@
   },
   "insufficientFunds": {
     "message": "資金不足。"
-  },
-  "insufficientFundsForGas": {
-    "message": "Insufficient funds for gas"
   },
   "insufficientTokens": {
     "message": "代幣不足。"
@@ -1035,12 +935,6 @@
     "message": "JSON 格式檔案",
     "description": "format for importing an account"
   },
-  "keystone": {
-    "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (Tutorials)"
-  },
   "knownAddressRecipient": {
     "message": "已知合約位址"
   },
@@ -1052,12 +946,6 @@
   },
   "learnMore": {
     "message": "了解更多"
-  },
-  "learnMoreUpperCase": {
-    "message": "Learn more"
-  },
-  "learnScamRisk": {
-    "message": "scams and security risks."
   },
   "ledgerAccountRestriction": {
     "message": "您必須使用最後一個的帳戶才能產生新帳戶"
@@ -1086,9 +974,6 @@
   "loadingTokens": {
     "message": "載入代幣..."
   },
-  "localhost": {
-    "message": "Localhost 8545"
-  },
   "lock": {
     "message": "鎖定"
   },
@@ -1104,21 +989,11 @@
   "max": {
     "message": "最大值"
   },
-  "maxBaseFee": {
-    "message": "Max base fee"
-  },
   "maxFee": {
     "message": "最大費用"
   },
   "maxPriorityFee": {
     "message": "最大優先費用"
-  },
-  "medium": {
-    "message": "Market"
-  },
-  "mediumGasSettingToolTipMessage": {
-    "message": "Use $1 for fast processing at current market price.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "備註"
@@ -1202,20 +1077,11 @@
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Collectible was successfully added!"
-  },
   "newContact": {
     "message": "新聯絡資訊"
   },
   "newContract": {
     "message": "建立新合約"
-  },
-  "newNFTsDetected": {
-    "message": "New! NFT detection"
-  },
-  "newNetworkAdded": {
-    "message": "“$1” was successfully added!"
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
@@ -1238,9 +1104,6 @@
   },
   "noAlreadyHaveSeed": {
     "message": "不，我已經有助憶詞"
-  },
-  "noConversionDateAvailable": {
-    "message": "No Currency Conversion Date Available"
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
@@ -1346,12 +1209,6 @@
   "primaryCurrencySettingDescription": {
     "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
   },
-  "priorityFee": {
-    "message": "Priority fee"
-  },
-  "priorityFeeProperCase": {
-    "message": "Priority Fee"
-  },
   "privacyMsg": {
     "message": "隱私政策"
   },
@@ -1418,9 +1275,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "保護您的資金"
-  },
-  "refreshList": {
-    "message": "Refresh list"
   },
   "reject": {
     "message": "拒絕"
@@ -1584,9 +1438,6 @@
     "message": "發送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Send to"
-  },
   "sendTokens": {
     "message": "發送代幣"
   },
@@ -1626,15 +1477,6 @@
   },
   "showPrivateKeys": {
     "message": "顯示私鑰"
-  },
-  "showRecommendations": {
-    "message": "Show Recommendations"
-  },
-  "showTestnetNetworks": {
-    "message": "Show test networks"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Select this to show test networks in network list"
   },
   "sigRequest": {
     "message": "請求簽署"
@@ -1862,26 +1704,11 @@
   "transactionCreated": {
     "message": "交易建立，數量 $1 @ $2。"
   },
-  "transactionData": {
-    "message": "Transaction data"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decoded by Truffle"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Transaction decoding is not available for chainId $1"
-  },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site suggested"
-  },
   "transactionDetailDappGasTooltip": {
     "message": "此 gas 手續費建議是使用舊版的 gas 估算方式，可能不精確。"
   },
   "transactionDetailGasHeading": {
     "message": "預估的 gas 手續費"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "estimated"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "了解更多關於 gas 手續費"
@@ -1894,12 +1721,6 @@
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "數量 + gas 手續費"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Layer 2 gas fee"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Amount + fees"
   },
   "transactionDropped": {
     "message": "交易被捨棄 @ $2。"
@@ -1918,18 +1739,6 @@
   },
   "transactionHistoryBaseFee": {
     "message": "基礎手續費 (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total L1 Gas Fee"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 Gas Limit"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 Gas Price"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Max Fee Per Gas"
   },
   "transactionHistoryPriorityFee": {
     "message": "優先手續費 (GWEI)"
@@ -1969,21 +1778,8 @@
   "tryAgain": {
     "message": "再試一次"
   },
-  "turnOnTokenDetection": {
-    "message": "Turn on enhanced token detection"
-  },
-  "twelveHrTitle": {
-    "message": "12hr:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Transaction insights not supported for this contract at this time."
-  },
   "typePassword": {
     "message": "請輸入密碼"
-  },
-  "u2f": {
-    "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unapproved": {
     "message": "未批准"
