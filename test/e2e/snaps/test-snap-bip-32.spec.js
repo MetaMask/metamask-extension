@@ -15,9 +15,7 @@ describe('Test Snap bip-32', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          // .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
         title: this.test.title,

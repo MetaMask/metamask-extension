@@ -16,9 +16,7 @@ describe('Test Snap update', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          // .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
         title: this.test.title,
