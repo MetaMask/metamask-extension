@@ -16,10 +16,9 @@ describe('Test Snap update', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -33,15 +32,32 @@ describe('Test Snap update', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#sendUpdateHello');
+        const snapButton = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
-        await driver.fill('#snapId7', 'npm:@metamask/test-snap-confirm');
-        await driver.clickElement('#connectUpdateOld');
+        await driver.delay(1000);
+        await driver.clickElement('#connectUpdate');
+
+        await driver.delay(2000);
+
+        // switch to metamask extension and click connect
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        let windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
+        await driver.delay(2000);
 
         // approve install of snap
-        let windowHandles = await driver.getAllWindowHandles();
-        const extensionPage = windowHandles[0];
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -58,9 +74,9 @@ describe('Test Snap update', function () {
         await driver.delay(1000);
 
         // find and scroll to the correct card and click first
-        const snapButton2 = await driver.findElement('#snapId7');
+        const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
         // switch to metamask extension and click connect
@@ -78,33 +94,15 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        // switch to the original MM tab
-        await driver.switchToWindow(extensionPage);
-        await driver.delay(500);
-
-        // click on the account menu icon
-        await driver.clickElement('.account-menu__icon');
-        await driver.delay(500);
-
-        // try to click on the notification item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
-        await driver.delay(500);
-
-        // try to click on the snaps item
-        await driver.clickElement({
-          text: 'Snaps',
-          tag: 'div',
-        });
-        await driver.delay(500);
+        // navigate to test snap page
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // look for the correct version text
-        const versionResult = await driver.findElement(
-          '.snap-settings-card__version',
-        );
-        assert.equal(await versionResult.getText(), 'v2.0.0');
+        const versionResult = await driver.findElement('#updateSnapVersion');
+        await driver.delay(1000);
+        assert.equal(await versionResult.getText(), '"2.0.0"');
       },
     );
   });
