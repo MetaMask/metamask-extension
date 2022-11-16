@@ -93,7 +93,9 @@ async function defineAndRunBuildTasks() {
       'navigator',
       'harden',
       'console',
+      // globals chrome driver needs to function (test env)
       'parseFloat',
+      'Symbol',
       'Math',
       'DOMRect',
       'Number',
@@ -103,7 +105,7 @@ async function defineAndRunBuildTasks() {
       'Uint8Array',
       'String',
       'Promise',
-      // globals sentry need to function
+      // globals sentry needs to function
       '__SENTRY__',
       'appState',
       'extra',
