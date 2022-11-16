@@ -1613,11 +1613,10 @@
       },
       "packages": {
         "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
         "@metamask/snap-controllers>@metamask/controllers": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
-        "@metamask/snap-controllers>@metamask/rpc-methods": true,
-        "@metamask/snap-controllers>@metamask/snap-utils": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
         "@metamask/snap-controllers>gunzip-maybe": true,
@@ -1625,6 +1624,7 @@
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
+        "@metamask/snap-utils": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -1812,42 +1812,6 @@
     "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/rpc-methods": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/snap-controllers>@metamask/controllers": true,
-        "@metamask/snap-controllers>@metamask/snap-utils": true,
-        "@metamask/snap-controllers>nanoid": true,
-        "@metamask/snap-utils>superstruct": true,
-        "eth-block-tracker>@metamask/utils": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/snap-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@babel/core": true,
-        "@babel/core>@babel/types": true,
-        "@metamask/snap-controllers>@metamask/snap-utils>ajv": true,
-        "@metamask/snap-utils>@noble/hashes": true,
-        "@metamask/snap-utils>@scure/base": true,
-        "@metamask/snap-utils>rfdc": true,
-        "@metamask/snap-utils>superstruct": true,
-        "browserify": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "browserify>path-browserify": true,
-        "eslint>fast-deep-equal": true,
-        "eth-block-tracker>@metamask/utils": true,
-        "semver": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
