@@ -16,7 +16,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   PLATFORM_FIREFOX,
-} from '../../shared/constants/app';
+} from '../../shared/constants/app.ts';
 import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,

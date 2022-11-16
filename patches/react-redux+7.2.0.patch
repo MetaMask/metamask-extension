@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-redux/package.json b/node_modules/react-redux/package.json
+index 2dc5cf1..b01eb35 100644
+--- a/node_modules/react-redux/package.json
++++ b/node_modules/react-redux/package.json
+@@ -37,7 +37,8 @@
+   },
+   "peerDependencies": {
+     "react": "^16.8.3",
+-    "redux": "^2.0.0 || ^3.0.0 || ^4.0.0-0"
++    "redux": "^2.0.0 || ^3.0.0 || ^4.0.0-0",
++    "react-dom": "^16.8.3"
+   },
+   "peerDependenciesMeta": {
+     "react-dom": {

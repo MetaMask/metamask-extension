@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-easy-swipe/package.json b/node_modules/react-easy-swipe/package.json
+index deea28f..31056b2 100644
+--- a/node_modules/react-easy-swipe/package.json
++++ b/node_modules/react-easy-swipe/package.json
+@@ -65,6 +65,10 @@
+     "watch": "^0.19.2",
+     "webpack": "^1.12.10"
+   },
++  "peerDependencies": {
++    "react": "^15.5.4",
++    "react-dom": "^15.5.4"
++  },
+   "tags": [
+     "React",
+     "React swipe",

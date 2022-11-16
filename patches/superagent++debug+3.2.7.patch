@@ -1,0 +1,14 @@
+diff --git a/node_modules/superagent/node_modules/debug/package.json b/node_modules/superagent/node_modules/debug/package.json
+index 191c815..eb38b3b 100644
+--- a/node_modules/superagent/node_modules/debug/package.json
++++ b/node_modules/superagent/node_modules/debug/package.json
+@@ -27,6 +27,9 @@
+   "dependencies": {
+     "ms": "^2.1.1"
+   },
++  "optionalDependencies": {
++    "supports-colors": "*"
++  },
+   "devDependencies": {
+     "@babel/cli": "^7.0.0",
+     "@babel/core": "^7.0.0",

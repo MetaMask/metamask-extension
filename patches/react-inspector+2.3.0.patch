@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-inspector/package.json b/node_modules/react-inspector/package.json
+index 4058ebd..9f627fb 100644
+--- a/node_modules/react-inspector/package.json
++++ b/node_modules/react-inspector/package.json
+@@ -79,5 +79,8 @@
+   },
+   "peerDependencies": {
+     "react": "^0.14.0 || ^15.0.0 || ^16.0.0"
++  },
++  "optionalDependencies": {
++    "prop-types": "^15.6.1"
+   }
+ }

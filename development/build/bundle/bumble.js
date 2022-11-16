@@ -17,56 +17,39 @@ const detective = require('detective');
 
 const extensions = ['.js', '.ts', '.tsx']
 
-main().catch(console.error)
-
-async function main () {
-  const transformer = await createTransformer({
-    entryFiles: [
-      './app/scripts/ui.js',
-      './app/scripts/background.js',
-    ],
-    projectDir: process.cwd(),
-    transforms: [
-      require('./fenced-code.js'),
-      require('./babelify.js'),
-      // // Inline `fs.readFileSync` files
-      // brfs,
-      // [envify(envVars), { global: true }]
-      // minify (should happen here)
-    ],
-    builtinModules: require('./browserify-builtins.js')(),
-  })
+module.exports = {
+  makeBundle,
 }
 
-async function createTransformer ({ entryFiles, projectDir, stringTransforms = [], transforms = [], builtinModules = {} }) {
+async function makeBundle ({ entryFiles, projectDir, stringTransforms = [], transforms = [], builtinModules = {} }) {
   const moduleRecords = new Map()
   let resolveTime = 0
   let readTime = 0
   let transformTime = 0
   let parseTime = 0
 
-  const entryRecords = await Promise.all(entryFiles.map(filename => {
-    return loadModule(filename, projectDir)
-  }))
-
   const visited = new Set()
-  const queue = [...entryRecords]
-  // for await (const moduleRecord of queue) {
-  for (const moduleRecord of queue) {
+  // TODO switch from this queue to a limited concurrency machine to see if its faster
+  const queue = entryFiles.map(filename => {
+    return loadModule(filename, projectDir)
+  })
+  for await (const moduleRecord of queue) {
+  // for (const moduleRecord of queue) {
     if (visited.has(moduleRecord.file)) continue
     visited.add(moduleRecord.file)
     const locationDir = path.dirname(moduleRecord.file)
     for (const importSpecifier of moduleRecord.detectedImports) {
-      const childRecord = await loadModule(importSpecifier, locationDir)
-      queue.push(childRecord)
-      // const childRecordPromise = loadModule(importSpecifier, locationDir)
-      // queue.push(childRecordPromise)
+      // const childRecord = await loadModule(importSpecifier, locationDir)
+      // queue.push(childRecord)
+      const childRecordPromise = loadModule(importSpecifier, locationDir)
+      queue.push(childRecordPromise)
       // console.log('loaded', childRecord.file)
     }
   }
   console.log('done', visited.size, {
     resolveTime,
     readTime,
+    // transform time is useless bc its async and includes the time the event loop is doing other things
     transformTime,
     parseTime, 
   })
@@ -76,6 +59,12 @@ async function createTransformer ({ entryFiles, projectDir, stringTransforms = [
     // resolver taking about 23% of total build time
     // in @lavamoat/aa we found some memoization opportunities
     const resolved = resolve.sync(specifier, { basedir: location, extensions: ['.json', ...extensions] })
+    // const resolved = await new Promise((_resolve,_reject) => {
+    //   resolve(specifier, { basedir: location, extensions: ['.json', ...extensions] }, (err, res) => {
+    //     if (err) return _reject(err)
+    //     _resolve(res)
+    //   })
+    // })
     resolveTime += Date.now() - resolveStart
     // check cache
     if (moduleRecords.has(resolved)) return moduleRecords.get(resolved)
@@ -99,7 +88,9 @@ async function createTransformer ({ entryFiles, projectDir, stringTransforms = [
     for (const transformFn of transforms) {
       await transformFn(moduleRecord)
     }
-    transformTime += Date.now() - transformStart
+    const transformEnd = Date.now()
+    // console.log('transformed', transformEnd - transformStart)
+    transformTime += transformEnd - transformStart
 
     const parseStart = Date.now()
     moduleRecord.detectedImports = detective(moduleRecord.source)

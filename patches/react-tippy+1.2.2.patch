@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-tippy/package.json b/node_modules/react-tippy/package.json
+index a99ccea..fe3a1da 100644
+--- a/node_modules/react-tippy/package.json
++++ b/node_modules/react-tippy/package.json
+@@ -48,5 +48,9 @@
+   },
+   "dependencies": {
+     "popper.js": "^1.11.1"
++  },
++  "peerDependencies": {
++    "react": "^15.5.3",
++    "react-dom": "^15.5.3"
+   }
+ }

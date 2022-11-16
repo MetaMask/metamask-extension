@@ -1,0 +1,52 @@
+diff --git a/node_modules/@material-ui/core/node_modules/dom-helpers/package.json b/node_modules/@material-ui/core/node_modules/dom-helpers/package.json
+index c0a88b1..6f6f095 100644
+--- a/node_modules/@material-ui/core/node_modules/dom-helpers/package.json
++++ b/node_modules/@material-ui/core/node_modules/dom-helpers/package.json
+@@ -38,5 +38,47 @@
+   "dependencies": {
+     "@babel/runtime": "^7.8.7",
+     "csstype": "^2.6.7"
++  },
++  "exports": {
++    "./activeElement": "./cjs/activeElement.js",
++    "./addClass": "./cjs/addClass.js",
++    "./addEventListener": "./cjs/addEventListener.js",
++    "./animate": "./cjs/animate.js",
++    "./animationFrame": "./cjs/animationFrame.js",
++    "./camelize": "./cjs/camelize.js",
++    "./camelizeStyle": "./cjs/camelizeStyle.js",
++    "./canUseDOM": "./cjs/canUseDOM.js",
++    "./closest": "./cjs/closest.js",
++    "./contains": "./cjs/contains.js",
++    "./css": "./cjs/css.js",
++    "./esm": "./cjs/esm.js",
++    "./filterEventHandler": "./cjs/filterEventHandler.js",
++    "./getComputedStyle": "./cjs/getComputedStyle.js",
++    "./getScrollAccessor": "./cjs/getScrollAccessor.js",
++    "./hasClass": "./cjs/hasClass.js",
++    "./height": "./cjs/height.js",
++    "./hyphenate": "./cjs/hyphenate.js",
++    "./hyphenateStyle": "./cjs/hyphenateStyle.js",
++    "./isDocument": "./cjs/isDocument.js",
++    "./isTransform": "./cjs/isTransform.js",
++    "./isWindow": "./cjs/isWindow.js",
++    "./listen": "./cjs/listen.js",
++    "./matches": "./cjs/matches.js",
++    "./offset": "./cjs/offset.js",
++    "./offsetParent": "./cjs/offsetParent.js",
++    "./ownerDocument": "./cjs/ownerDocument.js",
++    "./ownerWindow": "./cjs/ownerWindow.js",
++    "./position": "./cjs/position.js",
++    "./querySelectorAll": "./cjs/querySelectorAll.js",
++    "./removeClass": "./cjs/removeClass.js",
++    "./removeEventListener": "./cjs/removeEventListener.js",
++    "./scrollbarSize": "./cjs/scrollbarSize.js",
++    "./scrollLeft": "./cjs/scrollLeft.js",
++    "./scrollParent": "./cjs/scrollParent.js",
++    "./scrollTo": "./cjs/scrollTo.js",
++    "./scrollTop": "./cjs/scrollTop.js",
++    "./toggleClass": "./cjs/toggleClass.js",
++    "./transitionEnd": "./cjs/transitionEnd.js",
++    "./width": "./cjs/width.js"
+   }
+ }

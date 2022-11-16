@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-responsive-carousel/package.json b/node_modules/react-responsive-carousel/package.json
+index 36a911f..04b6819 100644
+--- a/node_modules/react-responsive-carousel/package.json
++++ b/node_modules/react-responsive-carousel/package.json
+@@ -109,6 +109,10 @@
+         "prop-types": "^15.5.8",
+         "react-easy-swipe": "^0.0.21"
+     },
++    "peerDependencies": {
++        "react": "^16.9.0",
++        "react-dom": "^16.9.0"
++    },
+     "jest": {
+         "unmockedModulePathPatterns": [
+             "node_modules"

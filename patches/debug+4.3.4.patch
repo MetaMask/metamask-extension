@@ -1,0 +1,14 @@
+diff --git a/node_modules/debug/package.json b/node_modules/debug/package.json
+index 3bcdc24..b12d101 100644
+--- a/node_modules/debug/package.json
++++ b/node_modules/debug/package.json
+@@ -46,6 +46,9 @@
+     "mocha-lcov-reporter": "^1.2.0",
+     "xo": "^0.23.0"
+   },
++  "peerDependencies": {
++    "supports-color": "*"
++  },
+   "peerDependenciesMeta": {
+     "supports-color": {
+       "optional": true

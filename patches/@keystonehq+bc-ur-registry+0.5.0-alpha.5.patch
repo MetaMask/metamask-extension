@@ -1,3 +1,16 @@
+diff --git a/node_modules/@keystonehq/bc-ur-registry/package.json b/node_modules/@keystonehq/bc-ur-registry/package.json
+index 571a220..b9950ea 100644
+--- a/node_modules/@keystonehq/bc-ur-registry/package.json
++++ b/node_modules/@keystonehq/bc-ur-registry/package.json
+@@ -68,7 +68,7 @@
+   "license": "Apache-2.0",
+   "dependencies": {
+     "@ngraveio/bc-ur": "^1.1.5",
+-    "base58check": "^2.0.0",
++    "bs58check": "^2.0.0",
+     "tslib": "^2.3.0"
+   }
+ }
 diff --git a/node_modules/@keystonehq/bc-ur-registry/src/Bytes.ts b/node_modules/@keystonehq/bc-ur-registry/src/Bytes.ts
 deleted file mode 100644
 index a5f9f7d..0000000

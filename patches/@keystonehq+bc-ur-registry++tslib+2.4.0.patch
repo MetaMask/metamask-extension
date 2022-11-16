@@ -1,0 +1,14 @@
+diff --git a/node_modules/@keystonehq/bc-ur-registry/node_modules/tslib/package.json b/node_modules/@keystonehq/bc-ur-registry/node_modules/tslib/package.json
+index 0ec2c63..8baf5d5 100644
+--- a/node_modules/@keystonehq/bc-ur-registry/node_modules/tslib/package.json
++++ b/node_modules/@keystonehq/bc-ur-registry/node_modules/tslib/package.json
+@@ -31,8 +31,6 @@
+             "module": "./tslib.es6.js",
+             "import": "./modules/index.js",
+             "default": "./tslib.js"
+-        },
+-        "./*": "./*",
+-        "./": "./"
++        }
+     }
+ }

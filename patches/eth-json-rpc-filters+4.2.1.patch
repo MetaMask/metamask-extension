@@ -1,0 +1,22 @@
+diff --git a/node_modules/eth-json-rpc-filters/package.json b/node_modules/eth-json-rpc-filters/package.json
+index ed5b405..9484abf 100644
+--- a/node_modules/eth-json-rpc-filters/package.json
++++ b/node_modules/eth-json-rpc-filters/package.json
+@@ -23,7 +23,8 @@
+     "eth-query": "^2.1.2",
+     "json-rpc-engine": "^5.3.0",
+     "lodash.flatmap": "^4.5.0",
+-    "safe-event-emitter": "^1.0.1"
++    "safe-event-emitter": "^1.0.1",
++    "pify": "^3.0.0"
+   },
+   "devDependencies": {
+     "@babel/core": "^7.5.5",
+@@ -32,7 +33,6 @@
+     "ethereumjs-util": "^6.1.0",
+     "ethjs-query": "^0.3.8",
+     "ganache-core": "^2.7.0",
+-    "pify": "^3.0.0",
+     "tape": "^4.9.1"
+   },
+   "directories": {

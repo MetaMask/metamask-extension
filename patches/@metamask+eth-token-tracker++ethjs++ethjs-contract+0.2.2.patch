@@ -1,0 +1,22 @@
+diff --git a/node_modules/@metamask/eth-token-tracker/node_modules/ethjs/node_modules/ethjs-contract/package.json b/node_modules/@metamask/eth-token-tracker/node_modules/ethjs/node_modules/ethjs-contract/package.json
+index 8e58ff5..6175e73 100644
+--- a/node_modules/@metamask/eth-token-tracker/node_modules/ethjs/node_modules/ethjs-contract/package.json
++++ b/node_modules/@metamask/eth-token-tracker/node_modules/ethjs/node_modules/ethjs-contract/package.json
+@@ -81,7 +81,8 @@
+     "ethjs-abi": "0.2.0",
+     "ethjs-filter": "0.1.8",
+     "ethjs-util": "0.1.3",
+-    "js-sha3": "0.5.5"
++    "js-sha3": "0.5.5",
++    "promise-to-callback": "^1.0.0"
+   },
+   "deprecated": false,
+   "description": "A simple contract object for the Ethereum RPC.",
+@@ -137,7 +138,6 @@
+     "lint-staged": "1.0.1",
+     "mocha": "3.1.2",
+     "pre-commit": "1.1.3",
+-    "promise-to-callback": "^1.0.0",
+     "rimraf": "2.3.4",
+     "webpack": "2.1.0-beta.15"
+   },

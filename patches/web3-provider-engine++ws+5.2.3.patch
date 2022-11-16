@@ -1,0 +1,15 @@
+diff --git a/node_modules/web3-provider-engine/node_modules/ws/package.json b/node_modules/web3-provider-engine/node_modules/ws/package.json
+index 1bbe74c..3f1164a 100644
+--- a/node_modules/web3-provider-engine/node_modules/ws/package.json
++++ b/node_modules/web3-provider-engine/node_modules/ws/package.json
+@@ -28,6 +28,10 @@
+   "dependencies": {
+     "async-limiter": "~1.0.0"
+   },
++  "peerDependencies": {
++    "bufferutil": "~3.0.0",
++    "utf-8-validate": "~4.0.0"
++  },
+   "devDependencies": {
+     "benchmark": "~2.1.2",
+     "bufferutil": "~3.0.0",

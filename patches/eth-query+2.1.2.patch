@@ -21,3 +21,17 @@ index 13e9f3c..d714bb7 100644
      if (!err && response.error) err = new Error('EthQuery - RPC Error - '+response.error.message)
      if (err) return cb(err)
      cb(null, response.result)
+diff --git a/node_modules/eth-query/package.json b/node_modules/eth-query/package.json
+index d51713a..e05ae59 100644
+--- a/node_modules/eth-query/package.json
++++ b/node_modules/eth-query/package.json
+@@ -10,7 +10,8 @@
+   "license": "ISC",
+   "dependencies": {
+     "json-rpc-random-id": "^1.0.0",
+-    "xtend": "^4.0.1"
++    "xtend": "^4.0.1",
++    "debug": "*"
+   },
+   "devDependencies": {},
+   "repository": {
