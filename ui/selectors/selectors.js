@@ -978,6 +978,10 @@ export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
 
+export function getShowBetaHeader(state) {
+  return state.metamask.showBetaHeader;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
