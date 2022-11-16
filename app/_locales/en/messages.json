@@ -444,7 +444,7 @@
     "message": "Beta version disclaimer"
   },
   "betaMetamaskDescriptionExplanation": {
-    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our standard $1 as well as our $2.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
   "betaMetamaskDescriptionExplanation2": {
@@ -458,7 +458,7 @@
     "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
