@@ -274,18 +274,18 @@
   "connect": {
     "message": "เชื่อมต่อ"
   },
-  "connectedSites": {
-    "message": "เว็บไซต์ที่เชื่อมต่อแล้ว"
-  },
-  "connecting": {
-    "message": "กำลังเชื่อมต่อ..."
-  },
   "connectTo": {
     "message": "เชื่อมต่อกับ $1",
     "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
   },
   "connectWithMetaMask": {
     "message": "เชื่อมต่อกับ MetaMask"
+  },
+  "connectedSites": {
+    "message": "เว็บไซต์ที่เชื่อมต่อแล้ว"
+  },
+  "connecting": {
+    "message": "กำลังเชื่อมต่อ..."
   },
   "connectingTo": {
     "message": "กำลังเชื่อมต่อ $1"
@@ -638,9 +638,6 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "อนุญาตให้คุณถอนความยินยอมได้เสมอผ่าน \"การตั้งค่า\""
   },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "ส่งบันทึกการคลิกและการดูหน้าเว็บแบบไม่ระบุตัวตน"
-  },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask จะ..."
   },
@@ -652,6 +649,9 @@
   },
   "metametricsCommitmentsNeverSell": {
     "message": "ไม่ขายข้อมูลเพื่อผลกำไร"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "ส่งบันทึกการคลิกและการดูหน้าเว็บแบบไม่ระบุตัวตน"
   },
   "metametricsHelpImproveMetaMask": {
     "message": "ช่วยให้เราปรับปรุง MetaMask"
@@ -991,6 +991,9 @@
   "statusNotConnected": {
     "message": "ไม่ได้เชื่อมต่อ"
   },
+  "storePhrase": {
+    "message": "เก็บ Secret Recovery Phrase นี้ไว้ในตัวจัดการรหัสผ่านเช่น 1Password"
+  },
   "stxAreHere": {
     "message": "Smart Transactions อยู่ที่นี่แล้ว!"
   },
@@ -1014,9 +1017,6 @@
   },
   "stxYouCanOptOut": {
     "message": "คุณสามารถเลือก \"ไม่ใช้\" ใน \"การตั้งค่าขั้นสูง\" ได้ทุกเมื่อ"
-  },
-  "storePhrase": {
-    "message": "เก็บ Secret Recovery Phrase นี้ไว้ในตัวจัดการรหัสผ่านเช่น 1Password"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
