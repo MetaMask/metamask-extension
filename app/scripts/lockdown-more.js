@@ -23,7 +23,7 @@ try {
    */
   (function protectIntrinsics() {
     const lmre = // regex expression for LavaMoat scuttling error message
-      /LavaMoat - property "[A-Za-z]*" of globalThis is inaccessible under scuttling mode/u;
+      /LavaMoat - property "[A-Za-z0-9]*" of globalThis is inaccessible under scuttling mode/u;
 
     const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
 

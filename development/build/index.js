@@ -95,6 +95,8 @@ async function defineAndRunBuildTasks() {
       'console',
       // globals chrome driver needs to function (test env)
       'parseFloat',
+      'innerWidth',
+      'innerHeight',
       'Symbol',
       'Math',
       'DOMRect',
