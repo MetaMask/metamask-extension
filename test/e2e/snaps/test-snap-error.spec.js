@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -74,6 +75,18 @@ describe('Test Snap Error', function () {
         // switch back to the extension page
         await driver.switchToWindow(extensionPage);
         await driver.delay(1000);
+
+        // look for the actual error and check if it is correct
+        const error = await driver.findElement(
+          '.home-notification__content-container',
+        );
+        const text = await error.getText();
+        assert.equal(
+          text.includes(
+            "Snap Error: 'random error inside'. Error Code: '-32603'",
+          ),
+          true,
+        );
 
         // try to click on the dismiss button and pass test if it works
         await driver.clickElement({
