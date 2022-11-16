@@ -32,6 +32,7 @@
       "js": [
         "disable-console.js",
         "globalthis.js",
+        "setup.js",
         "lockdown-install.js",
         "lockdown-run.js",
         "lockdown-more.js",

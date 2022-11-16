@@ -32,6 +32,7 @@
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
         "disable-console.js",
+        "setup.js",
         "globalthis.js",
         "lockdown-install.js",
         "lockdown-run.js",
