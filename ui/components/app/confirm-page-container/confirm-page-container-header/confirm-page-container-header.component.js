@@ -56,6 +56,7 @@ export default function ConfirmPageContainerHeader({
           >
             <IconCaretLeft />
             <span
+              data-testid="confirm-page-back-edit-button"
               className="confirm-page-container-header__back-button"
               onClick={() => onEdit()}
             >

@@ -482,75 +482,90 @@ export const BorderColor = () => {
 
 export const BorderRadius = () => {
   return (
-    <Box
-      display={DISPLAY.GRID}
-      style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}
-      gap={4}
-    >
+    <>
       <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.NONE}
+        display={DISPLAY.GRID}
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}
+        gap={4}
       >
-        BORDER_RADIUS.NONE 0px
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.NONE}
+        >
+          BORDER_RADIUS.NONE 0px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.XS}
+        >
+          BORDER_RADIUS.XS 2px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.SM}
+        >
+          BORDER_RADIUS.SM 4px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.MD}
+        >
+          BORDER_RADIUS.MD 6px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.LG}
+        >
+          BORDER_RADIUS.LG 8px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.XL}
+        >
+          BORDER_RADIUS.XL 12px
+        </Box>
+        <Box
+          padding={3}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_DEFAULT}
+          borderWidth={2}
+          borderRadius={BORDER_RADIUS.PILL}
+        >
+          BORDER_RADIUS.PILL 9999px
+        </Box>
       </Box>
       <Box
         padding={3}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_DEFAULT}
         borderWidth={2}
-        borderRadius={BORDER_RADIUS.XS}
+        borderRadius={BORDER_RADIUS.FULL}
+        margin={4}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        style={{ height: '250px', width: '250px' }}
       >
-        BORDER_RADIUS.XS 2px
+        BORDER_RADIUS.FULL 50%
       </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.SM}
-      >
-        BORDER_RADIUS.SM 4px
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.MD}
-      >
-        BORDER_RADIUS.MD 6px
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.LG}
-      >
-        BORDER_RADIUS.LG 8px
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.XL}
-      >
-        BORDER_RADIUS.XL 12px
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        borderRadius={BORDER_RADIUS.PILL}
-      >
-        BORDER_RADIUS.PILL 9999px
-      </Box>
-    </Box>
+    </>
   );
 };
 
