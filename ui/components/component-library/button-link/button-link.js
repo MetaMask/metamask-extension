@@ -43,5 +43,3 @@ ButtonLink.propTypes = {
    */
   ...ButtonBase.propTypes,
 };
-
-export default ButtonLink;
