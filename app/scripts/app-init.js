@@ -57,7 +57,6 @@ function importAllScripts() {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('./setup.js');
   loadFile('./globalthis.js');
   loadFile('./sentry-install.js');
 
