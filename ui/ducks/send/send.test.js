@@ -128,7 +128,7 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
     jest
-      .spyOn(Actions, 'isCollectibleOwner')
+      .spyOn(Actions, 'isNftOwner')
       .mockImplementation(() => Promise.resolve(true));
     jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
       type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
@@ -2566,9 +2566,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(
-          editExistingTransaction(ASSET_TYPES.COLLECTIBLE, 1),
-        );
+        await store.dispatch(editExistingTransaction(ASSET_TYPES.NFT, 1));
         const actionResult = store.getActions();
         expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
@@ -2635,7 +2633,7 @@ describe('Send Slice', () => {
                 tokenId: '15000',
               },
               error: null,
-              type: ASSET_TYPES.COLLECTIBLE,
+              type: ASSET_TYPES.NFT,
             },
             initialAssetSet: true,
           },

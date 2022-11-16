@@ -28,11 +28,11 @@ ButtonSecondary.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Boolean to change button type to Danger when true
+   * When true, ButtonSecondary color becomes Danger.
    */
   danger: PropTypes.bool,
   /**
-   * The possible size values for ButtonSecondary: 'SIZES.SM', 'SIZES.MD', 'SIZES.LG',
+   * Possible size values: 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px).
    * Default value is 'SIZES.MD'.
    */
   size: PropTypes.oneOf(Object.values(BUTTON_SECONDARY_SIZES)),

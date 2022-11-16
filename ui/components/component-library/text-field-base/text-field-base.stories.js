@@ -141,16 +141,6 @@ export default {
   },
   args: {
     placeholder: 'Placeholder...',
-    autoFocus: false,
-    defaultValue: '',
-    disabled: false,
-    error: false,
-    id: '',
-    readOnly: false,
-    required: false,
-    size: SIZES.MD,
-    type: 'text',
-    truncate: false,
   },
 };
 
@@ -360,6 +350,90 @@ export const InputRef = (args) => {
     </>
   );
 };
+
+const CustomInputComponent = ({
+  as,
+  autoComplete,
+  autoFocus,
+  defaultValue,
+  disabled,
+  focused,
+  id,
+  maxLength,
+  name,
+  onBlur,
+  onChange,
+  onFocus,
+  padding,
+  paddingLeft,
+  paddingRight,
+  placeholder,
+  readOnly,
+  ref,
+  required,
+  value,
+  variant,
+  type,
+  className,
+  'aria-invalid': ariaInvalid,
+  ...props
+}) => {
+  return (
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      {...{ padding, paddingLeft, paddingRight, ...props }}
+    >
+      <Box display={DISPLAY.INLINE_FLEX}>
+        <Text
+          style={{ padding: 0 }}
+          aria-invalid={ariaInvalid}
+          {...{
+            as,
+            className,
+            autoComplete,
+            autoFocus,
+            defaultValue,
+            disabled,
+            focused,
+            id,
+            maxLength,
+            name,
+            onBlur,
+            onChange,
+            onFocus,
+            placeholder,
+            readOnly,
+            ref,
+            required,
+            value,
+            variant,
+            type,
+          }}
+        />
+        <Text variant={TEXT.BODY_XS} color={COLORS.TEXT_ALTERNATIVE}>
+          GoerliETH
+        </Text>
+      </Box>
+      <Text variant={TEXT.BODY_XS}>No conversion rate available</Text>
+    </Box>
+  );
+};
+
+CustomInputComponent.propTypes = { ...TextFieldBase.propTypes };
+
+export const InputComponent = (args) => (
+  <TextFieldBase
+    {...args}
+    placeholder="0"
+    type="number"
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    leftAccessory={
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+    }
+  />
+);
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {

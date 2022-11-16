@@ -1,14 +1,15 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 const PHISHFORT_CDN_URL =
-  'https://cdn.jsdelivr.net/gh/phishfort/phishfort-lists@master/blacklists/hotlist.json';
+  'https://static.metafi.codefi.network/api/v1/lists/phishfort_hotlist.json';
 
 describe('Phishing Detection', function () {
   async function mockPhishingDetection(mockServer) {
     await mockServer
       .forGet(
-        'https://cdn.jsdelivr.net/gh/MetaMask/eth-phishing-detect@master/src/config.json',
+        'https://static.metafi.codefi.network/api/v1/lists/eth_phishing_detect_config.json',
       )
       .thenCallback(() => {
         return {
@@ -43,7 +44,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -67,7 +68,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -103,7 +104,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
@@ -142,7 +143,7 @@ describe('Phishing Detection', function () {
   it('should display the MetaMask Phishing Detection page with the correct new issue link if the issue was detected from the phishfort list', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishfortPhishingDetection,

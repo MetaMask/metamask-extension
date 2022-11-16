@@ -2,8 +2,9 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { SIZES } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
 
 import { TextFieldBase } from './text-field-base';
 
@@ -23,6 +24,21 @@ describe('TextFieldBase', () => {
     expect(textFieldBase.value).toBe('text value');
     fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
     expect(textFieldBase.value).toBe(''); // value is empty string after reset
+  });
+  it('should render with focused state when clicked', () => {
+    const { getByTestId } = render(
+      <TextFieldBase
+        data-testid="text-field-base"
+        inputProps={{ 'data-testid': 'input' }}
+      />,
+    );
+    const textFieldBase = getByTestId('text-field-base');
+
+    fireEvent.click(textFieldBase);
+    expect(getByTestId('input')).toHaveFocus();
+    expect(getByTestId('text-field-base')).toHaveClass(
+      'mm-text-field-base--focused ',
+    );
   });
   it('should render and fire onFocus and onBlur events', () => {
     const onFocus = jest.fn();
@@ -103,11 +119,17 @@ describe('TextFieldBase', () => {
       'password',
     );
   });
-  it('should render with truncate class', () => {
+  it('should render with truncate class as true by default and remove it when truncate is false', () => {
     const { getByTestId } = render(
-      <TextFieldBase truncate data-testid="truncate" />,
+      <>
+        <TextFieldBase data-testid="truncate" />
+        <TextFieldBase truncate={false} data-testid="no-truncate" />
+      </>,
     );
     expect(getByTestId('truncate')).toHaveClass('mm-text-field-base--truncate');
+    expect(getByTestId('no-truncate')).not.toHaveClass(
+      'mm-text-field-base--truncate',
+    );
   });
   it('should render with right and left accessories', () => {
     const { getByRole, getByText } = render(
@@ -167,11 +189,7 @@ describe('TextFieldBase', () => {
   });
   it('should render with error className when error is true', () => {
     const { getByTestId } = render(
-      <TextFieldBase
-        error
-        value="error value"
-        data-testid="text-field-base-error"
-      />,
+      <TextFieldBase error data-testid="text-field-base-error" />,
     );
     expect(getByTestId('text-field-base-error')).toHaveClass(
       'mm-text-field-base--error',
@@ -190,8 +208,12 @@ describe('TextFieldBase', () => {
     const { getByTestId } = render(
       <TextFieldBase
         readOnly
+        data-testid="read-only"
         inputProps={{ 'data-testid': 'text-field-base-readonly' }}
       />,
+    );
+    expect(getByTestId('read-only')).not.toHaveClass(
+      'mm-text-field-base--focused ',
     );
     expect(getByTestId('text-field-base-readonly')).toHaveAttribute(
       'readonly',
@@ -209,5 +231,24 @@ describe('TextFieldBase', () => {
       'required',
       '',
     );
+  });
+  it('should render with a custom input and still work', () => {
+    const CustomInputComponent = React.forwardRef((props, ref) => (
+      <Box ref={ref} as="input" {...props} />
+    ));
+    CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
+    const { getByTestId } = render(
+      <TextFieldBase
+        InputComponent={CustomInputComponent}
+        inputProps={{ 'data-testid': 'text-field-base', className: 'test' }}
+      />,
+    );
+    const textFieldBase = getByTestId('text-field-base');
+
+    expect(textFieldBase.value).toBe(''); // initial value is empty string
+    fireEvent.change(textFieldBase, { target: { value: 'text value' } });
+    expect(textFieldBase.value).toBe('text value');
+    fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
+    expect(textFieldBase.value).toBe(''); // value is empty string after reset
   });
 });

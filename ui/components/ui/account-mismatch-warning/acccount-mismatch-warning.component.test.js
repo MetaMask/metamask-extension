@@ -1,35 +1,35 @@
 import React from 'react';
-import * as reactRedux from 'react-redux';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
-import InfoIcon from '../icon/info-icon.component';
-import { getSelectedAccount } from '../../../selectors';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
 import AccountMismatchWarning from './account-mismatch-warning.component';
 
 describe('AccountMismatchWarning', () => {
-  beforeAll(() => {
-    sinon.stub(reactRedux, 'useSelector').callsFake((selector) => {
-      if (selector === getSelectedAccount) {
-        return { address: 'mockedAddress' };
-      }
-      throw new Error(
-        `${selector.name} is not cared for in the AccountMismatchWarning test useSelector stub`,
-      );
-    });
-  });
+  const mockStore = configureMockStore()(mockState);
 
-  afterAll(() => {
-    sinon.restore();
-  });
+  it('should match snapshot of no warning with same address and selected address', () => {
+    const props = {
+      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    };
 
-  it('renders nothing when the addresses match', () => {
-    const wrapper = shallow(<AccountMismatchWarning address="mockedAddress" />);
-    expect(wrapper.find(InfoIcon)).toHaveLength(0);
-  });
-  it('renders a warning info icon when addresses do not match', () => {
-    const wrapper = shallow(
-      <AccountMismatchWarning address="mockedAddress2" />,
+    const { container } = renderWithProvider(
+      <AccountMismatchWarning {...props} />,
+      mockStore,
     );
-    expect(wrapper.find(InfoIcon)).toHaveLength(1);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot of mismatch address warning', () => {
+    const props = {
+      address: '0xNotSelectedAddress',
+    };
+
+    const { container } = renderWithProvider(
+      <AccountMismatchWarning {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

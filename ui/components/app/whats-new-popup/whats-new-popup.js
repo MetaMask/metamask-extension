@@ -54,13 +54,13 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 12: true });
       history.push(EXPERIMENTAL_ROUTE);
     },
-    13: () => {
-      updateViewedNotifications({ 13: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#show-custom-network`);
-    },
     14: () => {
       updateViewedNotifications({ 14: true });
       history.push(`${ADVANCED_ROUTE}#backup-userdata`);
+    },
+    16: () => {
+      updateViewedNotifications({ 16: true });
+      history.push(EXPERIMENTAL_ROUTE);
     },
   };
 

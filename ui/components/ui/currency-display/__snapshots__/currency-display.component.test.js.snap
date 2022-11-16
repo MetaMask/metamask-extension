@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyDisplay Component should match default snapshot 1`] = `
+<div>
+  <div
+    class="currency-display-component"
+    title="null"
+  >
+    <span
+      class="currency-display-component__prefix"
+    />
+    <span
+      class="currency-display-component__text"
+    />
+  </div>
+</div>
+`;
+
+exports[`CurrencyDisplay Component should render text with a className 1`] = `
+<div>
+  <div
+    class="currency-display-component currency-display"
+    title="$123.45"
+  >
+    <span
+      class="currency-display-component__prefix"
+    />
+    <span
+      class="currency-display-component__text"
+    >
+      $123.45
+    </span>
+  </div>
+</div>
+`;
+
+exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
+<div>
+  <div
+    class="currency-display-component currency-display"
+    title="-$123.45"
+  >
+    <span
+      class="currency-display-component__prefix"
+    />
+    <span
+      class="currency-display-component__text"
+    >
+      -
+      $123.45
+    </span>
+  </div>
+</div>
+`;

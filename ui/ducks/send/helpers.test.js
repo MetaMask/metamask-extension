@@ -64,7 +64,7 @@ describe('Send Slice Helpers', () => {
             value: '0x1',
           },
           asset: {
-            type: ASSET_TYPES.COLLECTIBLE,
+            type: ASSET_TYPES.NFT,
             balance: '0xaf',
             details: {
               address: '0xToken',

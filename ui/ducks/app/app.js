@@ -4,9 +4,6 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-// actionConstants
-const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED';
-
 export default function reduceApp(state = {}, action) {
   // default state
   const appState = {
@@ -42,8 +39,6 @@ export default function reduceApp(state = {}, action) {
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -63,6 +58,7 @@ export default function reduceApp(state = {}, action) {
     newTokensImported: '',
     newCustomNetworkAdded: {},
     onboardedInThisUISession: false,
+    customTokenAmount: '',
     ...state,
   };
 
@@ -341,12 +337,6 @@ export default function reduceApp(state = {}, action) {
         loadingMethodData: false,
       };
 
-    case SET_THREEBOX_LAST_UPDATED:
-      return {
-        ...appState,
-        threeBoxLastUpdated: action.value,
-      };
-
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
       return {
         ...appState,
@@ -412,19 +402,17 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         onboardedInThisUISession: action.value,
       };
+    case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
+      return {
+        ...appState,
+        customTokenAmount: action.value,
+      };
     default:
       return appState;
   }
 }
 
 // Action Creators
-export function setThreeBoxLastUpdated(lastUpdated) {
-  return {
-    type: SET_THREEBOX_LAST_UPDATED,
-    value: lastUpdated,
-  };
-}
-
 export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
@@ -480,4 +468,8 @@ export function setNewCustomNetworkAdded(value) {
 
 export function setOnBoardedInThisUISession(value) {
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
+}
+
+export function setCustomTokenAmount(value) {
+  return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, value };
 }

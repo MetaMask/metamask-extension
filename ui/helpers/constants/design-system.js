@@ -193,6 +193,7 @@ export const BORDER_RADIUS = {
   XL: SIZES.XL,
   NONE,
   PILL: 'pill',
+  FULL: 'full',
 };
 
 const FLEX_END = 'flex-end';
