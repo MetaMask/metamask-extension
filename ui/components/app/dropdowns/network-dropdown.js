@@ -19,7 +19,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
-  ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -50,7 +49,6 @@ function mapStateToProps(state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
-    addPopularNetworkFeatureToggledOn: state.metamask.customNetworkListEnabled,
   };
 }
 
@@ -103,7 +101,6 @@ class NetworkDropdown extends Component {
     showTestnetMessageInDropdown: PropTypes.bool.isRequired,
     hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
-    addPopularNetworkFeatureToggledOn: PropTypes.bool,
   };
 
   handleClick(newProviderType) {
@@ -130,13 +127,11 @@ class NetworkDropdown extends Component {
         <Button
           type="secondary"
           onClick={() => {
-            if (this.props.addPopularNetworkFeatureToggledOn) {
-              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
-            } else {
-              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
-                : this.props.history.push(ADD_NETWORK_ROUTE);
-            }
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+              ? global.platform.openExtensionInBrowser(
+                  ADD_POPULAR_CUSTOM_NETWORK,
+                )
+              : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             this.props.hideNetworkDropdown();
           }}
         >
@@ -212,28 +207,20 @@ class NetworkDropdown extends Component {
   getNetworkName() {
     const { provider } = this.props;
     const providerName = provider.type;
+    const { t } = this.context;
 
-    let name;
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('mainnet');
-    } else if (providerName === 'ropsten') {
-      name = this.context.t('ropsten');
-    } else if (providerName === 'kovan') {
-      name = this.context.t('kovan');
-    } else if (providerName === 'rinkeby') {
-      name = this.context.t('rinkeby');
-    } else if (providerName === 'goerli') {
-      name = this.context.t('goerli');
-    } else if (providerName === 'sepolia') {
-      name = this.context.t('sepolia');
-    } else if (providerName === 'localhost') {
-      name = this.context.t('localhost');
-    } else {
-      name = provider.nickname || this.context.t('unknownNetwork');
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
     }
-
-    return name;
   }
 
   renderNetworkEntry(network) {
@@ -347,7 +334,7 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {this.renderNetworkEntry('mainnet')}
+          {this.renderNetworkEntry(NETWORK_TYPES.MAINNET)}
 
           {this.renderCustomRpcList(
             rpcListDetailWithoutLocalHost,
@@ -356,11 +343,8 @@ class NetworkDropdown extends Component {
 
           {shouldShowTestNetworks && (
             <>
-              {this.renderNetworkEntry('ropsten')}
-              {this.renderNetworkEntry('kovan')}
-              {this.renderNetworkEntry('rinkeby')}
-              {this.renderNetworkEntry('goerli')}
-              {this.renderNetworkEntry('sepolia')}
+              {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
+              {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

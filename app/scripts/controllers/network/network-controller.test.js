@@ -134,42 +134,6 @@ describe('NetworkController', () => {
     it('getNetworkDisplayName should return the correct network name', () => {
       const tests = [
         {
-          input: '3',
-          expected: 'Ropsten',
-        },
-        {
-          input: '4',
-          expected: 'Rinkeby',
-        },
-        {
-          input: '42',
-          expected: 'Kovan',
-        },
-        {
-          input: '0x3',
-          expected: 'Ropsten',
-        },
-        {
-          input: '0x4',
-          expected: 'Rinkeby',
-        },
-        {
-          input: '0x2a',
-          expected: 'Kovan',
-        },
-        {
-          input: 'ropsten',
-          expected: 'Ropsten',
-        },
-        {
-          input: 'rinkeby',
-          expected: 'Rinkeby',
-        },
-        {
-          input: 'kovan',
-          expected: 'Kovan',
-        },
-        {
           input: 'mainnet',
           expected: 'Ethereum Mainnet',
         },

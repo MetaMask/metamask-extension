@@ -11,6 +11,7 @@ import {
   MOONPAY_API_KEY,
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
+import { formatMoonpaySymbol } from '../../../ui/helpers/utils/moonpay';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -19,15 +20,20 @@ const fetchWithTimeout = getFetchWithTimeout();
  *
  * @param {string} walletAddress - Ethereum destination address
  * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
  * @returns String
  */
-const createWyrePurchaseUrl = async (walletAddress, chainId) => {
+const createWyrePurchaseUrl = async (walletAddress, chainId, symbol) => {
   const { wyre = {} } = BUYABLE_CHAINS_MAP[chainId];
   const { srn, currencyCode } = wyre;
 
   const networkId = parseInt(chainId, 16);
-  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}`;
-  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${currencyCode}&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}&currency=${
+    symbol || currencyCode
+  }`;
+  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${
+    symbol || currencyCode
+  }&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
@@ -75,15 +81,17 @@ const createTransakUrl = (walletAddress, chainId, symbol) => {
  *
  * @param {string} walletAddress - Destination address
  * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
  * @returns String
  */
-const createMoonPayUrl = async (walletAddress, chainId) => {
+const createMoonPayUrl = async (walletAddress, chainId, symbol) => {
   const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
     BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,
-    defaultCurrencyCode,
+    defaultCurrencyCode:
+      formatMoonpaySymbol(symbol, chainId) || defaultCurrencyCode,
     showOnlyCurrencies,
   });
   const queryParams = new URLSearchParams({
@@ -155,19 +163,15 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
 
   switch (service) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address, chainId);
+      return await createWyrePurchaseUrl(address, chainId, symbol);
     case 'transak':
       return createTransakUrl(address, chainId, symbol);
     case 'moonpay':
-      return createMoonPayUrl(address, chainId);
+      return createMoonPayUrl(address, chainId, symbol);
     case 'coinbase':
       return createCoinbasePayUrl(address, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
-    case 'rinkeby-faucet':
-      return 'https://www.rinkeby.io/';
-    case 'kovan-faucet':
-      return 'https://github.com/kovan-testnet/faucet';
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/';
     case 'sepolia-faucet':
@@ -183,12 +187,6 @@ function getDefaultServiceForChain(chainId) {
   switch (chainId) {
     case CHAIN_IDS.MAINNET:
       return 'wyre';
-    case CHAIN_IDS.ROPSTEN:
-      return 'metamask-faucet';
-    case CHAIN_IDS.RINKEBY:
-      return 'rinkeby-faucet';
-    case CHAIN_IDS.KOVAN:
-      return 'kovan-faucet';
     case CHAIN_IDS.GOERLI:
       return 'goerli-faucet';
     case CHAIN_IDS.SEPOLIA:

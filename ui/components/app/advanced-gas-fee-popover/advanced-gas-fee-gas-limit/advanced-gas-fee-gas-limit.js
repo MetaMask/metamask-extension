@@ -51,6 +51,7 @@ const AdvancedGasFeeGasLimit = () => {
         onChange={updateGasLimit}
         titleText={t('gasLimitV2')}
         value={gasLimit}
+        allowDecimals={false}
         numeric
       />
     );

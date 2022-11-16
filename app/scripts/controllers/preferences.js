@@ -39,7 +39,7 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
-      useCollectibleDetection: false,
+      useNftDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
 
@@ -69,7 +69,7 @@ export default class PreferencesController {
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
-      customNetworkListEnabled: false,
+      improvedTokenAllowanceEnabled: false,
       ...opts.initState,
     };
 
@@ -142,12 +142,12 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useCollectibleDetection` property
+   * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useCollectibleDetection - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
    */
-  setUseCollectibleDetection(useCollectibleDetection) {
-    this.store.updateState({ useCollectibleDetection });
+  setUseNftDetection(useNftDetection) {
+    this.store.updateState({ useNftDetection });
   }
 
   /**
@@ -189,13 +189,13 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `customNetworkListEnabled` property
+   * Setter for the `improvedTokenAllowanceEnabled` property
    *
-   * @param customNetworkListEnabled
+   * @param improvedTokenAllowanceEnabled
    */
-  setCustomNetworkListEnabled(customNetworkListEnabled) {
+  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
     this.store.updateState({
-      customNetworkListEnabled,
+      improvedTokenAllowanceEnabled,
     });
   }
 
@@ -263,7 +263,7 @@ export default class PreferencesController {
     // If the selected account is no longer valid,
     // select an arbitrary other account:
     if (address === this.getSelectedAddress()) {
-      const selected = Object.keys(identities)[0];
+      const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
     return address;
@@ -326,7 +326,7 @@ export default class PreferencesController {
     // select an arbitrary other account:
     let selected = this.getSelectedAddress();
     if (!addresses.includes(selected)) {
-      selected = addresses[0];
+      [selected] = addresses;
       this.setSelectedAddress(selected);
     }
 

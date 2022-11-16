@@ -8,9 +8,6 @@
   "about": {
     "message": "Tungkol sa"
   },
-  "acceleratingATransaction": {
-    "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
-  },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
   },
@@ -172,17 +169,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
   },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"
@@ -225,12 +213,6 @@
   },
   "currentLanguage": {
     "message": "Kasalukuyang Wika"
-  },
-  "customGas": {
-    "message": "I-customize ang Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Maaaring mas bumilis ang pagpoproseso kapag dinagdagan ang fee, pero hindi ito garantisado."
   },
   "customToken": {
     "message": "Custom na Token"
@@ -315,9 +297,6 @@
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Tinatantiyang Tagal ng Pagproseso"
   },
   "etherscanView": {
     "message": "Tingnan ang account sa Etherscan"
@@ -538,12 +517,6 @@
   "newToMetaMask": {
     "message": "Bago ka ba sa MetaMask?"
   },
-  "newTotal": {
-    "message": "Bagong Total"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Transaction Fee"
-  },
   "next": {
     "message": "Susunod"
   },
@@ -728,9 +701,6 @@
   "seedPhraseReq": {
     "message": "Ang mga seed phrase ay may habang 12 salita"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas mataas na gas fee para pabilisin ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAnAccount": {
     "message": "Pumili ng Account"
   },
@@ -748,9 +718,6 @@
   },
   "send": {
     "message": "Ipadala"
-  },
-  "sendAmount": {
-    "message": "Magpadala ng Halaga"
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
@@ -787,9 +754,6 @@
   },
   "signed": {
     "message": "Na-sign"
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."

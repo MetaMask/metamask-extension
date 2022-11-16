@@ -7,6 +7,9 @@
 
 .tx-insight {
   overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 
   &-loading {
     display: flex;
@@ -165,6 +168,12 @@
         text-align: center;
         color: var(--color-text-muted);
       }
+    }
+  }
+
+  .tx-insight-component-address {
+    &__sender-icon {
+      padding-right: 8px;
     }
   }
 }

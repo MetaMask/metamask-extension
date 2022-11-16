@@ -128,7 +128,7 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
     jest
-      .spyOn(Actions, 'isCollectibleOwner')
+      .spyOn(Actions, 'isNftOwner')
       .mockImplementation(() => Promise.resolve(true));
     jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
       type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
@@ -723,7 +723,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
@@ -747,7 +747,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
@@ -772,7 +772,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -797,7 +797,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x4',
+            chainId: '0x5',
             tokens: [{ address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }],
             useTokenDetection: true,
             tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
@@ -1287,12 +1287,12 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              0x4: {
+              0x5: {
                 '0xAddress': '0x0',
               },
             },
             provider: {
-              chainId: '0x4',
+              chainId: '0x5',
             },
             useTokenDetection: true,
             tokenList: {
@@ -1574,10 +1574,10 @@ describe('Send Slice', () => {
           blockGasLimit: '',
           selectedAddress: '',
           provider: {
-            chainId: CHAIN_IDS.RINKEBY,
+            chainId: CHAIN_IDS.GOERLI,
           },
           cachedBalances: {
-            [CHAIN_IDS.RINKEBY]: {
+            [CHAIN_IDS.GOERLI]: {
               '0xAddress': '0x0',
             },
           },
@@ -2166,7 +2166,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: CHAIN_IDS.RINKEBY,
+              chainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2215,7 +2215,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             provider: {
-              chainId: CHAIN_IDS.RINKEBY,
+              chainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2373,11 +2373,11 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             provider: {
-              chainId: CHAIN_IDS.RINKEBY,
+              chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [CHAIN_IDS.RINKEBY]: {},
+              [CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2387,7 +2387,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [CHAIN_IDS.RINKEBY]: {
+              [CHAIN_IDS.GOERLI]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2508,11 +2508,11 @@ describe('Send Slice', () => {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
             provider: {
-              chainId: CHAIN_IDS.RINKEBY,
+              chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [CHAIN_IDS.RINKEBY]: {},
+              [CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2522,7 +2522,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [CHAIN_IDS.RINKEBY]: {
+              [CHAIN_IDS.GOERLI]: {
                 '0xAddress': '0x0',
               },
             },
@@ -2566,9 +2566,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(
-          editExistingTransaction(ASSET_TYPES.COLLECTIBLE, 1),
-        );
+        await store.dispatch(editExistingTransaction(ASSET_TYPES.NFT, 1));
         const actionResult = store.getActions();
         expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
@@ -2635,7 +2633,7 @@ describe('Send Slice', () => {
                 tokenId: '15000',
               },
               error: null,
-              type: ASSET_TYPES.COLLECTIBLE,
+              type: ASSET_TYPES.NFT,
             },
             initialAssetSet: true,
           },
@@ -2682,7 +2680,7 @@ describe('Send Slice', () => {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
           provider: {
-            chainId: CHAIN_IDS.RINKEBY,
+            chainId: CHAIN_IDS.GOERLI,
           },
           tokens: [
             {
@@ -2697,7 +2695,7 @@ describe('Send Slice', () => {
             },
           },
           addressBook: {
-            [CHAIN_IDS.RINKEBY]: {},
+            [CHAIN_IDS.GOERLI]: {},
           },
           identities: {},
           accounts: {
@@ -2707,7 +2705,7 @@ describe('Send Slice', () => {
             },
           },
           cachedBalances: {
-            [CHAIN_IDS.RINKEBY]: {
+            [CHAIN_IDS.GOERLI]: {
               '0xAddress': '0x0',
             },
           },

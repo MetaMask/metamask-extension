@@ -164,11 +164,33 @@ export default class PermissionConnect extends Component {
   }
 
   selectAccounts = (addresses) => {
+    const {
+      confirmPermissionPath,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapInstallPath,
+      snapUpdatePath,
+      isSnap,
+      permissionsRequest,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      () => this.props.history.push(this.props.confirmPermissionPath),
+      ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+      () => this.props.history.push(confirmPermissionPath),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      () =>
+        this.props.history.push(
+          // eslint-disable-next-line no-nested-ternary
+          isSnap
+            ? permissionsRequest.newPermissions
+              ? snapUpdatePath
+              : snapInstallPath
+            : confirmPermissionPath,
+        ),
+      ///: END:ONLY_INCLUDE_IN
     );
   };
 
@@ -313,7 +335,10 @@ export default class PermissionConnect extends Component {
                 <SnapInstall
                   request={permissionsRequest || {}}
                   approveSnapInstall={(requestId) => {
-                    approvePendingApproval(requestId, true);
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      approvedAccounts: [...selectedAccountAddresses],
+                    });
                     this.redirect(true);
                   }}
                   rejectSnapInstall={(requestId) => {
@@ -340,7 +365,10 @@ export default class PermissionConnect extends Component {
                 <SnapUpdate
                   request={permissionsRequest || {}}
                   approveSnapUpdate={(requestId) => {
-                    approvePendingApproval(requestId, true);
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      approvedAccounts: [...selectedAccountAddresses],
+                    });
                     this.redirect(true);
                   }}
                   rejectSnapUpdate={(requestId) => {

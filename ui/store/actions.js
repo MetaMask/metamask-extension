@@ -1056,6 +1056,10 @@ export async function removeSnapError(msgData) {
   return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
+export async function handleSnapRequest(args) {
+  return submitRequestToBackground('handleSnapRequest', [args]);
+}
+
 export function dismissNotifications(ids) {
   return async (dispatch) => {
     await submitRequestToBackground('dismissNotifications', [ids]);
@@ -1777,7 +1781,7 @@ export async function getBalancesInSingleCall(tokens) {
   return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
 }
 
-export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function addNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add collectible without address');
@@ -1789,7 +1793,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectible', [address, tokenID]);
+      await submitRequestToBackground('addNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1800,7 +1804,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export function addCollectibleVerifyOwnership(
+export function addNftVerifyOwnership(
   address,
   tokenID,
   dontShowLoadingIndicator,
@@ -1816,7 +1820,7 @@ export function addCollectibleVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectibleVerifyOwnership', [
+      await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
       ]);
@@ -1837,11 +1841,7 @@ export function addCollectibleVerifyOwnership(
   };
 }
 
-export function removeAndIgnoreCollectible(
-  address,
-  tokenID,
-  dontShowLoadingIndicator,
-) {
+export function removeAndIgnoreNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot ignore collectible without address');
@@ -1853,10 +1853,7 @@ export function removeAndIgnoreCollectible(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreCollectible', [
-        address,
-        tokenID,
-      ]);
+      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1867,7 +1864,7 @@ export function removeAndIgnoreCollectible(
   };
 }
 
-export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function removeNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot remove collectible without address');
@@ -1879,7 +1876,7 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeCollectible', [address, tokenID]);
+      await submitRequestToBackground('removeNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1890,31 +1887,27 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
-  await submitRequestToBackground(
-    'checkAndUpdateAllCollectiblesOwnershipStatus',
-  );
+export async function checkAndUpdateAllNftsOwnershipStatus() {
+  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus');
 }
 
-export async function isCollectibleOwner(
+export async function isNftOwner(
   ownerAddress,
   collectibleAddress,
   collectibleId,
 ) {
-  return await submitRequestToBackground('isCollectibleOwner', [
+  return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
     collectibleAddress,
     collectibleId,
   ]);
 }
 
-export async function checkAndUpdateSingleCollectibleOwnershipStatus(
-  collectible,
-) {
-  await submitRequestToBackground(
-    'checkAndUpdateSingleCollectibleOwnershipStatus',
-    [collectible, false],
-  );
+export async function checkAndUpdateSingleNftOwnershipStatus(collectible) {
+  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
+    collectible,
+    false,
+  ]);
 }
 
 export async function getTokenStandardAndDetails(
@@ -2725,11 +2718,11 @@ export function setUseTokenDetection(val) {
   };
 }
 
-export function setUseCollectibleDetection(val) {
+export function setUseNftDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseCollectibleDetection`);
-    callBackgroundMethod('setUseCollectibleDetection', [val], (err) => {
+    log.debug(`background.setUseNftDetection`);
+    callBackgroundMethod('setUseNftDetection', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2751,11 +2744,11 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
-export function detectCollectibles() {
+export function detectNfts() {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectCollectibles`);
-    await submitRequestToBackground('detectCollectibles');
+    log.debug(`background.detectNfts`);
+    await submitRequestToBackground('detectNfts');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3333,108 +3326,6 @@ export function setSeedPhraseBackedUp(seedPhraseBackupState) {
   };
 }
 
-export function initializeThreeBox() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('initializeThreeBox', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function setShowRestorePromptToFalse() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('setShowRestorePromptToFalse', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOn() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('turnThreeBoxSyncingOn', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function restoreFromThreeBox(accountAddress) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('restoreFromThreeBox', [accountAddress], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function getThreeBoxLastUpdated() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('getThreeBoxLastUpdated', [], (err, lastUpdated) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve(lastUpdated);
-      });
-    });
-  };
-}
-
-export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'setThreeBoxSyncingPermission',
-        [threeBoxSyncingAllowed],
-        (err) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOnAndInitialize() {
-  return async (dispatch) => {
-    await dispatch(setThreeBoxSyncingPermission(true));
-    await dispatch(turnThreeBoxSyncingOn());
-    await dispatch(initializeThreeBox(true));
-  };
-}
-
 export function setNextNonce(nextNonce) {
   return {
     type: actionConstants.SET_NEXT_NONCE,
@@ -3614,7 +3505,10 @@ export async function closeNotificationPopup() {
  * @returns {Promise<void>}
  */
 export function trackMetaMetricsEvent(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsEvent', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function createEventFragment(options) {
@@ -3646,7 +3540,10 @@ export function finalizeEventFragment(id, options) {
  * @param {MetaMetricsPageOptions} options - options for handling the page view
  */
 export function trackMetaMetricsPage(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsPage', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsPage', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap) {
@@ -3676,6 +3573,7 @@ export async function setSmartTransactionsOptInStatus(
   prevOptInState,
 ) {
   trackMetaMetricsEvent({
+    actionId: generateActionId(),
     event: 'STX OptIn',
     category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
@@ -3887,11 +3785,13 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
-export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+export function setImprovedTokenAllowanceEnabled(
+  improvedTokenAllowanceEnabled,
+) {
   return async () => {
     try {
-      await submitRequestToBackground('setCustomNetworkListEnabled', [
-        customNetworkListEnabled,
+      await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
+        improvedTokenAllowanceEnabled,
       ]);
     } catch (error) {
       log.error(error);
@@ -3937,7 +3837,10 @@ export function addCustomNetwork(customRpc) {
   return async (dispatch) => {
     try {
       dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [customRpc]);
+      await submitRequestToBackground('addCustomNetwork', [
+        customRpc,
+        generateActionId(),
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));

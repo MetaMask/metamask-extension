@@ -32,7 +32,7 @@ describe('Confirm Page Container Container Test', () => {
       id: 8783053010106567,
       time: 1656448479005,
       status: 'unapproved',
-      metamaskNetworkId: '4',
+      metamaskNetworkId: '5',
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
       loadingDefaults: false,
@@ -92,7 +92,7 @@ describe('Confirm Page Container Container Test', () => {
       expect(senderRecipient).toBeInTheDocument();
     });
     it('should render recipient as address', () => {
-      const recipientName = screen.queryByText(shortenAddress(props.toAddress));
+      const recipientName = screen.queryByText('New contract');
       expect(recipientName).toBeInTheDocument();
     });
 
@@ -118,13 +118,13 @@ describe('Confirm Page Container Container Test', () => {
 
   describe('Contact/AddressBook name should appear in recipient header', () => {
     it('should not show add to address dialog if recipient is in contact list and should display contact name', () => {
-      const addressBookName = 'test save name';
+      const addressBookName = 'New contract';
 
       const addressBook = {
-        '0x4': {
+        '0x5': {
           '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8': {
             address: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-            chainId: '0x4',
+            chainId: '054',
             isEns: false,
             memo: '',
             name: addressBookName,

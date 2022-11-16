@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import {
@@ -17,6 +17,7 @@ import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -277,25 +278,25 @@ export function getEnableEIP1559V2NoticeDismissed(state) {
 export const getCollectibles = (state) => {
   const {
     metamask: {
-      allCollectibles,
+      allNfts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
   const {
     metamask: {
-      allCollectibleContracts,
+      allNftContracts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {

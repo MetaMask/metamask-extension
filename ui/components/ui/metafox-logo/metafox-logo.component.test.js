@@ -1,27 +1,22 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import MetaFoxLogo from '.';
 
-describe('MetaFoxLogo', () => {
-  it('sets icon height and width to 42 by default', () => {
-    const wrapper = mount(<MetaFoxLogo />);
+// eslint-disable-next-line react/display-name
+jest.mock('./horizontal-logo.js', () => () => {
+  return <div></div>;
+});
 
-    expect(
-      wrapper.find('img.app-header__metafox-logo--icon').prop('width'),
-    ).toStrictEqual(42);
-    expect(
-      wrapper.find('img.app-header__metafox-logo--icon').prop('height'),
-    ).toStrictEqual(42);
+describe('MetaFoxLogo', () => {
+  it('should match snapshot with img width and height default set to 42', () => {
+    const { container } = renderWithProvider(<MetaFoxLogo />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('does not set icon height and width when unsetIconHeight is true', () => {
-    const wrapper = mount(<MetaFoxLogo unsetIconHeight />);
+    const { container } = renderWithProvider(<MetaFoxLogo unsetIconHeight />);
 
-    expect(
-      wrapper.find('img.app-header__metafox-logo--icon').prop('width'),
-    ).toBeUndefined();
-    expect(
-      wrapper.find('img.app-header__metafox-logo--icon').prop('height'),
-    ).toBeUndefined();
+    expect(container).toMatchSnapshot();
   });
 });

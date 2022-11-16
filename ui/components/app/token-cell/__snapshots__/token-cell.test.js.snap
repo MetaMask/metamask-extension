@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Token Cell should match snapshot 1`] = `
+<div>
+  <div
+    class="list-item asset-list-item token-cell"
+    role="button"
+    tabindex="0"
+  >
+    <div
+      class="list-item__icon"
+    >
+      <div
+        class=""
+      >
+        <div
+          class="identicon token-cell__icon"
+          style="height: 32px; width: 32px; border-radius: 16px;"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(1, 119, 142);"
+          >
+            <svg
+              height="32"
+              width="32"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#234CE1"
+                height="32"
+                transform="translate(-6.755009921344284 0.22970804166999115) rotate(257.8 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#03445E"
+                height="32"
+                transform="translate(-16.888022167332927 0.15842627027688103) rotate(219.9 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#F96001"
+                height="32"
+                transform="translate(-7.464671435864012 -28.483778328962412) rotate(303.1 16 16)"
+                width="32"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="list-item__heading"
+    >
+      <button
+        class="asset-list-item__token-button"
+        data-testid="token-button"
+        title="5.000 TEST"
+      >
+        <h2>
+          <span
+            class="asset-list-item__token-value"
+          >
+            5.000
+          </span>
+          <span
+            class="asset-list-item__token-symbol"
+          >
+            TEST
+          </span>
+        </h2>
+      </button>
+    </div>
+    <div
+      class="list-item__subheading"
+    >
+      <h3
+        title="$0.52 USD"
+      >
+        $0.52 USD
+      </h3>
+    </div>
+    <div
+      class="list-item__right-content"
+    >
+      <i
+        class="fas fa-chevron-right asset-list-item__chevron-right"
+      />
+      <a
+        class="button btn-link asset-list-item__send-token-button"
+        role="button"
+        tabindex="0"
+      >
+        Send TEST
+      </a>
+    </div>
+  </div>
+</div>
+`;

@@ -28,6 +28,8 @@ import {
   getIsBuyableCoinbasePayChain,
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
+  getIsBuyableMoonpayToken,
+  getIsBuyableWyreToken,
 } from '../../../selectors/selectors';
 
 import OnRampItem from './on-ramp-item';
@@ -53,6 +55,12 @@ const DepositPopover = ({ onClose, token }) => {
   const isTokenBuyableTransak = useSelector((state) =>
     getIsBuyableTransakToken(state, token?.symbol),
   );
+  const isTokenBuyableMoonpay = useSelector((state) =>
+    getIsBuyableMoonpayToken(state, token?.symbol),
+  );
+  const isTokenBuyableWyre = useSelector((state) =>
+    getIsBuyableWyreToken(state, token?.symbol),
+  );
 
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const symbol = token
@@ -77,10 +85,12 @@ const DepositPopover = ({ onClose, token }) => {
     );
   };
   const toMoonPay = () => {
-    dispatch(buy({ service: 'moonpay', address, chainId }));
+    dispatch(
+      buy({ service: 'moonpay', address, chainId, symbol: token?.symbol }),
+    );
   };
   const toWyre = () => {
-    dispatch(buy({ service: 'wyre', address, chainId }));
+    dispatch(buy({ service: 'wyre', address, chainId, symbol: token?.symbol }));
   };
   const toFaucet = () => dispatch(buy({ chainId }));
 
@@ -95,113 +105,123 @@ const DepositPopover = ({ onClose, token }) => {
       title={t('depositCrypto', [symbol])}
       subtitle={isTokenDeposit ? '' : t('needCryptoInWallet', [symbol])}
       onClose={onClose}
+      className="deposit-popover"
     >
-      <OnRampItem
-        logo={<LogoCoinbasePay />}
-        title={t('buyCryptoWithCoinbasePay', [symbol])}
-        text={t('buyCryptoWithCoinbasePayDescription', [symbol])}
-        buttonLabel={t('continueToCoinbasePay')}
-        onButtonClick={() => {
-          trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-            properties: {
-              onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.COINBASE,
-            },
-          });
-          toCoinbasePay();
-        }}
-        hide={
-          isTokenDeposit
-            ? !isBuyableCoinbasePayChain || !isTokenBuyableCoinbasePay
-            : !isBuyableCoinbasePayChain
-        }
-      />
-      <OnRampItem
-        logo={<LogoTransak />}
-        title={t('buyCryptoWithTransak', [symbol])}
-        text={t('buyCryptoWithTransakDescription', [symbol])}
-        buttonLabel={t('continueToTransak')}
-        onButtonClick={() => {
-          trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-            properties: {
-              onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.TRANSAK,
-            },
-          });
-          toTransak();
-        }}
-        hide={
-          isTokenDeposit
-            ? !isBuyableTransakChain || !isTokenBuyableTransak
-            : !isBuyableTransakChain
-        }
-      />
-      <OnRampItem
-        logo={<LogoMoonPay />}
-        title={t('buyCryptoWithMoonPay', [symbol])}
-        text={t('buyCryptoWithMoonPayDescription', [symbol])}
-        buttonLabel={t('continueToMoonPay')}
-        onButtonClick={() => {
-          trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-            properties: {
-              onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.MOONPAY,
-            },
-          });
-          toMoonPay();
-        }}
-        hide={isTokenDeposit || !isBuyableMoonPayChain}
-      />
-
-      <OnRampItem
-        logo={<LogoWyre />}
-        title={t('buyWithWyre', [symbol])}
-        text={t('buyWithWyreDescription', [symbol])}
-        buttonLabel={t('continueToWyre')}
-        onButtonClick={() => {
-          trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-            properties: {
-              onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.WYRE,
-            },
-          });
-          toWyre();
-        }}
-        hide={isTokenDeposit || !isBuyableWyreChain}
-      />
-
-      <OnRampItem
-        logo={<LogoDepositEth width="50px" />}
-        title={t('directDepositCrypto', [symbol])}
-        text={t('directDepositCryptoExplainer', [symbol])}
-        buttonLabel={t('viewAccount')}
-        onButtonClick={() => {
-          trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
-            properties: {
-              onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
-            },
-          });
-          goToAccountDetailsModal();
-        }}
-        hide={isTokenDeposit || !isBuyableWyreChain}
-      />
-
-      {networkName && (
+      <ul>
         <OnRampItem
-          logo={<i className="fa fa-tint fa-2x" />}
-          title={t('testFaucet')}
-          text={t('getEtherFromFaucet', [networkName])}
-          buttonLabel={t('getEther')}
-          onButtonClick={() => toFaucet()}
-          hide={!isTestnet}
+          logo={<LogoCoinbasePay />}
+          title={t('buyCryptoWithCoinbasePay', [symbol])}
+          text={t('buyCryptoWithCoinbasePayDescription', [symbol])}
+          buttonLabel={t('continueToCoinbasePay')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.COINBASE,
+              },
+            });
+            toCoinbasePay();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableCoinbasePayChain || !isTokenBuyableCoinbasePay
+              : !isBuyableCoinbasePayChain
+          }
         />
-      )}
+        <OnRampItem
+          logo={<LogoTransak />}
+          title={t('buyCryptoWithTransak', [symbol])}
+          text={t('buyCryptoWithTransakDescription', [symbol])}
+          buttonLabel={t('continueToTransak')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.TRANSAK,
+              },
+            });
+            toTransak();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableTransakChain || !isTokenBuyableTransak
+              : !isBuyableTransakChain
+          }
+        />
+        <OnRampItem
+          logo={<LogoMoonPay />}
+          title={t('buyCryptoWithMoonPay', [symbol])}
+          text={t('buyCryptoWithMoonPayDescription', [symbol])}
+          buttonLabel={t('continueToMoonPay')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.MOONPAY,
+              },
+            });
+            toMoonPay();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableMoonPayChain || !isTokenBuyableMoonpay
+              : !isBuyableMoonPayChain
+          }
+        />
+        <OnRampItem
+          logo={<LogoWyre />}
+          title={t('buyWithWyre', [symbol])}
+          text={t('buyWithWyreDescription', [symbol])}
+          buttonLabel={t('continueToWyre')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.WYRE,
+              },
+            });
+            toWyre();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableWyreChain || !isTokenBuyableWyre
+              : !isBuyableWyreChain
+          }
+        />
+
+        <OnRampItem
+          logo={<LogoDepositEth width="50px" />}
+          title={t('directDepositCrypto', [symbol])}
+          text={t('directDepositCryptoExplainer', [symbol])}
+          buttonLabel={t('viewAccount')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
+              },
+            });
+            goToAccountDetailsModal();
+          }}
+          hide={isTokenDeposit || !isBuyableWyreChain}
+        />
+
+        {networkName && (
+          <OnRampItem
+            logo={<i className="fa fa-tint fa-2x" />}
+            title={t('testFaucet')}
+            text={t('getEtherFromFaucet', [networkName])}
+            buttonLabel={t('getEther')}
+            onButtonClick={() => toFaucet()}
+            hide={!isTestnet}
+          />
+        )}
+      </ul>
     </Popover>
   );
 };

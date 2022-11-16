@@ -90,6 +90,9 @@ workflows:
       - test-e2e-firefox-snaps:
           requires:
             - prep-build-test-flask
+      - test-e2e-chrome-mv3:
+          requires:
+            - prep-build-test-mv3
       - test-unit:
           requires:
             - prep-deps
@@ -386,7 +389,7 @@ jobs:
             - builds-test
 
   prep-build-storybook:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -513,6 +516,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -538,8 +542,37 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-chrome-mv3:
+    executor: node-browsers
+    parallelism: 8
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
   test-e2e-firefox-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -567,6 +600,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -594,6 +628,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -644,7 +679,7 @@ jobs:
           root: .
           paths:
             - test-artifacts
-    
+
   user-actions-benchmark:
     executor: node-browsers-medium-plus
     steps:
@@ -697,6 +732,9 @@ jobs:
       - run:
           name: Run page load benchmark
           command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+      - run:
+          name: Install jq
+          command: sudo apt install jq -y
       - run:
           name: Record bundle size at commit
           command: ./.circleci/scripts/bundle-stats-commit.sh
@@ -759,6 +797,11 @@ jobs:
       - store_artifacts:
           path: development/ts-migration-dashboard/build
           destination: ts-migration-dashboard
+      - run:
+          name: Set branch parent commit env var
+          command: |
+            echo "export PARENT_COMMIT=$(git rev-parse "$(git rev-list --topo-order --reverse HEAD ^origin/develop | head -1)"^)" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
