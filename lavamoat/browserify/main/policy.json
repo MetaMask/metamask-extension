@@ -615,6 +615,11 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
+    "@metamask/controllers>abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "@metamask/controllers>async-mutex": {
       "globals": {
         "setTimeout": true
@@ -2218,8 +2223,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "eslint>fast-deep-equal": true,
-        "eth-block-tracker>@metamask/utils>superstruct": true,
+        "@metamask/snap-utils>superstruct": true,
+        "browserify>buffer": true,
         "nock>debug": true
       }
     },
@@ -2652,6 +2657,7 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
+        "nock>debug": true,
         "watchify>xtend": true
       }
     },

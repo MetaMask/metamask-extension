@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.22.2]
 ### Changed
 - Restore changes from v10.22.0
+- Update `SmartTransactionsController` to v3 ([#16511](https://github.com/MetaMask/metamask-extension/pull/16511))
+  - Drops support for Node.js v12
+  - Fixes deadlock encountered while performing Swaps with STX on unsupported testnets
 
 ## [10.22.1]
 ### Changed

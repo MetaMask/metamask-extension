@@ -760,6 +760,11 @@
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
+    "@metamask/controllers>abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "@metamask/controllers>async-mutex": {
       "globals": {
         "setTimeout": true
@@ -1380,7 +1385,7 @@
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>@metamask/snap-utils": true,
         "@metamask/rpc-methods>nanoid": true,
-        "@metamask/rpc-methods>superstruct": true,
+        "@metamask/snap-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
       }
@@ -1548,10 +1553,10 @@
         "@babel/core": true,
         "@babel/core>@babel/types": true,
         "@metamask/rpc-methods>@metamask/snap-utils>ajv": true,
-        "@metamask/rpc-methods>superstruct": true,
         "@metamask/snap-utils>@noble/hashes": true,
         "@metamask/snap-utils>@scure/base": true,
         "@metamask/snap-utils>rfdc": true,
+        "@metamask/snap-utils>superstruct": true,
         "browserify": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
@@ -1626,7 +1631,6 @@
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>@metamask/rpc-methods": true,
-        "@metamask/snap-controllers>@metamask/utils": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
         "@metamask/snap-controllers>gunzip-maybe": true,
@@ -1635,6 +1639,7 @@
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
         "@metamask/snap-utils": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
@@ -1699,10 +1704,10 @@
       "packages": {
         "@metamask/controllers": true,
         "@metamask/snap-controllers>@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/snap-controllers>@metamask/utils": true,
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-utils": true,
         "@metamask/snap-utils>superstruct": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
       }
     },
@@ -1710,21 +1715,10 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
-        "@metamask/snap-controllers>@metamask/utils": true,
         "@metamask/snap-utils>@noble/hashes": true,
         "@metamask/snap-utils>@scure/base": true,
+        "eth-block-tracker>@metamask/utils": true,
         "eth-lattice-keyring>@noble/secp256k1": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snap-utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
@@ -1918,8 +1912,7 @@
       },
       "packages": {
         "@babel/core": true,
-        "@metamask/snap-utils>@babel/types": true,
-        "@metamask/snap-utils>@metamask/utils": true,
+        "@babel/core>@babel/types": true,
         "@metamask/snap-utils>@noble/hashes": true,
         "@metamask/snap-utils>@scure/base": true,
         "@metamask/snap-utils>cron-parser": true,
@@ -1931,29 +1924,8 @@
         "browserify>events": true,
         "browserify>path-browserify": true,
         "eslint>fast-deep-equal": true,
+        "eth-block-tracker>@metamask/utils": true,
         "semver": true
-      }
-    },
-    "@metamask/snap-utils>@babel/types": {
-      "globals": {
-        "console.trace": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "@metamask/snap-utils>@babel/types>@babel/helper-string-parser": true,
-        "@metamask/snap-utils>@babel/types>@babel/helper-validator-identifier": true,
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snap-utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true
       }
     },
     "@metamask/snap-utils>@noble/hashes": {
@@ -2971,8 +2943,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "eslint>fast-deep-equal": true,
-        "eth-block-tracker>@metamask/utils>superstruct": true,
+        "@metamask/snap-utils>superstruct": true,
+        "browserify>buffer": true,
         "nock>debug": true
       }
     },
@@ -3413,6 +3385,7 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
+        "nock>debug": true,
         "watchify>xtend": true
       }
     },
