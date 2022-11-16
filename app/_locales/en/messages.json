@@ -444,15 +444,25 @@
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Beta version disclaimer"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "By proceeding, you accept and acknowledge these risks, our $1, and $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Beta Terms"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
+    "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -461,13 +471,13 @@
     "message": "beta portfolio site"
   },
   "betaTerms": {
-    "message": "BETA Terms of use"
+    "message": "Beta Terms of use"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
