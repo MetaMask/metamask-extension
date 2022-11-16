@@ -3213,16 +3213,7 @@
   dependencies:
     fast-deep-equal "^3.1.3"
 
-"@metamask/utils@^3.0.1", "@metamask/utils@^3.0.3", "@metamask/utils@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-3.3.0.tgz#e5e7885c72a30f50f9e2b29690f543da1d6ab496"
-  integrity sha512-GT8jMTCiGl3z9L1lvALjgW/6urJsl5Cwnix4C65NzJInF0cK2GxqpLkEMQJ50Mdky2qc2P7+F5++d4utvx2TtA==
-  dependencies:
-    "@types/debug" "^4.1.7"
-    debug "^4.3.4"
-    superstruct "^0.16.7"
-
-"@metamask/utils@^3.3.1":
+"@metamask/utils@^3.0.1", "@metamask/utils@^3.0.3", "@metamask/utils@^3.3.0", "@metamask/utils@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-3.3.1.tgz#04a00a24469e3eb03bde111432053c05afb45326"
   integrity sha512-r65Swl91wQ2YDkEQXZah1l7it0iBJK+trTeX9uPHplLQ0lzWZ/yODbEMFZVrStRQxDU8RARXryDyfUX5CLVvLA==

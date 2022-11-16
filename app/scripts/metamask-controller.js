@@ -52,7 +52,7 @@ import {
   CronjobController,
   SnapController,
   IframeExecutionService,
-} from '@metamask/snap-controllers';
+} from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
