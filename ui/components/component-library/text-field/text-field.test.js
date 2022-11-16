@@ -1,7 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
-import React, { useState } from 'react';
+import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { renderControlledInput } from '../../../../test/lib/render-helpers';
 
 import { TextField } from './text-field';
 
@@ -12,22 +14,6 @@ function setup(jsx) {
     user: userEvent.setup(),
     ...render(jsx),
   };
-}
-
-// Custom userEvent setup function that renders the component in a controlled environment.
-// This is used for the showClearButton and related props as the clearButton will only show in a controlled environment.
-function setupControlled(FormComponent, props) {
-  const ControlledWrapper = () => {
-    const [value, setValue] = useState('');
-    return (
-      <FormComponent
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        {...props}
-      />
-    );
-  };
-  return { user: userEvent.setup(), ...render(<ControlledWrapper />) };
 }
 
 describe('TextField', () => {
@@ -87,8 +73,8 @@ describe('TextField', () => {
     expect(getByText('right-accessory')).toBeDefined();
   });
   it('should render showClearButton button when showClearButton is true and value exists', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use setupControlled
-    const { user, getByRole } = setupControlled(TextField, {
+    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
+    const { user, getByRole } = renderControlledInput(TextField, {
       showClearButton: true,
     });
     await user.type(getByRole('textbox'), 'test value');
@@ -96,8 +82,8 @@ describe('TextField', () => {
     expect(getByRole('button', { name: /Clear/u })).toBeDefined();
   });
   it('should still render with the rightAccessory when showClearButton is true', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use setupControlled
-    const { user, getByRole, getByText } = setupControlled(TextField, {
+    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
+    const { user, getByRole, getByText } = renderControlledInput(TextField, {
       showClearButton: true,
       rightAccessory: <div>right-accessory</div>,
     });
@@ -107,9 +93,9 @@ describe('TextField', () => {
     expect(getByText('right-accessory')).toBeDefined();
   });
   it('should fire onClick event when passed to clearButtonOnClick when clear button is clicked', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use setupControlled
+    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
     const fn = jest.fn();
-    const { user, getByRole } = setupControlled(TextField, {
+    const { user, getByRole } = renderControlledInput(TextField, {
       showClearButton: true,
       clearButtonOnClick: fn,
     });
@@ -118,9 +104,9 @@ describe('TextField', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
   it('should fire onClick event when passed to clearButtonProps.onClick prop', async () => {
-    // As showClearButton is intended to be used with a controlled input we need to use setupControlled
+    // As showClearButton is intended to be used with a controlled input we need to use renderControlledInput
     const fn = jest.fn();
-    const { user, getByRole } = setupControlled(TextField, {
+    const { user, getByRole } = renderControlledInput(TextField, {
       showClearButton: true,
       clearButtonProps: { onClick: fn },
     });
