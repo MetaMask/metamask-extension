@@ -1,3 +1,73 @@
+diff --git a/node_modules/@lavamoat/lavapack/.turbo/turbo-build.log b/node_modules/@lavamoat/lavapack/.turbo/turbo-build.log
+new file mode 100644
+index 0000000..666cd64
+--- /dev/null
++++ b/node_modules/@lavamoat/lavapack/.turbo/turbo-build.log
+@@ -0,0 +1,4 @@
++[32m@lavamoat/lavapack:build: [0mcache hit, replaying output [2m441def40a8db7575[0m
++[32m@lavamoat/lavapack:build: [0myarn run v1.22.17
++[32m@lavamoat/lavapack:build: [0m$ node ./src/build-runtime.js
++[32m@lavamoat/lavapack:build: [0mDone in 0.42s.
+diff --git a/node_modules/@lavamoat/lavapack/.turbo/turbo-test.log b/node_modules/@lavamoat/lavapack/.turbo/turbo-test.log
+new file mode 100644
+index 0000000..ebbefde
+--- /dev/null
++++ b/node_modules/@lavamoat/lavapack/.turbo/turbo-test.log
+@@ -0,0 +1,54 @@
++[32m@lavamoat/lavapack:test: [0mcache hit, replaying output [2m68ac83c6b0fa8355[0m
++[32m@lavamoat/lavapack:test: [0myarn run v1.22.17
++[32m@lavamoat/lavapack:test: [0m$ ava --timeout=30s test/index.js
++[32m@lavamoat/lavapack:test: [0m
++[32m@lavamoat/lavapack:test: [0m  ✔ dummy test
++[32m@lavamoat/lavapack:test: [0mLavaPack.loadBundle([
++[32m@lavamoat/lavapack:test: [0m["1", {"./log.js":"2","./util.js":"3"}, function(){
++[32m@lavamoat/lavapack:test: [0m  with (this) {
++[32m@lavamoat/lavapack:test: [0m    return function() {
++[32m@lavamoat/lavapack:test: [0m      'use strict';
++[32m@lavamoat/lavapack:test: [0m      // source: undefined
++[32m@lavamoat/lavapack:test: [0m      return function (require, module, exports) {
++[32m@lavamoat/lavapack:test: [0mrequire('./log.js'); require('./util.js')
++[32m@lavamoat/lavapack:test: [0m      };
++[32m@lavamoat/lavapack:test: [0m    };
++[32m@lavamoat/lavapack:test: [0m  }
++[32m@lavamoat/lavapack:test: [0m}, {}],
++[32m@lavamoat/lavapack:test: [0m["2", {}, function(){
++[32m@lavamoat/lavapack:test: [0m  with (this) {
++[32m@lavamoat/lavapack:test: [0m    return function() {
++[32m@lavamoat/lavapack:test: [0m      'use strict';
++[32m@lavamoat/lavapack:test: [0m      // source: undefined
++[32m@lavamoat/lavapack:test: [0m      return function (require, module, exports) {
++[32m@lavamoat/lavapack:test: [0mconsole.log('hi');
++[32m@lavamoat/lavapack:test: [0mnew Error('danger');
++[32m@lavamoat/lavapack:test: [0mconsole.log('the end');
++[32m@lavamoat/lavapack:test: [0m      };
++[32m@lavamoat/lavapack:test: [0m    };
++[32m@lavamoat/lavapack:test: [0m  }
++[32m@lavamoat/lavapack:test: [0m}, {}],
++[32m@lavamoat/lavapack:test: [0m["3", {}, function(){
++[32m@lavamoat/lavapack:test: [0m  with (this) {
++[32m@lavamoat/lavapack:test: [0m    return function() {
++[32m@lavamoat/lavapack:test: [0m      'use strict';
++[32m@lavamoat/lavapack:test: [0m      // source: undefined
++[32m@lavamoat/lavapack:test: [0m      return function (require, module, exports) {
++[32m@lavamoat/lavapack:test: [0mmodule.exports.add = (a,b) => a+b
++[32m@lavamoat/lavapack:test: [0m      };
++[32m@lavamoat/lavapack:test: [0m    };
++[32m@lavamoat/lavapack:test: [0m  }
++[32m@lavamoat/lavapack:test: [0m}, {}]],["1"],{})
++[32m@lavamoat/lavapack:test: [0m//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGV4LmpzIiwibG9nLmpzIiwidXRpbC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7O0FBQUE7Ozs7Ozs7Ozs7O0FDQUE7QUFDQTtBQUNBOzs7Ozs7Ozs7OztBQ0ZBIiwiZmlsZSI6ImdlbmVyYXRlZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJyZXF1aXJlKCcuL2xvZy5qcycpOyByZXF1aXJlKCcuL3V0aWwuanMnKSIsImNvbnNvbGUubG9nKCdoaScpO1xubmV3IEVycm9yKCdkYW5nZXInKTtcbmNvbnNvbGUubG9nKCd0aGUgZW5kJyk7IiwibW9kdWxlLmV4cG9ydHMuYWRkID0gKGEsYikgPT4gYStiIl19
++[32m@lavamoat/lavapack:test: [0m
++[32m@lavamoat/lavapack:test: [0mindex.js:
++[32m@lavamoat/lavapack:test: [0mrequire('./log.js'); require('./util.js')
++[32m@lavamoat/lavapack:test: [0mlog.js:
++[32m@lavamoat/lavapack:test: [0mconsole.log('hi');
++[32m@lavamoat/lavapack:test: [0mutil.js:
++[32m@lavamoat/lavapack:test: [0mmodule.exports.add = (a,b) => a+b
++[32m@lavamoat/lavapack:test: [0m  ✔ sourcemap test
++[32m@lavamoat/lavapack:test: [0m  ─
++[32m@lavamoat/lavapack:test: [0m
++[32m@lavamoat/lavapack:test: [0m  2 tests passed
++[32m@lavamoat/lavapack:test: [0mDone in 1.22s.
 diff --git a/node_modules/@lavamoat/lavapack/bundle.js b/node_modules/@lavamoat/lavapack/bundle.js
 new file mode 100644
 index 0000000..354848d
@@ -41,16 +111,8 @@ index 0000000..354848d
 +  }
 +}, {}]],["1"],{})
 +//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGV4LmpzIiwibG9nLmpzIiwidXRpbC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7O0FBQUE7Ozs7Ozs7Ozs7O0FDQUE7QUFDQTtBQUNBOzs7Ozs7Ozs7OztBQ0ZBIiwiZmlsZSI6ImdlbmVyYXRlZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJyZXF1aXJlKCcuL2xvZy5qcycpOyByZXF1aXJlKCcuL3V0aWwuanMnKSIsImNvbnNvbGUubG9nKCdoaScpO1xubmV3IEVycm9yKCdkYW5nZXInKTtcbmNvbnNvbGUubG9nKCd0aGUgZW5kJyk7IiwibW9kdWxlLmV4cG9ydHMuYWRkID0gKGEsYikgPT4gYStiIl19
-diff --git a/node_modules/@lavamoat/lavapack/src/MY_MAN.json b/node_modules/@lavamoat/lavapack/src/MY_MAN.json
-new file mode 100644
-index 0000000..e283359
---- /dev/null
-+++ b/node_modules/@lavamoat/lavapack/src/MY_MAN.json
-@@ -0,0 +1 @@
-+{"x":"Error\n    at createPacker (/Users/weizman/Documents/lavamoat/lavamoat/packages/lavapack/src/pack.js:61:8)\n    at createLavamoatPacker (/Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/src/index.js:261:22)\n    at setupPlugin (/Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/src/index.js:93:50)\n    at plugin (/Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/src/index.js:38:3)\n    at Browserify.plugin (/Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/node_modules/browserify/index.js:392:9)\n    at createBundleFromEntry (/Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/test/util.js:40:11)\n    at /Users/weizman/Documents/lavamoat/lavamoat/packages/browserify/test/basic.js:17:24\n    at Test.callFn (file:///Users/weizman/Documents/lavamoat/lavamoat/node_modules/ava/lib/test.js:507:21)\n    at Test.run (file:///Users/weizman/Documents/lavamoat/lavamoat/node_modules/ava/lib/test.js:520:23)\n    at Runner.runSingle (file:///Users/weizman/Documents/lavamoat/lavamoat/node_modules/ava/lib/runner.js:285:33)"}
-\ No newline at end of file
 diff --git a/node_modules/@lavamoat/lavapack/src/pack.js b/node_modules/@lavamoat/lavapack/src/pack.js
-index ec69e55..6a340ad 100644
+index ec69e55..ff35766 100644
 --- a/node_modules/@lavamoat/lavapack/src/pack.js
 +++ b/node_modules/@lavamoat/lavapack/src/pack.js
 @@ -54,6 +54,8 @@ function createPacker({
@@ -62,10 +124,14 @@ index ec69e55..6a340ad 100644
  } = {}) {
    // stream/parser wrapping incase raw: false
    const parser = raw ? through.obj() : JSONStream.parse([true])
-@@ -77,6 +79,11 @@ function createPacker({
+@@ -77,6 +79,15 @@ function createPacker({
    }
    assert(policy, 'must specify a policy')
  
++  for (let i = 0; i < scuttleGlobalThisExceptions.length; i++) {
++    scuttleGlobalThisExceptions[i] += '' // toString regexps if there's any
++  }
++
 +  prelude = prelude.replace('__lavamoatSecurityOptions__', JSON.stringify({
 +    scuttleGlobalThis,
 +    scuttleGlobalThisExceptions,
@@ -88,10 +154,18 @@ index b047bd2..e04d8b6 100644
    function loadPolicy () {
      throw new Error('runtime-cjs: unable to enforce policy')
 diff --git a/node_modules/@lavamoat/lavapack/src/runtime-template.js b/node_modules/@lavamoat/lavapack/src/runtime-template.js
-index 51c8c57..a670ae1 100644
+index 51c8c57..f4a79b7 100644
 --- a/node_modules/@lavamoat/lavapack/src/runtime-template.js
 +++ b/node_modules/@lavamoat/lavapack/src/runtime-template.js
-@@ -34,17 +34,17 @@
+@@ -3,6 +3,7 @@
+   // therefore this is our way of capturing access to basic APIs LavaMoat
+   // uses to still be accessible only to LavaMoat after scuttling occurs
+   const {
++    RegExp,
+     Reflect,
+     Object,
+     Error,
+@@ -34,17 +35,17 @@
    const { internalRequire } = kernel
  
    // create a lavamoat pulic API for loading modules over multiple files
@@ -113,10 +187,18 @@ index 51c8c57..a670ae1 100644
  
  
 diff --git a/node_modules/@lavamoat/lavapack/src/runtime.js b/node_modules/@lavamoat/lavapack/src/runtime.js
-index 7dbaf47..9fe45dd 100644
+index 7dbaf47..9d0b695 100644
 --- a/node_modules/@lavamoat/lavapack/src/runtime.js
 +++ b/node_modules/@lavamoat/lavapack/src/runtime.js
-@@ -78,12 +78,15 @@
+@@ -3,6 +3,7 @@
+   // therefore this is our way of capturing access to basic APIs LavaMoat
+   // uses to still be accessible only to LavaMoat after scuttling occurs
+   const {
++    RegExp,
+     Reflect,
+     Object,
+     Error,
+@@ -78,12 +79,15 @@
      runWithPrecompiledModules,
      reportStatsHook,
    }) {
@@ -134,7 +216,23 @@ index 7dbaf47..9fe45dd 100644
  
      // identify the globalRef
      const globalRef = (typeof globalThis !== 'undefined') ? globalThis : (typeof self !== 'undefined') ? self : (typeof global !== 'undefined') ? global : undefined
-@@ -10969,13 +10972,13 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
+@@ -10004,6 +10008,15 @@ markVirtualizedNativeFunction)
+           delete obj[prop];
+         } catch (err) {
+           if (prop in obj) {
++            if (typeof obj === 'function' && prop === 'prototype') {
++              obj.prototype = undefined;
++              if (obj.prototype === undefined) {
++                // eslint-disable-next-line @endo/no-polymorphic-call
++                console.log(`Tolerating undeletable ${subPath} === undefined`);
++                // eslint-disable-next-line no-continue
++                continue;
++              }
++            }
+             // eslint-disable-next-line @endo/no-polymorphic-call
+             console.error(`failed to delete ${subPath}`, err);
+           } else {
+@@ -10969,23 +10982,31 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
      return kernel
  
      function performScuttleGlobalThis (globalRef, extraPropsToAvoid = new Array()) {
@@ -146,6 +244,15 @@ index 7dbaf47..9fe45dd 100644
 +      getPrototypeChain(globalRef)
 +        .forEach(proto =>
 +          props.push(...Object.getOwnPropertyNames(proto)))
++
++      for (let i = 0; i < extraPropsToAvoid.length; i++) {
++        const prop = extraPropsToAvoid[i]
++        if (!prop.startsWith('/')) {
++          continue
++        }
++        const parts = prop.split('/');
++        extraPropsToAvoid[i] = new RegExp(parts.slice(1, -1), parts[parts.length - 1])
++      }
  
        // support LM,SES exported APIs and polyfills
 -      const avoidForLavaMoatCompatibility = ['LavaPack', 'Compartment', 'Error', 'globalThis']
@@ -153,7 +260,10 @@ index 7dbaf47..9fe45dd 100644
        const propsToAvoid = new Set([...avoidForLavaMoatCompatibility, ...extraPropsToAvoid])
  
        for (const prop of props) {
-@@ -10985,7 +10988,6 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
+-        if (propsToAvoid.has(prop)) {
++        if (shouldAvoidProp(propsToAvoid, prop)) {
+           continue
+         }
          if (Object.getOwnPropertyDescriptor(globalRef, prop)?.configurable === false) {
            continue
          }
@@ -161,7 +271,26 @@ index 7dbaf47..9fe45dd 100644
          const desc = {
            set: () => {
              console.warn(
-@@ -11365,17 +11367,17 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
+@@ -11331,6 +11352,18 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
+       }
+       return protoChain
+     }
++
++    function shouldAvoidProp(propsToAvoid, prop) {
++      for (const avoid of propsToAvoid) {
++        if (avoid instanceof RegExp && avoid.test(prop)) {
++          return true
++        }
++        if (propsToAvoid.has(prop)) {
++          return true
++        }
++      }
++      return false
++    }
+   }
+ })()
+ 
+@@ -11365,17 +11398,17 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
    const { internalRequire } = kernel
  
    // create a lavamoat pulic API for loading modules over multiple files
@@ -182,14 +311,6 @@ index 7dbaf47..9fe45dd 100644
    return
  
  
-diff --git a/node_modules/@lavamoat/lavapack/src/x3.json b/node_modules/@lavamoat/lavapack/src/x3.json
-new file mode 100644
-index 0000000..237a56f
---- /dev/null
-+++ b/node_modules/@lavamoat/lavapack/src/x3.json
-@@ -0,0 +1 @@
-+{"scuttleGlobalThis":false,"scuttleGlobalThisExceptions":[]}
-\ No newline at end of file
 diff --git a/node_modules/@lavamoat/lavapack/yarn-error.log b/node_modules/@lavamoat/lavapack/yarn-error.log
 new file mode 100644
 index 0000000..e42b5c2

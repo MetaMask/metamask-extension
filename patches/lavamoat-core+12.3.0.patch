@@ -1,3 +1,112 @@
+diff --git a/node_modules/lavamoat-core/.turbo/turbo-test.log b/node_modules/lavamoat-core/.turbo/turbo-test.log
+new file mode 100644
+index 0000000..33084b0
+--- /dev/null
++++ b/node_modules/lavamoat-core/.turbo/turbo-test.log
+@@ -0,0 +1,103 @@
++[36mlavamoat-core:test: [0mcache hit, replaying output [2me728ba487bcc0a97[0m
++[36mlavamoat-core:test: [0myarn run v1.22.17
++[36mlavamoat-core:test: [0m$ ava --timeout=30s test/index.js
++[36mlavamoat-core:test: [0m
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - siblings
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - getter
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - ensure window.document getter behavior support
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - specify unwrap to
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - specify unwrap from, unwrap to
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - ensure setTimeout calls dont trigger illegal invocation
++[36mlavamoat-core:test: [0m  ✔ merge with resources
++[36mlavamoat-core:test: [0m  ✔ getEndowmentsForConfig - endowing bind of a function
++[36mlavamoat-core:test: [0m  ✔ globals - ensure global property this-value unwrapped (211ms)
++[36mlavamoat-core:test: [0m  ✔ globals - ensure window.document getter behavior support (190ms)
++[36mlavamoat-core:test: [0m  ✔ globals - ensure circular refs on package compartment global (160ms)
++[36mlavamoat-core:test: [0m  ✔ globals - ensure setTimeout calls dont trigger illegal invocation (140ms)
++[36mlavamoat-core:test: [0m  ✔ globals - endowing bind on a function (116ms)
++[36mlavamoat-core:test: [0m  ✔ globals - endowing properties on the globalThis prototype chain
++[36mlavamoat-core:test: [0m  ✔ globals - firefox addon chrome api lazy getter works
++[36mlavamoat-core:test: [0m  ✔ circularDeps - multi-module circular deps dont inf loop
++[36mlavamoat-core:test: [0m  ✔ builtin - basic access (326ms)
++[36mlavamoat-core:test: [0m  ✔ builtin - access via paths (257ms)
++[36mlavamoat-core:test: [0m  ✔ builtin - paths soft-bindings preserve "this" but allow override (231ms)
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - basic config
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - config with debugInfo
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - ignore various refs
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - config ignores global refs
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - config ignores global refs when properties are not accessed
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - config ignores global refs accessed with whitelist items
++[36mlavamoat-core:test: [0m  ✔ generatePolicy - config ignores newer intrinsics
++[36mlavamoat-core:test: [0mRunning Core Scenario: autogen - react-devtools-core hasOwnProperty
++[36mlavamoat-core:test: [0m  ✔ Run scenarios (2s)
++[36mlavamoat-core:test: [0m  ✔ Run scenarios with precompiled intializer (2s)
++[36mlavamoat-core:test: [0mRunning Core Scenario: autogen - react-devtools-core hasOwnProperty
++[36mlavamoat-core:test: [0mRunning Core Scenario: security - prevent intrinsic modification
++[36mlavamoat-core:test: [0mRunning Core Scenario: security - prevent intrinsic modification
++[36mlavamoat-core:test: [0mRunning Core Scenario: security - limit platform API
++[36mlavamoat-core:test: [0mRunning Core Scenario: security - limit platform API
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - bundle works
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - bundle works
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - npm buffer toLocaleString support
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - npm buffer toLocaleString support
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - Function constructor for constructing constructor functions
++[36mlavamoat-core:test: [0mRunning Core Scenario: basic - Function constructor for constructing constructor functions
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - dunder proto not allowed in globals path
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - dunder proto not allowed in globals path
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - disable access to package
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - disable access to package
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "resources" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "resources" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "packages" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "packages" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "globals" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "globals" key
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "globals" value
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation fails: invalid "globals" value
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation passes - everything valid
++[36mlavamoat-core:test: [0mRunning Core Scenario: config - config validation passes - everything valid
++[36mlavamoat-core:test: [0mRunning Core Scenario: endowments - bridged endowments matches original endowments object
++[36mlavamoat-core:test: [0mRunning Core Scenario: endowments - bridged endowments matches original endowments object
++[36mlavamoat-core:test: [0mRunning Core Scenario: endowments - Date.now works in root and non-root
++[36mlavamoat-core:test: [0mRunning Core Scenario: endowments - Date.now works in root and non-root
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - readOnly restrictions have override workaround fix - updates the property correctly
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - readOnly restrictions have override workaround fix - updates the property correctly
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - readOnly restrictions have override workaround fix - should not update the prototype
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - readOnly restrictions have override workaround fix - should not update the prototype
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - doesnt explode on null/undefined exports
++[36mlavamoat-core:test: [0mRunning Core Scenario: exportsDefense - doesnt explode on null/undefined exports
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalWrites - deep endow
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalWrites - deep endow
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - object
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - object
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - function
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - function
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - class syntax
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - class syntax
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - class syntax subclass
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - decorate an import - class syntax subclass
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - bridged array passes Array.isArray
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - bridged array passes Array.isArray
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - object returned from exported function should be mutable
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - object returned from exported function should be mutable
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - <endowments> membrane space should round-trip correctly in packages
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - <endowments> membrane space should round-trip correctly in packages
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - <endowments> membrane space should round-trip correctly in <root>
++[36mlavamoat-core:test: [0mRunning Core Scenario: moduleExports - <endowments> membrane space should round-trip correctly in <root>
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - Ses transforms work
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - Ses transforms work
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - common pattern "_inheritsLoose" works with TypeError
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - common pattern "_inheritsLoose" works with TypeError
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - common pattern "_inheritsLoose" works across package boundaries
++[36mlavamoat-core:test: [0mRunning Core Scenario: transforms - common pattern "_inheritsLoose" works across package boundaries
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - check default containment
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - check default containment
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - Webpack code in the wild works
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - Webpack code in the wild works
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - globalRef workaround doesnt break instanceof Function
++[36mlavamoat-core:test: [0mRunning Core Scenario: globalRef - globalRef workaround doesnt break instanceof Function
++[36mlavamoat-core:test: [0m  ─
++[36mlavamoat-core:test: [0m
++[36mlavamoat-core:test: [0m  29 tests passed
++[36mlavamoat-core:test: [0mDone in 3.73s.
 diff --git a/node_modules/lavamoat-core/lib/lockdown.umd.js b/node_modules/lavamoat-core/lib/lockdown.umd.js
 index a72db51..caa4368 100644
 --- a/node_modules/lavamoat-core/lib/lockdown.umd.js
@@ -19,10 +128,10 @@ index a72db51..caa4368 100644
              console.error(`failed to delete ${subPath}`, err);
            } else {
 diff --git a/node_modules/lavamoat-core/src/generateKernel.js b/node_modules/lavamoat-core/src/generateKernel.js
-index 7afeb73..1a6f3d3 100644
+index 7afeb73..7467c20 100644
 --- a/node_modules/lavamoat-core/src/generateKernel.js
 +++ b/node_modules/lavamoat-core/src/generateKernel.js
-@@ -24,21 +24,22 @@ function getSesShimSrc () {
+@@ -24,21 +24,25 @@ function getSesShimSrc () {
  }
  
  // takes the kernelTemplate and populates it with the libraries
@@ -47,6 +156,9 @@ index 7afeb73..1a6f3d3 100644
 +    // scuttleGlobalThis config placeholder should be set only if ordered so explicitly.
 +    // if not, should be left as is to be replaced by a later processor (e.g. LavaPack).
 +    const {scuttleGlobalThis, scuttleGlobalThisExceptions} = opts
++    for (let i = 0; i < scuttleGlobalThisExceptions.length; i++) {
++      scuttleGlobalThisExceptions[i] += '' // toString regexps if there's any
++    }
 +    output = stringReplace(output, '__lavamoatSecurityOptions__', JSON.stringify({
 +      scuttleGlobalThis,
 +      scuttleGlobalThisExceptions,
@@ -56,10 +168,10 @@ index 7afeb73..1a6f3d3 100644
    return output
  }
 diff --git a/node_modules/lavamoat-core/src/kernelCoreTemplate.js b/node_modules/lavamoat-core/src/kernelCoreTemplate.js
-index 71243fe..c38de1a 100644
+index 71243fe..61d5006 100644
 --- a/node_modules/lavamoat-core/src/kernelCoreTemplate.js
 +++ b/node_modules/lavamoat-core/src/kernelCoreTemplate.js
-@@ -99,13 +99,13 @@
+@@ -99,23 +99,31 @@
      return kernel
  
      function performScuttleGlobalThis (globalRef, extraPropsToAvoid = new Array()) {
@@ -71,6 +183,15 @@ index 71243fe..c38de1a 100644
 +      getPrototypeChain(globalRef)
 +        .forEach(proto =>
 +          props.push(...Object.getOwnPropertyNames(proto)))
++
++      for (let i = 0; i < extraPropsToAvoid.length; i++) {
++        const prop = extraPropsToAvoid[i]
++        if (!prop.startsWith('/')) {
++          continue
++        }
++        const parts = prop.split('/');
++        extraPropsToAvoid[i] = new RegExp(parts.slice(1, -1), parts[parts.length - 1])
++      }
  
        // support LM,SES exported APIs and polyfills
 -      const avoidForLavaMoatCompatibility = ['LavaPack', 'Compartment', 'Error', 'globalThis']
@@ -78,7 +199,10 @@ index 71243fe..c38de1a 100644
        const propsToAvoid = new Set([...avoidForLavaMoatCompatibility, ...extraPropsToAvoid])
  
        for (const prop of props) {
-@@ -115,7 +115,6 @@
+-        if (propsToAvoid.has(prop)) {
++        if (shouldAvoidProp(propsToAvoid, prop)) {
+           continue
+         }
          if (Object.getOwnPropertyDescriptor(globalRef, prop)?.configurable === false) {
            continue
          }
@@ -86,6 +210,24 @@ index 71243fe..c38de1a 100644
          const desc = {
            set: () => {
              console.warn(
+@@ -461,5 +469,17 @@
+       }
+       return protoChain
+     }
++
++    function shouldAvoidProp(propsToAvoid, prop) {
++      for (const avoid of propsToAvoid) {
++        if (avoid instanceof RegExp && avoid.test(prop)) {
++          return true
++        }
++        if (propsToAvoid.has(prop)) {
++          return true
++        }
++      }
++      return false
++    }
+   }
+ })()
 diff --git a/node_modules/lavamoat-core/src/kernelTemplate.js b/node_modules/lavamoat-core/src/kernelTemplate.js
 index acde3cc..a88f8a3 100644
 --- a/node_modules/lavamoat-core/src/kernelTemplate.js
@@ -159,7 +301,7 @@ index 54f9780..a2ea8fa 100644
  async function * loadScenarios () {
 diff --git a/node_modules/lavamoat-core/test/scenarios/scuttle.js b/node_modules/lavamoat-core/test/scenarios/scuttle.js
 new file mode 100644
-index 0000000..e51daa7
+index 0000000..bff845c
 --- /dev/null
 +++ b/node_modules/lavamoat-core/test/scenarios/scuttle.js
 @@ -0,0 +1,35 @@
@@ -170,7 +312,7 @@ index 0000000..e51daa7
 +  if (globalThis.getTrueGlobalThisForTestsOnly) {
 +    globalObject = globalThis.getTrueGlobalThisForTestsOnly()
 +  }
-+  module.exports = globalObject.Math.SQRT2
++  module.exports = (globalObject.Float32Array , globalObject.Math.PI)
 +}
 +
 +module.exports = [
@@ -178,9 +320,9 @@ index 0000000..e51daa7
 +    const scenario = createScenarioFromScaffold({
 +      name: 'scuttle - host env global object is scuttled to work',
 +      defineOne: one,
-+      expectedResult: Math.SQRT2,
++      expectedResult: Math.PI,
 +      scuttleGlobalThis: true,
-+      scuttleGlobalThisExceptions: ['process', 'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'],
++      scuttleGlobalThisExceptions: ['process', /[0-9]+/, 'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'],
 +    })
 +    await autoConfigForScenario({ scenario })
 +    return scenario
@@ -190,9 +332,9 @@ index 0000000..e51daa7
 +      name: 'scuttle - host env global object is too scuttled to work',
 +      defineOne: one,
 +      scuttleGlobalThis: true,
-+      scuttleGlobalThisExceptions: ['process', /*'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'*/],
++      scuttleGlobalThisExceptions: ['process', '/[0-9]+/', /*'Set', 'Reflect', 'Object', 'console', 'Array', 'RegExp', 'Date', 'Math'*/],
 +      expectedFailure: true,
-+      expectedFailureMessageRegex: /LavaMoat - property "[A-Za-z]*" of globalThis is inaccessible under scuttling mode/,
++      expectedFailureMessageRegex: /LavaMoat - property "[A-Za-z0-9]*" of globalThis is inaccessible under scuttling mode/,
 +    })
 +    await autoConfigForScenario({ scenario })
 +    return scenario
