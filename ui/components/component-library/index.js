@@ -10,6 +10,7 @@ export { ButtonIcon } from './button-icon';
 export { ButtonLink } from './button-link';
 export { ButtonPrimary } from './button-primary';
 export { ButtonSecondary } from './button-secondary';
+export { FormTextField } from './form-text-field';
 export { HelpText } from './help-text';
 export { Icon, ICON_NAMES } from './icon';
 export { Label } from './label';
