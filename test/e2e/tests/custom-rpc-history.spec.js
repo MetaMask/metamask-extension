@@ -305,8 +305,10 @@ describe('Stores custom RPC history', function () {
           '.button.btn-danger-primary.modal-container__footer-button',
         );
 
-        // wait for confirm delete modal to be removed from DOM.
-        await confirmDeleteModal.waitForElementState('hidden');
+        if (await driver.isElementPresent('span .modal')) {
+          // wait for confirm delete modal to be removed from DOM.
+          await confirmDeleteModal.waitForElementState('hidden');
+        }
 
         const newNetworkListItems = await driver.findElements(
           '.networks-tab__networks-list-name',
