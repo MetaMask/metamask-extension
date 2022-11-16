@@ -717,7 +717,7 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
-        allCollectibles: {
+        allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
             56: [
               {
@@ -752,7 +752,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -790,7 +790,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -810,7 +810,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         identities: [{}, {}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -838,7 +838,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -856,7 +856,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });
