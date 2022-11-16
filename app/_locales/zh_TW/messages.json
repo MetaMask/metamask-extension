@@ -449,12 +449,9 @@
     "message": "目前語言"
   },
   "customSpendLimit": {
-    "message": "自訂花費限制"
-  },
-  "customSpendingCap": {
     "message": "自訂花費上限"
   },
-  "customSpendLimit": {
+  "customSpendingCap": {
     "message": "自訂花費上限"
   },
   "customToken": {
@@ -462,9 +459,6 @@
   },
   "data": {
     "message": "資料"
-  },
-  "dataBackupFoundInfo": {
-    "message": "您的部分帳戶資料曾經在之前安裝 MetaMask 時做過備份。裡面包含您的設定、聯絡人與代幣。您現在要還原這些資料嗎？"
   },
   "dataHex": {
     "message": "十六進位"
@@ -1434,10 +1428,6 @@
     "message": "發送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendSpecifiedTokens": {
-    "message": "發送 $1",
-    "description": "Symbol of the specified token"
-  },
   "sendTokens": {
     "message": "發送代幣"
   },
@@ -1633,15 +1623,6 @@
   },
   "syncWithMobileTitle": {
     "message": "和行動裝置同步"
-  },
-  "syncWithThreeBox": {
-    "message": "與 3Box 同步資料（實驗性質）"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "啟用此選項將您的設定備份至 3Box 。這是個實驗性質的功能；請自負使用風險。"
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "因為初始同步發生錯誤，3Box 已經被停用"
   },
   "terms": {
     "message": "使用條款"
