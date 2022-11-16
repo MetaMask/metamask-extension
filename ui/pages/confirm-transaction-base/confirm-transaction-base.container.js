@@ -97,7 +97,7 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allCollectibleContracts,
+    allNftContracts,
     selectedAddress,
     provider: { chainId },
   } = metamask;
@@ -175,7 +175,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );
@@ -289,7 +289,6 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   };
 };
 

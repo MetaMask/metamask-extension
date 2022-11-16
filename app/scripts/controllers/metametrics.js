@@ -76,6 +76,8 @@ const exceptionsToFilter = {
  * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
  *  a user opts into metrics.
  * @property {object} [traits] - Traits that are not derived from other state keys.
+ * @property {Record<string any>} [previousUserTraits] - The user traits the last
+ *  time they were computed.
  */
 
 export default class MetaMetricsController {
@@ -685,7 +687,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    const { traits } = this.store.getState();
+    const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
@@ -706,15 +708,14 @@ export default class MetaMetricsController {
           },
           [],
         ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
-        metamaskState.allCollectibles,
+        metamaskState.allNfts,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
-        metamaskState.allCollectibles,
-      ).length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
+        .length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
@@ -722,17 +723,17 @@ export default class MetaMetricsController {
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
-    if (!this.previousTraits) {
-      this.previousTraits = currentTraits;
+    if (!previousUserTraits) {
+      this.store.updateState({ previousUserTraits: currentTraits });
       return currentTraits;
     }
 
-    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(
         currentTraits,
-        (v, k) => !isEqual(this.previousTraits[k], v),
+        (v, k) => !isEqual(previousUserTraits[k], v),
       );
-      this.previousTraits = currentTraits;
+      this.store.updateState({ previousUserTraits: currentTraits });
       return updates;
     }
 
@@ -765,11 +766,11 @@ export default class MetaMetricsController {
    * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {[]}
    */
-  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
-    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+  _getAllNFTsFlattened = memoize((allNfts = {}) => {
+    return Object.values(allNfts).reduce((result, chainNFTs) => {
       return result.concat(...Object.values(chainNFTs));
     }, []);
   });
@@ -778,11 +779,11 @@ export default class MetaMetricsController {
    * Returns the number of unique collectible/NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {number}
    */
-  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+  _getAllUniqueNFTAddressesLength(allNfts = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);
