@@ -22,6 +22,7 @@
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
+    "showBetaHeader": false,
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
