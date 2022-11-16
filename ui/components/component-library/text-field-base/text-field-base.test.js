@@ -2,8 +2,9 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { SIZES } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
 
 import { TextFieldBase } from './text-field-base';
 
@@ -188,11 +189,7 @@ describe('TextFieldBase', () => {
   });
   it('should render with error className when error is true', () => {
     const { getByTestId } = render(
-      <TextFieldBase
-        error
-        value="error value"
-        data-testid="text-field-base-error"
-      />,
+      <TextFieldBase error data-testid="text-field-base-error" />,
     );
     expect(getByTestId('text-field-base-error')).toHaveClass(
       'mm-text-field-base--error',
@@ -236,7 +233,10 @@ describe('TextFieldBase', () => {
     );
   });
   it('should render with a custom input and still work', () => {
-    const CustomInputComponent = (props) => <input {...props} />;
+    const CustomInputComponent = React.forwardRef((props, ref) => (
+      <Box ref={ref} as="input" {...props} />
+    ));
+    CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
     const { getByTestId } = render(
       <TextFieldBase
         InputComponent={CustomInputComponent}

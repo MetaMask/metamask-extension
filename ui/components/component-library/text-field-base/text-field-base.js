@@ -155,7 +155,7 @@ TextFieldBase.propTypes = {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
    */
-  autoComplete: PropTypes.string,
+  autoComplete: PropTypes.bool,
   /**
    * If `true`, the input will be focused during the first mount.
    */

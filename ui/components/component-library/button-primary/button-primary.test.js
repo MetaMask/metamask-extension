@@ -14,6 +14,7 @@ describe('ButtonPrimary', () => {
     expect(getByText('Button Primary')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-primary')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {

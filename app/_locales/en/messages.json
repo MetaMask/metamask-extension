@@ -780,6 +780,12 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "contractNFT": {
+    "message": "NFT contract"
+  },
+  "contractRequestingAccess": {
+    "message": "Contract requesting access"
+  },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
   },
@@ -2404,6 +2410,15 @@
   },
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
+  },
+  "notifications16ActionText": {
+    "message": "Try it out here"
+  },
+  "notifications16Description": {
+    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
+  },
+  "notifications16Title": {
+    "message": "Improved token allowance experience"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
