@@ -198,10 +198,9 @@ window.logStateString = async function (cb) {
   try {
     state.platform = await browser.runtime.getPlatformInfo();
     const stateString = JSON.stringify(state, null, 2);
-    cb(null, stateString);
-  }
-  catch (e) {
-    cb(e);
+    return cb(null, stateString);
+  } catch (e) {
+    return cb(e);
   }
 };
 
