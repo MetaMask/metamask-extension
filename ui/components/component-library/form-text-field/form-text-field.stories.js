@@ -221,6 +221,55 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
+export const id = Template.bind({});
+id.args = {
+  id: 'accessible-input-id',
+  label: 'If label prop exists id prop is required for accessibility',
+  helpText: '',
+};
+
+export const LabelStory = Template.bind({});
+LabelStory.storyName = 'Label'; // Need to use LabelStory to avoid conflict with Label component
+LabelStory.args = {
+  id: 'input-with-label',
+  label: 'Label content appears here',
+  helpText: '',
+};
+
+export const HelpTextStory = (args) => {
+  const [{ value }, updateArgs] = useArgs();
+  const handleOnChange = (e) => {
+    updateArgs({ value: e.target.value });
+  };
+  const handleOnClear = () => {
+    updateArgs({ value: '' });
+  };
+  return (
+    <>
+      <FormTextField
+        {...args}
+        value={value}
+        onChange={handleOnChange}
+        clearButtonOnClick={handleOnClear}
+        marginBottom={4}
+      />
+      <FormTextField
+        {...args}
+        error
+        helpText="When error is true the help text will be rendered as an error message"
+        value={value}
+        onChange={handleOnChange}
+        clearButtonOnClick={handleOnClear}
+      />
+    </>
+  );
+};
+HelpTextStory.storyName = 'HelpText'; // Need to use HelpTextStory to avoid conflict with HelpTextStory component
+HelpTextStory.args = {
+  label: '',
+  helpText: 'HelpText content appears here',
+};
+
 export const FormExample = () => {
   const FORM_STATE = {
     DEFAULT: 'default',

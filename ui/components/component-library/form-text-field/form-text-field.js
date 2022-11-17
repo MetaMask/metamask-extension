@@ -149,10 +149,6 @@ FormTextField.propTypes = {
    */
   labelProps: PropTypes.object,
   /**
-   * Props that are applied to the TextField component
-   */
-  textFieldProps: PropTypes.object,
-  /**
    * The content of the HelpText component
    */
   helpText: PropTypes.string,
@@ -160,6 +156,10 @@ FormTextField.propTypes = {
    * Props that are applied to the HelpText component
    */
   helpTextProps: PropTypes.object,
+  /**
+   * Props that are applied to the TextField component
+   */
+  textFieldProps: PropTypes.object,
   /**
    * FormTextField accepts all the props from TextField and Box
    */

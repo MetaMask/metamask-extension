@@ -1,10 +1,12 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import { FormTextField } from './form-text-field';
+import { TextField } from '../text-field';
+import { TextFieldBase } from '../text-field-base';
 
 # FormTextField
 
-The `FormTextField` is an input component to create forms. It bundles the [Label](/docs/ui-components-component-library-label-label-stories-js--default-story), [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story) and [HelpText](/docs/ui-components-component-library-help-text-help-text-stories-js--default-story) components together.
+The `FormTextField` is an input component to create forms. It bundles the [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story), [Label](/docs/ui-components-component-library-label-label-stories-js--default-story) and [HelpText](/docs/ui-components-component-library-help-text-help-text-stories-js--default-story) components together.
 
 <Canvas>
   <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--default-story" />
@@ -12,9 +14,68 @@ The `FormTextField` is an input component to create forms. It bundles the [Label
 
 ## Props
 
-The `FormTextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props), [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props) component props
+The `FormTextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={FormTextField} />
+
+`FormTextField` accepts all [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextField} />
+
+`FormTextField` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextFieldBase} />
+
+### Id
+
+Use the `id` prop to set the `id` of the `FormTextField` component. This is required for accessibility when the `label` prop is set. It is also used internally to link the `label` and `input` elements using `htmlFor`, so clicking on the `label` will focus the `input`.
+
+<Canvas>
+  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--id" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../components/component-library';
+
+<FormTextField
+  id="accessible-input-id"
+  label="If label prop exists id prop is required for accessibility"
+/>;
+```
+
+### Label
+
+Use the `label` prop to add a label to the `FormTextField` component. Uses the [Label](/docs/ui-components-component-library-label-label-stories-js--default-story) component. Use the `labelProps` prop to pass props to the `Label` component. To use a custom label component see the [Custom Label or HelpText](#custom-label-or-helptext) story example.
+
+<Canvas>
+  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--label-story" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../components/component-library';
+
+<FormTextField id="input-with-label" label="Label content appears here" />;
+```
+
+### HelpText
+
+Use the `helpText` prop to add help text to the `FormTextField` component. Uses the [HelpText](/docs/ui-components-component-library-helpText-helpText-stories-js--default-story) component. Use the `helpTextProps` prop to pass props to the `HelpText` component. To use a custom help text component see the [Custom Label or HelpText](#custom-helpText-or-helptext) story example. When `error` is true the `helpText` will be rendered as an error message.
+
+<Canvas>
+  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--help-text-story" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../components/component-library';
+
+<FormTextField helpText="HelpText content appears here" />;
+<FormTextField
+  error
+  helpText="When error is true the help text will be rendered as an error message"
+/>;
+```
 
 ### Form Example
 
