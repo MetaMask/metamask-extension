@@ -774,7 +774,6 @@ export default class TransactionController extends EventEmitter {
    * @param transactionType
    * @param sendFlowHistory
    * @param actionId
-   * @param method
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
@@ -784,7 +783,6 @@ export default class TransactionController extends EventEmitter {
     transactionType,
     sendFlowHistory = [],
     actionId,
-    method,
   ) {
     if (
       transactionType !== undefined &&
