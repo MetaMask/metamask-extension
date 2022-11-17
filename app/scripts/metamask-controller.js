@@ -4538,6 +4538,9 @@ export default class MetamaskController extends EventEmitter {
   async securityProviderRequest(requestData, methodName) {
     // const isTransactionSecurityCheckEnabled =
     //   this.preferencesController.store.getState().transactionSecurityCheckEnabled;
+
+    const { currentLocale } = this.preferencesController.store.getState();
+
     const chainId = Number(
       hexToDecimal(this.networkController.getCurrentChainId()),
     );
@@ -4547,6 +4550,7 @@ export default class MetamaskController extends EventEmitter {
       requestData,
       methodName,
       chainId,
+      currentLocale,
     );
     console.log('flagAsDangerous: ', flagAsDangerous);
 

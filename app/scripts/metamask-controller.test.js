@@ -829,15 +829,8 @@ describe('MetaMaskController', function () {
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
     const data =
       '0x0000000000000000000000000000000000000043727970746f6b697474696573';
-    const origin = 'https://metamask.github.io';
 
     beforeEach(async function () {
-      nock(
-        'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
-      )
-        .post('/')
-        .reply(502, '{"message":"Forbidden"}');
-
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
         return Promise.resolve('0x0');
@@ -852,21 +845,6 @@ describe('MetaMaskController', function () {
         from: address,
         data,
       };
-
-      await metamaskController.securityProviderRequest(
-        {
-          id: 1529337209261235,
-          msgParams: {
-            data,
-            from: address,
-            origin,
-          },
-          time: 1668608342005,
-          status: 'rejected',
-          type: 'eth_sign',
-        },
-        'eth_sign',
-      );
 
       const promise = metamaskController.newUnsignedMessage(msgParams);
       // handle the promise so it doesn't throw an unhandledRejection

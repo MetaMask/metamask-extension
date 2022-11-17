@@ -3,7 +3,12 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
-export async function securityProviderCheck(requestData, methodName, chainId) {
+export async function securityProviderCheck(
+  requestData,
+  methodName,
+  chainId,
+  currentLocale,
+) {
   console.log('requestData: ', requestData);
   let dataToValidate;
 
@@ -13,6 +18,7 @@ export async function securityProviderCheck(requestData, methodName, chainId) {
       rpc_method_name: methodName,
       chain_id: chainId,
       data: requestData.msgParams.data,
+      currentLocale,
     };
   } else if (
     methodName === MESSAGE_TYPE.ETH_SIGN ||
@@ -26,6 +32,7 @@ export async function securityProviderCheck(requestData, methodName, chainId) {
         signer_address: requestData.msgParams.from,
         msg_to_sign: requestData.msgParams.data,
       },
+      currentLocale,
     };
   } else {
     dataToValidate = {
@@ -40,6 +47,7 @@ export async function securityProviderCheck(requestData, methodName, chainId) {
         value: requestData.txParams.value,
         data: requestData.txParams.data,
       },
+      currentLocale,
     };
   }
 
