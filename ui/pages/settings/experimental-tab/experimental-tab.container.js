@@ -6,12 +6,14 @@ import {
   setOpenSeaEnabled,
   setEIP1559V2Enabled,
   setImprovedTokenAllowanceEnabled,
+  setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
 import {
   getUseNftDetection,
   getOpenSeaEnabled,
   getEIP1559V2Enabled,
   getIsImprovedTokenAllowanceEnabled,
+  getIsTransactionSecurityCheckEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -21,6 +23,8 @@ const mapStateToProps = (state) => {
     openSeaEnabled: getOpenSeaEnabled(state),
     eip1559V2Enabled: getEIP1559V2Enabled(state),
     improvedTokenAllowanceEnabled: getIsImprovedTokenAllowanceEnabled(state),
+    transactionSecurityCheckEnabled:
+      getIsTransactionSecurityCheckEnabled(state),
   };
 };
 
@@ -31,6 +35,8 @@ const mapDispatchToProps = (dispatch) => {
     setEIP1559V2Enabled: (val) => dispatch(setEIP1559V2Enabled(val)),
     setImprovedTokenAllowanceEnabled: (val) =>
       dispatch(setImprovedTokenAllowanceEnabled(val)),
+    setTransactionSecurityCheckEnabled: (val) =>
+      dispatch(setTransactionSecurityCheckEnabled(val)),
   };
 };
 
