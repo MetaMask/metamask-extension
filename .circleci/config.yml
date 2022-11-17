@@ -300,7 +300,7 @@ jobs:
                 value: << pipeline.git.branch >>
           steps:
             - run:
-                name: build:dist
+                name: build:prod
                 command: yarn build --build-type beta prod
       - run:
           name: build:debug
