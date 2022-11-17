@@ -43,7 +43,7 @@ const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 let lastMessageReceivedTimestamp = Date.now();
 
 let extensionPort;
-let timeoutHandle;
+let ackTimeoutToDisplayError;
 
 /*
  * As long as UI is open it will keep sending messages to service worker
@@ -63,7 +63,7 @@ if (isManifestV3) {
   const ackKeepAliveListener = (message) => {
     if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
       lastMessageReceivedTimestamp = Date.now();
-      clearTimeout(timeoutHandle);
+      clearTimeout(ackTimeoutToDisplayError);
     }
   };
 
@@ -78,7 +78,7 @@ if (isManifestV3) {
       }
     }
 
-    timeoutHandle = setTimeout(() => {
+    ackTimeoutToDisplayError = setTimeout(() => {
       if (
         Date.now() - lastMessageReceivedTimestamp >
         ACK_KEEP_ALIVE_WAIT_TIME
