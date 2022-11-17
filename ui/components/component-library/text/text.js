@@ -58,18 +58,18 @@ export const Text = React.forwardRef(
     }
 
     const computedClassName = classnames(
-      'text',
+      'mm-text',
       className,
-      `text--${variant}`,
+      `mm-text--${variant}`,
       (strongTagFontWeight || fontWeight) &&
-        `text--font-weight-${strongTagFontWeight || fontWeight}`,
+        `mm-text--font-weight-${strongTagFontWeight || fontWeight}`,
       {
-        [`text--font-style-${fontStyle}`]: Boolean(fontStyle),
-        [`text--ellipsis`]: Boolean(ellipsis),
-        [`text--text-transform-${textTransform}`]: Boolean(textTransform),
-        [`text--text-align-${textAlign}`]: Boolean(textAlign),
-        [`text--color-${color}`]: Boolean(color),
-        [`text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+        [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--ellipsis`]: Boolean(ellipsis),
+        [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
+        [`mm-text--color-${color}`]: Boolean(color),
+        [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
 
@@ -98,7 +98,8 @@ export const Text = React.forwardRef(
 
 Text.propTypes = {
   /**
-   * The variation of font styles including sizes and weights of the Text component (display, heading, body)
+   * The variation of font styles including sizes and weights of the Text component
+   * Possible values: `DISPLAY_MD`,`HEADING_LG`,`HEADING_MD`,`HEADING_SM`,`BODY_LG_MEDIUM`,`BODY_MD`,`BODY_MD_BOLD`,`BODY_SM`,`BODY_SM_BOLD`,`BODY_XS`,`INHERIT`
    */
   variant: PropTypes.oneOf(Object.values(TEXT)),
   /**
