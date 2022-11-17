@@ -136,6 +136,8 @@ export default class MessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
     };
+    console.log('msgData: ', msgData);
+    console.log('msgData.type: ', msgData.type);
 
     const flagAsDangerous = await this.securityProviderRequest(
       msgData,
