@@ -40,7 +40,7 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
-let lastMessageRecievedTimestamp = Date.now();
+let lastMessageReceivedTimestamp = Date.now();
 
 let extensionPort;
 let timeoutHandle;
@@ -62,7 +62,7 @@ if (isManifestV3) {
 
   const ackKeepAliveListener = (message) => {
     if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
-      lastMessageRecievedTimestamp = Date.now();
+      lastMessageReceivedTimestamp = Date.now();
       clearTimeout(timeoutHandle);
     }
   };
@@ -80,7 +80,7 @@ if (isManifestV3) {
 
     timeoutHandle = setTimeout(() => {
       if (
-        Date.now() - lastMessageRecievedTimestamp >
+        Date.now() - lastMessageReceivedTimestamp >
         ACK_KEEP_ALIVE_WAIT_TIME
       ) {
         clearInterval(handle);
