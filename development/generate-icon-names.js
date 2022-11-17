@@ -4,7 +4,7 @@
  * Reads all the icon svg files in app/images/icons
  * and returns an object of icon name key value pairs
  * stored in the environment variable ICON_NAMES
- * Used with the Icon component in ./ui/component-library/icon
+ * Used with the Icon component in ./ui/components/component-library/icon/icon.js
  */
 const fs = require('fs');
 const path = require('path');
