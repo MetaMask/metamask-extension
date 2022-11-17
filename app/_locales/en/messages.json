@@ -434,18 +434,35 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "beta": {
+    "message": "Beta"
+  },
+  "betaHeaderText": {
+    "message": "This is a BETA version. Please report bugs $1",
+    "description": "$1 represents the word 'here' in a hyperlink"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Beta version disclaimer"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "By proceeding, you accept and acknowledge these risks, our $1, and $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Beta Terms"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
+    "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -454,13 +471,13 @@
     "message": "beta portfolio site"
   },
   "betaTerms": {
-    "message": "BETA Terms of use"
+    "message": "Beta Terms of use"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -766,6 +783,12 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractNFT": {
+    "message": "NFT contract"
+  },
+  "contractRequestingAccess": {
+    "message": "Contract requesting access"
   },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
@@ -1694,6 +1717,12 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "improvedTokenAllowance": {
+    "message": "Improved token allowance experience"
+  },
+  "improvedTokenAllowanceDescription": {
+    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -2146,6 +2175,9 @@
   "networkName": {
     "message": "Network name"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2160,6 +2192,9 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
+  },
+  "networkNameOptimism": {
+    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2379,6 +2414,15 @@
   },
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
+  },
+  "notifications16ActionText": {
+    "message": "Try it out here"
+  },
+  "notifications16Description": {
+    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
+  },
+  "notifications16Title": {
+    "message": "Improved token allowance experience"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
@@ -2656,6 +2700,10 @@
   "permission_accessSnap": {
     "message": "Connect to the $1 Snap.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+  },
+  "permission_cronjob": {
+    "message": "Schedule and execute periodic actions.",
+    "description": "The description for the `snap_cronjob` permission"
   },
   "permission_customConfirmation": {
     "message": "Display a confirmation in MetaMask.",
@@ -2939,6 +2987,9 @@
   "revokeApproveForAllDescription": {
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "Revoke spending cap for your"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
@@ -3263,6 +3314,10 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsInsightError": {
+    "message": "An error occured with $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -3280,6 +3335,9 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
+  },
+  "somethingIsWrong": {
+    "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."

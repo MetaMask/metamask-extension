@@ -112,12 +112,16 @@ export default class RevealSeedPhrase extends PureComponent {
               'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase,
             },
           )}
+          data-testid={
+            isShowingSeedPhrase ? 'showing-seed-phrase' : 'hidden-seed-phrase'
+          }
         >
           {seedPhrase}
         </div>
         {!isShowingSeedPhrase && (
           <div
             className="reveal-seed-phrase__secret-blocker"
+            data-testid="reveal-seed-blocker"
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.ONBOARDING,

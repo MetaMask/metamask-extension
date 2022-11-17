@@ -543,7 +543,7 @@ const NetworksForm = ({
             url: rpcUrlOrigin,
           },
           properties: {
-            chain_id: addHexPrefix(chainId.toString(16)),
+            chain_id: addHexPrefix(Number(chainId).toString(16)),
             network_name: networkName,
             network: rpcUrlOrigin,
             symbol: ticker,

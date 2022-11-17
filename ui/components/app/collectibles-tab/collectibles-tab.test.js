@@ -150,17 +150,17 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   collectiblesDetectionNoticeDismissed = false,
-  useCollectibleDetection,
+  useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
   const store = configureStore({
     metamask: {
-      allCollectibles: {
+      allNfts: {
         [ACCOUNT_1]: {
           [chainId]: collectibles,
         },
       },
-      allCollectibleContracts: {
+      allNftContracts: {
         [ACCOUNT_1]: {
           [chainId]: collectibleContracts,
         },
@@ -168,7 +168,7 @@ const render = ({
       provider: { chainId },
       selectedAddress,
       collectiblesDetectionNoticeDismissed,
-      useCollectibleDetection,
+      useNftDetection,
       collectiblesDropdownState,
     },
   });
@@ -184,9 +184,9 @@ describe('Collectible Items', () => {
   setBackgroundConnection({
     setCollectiblesDetectionNoticeDismissed:
       setCollectiblesDetectionNoticeDismissedStub,
-    detectCollectibles: detectCollectiblesStub,
+    detectNfts: detectCollectiblesStub,
     getState: getStateStub,
-    checkAndUpdateAllCollectiblesOwnershipStatus:
+    checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllCollectiblesOwnershipStatusStub,
     updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
   });
@@ -231,7 +231,7 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
@@ -284,7 +284,7 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(detectCollectiblesStub).not.toHaveBeenCalled();
       expect(
@@ -302,7 +302,7 @@ describe('Collectible Items', () => {
         chainId: '0x5',
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(
         checkAndUpdateAllCollectiblesOwnershipStatusStub,

@@ -33,7 +33,11 @@ describe('Error utils Tests', function () {
     };
 
     fetchLocale.mockReturnValue(mockStore.localeMessages.current);
-    const errorHtml = await getErrorHtml(SUPPORT_LINK, mockStore.metamask);
+    const errorHtml = await getErrorHtml(
+      'troubleStarting',
+      SUPPORT_LINK,
+      mockStore.metamask,
+    );
     const currentLocale = mockStore.localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
