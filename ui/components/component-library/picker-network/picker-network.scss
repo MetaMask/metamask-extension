@@ -5,6 +5,6 @@
   height: var(--picker-network-height);
 
   &:active {
-    background-color: #d6d9dc; //TODO: Add this color in design system for pressed state
+    background-color: var(--color-background-default-hover);
   }
 }
