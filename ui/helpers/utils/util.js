@@ -366,6 +366,7 @@ const solidityTypes = () => {
     'bytes',
     'int',
     'uint',
+    'uint256',
     'fixed',
     'ufixed',
   ];
@@ -433,11 +434,11 @@ export const sanitizeMessage = (msg, baseType, types) => {
     }
 
     // key has a type. check if the definedType is also a type
-    const nestedType = definedType.type.replace(/\[\]$/u, '');
+    const nestedType = definedType.type.replace(/\[[[0-9]*\]*/gu, '');
     const nestedTypeDefinition = types[nestedType];
 
     if (nestedTypeDefinition) {
-      if (definedType.type.endsWith('[]') > 0) {
+      if (definedType.type.match(/\[[[0-9]*\]$/u)) {
         // nested array
         sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
           sanitizeMessage(value, nestedType, types),

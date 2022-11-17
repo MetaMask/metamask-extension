@@ -365,6 +365,10 @@ describe('util', () => {
             ],
           },
         ],
+        nestArray: [
+          [12, 34, 56],
+          [56, 78, 89],
+        ],
       };
       primaryType = 'Mail';
       types = {
@@ -378,6 +382,7 @@ describe('util', () => {
           { name: 'from', type: 'Person' },
           { name: 'to', type: 'Person[]' },
           { name: 'contents', type: 'string' },
+          { name: 'nestArray', type: 'uint256[2][2]' },
         ],
         Person: [
           { name: 'name', type: 'string' },
@@ -406,6 +411,13 @@ describe('util', () => {
       expect(result.to).toHaveLength(1);
       expect(result.to[0].name).toStrictEqual('Bob');
       expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return parsed nested array if defined', () => {
+      const result = util.sanitizeMessage(message, primaryType, types);
+      expect(result.nestArray).toHaveLength(2);
+      expect(result.nestArray[0]).toHaveLength(3);
+      expect(result.nestArray[0][0]).toStrictEqual(12);
     });
 
     it('should return ignore message data with unknown types', () => {
