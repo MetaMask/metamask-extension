@@ -109,7 +109,6 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   before(async function () {
-    console.log('Before Called');
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
     sinon.spy(MetaMaskController.prototype, 'resetStates');

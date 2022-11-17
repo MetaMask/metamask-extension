@@ -1141,6 +1141,9 @@ export default class MetamaskController extends EventEmitter {
       if (globalThis.isFirstTimeProfileLoaded === true) {
         this.resetStates(resetMethods);
       }
+    } else {
+      // it's always the first time in MV2
+      this.resetStates(resetMethods);
     }
 
     const password = process.env.CONF?.PASSWORD;
