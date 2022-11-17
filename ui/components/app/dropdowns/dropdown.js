@@ -36,7 +36,7 @@ export class Dropdown extends Component {
           {`
             li.dropdown-menu-item:hover {
               color:var(--color-text-default);
-              background-color: var(--color-background-alternative);
+              background-color: var(--color-background-default-hover);
               border-radius: 4px;
             }
           `}
