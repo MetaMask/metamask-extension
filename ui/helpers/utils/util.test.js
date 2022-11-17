@@ -383,6 +383,7 @@ describe('util', () => {
           { name: 'to', type: 'Person[]' },
           { name: 'contents', type: 'string' },
           { name: 'nestArray', type: 'uint256[2][2]' },
+          { name: 'nestedPeople', type: 'Person[][]' },
         ],
         Person: [
           { name: 'name', type: 'string' },
@@ -414,10 +415,49 @@ describe('util', () => {
     });
 
     it('should return parsed nested array if defined', () => {
-      const result = util.sanitizeMessage(message, primaryType, types);
+      const result = util.sanitizeMessage(
+        {
+          nestArray: [
+            [12, 34, 56],
+            [56, 78, 89],
+          ],
+        },
+        primaryType,
+        types,
+      );
       expect(result.nestArray).toHaveLength(2);
       expect(result.nestArray[0]).toHaveLength(3);
       expect(result.nestArray[0][0]).toStrictEqual(12);
+    });
+
+    it('should return parsed nested array with struct if defined', () => {
+      const msg = {
+        nestedPeople: [
+          [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+          [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+        ],
+      };
+      const result = util.sanitizeMessage(msg, primaryType, types);
+      expect(result.nestedPeople).toHaveLength(2);
+      expect(result.nestedPeople[0]).toHaveLength(1);
     });
 
     it('should return ignore message data with unknown types', () => {
