@@ -29,7 +29,7 @@ describe('Test Snap update', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open a new tab and navigate to test snaps page and connect
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
 
         // find and scroll to the correct card and click first
         const snapButton = await driver.findElement('#connectUpdateNew');
@@ -40,7 +40,7 @@ describe('Test Snap update', function () {
         await driver.delay(2000);
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -56,7 +56,7 @@ describe('Test Snap update', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -77,7 +77,7 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
@@ -89,7 +89,7 @@ describe('Test Snap update', function () {
         await driver.clickElement('#connectUpdateNew');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         await driver.delay(1000);
 
         // approve update of snap
@@ -104,7 +104,7 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
