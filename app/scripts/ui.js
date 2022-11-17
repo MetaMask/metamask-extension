@@ -112,10 +112,7 @@ async function start() {
   const activeTab = await queryCurrentActiveTab(windowType);
 
   let loadPhishingWarningPage;
-  /**
-   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-   * Code below ensures that UI is rendered only after background is ready.
-   */
+
   if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
