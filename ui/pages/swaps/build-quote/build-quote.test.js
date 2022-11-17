@@ -7,6 +7,7 @@ import {
   createSwapsMockStore,
   setBackgroundConnection,
   fireEvent,
+  waitFor,
 } from '../../../../test/jest';
 import {
   setSwapsFromToken,
@@ -82,7 +83,7 @@ describe('BuildQuote', () => {
     ).toMatchSnapshot();
   });
 
-  it('switches swap from and to tokens', () => {
+  it('switches swap from and to tokens', async () => {
     const setSwapFromTokenMock = jest.fn(() => {
       return {
         type: 'MOCK_ACTION',
@@ -104,7 +105,9 @@ describe('BuildQuote', () => {
     );
     expect(getByText('Swap from')).toBeInTheDocument();
     fireEvent.click(getByTestId('build-quote__swap-arrows'));
-    expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken);
+    await waitFor(() =>
+      expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken),
+    );
     expect(setSwapToToken).toHaveBeenCalled();
   });
 
