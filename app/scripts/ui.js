@@ -67,7 +67,7 @@ if (isManifestV3) {
     }
   };
 
-  const handle = setInterval(() => {
+  const keepAliveInterval = setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
     if (extensionPort !== null && extensionPort !== undefined) {
@@ -83,7 +83,7 @@ if (isManifestV3) {
         Date.now() - lastMessageReceivedTimestamp >
         ACK_KEEP_ALIVE_WAIT_TIME
       ) {
-        clearInterval(handle);
+        clearInterval(keepAliveInterval);
         displayCriticalError(
           'somethingIsWrong',
           new Error("Something's gone wrong. Try reloading the page."),
