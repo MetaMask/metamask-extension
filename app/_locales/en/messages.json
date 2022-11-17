@@ -4140,6 +4140,12 @@
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
+  "transactionSecurityCheck": {
+    "message": "Transaction security check"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
