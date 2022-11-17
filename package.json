@@ -126,7 +126,7 @@
     "@metamask/providers": "^10.0.0",
     "@metamask/rpc-methods": "^0.23.0",
     "@metamask/slip44": "^2.1.0",
-    "@metamask/smart-transactions-controller": "^2.3.2",
+    "@metamask/smart-transactions-controller": "^3.0.0",
     "@metamask/snap-controllers": "^0.23.0",
     "@metamask/snap-utils": "^0.23.0",
     "@ngraveio/bc-ur": "^1.1.6",
@@ -454,7 +454,8 @@
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>bufferutil": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>es5-ext": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>utf-8-validate": false,
-      "web3>web3-shh": false
+      "web3>web3-shh": false,
+      "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": false
     }
   }
 }
