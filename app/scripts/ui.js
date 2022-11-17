@@ -29,8 +29,8 @@ const container = document.getElementById('app-content');
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
-const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
 // Service Worker Keep Alive Message Constants
+const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const ACK_KEEP_ALIVE_WAIT_TIME = 60_000; // 1 minute
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
@@ -41,15 +41,16 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
 let lastMessageRecievedTimestamp = Date.now();
+
+let extensionPort;
+let timeoutHandle;
+
 /*
  * As long as UI is open it will keep sending messages to service worker
  * In service worker as this message is received
  * if service worker is inactive it is reactivated and script re-loaded
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
-let extensionPort;
-let timeoutHandle;
-
 if (isManifestV3) {
   // Checking for SW aliveness (or stuckness) flow
   // 1. Check if we have an extensionPort, if yes
@@ -231,6 +232,7 @@ async function start() {
       extensionPort.onDisconnect.removeListener(
         resetExtensionStreamAndListeners,
       );
+
       // message below will try to activate service worker
       // in MV3 is likely that reason of stream closing is service worker going in-active
       browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
