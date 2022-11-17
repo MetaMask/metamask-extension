@@ -666,6 +666,11 @@
         "eth-rpc-errors": true
       }
     },
+    "@metamask/approval-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/assets-controllers": {
       "globals": {
         "Headers": true,
@@ -1149,6 +1154,11 @@
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/phishing-controller": {
