@@ -1,0 +1,44 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarFavicon } from './avatar-favicon';
+
+# AvatarFavicon
+
+The `AvatarFavicon` is an image component that renders an icon that is provided in the form of a URL.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-favicon-avatar-favicon-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `AvatarFavicon` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story) component props
+
+<ArgsTable of={AvatarFavicon} />
+
+### Size
+
+Use the `size` prop to set the size of the `AvatarFavicon`.
+
+Possible sizes include:
+
+- `xs` 16px
+- `sm` 24px
+- `md` 32px
+- `lg` 40px
+- `xl` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-favicon-avatar-favicon-stories-js--size" />
+</Canvas>
+
+### Image Source
+
+Use the `imageSource` prop to set the image to be rendered of the `AvatarFavicon`.
+
+### Fallback Icon Props
+
+If there is no `imageSource` then in that case an [icon](/docs/ui-components-component-library-icon-icon-stories-js--default-story) will be used as the fallback display and it can be customised via `fallbackIconProps`.
+

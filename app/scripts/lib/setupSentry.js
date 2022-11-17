@@ -53,11 +53,6 @@ export const SENTRY_STATE = {
       type: true,
     },
     seedPhraseBackedUp: true,
-    showRestorePrompt: true,
-    threeBoxDisabled: true,
-    threeBoxLastUpdated: true,
-    threeBoxSynced: true,
-    threeBoxSyncingAllowed: true,
     unapprovedDecryptMsgCount: true,
     unapprovedEncryptionPublicKeyMsgCount: true,
     unapprovedMsgCount: true,
@@ -226,7 +221,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
+  const filePath = origUrl.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }

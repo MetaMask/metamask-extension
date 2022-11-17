@@ -47,13 +47,18 @@
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
   },
-  "SIWEDomainInvalid": {
-    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
-    "description": "$1 represents the website domain"
+  "SIWEDomainInvalidText": {
+    "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "Deceptive site request."
   },
   "SIWEDomainWarningBody": {
     "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
     "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "Unsafe"
   },
   "SIWELabelChainID": {
     "message": "Chain ID:"
@@ -447,6 +452,15 @@
   },
   "betaPortfolioSite": {
     "message": "beta portfolio site"
+  },
+  "betaTerms": {
+    "message": "BETA Terms of use"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -890,9 +904,6 @@
   },
   "data": {
     "message": "Data"
-  },
-  "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "dataBackupSeemsCorrupt": {
     "message": "Can not restore your data. The file appears to be corrupt."
@@ -2897,10 +2908,6 @@
   "restoreUserDataDescription": {
     "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
   },
-  "restoreWalletPreferences": {
-    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Retry transaction"
   },
@@ -2921,6 +2928,9 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "reviewSpendingCap": {
+    "message": "Review your spending cap"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access all of your $1?",
@@ -3116,6 +3126,9 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "setSpendingCap": {
+    "message": "Set a spending cap for your"
   },
   "settings": {
     "message": "Settings"
@@ -3880,15 +3893,6 @@
   "syncWithMobileTitle": {
     "message": "Sync with mobile"
   },
-  "syncWithThreeBox": {
-    "message": "Sync data with 3Box (experimental)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box has been disabled due to an error during the initial sync"
-  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
@@ -4219,6 +4223,9 @@
   "userName": {
     "message": "Username"
   },
+  "verifyContractDetails": {
+    "message": "Verify contract details"
+  },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -4231,6 +4238,9 @@
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "View"
+  },
   "viewAccount": {
     "message": "View account"
   },
@@ -4239,6 +4249,9 @@
   },
   "viewContact": {
     "message": "View contact"
+  },
+  "viewDetails": {
+    "message": "View details"
   },
   "viewFullTransactionDetails": {
     "message": "View full transaction details"

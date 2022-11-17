@@ -48,7 +48,6 @@
   "app/scripts/controllers/preferences.test.js",
   "app/scripts/controllers/swaps.js",
   "app/scripts/controllers/swaps.test.js",
-  "app/scripts/controllers/threebox.js",
   "app/scripts/controllers/transactions/index.js",
   "app/scripts/controllers/transactions/index.test.js",
   "app/scripts/controllers/transactions/lib/tx-state-history-helpers.js",
