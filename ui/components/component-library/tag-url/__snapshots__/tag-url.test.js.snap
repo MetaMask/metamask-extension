@@ -16,7 +16,7 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
       />
     </div>
     <p
-      class="box text text--body-md text--ellipsis text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
     >
       https://app.uniswap.org
     </p>

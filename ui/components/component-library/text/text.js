@@ -99,7 +99,7 @@ export const Text = React.forwardRef(
 Text.propTypes = {
   /**
    * The variation of font styles including sizes and weights of the Text component
-   * Possible values: `DISPLAY_MD`,`HEADING_LG`,`HEADING_MD`,`HEADING_SM`,`BODY_LG_MEDIUM`,`BODY_MD`,`BODY_MD_BOLD`,`BODY_SM`,`BODY_SM_BOLD`,`BODY_XS`,`INHERIT`
+   * Possible values: `DISPLAY_MD` 48px/32px,`HEADING_LG` 32px/24px,`HEADING_MD` 24px/18px,`HEADING_SM` 18px/16px,`BODY_LG_MEDIUM` 18px/16px,`BODY_MD` 16px/14px,`BODY_MD_BOLD` 16px/14px,`BODY_SM` 14px/12px,`BODY_SM_BOLD` 14px/12px,`BODY_XS` 12px/10px,`INHERIT`
    */
   variant: PropTypes.oneOf(Object.values(TEXT)),
   /**
