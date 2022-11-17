@@ -10,10 +10,8 @@ import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
-import {
-  KEYRING_TYPES,
-  DEVICE_NAMES,
-} from '../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -192,7 +190,7 @@ describe('MetaMaskController', function () {
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
-          'Simple Key Pair',
+          KEYRING_TYPES.IMPORTED,
         );
       const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
       const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
