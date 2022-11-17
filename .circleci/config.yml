@@ -295,7 +295,6 @@ jobs:
                 command: yarn build --build-type beta dist
       - when:
           condition:
-            not:
               matches:
                 pattern: /^master$/
                 value: << pipeline.git.branch >>
