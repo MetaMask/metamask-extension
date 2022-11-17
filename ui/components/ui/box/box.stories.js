@@ -582,7 +582,7 @@ export const ResponsiveProps = () => {
         marginBottom={[0]}
         padding={[2, 4]}
         gap={[2, 4]}
-        display={['flex', 'flex', 'null', 'flex']}
+        display={['flex', null, null, 'none']}
         flexDirection={['column', 'column', 'row']}
         borderColor={COLORS.BORDER_DEFAULT}
       >
