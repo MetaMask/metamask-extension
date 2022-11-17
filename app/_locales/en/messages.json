@@ -437,18 +437,32 @@
   "beta": {
     "message": "Beta"
   },
+  "betaHeaderText": {
+    "message": "This is a BETA version. Please report bugs $1",
+    "description": "$1 represents the word 'here' in a hyperlink"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Beta version disclaimer"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "By proceeding, you accept and acknowledge these risks, our $1, and $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Beta Terms"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
+    "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -457,13 +471,13 @@
     "message": "beta portfolio site"
   },
   "betaTerms": {
-    "message": "BETA Terms of use"
+    "message": "Beta Terms of use"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -2401,6 +2415,15 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
+  "notifications16ActionText": {
+    "message": "Try it out here"
+  },
+  "notifications16Description": {
+    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
+  },
+  "notifications16Title": {
+    "message": "Improved token allowance experience"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -4116,6 +4139,12 @@
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
+  },
+  "transactionSecurityCheck": {
+    "message": "Transaction security check"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."

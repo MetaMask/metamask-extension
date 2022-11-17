@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.22.2]
+### Changed
+- Restore changes from v10.22.0
+- Fix deadlock encountered while performing Swaps on unsupported testnets ([#16511](https://github.com/MetaMask/metamask-extension/pull/16511))
+
+## [10.22.1]
+### Changed
+- Temporarily revert v10.22.0
+
+### Fixed
+- Prevent user from editing a contract interaction initiated by a dapp ([#16498](https://github.com/MetaMask/metamask-extension/pull/16498))
+
 ## [10.22.0]
 ### Added
 - Add Aurora network to the Popular Custom Network list ([#16039](https://github.com/MetaMask/metamask-extension/pull/16039))
@@ -3289,7 +3301,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...HEAD
+[10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
+[10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1
 [10.22.0]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.0
 [10.21.2]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...v10.21.2
 [10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1

@@ -3,8 +3,8 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap Confirm', function () {
-  it('can pop up a snap confirm and get its result', async function () {
+describe('Test Snap Installed', function () {
+  it('can tell if a snap is installed', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -16,10 +16,9 @@ describe('Test Snap Confirm', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToSnapDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -30,13 +29,32 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('#snapId1', 'npm:@metamask/test-snap-confirm');
-        await driver.clickElement('#connectHello');
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
+        const confirmButton = await driver.findElement('#connectConfirmSnap');
+        await driver.scrollToElement(confirmButton);
+        await driver.clickElement('#connectConfirmSnap');
+
+        // switch to metamask extension and click connect
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        let windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
+
+        await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -47,18 +65,33 @@ describe('Test Snap Confirm', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        const errorButton = await driver.findElement('#connectError');
+        const errorButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(errorButton);
         await driver.delay(1000);
-        await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
-        await driver.clickElement('#connectError');
+        await driver.clickElement('#connectErrorSnap');
+
+        // switch to metamask extension and click connect
+        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
+
+        await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -69,19 +102,13 @@ describe('Test Snap Confirm', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        const getInstalledSnapsButton = await driver.findElement(
-          '#getInstalledSnapsButton',
-        );
-        await driver.scrollToElement(getInstalledSnapsButton);
+        const result = await driver.findElement('#installedSnapsResult');
+        await driver.scrollToElement(result);
         await driver.delay(1000);
-        await driver.clickElement('#getInstalledSnapsButton');
-        await driver.delay(1000);
-
-        const result = await driver.findElement('#getInstalledSnapsResult');
         assert.equal(
           await result.getText(),
           'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
