@@ -15,6 +15,7 @@ import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -120,7 +121,7 @@ async function start() {
      * In case the UI is already rendered, only update the streams.
      */
     const messageListener = async (message) => {
-      if (message?.name === 'CONNECTION_READY') {
+      if (message?.name === EXTENSION_MESSAGES.CONNECTION_READY) {
         if (isUIInitialised) {
           // Currently when service worker is revived we create new streams
           // in later version we might try to improve it by reviving same streams.
