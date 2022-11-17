@@ -57,7 +57,8 @@ if (isManifestV3) {
   // 2a. Send a keep alive message to the background via extensionPort
   // 2b. Add a listener to it (if not already added)
   // 3a. Set a timeout to check if we have received an ACK from background
-  // 3b. If we have not received an ACK within Xs, we know the background is stuck or dead
+  // 3b. If we have not received an ACK within ACK_KEEP_ALIVE_WAIT_TIME,
+  //     we know the background is stuck or dead
   // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
 
   const ackKeepAliveListener = (message) => {
