@@ -366,7 +366,6 @@ const solidityTypes = () => {
     'bytes',
     'int',
     'uint',
-    'uint256',
     'fixed',
     'ufixed',
   ];
