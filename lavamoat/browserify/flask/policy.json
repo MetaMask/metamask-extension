@@ -1127,6 +1127,11 @@
         "@metamask/notification-controller>nanoid": true
       }
     },
+    "@metamask/notification-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -1411,6 +1416,11 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/rpc-methods>@metamask/controllers>web3": {
