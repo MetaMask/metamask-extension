@@ -147,10 +147,8 @@ async function start() {
      * worker has been registered, so that the warning page works offline.
      */
     loadPhishingWarningPage = async function () {
-      const currentPlatform = getPlatform();
-
-      // Check session storage for whether we've already initalized the phishing warning
-      // service worker this browser session and do not attempt to re-initialize if so.
+      // Check session storage for whether we've already initialized the phishing warning
+      // service worker in this browser session and do not attempt to re-initialize if so.
       const phishingSWMemoryFetch = await browser.storage.session.get(
         PHISHING_WARNING_SW_STORAGE_KEY,
       );
@@ -159,7 +157,9 @@ async function start() {
         return;
       }
 
+      const currentPlatform = getPlatform();
       let iframe;
+
       try {
         const extensionStartupPhishingPageUrl = new URL(
           process.env.PHISHING_WARNING_PAGE_URL,
@@ -195,7 +195,9 @@ async function start() {
           () => deferredReject(new PhishingWarningPageTimeoutError()),
           PHISHING_WARNING_PAGE_TIMEOUT,
         );
+
         await loadComplete;
+
         // store a flag in sessions storage that we've already loaded the service worker
         // and don't need to try again
         if (currentPlatform === PLATFORM_FIREFOX) {
@@ -225,7 +227,7 @@ async function start() {
     };
 
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
-    // it also creates new streams and attach event listeners to them
+    // it also creates new streams and attaches event listeners to them
     const resetExtensionStreamAndListeners = () => {
       extensionPort.onMessage.removeListener(messageListener);
       extensionPort.onDisconnect.removeListener(
