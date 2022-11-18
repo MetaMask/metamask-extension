@@ -5,6 +5,7 @@ import {
   TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import { getInitialSendStateWithExistingTxState } from '../../../test/jest/mocks';
 import {
@@ -48,9 +49,9 @@ describe('Send Slice Helpers', () => {
         }),
         to: '0xToken',
         type: '0x0',
-        value: '0x0',
-        gas: '0x0',
-        gasPrice: '0x0',
+        value: HEX_ZERO_VALUE,
+        gas: HEX_ZERO_VALUE,
+        gasPrice: HEX_ZERO_VALUE,
       });
     });
 
@@ -86,9 +87,9 @@ describe('Send Slice Helpers', () => {
         }),
         to: '0xToken',
         type: '0x0',
-        value: '0x0',
-        gas: '0x0',
-        gasPrice: '0x0',
+        value: HEX_ZERO_VALUE,
+        gas: HEX_ZERO_VALUE,
+        gasPrice: HEX_ZERO_VALUE,
       });
     });
 
@@ -117,8 +118,8 @@ describe('Send Slice Helpers', () => {
         to: BURN_ADDRESS,
         type: '0x0',
         value: '0x1',
-        gas: '0x0',
-        gasPrice: '0x0',
+        gas: HEX_ZERO_VALUE,
+        gasPrice: HEX_ZERO_VALUE,
       });
     });
 

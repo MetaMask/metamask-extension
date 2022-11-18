@@ -12,6 +12,7 @@ import {
   addFiat,
   addEth,
 } from '../../helpers/utils/confirm-tx.util';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 
 import { sumHexes } from '../../helpers/utils/transactions.util';
 
@@ -183,13 +184,15 @@ export function updateTxDataAndCalculate(txData) {
 
     dispatch(updateTxData(txData));
 
-    const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
+    const {
+      txParams: { value = HEX_ZERO_VALUE, gas: gasLimit = HEX_ZERO_VALUE } = {},
+    } = txData;
 
     // if the gas price from our infura endpoint is null or undefined
     // use the metaswap average price estimation as a fallback
     let { txParams: { gasPrice } = {} } = txData;
     if (!gasPrice) {
-      gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
+      gasPrice = getAveragePriceEstimateInHexWEI(state) || HEX_ZERO_VALUE;
     }
 
     const fiatTransactionAmount = getValueFromWeiHex({

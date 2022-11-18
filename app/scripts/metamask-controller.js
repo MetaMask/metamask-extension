@@ -60,6 +60,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
@@ -2143,7 +2144,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // seek out the first zero balance
-      while (lastBalance !== '0x0') {
+      while (lastBalance !== HEX_ZERO_VALUE) {
         await keyringController.addNewAccount(primaryKeyring);
         accounts = await keyringController.getAccounts();
         lastBalance = await this.getBalance(
@@ -2153,7 +2154,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // remove extra zero balance account potentially created from seeking ahead
-      if (accounts.length > 1 && lastBalance === '0x0') {
+      if (accounts.length > 1 && lastBalance === HEX_ZERO_VALUE) {
         await this.removeAccount(accounts[accounts.length - 1]);
         accounts = await keyringController.getAccounts();
       }
@@ -2193,7 +2194,7 @@ export default class MetamaskController extends EventEmitter {
             reject(error);
             log.error(error);
           } else {
-            resolve(balance || '0x0');
+            resolve(balance || HEX_ZERO_VALUE);
           }
         });
       }

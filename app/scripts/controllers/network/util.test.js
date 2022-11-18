@@ -3,6 +3,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 
 import { formatTxMetaForRpcResult } from './util';
 
@@ -48,7 +49,7 @@ describe('network utils', () => {
         transactionIndex: null,
         type: '0x2',
         v: '0x29',
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
       };
       const result = formatTxMetaForRpcResult(txMeta);
       expect(result).toStrictEqual(expectedResult);
@@ -91,7 +92,7 @@ describe('network utils', () => {
         transactionIndex: null,
         type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
         v: '0x29',
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
       };
       const result = formatTxMetaForRpcResult(txMeta);
       expect(result).toStrictEqual(expectedResult);

@@ -1,4 +1,5 @@
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 
@@ -71,8 +72,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
     paramsEstimatedBaseFee &&
     paramsMaxPriorityFeePerGas &&
     sumHexes(paramsEstimatedBaseFee, paramsMaxPriorityFeePerGas);
-  let cachedGasLimit = '0x0';
-  let cachedGasPrice = '0x0';
+  let cachedGasLimit = HEX_ZERO_VALUE;
+  let cachedGasPrice = HEX_ZERO_VALUE;
 
   const historyActivities = history.reduce((acc, base, index) => {
     // First history item should be transaction creation
@@ -80,7 +81,12 @@ export function getActivities(transaction, isFirstTransaction = false) {
       const {
         time: timestamp,
         estimatedBaseFee,
-        txParams: { value, gas = '0x0', gasPrice, maxPriorityFeePerGas } = {},
+        txParams: {
+          value = HEX_ZERO_VALUE,
+          gas = HEX_ZERO_VALUE,
+          gasPrice = HEX_ZERO_VALUE,
+          maxPriorityFeePerGas = HEX_ZERO_VALUE,
+        } = {},
       } = base;
 
       const eip1559Price =
@@ -91,7 +97,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
       cachedGasLimit = gas;
-      cachedGasPrice = eip1559Price || gasPrice || paramsGasPrice || '0x0';
+      cachedGasPrice =
+        eip1559Price || gasPrice || paramsGasPrice || HEX_ZERO_VALUE;
 
       if (isFirstTransaction) {
         return acc.concat({
@@ -115,12 +122,12 @@ export function getActivities(transaction, isFirstTransaction = false) {
         const timestamp = entryTimestamp || (base[0] && base[0].timestamp);
 
         const isAddBaseFee = path === ESTIMATE_BASE_FEE_PATH && op === 'add';
-
         if ((path in eventPathsHash && op === REPLACE_OP) || isAddBaseFee) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
-                cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                cachedGasLimit === HEX_ZERO_VALUE &&
+                cachedGasPrice === HEX_ZERO_VALUE
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
                       gasPrice: paramsEip1559Price || paramsGasPrice,

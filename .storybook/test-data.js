@@ -1,4 +1,6 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
+import { HEX_ZERO_VALUE } from '../shared/constants/hex';
+
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -380,7 +382,7 @@ const state = {
         txParams: {
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
           gas: '0xcb28',
           gasPrice: '0x77359400',
@@ -399,7 +401,7 @@ const state = {
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
               to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-              value: '0x0',
+              value: HEX_ZERO_VALUE,
               data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
               gas: '0xcb28',
               gasPrice: '0x77359400',
@@ -598,7 +600,7 @@ const state = {
               gasPrice: '0x12a05f200',
               to: '0x2e8c05582176fa93b4590382e8290c73deb82176',
               type: '0x0',
-              value: '0x0',
+              value: HEX_ZERO_VALUE,
             },
             type: 'transfer',
           },
@@ -941,7 +943,7 @@ const state = {
           nonce: '0x15b',
           to: '0x2e8c05582176fa93b4590382e8290c73deb82176',
           type: '0x0',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
         },
         txReceipt: {
           blockHash:
@@ -1079,9 +1081,9 @@ const state = {
     ],
     cachedBalances: {
       1: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x0',
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': HEX_ZERO_VALUE,
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0xcaf5317161f400',
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x0',
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': HEX_ZERO_VALUE,
       },
       3: {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x18d289d450bace66',
@@ -1471,7 +1473,7 @@ const state = {
     errors: {},
     asset: {
       type: 'NATIVE',
-      balance: '0x0',
+      balance: HEX_ZERO_VALUE,
       details: null,
     },
     gas: { error: 'gas' },

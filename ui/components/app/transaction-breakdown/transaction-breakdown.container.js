@@ -8,6 +8,7 @@ import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 
 import TransactionBreakdown from './transaction-breakdown.component';
 
@@ -36,7 +37,7 @@ const mapStateToProps = (state, ownProps) => {
     (gasLimit &&
       usedGasPrice &&
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
-    '0x0';
+    HEX_ZERO_VALUE;
 
   let totalInHex = sumHexes(hexGasTotal, value);
 

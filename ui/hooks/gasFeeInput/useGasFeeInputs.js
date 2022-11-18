@@ -8,6 +8,7 @@ import {
   PRIORITY_LEVELS,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
@@ -156,7 +157,7 @@ export function useGasFeeInputs(
   });
 
   const [gasLimit, setGasLimit] = useState(() =>
-    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
+    Number(hexToDecimal(transaction?.txParams?.gas ?? HEX_ZERO_VALUE)),
   );
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
@@ -176,7 +177,9 @@ export function useGasFeeInputs(
         setEstimateUsed(transaction?.userFeeLevel);
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
-      setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
+      setGasLimit(
+        Number(hexToDecimal(transaction?.txParams?.gas ?? HEX_ZERO_VALUE)),
+      );
     }
   }, [
     setEstimateUsed,

@@ -1,6 +1,7 @@
 import { BN } from 'ethereumjs-util';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import * as util from './util';
 
 describe('util', () => {
@@ -29,7 +30,7 @@ describe('util', () => {
     });
 
     it('should render 0 eth correctly', () => {
-      const input = '0x0';
+      const input = HEX_ZERO_VALUE;
       const output = util.parseBalance(input);
       expect(output).toStrictEqual(['0', '0']);
     });

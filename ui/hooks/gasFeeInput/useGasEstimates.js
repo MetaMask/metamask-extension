@@ -10,6 +10,7 @@ import {
 } from '../../../shared/modules/gas.utils';
 
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
@@ -94,7 +95,7 @@ export function useGasEstimates({
   } else if (gasEstimateType === GAS_ESTIMATE_TYPES.NONE) {
     gasSettings = {
       ...gasSettings,
-      gasPrice: '0x0',
+      gasPrice: HEX_ZERO_VALUE,
     };
   } else {
     gasSettings = {

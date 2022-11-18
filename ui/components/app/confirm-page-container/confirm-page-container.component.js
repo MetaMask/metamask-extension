@@ -10,6 +10,7 @@ import {
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 
 import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
@@ -184,7 +185,7 @@ export default class ConfirmPageContainer extends Component {
     const hideTitle =
       (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
         currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
-      currentTransaction.txParams?.value === '0x0';
+      currentTransaction.txParams?.value === HEX_ZERO_VALUE;
 
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;

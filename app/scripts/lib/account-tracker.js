@@ -18,6 +18,7 @@ import {
   CHAIN_IDS,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -288,7 +289,7 @@ export default class AccountTracker {
    * @returns {Promise} after the account balance is updated
    */
   async _updateAccount(address) {
-    let balance = '0x0';
+    let balance = HEX_ZERO_VALUE;
 
     // query balance
     try {
@@ -331,7 +332,9 @@ export default class AccountTracker {
       const balances = await ethContract.balances(addresses, ethBalance);
 
       addresses.forEach((address, index) => {
-        const balance = balances[index] ? balances[index].toHexString() : '0x0';
+        const balance = balances[index]
+          ? balances[index].toHexString()
+          : HEX_ZERO_VALUE;
         accounts[address] = { address, balance };
       });
       this.store.updateState({ accounts });

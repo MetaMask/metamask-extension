@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -26,12 +27,12 @@ describe('Account Menu', () => {
       {
         address: '0x00',
         name: 'Account 1',
-        balance: '0x0',
+        balance: HEX_ZERO_VALUE,
       },
       {
         address: '0x1',
         name: 'Imported Account 1',
-        balance: '0x0',
+        balance: HEX_ZERO_VALUE,
       },
     ],
     keyrings: [

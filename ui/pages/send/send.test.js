@@ -7,6 +7,7 @@ import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
@@ -94,7 +95,7 @@ const baseStore = {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
-      '0x0': { balance: '0x0', address: '0x0' },
+      '0x0': { balance: HEX_ZERO_VALUE, address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',

@@ -15,6 +15,7 @@ import {
   SWAPS_CLIENT_ID,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
 } from '../../../shared/constants/swaps';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
@@ -389,14 +390,17 @@ export function getRenderableNetworkFeesForQuote({
   nativeCurrencySymbol,
   multiLayerL1FeeTotal,
 }) {
-  const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
-    .plus(approveGas || '0x0', 16)
+  const totalGasLimitForCalculation = new BigNumber(
+    tradeGas || HEX_ZERO_VALUE,
+    16,
+  )
+    .plus(approveGas || HEX_ZERO_VALUE, 16)
     .toString(16);
   let gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
   if (multiLayerL1FeeTotal !== null) {
     gasTotalInWeiHex = sumHexes(
-      gasTotalInWeiHex || '0x0',
-      multiLayerL1FeeTotal || '0x0',
+      gasTotalInWeiHex || HEX_ZERO_VALUE,
+      multiLayerL1FeeTotal || HEX_ZERO_VALUE,
     );
   }
 

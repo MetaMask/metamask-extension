@@ -56,6 +56,7 @@ import {
   decGWEIToHexWEI,
   addHexes,
 } from '../../helpers/utils/conversions.util';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import { conversionLessThan } from '../../../shared/modules/conversion.utils';
 import {
   getSelectedAccount,
@@ -936,7 +937,7 @@ export const signAndSendSwapsSmartTransaction = ({
       if (approveTxParams) {
         updatedApproveTxParams = {
           ...approveTxParams,
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
         };
       }
       const fees = await dispatch(
@@ -1116,7 +1117,7 @@ export const signAndSendTransactions = (
       usedQuote?.gasEstimateWithRefund ||
       `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
     const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
-      .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
+      .plus(usedQuote.approvalNeeded?.gas || HEX_ZERO_VALUE, 16)
       .toString(16);
     const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(
@@ -1202,7 +1203,7 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
       const approveTxMeta = await addUnapprovedTransaction(
-        { ...approveTxParams, amount: '0x0' },
+        { ...approveTxParams, amount: HEX_ZERO_VALUE },
         TRANSACTION_TYPES.SWAP_APPROVAL,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));

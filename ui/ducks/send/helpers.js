@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   ASSET_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
@@ -63,7 +64,7 @@ export async function estimateGasLimitForSend({
       // represented in the gas shared constants.
       return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
     }
-    paramsForGasEstimate.value = '0x0';
+    paramsForGasEstimate.value = HEX_ZERO_VALUE;
 
     // We have to generate the erc20/erc721 contract call to transfer tokens in
     // order to get a proper estimate for gasLimit.
@@ -197,7 +198,7 @@ export function generateTransactionParams(sendState) {
       // is generated from the recipient address, token being sent and
       // amount.
       txParams.to = draftTransaction.asset.details.address;
-      txParams.value = '0x0';
+      txParams.value = HEX_ZERO_VALUE;
       txParams.data = generateERC20TransferData({
         toAddress: draftTransaction.recipient.address,
         amount: draftTransaction.amount.value,
@@ -210,7 +211,7 @@ export function generateTransactionParams(sendState) {
       // is generated from the recipient address, token being sent and
       // amount.
       txParams.to = draftTransaction.asset.details.address;
-      txParams.value = '0x0';
+      txParams.value = HEX_ZERO_VALUE;
       txParams.data = generateERC721TransferData({
         toAddress: draftTransaction.recipient.address,
         fromAddress:
@@ -238,13 +239,13 @@ export function generateTransactionParams(sendState) {
     txParams.maxFeePerGas = draftTransaction.gas.maxFeePerGas;
     txParams.maxPriorityFeePerGas = draftTransaction.gas.maxPriorityFeePerGas;
 
-    if (!txParams.maxFeePerGas || txParams.maxFeePerGas === '0x0') {
+    if (!txParams.maxFeePerGas || txParams.maxFeePerGas === HEX_ZERO_VALUE) {
       txParams.maxFeePerGas = draftTransaction.gas.gasPrice;
     }
 
     if (
       !txParams.maxPriorityFeePerGas ||
-      txParams.maxPriorityFeePerGas === '0x0'
+      txParams.maxPriorityFeePerGas === HEX_ZERO_VALUE
     ) {
       txParams.maxPriorityFeePerGas = txParams.maxFeePerGas;
     }
@@ -284,7 +285,7 @@ export async function getERC20Balance(token, accountAddress) {
   const contract = global.eth.contract(abi).at(token.address);
   const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
   if (!usersToken) {
-    return '0x0';
+    return HEX_ZERO_VALUE;
   }
   const amount = calcTokenAmount(
     usersToken.balance.toString(),

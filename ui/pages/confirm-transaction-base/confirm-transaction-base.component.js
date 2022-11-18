@@ -11,6 +11,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -260,7 +261,7 @@ export default class ConfirmTransactionBase extends Component {
       balance &&
       !isBalanceSufficient({
         amount,
-        gasTotal: hexMaximumTransactionFee || '0x0',
+        gasTotal: hexMaximumTransactionFee || HEX_ZERO_VALUE,
         balance,
         conversionRate,
       });

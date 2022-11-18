@@ -11,6 +11,7 @@ import {
 } from '../../../../test/stub/provider';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -368,7 +369,7 @@ describe('Transaction Controller', function () {
       assert.ok('history' in txMeta, 'should have a history');
       assert.equal(
         txMeta.txParams.value,
-        '0x0',
+        HEX_ZERO_VALUE,
         'should have added 0x0 as the value',
       );
 

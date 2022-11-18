@@ -2,6 +2,7 @@ import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import {
@@ -13,7 +14,7 @@ import {
 
 export function increaseLastGasPrice(lastGasPrice) {
   return addHexPrefix(
-    multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
+    multiplyCurrencies(lastGasPrice || HEX_ZERO_VALUE, 1.1, {
       multiplicandBase: 16,
       multiplierBase: 10,
       toNumericBase: 'hex',
@@ -30,7 +31,7 @@ export function hexGreaterThan(a, b) {
 
 export function getHexGasTotal({ gasLimit, gasPrice }) {
   return addHexPrefix(
-    multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+    multiplyCurrencies(gasLimit || HEX_ZERO_VALUE, gasPrice || HEX_ZERO_VALUE, {
       toNumericBase: 'hex',
       multiplicandBase: 16,
       multiplierBase: 16,

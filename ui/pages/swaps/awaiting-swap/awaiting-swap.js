@@ -12,6 +12,7 @@ import {
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 
 import {
   getCurrentChainId,
@@ -100,7 +101,7 @@ export default function AwaitingSwap({
   if (usedQuote && swapsGasPrice) {
     const renderableNetworkFees = getRenderableNetworkFeesForQuote({
       tradeGas: usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
-      approveGas: approveTxParams?.gas || '0x0',
+      approveGas: approveTxParams?.gas || HEX_ZERO_VALUE,
       gasPrice: swapsGasPrice,
       currentCurrency,
       conversionRate: usdConversionRate,

@@ -1,4 +1,5 @@
 import { addHexPrefix } from 'ethereumjs-util';
+import { HEX_ZERO_VALUE } from '../constants/hex';
 import {
   addCurrencies,
   conversionGreaterThan,
@@ -22,7 +23,7 @@ import {
  * @returns {string} The maximum total cost of transaction in hex wei string
  */
 export function getMaximumGasTotalInHexWei({
-  gasLimit = '0x0',
+  gasLimit = HEX_ZERO_VALUE,
   gasPrice,
   maxFeePerGas,
 } = {}) {
@@ -70,7 +71,7 @@ export function getMaximumGasTotalInHexWei({
  * @returns {string} The minimum total cost of transaction in hex wei string
  */
 export function getMinimumGasTotalInHexWei({
-  gasLimit = '0x0',
+  gasLimit = HEX_ZERO_VALUE,
   gasPrice,
   maxPriorityFeePerGas,
   maxFeePerGas,

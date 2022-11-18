@@ -10,6 +10,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
@@ -3598,7 +3599,7 @@ export function fetchSmartTransactionFees(
 ) {
   return async (dispatch) => {
     if (approveTxParams) {
-      approveTxParams.value = '0x0';
+      approveTxParams.value = HEX_ZERO_VALUE;
     }
     try {
       const smartTransactionFees = await await submitRequestToBackground(

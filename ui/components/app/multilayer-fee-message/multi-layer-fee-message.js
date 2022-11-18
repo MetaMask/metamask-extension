@@ -5,6 +5,7 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { SECONDARY } from '../../../helpers/constants/common';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import { I18nContext } from '../../../contexts/i18n';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import {
@@ -32,11 +33,13 @@ export default function MultilayerFeeMessage({
       .toFixed(12)} ${nativeCurrency}`;
   }
 
-  const feeTotal = sumHexes(layer2fee || '0x0', fetchedLayer1Total || '0x0');
-
+  const feeTotal = sumHexes(
+    layer2fee || HEX_ZERO_VALUE,
+    fetchedLayer1Total || HEX_ZERO_VALUE,
+  );
   const totalInWeiHex = sumHexes(
-    feeTotal || '0x0',
-    transaction.txParams.value || '0x0',
+    feeTotal || HEX_ZERO_VALUE,
+    transaction.txParams.value || HEX_ZERO_VALUE,
   );
 
   const totalBN = toBigNumber.hex(totalInWeiHex);

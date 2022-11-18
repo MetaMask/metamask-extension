@@ -1,5 +1,6 @@
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,
@@ -74,7 +75,7 @@ describe('PendingNonceMiddleware', () => {
       type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
       to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       transactionIndex: null,
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       v: '0x2c',
       r: '0x5f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57',
       s: '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',

@@ -17,6 +17,7 @@ import {
   TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../../test/jest';
 import {
@@ -75,12 +76,12 @@ import { draftTransactionInitialState, editExistingTransaction } from '.';
 
 const mockStore = createMockStore([thunk]);
 
-jest.mock('./send', () => {
+jest.doMock('./send', () => {
   const actual = jest.requireActual('./send');
   return {
     __esModule: true,
     ...actual,
-    getERC20Balance: jest.fn(() => '0x0'),
+    getERC20Balance: jest.fn(() => HEX_ZERO_VALUE),
   };
 });
 
@@ -109,7 +110,7 @@ describe('Send Slice', () => {
       .mockImplementation(() =>
         Promise.resolve({
           standard: 'ERC20',
-          balance: '0x0',
+          balance: HEX_ZERO_VALUE,
           symbol: 'SYMB',
           decimals: 18,
         }),
@@ -120,7 +121,7 @@ describe('Send Slice', () => {
     );
     jest
       .spyOn(Actions, 'estimateGas')
-      .mockImplementation(() => Promise.resolve('0x0'));
+      .mockImplementation(() => Promise.resolve(HEX_ZERO_VALUE));
     jest
       .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
       .mockImplementation(() => Promise.resolve());
@@ -386,7 +387,7 @@ describe('Send Slice', () => {
       it('should recalculate gasTotal', () => {
         const gasState = getInitialSendStateWithExistingTxState({
           gas: {
-            gasLimit: '0x0',
+            gasLimit: HEX_ZERO_VALUE,
             gasPrice: '0x3b9aca00', // 1000000000
           },
         });
@@ -613,8 +614,8 @@ describe('Send Slice', () => {
             },
             amount: {},
             gas: {
-              gasLimit: '0x0',
-              minimumGasLimit: '0x0',
+              gasLimit: HEX_ZERO_VALUE,
+              minimumGasLimit: HEX_ZERO_VALUE,
             },
             asset: {},
           }),
@@ -931,7 +932,7 @@ describe('Send Slice', () => {
       it('should error when total amount of gas is higher than account balance', () => {
         const gasFieldState = getInitialSendStateWithExistingTxState({
           account: {
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
           gas: {
             gasTotal: '0x1319718a5000', // 21000000000000
@@ -1112,7 +1113,7 @@ describe('Send Slice', () => {
         const olderState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
           selectedAccount: {
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             address: '0xAddress',
           },
         };
@@ -1141,7 +1142,7 @@ describe('Send Slice', () => {
         const olderState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
           selectedAccount: {
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             address: '0xAddress',
           },
         };
@@ -1155,7 +1156,7 @@ describe('Send Slice', () => {
 
         const result = sendReducer(olderState, action);
 
-        expect(result.selectedAccount.balance).toStrictEqual('0x0');
+        expect(result.selectedAccount.balance).toStrictEqual(HEX_ZERO_VALUE);
         expect(result.selectedAccount.address).toStrictEqual('0xAddress');
       });
     });
@@ -1166,13 +1167,13 @@ describe('Send Slice', () => {
           ...getInitialSendStateWithExistingTxState({
             fromAccount: {
               address: '0xAddress',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
           }),
           stage: SEND_STAGES.EDIT,
           selectedAccount: {
             address: '0xAddress',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
         };
 
@@ -1200,13 +1201,13 @@ describe('Send Slice', () => {
           ...getInitialSendStateWithExistingTxState({
             fromAccount: {
               address: '0xAddress',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
           }),
           stage: SEND_STAGES.EDIT,
           selectedAccount: {
             address: '0xAddress',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
         };
 
@@ -1221,7 +1222,7 @@ describe('Send Slice', () => {
 
         const draft = getTestUUIDTx(result);
 
-        expect(draft.fromAccount.balance).toStrictEqual('0x0');
+        expect(draft.fromAccount.balance).toStrictEqual(HEX_ZERO_VALUE);
       });
 
       it(`should not edit account balance if action payload address is not the same as state's address`, () => {
@@ -1230,7 +1231,7 @@ describe('Send Slice', () => {
           stage: SEND_STAGES.EDIT,
           selectedAccount: {
             address: '0xAddress',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
         };
 
@@ -1283,12 +1284,12 @@ describe('Send Slice', () => {
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
-                balance: '0x0',
+                balance: HEX_ZERO_VALUE,
               },
             },
             cachedBalances: {
               0x5: {
-                '0xAddress': '0x0',
+                '0xAddress': HEX_ZERO_VALUE,
               },
             },
             provider: {
@@ -1351,13 +1352,13 @@ describe('Send Slice', () => {
         const gasState = {
           ...getInitialSendStateWithExistingTxState({
             gas: {
-              gasPrice: '0x0',
+              gasPrice: HEX_ZERO_VALUE,
               gasLimit: GAS_LIMITS.SIMPLE,
-              gasTotal: '0x0',
+              gasTotal: HEX_ZERO_VALUE,
             },
           }),
           minimumGasLimit: GAS_LIMITS.SIMPLE,
-          gasPriceEstimate: '0x0',
+          gasPriceEstimate: HEX_ZERO_VALUE,
         };
 
         const action = {
@@ -1392,7 +1393,7 @@ describe('Send Slice', () => {
           }),
         });
 
-        const newGasPrice = '0x0';
+        const newGasPrice = HEX_ZERO_VALUE;
 
         await store.dispatch(updateGasPrice(newGasPrice));
 
@@ -1406,7 +1407,7 @@ describe('Send Slice', () => {
           {
             type: 'send/updateGasFees',
             payload: {
-              gasPrice: '0x0',
+              gasPrice: HEX_ZERO_VALUE,
               manuallyEdited: true,
               transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
             },
@@ -1578,7 +1579,7 @@ describe('Send Slice', () => {
           },
           cachedBalances: {
             [CHAIN_IDS.GOERLI]: {
-              '0xAddress': '0x0',
+              '0xAddress': HEX_ZERO_VALUE,
             },
           },
           accounts: {
@@ -1631,7 +1632,7 @@ describe('Send Slice', () => {
         expect(actionResult[1].payload).toStrictEqual({
           asset: {
             type: ASSET_TYPES.NATIVE,
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             error: null,
             details: null,
           },
@@ -1650,7 +1651,7 @@ describe('Send Slice', () => {
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({
             standard: 'ERC20',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             symbol: 'TokenSymbol',
             decimals: 18,
           }),
@@ -1692,9 +1693,9 @@ describe('Send Slice', () => {
               symbol: 'TokenSymbol',
               decimals: 18,
               standard: 'ERC20',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             error: null,
           },
           initialAssetSet: false,
@@ -2383,12 +2384,12 @@ describe('Send Slice', () => {
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
-                balance: '0x0',
+                balance: HEX_ZERO_VALUE,
               },
             },
             cachedBalances: {
               [CHAIN_IDS.GOERLI]: {
-                '0xAddress': '0x0',
+                '0xAddress': HEX_ZERO_VALUE,
               },
             },
             tokenList: {},
@@ -2437,23 +2438,23 @@ describe('Send Slice', () => {
               error: null,
             },
             asset: {
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
               details: null,
               error: null,
               type: ASSET_TYPES.NATIVE,
             },
             fromAccount: {
               address: '0xAddress',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
             gas: {
               error: null,
               gasLimit: GAS_LIMITS.SIMPLE,
               gasPrice: '0x3b9aca00',
-              gasTotal: '0x0',
+              gasTotal: HEX_ZERO_VALUE,
               wasManuallyEdited: false,
-              maxFeePerGas: '0x0',
-              maxPriorityFeePerGas: '0x0',
+              maxFeePerGas: HEX_ZERO_VALUE,
+              maxPriorityFeePerGas: HEX_ZERO_VALUE,
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
@@ -2518,12 +2519,12 @@ describe('Send Slice', () => {
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
-                balance: '0x0',
+                balance: HEX_ZERO_VALUE,
               },
             },
             cachedBalances: {
               [CHAIN_IDS.GOERLI]: {
-                '0xAddress': '0x0',
+                '0xAddress': HEX_ZERO_VALUE,
               },
             },
             tokenList: {},
@@ -2540,7 +2541,7 @@ describe('Send Slice', () => {
                   to: '0xCollectibleAddress',
                   gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                   gasPrice: '0x3b9aca00', // 1000000000
-                  value: '0x0',
+                  value: HEX_ZERO_VALUE,
                 },
               },
             },
@@ -2580,23 +2581,23 @@ describe('Send Slice', () => {
               value: '0x1',
             },
             asset: {
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
               details: null,
               error: null,
               type: ASSET_TYPES.NATIVE,
             },
             fromAccount: {
               address: '0xAddress',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
             gas: {
               error: null,
               gasLimit: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
               gasPrice: '0x3b9aca00',
-              gasTotal: '0x0',
+              gasTotal: HEX_ZERO_VALUE,
               wasManuallyEdited: false,
-              maxFeePerGas: '0x0',
-              maxPriorityFeePerGas: '0x0',
+              maxFeePerGas: HEX_ZERO_VALUE,
+              maxPriorityFeePerGas: HEX_ZERO_VALUE,
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
@@ -2701,12 +2702,12 @@ describe('Send Slice', () => {
           accounts: {
             '0xAddress': {
               address: '0xAddress',
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
             },
           },
           cachedBalances: {
             [CHAIN_IDS.GOERLI]: {
-              '0xAddress': '0x0',
+              '0xAddress': HEX_ZERO_VALUE,
             },
           },
           unapprovedTxs: {
@@ -2726,7 +2727,7 @@ describe('Send Slice', () => {
                 to: '0xTokenAddress',
                 gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                 gasPrice: '0x3b9aca00', // 1000000000
-                value: '0x0',
+                value: HEX_ZERO_VALUE,
               },
             },
           },
@@ -2741,7 +2742,7 @@ describe('Send Slice', () => {
           }),
           selectedAccount: {
             address: '0xAddress',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
           stage: SEND_STAGES.EDIT,
         },
@@ -2771,23 +2772,23 @@ describe('Send Slice', () => {
             value: '0x3a98',
           },
           asset: {
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             details: null,
             error: null,
             type: ASSET_TYPES.NATIVE,
           },
           fromAccount: {
             address: '0xAddress',
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
           },
           gas: {
             error: null,
             gasLimit: '0x186a0',
             gasPrice: '0x3b9aca00',
             wasManuallyEdited: false,
-            gasTotal: '0x0',
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            gasTotal: HEX_ZERO_VALUE,
+            maxFeePerGas: HEX_ZERO_VALUE,
+            maxPriorityFeePerGas: HEX_ZERO_VALUE,
           },
           history: ['sendFlow - user clicked edit on transaction with id 1'],
           id: 1,
@@ -2816,11 +2817,11 @@ describe('Send Slice', () => {
         type: 'send/updateAsset',
         payload: {
           asset: {
-            balance: '0x0',
+            balance: HEX_ZERO_VALUE,
             type: ASSET_TYPES.TOKEN,
             error: null,
             details: {
-              balance: '0x0',
+              balance: HEX_ZERO_VALUE,
               address: '0xTokenAddress',
               decimals: 18,
               symbol: 'SYMB',
@@ -2867,19 +2868,19 @@ describe('Send Slice', () => {
       it('has a selector that gets gasLimit', () => {
         expect(
           getGasLimit({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
+        ).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector that gets gasPrice', () => {
         expect(
           getGasPrice({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
+        ).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector that gets gasTotal', () => {
         expect(
           getGasTotal({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
+        ).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector to determine if gas fee is in error', () => {
@@ -3003,7 +3004,7 @@ describe('Send Slice', () => {
           getSendAssetAddress({
             send: getInitialSendStateWithExistingTxState({
               asset: {
-                balance: '0x0',
+                balance: HEX_ZERO_VALUE,
                 details: { address: '0x0' },
                 type: ASSET_TYPES.TOKEN,
               },
@@ -3033,7 +3034,7 @@ describe('Send Slice', () => {
       it('has a selector to get send amount', () => {
         expect(
           getSendAmount({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
+        ).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector to get if there is an insufficient funds error', () => {

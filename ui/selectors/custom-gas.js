@@ -9,6 +9,7 @@ import { formatETHFee } from '../helpers/utils/formatters';
 
 import { getGasPrice } from '../ducks/send';
 import { GAS_ESTIMATE_TYPES as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -37,7 +38,7 @@ export function getAveragePriceEstimateInHexWEI(state) {
 
 export function getFastPriceEstimateInHexWEI(state) {
   const fastPriceEstimate = getFastPriceEstimate(state);
-  return getGasPriceInHexWei(fastPriceEstimate || '0x0');
+  return getGasPriceInHexWei(fastPriceEstimate || HEX_ZERO_VALUE);
 }
 
 export function getDefaultActiveButtonIndex(

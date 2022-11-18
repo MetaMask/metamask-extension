@@ -5,6 +5,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import ConfirmPageContainer from '.';
 
 jest.mock('../../../store/actions', () => ({
@@ -41,7 +42,7 @@ describe('Confirm Page Container Container Test', () => {
       txParams: {
         from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         to: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
         gas: '0x5208',
         maxFeePerGas: '0x59682f0d',
         maxPriorityFeePerGas: '0x59682f00',

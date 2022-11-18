@@ -25,6 +25,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
@@ -841,7 +842,7 @@ export default class TransactionController extends EventEmitter {
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
-      : '0x0';
+      : HEX_ZERO_VALUE;
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
@@ -1206,7 +1207,7 @@ export default class TransactionController extends EventEmitter {
         from,
         to: from,
         nonce,
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
         ...newGasParams,
       },
       previousGasParams,
@@ -1980,7 +1981,7 @@ export default class TransactionController extends EventEmitter {
   }
 
   _calculateTransactionsCost(txMeta, approvalTxMeta) {
-    let approvalGasCost = '0x0';
+    let approvalGasCost = HEX_ZERO_VALUE;
     if (approvalTxMeta?.txReceipt) {
       approvalGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,

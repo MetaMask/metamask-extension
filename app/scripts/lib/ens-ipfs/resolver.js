@@ -2,6 +2,7 @@ import namehash from 'eth-ens-namehash';
 import Eth from 'ethjs-query';
 import EthContract from 'ethjs-contract';
 import contentHash from '@ensdomains/content-hash';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
@@ -62,7 +63,7 @@ function hexValueIsEmpty(value) {
     undefined,
     null,
     '0x',
-    '0x0',
+    HEX_ZERO_VALUE,
     '0x0000000000000000000000000000000000000000000000000000000000000000',
   ].includes(value);
 }

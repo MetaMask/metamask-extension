@@ -1,3 +1,5 @@
+import { HEX_ZERO_VALUE } from "../../shared/constants/hex";
+
 const MOCK_TX_TYPE = {
   CANCEL: 'cancel',
   CONTRACT_INTERACTION: 'contractInteraction',
@@ -35,7 +37,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       from: '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e',
       to: '0xefge7847fd3661a9b7c86aaf1daea08d9da5750e',
       nonce: '0x51',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       gas: '0x5208',
       gasPrice: '0x59682f0e',
       estimateSuggested: 'medium',
@@ -61,7 +63,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
           from: '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e',
           to: '0xefge7847fd3661a9b7c86aaf1daea08d9da5750e',
           nonce: '0x51',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           gas: '0x5208',
           gasPrice: '0x59682f0e',
           estimateSuggested: 'medium',
@@ -227,7 +229,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       maxPriorityFeePerGas: '0x9502F900',
       to: '0xefg6c980a3fcd3100503d8f80537eefcee516d67',
       type: '0x2',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
     },
     type: 'contractInteraction',
     userEditedGasLimit: false,
@@ -356,7 +358,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     txParams: {
       from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
       nonce: '0x7',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       data:
         '0x6080604052348015600f57600080fd5b50608b8061001e6000396000f3fe6080604052610fff3411600e57fe5b3373ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f193505050501580156053573d6000803e3d6000fd5b5000fea265627a7a72315820631b0dbb6b871cdbfdec2773af15ebfb8e52c794cf836fe27ec21f1aed17180f64736f6c634300050c0032',
       gas: '0x14609',
@@ -386,7 +388,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         txParams: {
           from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
           nonce: '0x7',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           data:
             '0x6080604052348015600f57600080fd5b50608b8061001e6000396000f3fe6080604052610fff3411600e57fe5b3373ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f193505050501580156053573d6000803e3d6000fd5b5000fea265627a7a72315820631b0dbb6b871cdbfdec2773af15ebfb8e52c794cf836fe27ec21f1aed17180f64736f6c634300050c0032',
           gas: '0x14609',
@@ -678,7 +680,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
       to: '0xefg60bbf4ba1de43f3b4983a539feebfbd5fd976',
       nonce: '0x5',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       data:
         '0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170',
       gas: '0xb427',
@@ -705,7 +707,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         txParams: {
           from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
           to: '0xefg60bbf4ba1de43f3b4983a539feebfbd5fd976',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           data:
             '0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170',
           gas: '0xb427',
@@ -932,7 +934,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       from: '0xabc627172af48bd5b0765d3449a7def80d6576ff',
       to: '0xefge760f2e916647fd766b4ad9e85ff943ce3a2b',
       nonce: '0x57',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       data:
         '0x42842e0e000000000000000000000000806627172af48bd5b0765d3449a7def80d6576ff000000000000000000000000e7d522230eff653bb0a9b4385f0be0815420dd98000000000000000000000000000000000000000000000000000000000009a7cc',
       gas: '0x118e0',
@@ -1056,7 +1058,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
       to: '0xefg60bbf4ba1de43f3b4983a539feebfbd5fd976',
       nonce: '0x5',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       data:
         '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000003a98',
       gas: '0xea60',
@@ -1083,7 +1085,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         txParams: {
           from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
           to: '0xefg60bbf4ba1de43f3b4983a539feebfbd5fd976',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           data:
             '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000003a98',
           gas: '0xea60',
@@ -1481,7 +1483,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
       to: '0xefge760f2e916647fd766b4ad9e85ff943ce3a2b',
       nonce: '0x6',
-      value: '0x0',
+      value: HEX_ZERO_VALUE,
       data:
         '0x23b872dd000000000000000000000000ac9539a7d5c43940af498008a7c8f3abb35c3725000000000000000000000000e56e7847fd3661a9b7c86aaf1daea08d9da5750e000000000000000000000000000000000000000000000000000000000009a7b8',
       gas: '0x10896',
@@ -1530,7 +1532,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         txParams: {
           from: '0xabc539a7d5c43940af498008a7c8f3abb35c3725',
           to: '0xefge760f2e916647fd766b4ad9e85ff943ce3a2b',
-          value: '0x0',
+          value: HEX_ZERO_VALUE,
           data:
             '0x23b872dd000000000000000000000000ac9539a7d5c43940af498008a7c8f3abb35c3725000000000000000000000000e56e7847fd3661a9b7c86aaf1daea08d9da5750e000000000000000000000000000000000000000000000000000000000009a7b8',
           gas: '0x10896',

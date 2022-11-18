@@ -82,6 +82,7 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex';
 import {
   decGWEIToHexWEI,
   addHexes,
@@ -177,7 +178,7 @@ export default function ViewQuote() {
   const selectedQuote = useSelector(getSelectedQuote, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
-  const tradeValue = usedQuote?.trade?.value ?? '0x0';
+  const tradeValue = usedQuote?.trade?.value ?? HEX_ZERO_VALUE;
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
@@ -269,8 +270,8 @@ export default function ViewQuote() {
   let gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
   if (multiLayerL1FeeTotal !== null) {
     gasTotalInWeiHex = sumHexes(
-      gasTotalInWeiHex || '0x0',
-      multiLayerL1FeeTotal || '0x0',
+      gasTotalInWeiHex || HEX_ZERO_VALUE,
+      multiLayerL1FeeTotal || HEX_ZERO_VALUE,
     );
   }
 
@@ -286,7 +287,7 @@ export default function ViewQuote() {
   const tokenBalance =
     tokensWithBalances?.length &&
     calcTokenAmount(
-      selectedFromToken.balance || '0x0',
+      selectedFromToken.balance || HEX_ZERO_VALUE,
       selectedFromToken.decimals,
     ).toFixed(9);
   const tokenBalanceUnavailable =
@@ -437,9 +438,11 @@ export default function ViewQuote() {
 
   const insufficientTokens =
     (tokensWithBalances?.length || balanceError) &&
-    tokenCost.gt(new BigNumber(selectedFromToken.balance || '0x0'));
+    tokenCost.gt(new BigNumber(selectedFromToken.balance || HEX_ZERO_VALUE));
 
-  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || '0x0'));
+  const insufficientEth = ethCost.gt(
+    new BigNumber(ethBalance || HEX_ZERO_VALUE),
+  );
 
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(

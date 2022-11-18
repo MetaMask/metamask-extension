@@ -1,4 +1,5 @@
 import React from 'react';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import TokenAllowance from './token-allowance';
 
 export default {
@@ -110,7 +111,7 @@ export default {
       txParams: {
         from: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
         to: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
         data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
         gas: '0xea60',
         maxFeePerGas: '0x4a817c800',
@@ -136,7 +137,7 @@ export default {
           txParams: {
             from: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
             to: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
-            value: '0x0',
+            value: HEX_ZERO_VALUE,
             data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
             gas: '0xea60',
             gasPrice: '0x4a817c800',

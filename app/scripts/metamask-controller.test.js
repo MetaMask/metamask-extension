@@ -14,6 +14,9 @@ import {
   KEYRING_TYPES,
   DEVICE_NAMES,
 } from '../../shared/constants/hardware-wallets';
+
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
+
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -270,7 +273,7 @@ describe('MetaMaskController', function () {
       const password = 'what-what-what';
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController
@@ -287,7 +290,7 @@ describe('MetaMaskController', function () {
     it('should clear previous identities after vault restoration', async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       let startTime = Date.now();
@@ -350,7 +353,7 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x14ced5122ce0a000');
       });
       metamaskController.getBalance.withArgs(TEST_ADDRESS_2).callsFake(() => {
-        return Promise.resolve('0x0');
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
       metamaskController.getBalance.withArgs(TEST_ADDRESS_3).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000');
@@ -820,7 +823,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController.createNewVaultAndRestore(
@@ -899,7 +902,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController.createNewVaultAndRestore(

@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import swapsReducer, * as swaps from './swaps';
 
@@ -675,7 +676,7 @@ describe('Ducks - Swaps', () => {
       state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded = {
         data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
         to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        value: '0x0',
+        value: HEX_ZERO_VALUE,
         from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
         gas: '0x12',
         gasPrice: '0x34',

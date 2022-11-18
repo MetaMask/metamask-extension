@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TRANSACTION_ENVELOPE_TYPES } from '../constants/transaction';
+import { HEX_ZERO_VALUE } from '../constants/hex';
 import {
   conversionUtil,
   multiplyCurrencies,
@@ -70,7 +71,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       return txMeta.swapMetaData.token_to_amount;
     }
 
-    let approvalTxGasCost = '0x0';
+    let approvalTxGasCost = HEX_ZERO_VALUE;
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,

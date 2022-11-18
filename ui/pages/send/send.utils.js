@@ -11,6 +11,7 @@ import {
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { ERC20, ERC721 } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -27,10 +28,10 @@ export {
 };
 
 function isBalanceSufficient({
-  amount = '0x0',
-  balance = '0x0',
+  amount = HEX_ZERO_VALUE,
+  balance = HEX_ZERO_VALUE,
   conversionRate = 1,
-  gasTotal = '0x0',
+  gasTotal = HEX_ZERO_VALUE,
   primaryCurrency,
 }) {
   const totalAmount = addCurrencies(amount, gasTotal, {
@@ -57,7 +58,11 @@ function isBalanceSufficient({
   return balanceIsSufficient;
 }
 
-function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
+function isTokenBalanceSufficient({
+  amount = HEX_ZERO_VALUE,
+  tokenBalance,
+  decimals,
+}) {
   const amountInDec = conversionUtil(amount, {
     fromNumericBase: 'hex',
   });
@@ -121,7 +126,7 @@ function addGasBuffer(
 
 function generateERC20TransferData({
   toAddress = '0x0',
-  amount = '0x0',
+  amount = HEX_ZERO_VALUE,
   sendToken,
 }) {
   if (!sendToken) {

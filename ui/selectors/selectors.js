@@ -22,6 +22,7 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 import {
   KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
@@ -1330,7 +1331,7 @@ export function getIsNetworkUsed(state) {
 export function getAllAccountsOnNetworkAreEmpty(state) {
   const balances = getMetaMaskCachedBalances(state) ?? {};
   const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
-    (balance) => balance === '0x0' || balance === '0x00',
+    (balance) => balance === HEX_ZERO_VALUE || balance === '0x00',
   );
   const hasNoTokens = getNumberOfTokens(state) === 0;
 

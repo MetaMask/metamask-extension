@@ -4,6 +4,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {
@@ -20,7 +21,7 @@ const INCOMING_TX = {
   id: '0-incoming',
   type: TRANSACTION_TYPES.INCOMING,
   txParams: {
-    value: '0x0',
+    value: HEX_ZERO_VALUE,
     from: RECIPIENTS.ONE,
     to: SENDERS.ONE,
   },
@@ -46,7 +47,7 @@ const TOKEN_SEND_TX = {
   txParams: {
     from: SENDERS.ONE,
     to: RECIPIENTS.TWO,
-    value: '0x0',
+    value: HEX_ZERO_VALUE,
     data: '0xdata',
   },
   type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
@@ -61,7 +62,7 @@ const RETRY_TX = {
 const CANCEL_TX = {
   id: '0-cancel',
   txParams: {
-    value: '0x0',
+    value: HEX_ZERO_VALUE,
     from: SENDERS.ONE,
     to: SENDERS.ONE,
   },

@@ -1,4 +1,5 @@
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -108,7 +109,7 @@ export const createSwapsMockStore = () => {
     },
     swaps: {
       customGas: {
-        limit: '0x0',
+        limit: HEX_ZERO_VALUE,
         fallBackPrice: 5,
         priceEstimates: {
           blockTime: 14.1,
@@ -243,11 +244,11 @@ export const createSwapsMockStore = () => {
       accounts: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          balance: '0x0',
+          balance: HEX_ZERO_VALUE,
         },
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
           address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-          balance: '0x0',
+          balance: HEX_ZERO_VALUE,
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -292,7 +293,7 @@ export const createSwapsMockStore = () => {
           TEST_AGG_1: {
             trade: {
               from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-              value: '0x0',
+              value: HEX_ZERO_VALUE,
               gas: '0x61a80', // 4e5
               to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
             },
@@ -326,7 +327,7 @@ export const createSwapsMockStore = () => {
           TEST_AGG_BEST: {
             trade: {
               from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-              value: '0x0',
+              value: HEX_ZERO_VALUE,
               gas: '0x61a80',
               to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
             },
@@ -359,7 +360,7 @@ export const createSwapsMockStore = () => {
           TEST_AGG_2: {
             trade: {
               from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-              value: '0x0',
+              value: HEX_ZERO_VALUE,
               gas: '0x61a80',
               to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
             },

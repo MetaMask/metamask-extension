@@ -20,6 +20,7 @@ import {
   NEGATIVE_ETH_ERROR,
   RECIPIENT_TYPES,
 } from '../../pages/send/send.constants';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex';
 
 import {
   isBalanceSufficient,
@@ -367,10 +368,10 @@ export const RECIPIENT_SEARCH_MODES = {
 export const draftTransactionInitialState = {
   amount: {
     error: null,
-    value: '0x0',
+    value: HEX_ZERO_VALUE,
   },
   asset: {
-    balance: '0x0',
+    balance: HEX_ZERO_VALUE,
     details: null,
     error: null,
     type: ASSET_TYPES.NATIVE,
@@ -378,11 +379,11 @@ export const draftTransactionInitialState = {
   fromAccount: null,
   gas: {
     error: null,
-    gasLimit: '0x0',
-    gasPrice: '0x0',
-    gasTotal: '0x0',
-    maxFeePerGas: '0x0',
-    maxPriorityFeePerGas: '0x0',
+    gasLimit: HEX_ZERO_VALUE,
+    gasPrice: HEX_ZERO_VALUE,
+    gasTotal: HEX_ZERO_VALUE,
+    maxFeePerGas: HEX_ZERO_VALUE,
+    maxPriorityFeePerGas: HEX_ZERO_VALUE,
     wasManuallyEdited: false,
   },
   history: [],
@@ -458,14 +459,14 @@ export const initialState = {
   gasEstimateIsLoading: true,
   gasEstimatePollToken: null,
   gasIsSetInModal: false,
-  gasPriceEstimate: '0x0',
+  gasPriceEstimate: HEX_ZERO_VALUE,
   gasLimitMinimum: GAS_LIMITS.SIMPLE,
-  gasTotalForLayer1: '0x0',
+  gasTotalForLayer1: HEX_ZERO_VALUE,
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
     address: null,
-    balance: '0x0',
+    balance: HEX_ZERO_VALUE,
   },
   stage: SEND_STAGES.INACTIVE,
 };
@@ -647,7 +648,7 @@ export const initializeSendState = createAsyncThunk(
       } else {
         gasPrice = gasFeeEstimates.gasPrice
           ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
-          : '0x0';
+          : HEX_ZERO_VALUE;
       }
     }
 
@@ -907,7 +908,7 @@ const slice = createSlice({
     updateAmountToMax: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      let amount = '0x0';
+      let amount = HEX_ZERO_VALUE;
       if (draftTransaction.asset.type === ASSET_TYPES.TOKEN) {
         const decimals = draftTransaction.asset.details?.decimals ?? 0;
         const multiplier = Math.pow(10, Number(decimals));
@@ -923,8 +924,8 @@ const slice = createSlice({
         );
       } else {
         const _gasTotal = sumHexes(
-          draftTransaction.gas.gasTotal || '0x0',
-          state.gasTotalForLayer1 || '0x0',
+          draftTransaction.gas.gasTotal || HEX_ZERO_VALUE,
+          state.gasTotalForLayer1 || HEX_ZERO_VALUE,
         );
         amount = subtractCurrencies(
           addHexPrefix(draftTransaction.asset.balance),
@@ -977,7 +978,7 @@ const slice = createSlice({
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
-        slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+        slice.caseReducers.updateSendAmount(state, { payload: HEX_ZERO_VALUE });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -992,7 +993,7 @@ const slice = createSlice({
      */
     updateGasFeeEstimates: (state, action) => {
       const { gasFeeEstimates, gasEstimateType } = action.payload;
-      let gasPriceEstimate = '0x0';
+      let gasPriceEstimate = HEX_ZERO_VALUE;
       switch (gasEstimateType) {
         case GAS_ESTIMATE_TYPES.FEE_MARKET:
           slice.caseReducers.updateGasFees(state, {
@@ -1283,7 +1284,7 @@ const slice = createSlice({
           !isBalanceSufficient({
             amount: draftTransaction.amount.value,
             balance: draftTransaction.asset.balance,
-            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
+            gasTotal: draftTransaction.gas.gasTotal ?? HEX_ZERO_VALUE,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
           break;
@@ -1291,7 +1292,7 @@ const slice = createSlice({
         // than the amount of token the user is attempting to send.
         case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
           !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.asset.balance ?? '0x0',
+            tokenBalance: draftTransaction.asset.balance ?? HEX_ZERO_VALUE,
             amount: draftTransaction.amount.value,
             decimals: draftTransaction.asset.details.decimals,
           }):
@@ -1327,11 +1328,11 @@ const slice = createSlice({
         amount:
           draftTransaction.asset.type === ASSET_TYPES.NATIVE
             ? draftTransaction.amount.value
-            : '0x0',
+            : HEX_ZERO_VALUE,
         balance:
           draftTransaction.fromAccount?.balance ??
           state.selectedAccount.balance,
-        gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
+        gasTotal: draftTransaction.gas.gasTotal ?? HEX_ZERO_VALUE,
       });
 
       draftTransaction.gas.error = insufficientFunds
@@ -2326,7 +2327,7 @@ export function toggleSendMaxMode() {
     const state = getState();
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
-      await dispatch(actions.updateSendAmount('0x0'));
+      await dispatch(actions.updateSendAmount(HEX_ZERO_VALUE));
       await dispatch(addHistoryEntry(`sendFlow - user toggled max mode off`));
     } else {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
