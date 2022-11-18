@@ -159,7 +159,7 @@ export function initializeDomainSlice() {
       dispatch(enabledomainLookup(network));
     } else {
       web3Provider = null;
-      dispatch(disabledomainLookup());
+      dispatch(disableDomainLookup());
     }
   };
 }
