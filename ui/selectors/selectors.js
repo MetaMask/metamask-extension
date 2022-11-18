@@ -412,6 +412,21 @@ export function getAddressBookEntryOrAccountName(state, address) {
   return entry && entry.name !== '' ? entry.name : address;
 }
 
+export function getAccountName(identities, address) {
+  const entry = Object.values(identities).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
+export function getMetadataContractName(state, address) {
+  const tokenList = getTokenList(state);
+  const entry = Object.values(tokenList).find((identity) =>
+    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+  );
+  return entry && entry.name !== '' ? entry.name : '';
+}
+
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
   const identities = getMetaMaskIdentities(state);
@@ -941,12 +956,13 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
     13: false,
     14: false,
-    15: true,
+    15: false,
+    16: true,
   };
 }
 
@@ -997,6 +1013,10 @@ export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
 
+export function getShowBetaHeader(state) {
+  return state.metamask.showBetaHeader;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1008,13 +1028,13 @@ export function getUseTokenDetection(state) {
 }
 
 /**
- * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * To get the useNftDetection flag which determines whether we autodetect NFTs
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getUseCollectibleDetection(state) {
-  return Boolean(state.metamask.useCollectibleDetection);
+export function getUseNftDetection(state) {
+  return Boolean(state.metamask.useNftDetection);
 }
 
 /**
@@ -1238,6 +1258,26 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
+}
+
+/**
+ * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsImprovedTokenAllowanceEnabled(state) {
+  return state.metamask.improvedTokenAllowanceEnabled;
+}
+
+/**
+ * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTransactionSecurityCheckEnabled(state) {
+  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 export function getIsCustomNetwork(state) {

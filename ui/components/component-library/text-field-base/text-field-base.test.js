@@ -2,8 +2,9 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { SIZES } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
 
 import { TextFieldBase } from './text-field-base';
 
@@ -188,11 +189,7 @@ describe('TextFieldBase', () => {
   });
   it('should render with error className when error is true', () => {
     const { getByTestId } = render(
-      <TextFieldBase
-        error
-        value="error value"
-        data-testid="text-field-base-error"
-      />,
+      <TextFieldBase error data-testid="text-field-base-error" />,
     );
     expect(getByTestId('text-field-base-error')).toHaveClass(
       'mm-text-field-base--error',
@@ -234,5 +231,24 @@ describe('TextFieldBase', () => {
       'required',
       '',
     );
+  });
+  it('should render with a custom input and still work', () => {
+    const CustomInputComponent = React.forwardRef((props, ref) => (
+      <Box ref={ref} as="input" {...props} />
+    ));
+    CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
+    const { getByTestId } = render(
+      <TextFieldBase
+        InputComponent={CustomInputComponent}
+        inputProps={{ 'data-testid': 'text-field-base', className: 'test' }}
+      />,
+    );
+    const textFieldBase = getByTestId('text-field-base');
+
+    expect(textFieldBase.value).toBe(''); // initial value is empty string
+    fireEvent.change(textFieldBase, { target: { value: 'text value' } });
+    expect(textFieldBase.value).toBe('text value');
+    fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
+    expect(textFieldBase.value).toBe(''); // value is empty string after reset
   });
 });

@@ -1187,6 +1187,16 @@
         "typescript": true
       }
     },
+    "addons-linter>postcss>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -3206,106 +3216,58 @@
         "fancy-log": true,
         "gulp-autoprefixer>autoprefixer": true,
         "gulp-autoprefixer>postcss": true,
-        "gulp-autoprefixer>through2": true,
         "gulp-zip>plugin-error": true,
+        "through2": true,
         "vinyl-sourcemaps-apply": true
       }
     },
     "gulp-autoprefixer>autoprefixer": {
       "globals": {
-        "process.cwd": true
+        "console": true,
+        "process.cwd": true,
+        "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
-        "gulp-autoprefixer>autoprefixer>browserslist": true,
-        "gulp-autoprefixer>autoprefixer>postcss-value-parser": true,
+        "addons-linter>postcss>picocolors": true,
+        "gulp-autoprefixer>autoprefixer>fraction.js": true,
         "gulp-autoprefixer>postcss": true,
+        "stylelint>autoprefixer>browserslist": true,
         "stylelint>autoprefixer>caniuse-lite": true,
         "stylelint>autoprefixer>normalize-range": true,
-        "stylelint>autoprefixer>num2fraction": true
+        "stylelint>postcss-value-parser": true
       }
     },
-    "gulp-autoprefixer>autoprefixer>browserslist": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
+    "gulp-autoprefixer>autoprefixer>fraction.js": {
       "globals": {
-        "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
-        "process.env.BROWSERSLIST_ENV": true,
-        "process.env.BROWSERSLIST_STATS": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>caniuse-lite": true
+        "define": true
       }
     },
     "gulp-autoprefixer>postcss": {
       "builtin": {
-        "fs": true,
-        "path": true
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
       },
       "globals": {
         "Buffer": true,
+        "URL": true,
         "atob": true,
         "btoa": true,
-        "console": true
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
-        "gulp-autoprefixer>postcss>chalk": true,
-        "gulp-autoprefixer>postcss>source-map": true,
-        "gulp-autoprefixer>postcss>supports-color": true
-      }
-    },
-    "gulp-autoprefixer>postcss>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "gulp-autoprefixer>postcss>chalk>ansi-styles": true,
-        "gulp-autoprefixer>postcss>supports-color": true,
-        "mocha>escape-string-regexp": true
-      }
-    },
-    "gulp-autoprefixer>postcss>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "gulp-autoprefixer>postcss>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "mocha>supports-color>has-flag": true
-      }
-    },
-    "gulp-autoprefixer>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "addons-linter>postcss>picocolors": true,
+        "addons-linter>postcss>source-map-js": true,
+        "gulp-autoprefixer>postcss>nanoid": true
       }
     },
     "gulp-dart-sass": {
@@ -6453,9 +6415,9 @@
         "stylelint>autoprefixer>caniuse-lite": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>autoprefixer>num2fraction": true,
+        "stylelint>autoprefixer>picocolors": true,
         "stylelint>postcss": true,
-        "stylelint>postcss-value-parser": true,
-        "stylelint>postcss>picocolors": true
+        "stylelint>postcss-value-parser": true
       }
     },
     "stylelint>autoprefixer>browserslist": {
@@ -6484,6 +6446,16 @@
         "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
         "stylelint>autoprefixer>browserslist>node-releases": true,
         "stylelint>autoprefixer>caniuse-lite": true
+      }
+    },
+    "stylelint>autoprefixer>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
       }
     },
     "stylelint>chalk": {

@@ -25,6 +25,8 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
+import { ERC1155, ERC721 } from '../../../../../shared/constants/transaction';
+import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 
 export default function ContractDetailsModal({
   onClose,
@@ -35,6 +37,9 @@ export default function ContractDetailsModal({
   rpcPrefs,
   origin,
   siteImage,
+  tokenId,
+  assetName,
+  assetStandard,
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
@@ -43,6 +48,12 @@ export default function ContractDetailsModal({
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
   }));
+  const nft =
+    assetStandard === ERC721 ||
+    assetStandard === ERC1155 ||
+    // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenName and tokenId we assume its an NFT
+    (assetName && tokenId) ||
+    (tokenName && tokenId);
 
   return (
     <Popover className="contract-details-modal">
@@ -75,7 +86,7 @@ export default function ContractDetailsModal({
           marginTop={4}
           marginBottom={2}
         >
-          {t('contractToken')}
+          {nft ? t('contractNFT') : t('contractToken')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
@@ -84,11 +95,20 @@ export default function ContractDetailsModal({
           borderColor={COLORS.BORDER_DEFAULT}
           className="contract-details-modal__content__contract"
         >
-          <Identicon
-            className="contract-details-modal__content__contract__identicon"
-            address={tokenAddress}
-            diameter={24}
-          />
+          {nft ? (
+            <Box margin={4}>
+              <NftCollectionImage
+                assetName={assetName}
+                tokenAddress={tokenAddress}
+              />
+            </Box>
+          ) : (
+            <Identicon
+              className="contract-details-modal__content__contract__identicon"
+              address={tokenAddress}
+              diameter={24}
+            />
+          )}
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
@@ -102,6 +122,8 @@ export default function ContractDetailsModal({
                 variant={TYPOGRAPHY.H6}
                 display={DISPLAY.FLEX}
                 color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+                marginBottom={4}
               >
                 {ellipsify(tokenAddress)}
               </Typography>
@@ -166,7 +188,9 @@ export default function ContractDetailsModal({
           marginTop={4}
           marginBottom={2}
         >
-          {t('contractRequestingSpendingCap')}
+          {nft
+            ? t('contractRequestingAccess')
+            : t('contractRequestingSpendingCap')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
@@ -175,22 +199,30 @@ export default function ContractDetailsModal({
           borderColor={COLORS.BORDER_DEFAULT}
           className="contract-details-modal__content__contract"
         >
-          <UrlIcon
-            className={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            fallbackClassName={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            name={origin}
-            url={siteImage}
-          />
+          {nft ? (
+            <Identicon
+              className="contract-details-modal__content__contract__identicon"
+              diameter={24}
+              address={toAddress}
+            />
+          ) : (
+            <UrlIcon
+              className={classnames({
+                'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                  addressBookEntry?.data?.name === undefined,
+                'contract-details-modal__content__contract__identicon':
+                  addressBookEntry?.data?.name !== undefined,
+              })}
+              fallbackClassName={classnames({
+                'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                  addressBookEntry?.data?.name === undefined,
+                'contract-details-modal__content__contract__identicon':
+                  addressBookEntry?.data?.name !== undefined,
+              })}
+              name={origin}
+              url={siteImage}
+            />
+          )}
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
@@ -204,6 +236,8 @@ export default function ContractDetailsModal({
                 variant={TYPOGRAPHY.H6}
                 display={DISPLAY.FLEX}
                 color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+                marginBottom={4}
               >
                 {ellipsify(toAddress)}
               </Typography>
@@ -310,4 +344,16 @@ ContractDetailsModal.propTypes = {
    * Dapp image
    */
   siteImage: PropTypes.string,
+  /**
+   * The token id of the collectible
+   */
+  tokenId: PropTypes.string,
+  /**
+   * Token Standard
+   */
+  assetStandard: PropTypes.string,
+  /**
+   * The name of the collection
+   */
+  assetName: PropTypes.string,
 };

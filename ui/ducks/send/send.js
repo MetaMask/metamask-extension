@@ -51,7 +51,7 @@ import {
   updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  isCollectibleOwner,
+  isNftOwner,
   getTokenStandardAndDetails,
   showModal,
   addUnapprovedTransactionAndRouteToConfirmationPage,
@@ -298,7 +298,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  with the asset.
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
- *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
+ *  asset of the chain. Can also be 'TOKEN' or 'NFT'.
  */
 
 /**
@@ -562,7 +562,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * @typedef {object} Asset
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
- *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
+ *  asset of the chain. Can also be 'TOKEN' or 'NFT'.
  * @property {string} balance - A hex string representing the balance
  *  that the user holds of the asset that they are attempting to send.
  * @property {TokenDetails} [details] - An object that describes the
@@ -660,7 +660,7 @@ export const initializeSendState = createAsyncThunk(
     ) {
       gasLimit =
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+        draftTransaction.asset.type === ASSET_TYPES.NFT
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -960,7 +960,7 @@ const slice = createSlice({
 
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+        draftTransaction.asset.type === ASSET_TYPES.NFT
       ) {
         draftTransaction.asset.details = asset.details;
       } else {
@@ -1782,7 +1782,7 @@ export function editExistingTransaction(assetType, transactionId) {
             type: assetType,
             details: {
               address: transaction.txParams.to,
-              ...(assetType === ASSET_TYPES.COLLECTIBLE
+              ...(assetType === ASSET_TYPES.NFT
                 ? {
                     tokenId:
                       getTokenIdParam(tokenData) ??
@@ -2069,7 +2069,7 @@ export function updateSendAsset(
         );
       } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 &&
-        type === ASSET_TYPES.COLLECTIBLE
+        type === ASSET_TYPES.NFT
       ) {
         throw new Error('Sends of ERC1155 tokens are not currently supported');
       } else if (
@@ -2088,7 +2088,7 @@ export function updateSendAsset(
         } else {
           let isCurrentOwner = true;
           try {
-            isCurrentOwner = await isCollectibleOwner(
+            isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
@@ -2292,7 +2292,7 @@ export function signTransaction() {
 
       if (draftTransaction.asset.type !== ASSET_TYPES.NATIVE) {
         transactionType =
-          draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+          draftTransaction.asset.type === ASSET_TYPES.NFT
             ? TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
             : TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
       }

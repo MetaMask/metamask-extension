@@ -34,23 +34,23 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+import { ButtonPrimary } from '../../ui/components/component-library';
 
 <ButtonPrimary size={SIZES.SM} />
 <ButtonPrimary size={SIZES.MD} />
 <ButtonPrimary size={SIZES.LG} />
 ```
 
-### Type
+### Danger
 
-Use the `type` prop and the `BUTTON_TYPES` object from `./ui/helpers/constants/design-system.js` to change the context of `ButtonPrimary`.
+Use the `danger` boolean prop to change the `ButtonPrimary` to danger color.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--type" />
+  <Story id="ui-components-component-library-button-primary-button-primary-stories-js--danger" />
 </Canvas>
 
 ```jsx
-import { ButtonPrimary } from '../ui/component-library/button/button-primary/button-primary';
+import { ButtonPrimary } from '../../ui/components/component-library';
 
 <ButtonPrimary>Normal</ButtonPrimary>
 <ButtonPrimary danger>Danger</ButtonPrimary>

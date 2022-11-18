@@ -250,11 +250,25 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@keystonehq/bc-ur-registry-eth": true,
-        "@keystonehq/bc-ur-registry-eth>hdkey": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": true,
         "browserify>buffer": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
         "uuid": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey": {
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": true,
+        "browserify>assert": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": {
+      "packages": {
+        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": {
@@ -999,9 +1013,9 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util": true,
-        "@metamask/eth-ledger-bridge-keyring>hdkey": true,
         "browserify>buffer": true,
         "browserify>events": true,
+        "eth-trezor-keyring>hdkey": true,
         "ethereumjs-util": true
       }
     },
@@ -1032,25 +1046,6 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>hdkey": {
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": true,
-        "browserify>assert": true,
-        "browserify>crypto-browserify": true,
-        "eth-trezor-keyring>hdkey>coinstring": true,
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": {
-      "packages": {
-        "bn.js": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-trezor-keyring>hdkey>secp256k1>bip66": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -1267,6 +1262,9 @@
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
         "@metamask/contract-metadata": true,
+        "@metamask/controllers>@ethersproject/abi": true,
+        "@metamask/controllers>@ethersproject/contracts": true,
+        "@metamask/controllers>@ethersproject/providers": true,
         "@metamask/controllers>abort-controller": true,
         "@metamask/controllers>async-mutex": true,
         "@metamask/controllers>eth-json-rpc-infura": true,
@@ -1289,7 +1287,6 @@
         "eth-rpc-errors": true,
         "eth-sig-util": true,
         "ethereumjs-util": true,
-        "ethers": true,
         "ethjs>ethjs-unit": true,
         "immer": true,
         "json-rpc-engine": true,
@@ -2358,7 +2355,7 @@
       },
       "packages": {
         "@metamask/snap-utils>superstruct": true,
-        "eslint>fast-deep-equal": true,
+        "browserify>buffer": true,
         "nock>debug": true
       }
     },

@@ -278,25 +278,25 @@ export function getEnableEIP1559V2NoticeDismissed(state) {
 export const getCollectibles = (state) => {
   const {
     metamask: {
-      allCollectibles,
+      allNfts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
   const {
     metamask: {
-      allCollectibleContracts,
+      allNftContracts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {

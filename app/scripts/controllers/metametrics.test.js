@@ -20,6 +20,7 @@ const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -634,6 +635,50 @@ describe('MetaMetricsController', function () {
       );
       mock.verify();
     });
+
+    it('multiple trackPage call with same actionId should result in same messageId being sent to segment', function () {
+      const mock = sinon.mock(segment);
+      const metaMetricsController = getMetaMetricsController({
+        preferencesStore: getMockPreferencesStore({
+          participateInMetaMetrics: null,
+        }),
+      });
+      mock
+        .expects('page')
+        .twice()
+        .withArgs({
+          name: 'home',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            params: null,
+            ...DEFAULT_PAGE_PROPERTIES,
+          },
+          messageId: DUMMY_ACTION_ID,
+          timestamp: new Date(),
+        });
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      mock.verify();
+    });
   });
 
   describe('_buildUserTraitsObject', function () {
@@ -672,7 +717,7 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
-        allCollectibles: {
+        allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
             56: [
               {
@@ -707,7 +752,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -745,7 +790,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -765,7 +810,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         identities: [{}, {}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -793,7 +838,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -811,7 +856,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });
