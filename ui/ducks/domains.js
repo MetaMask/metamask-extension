@@ -133,7 +133,7 @@ export default reducer;
 const {
   disabledomainLookup,
   domainLookup,
-  enabledomainLookup,
+  enableDomainLookup,
   ensNotSupported,
   resetDomainResolution,
 } = actions;
