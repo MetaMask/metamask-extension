@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
 - Fix Balance not updating when using a duplicated `chainId` network ([#14245](https://github.com/MetaMask/metamask-extension/pull/14245))
 - [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
-- [FLASK] Fix some issues with installing snaps that request eth_accounts ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
+- [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
 
 ## [10.22.2]
 ### Changed
