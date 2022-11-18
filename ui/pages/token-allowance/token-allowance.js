@@ -184,7 +184,7 @@ export default function TokenAllowance({
   };
 
   const isEmpty = customTokenAmount === '';
-  
+
   const renderContractTokenValues = (
     <Box marginTop={4} key={tokenAddress}>
       <ContractTokenValues
@@ -284,7 +284,7 @@ export default function TokenAllowance({
             t('setSpendingCap', [renderContractTokenValues])
           ) : (
             <Box>
-              {customTokenAmount === '0' ? (
+              {customTokenAmount === '0' || isEmpty ? (
                 t('revokeSpendingCap', [renderContractTokenValues])
               ) : (
                 <Box>
