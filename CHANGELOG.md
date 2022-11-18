@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Button component, unifying primary, secondary and link buttons([#16305](https://github.com/MetaMask/metamask-extension/pull/16305))
 - Add Button Icon component ([#16277](https://github.com/MetaMask/metamask-extension/pull/16277))
 - Swaps: enable Swaps functionality on Arbitrum and Optimism networks ([#16396](https://github.com/MetaMask/metamask-extension/pull/16396))
-- [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
 - [FLASK] Add snap cronjobs ([#16239](https://github.com/MetaMask/metamask-extension/pull/16239))
 
 ### Changed
@@ -35,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Balance not updating when using a duplicated `chainId` network ([#14245](https://github.com/MetaMask/metamask-extension/pull/14245))
 - [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
 - [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
+- [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
 
 ## [10.22.2]
 ### Changed
