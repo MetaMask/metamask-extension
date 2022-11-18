@@ -411,10 +411,36 @@ const solidityTypes = () => {
   ];
 };
 
-export const sanitizeMessage = (msg, baseType, types) => {
+const SOLIDITY_TYPES = solidityTypes();
+
+const stripArrayType = (potentialArrayType) =>
+  potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
+
+const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+
+const isArrayType = (potentialArrayType) =>
+  potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
+
+const isSolidityType = (type) => SOLIDITY_TYPES.includes(type);
+
+export const sanitizeMessage = (msg, primaryType, types) => {
   if (!types) {
     throw new Error(`Invalid types definition`);
   }
+
+  // Primary type can be an array.
+  const isArray = primaryType && isArrayType(primaryType);
+  if (isArray) {
+    return msg.map((value) =>
+      sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
+    );
+  } else if (isSolidityType(primaryType)) {
+    return msg;
+  }
+
+  // If not, assume to be struct
+  const baseType = isArray ? stripArrayType(primaryType) : primaryType;
 
   const baseTypeDefinitions = types[baseType];
   if (!baseTypeDefinitions) {
@@ -432,31 +458,11 @@ export const sanitizeMessage = (msg, baseType, types) => {
       return;
     }
 
-    // key has a type. check if the definedType is also a type
-    const nestedType = definedType.type.replace(/\[\]$/u, '');
-    const nestedTypeDefinition = types[nestedType];
-
-    if (nestedTypeDefinition) {
-      if (definedType.type.endsWith('[]') > 0) {
-        // nested array
-        sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
-          sanitizeMessage(value, nestedType, types),
-        );
-      } else {
-        // nested object
-        sanitizedMessage[msgKey] = sanitizeMessage(
-          msg[msgKey],
-          definedType.type,
-          types,
-        );
-      }
-    } else {
-      // check if it's a valid solidity type
-      const isSolidityType = solidityTypes().includes(nestedType);
-      if (isSolidityType) {
-        sanitizedMessage[msgKey] = msg[msgKey];
-      }
-    }
+    sanitizedMessage[msgKey] = sanitizeMessage(
+      msg[msgKey],
+      definedType.type,
+      types,
+    );
   });
   return sanitizedMessage;
 };
