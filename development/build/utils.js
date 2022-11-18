@@ -1,3 +1,4 @@
+const path = require('path');
 const semver = require('semver');
 const { BuildType } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
@@ -117,10 +118,38 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
+/**
+ * Get the path of a file or folder inside the node_modules folder
+ *
+ * require.resolve was causing errors on Windows, once the paths were fed into fast-glob
+ * (The backslashes had to be converted to forward-slashes)
+ * This helper function was written to fix the Windows problem, and also end reliance on writing paths that start with './node_modules/'
+ *
+ * @see {@link https://github.com/MetaMask/metamask-extension/pull/16550}
+ * @param {string} packageName - The name of the package, such as '@lavamoat/lavapack'
+ * @param {string} pathToFiles - The path of the file or folder inside the package, optionally starting with /
+ */
+function getPathInsideNodeModules(packageName, pathToFiles) {
+  let targetPath = path.dirname(require.resolve(`${packageName}/package.json`));
+
+  if (pathToFiles.charAt(0) !== '/') {
+    targetPath += '/';
+  }
+
+  targetPath += pathToFiles;
+
+  if (process.platform === 'win32') {
+    targetPath = targetPath.replace(/\\/gu, '/');
+  }
+
+  return targetPath;
+}
+
 module.exports = {
   getBrowserVersionMap,
   getEnvironment,
   isDevBuild,
   isTestBuild,
   logError,
+  getPathInsideNodeModules,
 };
