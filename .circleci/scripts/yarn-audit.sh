@@ -16,7 +16,7 @@ audit_status="$?"
 
 if [[ "$audit_status" != 0 ]]
 then
-    count="$(yarn audit --level moderate --groups dependencies --json | tail -1 | jq '.data.vulnerabilities.moderate + .data.vulnerabilities.high + .data.vulnerabilities.critical')"
+    count="$(yarn npm audit --severity moderate --environment production --json | tail -1 | jq '.data.vulnerabilities.moderate + .data.vulnerabilities.high + .data.vulnerabilities.critical')"
     printf "Audit shows %s moderate or high severity advisories _in the production dependencies_\n" "$count"
     exit 1
 else
