@@ -161,6 +161,7 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
     } = this.props;
+
     const { t } = this.context;
 
     const showInsuffienctFundsError =
