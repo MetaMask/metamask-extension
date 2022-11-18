@@ -92,7 +92,7 @@ const slice = createSlice({
         }
       }
     },
-    enabledomainLookup: (state, action) => {
+    enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
       state.error = null;
       state.resolution = null;
