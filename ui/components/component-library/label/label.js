@@ -5,11 +5,10 @@ import classnames from 'classnames';
 import {
   COLORS,
   FONT_WEIGHT,
-  TEXT,
   DISPLAY,
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 
 export const Label = ({
   htmlFor,

@@ -5,12 +5,12 @@ import Box from '../../ui/box';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
   TEXT_COLORS,
 } from '../../../helpers/constants/design-system';
+import { TEXT } from './text.constants';
 
 export const ValidTags = [
   'dd',

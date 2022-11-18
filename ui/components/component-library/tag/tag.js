@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 import {
   ALIGN_ITEMS,
   BORDER_RADIUS,
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  TEXT,
 } from '../../../helpers/constants/design-system';
 
 export const Tag = ({ label, className, labelProps, ...props }) => {

@@ -2,13 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import {
-  COLORS,
-  TEXT,
-  TEXT_COLORS,
-} from '../../../helpers/constants/design-system';
+import { COLORS, TEXT_COLORS } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 
 export const HelpText = ({
   error,

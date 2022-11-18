@@ -3,11 +3,10 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
   SIZES,
-  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 import { ButtonLink } from './button-link';
 import { BUTTON_LINK_SIZES } from './button-link.constants';
 import README from './README.mdx';

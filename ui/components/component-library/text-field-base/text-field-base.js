@@ -6,13 +6,12 @@ import {
   DISPLAY,
   SIZES,
   ALIGN_ITEMS,
-  TEXT,
   COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 
 import {
   TEXT_FIELD_BASE_SIZES,

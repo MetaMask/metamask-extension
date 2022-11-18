@@ -4,14 +4,13 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box';
 import { Icon, ICON_NAMES } from '../icon';
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 
 import {
   ALIGN_ITEMS,
   DISPLAY,
   JUSTIFY_CONTENT,
   TEXT_COLORS,
-  TEXT,
   SIZES,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';

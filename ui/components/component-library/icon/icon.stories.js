@@ -7,10 +7,9 @@ import {
   ICON_COLORS,
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
-  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { Text } from '../text';
+import { Text, TEXT } from '../text';
 
 import { Icon } from './icon';
 import { ICON_NAMES } from './icon.constants';

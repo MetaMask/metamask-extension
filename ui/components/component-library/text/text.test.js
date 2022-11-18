@@ -5,11 +5,10 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
   OVERFLOW_WRAP,
-  TEXT,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
 } from '../../../helpers/constants/design-system';
-import { Text } from '.';
+import { Text, TEXT } from '.';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
