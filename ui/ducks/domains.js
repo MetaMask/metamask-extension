@@ -131,7 +131,7 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  disabledomainLookup,
+  disableDomainLookup,
   domainLookup,
   enableDomainLookup,
   ensNotSupported,
