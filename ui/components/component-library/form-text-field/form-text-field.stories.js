@@ -12,14 +12,18 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { ButtonLink } from '../button-link';
-import { ButtonPrimary } from '../button-primary';
-import { ButtonSecondary } from '../button-secondary';
-import { HelpText } from '../help-text';
-import { Icon, ICON_NAMES } from '../icon';
-import { Label } from '../label';
-import { Text } from '../text';
-import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from '../text-field';
+import {
+  ButtonLink,
+  ButtonPrimary,
+  ButtonSecondary,
+  HelpText,
+  Icon,
+  ICON_NAMES,
+  Label,
+  Text,
+  TEXT_FIELD_SIZES,
+  TEXT_FIELD_TYPES,
+} from '../';
 
 import { FormTextField } from './form-text-field';
 
@@ -220,8 +224,8 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const id = Template.bind({});
-id.args = {
+export const Id = Template.bind({});
+Id.args = {
   id: 'accessible-input-id',
   label: 'If label prop exists id prop is required for accessibility',
   helpText: '',
@@ -283,9 +287,9 @@ export const FormExample = () => {
     CHAIN_ID: 'chain id',
   };
   const ERROR_MESSAGES = {
-    NETWORK_NAME: `Please enter enter "${VALIDATED_VALUES.NETWORK_NAME}"`,
-    NEW_RPC_URL: `Please enter enter "${VALIDATED_VALUES.NEW_RPC_URL}"`,
-    CHAIN_ID: `Please enter enter "${VALIDATED_VALUES.CHAIN_ID}"`,
+    NETWORK_NAME: `Please enter "${VALIDATED_VALUES.NETWORK_NAME}"`,
+    NEW_RPC_URL: `Please enter "${VALIDATED_VALUES.NEW_RPC_URL}"`,
+    CHAIN_ID: `Please enter "${VALIDATED_VALUES.CHAIN_ID}"`,
   };
   const [submitted, setSubmitted] = useState(FORM_STATE.DEFAULT);
   const [values, setValues] = useState({
@@ -366,7 +370,7 @@ export const FormExample = () => {
           onChange={handleOnChange}
           value={values.networkName}
           error={Boolean(submitted === FORM_STATE.ERROR && errors.networkName)}
-          helpText={submitted === FORM_STATE.ERROR && errors.networkName}
+          helpText={submitted === FORM_STATE.ERROR ? errors.networkName : null}
         />
         <FormTextField
           marginBottom={4}
@@ -378,7 +382,7 @@ export const FormExample = () => {
           onChange={handleOnChange}
           value={values.newRpcUrl}
           error={Boolean(submitted === FORM_STATE.ERROR && errors.newRpcUrl)}
-          helpText={submitted === FORM_STATE.ERROR && errors.newRpcUrl}
+          helpText={submitted === FORM_STATE.ERROR ? errors.newRpcUrl : null}
         />
         <FormTextField
           label="Chain ID"
@@ -390,7 +394,7 @@ export const FormExample = () => {
           onChange={handleOnChange}
           value={values.chainId}
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
-          helpText={submitted === FORM_STATE.ERROR && errors.chainId}
+          helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
         <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>

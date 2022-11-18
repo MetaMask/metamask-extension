@@ -18,7 +18,7 @@ export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text } from './text';
-export { TextField } from './text-field';
+export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export {
   TextFieldBase,
   TEXT_FIELD_BASE_SIZES,
