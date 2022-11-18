@@ -428,6 +428,7 @@ describe('util', () => {
       expect(result.nestArray).toHaveLength(2);
       expect(result.nestArray[0]).toHaveLength(3);
       expect(result.nestArray[0][0]).toStrictEqual(12);
+      expect(result.nestArray[0][2]).toStrictEqual(56);
     });
 
     it('should return parsed nested array with struct if defined', () => {
@@ -445,7 +446,15 @@ describe('util', () => {
           ],
           [
             {
-              name: 'Bob',
+              name: 'Ben',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+            {
+              name: 'Brandon',
               wallets: [
                 '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
                 '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
@@ -458,6 +467,12 @@ describe('util', () => {
       const result = util.sanitizeMessage(msg, primaryType, types);
       expect(result.nestedPeople).toHaveLength(2);
       expect(result.nestedPeople[0]).toHaveLength(1);
+      expect(result.nestedPeople[0][0].name).toStrictEqual('Bob');
+      expect(result.nestedPeople[0][0].wallets).toHaveLength(3);
+      expect(result.nestedPeople[0][0].wallets[0]).toStrictEqual(
+        '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+      );
+      expect(result.nestedPeople[1][1].name).toStrictEqual('Brandon');
     });
 
     it('should return ignore message data with unknown types', () => {
