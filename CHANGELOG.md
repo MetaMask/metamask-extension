@@ -22,7 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Address component on Transaction data screen by displaying Account name, Contact name, or Contract name when corresponds ([#15888](https://github.com/MetaMask/metamask-extension/pull/15888))
 - Update Token Allowance screen for Improved Token Allowance experience ([#16157](https://github.com/MetaMask/metamask-extension/pull/16157))
 - Bump `@metamask/providers` from `10.0.0` to `10.2.0` ([#16361](https://github.com/MetaMask/metamask-extension/pull/16361))
-- [FLASK] `snaps-monorepo@0.23.0` ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+- [FLASK] **BREAKING**: Snaps no longer automatically receive a `Buffer` polyfill ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - To work around this you can either use typed arrays or include a polyfill yourself.
+- [FLASK] **BREAKING**: Snap RPC methods now use `@metamask/key-tree@6.0.0` ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - In the new version, all hexadecimal values are prefixed with `0x`
+  - All fields containing the word `Buffer` has also been renamed to `Bytes`
+  - Please update your snap to use the latest version 
+  
 
 ### Fixed
 - Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
