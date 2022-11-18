@@ -46,11 +46,23 @@ export default class NewAccountCreateForm extends Component {
         });
     };
 
-    const accountNameExists = (allAccounts, accountName) => {
-      return Boolean(allAccounts.find((item) => item.name === accountName));
-    };
+    const isDuplicateAccountName = accounts.some(
+      (item) => item.name === newAccountName,
+    );
 
-    const existingAccountName = accountNameExists(accounts, newAccountName);
+    const reservedRegEx = /^Account \d+$/i; //Match strings starting with "Account" and then any numeral, case insensitive
+    const isReservedAccountName = reservedRegEx.test(newAccountName);
+
+    const isValidAccountName =
+      !isDuplicateAccountName && !isReservedAccountName;
+
+    const getErrorMessage = () => {
+      if (isValidAccountName) return '\u200d'; //This is Unicode for an invisible character, so the spacing stays constant
+
+      if (isDuplicateAccountName) return this.context.t('accountNameDuplicate');
+
+      if (isReservedAccountName) return this.context.t('accountNameReserved');
+    };
 
     return (
       <div className="new-account-create-form">
@@ -59,9 +71,10 @@ export default class NewAccountCreateForm extends Component {
         </div>
         <div>
           <input
-            className={classnames('new-account-create-form__input', {
-              'new-account-create-form__input__error': existingAccountName,
-            })}
+            className={classnames(
+              'new-account-create-form__input',
+              !isValidAccountName && 'new-account-create-form__input__error',
+            )}
             value={newAccountName}
             placeholder={defaultAccountName}
             onChange={(event) =>
@@ -69,16 +82,16 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
-          {existingAccountName ? (
+          {
             <div
               className={classnames(
                 ' new-account-create-form__error',
                 ' new-account-create-form__error-amount',
               )}
             >
-              {this.context.t('accountNameDuplicate')}
+              {getErrorMessage()}
             </div>
-          ) : null}
+          }
           <div className="new-account-create-form__buttons">
             <Button
               type="secondary"
@@ -93,7 +106,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={existingAccountName}
+              disabled={!isValidAccountName}
             >
               {this.context.t('create')}
             </Button>
