@@ -1,7 +1,4 @@
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-
-const fetchWithTimeout = getFetchWithTimeout();
 
 export async function securityProviderCheck(
   requestData,
@@ -51,7 +48,7 @@ export async function securityProviderCheck(
     };
   }
 
-  const response = await fetchWithTimeout(
+  const response = await fetch(
     'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
     {
       method: 'POST',

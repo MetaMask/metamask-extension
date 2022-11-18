@@ -4536,27 +4536,30 @@ export default class MetamaskController extends EventEmitter {
   };
 
   async securityProviderRequest(requestData, methodName) {
-    // const isTransactionSecurityCheckEnabled =
-    //   this.preferencesController.store.getState().transactionSecurityCheckEnabled;
-
-    const { currentLocale } = this.preferencesController.store.getState();
+    const { currentLocale, transactionSecurityCheckEnabled } =
+      this.preferencesController.store.getState();
 
     const chainId = Number(
       hexToDecimal(this.networkController.getCurrentChainId()),
     );
 
-    // if (isTransactionSecurityCheckEnabled) {
-    const { flagAsDangerous } = await securityProviderCheck(
-      requestData,
-      methodName,
-      chainId,
-      currentLocale,
-    );
-    console.log('flagAsDangerous: ', flagAsDangerous);
+    if (transactionSecurityCheckEnabled) {
+      try {
+        const { flagAsDangerous } = await securityProviderCheck(
+          requestData,
+          methodName,
+          chainId,
+          currentLocale,
+        );
+        console.log('flagAsDangerous: ', flagAsDangerous);
 
-    return await flagAsDangerous;
-    // }
+        return await flagAsDangerous;
+      } catch (err) {
+        log.error(err.message);
+        throw err;
+      }
+    }
 
-    // return null;
+    return null;
   }
 }
