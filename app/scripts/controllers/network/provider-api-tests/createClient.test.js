@@ -180,37 +180,17 @@ import {
       });
     });
 
-    describe('net_version and eth_chainId', () => {
-      it(`does not hit ${providerType} provider, instead returning the networkId that maps to the rpc network, as a decimal string`, async () => {
-        const result = '5';
+    it(`net_version does not hit ${providerType} provider, instead returning the networkId that maps to the rpc network, as a decimal string`, async () => {
+      const result = '5';
 
-        await withMockedCommunications(
-          { type: providerType },
-          async (comms) => {
-            if (providerType === 'custom') {
-              comms.mockRpcCall({
-                request: { method: 'net_version' },
-                response: { result },
-              });
-            }
+      await withMockedCommunications({ type: providerType }, async (comms) => {
+        if (providerType === 'custom') {
+          comms.mockRpcCall({
+            request: { method: 'net_version' },
+            response: { result },
+          });
+        }
 
-            const networkId = await withClient(
-              {
-                network: 'goerli',
-                type: providerType,
-              },
-              ({ makeRpcCall }) => {
-                return makeRpcCall({
-                  method: 'net_version',
-                });
-              },
-            );
-            expect(networkId).toStrictEqual(result);
-          },
-        );
-      });
-
-      it(`does not hit ${providerType} provider, instead returning the chainId that maps to the rpc network, as a hex string`, async () => {
         const networkId = await withClient(
           {
             network: 'goerli',
@@ -218,12 +198,27 @@ import {
           },
           ({ makeRpcCall }) => {
             return makeRpcCall({
-              method: 'eth_chainId',
+              method: 'net_version',
             });
           },
         );
-        expect(networkId).toStrictEqual('0x5');
+        expect(networkId).toStrictEqual(result);
       });
+    });
+
+    it(`eth_chainId does not hit ${providerType} provider, instead returning the chainId that maps to the rpc network, as a hex string`, async () => {
+      const networkId = await withClient(
+        {
+          network: 'goerli',
+          type: providerType,
+        },
+        ({ makeRpcCall }) => {
+          return makeRpcCall({
+            method: 'eth_chainId',
+          });
+        },
+      );
+      expect(networkId).toStrictEqual('0x5');
     });
   });
 });

@@ -15,7 +15,7 @@ import {
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
-  NETWORK_TYPES
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,

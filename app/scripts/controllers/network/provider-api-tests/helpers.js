@@ -313,7 +313,7 @@ export async function withClient(...args) {
   } else {
     clientUnderTest = createJsonRpcClient({
       rpcUrl: LOCALHOST_RPC_URL,
-      chainId: BUILT_IN_NETWORKS[network].chainId || '0x1'
+      chainId: BUILT_IN_NETWORKS[network].chainId || '0x1',
     });
   }
   const { networkMiddleware, blockTracker } = clientUnderTest;
