@@ -13,7 +13,7 @@ import { SECOND } from '../../../../shared/constants/time';
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 
-export default function createJsonRpcClient({ rpcUrl, chainId, networkId }) {
+export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
@@ -21,16 +21,10 @@ export default function createJsonRpcClient({ rpcUrl, chainId, networkId }) {
     provider: blockProvider,
   });
 
-  const scaffolded = {
-    eth_chainId: chainId,
-  };
-
-  if (networkId) {
-    scaffolded.net_version = networkId;
-  }
-
   const networkMiddleware = mergeMiddleware([
-    createScaffoldMiddleware(scaffolded),
+    createScaffoldMiddleware({
+      eth_chainId: chainId,
+    }),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),
     createInflightCacheMiddleware(),

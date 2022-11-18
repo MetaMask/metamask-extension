@@ -182,19 +182,32 @@ import {
 
     describe('net_version and eth_chainId', () => {
       it(`does not hit ${providerType} provider, instead returning the networkId that maps to the rpc network, as a decimal string`, async () => {
-        const networkId = await withClient(
-          {
-            network: 'goerli',
-            type: providerType,
-          },
-          ({ makeRpcCall }) => {
-            return makeRpcCall({
-              method: 'net_version',
-            });
+        const result = '5';
+
+        await withMockedCommunications(
+          { type: providerType },
+          async (comms) => {
+            if (providerType === 'custom') {
+              comms.mockRpcCall({
+                request: { method: 'net_version' },
+                response: { result },
+              });
+            }
+
+            const networkId = await withClient(
+              {
+                network: 'goerli',
+                type: providerType,
+              },
+              ({ makeRpcCall }) => {
+                return makeRpcCall({
+                  method: 'net_version',
+                });
+              },
+            );
+            expect(networkId).toStrictEqual(result);
           },
         );
-        const result = providerType === 'infura' ? '5' : '0x5'; // bad
-        expect(networkId).toStrictEqual(result);
       });
 
       it(`does not hit ${providerType} provider, instead returning the chainId that maps to the rpc network, as a hex string`, async () => {
