@@ -45,13 +45,13 @@ async function start() {
     .join(', ');
   const betaBuildLinks = platforms
     .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-beta-${platform}-${VERSION}.zip`;
+      const url = `${BUILD_LINK_BASE}/builds/metamask-beta-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
   const flaskBuildLinks = platforms
     .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
+      const url = `${BUILD_LINK_BASE}/builds/metamask-flask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
