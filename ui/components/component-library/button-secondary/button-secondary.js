@@ -41,5 +41,3 @@ ButtonSecondary.propTypes = {
    */
   ...ButtonBase.propTypes,
 };
-
-export default ButtonSecondary;
