@@ -131,7 +131,7 @@ describe('Send Page', () => {
       expect(actions).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'DNS/enabledomainLookup',
+            type: 'DNS/enableDomainLookup',
           }),
         ]),
       );
