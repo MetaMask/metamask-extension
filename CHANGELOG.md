@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.22.23]
+### Added
+- [Beta]: Add Beta banner to all screens ([#16307](https://github.com/MetaMask/metamask-extension/pull/16307))
+
+### Changed
+- [Beta]: Update MetaMask logo imagery ([#16304](https://github.com/MetaMask/metamask-extension/pull/16304))
+- [Beta]: Update MetaMask long logo to new imagery ([#16505](https://github.com/MetaMask/metamask-extension/pull/16505))
 
 ## [10.22.2]
 ### Changed
