@@ -272,6 +272,15 @@ class Driver {
     }
   }
 
+  async isElementPresentAndVisible(rawLocator) {
+    try {
+      await this.findVisibleElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   /**
    * Paste a string into a field.
    *
@@ -407,7 +416,7 @@ class Driver {
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
       () =>
-        window.stateHooks.getCleanAppState &&
+        window.stateHooks?.getCleanAppState &&
         window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
