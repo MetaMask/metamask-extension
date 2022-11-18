@@ -6,7 +6,6 @@ export async function securityProviderCheck(
   chainId,
   currentLocale,
 ) {
-  console.log('requestData: ', requestData);
   let dataToValidate;
 
   if (methodName === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {

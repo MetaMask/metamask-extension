@@ -4551,8 +4551,6 @@ export default class MetamaskController extends EventEmitter {
           chainId,
           currentLocale,
         );
-        console.log('flagAsDangerous: ', flagAsDangerous);
-
         return await flagAsDangerous;
       } catch (err) {
         log.error(err.message);

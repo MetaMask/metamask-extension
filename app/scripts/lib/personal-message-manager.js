@@ -162,7 +162,6 @@ export default class PersonalMessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     };
-
     this.addMsg(msgData);
 
     const flagAsDangerous = await this.securityProviderRequest(
@@ -171,6 +170,7 @@ export default class PersonalMessageManager extends EventEmitter {
     );
 
     msgData.flagAsDangerous = flagAsDangerous;
+
     // signal update
     this.emit('update');
     return msgId;
