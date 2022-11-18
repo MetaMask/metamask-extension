@@ -583,7 +583,11 @@ export const ResponsiveProps = () => {
         padding={[2, 4]}
         gap={[2, 4]}
         display={[DISPLAY.FLEX, null, null, DISPLAY.NONE]}
-        flexDirection={['column', 'column', 'row']}
+        flexDirection={[
+          FLEX_DIRECTION.COLUMN,
+          FLEX_DIRECTION.COLUMN,
+          FLEX_DIRECTION.ROW,
+        ]}
         borderColor={COLORS.BORDER_DEFAULT}
       >
         <Box
