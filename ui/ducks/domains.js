@@ -156,7 +156,7 @@ export function initializeDomainSlice() {
           ensAddress,
         },
       );
-      dispatch(enabledomainLookup(network));
+      dispatch(enableDomainLookup(network));
     } else {
       web3Provider = null;
       dispatch(disableDomainLookup());
