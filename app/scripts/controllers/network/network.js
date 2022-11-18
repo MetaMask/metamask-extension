@@ -15,8 +15,7 @@ import {
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
-  NETWORK_TYPES,
-  CHAIN_ID_TO_NETWORK_ID_MAP,
+  NETWORK_TYPES
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -411,11 +410,7 @@ export default class NetworkController extends EventEmitter {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
-      this._configureStandardProvider(
-        rpcUrl,
-        chainId,
-        CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
-      );
+      this._configureStandardProvider(rpcUrl, chainId);
     } else {
       throw new Error(
         `NetworkController - _configureProvider - unknown type "${type}"`,
@@ -432,9 +427,9 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient);
   }
 
-  _configureStandardProvider(rpcUrl, chainId, networkId) {
+  _configureStandardProvider(rpcUrl, chainId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
-    const networkClient = createJsonRpcClient({ rpcUrl, chainId, networkId });
+    const networkClient = createJsonRpcClient({ rpcUrl, chainId });
     this._setNetworkClient(networkClient);
   }
 
