@@ -34,7 +34,7 @@ export const AvatarBase = ({
 AvatarBase.propTypes = {
   /**
    * The size of the AvatarBase.
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
+   * Possible values could be 'SIZES.XS'(16px), 'SIZES.SM'(24px), 'SIZES.MD'(32px), 'SIZES.LG'(40px), 'SIZES.XL'(48px)
    * Defaults to SIZES.MD
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
