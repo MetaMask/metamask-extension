@@ -155,15 +155,18 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+// These are set after initialization
 let connectRemote;
 let connectExternal;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   await isInitialized;
+  // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   await isInitialized;
+  // This is set in `setupController`, which is called as part of initialization
   connectExternal(...args);
 });
 
