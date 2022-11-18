@@ -22,10 +22,20 @@ describe('AvatarBase', () => {
         <AvatarBase size="xl" data-testid="avatar-base-xl" />
       </>,
     );
-    expect(getByTestId('avatar-base-xs')).toHaveClass('avatar-base--size-xs');
-    expect(getByTestId('avatar-base-sm')).toHaveClass('avatar-base--size-sm');
-    expect(getByTestId('avatar-base-md')).toHaveClass('avatar-base--size-md');
-    expect(getByTestId('avatar-base-lg')).toHaveClass('avatar-base--size-lg');
-    expect(getByTestId('avatar-base-xl')).toHaveClass('avatar-base--size-xl');
+    expect(getByTestId('avatar-base-xs')).toHaveClass(
+      'mm-avatar-base--size-xs',
+    );
+    expect(getByTestId('avatar-base-sm')).toHaveClass(
+      'mm-avatar-base--size-sm',
+    );
+    expect(getByTestId('avatar-base-md')).toHaveClass(
+      'mm-avatar-base--size-md',
+    );
+    expect(getByTestId('avatar-base-lg')).toHaveClass(
+      'mm-avatar-base--size-lg',
+    );
+    expect(getByTestId('avatar-base-xl')).toHaveClass(
+      'mm-avatar-base--size-xl',
+    );
   });
 });
