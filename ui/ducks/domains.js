@@ -99,7 +99,7 @@ const slice = createSlice({
       state.warning = null;
       state.network = action.payload;
     },
-    disabledomainLookup: (state) => {
+    disableDomainLookup: (state) => {
       state.stage = 'NO_NETWORK_SUPPORT';
       state.error = null;
       state.warning = null;
