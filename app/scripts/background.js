@@ -155,6 +155,18 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+let connectRemote;
+let connectExternal;
+
+browser.runtime.onConnect.addListener(async (...args) => {
+  await isInitialized;
+  connectRemote(...args);
+});
+browser.runtime.onConnectExternal.addListener(async (...args) => {
+  await isInitialized;
+  connectExternal(...args);
+});
+
 initialize().catch(log.error);
 
 /**
@@ -412,9 +424,6 @@ function setupController(initState, initLangCode) {
 
   setupSentryGetStateGlobal(controller);
 
-  browser.runtime.onConnect.addListener(connectRemote);
-  browser.runtime.onConnectExternal.addListener(connectExternal);
-
   const isClientOpenStatus = () => {
     return (
       popupIsOpen ||
@@ -455,9 +464,7 @@ function setupController(initState, initLangCode) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  async function connectRemote(remotePort) {
-    await isInitialized;
-
+  connectRemote = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -560,16 +567,16 @@ function setupController(initState, initLangCode) {
       }
       connectExternal(remotePort);
     }
-  }
+  };
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  connectExternal = (remotePort) => {
     const portStream = new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
-  }
+  };
 
   //
   // User Interface setup
