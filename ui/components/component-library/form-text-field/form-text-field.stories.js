@@ -194,7 +194,6 @@ export default {
   args: {
     placeholder: 'Form text field',
     label: 'Label',
-    htmlFor: 'form-text-field',
     id: 'form-text-field',
     helpText: 'Help text',
   },
@@ -248,6 +247,7 @@ export const HelpTextStory = (args) => {
     <>
       <FormTextField
         {...args}
+        id="input-with-help-text"
         value={value}
         onChange={handleOnChange}
         clearButtonOnClick={handleOnClear}
@@ -255,6 +255,7 @@ export const HelpTextStory = (args) => {
       />
       <FormTextField
         {...args}
+        id="input-with-help-text-as-error"
         error
         helpText="When error is true the help text will be rendered as an error message"
         value={value}
@@ -362,7 +363,6 @@ export const FormExample = () => {
           required
           name="networkName"
           id="networkName"
-          htmlFor="networkName"
           onChange={handleOnChange}
           value={values.networkName}
           error={Boolean(submitted === FORM_STATE.ERROR && errors.networkName)}
@@ -377,7 +377,6 @@ export const FormExample = () => {
           id="newRpcUrl"
           onChange={handleOnChange}
           value={values.newRpcUrl}
-          htmlFor="newRpcUrl"
           error={Boolean(submitted === FORM_STATE.ERROR && errors.newRpcUrl)}
           helpText={submitted === FORM_STATE.ERROR && errors.newRpcUrl}
         />

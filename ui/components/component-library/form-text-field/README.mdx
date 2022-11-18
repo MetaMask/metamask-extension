@@ -197,7 +197,6 @@ return (
         required
         name="networkName"
         id="networkName"
-        htmlFor="networkName"
         onChange={handleOnChange}
         value={values.networkName}
         error={Boolean(submitted === FORM_STATE.ERROR && errors.networkName)}
@@ -212,7 +211,6 @@ return (
         id="newRpcUrl"
         onChange={handleOnChange}
         value={values.newRpcUrl}
-        htmlFor="newRpcUrl"
         error={Boolean(submitted === FORM_STATE.ERROR && errors.newRpcUrl)}
         helpText={submitted === FORM_STATE.ERROR && errors.newRpcUrl}
       />
