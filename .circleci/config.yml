@@ -59,12 +59,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
-            - test-storybook
+            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -431,16 +428,6 @@ jobs:
           root: .
           paths:
             - development/ts-migration-dashboard/build
-
-  test-storybook:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test Storybook
-          command: yarn storybook:test
 
   test-yarn-dedupe:
     executor: node-browsers
