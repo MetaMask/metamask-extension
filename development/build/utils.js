@@ -132,15 +132,10 @@ function logError(error) {
 function getPathInsideNodeModules(packageName, pathToFiles) {
   let targetPath = path.dirname(require.resolve(`${packageName}/package.json`));
 
-  if (pathToFiles.charAt(0) !== '/') {
-    targetPath += '/';
-  }
+  targetPath = path.join(targetPath, pathToFiles);
 
-  targetPath += pathToFiles;
-
-  if (process.platform === 'win32') {
-    targetPath = targetPath.replace(/\\/gu, '/');
-  }
+  // Force POSIX separators
+  targetPath = targetPath.split(path.sep).join(path.posix.sep);
 
   return targetPath;
 }
