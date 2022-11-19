@@ -1301,7 +1301,7 @@
     "message": "此帳戶將由錢包中移除。在繼續進行之前請確認您已經匯出並妥善備份助憶詞或私鑰。您可以從帳戶下拉選單中匯入或再次建立帳戶。"
   },
   "removeNFT": {
-    "message": "Remove NFT"
+    "message": "移除 NFT"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "請求正在等待確認"
