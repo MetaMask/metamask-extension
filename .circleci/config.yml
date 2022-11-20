@@ -59,12 +59,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
-            - test-storybook
+            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -283,9 +280,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type beta dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type beta dist
+      - when:
+          condition:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type beta prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -415,16 +428,6 @@ jobs:
           root: .
           paths:
             - development/ts-migration-dashboard/build
-
-  test-storybook:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test Storybook
-          command: yarn storybook:test
 
   test-yarn-dedupe:
     executor: node-browsers
