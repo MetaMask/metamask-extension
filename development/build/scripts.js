@@ -615,45 +615,6 @@ function createFactoredBuild({
         return;
       }
 
-      // wrap sentry so it will still have access to natives after LM scuttling
-      for (const browser of browserPlatforms) {
-        const sentryPath = `./dist/${browser}/sentry-install.js`;
-        const content = readFileSync(sentryPath, 'utf8');
-        const wrappedContent = wrapAgainstScuttling(content, {
-          // globals sentry need to function
-          window: '',
-          navigator: '',
-          location: '',
-          Uint16Array: '',
-          fetch: '',
-          String: '',
-          Math: '',
-          Object: '',
-          Symbol: '',
-          Function: '',
-          Array: '',
-          Boolean: '',
-          Number: '',
-          Request: '',
-          Date: '',
-          document: '',
-          JSON: '',
-          encodeURIComponent: '',
-          crypto: '',
-          // {clear/set}Timeout are "this sensitive"
-          clearTimeout: 'window',
-          setTimeout: 'window',
-          // sentry special props
-          __SENTRY__: '',
-          sentryHooks: '',
-          sentry: '',
-          appState: '',
-          extra: '',
-          stateHooks: '',
-        });
-        writeFileSync(sentryPath, wrappedContent);
-      }
-
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
@@ -964,6 +925,55 @@ function setupMinification(buildConfiguration) {
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
+    pipeline
+      .get('xxxyyy')
+      // eslint-disable-next-line no-unused-vars
+      .push(
+        through.obj(
+          callbackify(async (file, _enc) => {
+            if (file.relative.includes('sentry')) {
+              file.contents = Buffer.concat([
+                Buffer.from(
+                  wrapAgainstScuttling(file.contents.toString(), {
+                    // globals sentry need to function
+                    window: '',
+                    navigator: '',
+                    location: '',
+                    Uint16Array: '',
+                    fetch: '',
+                    String: '',
+                    Math: '',
+                    Object: '',
+                    Symbol: '',
+                    Function: '',
+                    Array: '',
+                    Boolean: '',
+                    Number: '',
+                    Request: '',
+                    Date: '',
+                    document: '',
+                    JSON: '',
+                    encodeURIComponent: '',
+                    crypto: '',
+                    // {clear/set}Timeout are "this sensitive"
+                    clearTimeout: 'window',
+                    setTimeout: 'window',
+                    // sentry special props
+                    __SENTRY__: '',
+                    sentryHooks: '',
+                    sentry: '',
+                    appState: '',
+                    extra: '',
+                    stateHooks: '',
+                  }),
+                  'utf8',
+                ),
+              ]);
+            }
+            return file;
+          }),
+        ),
+      );
     pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
     pipeline
       .get('sourcemaps:write')
@@ -1005,6 +1015,8 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       'groups',
       [],
       'vinyl',
+      [],
+      'xxxyyy',
       [],
       'sourcemaps:init',
       [],
