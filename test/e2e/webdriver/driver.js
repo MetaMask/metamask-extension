@@ -416,7 +416,7 @@ class Driver {
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
       () =>
-        window.stateHooks.getCleanAppState &&
+        window.stateHooks?.getCleanAppState &&
         window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(

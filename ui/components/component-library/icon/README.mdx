@@ -23,7 +23,7 @@ Use the `name` prop and the `ICON_NAMES` object to change the icon.
 Use the [IconSearch](/ui-components-component-library-icon-icon-stories-js--name) story to find the icon you want to use.
 
 ```jsx
-import { Icon, ICON_NAMES } from '../ui/component-library';
+import { Icon, ICON_NAMES } from '../../ui/components/component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} />
 <Icon name={ICON_NAMES.BANK_FILLED} />
@@ -55,7 +55,7 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../ui/component-library';
+import { Icon, ICON_NAMES } from '../../ui/components/component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XXS} />
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XS} />
@@ -79,7 +79,7 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 
 ```jsx
 import { COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../ui/component-library';
+import { Icon, ICON_NAMES } from '../../ui/components/component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.INHERIT} />
 <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ICON_DEFAULT} />
