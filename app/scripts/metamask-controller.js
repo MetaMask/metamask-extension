@@ -1648,6 +1648,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
           preferencesController,
         ),
+      setTransactionSecurityCheckEnabled:
+        preferencesController.setTransactionSecurityCheckEnabled.bind(
+          preferencesController,
+        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -1700,6 +1704,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowPortfolioTooltip:
         appStateController.setShowPortfolioTooltip.bind(appStateController),
+      setShowBetaHeader:
+        appStateController.setShowBetaHeader.bind(appStateController),
       setCollectiblesDetectionNoticeDismissed:
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
           appStateController,
