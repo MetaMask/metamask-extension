@@ -51,6 +51,42 @@ const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
 
+// map dist files to bag of needed native APIs against LM scuttling
+const scuttlingBagConfig = {
+  'sentry-install.js': {
+    // globals sentry need to function
+    window: '',
+    navigator: '',
+    location: '',
+    Uint16Array: '',
+    fetch: '',
+    String: '',
+    Math: '',
+    Object: '',
+    Symbol: '',
+    Function: '',
+    Array: '',
+    Boolean: '',
+    Number: '',
+    Request: '',
+    Date: '',
+    document: '',
+    JSON: '',
+    encodeURIComponent: '',
+    crypto: '',
+    // {clear/set}Timeout are "this sensitive"
+    clearTimeout: 'window',
+    setTimeout: 'window',
+    // sentry special props
+    __SENTRY__: '',
+    sentryHooks: '',
+    sentry: '',
+    appState: '',
+    extra: '',
+    stateHooks: '',
+  },
+};
+
 /**
  * Get the appropriate Infura project ID.
  *
@@ -867,6 +903,9 @@ function setupBundlerDefaults(
       setupMinification(buildConfiguration);
     }
 
+    // Setup wrapping of code against scuttling (before sourcemaps generation)
+    setupScuttlingWrapping(buildConfiguration);
+
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
   }
@@ -922,58 +961,27 @@ function setupMinification(buildConfiguration) {
   });
 }
 
+function setupScuttlingWrapping(buildConfiguration) {
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('scuttle').push(
+      through.obj(
+        callbackify(async (file, _enc) => {
+          const bag = scuttlingBagConfig[file.relative];
+          if (bag) {
+            const wrapped = wrapAgainstScuttling(file.contents.toString(), bag);
+            file.contents = Buffer.from(wrapped, 'utf8');
+          }
+          return file;
+        }),
+      ),
+    );
+  });
+}
+
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
-    pipeline
-      .get('xxxyyy')
-      // eslint-disable-next-line no-unused-vars
-      .push(
-        through.obj(
-          callbackify(async (file, _enc) => {
-            if (file.relative.includes('sentry')) {
-              file.contents = Buffer.concat([
-                Buffer.from(
-                  wrapAgainstScuttling(file.contents.toString(), {
-                    // globals sentry need to function
-                    window: '',
-                    navigator: '',
-                    location: '',
-                    Uint16Array: '',
-                    fetch: '',
-                    String: '',
-                    Math: '',
-                    Object: '',
-                    Symbol: '',
-                    Function: '',
-                    Array: '',
-                    Boolean: '',
-                    Number: '',
-                    Request: '',
-                    Date: '',
-                    document: '',
-                    JSON: '',
-                    encodeURIComponent: '',
-                    crypto: '',
-                    // {clear/set}Timeout are "this sensitive"
-                    clearTimeout: 'window',
-                    setTimeout: 'window',
-                    // sentry special props
-                    __SENTRY__: '',
-                    sentryHooks: '',
-                    sentry: '',
-                    appState: '',
-                    extra: '',
-                    stateHooks: '',
-                  }),
-                  'utf8',
-                ),
-              ]);
-            }
-            return file;
-          }),
-        ),
-      );
     pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
     pipeline
       .get('sourcemaps:write')
@@ -1016,7 +1024,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       [],
       'vinyl',
       [],
-      'xxxyyy',
+      'scuttle',
       [],
       'sourcemaps:init',
       [],
