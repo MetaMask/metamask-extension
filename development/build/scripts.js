@@ -51,6 +51,42 @@ const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
 
+// map dist files to bag of needed native APIs against LM scuttling
+const scuttlingBagConfig = {
+  'sentry-install.js': {
+    // globals sentry need to function
+    window: '',
+    navigator: '',
+    location: '',
+    Uint16Array: '',
+    fetch: '',
+    String: '',
+    Math: '',
+    Object: '',
+    Symbol: '',
+    Function: '',
+    Array: '',
+    Boolean: '',
+    Number: '',
+    Request: '',
+    Date: '',
+    document: '',
+    JSON: '',
+    encodeURIComponent: '',
+    crypto: '',
+    // {clear/set}Timeout are "this sensitive"
+    clearTimeout: 'window',
+    setTimeout: 'window',
+    // sentry special props
+    __SENTRY__: '',
+    sentryHooks: '',
+    sentry: '',
+    appState: '',
+    extra: '',
+    stateHooks: '',
+  },
+};
+
 /**
  * Get the appropriate Infura project ID.
  *
@@ -615,45 +651,6 @@ function createFactoredBuild({
         return;
       }
 
-      // wrap sentry so it will still have access to natives after LM scuttling
-      for (const browser of browserPlatforms) {
-        const sentryPath = `./dist/${browser}/sentry-install.js`;
-        const content = readFileSync(sentryPath, 'utf8');
-        const wrappedContent = wrapAgainstScuttling(content, {
-          // globals sentry need to function
-          window: '',
-          navigator: '',
-          location: '',
-          Uint16Array: '',
-          fetch: '',
-          String: '',
-          Math: '',
-          Object: '',
-          Symbol: '',
-          Function: '',
-          Array: '',
-          Boolean: '',
-          Number: '',
-          Request: '',
-          Date: '',
-          document: '',
-          JSON: '',
-          encodeURIComponent: '',
-          crypto: '',
-          // {clear/set}Timeout are "this sensitive"
-          clearTimeout: 'window',
-          setTimeout: 'window',
-          // sentry special props
-          __SENTRY__: '',
-          sentryHooks: '',
-          sentry: '',
-          appState: '',
-          extra: '',
-          stateHooks: '',
-        });
-        writeFileSync(sentryPath, wrappedContent);
-      }
-
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
@@ -906,6 +903,9 @@ function setupBundlerDefaults(
       setupMinification(buildConfiguration);
     }
 
+    // Setup wrapping of code against scuttling (before sourcemaps generation)
+    setupScuttlingWrapping(buildConfiguration);
+
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
   }
@@ -961,6 +961,24 @@ function setupMinification(buildConfiguration) {
   });
 }
 
+function setupScuttlingWrapping(buildConfiguration) {
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('scuttle').push(
+      through.obj(
+        callbackify(async (file, _enc) => {
+          const bag = scuttlingBagConfig[file.relative];
+          if (bag) {
+            const wrapped = wrapAgainstScuttling(file.contents.toString(), bag);
+            file.contents = Buffer.from(wrapped, 'utf8');
+          }
+          return file;
+        }),
+      ),
+    );
+  });
+}
+
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
@@ -1005,6 +1023,8 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       'groups',
       [],
       'vinyl',
+      [],
+      'scuttle',
       [],
       'sourcemaps:init',
       [],
