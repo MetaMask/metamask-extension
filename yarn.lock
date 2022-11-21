@@ -5890,6 +5890,19 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@weizman/securely@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@weizman/securely/-/securely-1.0.2.tgz#f514c5669fd45910ba74ea7d9284130e192d934e"
+  integrity sha512-ZUQcGY2UcSpeR4kLc5hx+V9Eft4TFUT76z6G/IUIUHH52eZjBa5ZQDzjijQXJHK8rDcxxS9zN4mrgfOZVRky4g==
+
+"@weizman/snow@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@weizman/snow/-/snow-1.2.0.tgz#4658782b96c665e333e2276c0b83e5ed29614aaa"
+  integrity sha512-Q9fjWEMPMykWgAoZRN0iOSc0h1/ptCzhUCgb1t8iQnurIGA1cNhoJ//wucU6OAUjvi/dBHyzgQyux3MdySROEg==
+  dependencies:
+    "@weizman/securely" "^1.0.2"
+    is-cross-origin "^1.0.1"
+
 "@xstate/fsm@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@xstate/fsm/-/fsm-2.0.0.tgz#221db16b606df3f4675f5be6058b633ec4b8b44a"
@@ -14491,6 +14504,13 @@ is-core-module@^2.4.0, is-core-module@^2.8.1, is-core-module@^2.9.0:
   integrity sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==
   dependencies:
     has "^1.0.3"
+
+is-cross-origin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-cross-origin/-/is-cross-origin-1.0.1.tgz#b73ee0bbcf9f640a4c4f17bcf3cc229e3dae11e8"
+  integrity sha512-l0VqOliZJ0tJTFkNGa1kJilL9q+wCKw2wLX6qoXVtWUFKiqXvLaf4kAu4+9xAg6QJGKc41CDaFYSxmO9Iw1vuw==
+  dependencies:
+    is-window "^1.0.2"
 
 is-data-descriptor@^0.1.4:
   version "0.1.4"
