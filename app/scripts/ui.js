@@ -123,9 +123,7 @@ async function start() {
      * In case the UI is already rendered, only update the streams.
      */
     const messageListener = async (message) => {
-      if (message?.name === 'CONNECTION_READY' && !isUIInitialised) {
-        initializeUiWithTab(activeTab);
-      } else if (message?.data?.method === 'startUISync') {
+      if (message?.data?.method === 'startUISync') {
         if (isUIInitialised) {
           // Currently when service worker is revived we create new streams
           // in later version we might try to improve it by reviving same streams.
@@ -135,6 +133,7 @@ async function start() {
         }
         await loadPhishingWarningPage();
       }
+      extensionPort.onMessage.removeListener(messageListener);
     };
 
     /**
@@ -231,7 +230,6 @@ async function start() {
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
     // it also creates new streams and attach event listeners to them
     const resetExtensionStreamAndListeners = () => {
-      extensionPort.onMessage.removeListener(messageListener);
       extensionPort.onDisconnect.removeListener(
         resetExtensionStreamAndListeners,
       );
