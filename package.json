@@ -51,7 +51,9 @@
     "lint:changelog:rc": "auto-changelog validate --rc",
     "lint:eslint": "eslint . --ext js,ts,tsx,snap --cache",
     "lint:eslint:fix": "yarn lint:eslint --fix",
-    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com npm.pkg.github.com --empty-hostname false --allowed-schemes \"https:\" \"git+https:\"",
+    "lint:lockfile:dedupe": "yarn dedupe --check",
+    "lint:lockfile:dedupe:fix": "yarn dedupe --strategy highest",
+    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname false --allowed-schemes \"https:\" \"git+https:\"",
     "lint:shellcheck": "./development/shellcheck.sh",
     "lint:styles": "stylelint '*/**/*.scss'",
     "lint:styles:fix": "yarn lint:styles --fix",
@@ -495,9 +497,8 @@
     "vinyl-sourcemaps-apply": "^0.2.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^5.75.0",
-    "yargs": "^17.0.1",
-    "yarn-deduplicate": "^3.1.0"
+    "webpack": "^4.41.6",
+    "yargs": "^17.0.1"
   },
   "engines": {
     "node": "^16.0.0",
