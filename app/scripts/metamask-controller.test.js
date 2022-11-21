@@ -172,9 +172,6 @@ describe('MetaMaskController', function () {
     });
 
     it('should not reset states if already set', function () {
-      // Even though MMController is initialzed again in beforeEach,
-      // resetStates should still be called once
-      assert(metamaskController.resetStates.calledOnce);
       // global.isFirstTime should also remain false
       assert.equal(globalThis.isFirstTimeProfileLoaded, false);
     });
