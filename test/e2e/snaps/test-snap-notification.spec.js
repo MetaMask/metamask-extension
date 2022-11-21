@@ -39,7 +39,11 @@ describe('Test Snap Notification', function () {
         await driver.clickElement('#connectNotification');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          3,
+          1000,
+          10000,
+        );
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',

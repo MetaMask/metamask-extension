@@ -40,7 +40,11 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#connectManageState');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,

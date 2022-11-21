@@ -36,7 +36,11 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#connectBip44Snap');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
