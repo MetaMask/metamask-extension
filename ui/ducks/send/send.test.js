@@ -2108,7 +2108,7 @@ describe('Send Slice', () => {
         expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[9].type).toStrictEqual('DNS/resetDomainResolution');
         expect(actionResult[10].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
