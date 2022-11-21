@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Stores custom RPC history', function () {
@@ -30,12 +30,7 @@ describe('Stores custom RPC history', function () {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -91,12 +86,7 @@ describe('Stores custom RPC history', function () {
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -140,12 +130,7 @@ describe('Stores custom RPC history', function () {
         const newRpcUrl = 'http://localhost:8544';
         const duplicateChainId = '1';
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -193,12 +178,7 @@ describe('Stores custom RPC history', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
@@ -237,12 +217,7 @@ describe('Stores custom RPC history', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         // only recent 3 are found and in correct order (most recent at the top)
@@ -291,12 +266,7 @@ describe('Stores custom RPC history', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.delay(largeDelayMs);
-
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
