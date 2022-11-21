@@ -12,6 +12,7 @@ import {
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import {
   ASSET_TYPES,
   TOKEN_STANDARDS,
@@ -1276,7 +1277,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: 'HD Key Tree',
+                type: KEYRING_TYPES.HD_KEY_TREE,
                 accounts: ['0xAddress'],
               },
             ],
