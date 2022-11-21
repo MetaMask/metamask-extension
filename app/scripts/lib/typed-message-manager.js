@@ -91,9 +91,10 @@ export default class TypedMessageManager extends EventEmitter {
    * @param version
    * @returns {promise} When the message has been signed or rejected
    */
-  addUnapprovedMessageAsync(msgParams, req, version) {
+  async addUnapprovedMessageAsync(msgParams, req, version) {
+    const msgId = await this.addUnapprovedMessage(msgParams, req, version);
+
     return new Promise((resolve, reject) => {
-      const msgId = this.addUnapprovedMessage(msgParams, req, version);
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'signed':
