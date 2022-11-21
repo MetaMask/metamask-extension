@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  KEYRING_NAMES,
-  KEYRING_TYPES,
-} from '../../../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../../../shared/constants/keyrings';
+import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function KeyRingLabel({ keyring }) {
   const t = useI18nContext();

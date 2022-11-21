@@ -582,8 +582,12 @@ export const ResponsiveProps = () => {
         marginBottom={[0]}
         padding={[2, 4]}
         gap={[2, 4]}
-        display={['flex', null, null, 'none']}
-        flexDirection={['column', 'row']}
+        display={[DISPLAY.FLEX, null, null, DISPLAY.NONE]}
+        flexDirection={[
+          FLEX_DIRECTION.COLUMN,
+          FLEX_DIRECTION.COLUMN,
+          FLEX_DIRECTION.ROW,
+        ]}
         borderColor={COLORS.BORDER_DEFAULT}
       >
         <Box
@@ -606,6 +610,32 @@ export const ResponsiveProps = () => {
           borderColor={COLORS.BORDER_MUTED}
         >
           example
+        </Box>
+        <Box
+          padding={[4, 8]}
+          borderRadius={[
+            BORDER_RADIUS.XS,
+            BORDER_RADIUS.SM,
+            BORDER_RADIUS.MD,
+            BORDER_RADIUS.LG,
+          ]}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+        >
+          Responsive Border Radius 1
+        </Box>
+        <Box
+          padding={[4, 8]}
+          borderRadius={[
+            BORDER_RADIUS.XL,
+            BORDER_RADIUS.PILL,
+            BORDER_RADIUS.NONE,
+            BORDER_RADIUS.FULL,
+          ]}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+        >
+          Responsive Border Radius 2
         </Box>
       </Box>
     </>
