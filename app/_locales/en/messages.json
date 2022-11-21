@@ -2721,7 +2721,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_getEntropy": {
-    "message": "Access snap specific entropy.",
+    "message": "Derive arbitrary keys unique to this snap.",
     "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
