@@ -37,6 +37,10 @@ async function main() {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
+          .option('mv3', {
+            description: `run mv3 specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -46,17 +50,21 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps } = argv;
+  const { browser, retries, snaps, mv3 } = argv;
 
   let testDir = path.join(__dirname, 'tests');
+  let testPaths = await getTestPathsForTestDir(testDir);
 
   if (snaps) {
     testDir = path.join(__dirname, 'snaps');
-  }
-
-  let testPaths = await getTestPathsForTestDir(testDir);
-
-  if (!snaps) {
+  } else if (mv3) {
+    testPaths = [
+      ...testPaths,
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
+  } else {
     testPaths = [
       ...testPaths,
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
