@@ -438,7 +438,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a BETA version. Please report bugs $1",
+    "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskDescription": {
@@ -789,6 +789,9 @@
   },
   "contractRequestingAccess": {
     "message": "Contract requesting access"
+  },
+  "contractRequestingSignature": {
+    "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"

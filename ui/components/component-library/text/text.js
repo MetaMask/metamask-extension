@@ -155,5 +155,3 @@ Text.propTypes = {
 };
 
 Text.displayName = 'Text'; // Used for React DevTools profiler
-
-export default Text;
