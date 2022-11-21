@@ -16,7 +16,16 @@ export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
-export { Text, TEXT } from './text';
+export {
+  Text,
+  FONT_STYLE,
+  FONT_WEIGHT,
+  OVERFLOW_WRAP,
+  TEXT,
+  TEXT_ALIGN,
+  TEXT_COLORS,
+  TEXT_TRANSFORM,
+} from './text';
 export { TextField } from './text-field';
 export {
   TextFieldBase,
