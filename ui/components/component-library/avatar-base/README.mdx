@@ -38,12 +38,12 @@ Defaults to `md`
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { AvatarBase } from '../ui/component-library/avatar-base/avatar-base/avatar-base';
-  <AvatarBase {...args} size={SIZES.XS} />
-  <AvatarBase {...args} size={SIZES.SM} />
-  <AvatarBase {...args} size={SIZES.MD} />
-  <AvatarBase {...args} size={SIZES.LG} />
-  <AvatarBase {...args} size={SIZES.XL} />
+import { AvatarBase } from '../../component-library';
+  <AvatarBase size={SIZES.XS} />
+  <AvatarBase size={SIZES.SM} />
+  <AvatarBase size={SIZES.MD} />
+  <AvatarBase size={SIZES.LG} />
+  <AvatarBase size={SIZES.XL} />
 ```
 
 ### Children
@@ -56,44 +56,43 @@ The `AvatarBase` component can contain images, icons or text
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-  <AvatarBase {...args}>
+import { AvatarBase } from '../../component-library';
+  <AvatarBase >
     <img src="./images/eth_logo.svg" />
   </AvatarBase>
-  <AvatarBase {...args}>
+  <AvatarBase >
     <img width="100%" src="./images/arbitrum.svg" />
   </AvatarBase>
-  <AvatarBase {...args}>
+  <AvatarBase >
     <img width="100%" src="./images/avax-token.png" />
   </AvatarBase>
-  <AvatarBase {...args}>A</AvatarBase>
+  <AvatarBase >A</AvatarBase>
 ```
 
 ### Color, Background Color And Border Color
 
-Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the s of the `AvatarBase`.
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarBase`.
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-base-avatar-base-stories-js--color-background-color-and-border-color" />
 </Canvas>
 
-````jsx
-import { COLORS, BACKGROUND_COLORS, BORDER_COLORS } from '../../../helpers/constants/design-system';
-import { AvatarBase } from '../ui/component-library/avatar-base/avatar-base/avatar-base';
-  <AvatarBase {...args}>B</AvatarBase>
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { AvatarBase } from '../../component-library';
+  <AvatarBase>B</AvatarBase>
   <AvatarBase
-    {...args}
-    backgroundColor={BACKGROUND_COLORS.GOERLI}
-    borderColor={BORDER_COLORS.GOERLI}
+    backgroundColor={COLORS.GOERLI}
+    borderColor={COLORS.GOERLI}
     color={COLORS.PRIMARY_INVERSE}
     >
     G
   </AvatarBase>
   <AvatarBase
-    {...args}
-    backgroundColor={BACKGROUND_COLORS.SEPOLIA}
-    borderColor={BORDER_COLORS.SEPOLIA}
+    backgroundColor={COLORS.SEPOLIA}
+    borderColor={COLORS.SEPOLIA}
     color={COLORS.PRIMARY_INVERSE}
   >
     S
   </AvatarBase>
-````
+```

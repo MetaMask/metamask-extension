@@ -3,18 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box/box';
-import {
-  COLORS,
-  SIZES,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
-} from '../../../helpers/constants/design-system';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
 export const AvatarBase = ({
   size = SIZES.MD,
   children,
-  backgroundColor = BACKGROUND_COLORS.BACKGROUND_ALTERNATIVE,
-  borderColor = BORDER_COLORS.BORDER_DEFAULT,
+  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
+  borderColor = COLORS.BORDER_DEFAULT,
   color = COLORS.TEXT_DEFAULT,
   className,
   ...props

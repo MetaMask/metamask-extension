@@ -5,8 +5,6 @@ import {
   DISPLAY,
   SIZES,
   TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -50,11 +48,11 @@ export default {
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(COLORS),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(COLORS),
       control: 'select',
     },
     display: {
@@ -120,8 +118,8 @@ export const Children = (args) => (
     <AvatarBase {...args}>A</AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
-      borderColor={BORDER_COLORS.INFO_MUTED}
+      backgroundColor={COLORS.INFO_MUTED}
+      borderColor={COLORS.INFO_MUTED}
     >
       <i
         className="fa fa-user"
@@ -136,16 +134,16 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     <AvatarBase {...args}>B</AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={BACKGROUND_COLORS.PRIMARY_DEFAULT}
-      borderColor={BORDER_COLORS.PRIMARY_DEFAULT}
+      backgroundColor={COLORS.GOERLI}
+      borderColor={COLORS.GOERLI}
       color={COLORS.PRIMARY_INVERSE}
     >
       G
     </AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={BACKGROUND_COLORS.SUCCESS_DEFAULT}
-      borderColor={BORDER_COLORS.SUCCESS_DEFAULT}
+      backgroundColor={COLORS.SEPOLIA}
+      borderColor={COLORS.SEPOLIA}
       color={COLORS.PRIMARY_INVERSE}
     >
       S
