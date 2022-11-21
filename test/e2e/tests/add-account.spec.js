@@ -188,10 +188,11 @@ describe('Add account', function () {
         );
 
         // get the public address for the "third account"
-        await driver.waitForSelector('.qr-code__address');
         const recreatedThirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
+        await driver.waitForNonEmptyElement(recreatedThirdAccountAddress);
+
         assert.strictEqual(
           await recreatedThirdAccountAddress.getText(),
           thirdAccountPublicAddress,
