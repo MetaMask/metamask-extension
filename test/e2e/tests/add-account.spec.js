@@ -83,6 +83,7 @@ describe('Add account', function () {
         const secondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
+        await driver.waitForNonEmptyElement(secondAccountAddress);
         const secondAccountPublicAddress = await secondAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -109,6 +110,7 @@ describe('Add account', function () {
         const thirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
+        await driver.waitForNonEmptyElement(thirdAccountAddress);
         const thirdAccountPublicAddress = await thirdAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -165,6 +167,7 @@ describe('Add account', function () {
         const recreatedSecondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
+        await driver.waitForNonEmptyElement(recreatedSecondAccountAddress);
 
         assert.equal(
           await recreatedSecondAccountAddress.getText(),
