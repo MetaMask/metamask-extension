@@ -1,5 +1,7 @@
+// eslint-disable-next-line import/unambiguous
 (function () {
   window.top.SNOW((w) => {
-    console.log('SNOW INTERCEPTED NEW WINDOW CREATION IN METAMASK APP: ', w, w?.frameElement);
+    const msg = 'SNOW INTERCEPTED NEW WINDOW CREATION IN METAMASK APP: ';
+    console.log(msg, w, w?.frameElement);
   });
-} ())
+})();
