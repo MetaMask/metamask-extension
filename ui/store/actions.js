@@ -3779,6 +3779,10 @@ export function hidePortfolioTooltip() {
   return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
+export function hideBetaHeader() {
+  return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,

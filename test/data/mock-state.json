@@ -19,6 +19,7 @@
   },
   "metamask": {
     "gasEstimateType": "fee-market",
+    "showBetaHeader": false,
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
