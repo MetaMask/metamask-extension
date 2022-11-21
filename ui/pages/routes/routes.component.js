@@ -114,6 +114,7 @@ export default class Routes extends Component {
     shouldShowSeedPhraseReminder: PropTypes.bool,
     portfolioTooltipIsBeingShown: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
+    isCurrentProviderCustom: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -377,6 +378,7 @@ export default class Routes extends Component {
       currentChainId,
       shouldShowSeedPhraseReminder,
       portfolioTooltipIsBeingShown,
+      isCurrentProviderCustom,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -388,6 +390,7 @@ export default class Routes extends Component {
       currentChainId &&
       !isTestNet &&
       !isNetworkUsed &&
+      !isCurrentProviderCustom &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();

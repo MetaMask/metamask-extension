@@ -1,4 +1,5 @@
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -103,6 +104,9 @@ const createGetSmartTransactionFeesApiResponse = () => {
 
 export const createSwapsMockStore = () => {
   return {
+    confirmTransaction: {
+      txData: {},
+    },
     swaps: {
       customGas: {
         limit: '0x0',
@@ -144,6 +148,76 @@ export const createSwapsMockStore = () => {
         showFiatInTestnets: true,
       },
       currentCurrency: 'ETH',
+      currentNetworkTxList: [
+        {
+          id: 6571648590592143,
+          time: 1667403993369,
+          status: 'confirmed',
+          metamaskNetworkId: '5',
+          originalGasEstimate: '0x7548',
+          userEditedGasLimit: false,
+          chainId: '0x5',
+          loadingDefaults: false,
+          dappSuggestedGasFees: null,
+          sendFlowHistory: null,
+          txParams: {
+            from: '0x806627172af48bd5b0765d3449a7def80d6576ff',
+            to: '0x881d40237659c251811cec9c364ef91dc08d300c',
+            nonce: '0x30',
+            value: '0x5af3107a4000',
+            gas: '0x7548',
+            maxFeePerGas: '0x19286f704d',
+            maxPriorityFeePerGas: '0x77359400',
+          },
+          origin: 'metamask',
+          actionId: 1667403993358.877,
+          type: 'swap',
+          userFeeLevel: 'medium',
+          defaultGasEstimates: {
+            estimateType: 'medium',
+            gas: '0x7548',
+            maxFeePerGas: '0x19286f704d',
+            maxPriorityFeePerGas: '0x77359400',
+          },
+          sourceTokenSymbol: 'ETH',
+          destinationTokenSymbol: 'USDC',
+          destinationTokenDecimals: 6,
+          destinationTokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          swapMetaData: {
+            token_from: 'ETH',
+            token_from_amount: '0.0001',
+            token_to: 'USDC',
+            token_to_amount: '0.15471500',
+            slippage: 2,
+            custom_slippage: false,
+            best_quote_source: 'pmm',
+            other_quote_selected: false,
+            other_quote_selected_source: '',
+            gas_fees: '3.016697',
+            estimated_gas: '30024',
+            used_gas_price: '0',
+            is_hardware_wallet: false,
+            stx_enabled: false,
+            current_stx_enabled: false,
+            stx_user_opt_in: false,
+            reg_tx_fee_in_usd: 3.02,
+            reg_tx_fee_in_eth: 0.00193,
+            reg_tx_max_fee_in_usd: 5.06,
+            reg_tx_max_fee_in_eth: 0.00324,
+            max_fee_per_gas: '19286f704d',
+            max_priority_fee_per_gas: '77359400',
+            base_and_priority_fee_per_gas: 'efd93d95a',
+          },
+          swapTokenValue: '0.0001',
+          estimatedBaseFee: 'e865e455a',
+          hash: '0x8216e3696e7deb7ca794703015f17d5114a09362ae98f6a1611203e4c9509243',
+          submittedTime: 1667403996143,
+          firstRetryBlockNumber: '0x7838fe',
+          baseFeePerGas: '0xe0ef7d207',
+          blockTimestamp: '636290e8',
+          postTxBalance: '19a61aaaf06e4bd1',
+        },
+      ],
       conversionRate: 1,
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
@@ -178,10 +252,10 @@ export const createSwapsMockStore = () => {
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      keyringTypes: ['Simple Key Pair', 'HD Key Tree'],
+      keyringTypes: [KEYRING_TYPES.IMPORTED, KEYRING_TYPES.HD_KEY_TREE],
       keyrings: [
         {
-          type: 'HD Key Tree',
+          type: KEYRING_TYPES.HD_KEY_TREE,
           accounts: [
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -189,7 +263,7 @@ export const createSwapsMockStore = () => {
           ],
         },
         {
-          type: 'Simple Key Pair',
+          type: KEYRING_TYPES.IMPORTED,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],

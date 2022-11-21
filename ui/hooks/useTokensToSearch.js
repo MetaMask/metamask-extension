@@ -65,7 +65,10 @@ export function getRenderableTokenData(
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
     (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
     (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
-    (symbol === CURRENCY_SYMBOLS.AVALANCHE && chainId === CHAIN_IDS.AVALANCHE)
+    (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
+      chainId === CHAIN_IDS.AVALANCHE) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM)
       ? iconUrl
       : formatIconUrlWithProxy({
           chainId: chainIdForTokenIcons,
