@@ -2358,9 +2358,7 @@ export default class MetamaskController extends EventEmitter {
     // Message startUISync is used in MV3 to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
-    if (this.activeControllerConnections > 0) {
-      this.emit('startUISync');
-    }
+    this.emit('startUISync');
     this.startUISync = true;
     this.memStore.subscribe(this.sendUpdate.bind(this));
   }

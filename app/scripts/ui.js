@@ -133,7 +133,6 @@ async function start() {
         }
         await loadPhishingWarningPage();
       }
-      extensionPort.onMessage.removeListener(messageListener);
     };
 
     /**
@@ -230,6 +229,7 @@ async function start() {
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
     // it also creates new streams and attach event listeners to them
     const resetExtensionStreamAndListeners = () => {
+      extensionPort.onMessage.removeListener(messageListener);
       extensionPort.onDisconnect.removeListener(
         resetExtensionStreamAndListeners,
       );
