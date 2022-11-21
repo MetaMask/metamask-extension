@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Chip from '../chip';
 import IconWithFallback from '../icon-with-fallback';
+import { COLORS } from '../../../helpers/constants/design-system';
 
 export default function SiteOrigin({
   siteOrigin,
@@ -11,21 +12,25 @@ export default function SiteOrigin({
   chip,
   className,
   title,
+  leftIcon,
   rightIcon,
 }) {
   return (
     <div className={classnames('site-origin', className)} title={title}>
       {chip ? (
         <Chip
+          borderColor={COLORS.BORDER_MUTED}
           label={siteOrigin}
           maxContent={false}
           leftIcon={
-            <IconWithFallback icon={iconSrc} name={iconName} size={32} />
+            leftIcon || (
+              <IconWithFallback icon={iconSrc} name={iconName} size={24} />
+            )
           }
           rightIcon={rightIcon}
         />
       ) : (
-        <span>{siteOrigin}</span>
+        <bdi dir="ltr">{siteOrigin}</bdi>
       )}
     </div>
   );
@@ -59,6 +64,10 @@ SiteOrigin.propTypes = {
    * if false iconSrc and iconName props will not be used.
    */
   chip: PropTypes.bool,
+  /**
+   * The icon to display on the left side of the chip. If not provided, the iconSrc and iconName will be used.
+   */
+  leftIcon: PropTypes.node,
   /**
    * The icon to display on the right side of the chip.
    */

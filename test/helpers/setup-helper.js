@@ -1,3 +1,5 @@
+/* eslint-disable-next-line */
+import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -12,6 +14,12 @@ global.chrome = {
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
+if (typeof beforeEach === 'function') {
+  /* eslint-disable-next-line jest/require-top-level-describe */
+  beforeEach(() => {
+    nock.cleanAll();
+  });
+}
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
@@ -57,6 +65,12 @@ global.Element = window.Element;
 // required by `react-popper`
 global.HTMLElement = window.HTMLElement;
 
+// Jest no longer adds the following timers so we use set/clear Timeouts
+global.setImmediate =
+  global.setImmediate || ((fn, ...args) => global.setTimeout(fn, 0, ...args));
+global.clearImmediate =
+  global.clearImmediate || ((id) => global.clearTimeout(id));
+
 // required by any components anchored on `popover-content`
 const popoverContent = window.document.createElement('div');
 popoverContent.setAttribute('id', 'popover-content');
@@ -89,6 +103,10 @@ if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
 }
+
+// TextEncoder/TextDecoder
+window.TextEncoder = TextEncoder;
+window.TextDecoder = TextDecoder;
 
 // Used to test `clearClipboard` function
 if (!window.navigator.clipboard) {

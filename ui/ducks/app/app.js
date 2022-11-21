@@ -4,9 +4,6 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-// actionConstants
-const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED';
-
 export default function reduceApp(state = {}, action) {
   // default state
   const appState = {
@@ -42,8 +39,6 @@ export default function reduceApp(state = {}, action) {
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -58,9 +53,12 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    portfolioTooltipWasShownInThisSession: false,
     sendInputCurrencySwitched: false,
     newTokensImported: '',
     newCustomNetworkAdded: {},
+    onboardedInThisUISession: false,
+    customTokenAmount: '',
     ...state,
   };
 
@@ -321,6 +319,12 @@ export default function reduceApp(state = {}, action) {
         newCollectibleAddedMessage: action.value,
       };
 
+    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
+      return {
+        ...appState,
+        portfolioTooltipWasShownInThisSession: true,
+      };
+
     case actionConstants.LOADING_METHOD_DATA_STARTED:
       return {
         ...appState,
@@ -331,12 +335,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         loadingMethodData: false,
-      };
-
-    case SET_THREEBOX_LAST_UPDATED:
-      return {
-        ...appState,
-        threeBoxLastUpdated: action.value,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -399,22 +397,31 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         newCustomNetworkAdded: action.value,
       };
+    case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
+      return {
+        ...appState,
+        onboardedInThisUISession: action.value,
+      };
+    case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
+      return {
+        ...appState,
+        customTokenAmount: action.value,
+      };
     default:
       return appState;
   }
 }
 
 // Action Creators
-export function setThreeBoxLastUpdated(lastUpdated) {
-  return {
-    type: SET_THREEBOX_LAST_UPDATED,
-    value: lastUpdated,
-  };
-}
-
 export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function setPortfolioTooltipWasShownInThisSession() {
+  return {
+    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
   };
 }
 
@@ -447,10 +454,22 @@ export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
 }
 
+export function getPortfolioTooltipWasShownInThisSession(state) {
+  return state.appState.portfolioTooltipWasShownInThisSession;
+}
+
 export function toggleCurrencySwitch() {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
 }
 
 export function setNewCustomNetworkAdded(value) {
   return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
+}
+
+export function setOnBoardedInThisUISession(value) {
+  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
+}
+
+export function setCustomTokenAmount(value) {
+  return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, value };
 }

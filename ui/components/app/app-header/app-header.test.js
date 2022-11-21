@@ -1,94 +1,148 @@
 import React from 'react';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
-import MetaFoxLogo from '../../ui/metafox-logo';
-import NetworkDisplay from '../network-display';
-import AppHeader from './app-header.container';
+import { fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import AppHeader from '.';
+
+const mockShowNetworkDropdown = jest.fn();
+const mockHideNetworkDropdown = jest.fn();
+const mockToggleAccountMenu = jest.fn();
+
+jest.mock('../../../store/actions', () => {
+  return {
+    showNetworkDropdown: () => mockShowNetworkDropdown,
+    hideNetworkDropdown: () => mockHideNetworkDropdown,
+    toggleAccountMenu: () => mockToggleAccountMenu,
+  };
+});
 
 describe('App Header', () => {
-  let wrapper;
-
-  const props = {
-    hideNetworkDropdown: sinon.spy(),
-    showNetworkDropdown: sinon.spy(),
-    toggleAccountMenu: sinon.spy(),
-    history: {
-      push: sinon.spy(),
-    },
-    network: 'test',
-    provider: {},
-    selectedAddress: '0xAddress',
-    disabled: false,
-    hideNetworkIndicator: false,
-    networkDropdownOpen: false,
-    isAccountMenuOpen: false,
-    isUnlocked: true,
-  };
-
-  beforeEach(() => {
-    wrapper = shallow(<AppHeader.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-        trackEvent: () => undefined,
-      },
-    });
+  afterEach(() => {
+    mockShowNetworkDropdown.mockClear();
+    mockHideNetworkDropdown.mockClear();
+    mockToggleAccountMenu.mockClear();
   });
 
-  afterEach(() => {
-    props.toggleAccountMenu.resetHistory();
+  const store = configureMockStore([thunk])(mockState);
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(<AppHeader />, store);
+    expect(container).toMatchSnapshot();
   });
 
   describe('App Header Logo', () => {
     it('routes to default route when logo is clicked', () => {
-      const appLogo = wrapper.find(MetaFoxLogo);
-      appLogo.simulate('click');
-      expect(props.history.push.calledOnce).toStrictEqual(true);
-      expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
+      const { history, queryByTestId } = renderWithProvider(
+        <AppHeader />,
+        store,
+        '/different-route',
+      );
+      expect(history.location.pathname).toStrictEqual('/different-route');
+
+      const appLogo = queryByTestId('app-header-logo');
+      fireEvent.click(appLogo);
+
+      expect(history.location.pathname).toStrictEqual('/');
     });
   });
 
   describe('Network', () => {
     it('shows network dropdown when networkDropdownOpen is false', () => {
-      const network = wrapper.find(NetworkDisplay);
-      network.simulate('click', {
-        preventDefault: () => undefined,
-        stopPropagation: () => undefined,
-      });
+      const { queryByTestId } = renderWithProvider(<AppHeader />, store);
 
-      expect(props.showNetworkDropdown.calledOnce).toStrictEqual(true);
+      const networkDisplay = queryByTestId('network-display');
+
+      fireEvent.click(networkDisplay);
+
+      expect(mockShowNetworkDropdown).toHaveBeenCalled();
+      expect(mockHideNetworkDropdown).not.toHaveBeenCalled();
     });
 
     it('hides network dropdown when networkDropdownOpen is true', () => {
-      wrapper.setProps({ networkDropdownOpen: true });
-      const network = wrapper.find(NetworkDisplay);
+      const openNetworkDropdownState = {
+        ...mockState,
+        appState: {
+          networkDropdownOpen: true,
+        },
+      };
 
-      network.simulate('click', {
-        preventDefault: () => undefined,
-        stopPropagation: () => undefined,
-      });
+      const openNetworkDropdownStore = configureMockStore([thunk])(
+        openNetworkDropdownState,
+      );
 
-      expect(props.hideNetworkDropdown.calledOnce).toStrictEqual(true);
+      const { queryByTestId } = renderWithProvider(
+        <AppHeader />,
+        openNetworkDropdownStore,
+      );
+
+      const networkDisplay = queryByTestId('network-display');
+
+      fireEvent.click(networkDisplay);
+
+      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+      expect(mockHideNetworkDropdown).toHaveBeenCalled();
     });
 
     it('hides network indicator', () => {
-      wrapper.setProps({ hideNetworkIndicator: true });
-      const network = wrapper.find(NetworkDisplay);
-      expect(network).toHaveLength(0);
+      const props = {
+        hideNetworkIndicator: true,
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <AppHeader {...props} />,
+        store,
+      );
+
+      const networkDisplay = queryByTestId('network-display');
+
+      expect(networkDisplay).not.toBeInTheDocument();
     });
   });
 
   describe('Account Menu', () => {
     it('toggles account menu', () => {
-      const accountMenu = wrapper.find('.account-menu__icon');
-      accountMenu.simulate('click');
-      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      const { queryByTestId } = renderWithProvider(<AppHeader />, store);
+
+      const accountMenuIcon = queryByTestId('account-menu-icon');
+
+      fireEvent.click(accountMenuIcon);
+      expect(mockToggleAccountMenu).toHaveBeenCalled();
+    });
+
+    it('should not render account menu icon if isUnlocked is false', () => {
+      const lockedState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          isUnlocked: false,
+        },
+      };
+
+      const lockedStore = configureMockStore([thunk])(lockedState);
+
+      const { queryByTestId } = renderWithProvider(<AppHeader />, lockedStore);
+
+      const accountMenuIcon = queryByTestId('account-menu-icon');
+
+      expect(accountMenuIcon).not.toBeInTheDocument();
     });
 
     it('does not toggle account menu when disabled', () => {
-      wrapper.setProps({ disabled: true });
-      const accountMenu = wrapper.find('.account-menu__icon');
-      accountMenu.simulate('click');
-      expect(props.toggleAccountMenu.notCalled).toStrictEqual(true);
+      const props = {
+        disabled: true,
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <AppHeader {...props} />,
+        store,
+      );
+
+      const accountMenuIcon = queryByTestId('account-menu-icon');
+
+      fireEvent.click(accountMenuIcon);
+      expect(mockToggleAccountMenu).not.toHaveBeenCalled();
     });
   });
 });

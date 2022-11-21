@@ -9,7 +9,7 @@ import {
   TokensController,
   AssetsContractController,
 } from '@metamask/controllers';
-import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
@@ -169,7 +169,7 @@ describe('DetectTokensController', function () {
 
   it('should be called on every polling period', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(MAINNET);
+    network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -195,15 +195,15 @@ describe('DetectTokensController', function () {
 
   it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(ROPSTEN);
-    const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
+    network.setProviderType(NETWORK_TYPES.SEPOLIA);
+    const tokenListMessengerSepolia = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '3',
+      chainId: '11155111',
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessengerRopsten,
+      messenger: tokenListMessengerSepolia,
     });
     await tokenListController.start();
     const controller = new DetectTokensController({
@@ -228,7 +228,7 @@ describe('DetectTokensController', function () {
 
   it('should skip adding tokens listed in ignoredTokens array', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(MAINNET);
+    network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -249,7 +249,7 @@ describe('DetectTokensController', function () {
         address: tokenValues[0].address,
         symbol: tokenValues[0].symbol,
         decimals: tokenValues[0].decimals,
-        aggregators: tokenValues[0].aggregators,
+        aggregators: undefined,
         image: undefined,
         isERC721: undefined,
       },
@@ -270,7 +270,7 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(tokenValues[0].address),
         decimals: tokenValues[0].decimals,
         symbol: tokenValues[0].symbol,
-        aggregators: tokenValues[0].aggregators,
+        aggregators: undefined,
         image: undefined,
         isERC721: undefined,
       },
@@ -279,7 +279,7 @@ describe('DetectTokensController', function () {
 
   it('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
-    network.setProviderType(MAINNET);
+    network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -303,7 +303,7 @@ describe('DetectTokensController', function () {
         address: existingToken.address,
         symbol: existingToken.symbol,
         decimals: existingToken.decimals,
-        aggregators: existingToken.aggregators,
+        aggregators: undefined,
         image: undefined,
         isERC721: undefined,
       },
@@ -321,7 +321,7 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
-        aggregators: existingToken.aggregators,
+        aggregators: undefined,
         image: undefined,
         isERC721: undefined,
       },
@@ -329,7 +329,7 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
-        aggregators: tokenToAdd.aggregators,
+        aggregators: undefined,
         image: undefined,
         isERC721: undefined,
       },
@@ -374,7 +374,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not unlocked', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(MAINNET);
+    network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,
@@ -395,7 +395,7 @@ describe('DetectTokensController', function () {
 
   it('should not trigger detect new tokens when not open', async function () {
     const clock = sandbox.useFakeTimers();
-    network.setProviderType(MAINNET);
+    network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
       preferences,
       network,

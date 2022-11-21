@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 
 import React, { useState } from 'react';
+import Typography from '../typography';
+import Tooltip from '../tooltip';
+import Box from '../box';
+
 import README from './README.mdx';
 import FormField from '.';
 
@@ -83,4 +87,31 @@ export const FormFieldWithError = (args) => {
 FormFieldWithError.args = {
   titleText: 'Title',
   error: 'Incorrect Format',
+};
+
+export const CustomComponents = (args) => {
+  return (
+    <div style={{ width: '600px' }}>
+      <FormField
+        {...args}
+        TitleTextCustomComponent={
+          <Typography>TitleTextCustomComponent</Typography>
+        }
+        TitleUnitCustomComponent={
+          <Typography marginLeft={2}>TitleUnitCustomComponent</Typography>
+        }
+        TooltipCustomComponent={
+          <Tooltip
+            interactive
+            position="top"
+            html={<Typography>Custom tooltip</Typography>}
+          >
+            <Box as="i" marginLeft={2} className="fa fa-question-circle" />
+          </Tooltip>
+        }
+        titleDetail={<Typography>TitleDetail</Typography>}
+        titleDetailWrapperProps={{ marginBottom: 0 }}
+      />
+    </div>
+  );
 };

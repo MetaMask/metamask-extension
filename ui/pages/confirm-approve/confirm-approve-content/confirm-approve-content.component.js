@@ -4,15 +4,13 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
-import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
+import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { isBeta } from '../../../helpers/utils/build-types';
 import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import CopyIcon from '../../../components/ui/icon/copy-icon.component';
@@ -33,10 +31,8 @@ import {
   ERC20,
   ERC721,
 } from '../../../../shared/constants/transaction';
-import {
-  MAINNET_CHAIN_ID,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -80,13 +76,14 @@ export default class ConfirmApproveContent extends Component {
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
     isSetApproveForAll: PropTypes.bool,
-    setApproveForAllArg: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
   };
 
   state = {
-    showFullTxDetails: true,
+    showFullTxDetails: false,
     copied: false,
+    setshowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -312,7 +309,7 @@ export default class ConfirmApproveContent extends Component {
 
   renderDataContent() {
     const { t } = this.context;
-    const { data, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -320,9 +317,9 @@ export default class ConfirmApproveContent extends Component {
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
         </div>
-        {isSetApproveForAll && setApproveForAllArg !== undefined ? (
+        {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
-            {`${t('parameters')}: ${setApproveForAllArg}`}
+            {`${t('parameters')}: ${isApprovalOrRejection}`}
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
@@ -468,7 +465,7 @@ export default class ConfirmApproveContent extends Component {
     const { t } = this.context;
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, MAINNET_CHAIN_ID].includes(chainId);
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
 
     let titleTokenDescription = t('token');
     const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
@@ -536,14 +533,14 @@ export default class ConfirmApproveContent extends Component {
 
   renderTitle() {
     const { t } = this.context;
-    const { isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { isSetApproveForAll, isApprovalOrRejection } = this.props;
     const titleTokenDescription = this.getTitleTokenDescription();
 
     let title;
 
     if (isSetApproveForAll) {
       title = t('approveAllTokensTitle', [titleTokenDescription]);
-      if (setApproveForAllArg === false) {
+      if (isApprovalOrRejection === false) {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
     }
@@ -552,14 +549,15 @@ export default class ConfirmApproveContent extends Component {
 
   renderDescription() {
     const { t } = this.context;
-    const { isContract, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const { isContract, isSetApproveForAll, isApprovalOrRejection } =
+      this.props;
     const grantee = isContract
       ? t('contract').toLowerCase()
       : t('account').toLowerCase();
 
     let description = t('trustSiteApprovePermission', [grantee]);
 
-    if (isSetApproveForAll && setApproveForAllArg === false) {
+    if (isSetApproveForAll && isApprovalOrRejection === false) {
       description = t('revokeApproveForAllDescription', [
         grantee,
         this.getTitleTokenDescription(),
@@ -592,8 +590,11 @@ export default class ConfirmApproveContent extends Component {
       isContract,
       assetStandard,
       userAddress,
+      tokenId,
+      tokenAddress,
+      assetName,
     } = this.props;
-    const { showFullTxDetails } = this.state;
+    const { showFullTxDetails, setshowContractDetails } = this.state;
 
     return (
       <div
@@ -610,17 +611,11 @@ export default class ConfirmApproveContent extends Component {
           display={DISPLAY.FLEX}
           className="confirm-approve-content__icon-display-content"
         >
-          <Box className="confirm-approve-content__metafoxlogo">
-            <MetaFoxLogo useDark={isBeta()} />
-          </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            className="confirm-approve-content__siteinfo"
-          >
+          <Box display={DISPLAY.FLEX}>
             <UrlIcon
               className="confirm-approve-content__siteimage-identicon"
               fallbackClassName="confirm-approve-content__siteimage-identicon"
-              name={getURLHostName(origin)}
+              name={origin}
               url={siteImage}
             />
             <Typography
@@ -629,7 +624,7 @@ export default class ConfirmApproveContent extends Component {
               color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
-              {getURLHostName(origin)}
+              {origin}
             </Typography>
           </Box>
         </Box>
@@ -642,6 +637,33 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
+        {(assetStandard === ERC721 ||
+          assetStandard === ERC1155 ||
+          (assetName && tokenId) ||
+          (tokenSymbol && tokenId)) && (
+          <Box marginBottom={4} marginTop={2}>
+            <Button
+              type="link"
+              className="confirm-approve-content__verify-contract-details"
+              onClick={() => this.setState({ setshowContractDetails: true })}
+            >
+              {t('verifyContractDetails')}
+            </Button>
+            {setshowContractDetails && (
+              <ContractDetailsModal
+                onClose={() => this.setState({ setshowContractDetails: false })}
+                tokenName={tokenSymbol}
+                tokenAddress={tokenAddress}
+                toAddress={toAddress}
+                chainId={chainId}
+                rpcPrefs={rpcPrefs}
+                tokenId={tokenId}
+                assetName={assetName}
+                assetStandard={assetStandard}
+              />
+            )}
+          </Box>
+        )}
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
             <Identicon

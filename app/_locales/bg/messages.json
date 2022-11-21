@@ -8,9 +8,6 @@
   "about": {
     "message": "Информация"
   },
-  "acceleratingATransaction": {
-    "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
-  },
   "accessingYourCamera": {
     "message": "Достъп до вашата камера ..."
   },
@@ -193,17 +190,8 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToKovan": {
-    "message": "Свързване с тестовата мрежа на Kovan"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
-  },
-  "connectingToRinkeby": {
-    "message": "Свързване с тестова мрежа на Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Свързване с тестова мрежа Ropsten"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -249,12 +237,6 @@
   },
   "custom": {
     "message": "Разширени"
-  },
-  "customGas": {
-    "message": "Персонализирайте газ"
-  },
-  "customGasSubTitle": {
-    "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
   },
   "customToken": {
     "message": "Персонализиран маркер"
@@ -339,9 +321,6 @@
   },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Приблизителни времена за обработка"
   },
   "ethereumPublicAddress": {
     "message": "Публичен адрес за етереум"
@@ -499,9 +478,6 @@
   "knownAddressRecipient": {
     "message": "Известен адрес на договора."
   },
-  "kovan": {
-    "message": "Тестова мрежа на Кован"
-  },
   "learnMore": {
     "message": "Научете повече"
   },
@@ -599,12 +575,6 @@
   },
   "newToMetaMask": {
     "message": "Нови ли сте в MetaMask?"
-  },
-  "newTotal": {
-    "message": "Ново общо"
-  },
-  "newTransactionFee": {
-    "message": "Нова такса за транзакция"
   },
   "next": {
     "message": "Напред"
@@ -764,12 +734,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "НЕ споделяйте тази фраза с никого!"
   },
-  "rinkeby": {
-    "message": "Тестова мрежа на Rinkeby"
-  },
-  "ropsten": {
-    "message": "Тестова мрежа Ropsten"
-  },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"
   },
@@ -806,9 +770,6 @@
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"
   },
-  "selectAHigherGasFee": {
-    "message": "\nИзберете по-висока такса за газ, за ​​да ускорите обработката на Вашата транзакция.*"
-  },
   "selectAnAccount": {
     "message": "Изберете акаунт"
   },
@@ -826,9 +787,6 @@
   },
   "send": {
     "message": "Изпращане"
-  },
-  "sendAmount": {
-    "message": "Изпратете сумата"
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
@@ -871,9 +829,6 @@
   },
   "signed": {
     "message": "Подписан"
-  },
-  "slow": {
-    "message": "Бавно"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."

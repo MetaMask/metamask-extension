@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
+import { formatIconUrlWithProxy } from '@metamask/controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -16,6 +17,7 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -55,8 +57,25 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const usedIconUrl =
-    iconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
+  const chainIdForTokenIcons =
+    chainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : chainId;
+
+  const tokenIconUrl =
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.MAINNET) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
+    (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
+    (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
+    (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
+      chainId === CHAIN_IDS.AVALANCHE) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM)
+      ? iconUrl
+      : formatIconUrlWithProxy({
+          chainId: chainIdForTokenIcons,
+          tokenAddress: address || '',
+        });
+  const usedIconUrl = tokenIconUrl || token?.image;
+
   return {
     ...token,
     primaryLabel: symbol,

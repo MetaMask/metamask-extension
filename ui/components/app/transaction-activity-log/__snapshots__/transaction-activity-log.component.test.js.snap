@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionActivityLog Component should match snapshot 1`] = `
+<div>
+  <div
+    class="transaction-activity-log test-class"
+  >
+    <div
+      class="transaction-activity-log__title"
+    >
+      [activityLog]
+    </div>
+    <div
+      class="transaction-activity-log__activities-container"
+    >
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <i
+            class="fa transaction-activity-log-icon__icon fa-plus"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionCreated]"
+          >
+            [transactionCreated]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <i
+            class="fa transaction-activity-log-icon__icon fa-arrow-up"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionSubmitted]"
+          >
+            [transactionSubmitted]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <i
+            class="fa transaction-activity-log-icon__icon fa-retweet"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionResubmitted]"
+          >
+            [transactionResubmitted]
+          </div>
+        </div>
+      </div>
+      <div
+        class="transaction-activity-log__activity"
+      >
+        <div
+          class="transaction-activity-log-icon transaction-activity-log__activity-icon"
+        >
+          <i
+            class="fa transaction-activity-log-icon__icon fa-check"
+          />
+        </div>
+        <div
+          class="transaction-activity-log__entry-container"
+        >
+          <div
+            class="transaction-activity-log__activity-text"
+            title="[transactionConfirmed]"
+          >
+            [transactionConfirmed]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

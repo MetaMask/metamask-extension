@@ -11,11 +11,8 @@ import {
   addFiat,
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
-import {
-  getWeiHexFromDecimalValue,
-  hexWEIToDecETH,
-} from '../../helpers/utils/conversions.util';
 import { ETH, PRIMARY } from '../../helpers/constants/common';
+import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -25,6 +22,7 @@ import {
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
 import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { hexWEIToDecETH } from '../../../shared/lib/transactions-controller-utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',

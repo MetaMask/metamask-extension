@@ -1,4 +1,4 @@
-import { setupLocale } from '.';
+import { setupLocale } from '../shared/lib/error-utils';
 
 const enMessages = {
   troubleStarting: {

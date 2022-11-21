@@ -5,8 +5,9 @@ import { useLocation } from 'react-router-dom';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
-import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
@@ -68,7 +69,7 @@ const baseStore = {
     selectedAddress: '0x0',
     keyrings: [
       {
-        type: 'HD Key Tree',
+        type: KEYRING_TYPES.HD_KEY_TREE,
         accounts: ['0x0'],
       },
     ],
@@ -81,17 +82,17 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     provider: {
-      chainId: RINKEBY_CHAIN_ID,
+      chainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
-      [RINKEBY_CHAIN_ID]: [],
+      [CHAIN_IDS.GOERLI]: [],
     },
     cachedBalances: {
-      [RINKEBY_CHAIN_ID]: {},
+      [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },

@@ -68,19 +68,19 @@ export const TOKENS_GET_RESPONSE = [
 export const createFeatureFlagsResponse = () => {
   return {
     bsc: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: true,
+      mobileActive: false,
+      extensionActive: true,
+      fallbackToV1: true,
     },
     ethereum: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: true,
+      mobileActive: false,
+      extensionActive: true,
+      fallbackToV1: true,
     },
     polygon: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: false,
+      mobileActive: false,
+      extensionActive: true,
+      fallbackToV1: false,
     },
   };
 };

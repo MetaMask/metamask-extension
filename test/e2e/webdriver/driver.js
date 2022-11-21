@@ -49,6 +49,7 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+    this.exceptions = [];
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -161,6 +162,14 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+  async waitForNonEmptyElement(element) {
+    await this.driver.wait(async () => {
+      const elemText = await element.getText();
+      const empty = elemText === '';
+      return !empty;
+    }, this.timeout);
+  }
+
   async quit() {
     await this.driver.quit();
   }
@@ -254,9 +263,18 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-  async isElementPresent(element) {
+  async isElementPresent(rawLocator) {
     try {
-      await this.findElement(element);
+      await this.findElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async isElementPresentAndVisible(rawLocator) {
+    try {
+      await this.findVisibleElement(rawLocator);
       return true;
     } catch (err) {
       return false;
@@ -287,6 +305,10 @@ class Driver {
 
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
   }
 
   // Metrics
@@ -382,6 +404,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',
@@ -389,7 +415,9 @@ class Driver {
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
+      () =>
+        window.stateHooks?.getCleanAppState &&
+        window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
       `${filepathBase}-state.json`,
@@ -409,6 +437,15 @@ class Driver {
     await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
 
     return browserLogs;
+  }
+
+  async checkBrowserForExceptions() {
+    const { exceptions } = this;
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    await this.driver.onLogException(cdpConnection, function (exception) {
+      const { description } = exception.exceptionDetails.exception;
+      exceptions.push(description);
+    });
   }
 
   async checkBrowserForConsoleErrors() {
