@@ -22,8 +22,8 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import {
-  KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
   LEDGER_TRANSPORT_TYPES,
   TRANSPORT_STATES,
@@ -243,7 +243,7 @@ export function getAccountType(state) {
     case KEYRING_TYPES.LEDGER:
     case KEYRING_TYPES.LATTICE:
       return 'hardware';
-    case 'Simple Key Pair':
+    case KEYRING_TYPES.IMPORTED:
       return 'imported';
     default:
       return 'default';
@@ -956,12 +956,13 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
     13: false,
     14: false,
-    15: true,
+    15: false,
+    16: true,
   };
 }
 
@@ -1012,6 +1013,10 @@ export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
 
+export function getShowBetaHeader(state) {
+  return state.metamask.showBetaHeader;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1023,13 +1028,13 @@ export function getUseTokenDetection(state) {
 }
 
 /**
- * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * To get the useNftDetection flag which determines whether we autodetect NFTs
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getUseCollectibleDetection(state) {
-  return Boolean(state.metamask.useCollectibleDetection);
+export function getUseNftDetection(state) {
+  return Boolean(state.metamask.useNftDetection);
 }
 
 /**
@@ -1263,6 +1268,16 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsImprovedTokenAllowanceEnabled(state) {
   return state.metamask.improvedTokenAllowanceEnabled;
+}
+
+/**
+ * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTransactionSecurityCheckEnabled(state) {
+  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 export function getIsCustomNetwork(state) {

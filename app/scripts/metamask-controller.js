@@ -34,9 +34,9 @@ import {
   TokenListController,
   TokensController,
   TokenRatesController,
-  CollectiblesController,
+  NftController,
   AssetsContractController,
-  CollectibleDetectionController,
+  NftDetectionController,
   PermissionController,
   SubjectMetadataController,
   PermissionsRequestNotFoundError,
@@ -66,11 +66,9 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  DEVICE_NAMES,
-  KEYRING_TYPES,
-} from '../../shared/constants/hardware-wallets';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -314,7 +312,7 @@ export default class MetamaskController extends EventEmitter {
       initState.AssetsContractController,
     );
 
-    this.collectiblesController = new CollectiblesController(
+    this.nftController = new NftController(
       {
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
@@ -345,14 +343,14 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController.getERC1155TokenURI.bind(
             this.assetsContractController,
           ),
-        onCollectibleAdded: ({ address, symbol, tokenId, standard, source }) =>
+        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
           this.metaMetricsController.trackEvent({
             event: EVENT_NAMES.NFT_ADDED,
             category: EVENT.CATEGORIES.WALLET,
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: ASSET_TYPES.COLLECTIBLE,
+              asset_type: ASSET_TYPES.NFT,
               token_standard: standard,
               source,
             },
@@ -362,34 +360,29 @@ export default class MetamaskController extends EventEmitter {
           }),
       },
       {},
-      initState.CollectiblesController,
+      initState.NftController,
     );
 
-    this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
+    this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
     process.env.COLLECTIBLES_V1 &&
-      (this.collectibleDetectionController = new CollectibleDetectionController(
-        {
-          onCollectiblesStateChange: (listener) =>
-            this.collectiblesController.subscribe(listener),
-          onPreferencesStateChange:
-            this.preferencesController.store.subscribe.bind(
-              this.preferencesController.store,
-            ),
-          onNetworkStateChange: this.networkController.store.subscribe.bind(
-            this.networkController.store,
+      (this.nftDetectionController = new NftDetectionController({
+        onNftsStateChange: (listener) => this.nftController.subscribe(listener),
+        onPreferencesStateChange:
+          this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
           ),
-          getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
-          getBalancesInSingleCall:
-            this.assetsContractController.getBalancesInSingleCall.bind(
-              this.assetsContractController,
-            ),
-          addCollectible: this.collectiblesController.addCollectible.bind(
-            this.collectiblesController,
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
+        getBalancesInSingleCall:
+          this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
           ),
-          getCollectiblesState: () => this.collectiblesController.state,
-        },
-      ));
+        addNft: this.nftController.addNft.bind(this.nftController),
+        getNftState: () => this.nftController.state,
+      }));
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -897,12 +890,10 @@ export default class MetamaskController extends EventEmitter {
           const transactionDataTokenId =
             getTokenIdParam(transactionData) ??
             getTokenValueParam(transactionData);
-          const { allCollectibles } = this.collectiblesController.state;
+          const { allNfts } = this.nftController.state;
 
           // check if its a known collectible
-          const knownCollectible = allCollectibles?.[userAddress]?.[
-            chainId
-          ].find(
+          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -910,7 +901,7 @@ export default class MetamaskController extends EventEmitter {
 
           // if it is we check and update ownership status.
           if (knownCollectible) {
-            this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
+            this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownCollectible,
               false,
               { userAddress, chainId },
@@ -918,7 +909,7 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
-        const metamaskState = await this.getState();
+        const metamaskState = this.getState();
 
         if (txReceipt && txReceipt.status === '0x0') {
           this.metaMetricsController.trackEvent(
@@ -1014,7 +1005,9 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
       },
-      undefined,
+      {
+        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+      },
       initState.SmartTransactionsController,
     );
 
@@ -1058,7 +1051,7 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       SmartTransactionsController: this.smartTransactionsController,
-      CollectiblesController: this.collectiblesController,
+      NftController: this.nftController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1100,7 +1093,7 @@ export default class MetamaskController extends EventEmitter {
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
-        CollectiblesController: this.collectiblesController,
+        NftController: this.nftController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -1504,8 +1497,8 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      collectiblesController,
-      collectibleDetectionController,
+      nftController,
+      nftDetectionController,
       currencyRateController,
       detectTokensController,
       ensController,
@@ -1544,10 +1537,9 @@ export default class MetamaskController extends EventEmitter {
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
-      setUseCollectibleDetection:
-        preferencesController.setUseCollectibleDetection.bind(
-          preferencesController,
-        ),
+      setUseNftDetection: preferencesController.setUseNftDetection.bind(
+        preferencesController,
+      ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
@@ -1654,41 +1646,32 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
           preferencesController,
         ),
+      setTransactionSecurityCheckEnabled:
+        preferencesController.setTransactionSecurityCheckEnabled.bind(
+          preferencesController,
+        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
-      // CollectiblesController
-      addCollectible: collectiblesController.addCollectible.bind(
-        collectiblesController,
-      ),
+      // NftController
+      addNft: nftController.addNft.bind(nftController),
 
-      addCollectibleVerifyOwnership:
-        collectiblesController.addCollectibleVerifyOwnership.bind(
-          collectiblesController,
+      addNftVerifyOwnership:
+        nftController.addNftVerifyOwnership.bind(nftController),
+
+      removeAndIgnoreNft: nftController.removeAndIgnoreNft.bind(nftController),
+
+      removeNft: nftController.removeNft.bind(nftController),
+
+      checkAndUpdateAllNftsOwnershipStatus:
+        nftController.checkAndUpdateAllNftsOwnershipStatus.bind(nftController),
+
+      checkAndUpdateSingleNftOwnershipStatus:
+        nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
+          nftController,
         ),
 
-      removeAndIgnoreCollectible:
-        collectiblesController.removeAndIgnoreCollectible.bind(
-          collectiblesController,
-        ),
-
-      removeCollectible: collectiblesController.removeCollectible.bind(
-        collectiblesController,
-      ),
-
-      checkAndUpdateAllCollectiblesOwnershipStatus:
-        collectiblesController.checkAndUpdateAllCollectiblesOwnershipStatus.bind(
-          collectiblesController,
-        ),
-
-      checkAndUpdateSingleCollectibleOwnershipStatus:
-        collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus.bind(
-          collectiblesController,
-        ),
-
-      isCollectibleOwner: collectiblesController.isCollectibleOwner.bind(
-        collectiblesController,
-      ),
+      isNftOwner: nftController.isNftOwner.bind(nftController),
 
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),
@@ -1719,6 +1702,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowPortfolioTooltip:
         appStateController.setShowPortfolioTooltip.bind(appStateController),
+      setShowBetaHeader:
+        appStateController.setShowBetaHeader.bind(appStateController),
       setCollectiblesDetectionNoticeDismissed:
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
           appStateController,
@@ -1968,10 +1953,8 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // DetectCollectibleController
-      detectCollectibles: process.env.COLLECTIBLES_V1
-        ? collectibleDetectionController.detectCollectibles.bind(
-            collectibleDetectionController,
-          )
+      detectNfts: process.env.COLLECTIBLES_V1
+        ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
 
       /** Token Detection V2 */
@@ -2065,7 +2048,7 @@ export default class MetamaskController extends EventEmitter {
   async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
-    await this.preferencesController.addToFrequentRpcList(
+    this.preferencesController.addToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
@@ -2151,8 +2134,9 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const [primaryKeyring] =
-        keyringController.getKeyringsByType('HD Key Tree');
+      const [primaryKeyring] = keyringController.getKeyringsByType(
+        KEYRING_TYPES.HD_KEY_TREE,
+      );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2277,9 +2261,12 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const [hdKeyring] = this.keyringController.getKeyringsByType('HD Key Tree');
-    const simpleKeyPairKeyrings =
-      this.keyringController.getKeyringsByType('Simple Key Pair');
+    const [hdKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
+    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.IMPORTED,
+    );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
       simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
@@ -2376,7 +2363,9 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType('HD Key Tree');
+    const [keyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
@@ -2607,8 +2596,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const [primaryKeyring] =
-      this.keyringController.getKeyringsByType('HD Key Tree');
+    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2651,8 +2641,9 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] =
-      this.keyringController.getKeyringsByType('HD Key Tree');
+    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2773,7 +2764,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      'Simple Key Pair',
+      KEYRING_TYPES.IMPORTED,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();
@@ -2781,7 +2772,7 @@ export default class MetamaskController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(allAccounts);
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(firstAccount);
+    this.preferencesController.setSelectedAddress(firstAccount);
   }
 
   // ---------------------------------------------------------------------------
@@ -3243,7 +3234,7 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = await this.getState();
+    const state = this.getState();
     return state;
   }
 
@@ -3266,7 +3257,7 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = await this.getState();
+    const state = this.getState();
     return state;
   }
 

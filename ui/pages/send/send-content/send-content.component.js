@@ -71,7 +71,7 @@ export default class SendContent extends Component {
     const showHexData =
       this.props.showHexData &&
       asset.type !== ASSET_TYPES.TOKEN &&
-      asset.type !== ASSET_TYPES.COLLECTIBLE;
+      asset.type !== ASSET_TYPES.NFT;
 
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';
