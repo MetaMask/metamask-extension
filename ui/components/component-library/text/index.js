@@ -1,2 +1,10 @@
 export { Text } from './text';
-export { TEXT } from './text.constants';
+export {
+  FONT_STYLE,
+  FONT_WEIGHT,
+  OVERFLOW_WRAP,
+  TEXT,
+  TEXT_ALIGN,
+  TEXT_COLORS,
+  TEXT_TRANSFORM,
+} from './text.constants';
