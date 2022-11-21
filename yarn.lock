@@ -5890,17 +5890,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@weizman/securely@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@weizman/securely/-/securely-1.0.2.tgz#f514c5669fd45910ba74ea7d9284130e192d934e"
-  integrity sha512-ZUQcGY2UcSpeR4kLc5hx+V9Eft4TFUT76z6G/IUIUHH52eZjBa5ZQDzjijQXJHK8rDcxxS9zN4mrgfOZVRky4g==
-
-"@weizman/snow@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@weizman/snow/-/snow-1.2.0.tgz#4658782b96c665e333e2276c0b83e5ed29614aaa"
-  integrity sha512-Q9fjWEMPMykWgAoZRN0iOSc0h1/ptCzhUCgb1t8iQnurIGA1cNhoJ//wucU6OAUjvi/dBHyzgQyux3MdySROEg==
+"@weizman/snow@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@weizman/snow/-/snow-1.2.1.tgz#b5a7154808568d149800cddb3cd35b06589cbe92"
+  integrity sha512-Hj3gQUxXL9H5Yv8KWC7ufif8sg+YsBBotEgrOOSmjZdPEyoTnyDHi2mOM+B0rE+8PGL+pFgjHppDV84GDM5USg==
   dependencies:
-    "@weizman/securely" "^1.0.2"
     is-cross-origin "^1.0.1"
 
 "@xstate/fsm@^2.0.0":
