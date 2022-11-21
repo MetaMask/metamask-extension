@@ -135,7 +135,7 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `fonts/fontawesome`,
     },
     {
-      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles'),
+      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
       dest: 'react-gallery/',
     },
     {
