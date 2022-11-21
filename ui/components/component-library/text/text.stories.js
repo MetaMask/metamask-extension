@@ -8,7 +8,6 @@ import {
   FONT_STYLE,
   TEXT_COLORS,
   TEXT_ALIGN,
-  TEXT,
   OVERFLOW_WRAP,
   TEXT_TRANSFORM,
   FRACTIONS,
@@ -16,6 +15,7 @@ import {
 
 import Box from '../../ui/box';
 import { ValidTags, Text } from './text';
+import { TEXT } from './text.constants';
 
 import README from './README.mdx';
 
