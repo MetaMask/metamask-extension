@@ -36,7 +36,7 @@ describe('Test Snap Confirm', function () {
         await driver.clickElement('#connectConfirmSnap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -53,7 +53,7 @@ describe('Test Snap Confirm', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -65,7 +65,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // switch back to test snaps page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -76,7 +76,7 @@ describe('Test Snap Confirm', function () {
         await driver.clickElement('#sendConfirmButton');
 
         // hit 'approve' on the custom confirm
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -88,7 +88,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // check the results of the custom confirm
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         const confirmResult = await driver.findElement('#confirmResult');

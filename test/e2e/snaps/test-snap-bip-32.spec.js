@@ -38,7 +38,7 @@ describe('Test Snap bip-32', function () {
         await driver.clickElement('#connectBip32');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -55,7 +55,7 @@ describe('Test Snap bip-32', function () {
         await driver.delay(2000);
 
         // switch to metamask extension
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
 
         // approve install of snap
@@ -78,7 +78,7 @@ describe('Test Snap bip-32', function () {
         });
 
         // switch back to test-snaps window
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -124,7 +124,7 @@ describe('Test Snap bip-32', function () {
         await driver.clickElement('#sendBip32-secp256k1');
 
         // hit 'approve' on the custom confirm
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -135,7 +135,7 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -161,7 +161,7 @@ describe('Test Snap bip-32', function () {
         await driver.clickElement('#sendBip32-ed25519');
 
         // hit 'approve' on the custom confirm
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -172,7 +172,7 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
+        await driver.waitUntilXWindowHandles(1, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 

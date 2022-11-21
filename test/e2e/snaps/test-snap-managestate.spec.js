@@ -40,7 +40,7 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#connectManageState');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(3, 1000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -56,7 +56,7 @@ describe('Test Snap manageState', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
+        await driver.waitUntilXWindowHandles(3, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -68,7 +68,7 @@ describe('Test Snap manageState', function () {
         });
 
         // fill and click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
+        await driver.waitUntilXWindowHandles(2, 1000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.fill('#dataManageState', '23');
