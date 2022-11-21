@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import Identicon from '../../components/ui/identicon/identicon.component';
+import Identicon from '../../components/ui/identicon';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import TokenDetailsPage from './token-details-page';
 

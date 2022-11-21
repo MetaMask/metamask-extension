@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beta Header should match snapshot 1`] = `
+<div>
+  <div
+    class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--width-full box--background-color-warning-default"
+  >
+    <h6
+      class="box box--flex-direction-row typography beta-header__message typography--h7 typography--weight-normal typography--style-normal typography--color-warning-inverse"
+    >
+      <span>
+         
+        This is a BETA version. Please report bugs 
+        <a
+          href="https://metamask.zendesk.com/hc/en-us"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          here
+        </a>
+        
+         
+      </span>
+    </h6>
+    <button
+      aria-label="Close"
+      class="beta-header__button"
+      data-testid="beta-header-close"
+    >
+      <i
+        class="fa fa-times"
+      />
+    </button>
+  </div>
+</div>
+`;

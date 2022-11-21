@@ -111,6 +111,7 @@ const PriorityFeeInput = () => {
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
         detailText={`≈ ${priorityFeeInPrimaryCurrency}`}
+        allowDecimals
         numeric
       />
       <AdvancedGasFeeInputSubtext

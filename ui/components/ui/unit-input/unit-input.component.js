@@ -13,6 +13,7 @@ function removeLeadingZeroes(str) {
  */
 export default class UnitInput extends PureComponent {
   static propTypes = {
+    dataTestId: PropTypes.string,
     children: PropTypes.node,
     actionComponent: PropTypes.node,
     error: PropTypes.bool,
@@ -80,8 +81,14 @@ export default class UnitInput extends PureComponent {
   }
 
   render() {
-    const { error, placeholder, suffix, actionComponent, children } =
-      this.props;
+    const {
+      error,
+      placeholder,
+      suffix,
+      actionComponent,
+      children,
+      dataTestId,
+    } = this.props;
     const { value } = this.state;
 
     return (
@@ -92,6 +99,7 @@ export default class UnitInput extends PureComponent {
         <div className="unit-input__inputs">
           <div className="unit-input__input-container">
             <input
+              data-testid={dataTestId}
               type="number"
               dir="ltr"
               className={classnames('unit-input__input')}

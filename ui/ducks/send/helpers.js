@@ -1,6 +1,7 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
   ASSET_TYPES,
@@ -12,7 +13,6 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { ETH, GWEI } from '../../helpers/constants/common';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   addGasBuffer,
   generateERC20TransferData,
@@ -204,7 +204,7 @@ export function generateTransactionParams(sendState) {
         sendToken: draftTransaction.asset.details,
       });
       break;
-    case ASSET_TYPES.COLLECTIBLE:
+    case ASSET_TYPES.NFT:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and

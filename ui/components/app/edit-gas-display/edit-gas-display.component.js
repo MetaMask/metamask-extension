@@ -244,6 +244,7 @@ export default function EditGasDisplay({
           )}
         {radioButtonsEnabled && !hideRadioButtons && (
           <RadioGroup
+            dataTestId="gas-recommendation"
             name="gas-recommendation"
             options={[
               {

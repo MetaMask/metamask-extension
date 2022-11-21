@@ -36,7 +36,7 @@ export class Dropdown extends Component {
           {`
             li.dropdown-menu-item:hover {
               color:var(--color-text-default);
-              background-color: var(--color-background-alternative);
+              background-color: var(--color-background-default-hover);
               border-radius: 4px;
             }
           `}
@@ -68,6 +68,7 @@ export class DropdownMenuItem extends Component {
     return (
       <li
         className="dropdown-menu-item"
+        data-testid="dropdown-menu-item"
         onClick={() => {
           onClick();
           closeMenu();

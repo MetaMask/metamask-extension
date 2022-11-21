@@ -87,10 +87,10 @@ import { EVENT } from '../../../shared/constants/metametrics';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   fetchTokens,
   fetchTopAssets,
-  getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
   stxErrorTypes,
 } from './swaps.util';
@@ -515,6 +515,7 @@ export default function Swap() {
                       swapComplete={false}
                       errorKey={swapsErrorKey}
                       txHash={tradeTxData?.hash}
+                      txId={tradeTxData?.id}
                       submittedTime={tradeTxData?.submittedTime}
                     />
                   );
@@ -574,7 +575,7 @@ export default function Swap() {
               path={SMART_TRANSACTION_STATUS_ROUTE}
               exact
               render={() => {
-                return <SmartTransactionStatus />;
+                return <SmartTransactionStatus txId={tradeTxData?.id} />;
               }}
             />
             <Route
@@ -586,6 +587,7 @@ export default function Swap() {
                     swapComplete={tradeConfirmed}
                     txHash={tradeTxData?.hash}
                     tokensReceived={tokensReceived}
+                    txId={tradeTxData?.id}
                     submittingSwap={
                       routeState === 'awaiting' && !(approveTxId || tradeTxId)
                     }
