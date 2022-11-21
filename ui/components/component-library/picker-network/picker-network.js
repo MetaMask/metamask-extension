@@ -26,15 +26,13 @@ export const PickerNetwork = ({
     <Box
       className={classnames('mm-picker-network', className)}
       as="button"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderColor={COLORS.BORDER_DEFAULT}
-      borderWidth={1}
+      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
       alignItems={ALIGN_ITEMS.CENTER}
       paddingLeft={2}
       paddingRight={4}
       gap={2}
       borderRadius={BORDER_RADIUS.PILL}
-      display={DISPLAY.INLINE_FLEX}
+      display={DISPLAY.FLEX}
       {...props}
     >
       <AvatarNetwork
@@ -44,7 +42,9 @@ export const PickerNetwork = ({
         size={SIZES.XS}
         {...avatarNetworkProps}
       />
-      <Text variant={TEXT.BODY_SM}>{label}</Text>
+      <Text ellipsis variant={TEXT.BODY_SM}>
+        {label}
+      </Text>
       <Icon
         className="mm-picker-network__arrow-down-icon"
         name={ICON_NAMES.ARROW_DOWN}
