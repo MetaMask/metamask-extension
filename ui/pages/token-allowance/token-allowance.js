@@ -76,7 +76,9 @@ export default function TokenAllowance({
 
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
-  const [isFirstPage, setIsFirstPage] = useState(true);
+  const [isFirstPage, setIsFirstPage] = useState(
+    dappProposedTokenAmount !== '0',
+  );
   const [errorText, setErrorText] = useState('');
 
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
@@ -181,6 +183,8 @@ export default function TokenAllowance({
     setIsFirstPage(true);
   };
 
+  const isEmpty = customTokenAmount === '';
+
   return (
     <Box className="token-allowance-container page-container">
       <Box
@@ -267,7 +271,7 @@ export default function TokenAllowance({
         >
           {isFirstPage && t('setSpendingCap')}
           {!isFirstPage &&
-            (customTokenAmount === 0
+            (customTokenAmount === '0' || isEmpty
               ? t('revokeSpendingCap')
               : t('reviewSpendingCap'))}
         </Typography>
@@ -309,7 +313,11 @@ export default function TokenAllowance({
           <ReviewSpendingCap
             tokenName={tokenSymbol}
             currentTokenBalance={parseFloat(currentTokenBalance)}
-            tokenValue={parseFloat(customTokenAmount)}
+            tokenValue={
+              isNaN(parseFloat(customTokenAmount))
+                ? parseFloat(dappProposedTokenAmount)
+                : parseFloat(customTokenAmount)
+            }
             onEdit={() => handleBackClick()}
           />
         )}
