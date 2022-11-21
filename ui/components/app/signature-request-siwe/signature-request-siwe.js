@@ -55,13 +55,6 @@ export default function SignatureRequestSIWE({
 
   const isSIWEDomainValid = checkSIWEDomain();
 
-  if (!isSIWEDomainValid) {
-    // call rejectPersonalMessage
-    console.log(
-      `SIWE domain is not valid: "${origin}" !== "${parsedMessage.domain}"`,
-    );
-  }
-
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
 
