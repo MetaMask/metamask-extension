@@ -33,7 +33,6 @@ ignores:
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   # development tool
-  - 'yarn-deduplicate'
   - 'improved-yarn-audit'
   # storybook
   - '@storybook/core'
