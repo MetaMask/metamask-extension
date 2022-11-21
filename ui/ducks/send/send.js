@@ -82,7 +82,7 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetEnsResolution } from '../ens';
+import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -2199,7 +2199,7 @@ export function resetRecipientInput() {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetEnsResolution());
+    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }

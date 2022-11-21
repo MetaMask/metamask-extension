@@ -70,11 +70,9 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  DEVICE_NAMES,
-  KEYRING_TYPES,
-} from '../../shared/constants/hardware-wallets';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -2140,8 +2138,9 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const [primaryKeyring] =
-        keyringController.getKeyringsByType('HD Key Tree');
+      const [primaryKeyring] = keyringController.getKeyringsByType(
+        KEYRING_TYPES.HD_KEY_TREE,
+      );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2266,9 +2265,12 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const [hdKeyring] = this.keyringController.getKeyringsByType('HD Key Tree');
-    const simpleKeyPairKeyrings =
-      this.keyringController.getKeyringsByType('Simple Key Pair');
+    const [hdKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
+    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.IMPORTED,
+    );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
       simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
@@ -2365,7 +2367,9 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType('HD Key Tree');
+    const [keyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
@@ -2596,8 +2600,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
-    const [primaryKeyring] =
-      this.keyringController.getKeyringsByType('HD Key Tree');
+    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2640,8 +2645,9 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] =
-      this.keyringController.getKeyringsByType('HD Key Tree');
+    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2762,7 +2768,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      'Simple Key Pair',
+      KEYRING_TYPES.IMPORTED,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();

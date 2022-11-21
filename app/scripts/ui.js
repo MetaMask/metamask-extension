@@ -282,27 +282,22 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
-  return new Promise((resolve) => {
-    // At the time of writing we only have the `activeTab` permission which means
-    // that this query will only succeed in the popup context (i.e. after a "browserAction")
-    if (windowType !== ENVIRONMENT_TYPE_POPUP) {
-      resolve({});
-      return;
-    }
+  // At the time of writing we only have the `activeTab` permission which means
+  // that this query will only succeed in the popup context (i.e. after a "browserAction")
+  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+    return {};
+  }
 
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      const [activeTab] = tabs;
-      const { id, title, url } = activeTab;
-      const { origin, protocol } = url ? new URL(url) : {};
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  const [activeTab] = tabs;
+  const { id, title, url } = activeTab;
+  const { origin, protocol } = url ? new URL(url) : {};
 
-      if (!origin || origin === 'null') {
-        resolve({});
-        return;
-      }
+  if (!origin || origin === 'null') {
+    return {};
+  }
 
-      resolve({ id, title, origin, protocol, url });
-    });
-  });
+  return { id, title, origin, protocol, url };
 }
 
 function initializeUi(activeTab, connectionStream, cb) {
