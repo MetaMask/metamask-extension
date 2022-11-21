@@ -1,4 +1,6 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
+import { KEYRING_TYPES } from '../shared/constants/keyrings';
+
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -1114,14 +1116,14 @@ const state = {
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
     keyringTypes: [
-      'Simple Key Pair',
-      'HD Key Tree',
-      'Trezor Hardware',
-      'Ledger Hardware',
+      KEYRING_TYPES.IMPORTED,
+      KEYRING_TYPES.HD_KEY_TREE,
+      KEYRING_TYPES.TREZOR,
+      KEYRING_TYPES.LEDGER,
     ],
     keyrings: [
       {
-        type: 'HD Key Tree',
+        type: KEYRING_TYPES.HD_KEY_TREE,
         accounts: [
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',

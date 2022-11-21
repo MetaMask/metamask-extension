@@ -22,8 +22,8 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import {
-  KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
   LEDGER_TRANSPORT_TYPES,
   TRANSPORT_STATES,
@@ -243,7 +243,7 @@ export function getAccountType(state) {
     case KEYRING_TYPES.LEDGER:
     case KEYRING_TYPES.LATTICE:
       return 'hardware';
-    case 'Simple Key Pair':
+    case KEYRING_TYPES.IMPORTED:
       return 'imported';
     default:
       return 'default';
