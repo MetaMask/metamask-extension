@@ -494,7 +494,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
+        remotePort.postMessage({ name: EXTENSION_MESSAGES.CONNECTION_READY });
 
         // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
         remotePort.onMessage.addListener((message) => {

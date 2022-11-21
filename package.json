@@ -65,7 +65,6 @@
     "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
     "announce": "node development/announcer.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
-    "storybook:test": "jest --config=./jest.stories.config.js",
     "storybook:build": "build-storybook -c .storybook -o storybook-build",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "auto-changelog update",
