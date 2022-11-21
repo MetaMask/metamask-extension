@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { mount, shallow } from 'enzyme';
 import { Router, MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -121,4 +122,18 @@ export function renderWithLocalization(component) {
   };
 
   return render(component, { wrapper: Wrapper });
+}
+
+export function renderControlledInput(InputComponent, props) {
+  const ControlledWrapper = () => {
+    const [value, setValue] = useState('');
+    return (
+      <InputComponent
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  };
+  return { user: userEvent.setup(), ...render(<ControlledWrapper />) };
 }

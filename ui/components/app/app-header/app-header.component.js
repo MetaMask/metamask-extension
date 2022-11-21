@@ -7,6 +7,10 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
 
+///: BEGIN:ONLY_INCLUDE_IN(beta)
+import BetaHeader from '../beta-header';
+///: END:ONLY_INCLUDE_IN(beta)
+
 export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
@@ -22,6 +26,9 @@ export default class AppHeader extends PureComponent {
     isAccountMenuOpen: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(beta)
+    showBetaHeader: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
   };
@@ -112,33 +119,44 @@ export default class AppHeader extends PureComponent {
       disableNetworkIndicator,
       disabled,
       onClick,
+      ///: BEGIN:ONLY_INCLUDE_IN(beta)
+      showBetaHeader,
+      ///: END:ONLY_INCLUDE_IN(beta)
     } = this.props;
 
     return (
-      <div className="app-header">
-        <div className="app-header__contents">
-          <MetaFoxLogo
-            unsetIconHeight
-            onClick={async () => {
-              if (onClick) {
-                await onClick();
-              }
-              history.push(DEFAULT_ROUTE);
-            }}
-          />
-          <div className="app-header__account-menu-container">
-            {!hideNetworkIndicator && (
-              <div className="app-header__network-component-wrapper">
-                <NetworkDisplay
-                  onClick={(event) => this.handleNetworkIndicatorClick(event)}
-                  disabled={disabled || disableNetworkIndicator}
-                />
-              </div>
-            )}
-            {this.renderAccountMenu()}
+      <>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(beta)
+          showBetaHeader ? <BetaHeader /> : null
+          ///: END:ONLY_INCLUDE_IN(beta)
+        }
+
+        <div className="app-header">
+          <div className="app-header__contents">
+            <MetaFoxLogo
+              unsetIconHeight
+              onClick={async () => {
+                if (onClick) {
+                  await onClick();
+                }
+                history.push(DEFAULT_ROUTE);
+              }}
+            />
+            <div className="app-header__account-menu-container">
+              {!hideNetworkIndicator && (
+                <div className="app-header__network-component-wrapper">
+                  <NetworkDisplay
+                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
+                    disabled={disabled || disableNetworkIndicator}
+                  />
+                </div>
+              )}
+              {this.renderAccountMenu()}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
