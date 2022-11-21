@@ -32,11 +32,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
@@ -93,11 +92,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
@@ -142,11 +140,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
@@ -195,11 +192,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
       },
@@ -239,11 +235,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         // only recent 3 are found and in correct order (most recent at the top)
         const customRpcs = await driver.findElements({
@@ -293,11 +288,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
-        await driver.waitForElementNotPresent(
-          '.spinner loading-overlay__spinner',
-        );
-
-        await driver.clickElement('.network-display');
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'span',
+        });
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
 
