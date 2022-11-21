@@ -32,6 +32,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
+
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -89,6 +93,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
+
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -133,6 +141,10 @@ describe('Stores custom RPC history', function () {
         const duplicateChainId = '1';
 
         await driver.delay(largeDelayMs);
+
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
 
         await driver.clickElement('.network-display');
 
@@ -183,6 +195,10 @@ describe('Stores custom RPC history', function () {
 
         await driver.delay(largeDelayMs);
 
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
+
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
@@ -222,6 +238,11 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.delay(largeDelayMs);
+
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
+
         await driver.clickElement('.network-display');
 
         // only recent 3 are found and in correct order (most recent at the top)
@@ -271,6 +292,11 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.delay(largeDelayMs);
+
+        await driver.waitForElementNotPresent(
+          '.spinner loading-overlay__spinner',
+        );
+
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
