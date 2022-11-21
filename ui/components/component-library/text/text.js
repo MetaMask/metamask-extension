@@ -99,7 +99,18 @@ export const Text = React.forwardRef(
 Text.propTypes = {
   /**
    * The variation of font styles including sizes and weights of the Text component
-   * Possible values: `DISPLAY_MD` 48px/32px,`HEADING_LG` 32px/24px,`HEADING_MD` 24px/18px,`HEADING_SM` 18px/16px,`BODY_LG_MEDIUM` 18px/16px,`BODY_MD` 16px/14px,`BODY_MD_BOLD` 16px/14px,`BODY_SM` 14px/12px,`BODY_SM_BOLD` 14px/12px,`BODY_XS` 12px/10px,`INHERIT`
+   * Possible values:
+   * `DISPLAY_MD` LG Screen: 48px / Sm Screen: 32px,
+   * `HEADING_LG` LG Screen: 32px / Sm Screen: 24px,
+   * `HEADING_MD` LG Screen: 24px / Sm Screen: 18px,
+   * `HEADING_SM` LG Screen: 18px / Sm Screen: 16px,
+   * `BODY_LG_MEDIUM` LG Screen: 18px / Sm Screen: 16px,
+   * `BODY_MD` LG Screen: 16px / Sm Screen: 14px,
+   * `BODY_MD_BOLD` LG Screen: 16px / Sm Screen: 14px,
+   * `BODY_SM` LG Screen: 14px / Sm Screen: 12px,
+   * `BODY_SM_BOLD` LG Screen: 14px / Sm Screen: 12px,
+   * `BODY_XS` LG Screen: 12px / Sm Screen: 10px,
+   * `INHERIT`
    */
   variant: PropTypes.oneOf(Object.values(TEXT)),
   /**
