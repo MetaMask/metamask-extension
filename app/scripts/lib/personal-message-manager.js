@@ -90,7 +90,9 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {object} [req] - The original request object possibly containing the origin
    * @returns {promise} When the message has been signed or rejected
    */
-  addUnapprovedMessageAsync(msgParams, req) {
+  async addUnapprovedMessageAsync(msgParams, req) {
+    const msgId = await this.addUnapprovedMessage(msgParams, req);
+
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
         reject(
