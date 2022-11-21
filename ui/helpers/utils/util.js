@@ -1,11 +1,11 @@
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import Resolution from '@unstoppabledomains/resolution';
-import * as ethUtil from 'ethereumjs-util';
+=import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
-import { CHAIN_IDS, infuraProjectId } from '../../../shared/constants/network';
+import { CHAIN_IDS, infuraProjectId, infuraProjectId } from '../../../shared/constants/network';
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
@@ -14,14 +14,6 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
-<<<<<<< HEAD
-import {
-  ALLOWED_UNSTOPPABLE_TLDS,
-  ALLOWED_ENS_TLDS,
-  RESPONSE_JSON,
-} from '../../../shared/constants/tld';
-=======
->>>>>>> f7c6223b1 (Code cleanup)
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,

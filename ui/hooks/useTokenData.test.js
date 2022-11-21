@@ -56,7 +56,7 @@ describe('useTokenData', () => {
           tokenData.args[0],
         );
 <<<<<<< HEAD
-        expect(tokenData.args[1].toHexString()).toStrictEqual(
+        expect(tokenData.args[1].toHexString()).toMatchObject(
           result.current.args[1].toHexString(),
         );
 =======

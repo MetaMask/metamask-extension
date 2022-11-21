@@ -157,12 +157,12 @@ export function RecipientWithAddress({
               ? recipientName ||
                 recipientNickname ||
                 recipientMetadataName ||
-                recipientEns ||
+                recipientDomain ||
                 shortenAddress(checksummedRecipientAddress)
               : recipientName ||
                 recipientNickname ||
                 recipientMetadataName ||
-                recipientEns ||
+                recipientDomain ||
                 t('newContract')}
           </div>
         </Tooltip>
