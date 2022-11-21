@@ -1153,8 +1153,7 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this._loginUser();
     } else {
-      this.emit('startUISync');
-      this.memStore.subscribe(this.sendUpdate.bind(this));
+      this._startUISync();
     }
 
     // Lazily update the store with the current extension environment
@@ -2407,14 +2406,17 @@ export default class MetamaskController extends EventEmitter {
       // state has account balance before it is synced with UI
       await this.accountTracker._updateAccounts();
     } finally {
-      // Message startUISync is used in MV3 to start syncing state with UI
-      // Sending this message after login is completed helps to ensure that incomplete state without
-      // account details are not flushed to UI.
-      this.emit('startUISync');
-      // During controllers initialisation memstore updates a lot, delaying this subscription
-      // helps to delay early flusing of state to UI.
-      this.memStore.subscribe(this.sendUpdate.bind(this));
+      this._startUISync();
     }
+  }
+
+  _startUISync() {
+    // Message startUISync is used in MV3 to start syncing state with UI
+    // Sending this message after login is completed helps to ensure that incomplete state without
+    // account details are not flushed to UI.
+    this.emit('startUISync');
+    this.startUISync = true;
+    this.memStore.subscribe(this.sendUpdate.bind(this));
   }
 
   /**
@@ -3586,6 +3588,9 @@ export default class MetamaskController extends EventEmitter {
       });
     };
     this.on('startUISync', startUISync);
+    if (this.startUISync) {
+      this.emit('startUISync');
+    }
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
