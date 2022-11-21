@@ -26,7 +26,7 @@ export default class SignatureRequestFooter extends PureComponent {
         </Button>
         <Button
           onClick={signAction}
-          type="primary"
+          type="primary" // TO DO: conditional type={'danger-primary'}
           data-testid="signature-sign-button"
           disabled={disabled}
         >

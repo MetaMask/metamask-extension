@@ -55,6 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    currentTransaction: PropTypes.object,
   };
 
   state = {
@@ -160,7 +161,11 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      currentTransaction,
     } = this.props;
+
+    console.log('HERE');
+    console.log('currentTransaction: ', currentTransaction);
 
     const { t } = this.context;
 
@@ -248,12 +253,20 @@ export default class ConfirmPageContainerContent extends Component {
             onClose={() => this.setState({ setShowDepositPopover: false })}
           />
         )}
+        <div className="confirm-page-container-content__error-container">
+          <ActionableMessage
+            className="actionable-message--warning"
+            message={t('securityProviderWarning')}
+            type="danger"
+          />
+        </div>
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}
           onSubmit={onSubmit}
           submitText={submitText}
           disabled={disabled}
+          // TO DO: conditional submitButtonType={'danger-primary'}
         >
           {unapprovedTxCount > 1 ? (
             <a onClick={onCancelAll}>{rejectNText}</a>

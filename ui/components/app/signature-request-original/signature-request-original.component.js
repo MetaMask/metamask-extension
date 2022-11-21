@@ -14,6 +14,7 @@ import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
 import SiteOrigin from '../../ui/site-origin';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -295,7 +296,7 @@ export default class SignatureRequestOriginal extends Component {
         </Button>
         <Button
           data-testid="request-signature__sign"
-          type="primary"
+          type="primary" // // TO DO: conditional type='danger-primary'
           large
           className="request-signature__footer__sign-button"
           disabled={hardwareWalletRequiresConnection}
@@ -342,6 +343,9 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   render = () => {
+    console.log('HERE');
+    console.log('txData: ', this.props.txData);
+
     const { messagesCount } = this.props;
     const { t } = this.context;
     const rejectNText = t('rejectTxsN', [messagesCount]);
@@ -354,6 +358,13 @@ export default class SignatureRequestOriginal extends Component {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
+        <div className="confirm-page-container-content__error-container">
+          <ActionableMessage
+            className="actionable-message--warning"
+            message={t('securityProviderWarning')}
+            type="danger"
+          />
+        </div>
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <Button

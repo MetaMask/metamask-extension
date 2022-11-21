@@ -3048,6 +3048,9 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityProviderWarning": {
+    "message": "OpenSea has reviewed this request and is flagging it as malicious. Approving it could lead to a loss of funds. Proceed with caution."
+  },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"
   },

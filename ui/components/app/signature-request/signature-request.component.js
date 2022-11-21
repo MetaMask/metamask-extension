@@ -5,6 +5,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -73,6 +74,9 @@ export default class SignatureRequest extends PureComponent {
       isLedgerWallet,
       hardwareWalletRequiresConnection,
     } = this.props;
+    console.log('HERE');
+    console.log('txData: ', this.props.txData);
+
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { trackEvent } = this.context;
@@ -145,6 +149,13 @@ export default class SignatureRequest extends PureComponent {
           messageRootRef={this.messageRootRef}
           messageIsScrollable={messageIsScrollable}
         />
+        <div className="confirm-page-container-content__error-container">
+          <ActionableMessage
+            className="actionable-message--warning"
+            message={this.context.t('securityProviderWarning')}
+            type="danger"
+          />
+        </div>
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
