@@ -53,18 +53,21 @@ async function main() {
   const { browser, retries, snaps, mv3 } = argv;
 
   let testDir = path.join(__dirname, 'tests');
-  let testPaths = await getTestPathsForTestDir(testDir);
 
   if (snaps) {
     testDir = path.join(__dirname, 'snaps');
-  } else if (mv3) {
+  }
+
+  let testPaths = await getTestPathsForTestDir(testDir);
+
+  if (mv3) {
     testPaths = [
       ...testPaths,
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
-  } else {
+  } else if (!snaps) {
     testPaths = [
       ...testPaths,
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
