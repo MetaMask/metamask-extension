@@ -102,7 +102,7 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snap-controllers>nanoid": {
+    "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

@@ -1395,7 +1395,7 @@
         "setTimeout": true
       }
     },
-    "@metamask/snap-controllers>nanoid": {
+    "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
@@ -2358,7 +2358,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snap-utils>superstruct": true,
+        "@metamask/snaps-utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true
       }

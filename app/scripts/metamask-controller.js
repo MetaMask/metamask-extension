@@ -56,7 +56,7 @@ import {
   CronjobController,
   SnapController,
   IframeExecutionService,
-} from '@metamask/snap-controllers';
+} from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -665,7 +665,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.10.0',
+        'https://metamask.github.io/iframe-execution-environment/0.11.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -2114,6 +2114,8 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // Clear snap state
       this.snapController.clearState();
+      // Clear notification state
+      this.notificationController.clear();
       ///: END:ONLY_INCLUDE_IN
 
       // clear accounts in accountTracker
