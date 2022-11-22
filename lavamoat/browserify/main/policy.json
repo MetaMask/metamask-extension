@@ -231,7 +231,7 @@
     },
     "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": {
       "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -268,7 +268,7 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": {
       "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": {
@@ -886,14 +886,14 @@
     "@metamask/controllers>web3-provider-engine>ethereumjs-util": {
       "packages": {
         "@metamask/controllers>web3-provider-engine>ethereumjs-util>ethjs-util": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/controllers>web3-provider-engine>ethereumjs-util>ethjs-util": {
@@ -984,14 +984,14 @@
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": {
       "packages": {
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -1031,14 +1031,14 @@
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -1860,6 +1860,66 @@
         "browserify>browser-resolve": true
       }
     },
+    "@unstoppabledomains/resolution": {
+      "globals": {
+        "__values": true
+      },
+      "packages": {
+        "@metamask/controllers>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>cross-fetch": true,
+        "@unstoppabledomains/resolution>crypto-js": true,
+        "@unstoppabledomains/resolution>elliptic": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>js-sha3": true
+      }
+    },
+    "@unstoppabledomains/resolution>cross-fetch": {
+      "globals": {
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true
+      }
+    },
+    "@unstoppabledomains/resolution>crypto-js": {
+      "globals": {
+        "crypto": true,
+        "define": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@unstoppabledomains/resolution>elliptic": {
+      "packages": {
+        "@unstoppabledomains/resolution>elliptic>brorand": true,
+        "@unstoppabledomains/resolution>elliptic>hmac-drbg": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-crypto-utils": true,
+        "bn.js": true,
+        "ethers>@ethersproject/sha2>hash.js": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@unstoppabledomains/resolution>elliptic>brorand": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@unstoppabledomains/resolution>elliptic>hmac-drbg": {
+      "packages": {
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-crypto-utils": true,
+        "ethers>@ethersproject/sha2>hash.js": true
+      }
+    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
@@ -1989,7 +2049,7 @@
     },
     "browserify>crypto-browserify>browserify-cipher>browserify-des>des.js": {
       "packages": {
-        "ethers>@ethersproject/sha2>hash.js>minimalistic-assert": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -2001,6 +2061,7 @@
     },
     "browserify>crypto-browserify>browserify-sign": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify>create-hmac": true,
@@ -2008,15 +2069,14 @@
         "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
         "browserify>stream-browserify": true,
         "ethereumjs-util>create-hash": true,
-        "ethers>@ethersproject/signing-key>elliptic": true,
         "pumpify>inherits": true
       }
     },
     "browserify>crypto-browserify>create-ecdh": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
-        "browserify>buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "browserify>buffer": true
       }
     },
     "browserify>crypto-browserify>create-hmac": {
@@ -2039,8 +2099,8 @@
     },
     "browserify>crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
-        "bn.js": true,
-        "ethers>@ethersproject/signing-key>elliptic>brorand": true
+        "@unstoppabledomains/resolution>elliptic>brorand": true,
+        "bn.js": true
       }
     },
     "browserify>crypto-browserify>pbkdf2": {
@@ -2087,10 +2147,10 @@
     },
     "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>vm-browserify": true,
-        "ethers>@ethersproject/sha2>hash.js>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -2648,6 +2708,7 @@
       "packages": {
         "@ethereumjs/common>crc-32": true,
         "@metamask/controllers>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
@@ -2663,7 +2724,6 @@
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
         "ethers>@ethersproject/sha2>hash.js": true,
-        "ethers>@ethersproject/signing-key>elliptic": true,
         "ganache>secp256k1": true,
         "lodash": true
       }
@@ -2808,6 +2868,7 @@
     },
     "eth-sig-util>ethereumjs-util": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
@@ -2815,8 +2876,7 @@
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -2870,14 +2930,14 @@
     },
     "eth-trezor-keyring>@metamask/eth-sig-util>ethereumjs-util": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-util>rlp": true
       }
     },
     "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": {
@@ -2905,12 +2965,12 @@
     },
     "eth-trezor-keyring>hdkey>secp256k1": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-trezor-keyring>hdkey>secp256k1>bip66": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "eth-trezor-keyring>hdkey>secp256k1>bip66": {
@@ -2941,18 +3001,9 @@
       },
       "packages": {
         "@babel/runtime": true,
+        "@unstoppabledomains/resolution>cross-fetch": true,
         "browserify>events": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util": true,
-        "eth-trezor-keyring>trezor-connect>cross-fetch": true
-      }
-    },
-    "eth-trezor-keyring>trezor-connect>cross-fetch": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true
+        "eth-trezor-keyring>@metamask/eth-sig-util": true
       }
     },
     "ethereumjs-abi": {
@@ -2964,14 +3015,14 @@
     },
     "ethereumjs-abi>ethereumjs-util": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "ethereumjs-abi>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-util>rlp": true
       }
     },
     "ethereumjs-abi>ethereumjs-util>ethjs-util": {
@@ -3096,7 +3147,7 @@
     },
     "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -3150,14 +3201,14 @@
     },
     "ethereumjs-wallet>ethereumjs-util": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>ethereumjs-util>ethjs-util": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethereumjs-wallet>ethereumjs-util>ethjs-util": true
       }
     },
     "ethereumjs-wallet>ethereumjs-util>ethjs-util": {
@@ -3629,10 +3680,10 @@
     },
     "ethers>@ethersproject/contracts>@ethersproject/transactions>@ethersproject/signing-key": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "ethers>@ethersproject/contracts>@ethersproject/bytes": true,
         "ethers>@ethersproject/contracts>@ethersproject/logger": true,
-        "ethers>@ethersproject/contracts>@ethersproject/properties": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethers>@ethersproject/contracts>@ethersproject/properties": true
       }
     },
     "ethers>@ethersproject/hash": {
@@ -3978,10 +4029,10 @@
     },
     "ethers>@ethersproject/providers>@ethersproject/transactions>@ethersproject/signing-key": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "ethers>@ethersproject/providers>@ethersproject/bytes": true,
         "ethers>@ethersproject/providers>@ethersproject/logger": true,
-        "ethers>@ethersproject/providers>@ethersproject/properties": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethers>@ethersproject/providers>@ethersproject/properties": true
       }
     },
     "ethers>@ethersproject/providers>@ethersproject/web": {
@@ -4061,16 +4112,16 @@
     },
     "ethers>@ethersproject/sha2>hash.js": {
       "packages": {
-        "ethers>@ethersproject/sha2>hash.js>minimalistic-assert": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
     "ethers>@ethersproject/signing-key": {
       "packages": {
+        "@unstoppabledomains/resolution>elliptic": true,
         "ethers>@ethersproject/signing-key>@ethersproject/bytes": true,
         "ethers>@ethersproject/signing-key>@ethersproject/logger": true,
-        "ethers>@ethersproject/signing-key>@ethersproject/properties": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "ethers>@ethersproject/signing-key>@ethersproject/properties": true
       }
     },
     "ethers>@ethersproject/signing-key>@ethersproject/bytes": {
@@ -4086,33 +4137,6 @@
     "ethers>@ethersproject/signing-key>@ethersproject/properties": {
       "packages": {
         "ethers>@ethersproject/signing-key>@ethersproject/logger": true
-      }
-    },
-    "ethers>@ethersproject/signing-key>elliptic": {
-      "packages": {
-        "bn.js": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "ethers>@ethersproject/sha2>hash.js>minimalistic-assert": true,
-        "ethers>@ethersproject/signing-key>elliptic>brorand": true,
-        "ethers>@ethersproject/signing-key>elliptic>hmac-drbg": true,
-        "ethers>@ethersproject/signing-key>elliptic>minimalistic-crypto-utils": true,
-        "pumpify>inherits": true
-      }
-    },
-    "ethers>@ethersproject/signing-key>elliptic>brorand": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "ethers>@ethersproject/signing-key>elliptic>hmac-drbg": {
-      "packages": {
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "ethers>@ethersproject/sha2>hash.js>minimalistic-assert": true,
-        "ethers>@ethersproject/signing-key>elliptic>minimalistic-crypto-utils": true
       }
     },
     "ethers>@ethersproject/solidity": {
@@ -4236,7 +4260,7 @@
     },
     "ethers>@ethersproject/transactions>@ethersproject/signing-key": {
       "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "ethers>@ethersproject/transactions>@ethersproject/bytes": true,
         "ethers>@ethersproject/transactions>@ethersproject/logger": true,
         "ethers>@ethersproject/transactions>@ethersproject/properties": true
@@ -4320,7 +4344,7 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true,
-        "ethers>@ethersproject/signing-key>elliptic": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "ethers>@ethersproject/wallet>@ethersproject/properties": true
       }
     },
@@ -4566,7 +4590,7 @@
     },
     "ganache>secp256k1": {
       "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "gh-pages>async": {

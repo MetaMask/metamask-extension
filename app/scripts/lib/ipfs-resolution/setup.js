@@ -1,21 +1,23 @@
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
 import browser from 'webextension-polyfill';
+import { udTlds } from '@unstoppabledomains/tldsresolverkeys';
 
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import resolveEnsToIpfsContentId from './resolver';
+import resolveEnsToIpfsContentId from './ens-resolver';
+import resolveUnsToIpfsContentId from './uns-resolver';
 
 const fetchWithTimeout = getFetchWithTimeout();
+const supportedEnsTopLevelDomains = ['eth'];
+const combinedSupportedTlds = udTlds.concat(supportedEnsTopLevelDomains);
 
-const supportedTopLevelDomains = ['eth'];
-
-export default function setupEnsIpfsResolver({
+export default function setupIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
 }) {
   // install listener
-  const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
+  const urlPatterns = combinedSupportedTlds.map((tld) => `*://*.${tld}/*`);
   browser.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
     urls: urlPatterns,
     types: ['main_frame'],
@@ -31,26 +33,55 @@ export default function setupEnsIpfsResolver({
 
   async function webRequestDidFail(details) {
     const { tabId, url } = details;
+    console.log('details', details);
     // ignore requests that are not associated with tabs
-    // only attempt ENS resolution on mainnet
+    // only attempt resolution on mainnet
     if (tabId === -1 || getCurrentChainId() !== '0x1') {
       return;
     }
-    // parse ens name
+    // parse domain name
     const { hostname: name, pathname, search, hash: fragment } = new URL(url);
+    // if domain name contains an Unstoppable TLD, it will attempt tp resolve to IPFS 
+    udTlds.forEach((tld) => {
+      if (name.toLowerCase().endsWith(`.${tld}`)) {
+        attemptResolveUns(tabId, name);
+      }
+    })
+
     const domainParts = name.split('.');
     const topLevelDomain = domainParts[domainParts.length - 1];
     // if unsupported TLD, abort
-    if (!supportedTopLevelDomains.includes(topLevelDomain)) {
+    if (!supportedEnsTopLevelDomains.includes(topLevelDomain)) {
       return;
     }
-    // otherwise attempt resolve
-    attemptResolve({ tabId, name, pathname, search, fragment });
+    // otherwise attempt resolve for ENS
+    attemptResolveEns({ tabId, name, pathname, search, fragment });
+  }
+  /**
+   *  Checks for an IPFS site under an Unstoppable Domain,
+   *  If the site exists, it will redirect to it, otherwise it redirects to the UD search page with the given domain
+   * 
+   * @param {tabId}  - tab ID from browser
+   * @param {domainName} - entered domain name 
+  */
+  async function attemptResolveUns(tabId, domainName) {
+    const ipfsGateway = getIpfsGateway();
+    browser.tabs.update(tabId, { url: `unsLoading.html` });
+    let url = `http://unstoppabledomains.com/search?searchTerm=${domainName}`;
+    try {
+      const ipfsHash = await resolveUnsToIpfsContentId(domainName);
+      if (ipfsHash) {
+        url = `https://${ipfsGateway}/ipfs/${ipfsHash}`;
+      }
+    } catch (err) {
+      console.warn(err);
+    } finally {
+      browser.tabs.update(tabId, { url });
+    }
   }
 
-  async function attemptResolve({ tabId, name, pathname, search, fragment }) {
+  async function attemptResolveEns({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
-
     browser.tabs.update(tabId, { url: `loading.html` });
     let url = `https://app.ens.domains/name/${name}`;
     try {
@@ -75,15 +106,13 @@ export default function setupEnsIpfsResolver({
           console.warn(err);
         }
       } else if (type === 'swarm-ns') {
-        url = `https://swarm-gateways.net/bzz:/${hash}${pathname}${
-          search || ''
-        }${fragment || ''}`;
+        url = `https://swarm-gateways.net/bzz:/${hash}${pathname}${search || ''
+          }${fragment || ''}`;
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${pathname}${search || ''}${fragment || ''}`;
       } else if (type === 'zeronet') {
-        url = `http://127.0.0.1:43110/${hash}${pathname}${search || ''}${
-          fragment || ''
-        }`;
+        url = `http://127.0.0.1:43110/${hash}${pathname}${search || ''}${fragment || ''
+          }`;
       } else if (type === 'skynet-ns') {
         const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), '=');
         const decoded = base64.toByteArray(padded);
@@ -94,9 +123,8 @@ export default function setupEnsIpfsResolver({
           'RFC4648-HEX',
           options,
         ).toLowerCase();
-        url = `https://${base32EncodedSkylink}.siasky.net${pathname}${
-          search || ''
-        }${fragment || ''}`;
+        url = `https://${base32EncodedSkylink}.siasky.net${pathname}${search || ''
+          }${fragment || ''}`;
       }
     } catch (err) {
       console.warn(err);
