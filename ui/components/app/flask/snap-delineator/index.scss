@@ -12,9 +12,12 @@
       border-style: solid;
       border-radius: 8px 8px 0px 0px;
       padding: 4px 8px 4px 8px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+
+      &__text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
   }
 
   &__content {

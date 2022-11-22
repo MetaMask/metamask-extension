@@ -751,6 +751,10 @@
   "contacts": {
     "message": "Contacts"
   },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continue"
   },

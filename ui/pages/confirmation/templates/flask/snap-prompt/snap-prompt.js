@@ -2,57 +2,73 @@ import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
-  const { title, description } = pendingApproval.requestData;
+  const { snapName, requestData } = pendingApproval;
+  const { title, description } = requestData;
 
   return {
     content: [
       {
-        element: 'Typography',
-        key: 'title',
-        children: title,
+        element: 'Box',
+        key: 'snap-dialog-content-wrapper',
         props: {
-          variant: TYPOGRAPHY.H3,
-          align: 'center',
-          fontWeight: 'bold',
-          boxProps: {
-            margin: [0, 0, 4],
-          },
+          marginLeft: 4,
+          marginRight: 4,
         },
-      },
-      ...(description
-        ? [
+        children: {
+          element: 'SnapDelineator',
+          key: 'snap-delineator',
+          props: {
+            snapName,
+          },
+          children: [
             {
               element: 'Typography',
-              key: 'subtitle',
-              children: description,
+              key: 'title',
+              children: title,
               props: {
-                variant: TYPOGRAPHY.H6,
-                align: 'center',
+                variant: TYPOGRAPHY.H3,
+                fontWeight: 'bold',
                 boxProps: {
-                  margin: [0, 0, 4],
+                  marginBottom: 4,
                 },
               },
             },
-          ]
-        : []),
-      {
-        element: 'div',
-        key: 'snap-prompt-container',
-        children: {
-          element: 'TextField',
-          key: 'snap-prompt-input',
-          props: {
-            className: 'snap-prompt-input',
-            max: 300,
-            onChange: (event) => {
-              const inputValue = event.target.value ?? '';
-              setInputState(MESSAGE_TYPE.SNAP_DIALOG_PROMPT, inputValue);
+            ...(description
+              ? [
+                  {
+                    element: 'Typography',
+                    key: 'subtitle',
+                    children: description,
+                    props: {
+                      variant: TYPOGRAPHY.H6,
+                      boxProps: {
+                        marginBottom: 4,
+                      },
+                    },
+                  },
+                ]
+              : []),
+            {
+              element: 'div',
+              key: 'snap-prompt-container',
+              children: {
+                element: 'TextField',
+                key: 'snap-prompt-input',
+                props: {
+                  className: 'snap-prompt-input',
+                  max: 300,
+                  onChange: (event) => {
+                    const inputValue = event.target.value ?? '';
+                    setInputState(MESSAGE_TYPE.SNAP_DIALOG_PROMPT, inputValue);
+                  },
+                  theme: 'bordered',
+                },
+              },
+              props: {
+                className: 'snap-prompt',
+              },
             },
-            theme: 'bordered',
-          },
-        },
-        props: {
-          className: 'snap-prompt',
+          ],
         },
       },
     ],
@@ -60,7 +76,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
     submitText: t('submit'),
     onSubmit: (inputValue) =>
       actions.resolvePendingApproval(pendingApproval.id, inputValue),
-    onCancel: () => actions.rejectPendingApproval(pendingApproval.id),
+    onCancel: () => actions.rejectPendingApproval(pendingApproval.id, null),
   };
 }
 

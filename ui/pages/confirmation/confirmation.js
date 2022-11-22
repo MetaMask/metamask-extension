@@ -22,7 +22,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { getUnapprovedTemplatedConfirmations } from '../../selectors';
+import { getSnaps, getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
@@ -141,20 +141,48 @@ export default function ConfirmationPage({
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const snaps = useSelector(getSnaps);
+
+  const SNAP_DIALOG_TYPE = [
+    MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+    MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
+    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+  ];
+
+  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation.type);
+  ///: END:ONLY_INCLUDE_IN
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-          pendingConfirmation,
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            snapName:
+              isSnapDialog &&
+              snaps[pendingConfirmation.origin].manifest.proposedName,
+            ///: END:ONLY_INCLUDE_IN
+            ...pendingConfirmation,
+          },
           t,
           dispatch,
           history,
           setInputState,
         )
       : {};
-  }, [pendingConfirmation, t, dispatch, history]);
+  }, [
+    pendingConfirmation,
+    t,
+    dispatch,
+    history,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    isSnapDialog,
+    snaps,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
 
   const INPUT_STATE_CONFIRMATIONS = [MESSAGE_TYPE.SNAP_DIALOG_PROMPT];
 
