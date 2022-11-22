@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Fail approved but not submitted transaction on boot', function () {
   const ganacheOptions = {
@@ -15,7 +16,9 @@ describe('Fail approved but not submitted transaction on boot', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'approved-tx',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerApprovedTransaction()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },

@@ -16,6 +16,7 @@ import {
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -127,15 +128,21 @@ describe('TransactionListItem', () => {
       );
       expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
     });
-
-    it(`should open the edit gas popover when cancel is clicked`, () => {
+    it(`should open the edit gas popover when cancel is clicked and status is submitted`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
         }),
       );
+      const submittedTransaction = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          status: TRANSACTION_STATUSES.SUBMITTED,
+        },
+      };
       const { getByText, queryByText } = renderWithProvider(
-        <TransactionListItem transactionGroup={transactionGroup} />,
+        <TransactionListItem transactionGroup={submittedTransaction} />,
       );
       expect(queryByText('Cancel transaction')).not.toBeInTheDocument();
 
