@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormTextField should render correctly 1`] = `
+<div>
+  <div
+    class="box mm-form-text-field box--display-flex box--flex-direction-column"
+  >
+    <div
+      class="box mm-text-field-base mm-text-field-base--size-md mm-text-field-base--truncate mm-text-field mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+    >
+      <input
+        autocomplete="off"
+        class="box text mm-text-field-base__input text--body-md text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
+        focused="false"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+</div>
+`;

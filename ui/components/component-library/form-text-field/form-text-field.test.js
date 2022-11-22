@@ -13,8 +13,9 @@ import { FormTextField } from './form-text-field';
 
 describe('FormTextField', () => {
   it('should render correctly', () => {
-    const { getByRole } = render(<FormTextField />);
+    const { getByRole, container } = render(<FormTextField />);
     expect(getByRole('textbox')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
   // autoComplete
   it('should render with autoComplete', () => {
