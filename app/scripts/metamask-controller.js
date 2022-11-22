@@ -2110,6 +2110,8 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // Clear snap state
       this.snapController.clearState();
+      // Clear notification state
+      this.notificationController.clear();
       ///: END:ONLY_INCLUDE_IN
 
       // clear accounts in accountTracker
