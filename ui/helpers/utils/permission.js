@@ -76,7 +76,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   },
   [RestrictedMethods.snap_getEntropy]: {
     label: (t) => t('permission_getEntropy'),
-    leftIcon: 'fas fa-door-open',
+    leftIcon: 'fas fa-key',
     rightIcon: null,
   },
   [RestrictedMethods.snap_manageState]: {
