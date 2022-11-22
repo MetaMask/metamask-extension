@@ -124,12 +124,14 @@ describe('useGasFeeErrors', () => {
         );
         expect(result.current.hasGasErrors).toBe(true);
       });
-      it('returns MAX_FEE_IMBALANCE error if maxPriorityFeePerGas is 0', () => {
+      it('does not return MAX_FEE_IMBALANCE error if maxPriorityFeePerGas is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGas: '1',
           maxPriorityFeePerGas: '0',
         });
-        expect(result.current.gasErrors.maxFee).toBeDefined();
+        expect(result.current.gasErrors.maxFee).not.toBe(
+          GAS_FORM_ERRORS.MAX_FEE_IMBALANCE,
+        );
       });
     });
     describe('Legacy estimates', () => {
