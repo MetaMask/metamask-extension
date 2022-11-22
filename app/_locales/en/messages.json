@@ -3348,10 +3348,6 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
-  "contentFromSnap": {
-    "message": "Content from $1",
-    "description": "$1 represents the name of the snap"
-  },
   "snapAccess": {
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
