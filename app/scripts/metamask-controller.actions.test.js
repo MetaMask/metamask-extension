@@ -21,6 +21,12 @@ const browserPolyfillMock = {
     },
     getPlatformInfo: async () => 'mac',
   },
+  storage: {
+    local: {
+      get: sinon.stub().resolves({}),
+      set: sinon.stub().resolves(),
+    },
+  },
 };
 
 let loggerMiddlewareMock;
