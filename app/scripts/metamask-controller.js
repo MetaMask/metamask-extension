@@ -2429,14 +2429,27 @@ export default class MetamaskController extends EventEmitter {
         'loginSalt',
       ]);
       if (loginToken && loginSalt) {
+        const { vault } = this.keyringController.store.getState();
+
+        if (vault.salt !== loginSalt) {
+          console.warn(
+            'submitEncryptionKey: Stored salt and vault salt do not match',
+          );
+          await this.clearLoginArtifacts();
+        }
+
         await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
       }
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
-      await browser.storage.session.remove(['loginToken', 'loginSalt']);
+      await this.clearLoginArtifacts();
       throw e;
     }
+  }
+
+  async clearLoginArtifacts() {
+    await browser.storage.session.remove(['loginToken', 'loginSalt']);
   }
 
   /**
@@ -4440,7 +4453,7 @@ export default class MetamaskController extends EventEmitter {
     ledgerKeyring?.destroy?.();
 
     if (isManifestV3) {
-      browser.storage.session.remove(['loginToken', 'loginSalt']);
+      this.clearLoginArtifacts();
     }
 
     return this.keyringController.setLocked();
