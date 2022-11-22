@@ -2716,6 +2716,14 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_ethereumProvider": {
+    "message": "Access the Ethereum provider.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive arbitrary keys unique to this snap.",
+    "description": "The description for the `snap_getEntropy` permission"
+  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
