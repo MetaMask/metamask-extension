@@ -21,10 +21,11 @@ import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
-  if (value <= 0) {
+  if (value < 0) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
+    value !== 0 &&
     gasFeeEstimates?.low &&
     bnLessThan(value, gasFeeEstimates.low.suggestedMaxPriorityFeePerGas)
   ) {

@@ -80,14 +80,14 @@ describe('useGasFeeErrors', () => {
         expect(result.current.gasErrors.maxPriorityFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
       });
-      it('return maxPriorityFeeError if maxPriorityFee is 0', () => {
+      it('does not return maxPriorityFeeError if maxPriorityFee is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxPriorityFeePerGas: '0',
         });
-        expect(result.current.gasErrors.maxPriorityFee).toBe(
+        expect(result.current.gasErrors.maxPriorityFee).not.toBe(
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM,
         );
-        expect(result.current.hasGasErrors).toBe(true);
+        expect(result.current.hasGasErrors).toBe(false);
       });
     });
     describe('Legacy estimates', () => {
@@ -124,12 +124,12 @@ describe('useGasFeeErrors', () => {
         );
         expect(result.current.hasGasErrors).toBe(true);
       });
-      it('does not return MAX_FEE_IMBALANCE error if maxPriorityFeePerGas is 0', () => {
+      it('returns MAX_FEE_IMBALANCE error if maxPriorityFeePerGas is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGas: '1',
           maxPriorityFeePerGas: '0',
         });
-        expect(result.current.gasErrors.maxFee).toBeUndefined();
+        expect(result.current.gasErrors.maxFee).toBeDefined();
       });
     });
     describe('Legacy estimates', () => {
@@ -163,15 +163,15 @@ describe('useGasFeeErrors', () => {
       beforeEach(() => {
         configureLegacy();
       });
-      it('returns gasPriceError if gasPrice is 0', () => {
+      it('does not return gasPriceError if gasPrice is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
           gasPrice: '0',
           ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
         });
-        expect(result.current.gasErrors.gasPrice).toBe(
+        expect(result.current.gasErrors.gasPrice).not.toBe(
           GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW,
         );
-        expect(result.current.hasGasErrors).toBe(true);
+        expect(result.current.hasGasErrors).toBe(false);
       });
       it('does not return gasPriceError if gasPrice is > 0', () => {
         const { result } = renderUseGasFeeErrorsHook(
