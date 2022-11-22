@@ -2754,47 +2754,47 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
-"@metamask/address-book-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/address-book-controller/1.0.0-preview.ea702e4/ff6719401647990b17c0f0892057602834b58e44#ff6719401647990b17c0f0892057602834b58e44"
-  integrity sha512-9hvxQzSac8bLv+P0dIDVA7MW/P4JX6vS5hMBy2rGvq6cndn+v4SIi27IdwEoLq4+E7+BLrr0pmbC1s3qj+s4uw==
+"@metamask/address-book-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/address-book-controller/-/address-book-controller-1.0.0.tgz#b9899164384672a0e85ddee49b7809dcf5083182"
+  integrity sha512-LNDbSPxfFQPnUYAFE2JDTeeuvAwCcw07aqCvvePUGYVG4NJ1GXurcyhcTkMNr3RRuJIKni8YlvDo3H7X+fWVtg==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
 
-"@metamask/announcement-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/announcement-controller/1.0.0-preview.ea702e4/b31368d7354d133746705d3ff7ca023fe2a845cb#b31368d7354d133746705d3ff7ca023fe2a845cb"
-  integrity sha512-Ugb39G/wj1RGsdRDJX8hpYLlHmOmUW/QwOO9wc3D11fRRMC+Jt6MpfHZ30y9uXq2lzHqRtaDjH+8uA0kieYWjQ==
+"@metamask/announcement-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/announcement-controller/-/announcement-controller-1.0.0.tgz#4173ee68bfd10f8b2078b75f9f59665c7414c245"
+  integrity sha512-9noNDpQ2x19VQkF5/TuBaPZFXw/lf73w/8rzZSItR5w91oIr7mvLC4gNQlXxC5S6thcrjEo+aY7vnw3IAFvRXQ==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
 
-"@metamask/approval-controller@1.0.0-preview.ea702e4", "@metamask/approval-controller@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/approval-controller/1.0.0-preview.ea702e4/d693b689d5c62d2d991029016fc61811cdc126b0#d693b689d5c62d2d991029016fc61811cdc126b0"
-  integrity sha512-fwBPK41+x2zqEG5pMBzA/7pASmhZVJ4R79/i8ko6o+jLdvf1djfd5ETl4yDMmF0yKVmttLm95DRJc2SESzmAsg==
+"@metamask/approval-controller@1.0.0", "@metamask/approval-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/approval-controller/-/approval-controller-1.0.0.tgz#2dc8144f89756b955250b183f07ba08e223aa441"
+  integrity sha512-iP7SrvvSC6JQ78j6Yy4whs839xq15OAB81Q+UJ6tOqGaT9BpN/PBHeP8x5c1Ov3pCQkBi9Y+n5VlfJz5dGS7+Q==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
     eth-rpc-errors "^4.0.0"
     immer "^9.0.6"
     nanoid "^3.1.31"
 
-"@metamask/assets-controllers@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/assets-controllers/1.0.0-preview.ea702e4/f7d68531e062c66c67fe9a1c2279dd0c324428dc#f7d68531e062c66c67fe9a1c2279dd0c324428dc"
-  integrity sha512-2e8PViw6c9t2IScKV0ZcrcSfB9VrfP3vzrCtnZuSS3GMbFg5EAM4Y2FaZiZnX7wpuPePhXTuc+yTHtgA/DqYcg==
+"@metamask/assets-controllers@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.0.tgz#10ee4e0bd005a2d26b78562641250a153cba5618"
+  integrity sha512-QUTtp4xJrh6sSkAByh0c7U7x2n50zU5wF++tkutsVyoQGwSurX8ZQwvf8W3l+3ARzHxy/l+Zc3JFhysJ9dn2Xw==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
     "@metamask/contract-metadata" "^1.35.0"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/controller-utils" "~1.0.0"
     "@metamask/metamask-eth-abis" "3.0.0"
-    "@metamask/network-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/preferences-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/network-controller" "~1.0.0"
+    "@metamask/preferences-controller" "~1.0.0"
     "@types/uuid" "^8.3.0"
     abort-controller "^3.0.0"
     async-mutex "^0.2.6"
@@ -2817,12 +2817,12 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/base-controller@1.0.0-preview.ea702e4", "@metamask/base-controller@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/base-controller/1.0.0-preview.ea702e4/abf9385d1bde0b963584e71723b12c0bd7a5ef5f#abf9385d1bde0b963584e71723b12c0bd7a5ef5f"
-  integrity sha512-fQYVWVKfX/5VOESU6cujKrzdMQvZHGY8k6wuBWSuLfxhvoLoQkCvvWSb/vZ6QGVQJ9PKvUgxIrHyoPDL7kdV+Q==
+"@metamask/base-controller@1.0.0", "@metamask/base-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
+  integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
   dependencies:
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/controller-utils" "~1.0.0"
     immer "^9.0.6"
 
 "@metamask/bip39@^4.0.0":
@@ -2845,10 +2845,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
   integrity sha512-weTsrXfDQHOgYaiI5giMcOAsD3ChcwnoryasT7xmAfLSKIbKP3RTTUu63VWYBoFCBZugHrhKD6z+N+nm8qAWBQ==
 
-"@metamask/controller-utils@1.0.0-preview.ea702e4", "@metamask/controller-utils@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/controller-utils/1.0.0-preview.ea702e4/ab72ef65ded4026442fecceea5f4ef564a4d9d4d#ab72ef65ded4026442fecceea5f4ef564a4d9d4d"
-  integrity sha512-3Xu3Yc0s9wRCUJxzwsOfrBtXc7Hof06yOaQbt3fVbvO2Av5LJCmdj+6Aj5nfQe1QzqxN9A7zR0pQDg6QpKLJxQ==
+"@metamask/controller-utils@1.0.0", "@metamask/controller-utils@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controller-utils/-/controller-utils-1.0.0.tgz#2e2261b65c3f38ba0c5b893743fca8cce764339c"
+  integrity sha512-LXIpnmF/C5/vCBX0u2DiUWA55utZy54guUV+A8qUYmz8PvZrXfK7mdq1zlk8z0aq+aO0rHHfSVbTNacEE3TlAQ==
   dependencies:
     eth-ens-namehash "^2.0.8"
     eth-rpc-errors "^4.0.0"
@@ -3025,14 +3025,14 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/gas-fee-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/gas-fee-controller/1.0.0-preview.ea702e4/c5be5f9d5ed3df45977e5ce1463df72ca76baa1d#c5be5f9d5ed3df45977e5ce1463df72ca76baa1d"
-  integrity sha512-8QNGl8pVVdK9qEkiCAaNFbysXc+jGuEoONFibIa2FixlHX72+M0YJoe9hjv2kFN5ocZFe6OuSvqUIoNr8QpQVw==
+"@metamask/gas-fee-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/gas-fee-controller/-/gas-fee-controller-1.0.0.tgz#d0922ce83c69ac7adaf1b5957d206190283efba7"
+  integrity sha512-qzpS4lCzBDhWWwq+YmDXwGQdhNrXvsX3ltQYPI5RGPn5x3WYgyhvULdaP+nzk/wxH2sshPNNyyUmP6DhE+aYHQ==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
-    "@metamask/network-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
+    "@metamask/network-controller" "~1.0.0"
     "@types/uuid" "^8.3.0"
     babel-runtime "^6.26.0"
     eth-query "^2.1.2"
@@ -3074,13 +3074,13 @@
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
 
-"@metamask/network-controller@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/network-controller/1.0.0-preview.ea702e4/1aa51c6b3db6369e7ed50eaa70b5178e996d11e9#1aa51c6b3db6369e7ed50eaa70b5178e996d11e9"
-  integrity sha512-MKD0qz4nX+pFDMSaGruTycv4P+YWar0qOin5PfvK7JIxd177BfB+mX4kzzLXq4gwl/UAN7GNtak56vjN66a38A==
+"@metamask/network-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/network-controller/-/network-controller-1.0.0.tgz#35180bdc56c918719eaa1e00455faa55ecf87824"
+  integrity sha512-i/7IMqFqbnfZZY8jVs/ptG0aaU8Po01/7kQ5aZgWR+sk7FxdOzs6rYD78qm5f6bU2PNBDSTN3TyN29n50ksmIA==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
     async-mutex "^0.2.6"
     babel-runtime "^6.26.0"
     eth-json-rpc-infura "^5.1.0"
@@ -3088,13 +3088,13 @@
     immer "^9.0.6"
     web3-provider-engine "^16.0.3"
 
-"@metamask/notification-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/notification-controller/1.0.0-preview.ea702e4/5578e7a0f4c320920ec22b50ab36660e68de512e#5578e7a0f4c320920ec22b50ab36660e68de512e"
-  integrity sha512-M36fnXsrNn5BM+gvAW++1iyNqys9DDL+XfrbWCGu69pa3PovWA/3WrDIWmwJT0mVbrCnsV36Cbtz4ruzjuC2hA==
+"@metamask/notification-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/notification-controller/-/notification-controller-1.0.0.tgz#46ffce7098c8965006796ed0b024224f478f3e4a"
+  integrity sha512-M6LDHq1Lm4mLvr/2QkRS0pClntGqT740BPpa8Veu/LkB0Q/A2mU7Xg/yIW5Q+K5bc6VVVPQouYib8pGrN4ZU5A==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
     immer "^9.0.6"
     nanoid "^3.1.31"
 
@@ -3124,14 +3124,14 @@
     "@metamask/safe-event-emitter" "^2.0.0"
     through2 "^2.0.3"
 
-"@metamask/permission-controller@1.0.0-preview.ea702e4", "@metamask/permission-controller@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/permission-controller/1.0.0-preview.ea702e4/e6c608dc32cba78ea95f7397f2033a9c897d6af8#e6c608dc32cba78ea95f7397f2033a9c897d6af8"
-  integrity sha512-FasgyKwmuwTo2boW+do5JOeLn4r6N8DKKubBHgN6tEOC3n1XoJcOVrB1gvXmlbkJTaGwevsiR8El4QK32Xl9tw==
+"@metamask/permission-controller@1.0.0", "@metamask/permission-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/permission-controller/-/permission-controller-1.0.0.tgz#5f357b34bc98623b0109fda0e5a83aaece872336"
+  integrity sha512-cZqdHw77PWXMxrNLU2gTgMTf3895VlUBfbld8bw2fRkYqybuVyT/risR3Md1ciMWhMek5qMUwD/pk8M+jSkAJw==
   dependencies:
-    "@metamask/approval-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/approval-controller" "~1.0.0"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
     "@metamask/types" "^1.1.0"
     "@types/deep-freeze-strict" "^1.1.0"
     deep-freeze-strict "^1.1.1"
@@ -3140,13 +3140,13 @@
     json-rpc-engine "^6.1.0"
     nanoid "^3.1.31"
 
-"@metamask/phishing-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/phishing-controller/1.0.0-preview.ea702e4/ecb71268547fcfe1aa1cdc9dfff3b3a9a1016a9a#ecb71268547fcfe1aa1cdc9dfff3b3a9a1016a9a"
-  integrity sha512-Jr5KzOQC0IG8fgb59L3jZUTjCM9GdZR7lShXL6gAxDt9gHXfGRfsIhNsCPPzC6Tm+nQ4EEzDqJQQBeM7HAZvDQ==
+"@metamask/phishing-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/phishing-controller/-/phishing-controller-1.0.0.tgz#119721e4e0c0e2926445cdc3ae46a8afafadd174"
+  integrity sha512-47dIlhdVfWcp2cJ2thVs9SsIxyscWFte4RJ/zLk4m/GpP4LaPZB5zcoAHBKWjDkSHlQyO9AScVnDGfurs1ziHA==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
     "@types/punycode" "^2.1.0"
     eth-phishing-detect "^1.2.0"
     isomorphic-fetch "^3.0.0"
@@ -3180,13 +3180,13 @@
     "@metamask/utils" "^2.0.0"
     readable-stream "2.3.3"
 
-"@metamask/preferences-controller@~1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/preferences-controller/1.0.0-preview.ea702e4/ba95f4979d127bf6661b9666b85cabeaa14da3ff#ba95f4979d127bf6661b9666b85cabeaa14da3ff"
-  integrity sha512-1TAuLW98JXb/mAR0mZZAkKJgu1zllg1PzBeYcCMksPMr5ARfUe3/WZNooR05SpnDmpD0OJO8WP7KZsLSTvljrQ==
+"@metamask/preferences-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/preferences-controller/-/preferences-controller-1.0.0.tgz#39c246d78a892712bfc0b82f9eb3ecc4053950ef"
+  integrity sha512-Kg/HslnPqtSkPOeDLDApBDBl6128LxO3aEYBxGiNWRJpzPWZvgAuwGufPkvKABuw5JnYq4L/MJWv4w+cpOfqTg==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/controller-utils" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/controller-utils" "~1.0.0"
 
 "@metamask/providers@^10.0.0":
   version "10.2.0"
@@ -3224,12 +3224,12 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rate-limit-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/rate-limit-controller/1.0.0-preview.ea702e4/b4c55cbb4964ad5dccbe8deb7bc027938235ba00#b4c55cbb4964ad5dccbe8deb7bc027938235ba00"
-  integrity sha512-cfLocG1Mks041sRh++UJ3SrBukc/B9uKq7F2llCzcMSF7LeWwl5L8EMyoZTiCVC1vlDTRvCIqJkvl5dPRX6wYg==
+"@metamask/rate-limit-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/rate-limit-controller/-/rate-limit-controller-1.0.0.tgz#06dd16c07e827965683060f93d9229c4d0751efd"
+  integrity sha512-2ngqwufeZnMfOBDCUr0+a8vTLqTpgAIdlV5Gwk4YYaE3m3QsBK+uelZGMTV1b7mvYtf4KjARzij9zaACHseH3g==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
     eth-rpc-errors "^4.0.0"
     immer "^9.0.6"
 
@@ -3327,13 +3327,13 @@
     ses "^0.17.0"
     superstruct "^0.16.7"
 
-"@metamask/subject-metadata-controller@1.0.0-preview.ea702e4":
-  version "1.0.0-preview.ea702e4"
-  resolved "https://npm.pkg.github.com/download/@metamask/subject-metadata-controller/1.0.0-preview.ea702e4/46d31bca1a2f8b50ad18892ae9bfc5f2080d8d00#46d31bca1a2f8b50ad18892ae9bfc5f2080d8d00"
-  integrity sha512-2A1BOJxlE0PM/AJZ+Rhj+v8cpOqx4/1AcOcElal1FJo/4vbMTmYA14eBXZ3AkDdxlnRxpOgvVcAXfBrEEXtGlQ==
+"@metamask/subject-metadata-controller@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.0.tgz#a3f3390995c3541981aa4fe6cfcad0d69122f358"
+  integrity sha512-ED6teocVxVQO7ykourRp+USHNg7LsxATBYgquFPkGgyIJAbOVMvHAuWFijhA1SiiuV51M3ehMl9oX3/f6Y7Tkg==
   dependencies:
-    "@metamask/base-controller" "~1.0.0-preview.ea702e4"
-    "@metamask/permission-controller" "~1.0.0-preview.ea702e4"
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/permission-controller" "~1.0.0"
     "@metamask/types" "^1.1.0"
     immer "^9.0.6"
 
