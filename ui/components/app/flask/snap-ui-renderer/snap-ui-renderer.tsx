@@ -1,25 +1,25 @@
 import React from 'react';
 import { Json } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+import nanoid from 'nanoid';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
+import { getSnap } from '../../../../selectors';
 
 export type SnapUIRendererProps = {
   data: Json;
 };
 
 // TODO: Types
-// TODO: Handle keys
 const UI_MAPPING = {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   panel: (props) => ({
     element: 'Box',
-    key: 'panel',
     children: props.children.map(mapToTemplate),
   }),
   heading: (props) => ({
     element: 'Typography',
-    key: 'title',
     children: props.text,
     props: {
       variant: TYPOGRAPHY.H3,
@@ -28,7 +28,6 @@ const UI_MAPPING = {
   }),
   text: (props) => ({
     element: 'Typography',
-    key: 'subtitle',
     children: props.text,
     props: {
       variant: TYPOGRAPHY.H6,
@@ -36,21 +35,18 @@ const UI_MAPPING = {
   }),
   spinner: () => ({
     element: 'Spinner',
-    key: 'spinner',
     props: {
       className: 'snap-ui-renderer__spinner',
     },
   }),
   spacer: () => ({
     element: 'Box',
-    key: 'spacer',
     props: {
       className: 'snap-ui-renderer__spacer',
     },
   }),
   divider: () => ({
     element: 'hr',
-    key: 'divider',
   }),
 };
 
@@ -58,11 +54,17 @@ const UI_MAPPING = {
 const mapToTemplate = (data: Json) => {
   const { type } = data;
   const mapped = UI_MAPPING[type](data);
-  return mapped;
+  // TODO: We may want to have deterministic keys at some point
+  return { ...mapped, key: nanoid() };
 };
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
-export const SnapUIRenderer = ({ data }: SnapUIRendererProps) => {
+export const SnapUIRenderer = ({ snapId, data }: SnapUIRendererProps) => {
+  const snap = useSelector((state) => getSnap(state, snapId));
+
+  if (!snap) {
+    return null;
+  }
   // TODO: Validate
 
   const sections = mapToTemplate(data);
@@ -70,7 +72,7 @@ export const SnapUIRenderer = ({ data }: SnapUIRendererProps) => {
   console.log(data, sections);
 
   return (
-    <SnapDelineator snapId="foo">
+    <SnapDelineator snapName={snap.manifest.proposedName}>
       <MetaMaskTemplateRenderer sections={sections} />
     </SnapDelineator>
   );

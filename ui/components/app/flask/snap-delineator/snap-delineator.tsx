@@ -15,7 +15,11 @@ export const SnapDelineator = ({ snapName, children }: SnapDelineatorProps) => {
 
   return (
     <Box className="snap-delineator__wrapper">
-      <Box className="snap-delineator__header" display="flex">
+      <Box
+        className="snap-delineator__header"
+        display="flex"
+        alignItems="center"
+      >
         <Icon name="snaps-filled" />
         <Typography
           color={COLORS.INFO_DEFAULT}
