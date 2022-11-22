@@ -39,8 +39,11 @@ describe('Test Snap Notification', function () {
         await driver.clickElement('#connectNotification');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          3,
+          1000,
+          10000,
+        );
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -56,8 +59,7 @@ describe('Test Snap Notification', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(3, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -68,8 +70,7 @@ describe('Test Snap Notification', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
         await driver.clickElement('#sendInAppNotification');
