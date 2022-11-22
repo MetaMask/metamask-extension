@@ -3600,10 +3600,13 @@ export default class MetamaskController extends EventEmitter {
         method: 'startUISync',
       });
     };
-    this.on('startUISync', startUISync);
+
     if (this.startUISync) {
-      this.emit('startUISync');
+      startUISync();
+    } else {
+      this.once('startUISync', startUISync);
     }
+
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
