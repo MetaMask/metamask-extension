@@ -30,6 +30,7 @@ import {
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
+const ENS = 'ENS';
 
 const initialState = {
   stage: 'UNINITIALIZED',
@@ -37,11 +38,13 @@ const initialState = {
   error: null,
   warning: null,
   network: null,
+  domainType: null,
+  domainName: null,
 };
 
-export const ensInitialState = initialState;
+export const domainInitialState = initialState;
 
-const name = 'ENS';
+const name = 'DNS';
 
 let web3Provider = null;
 
@@ -49,51 +52,54 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    ensLookup: (state, action) => {
+    domainLookup: (state, action) => {
       // first clear out the previous state
       state.resolution = null;
       state.error = null;
       state.warning = null;
-      const { address, ensName, error, network } = action.payload;
-
-      if (error) {
-        if (
-          isValidDomainName(ensName) &&
-          error.message === 'ENS name not defined.'
-        ) {
-          state.error =
-            network === NETWORK_IDS.MAINNET
-              ? ENS_NO_ADDRESS_FOR_NAME
-              : ENS_NOT_FOUND_ON_NETWORK;
-        } else if (error.message === 'Illegal character for ENS.') {
-          state.error = ENS_ILLEGAL_CHARACTER;
+      const { address, error, network, domainType, domainName } =
+        action.payload;
+      state.domainType = domainType;
+      if (state.domainType === ENS) {
+        if (error) {
+          if (
+            isValidDomainName(domainName) &&
+            error.message === 'ENS name not defined.'
+          ) {
+            state.error =
+              network === NETWORK_IDS.MAINNET
+                ? ENS_NO_ADDRESS_FOR_NAME
+                : ENS_NOT_FOUND_ON_NETWORK;
+          } else if (error.message === 'Illegal character for ENS.') {
+            state.error = ENS_ILLEGAL_CHARACTER;
+          } else {
+            log.error(error);
+            state.error = ENS_UNKNOWN_ERROR;
+          }
+        } else if (address) {
+          if (address === BURN_ADDRESS) {
+            state.error = ENS_NO_ADDRESS_FOR_NAME;
+          } else if (address === ZERO_X_ERROR_ADDRESS) {
+            state.error = ENS_REGISTRATION_ERROR;
+          } else {
+            state.resolution = address;
+          }
+          if (isValidDomainName(address) && isConfusing(address)) {
+            state.warning = CONFUSING_ENS_ERROR;
+          }
         } else {
-          log.error(error);
-          state.error = ENS_UNKNOWN_ERROR;
-        }
-      } else if (address) {
-        if (address === BURN_ADDRESS) {
           state.error = ENS_NO_ADDRESS_FOR_NAME;
-        } else if (address === ZERO_X_ERROR_ADDRESS) {
-          state.error = ENS_REGISTRATION_ERROR;
-        } else {
-          state.resolution = address;
         }
-        if (isValidDomainName(address) && isConfusing(address)) {
-          state.warning = CONFUSING_ENS_ERROR;
-        }
-      } else {
-        state.error = ENS_NO_ADDRESS_FOR_NAME;
       }
     },
-    enableEnsLookup: (state, action) => {
+    enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
       state.error = null;
       state.resolution = null;
       state.warning = null;
       state.network = action.payload;
     },
-    disableEnsLookup: (state) => {
+    disableDomainLookup: (state) => {
       state.stage = 'NO_NETWORK_SUPPORT';
       state.error = null;
       state.warning = null;
@@ -105,7 +111,7 @@ const slice = createSlice({
       state.warning = null;
       state.error = ENS_NOT_SUPPORTED_ON_NETWORK;
     },
-    resetEnsResolution: (state) => {
+    resetDomainResolution: (state) => {
       state.resolution = null;
       state.warning = null;
       state.error = null;
@@ -125,15 +131,15 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  disableEnsLookup,
-  ensLookup,
-  enableEnsLookup,
+  disableDomainLookup,
+  domainLookup,
+  enableDomainLookup,
   ensNotSupported,
-  resetEnsResolution,
+  resetDomainResolution,
 } = actions;
-export { resetEnsResolution };
+export { resetDomainResolution };
 
-export function initializeEnsSlice() {
+export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
@@ -150,69 +156,65 @@ export function initializeEnsSlice() {
           ensAddress,
         },
       );
-      dispatch(enableEnsLookup(network));
+      dispatch(enableDomainLookup(network));
     } else {
       web3Provider = null;
-      dispatch(disableEnsLookup());
+      dispatch(disableDomainLookup());
     }
   };
 }
 
-export function lookupEnsName(ensName) {
+export function lookupEnsName(domainName) {
   return async (dispatch, getState) => {
-    const trimmedEnsName = ensName.trim();
+    const trimmedDomainName = domainName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
-      await dispatch(initializeEnsSlice());
+      await dispatch(initializeDomainSlice());
     }
     state = getState();
     if (
       state[name].stage === 'NO_NETWORK_SUPPORT' &&
       !(
-        isBurnAddress(trimmedEnsName) === false &&
-        isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
+        isBurnAddress(trimmedDomainName) === false &&
+        isValidHexAddress(trimmedDomainName, { mixedCaseUseChecksum: true })
       ) &&
-      !isHexString(trimmedEnsName)
+      !isHexString(trimmedDomainName)
     ) {
       await dispatch(ensNotSupported());
     } else {
-      log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
+      log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
       let address;
       let error;
       try {
-        // the writable property on the 'provider' object on the 'web3Provider' flips to false when stale
-        // This helps handle the case where the provider is becomes unresponsive if/when, in MV3, the service worker dies after the ENS slice is instantiated
-        const isProviderActive = web3Provider.provider?.writable;
-        if (!isProviderActive) {
-          await dispatch(initializeEnsSlice());
-        }
-        address = await web3Provider.resolveName(trimmedEnsName);
+        address = await web3Provider.resolveName(trimmedDomainName);
       } catch (err) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+
       await dispatch(
-        ensLookup({
-          ensName: trimmedEnsName,
+        domainLookup({
           address,
           error,
           chainId,
           network,
+          domainType: ENS,
+          domainName: trimmedDomainName,
         }),
       );
     }
   };
 }
 
-export function getEnsResolution(state) {
+export function getDomainResolution(state) {
   return state[name].resolution;
 }
 
-export function getEnsError(state) {
+export function getDomainError(state) {
   return state[name].error;
 }
 
-export function getEnsWarning(state) {
+export function getDomainWarning(state) {
   return state[name].warning;
 }
