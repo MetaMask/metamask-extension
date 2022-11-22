@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 import {
   ALIGN_ITEMS,
   BORDER_RADIUS,
   COLORS,
   DISPLAY,
   SIZES,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';

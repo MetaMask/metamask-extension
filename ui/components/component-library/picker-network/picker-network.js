@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarNetwork } from '../avatar-network';
 import { Icon, ICON_NAMES } from '../icon';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 import Box from '../../ui/box';
 import {
   ALIGN_ITEMS,
   COLORS,
   DISPLAY,
   SIZES,
+  TEXT,
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 

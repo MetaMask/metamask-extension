@@ -5,13 +5,14 @@ import classnames from 'classnames';
 import {
   DISPLAY,
   SIZES,
+  TEXT,
   ALIGN_ITEMS,
   COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 
 import {
   TEXT_FIELD_BASE_SIZES,

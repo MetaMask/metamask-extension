@@ -6,13 +6,14 @@ import {
   COLORS,
   FLEX_DIRECTION,
   ALIGN_ITEMS,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
 import { Icon, ICON_NAMES } from '../icon';
 import { AvatarToken } from '../avatar-token';
 import { AvatarAccount } from '../avatar-account';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 
 import {
   TEXT_FIELD_BASE_SIZES,

@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 import {
   ALIGN_ITEMS,
   BORDER_RADIUS,
   COLORS,
   DISPLAY,
+  TEXT,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 

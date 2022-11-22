@@ -4,10 +4,11 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   SIZES,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';

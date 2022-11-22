@@ -7,8 +7,9 @@ import {
   FONT_WEIGHT,
   DISPLAY,
   ALIGN_ITEMS,
+  TEXT,
 } from '../../../helpers/constants/design-system';
-import { Text, TEXT } from '../text';
+import { Text } from '../text';
 
 export const Label = ({
   htmlFor,

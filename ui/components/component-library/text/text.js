@@ -10,7 +10,7 @@ import {
   OVERFLOW_WRAP,
   TEXT_COLORS,
 } from '../../../helpers/constants/design-system';
-import { TEXT } from './text.constants';
+import { TEXT_VARIANTS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -35,7 +35,7 @@ export const ValidTags = [
 export const Text = React.forwardRef(
   (
     {
-      variant = TEXT.BODY_MD,
+      variant = TEXT_VARIANTS.BODY_MD,
       color = TEXT_COLORS.TEXT_DEFAULT,
       fontWeight,
       fontStyle,
@@ -100,19 +100,19 @@ Text.propTypes = {
   /**
    * The variation of font styles including sizes and weights of the Text component
    * Possible values:
-   * `DISPLAY_MD` LG Screen: 48px / Sm Screen: 32px,
-   * `HEADING_LG` LG Screen: 32px / Sm Screen: 24px,
-   * `HEADING_MD` LG Screen: 24px / Sm Screen: 18px,
-   * `HEADING_SM` LG Screen: 18px / Sm Screen: 16px,
-   * `BODY_LG_MEDIUM` LG Screen: 18px / Sm Screen: 16px,
-   * `BODY_MD` LG Screen: 16px / Sm Screen: 14px,
-   * `BODY_MD_BOLD` LG Screen: 16px / Sm Screen: 14px,
-   * `BODY_SM` LG Screen: 14px / Sm Screen: 12px,
-   * `BODY_SM_BOLD` LG Screen: 14px / Sm Screen: 12px,
-   * `BODY_XS` LG Screen: 12px / Sm Screen: 10px,
+   * `DISPLAY_MD` large screen: 48px / small screen: 32px,
+   * `HEADING_LG` large screen: 32px / small screen: 24px,
+   * `HEADING_MD` large screen: 24px / small screen: 18px,
+   * `HEADING_SM` large screen: 18px / small screen: 16px,
+   * `BODY_LG_MEDIUM` large screen: 18px / small screen: 16px,
+   * `BODY_MD` large screen: 16px / small screen: 14px,
+   * `BODY_MD_BOLD` large screen: 16px / small screen: 14px,
+   * `BODY_SM` large screen: 14px / small screen: 12px,
+   * `BODY_SM_BOLD` large screen: 14px / small screen: 12px,
+   * `BODY_XS` large screen: 12px / small screen: 10px,
    * `INHERIT`
    */
-  variant: PropTypes.oneOf(Object.values(TEXT)),
+  variant: PropTypes.oneOf(Object.values(TEXT_VARIANTS)),
   /**
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js

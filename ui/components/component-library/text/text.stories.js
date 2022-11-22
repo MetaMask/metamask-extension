@@ -6,6 +6,7 @@ import {
   BORDER_COLORS,
   FONT_WEIGHT,
   FONT_STYLE,
+  TEXT,
   TEXT_COLORS,
   TEXT_ALIGN,
   OVERFLOW_WRAP,
@@ -15,7 +16,6 @@ import {
 
 import Box from '../../ui/box';
 import { ValidTags, Text } from './text';
-import { TEXT } from './text.constants';
 
 import README from './README.mdx';
 
