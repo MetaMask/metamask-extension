@@ -50,14 +50,19 @@ export default class NewAccountCreateForm extends Component {
       (item) => item.name === newAccountName,
     );
 
-    const reservedRegEx = /^Account \d+$/i; //Match strings starting with "Account" and then any numeral, case insensitive
+    const localizedWordForAccount = this.context
+      .t('newAccountNumberName')
+      .replace(' $1', '');
+
+    const reservedRegEx = new RegExp(`^${localizedWordForAccount} \\d+$`, 'i'); // Match strings starting with ${localizedWordForAccount} and then any numeral, case insensitive
     const isReservedAccountName = reservedRegEx.test(newAccountName);
 
     const isValidAccountName =
-      !isDuplicateAccountName && !isReservedAccountName;
+      newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
+      (!isDuplicateAccountName && !isReservedAccountName);
 
     const getErrorMessage = () => {
-      if (isValidAccountName) return '\u200d'; //This is Unicode for an invisible character, so the spacing stays constant
+      if (isValidAccountName) return '\u200d'; // This is Unicode for an invisible character, so the spacing stays constant
 
       if (isDuplicateAccountName) return this.context.t('accountNameDuplicate');
 
