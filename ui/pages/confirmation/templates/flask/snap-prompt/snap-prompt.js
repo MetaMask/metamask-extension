@@ -1,5 +1,4 @@
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
@@ -54,33 +53,6 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
         },
         props: {
           className: 'snap-prompt',
-        },
-      },
-      {
-        element: 'Typography',
-        key: 'only-interact-with-entities-you-trust',
-        children: [
-          {
-            element: 'span',
-            key: 'only-connect-trust',
-            children: `${t('onlyConnectTrust')} `,
-          },
-          {
-            element: 'a',
-            children: t('learnMoreUpperCase'),
-            key: 'learnMore-a-href',
-            props: {
-              href: ZENDESK_URLS.USER_GUIDE_DAPPS,
-              target: '__blank',
-            },
-          },
-        ],
-        props: {
-          variant: TYPOGRAPHY.H7,
-          align: 'center',
-          boxProps: {
-            margin: 0,
-          },
         },
       },
     ],

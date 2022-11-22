@@ -2,7 +2,6 @@ import {
   RESIZE,
   TYPOGRAPHY,
 } from '../../../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
 function getValues(pendingApproval, t, actions) {
   const { title, description, textAreaContent } = pendingApproval.requestData;
@@ -63,33 +62,6 @@ function getValues(pendingApproval, t, actions) {
             },
           ]
         : []),
-      {
-        element: 'Typography',
-        key: 'only-interact-with-entities-you-trust',
-        children: [
-          {
-            element: 'span',
-            key: 'only-connect-trust',
-            children: `${t('onlyConnectTrust')} `,
-          },
-          {
-            element: 'a',
-            children: t('learnMoreUpperCase'),
-            key: 'learnMore-a-href',
-            props: {
-              href: ZENDESK_URLS.USER_GUIDE_DAPPS,
-              target: '__blank',
-            },
-          },
-        ],
-        props: {
-          variant: TYPOGRAPHY.H7,
-          align: 'center',
-          boxProps: {
-            margin: 0,
-          },
-        },
-      },
     ],
     cancelText: t('reject'),
     submitText: t('approveButtonText'),

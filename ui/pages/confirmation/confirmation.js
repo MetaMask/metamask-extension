@@ -156,6 +156,19 @@ export default function ConfirmationPage({
       : {};
   }, [pendingConfirmation, t, dispatch, history]);
 
+  const INPUT_STATE_CONFIRMATIONS = [MESSAGE_TYPE.SNAP_DIALOG_PROMPT];
+
+  const hasInputState = (type) => {
+    return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const handleSubmit = () =>
+    templatedValues.onSubmit(
+      hasInputState(pendingConfirmation.type)
+        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+        : null,
+    );
+
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -260,20 +273,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        onSubmit={
-          // TODO(rekmarks): We need some generic way of managing this, as
-          // opposed to this one-time hack. This component should not have to
-          // keep track of which message types / templates have input values.
-          // We should define that in a constant somewhere, and then we can do
-          // something like: if (hasInputState(pendingConfirmation.type)) { ... }
-          pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
-            ? () => {
-                templatedValues.onSubmit(
-                  inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT],
-                );
-              }
-            : templatedValues.onSubmit
-        }
+        onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}

@@ -63,33 +63,6 @@ function getValues(pendingApproval, t, actions) {
             },
           ]
         : []),
-      {
-        element: 'Typography',
-        key: 'only-interact-with-entities-you-trust',
-        children: [
-          {
-            element: 'span',
-            key: 'only-connect-trust',
-            children: `${t('onlyConnectTrust')} `,
-          },
-          {
-            element: 'a',
-            children: t('learnMoreUpperCase'),
-            key: 'learnMore-a-href',
-            props: {
-              href: ZENDESK_URLS.USER_GUIDE_DAPPS,
-              target: '__blank',
-            },
-          },
-        ],
-        props: {
-          variant: TYPOGRAPHY.H7,
-          align: 'center',
-          boxProps: {
-            margin: 0,
-          },
-        },
-      },
     ],
     submitText: t('ok'),
     onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, null),
