@@ -102,12 +102,11 @@ function debug(...args) {
  * @param {string} options.network - The network you're testing with
  * (default: "mainnet").
  * @param {string} options.type - if defined, must be either `infura` or `custom`
- * (default: "infura").
  * @returns {NockScope} The nock scope.
  */
 function buildScopeForMockingRequests({
   network = 'mainnet',
-  type = 'infura',
+  type,
 }) {
   let rpcUrl;
   if (type === 'infura') {
@@ -265,7 +264,7 @@ function makeRpcCall(ethQuery, request) {
  */
 export async function withMockedCommunications(...args) {
   const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { network = 'mainnet', type = 'infura' } = options;
+  const { network = 'mainnet', type } = options;
 
   const nockScope = buildScopeForMockingRequests({ network, type });
   const curriedMockNextBlockTrackerRequest = (localOptions) =>
@@ -296,13 +295,13 @@ export async function withMockedCommunications(...args) {
  * @param {WithClientArgs} args - Either an options bag + a function, or
  * just a function. The options bag, at the moment, may contain `network`
  * (defaults to "mainnet"). The options bag may also include providerType
- * (defaults to 'infura'). The function is called with an object that allows
+ * The function is called with an object that allows
  * you to interact with the client via a couple of methods on that object.
  * @returns {Promise<any>} The return value of the given function.
  */
 export async function withClient(...args) {
   const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { network = 'mainnet', type = 'infura' } = options;
+  const { network = 'mainnet', type } = options;
 
   let clientUnderTest;
   if (type === 'infura') {
