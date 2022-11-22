@@ -310,24 +310,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-<<<<<<< HEAD
         onSubmit={handleSubmit}
-=======
-        onSubmit={
-          // TODO(rekmarks): We need some generic way of managing this, as
-          // opposed to this one-time hack. This component should not have to
-          // keep track of which message types / templates have input values.
-          // We should define that in a constant somewhere, and then we can do
-          // something like: if (hasInputState(pendingConfirmation.type)) { ... }
-          pendingConfirmation.type === MESSAGE_TYPE.SNAP_DIALOG_PROMPT
-            ? () => {
-                templatedValues.onSubmit(
-                  inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT],
-                );
-              }
-            : templatedValues.onSubmit
-        }
->>>>>>> Add snap alerts and prompts via snap_dialog
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
