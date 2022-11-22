@@ -803,15 +803,10 @@
         "console.warn": true
       }
     },
-    "@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/controllers>web3": {
       "globals": {
         "Web3": "write",
-        "XMLHttpRequest": true,
+        "XMLHttpRequest": "write",
         "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
@@ -865,11 +860,6 @@
         "browserify>util": true
       }
     },
-    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "@metamask/controllers>web3-provider-engine>eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -896,11 +886,6 @@
         "node-fetch": true,
         "source-map-explorer>btoa": true,
         "vinyl>clone": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
-      "globals": {
-        "fetch": true
       }
     },
     "@metamask/controllers>web3-provider-engine>eth-rpc-errors": {
@@ -1252,11 +1237,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/rpc-methods>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1420,11 +1400,6 @@
         "msCrypto": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -1437,11 +1412,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      }
-    },
-    "@metamask/snaps-controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -1987,11 +1957,6 @@
         "browserify>process": true
       }
     },
-    "browserify>browser-resolve": {
-      "packages": {
-        "ethjs-query>babel-runtime>core-js": true
-      }
-    },
     "browserify>buffer": {
       "globals": {
         "console": true
@@ -2335,16 +2300,6 @@
         "browserify>stream-browserify": true
       }
     },
-    "depcheck>@vue/compiler-sfc>postcss>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "end-of-stream": {
       "packages": {
         "browserify>process": true,
@@ -2564,11 +2519,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "eth-keyring-controller>browser-passworder": {
-      "globals": {
-        "crypto": true
       }
     },
     "eth-keyring-controller>eth-simple-keyring": {
@@ -4055,9 +4005,6 @@
       }
     },
     "ethers>@ethersproject/random": {
-      "globals": {
-        "crypto.getRandomValues": true
-      },
       "packages": {
         "ethers>@ethersproject/random>@ethersproject/bytes": true,
         "ethers>@ethersproject/random>@ethersproject/logger": true
@@ -4507,7 +4454,6 @@
     },
     "ethjs-query>babel-runtime": {
       "packages": {
-        "@babel/runtime": true,
         "@storybook/api>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
@@ -4701,9 +4647,7 @@
     },
     "lodash": {
       "globals": {
-        "clearTimeout": true,
-        "define": true,
-        "setTimeout": true
+        "define": true
       }
     },
     "loglevel": {
@@ -4738,14 +4682,6 @@
       "packages": {
         "browserify>process": true,
         "nock>debug>ms": true
-      }
-    },
-    "node-fetch": {
-      "globals": {
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "fetch": true
       }
     },
     "nonce-tracker": {
@@ -4862,17 +4798,6 @@
         "react>object-assign": true
       }
     },
-    "react-devtools": {
-      "packages": {
-        "react-devtools>react-devtools-core": true
-      }
-    },
-    "react-devtools>react-devtools-core": {
-      "globals": {
-        "WebSocket": true,
-        "setTimeout": true
-      }
-    },
     "react-dnd": {
       "globals": {
         "console.error": true
@@ -4891,13 +4816,10 @@
     "react-dnd-html5-backend": {
       "globals": {
         "Image": true,
-        "addEventListener": true,
-        "clearTimeout": true,
         "console.warn": true,
         "devicePixelRatio": true,
         "document": true,
         "navigator.userAgent": true,
-        "removeEventListener": true,
         "safari": true,
         "setTimeout": true
       }
@@ -4921,7 +4843,6 @@
     },
     "react-dom": {
       "globals": {
-        "HTMLIFrameElement": true,
         "MSApp": true,
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "addEventListener": true,
@@ -5360,11 +5281,6 @@
     "vinyl>clone": {
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "web3": {
-      "globals": {
-        "XMLHttpRequest": true
       }
     },
     "web3-stream-provider": {
