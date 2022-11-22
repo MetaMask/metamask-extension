@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box/box';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { COLORS } from '../../../helpers/constants/design-system';
+import { AVATAR_BASE_SIZES } from './avatar-base.constants';
 
 export const AvatarBase = ({
-  size = SIZES.MD,
+  size = AVATAR_BASE_SIZES.MD,
   children,
   backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
   borderColor = COLORS.BORDER_DEFAULT,
@@ -29,10 +30,10 @@ export const AvatarBase = ({
 AvatarBase.propTypes = {
   /**
    * The size of the AvatarBase.
-   * Possible values could be 'SIZES.XS'(16px), 'SIZES.SM'(24px), 'SIZES.MD'(32px), 'SIZES.LG'(40px), 'SIZES.XL'(48px)
-   * Defaults to SIZES.MD
+   * Possible values could be 'AVATAR_BASE_SIZES.XS'(16px), 'AVATAR_BASE_SIZES.SM'(24px), 'AVATAR_BASE_SIZES.MD'(32px), 'AVATAR_BASE_SIZES.LG'(40px), 'AVATAR_BASE_SIZES.XL'(48px)
+   * Defaults to AVATAR_BASE_SIZES.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_BASE_SIZES)),
   /**
    * The children to be rendered inside the AvatarBase
    */

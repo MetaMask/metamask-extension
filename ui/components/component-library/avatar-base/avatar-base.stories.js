@@ -3,14 +3,16 @@ import {
   ALIGN_ITEMS,
   COLORS,
   DISPLAY,
-  SIZES,
   TEXT_COLORS,
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
+import { AVATAR_BASE_SIZES } from './avatar-base.constants';
 
 const marginSizeKnobOptions = [
   0,
@@ -41,18 +43,18 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_BASE_SIZES),
     },
     color: {
       options: Object.values(TEXT_COLORS),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(COLORS),
+      options: Object.values(BACKGROUND_COLORS),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(COLORS),
+      options: Object.values(BORDER_COLORS),
       control: 'select',
     },
     display: {
@@ -83,7 +85,7 @@ export default {
     },
   },
   args: {
-    size: SIZES.MD,
+    size: AVATAR_BASE_SIZES.MD,
     color: COLORS.TEXT_DEFAULT,
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderColor: COLORS.BORDER_DEFAULT,
@@ -96,11 +98,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarBase {...args} size={SIZES.XS} />
-    <AvatarBase {...args} size={SIZES.SM} />
-    <AvatarBase {...args} size={SIZES.MD} />
-    <AvatarBase {...args} size={SIZES.LG} />
-    <AvatarBase {...args} size={SIZES.XL} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.XS} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.SM} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.MD} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.LG} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.XL} />
   </Box>
 );
 
