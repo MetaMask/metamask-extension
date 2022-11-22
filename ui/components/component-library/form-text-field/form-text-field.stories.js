@@ -23,7 +23,7 @@ import {
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-} from '../';
+} from '..';
 
 import { FormTextField } from './form-text-field';
 
