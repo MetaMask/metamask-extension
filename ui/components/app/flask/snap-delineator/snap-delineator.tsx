@@ -22,6 +22,7 @@ export const SnapDelineator = ({ snapName, children }: SnapDelineatorProps) => {
       >
         <Icon name="snaps-filled" />
         <Typography
+          className="snap-delineator__header__text"
           color={COLORS.INFO_DEFAULT}
           marginLeft={1}
           marginTop={0}
