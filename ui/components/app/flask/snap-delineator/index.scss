@@ -1,26 +1,14 @@
 .snap-delineator {
-  &__wrapper {
-      border: 1px solid #BBC0C5;
-      border-radius: 8px;
-  }
-
   &__header {
-      color: var(--color-info-default);
-      background-color: #E6F2FB;
       border-bottom-width: 1px;
-      border-color: #BBC0C5;
+      border-color: var(--color-border-muted);
       border-style: solid;
       border-radius: 8px 8px 0px 0px;
-      padding: 4px 8px 4px 8px;
 
       &__text {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
-  }
-
-  &__content {
-      padding: 16px;
   }
 }
