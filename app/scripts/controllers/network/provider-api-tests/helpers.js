@@ -5,10 +5,7 @@ import { providerFromEngine } from 'eth-json-rpc-middleware';
 import EthQuery from 'eth-query';
 import createInfuraClient from '../createInfuraClient';
 import createJsonRpcClient from '../createJsonRpcClient';
-import {
-  LOCALHOST_RPC_URL,
-  BUILT_IN_NETWORKS,
-} from '../../../../../shared/constants/network';
+import { LOCALHOST_RPC_URL } from '../../../../../shared/constants/network';
 
 /**
  * @typedef {import('nock').Scope} NockScope
@@ -104,10 +101,7 @@ function debug(...args) {
  * @param {string} options.type - if defined, must be either `infura` or `custom`
  * @returns {NockScope} The nock scope.
  */
-function buildScopeForMockingRequests({
-  network = 'mainnet',
-  type,
-}) {
+function buildScopeForMockingRequests({ network = 'mainnet', type }) {
   let rpcUrl;
   if (type === 'infura') {
     rpcUrl = `https://${network}.infura.io`;
@@ -301,7 +295,7 @@ export async function withMockedCommunications(...args) {
  */
 export async function withClient(...args) {
   const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { network = 'mainnet', type } = options;
+  const { network = 'mainnet', type, chainId = '0x1' } = options;
 
   let clientUnderTest;
   if (type === 'infura') {
@@ -312,7 +306,7 @@ export async function withClient(...args) {
   } else {
     clientUnderTest = createJsonRpcClient({
       rpcUrl: LOCALHOST_RPC_URL,
-      chainId: BUILT_IN_NETWORKS[network].chainId || '0x1',
+      chainId,
     });
   }
   const { networkMiddleware, blockTracker } = clientUnderTest;

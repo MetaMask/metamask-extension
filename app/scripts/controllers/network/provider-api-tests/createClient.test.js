@@ -99,7 +99,7 @@ import {
     describe('eth_chainId', () => {
       it('does not hit custom provider, instead returning the chain id that maps to the custom providers network, as a hex string', async () => {
         const chainId = await withClient(
-          { network: 'goerli', type: providerType },
+          { network: 'goerli', type: providerType, chainId: '0x5' },
           ({ makeRpcCall }) => {
             return makeRpcCall({
               method: 'eth_chainId',
@@ -211,6 +211,7 @@ import {
         {
           network: 'goerli',
           type: providerType,
+          chainId: '0x5',
         },
         ({ makeRpcCall }) => {
           return makeRpcCall({
