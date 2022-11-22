@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEnvironmentType } from '../lib/util';
 import { startCase, toLower } from 'lodash';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
