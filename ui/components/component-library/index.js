@@ -3,7 +3,7 @@ export { AvatarFavicon } from './avatar-favicon';
 export { AvatarNetwork } from './avatar-network';
 export { AvatarToken } from './avatar-token';
 export { AvatarWithBadge } from './avatar-with-badge';
-export { BaseAvatar } from './base-avatar';
+export { AvatarBase } from './avatar-base';
 export { Button } from './button';
 export { ButtonBase } from './button-base';
 export { ButtonIcon } from './button-icon';
