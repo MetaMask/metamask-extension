@@ -21,10 +21,7 @@ export type SnapUIRendererProps = {
 };
 
 // TODO: Types
-const UI_MAPPING: Record<
-  NodeType,
-  (arg: Component) => Record<string, unknown>
-> = {
+const UI_MAPPING: Record<NodeType, (arg: any) => Record<string, unknown>> = {
   panel: (props: Panel) => ({
     element: 'Box',
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
