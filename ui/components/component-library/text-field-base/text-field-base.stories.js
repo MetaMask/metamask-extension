@@ -156,17 +156,7 @@ const Template = (args) => {
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
-  return (
-    <TextFieldBase
-      {...args}
-      value={value}
-      onChange={handleOnChange}
-      clearButtonOnClick={handleOnClear}
-    />
-  );
+  return <TextFieldBase {...args} value={value} onChange={handleOnChange} />;
 };
 
 export const DefaultStory = Template.bind({});
