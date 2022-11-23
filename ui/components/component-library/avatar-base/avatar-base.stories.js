@@ -3,7 +3,6 @@ import {
   ALIGN_ITEMS,
   COLORS,
   DISPLAY,
-  SIZES,
   TEXT_COLORS,
   BACKGROUND_COLORS,
   BORDER_COLORS,
@@ -12,7 +11,8 @@ import {
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
-import { BaseAvatar } from './base-avatar';
+import { AvatarBase } from './avatar-base';
+import { AVATAR_BASE_SIZES } from './avatar-base.constants';
 
 const marginSizeKnobOptions = [
   0,
@@ -32,9 +32,9 @@ const marginSizeKnobOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/BaseAvatar',
+  title: 'Components/ComponentLibrary/AvatarBase',
   id: __filename,
-  component: BaseAvatar,
+  component: AvatarBase,
   parameters: {
     docs: {
       page: README,
@@ -43,7 +43,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_BASE_SIZES),
     },
     color: {
       options: Object.values(TEXT_COLORS),
@@ -85,40 +85,40 @@ export default {
     },
   },
   args: {
-    size: SIZES.MD,
+    size: AVATAR_BASE_SIZES.MD,
     color: COLORS.TEXT_DEFAULT,
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderColor: COLORS.BORDER_DEFAULT,
   },
 };
 
-export const DefaultStory = (args) => <BaseAvatar {...args}>B</BaseAvatar>;
+export const DefaultStory = (args) => <AvatarBase {...args}>B</AvatarBase>;
 
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <BaseAvatar {...args} size={SIZES.XS} />
-    <BaseAvatar {...args} size={SIZES.SM} />
-    <BaseAvatar {...args} size={SIZES.MD} />
-    <BaseAvatar {...args} size={SIZES.LG} />
-    <BaseAvatar {...args} size={SIZES.XL} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.XS} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.SM} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.MD} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.LG} />
+    <AvatarBase {...args} size={AVATAR_BASE_SIZES.XL} />
   </Box>
 );
 
 export const Children = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <BaseAvatar {...args}>
+    <AvatarBase {...args}>
       <img src="./images/eth_logo.svg" />
-    </BaseAvatar>
-    <BaseAvatar {...args}>
+    </AvatarBase>
+    <AvatarBase {...args}>
       <img width="100%" src="./images/arbitrum.svg" />
-    </BaseAvatar>
-    <BaseAvatar {...args}>
+    </AvatarBase>
+    <AvatarBase {...args}>
       <img width="100%" src="./images/avax-token.png" />
-    </BaseAvatar>
-    <BaseAvatar {...args}>A</BaseAvatar>
-    <BaseAvatar
+    </AvatarBase>
+    <AvatarBase {...args}>A</AvatarBase>
+    <AvatarBase
       {...args}
       backgroundColor={COLORS.INFO_MUTED}
       borderColor={COLORS.INFO_MUTED}
@@ -127,28 +127,28 @@ export const Children = (args) => (
         className="fa fa-user"
         style={{ color: 'var(--color-info-default)' }}
       />
-    </BaseAvatar>
+    </AvatarBase>
   </Box>
 );
 
 export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
-    <BaseAvatar {...args}>B</BaseAvatar>
-    <BaseAvatar
+    <AvatarBase {...args}>B</AvatarBase>
+    <AvatarBase
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
-      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
+      color={COLORS.PRIMARY_INVERSE}
     >
       G
-    </BaseAvatar>
-    <BaseAvatar
+    </AvatarBase>
+    <AvatarBase
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
+      color={COLORS.PRIMARY_INVERSE}
     >
       S
-    </BaseAvatar>
+    </AvatarBase>
   </Box>
 );
