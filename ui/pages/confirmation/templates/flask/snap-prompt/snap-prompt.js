@@ -1,4 +1,3 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
@@ -57,6 +56,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
                 key: 'snap-prompt-input',
                 props: {
                   className: 'snap-prompt-input',
+                  placeholder: 'Answer here...', // TODO(guillaumerx): Replace this with the parameterized placeholder
                   max: 300,
                   onChange: (event) => {
                     const inputValue = event.target.value ?? '';
@@ -77,11 +77,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
     submitText: t('submit'),
     onSubmit: (inputValue) =>
       actions.resolvePendingApproval(pendingApproval.id, inputValue),
-    onCancel: () =>
-      actions.rejectPendingApproval(
-        pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
-      ),
+    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, null),
   };
 }
 

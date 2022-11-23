@@ -22,7 +22,12 @@ import {
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { getSnaps, getUnapprovedTemplatedConfirmations } from '../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getSnaps,
+  ///: END:ONLY_INCLUDE_IN
+  getUnapprovedTemplatedConfirmations,
+} from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
