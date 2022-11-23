@@ -34,34 +34,82 @@ Defaults to `md`
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--size" />
 </Canvas>
 
-###  Network Name
+```jsx
+import { AvatarNetwork } from '../../component-library';
+  <AvatarNetwork size={SIZES.XS} />
+  <AvatarNetwork size={SIZES.SM} />
+  <AvatarNetwork size={SIZES.MD} />
+  <AvatarNetwork size={SIZES.LG} />
+  <AvatarNetwork size={SIZES.XL} />
+```
 
-Use the `networkName` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `networkImageUrl` prop.
+###  Name
+
+Use the `name` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `src` prop.
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-name" />
 </Canvas>
 
-###  Network Image Url
+```jsx
+import { AvatarToken } from '../../component-library';
+  <AvatarToken name="A" />
+  <AvatarToken name="G" />
+```
 
-Use the `networkImageUrl` prop to set the image to be rendered of the `AvatarNetwork`.
+###  Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarNetwork`.
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-image-url" />
 </Canvas>
 
+```jsx
+import { AvatarToken } from '../../component-library';
+  <AvatarToken src="./images/arbitrum.svg" />
+  <AvatarToken src="./images/optimism.svg" />
+```
+
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `networkImageUrl`
+If we want to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--show-halo" />
 </Canvas>
 
+```jsx
+import { AvatarToken } from '../../component-library';
+  <AvatarToken src="./images/arbitrum.svg" showHalo/>
+  <AvatarToken src="./images/optimism.svg" showHalo/>
+```
+
 ### Color, Background Color And Border Color
 
-Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarNetwork`.
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--color-background-color-and-border-color" />
 </Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { AvatarToken } from '../../component-library';
+<AvatarToken
+  backgroundColor={COLORS.GOERLI}
+  borderColor={COLORS.GOERLI}
+  name="G"
+  color={COLORS.PRIMARY_INVERSE}
+  >
+  G
+</AvatarBase>
+<AvatarToken
+  backgroundColor={COLORS.SEPOLIA}
+  borderColor={COLORS.SEPOLIA}
+  name="G"
+  color={COLORS.PRIMARY_INVERSE}
+>
+  S
+</AvatarToken>
+```

@@ -40,10 +40,10 @@ export default {
       options: Object.values(BORDER_COLORS),
       control: 'select',
     },
-    networkName: {
+    name: {
       control: 'text',
     },
-    networkImageUrl: {
+    src: {
       control: 'text',
     },
     showHalo: {
@@ -51,8 +51,8 @@ export default {
     },
   },
   args: {
-    networkName: 'Arbitrum One',
-    networkImageUrl: './images/arbitrum.svg',
+    name: 'Arbitrum One',
+    src: './images/arbitrum.svg',
     size: SIZES.MD,
     showHalo: false,
   },
@@ -75,12 +75,12 @@ export const Size = (args) => (
   </Box>
 );
 
-export const NetworkName = Template.bind({});
-NetworkName.args = {
-  networkImageUrl: '',
+export const Name = Template.bind({});
+Name.args = {
+  src: '',
 };
 
-export const NetworkImageUrl = Template.bind({});
+export const Src = Template.bind({});
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
@@ -93,18 +93,18 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
-      networkName="G"
+      name="G"
       color={COLORS.PRIMARY_INVERSE} // This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
     <AvatarNetwork
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      networkName="G"
+      name="G"
       color={COLORS.PRIMARY_INVERSE} // This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
   </Box>
 );
 ColorBackgroundColorAndBorderColor.args = {
-  networkImageUrl: '',
+  src: '',
 };
