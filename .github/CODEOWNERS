@@ -1,12 +1,11 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 # Owners bear a responsibility to the organization and the users of this
-# application. You may be a CODEOWNER AND a repository admin, granting
-# you the ability to merge pull requests that have not yet received the
-# requisite reviews as outlined in this file. Do not force merge any PR
-# without confidence that it follows all policies or without full 
-# understanding of the impact of those changes on build, release and 
-# publishing outcomes.
+# application. Repository administrators have the ability to merge pull 
+# requests that have not yet received the requisite reviews as outlined 
+# in this file. Do not force merge any PR without confidence that it 
+# follows all policies or without full understanding of the impact of 
+# those changes on build, release and publishing outcomes.
 
 *                                    @MetaMask/extension-devs
 development/                         @MetaMask/extension-devs @kumavis
