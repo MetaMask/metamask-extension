@@ -2616,7 +2616,7 @@
     "description": "The description for the `snap_confirm` permission"
   },
   "permission_ethereumAccounts": {
-    "message": "Ver las direcciones de las cuentas permitidas (requerido)",
+    "message": "Ver las direcciones, saldos, actividad de las cuentas permitidas y sugerir transacciones para aprobar (requerido)",
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_longRunning": {

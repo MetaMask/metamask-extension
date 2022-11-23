@@ -2,6 +2,9 @@ import { connect } from 'react-redux';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
+  getSubjectMetadata,
 } from '../../../selectors';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
@@ -16,18 +19,33 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const chainId = getCurrentChainId(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+  const subjectMetadata = getSubjectMetadata(state);
+
+  const { iconUrl: siteImage = '' } =
+    subjectMetadata[txData.msgParams.origin] || {};
 
   return {
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { allAccounts, isLedgerWallet, hardwareWalletRequiresConnection } =
-    stateProps;
+  const {
+    allAccounts,
+    isLedgerWallet,
+    hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
+  } = stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -68,6 +86,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     sign,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
   };
 }
 

@@ -6,10 +6,7 @@ import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
-import {
-  checkForLastError,
-  checkForLastErrorAndWarn,
-} from '../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -141,11 +138,7 @@ function setupPhishingPageStreams() {
   });
 
   if (isManifestV3) {
-    phishingPageStream.on('data', ({ data: { method } }) => {
-      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-        runWorkerKeepAliveInterval();
-      }
-    });
+    runWorkerKeepAliveInterval();
   }
 
   // create and connect channel muxers
@@ -220,13 +213,25 @@ const destroyPhishingExtStreams = () => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = () => {
-  checkForLastErrorAndWarn();
+  const err = checkForLastError();
 
   phishingExtPort.onDisconnect.removeListener(
     onDisconnectDestroyPhishingStreams,
   );
 
   destroyPhishingExtStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready. Delay time is arbitrary.
+   */
+  if (err) {
+    console.warn(`${err} Resetting the phishing streams.`);
+    setTimeout(setupPhishingExtStreams, 1000);
+  }
 };
 
 /**

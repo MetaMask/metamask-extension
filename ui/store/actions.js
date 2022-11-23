@@ -3775,6 +3775,10 @@ export function hidePortfolioTooltip() {
   return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
+export function hideBetaHeader() {
+  return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
@@ -3792,6 +3796,20 @@ export function setImprovedTokenAllowanceEnabled(
     try {
       await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
         improvedTokenAllowanceEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export function setTransactionSecurityCheckEnabled(
+  transactionSecurityCheckEnabled,
+) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
+        transactionSecurityCheckEnabled,
       ]);
     } catch (error) {
       log.error(error);

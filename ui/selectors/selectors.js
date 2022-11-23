@@ -22,8 +22,8 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import {
-  KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
   LEDGER_TRANSPORT_TYPES,
   TRANSPORT_STATES,
@@ -243,7 +243,7 @@ export function getAccountType(state) {
     case KEYRING_TYPES.LEDGER:
     case KEYRING_TYPES.LATTICE:
       return 'hardware';
-    case 'Simple Key Pair':
+    case KEYRING_TYPES.IMPORTED:
       return 'imported';
     default:
       return 'default';
@@ -1013,6 +1013,10 @@ export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
 
+export function getShowBetaHeader(state) {
+  return state.metamask.showBetaHeader;
+}
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1264,6 +1268,16 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsImprovedTokenAllowanceEnabled(state) {
   return state.metamask.improvedTokenAllowanceEnabled;
+}
+
+/**
+ * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTransactionSecurityCheckEnabled(state) {
+  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 export function getIsCustomNetwork(state) {

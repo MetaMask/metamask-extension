@@ -13,10 +13,13 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
-function chunk(array, chunkSize) {
+// Heavily inspired by: https://stackoverflow.com/a/51514813
+// Splits the array into totalChunks chunks with a decent spread of items in each chunk
+function chunk(array, totalChunks) {
+  const copyArray = [...array];
   const result = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
+  for (let chunkIndex = totalChunks; chunkIndex > 0; chunkIndex--) {
+    result.push(copyArray.splice(0, Math.ceil(copyArray.length / chunkIndex)));
   }
   return result;
 }
@@ -77,8 +80,7 @@ async function main() {
   // For running E2Es in parallel in CI
   const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
   const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
-  const chunkSize = Math.ceil(testPaths.length / totalChunks);
-  const chunks = chunk(testPaths, chunkSize);
+  const chunks = chunk(testPaths, totalChunks);
   const currentChunk = chunks[currentChunkIndex];
 
   for (const testPath of currentChunk) {

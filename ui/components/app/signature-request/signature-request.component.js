@@ -5,9 +5,13 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
-import Header from './signature-request-header';
-import Footer from './signature-request-footer';
+import Button from '../../ui/button';
+import Typography from '../../ui/typography/typography';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import Message from './signature-request-message';
+import Footer from './signature-request-footer';
+import Header from './signature-request-header';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -39,6 +43,18 @@ export default class SignatureRequest extends PureComponent {
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
+    /**
+     * Current network chainId
+     */
+    chainId: PropTypes.string,
+    /**
+     * RPC prefs of the current network
+     */
+    rpcPrefs: PropTypes.object,
+    /**
+     * Dapp image
+     */
+    siteImage: PropTypes.string,
   };
 
   static contextTypes = {
@@ -48,6 +64,7 @@ export default class SignatureRequest extends PureComponent {
 
   state = {
     hasScrolledMessage: false,
+    showContractDetails: false,
   };
 
   setMessageRootRef(ref) {
@@ -72,6 +89,9 @@ export default class SignatureRequest extends PureComponent {
       sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
+      chainId,
+      rpcPrefs,
+      siteImage,
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
@@ -129,8 +149,19 @@ export default class SignatureRequest extends PureComponent {
             className="signature-request-content__info"
             siteOrigin={origin}
           />
-          <div className="signature-request-content__info">
-            {this.formatWallet(fromAddress)}
+          <div>
+            <Button
+              type="link"
+              onClick={() => this.setState({ showContractDetails: true })}
+              className="signature-request-content__verify-contract-details"
+            >
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.PRIMARY_DEFAULT}
+              >
+                {this.context.t('verifyContractDetails')}
+              </Typography>
+            </Button>
           </div>
         </div>
         {isLedgerWallet ? (
@@ -153,6 +184,17 @@ export default class SignatureRequest extends PureComponent {
             (messageIsScrollable && !this.state.hasScrolledMessage)
           }
         />
+        {this.state.showContractDetails && (
+          <ContractDetailsModal
+            toAddress={domain.verifyingContract}
+            chainId={chainId}
+            rpcPrefs={rpcPrefs}
+            origin={origin}
+            siteImage={siteImage}
+            onClose={() => this.setState({ showContractDetails: false })}
+            isContractRequestingSignature
+          />
+        )}
       </div>
     );
   }
