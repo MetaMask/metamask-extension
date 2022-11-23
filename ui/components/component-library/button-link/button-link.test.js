@@ -79,7 +79,7 @@ describe('ButtonLink', () => {
       <ButtonLink data-testid="icon" icon="add-square-filled" />,
     );
 
-    const icons = container.getElementsByClassName('icon').length;
+    const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
 });

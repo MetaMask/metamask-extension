@@ -11,8 +11,8 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
     >
       <div
         aria-label="avatar-favicon"
-        class="box icon icon--size-md box--flex-direction-row box--color-icon-default"
-        style="mask-image: url('./images/icons/icon-global-filled.svg;"
+        class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-icon-default"
+        style="mask-image: url('./images/icons/icon-global-filled.svg');"
       />
     </div>
     <p

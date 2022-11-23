@@ -12,7 +12,7 @@ export { ButtonPrimary } from './button-primary';
 export { ButtonSecondary } from './button-secondary';
 export { FormTextField } from './form-text-field';
 export { HelpText } from './help-text';
-export { Icon, ICON_NAMES } from './icon';
+export { Icon, ICON_NAMES, ICON_SIZES } from './icon';
 export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
@@ -24,3 +24,4 @@ export {
   TEXT_FIELD_BASE_SIZES,
   TEXT_FIELD_BASE_TYPES,
 } from './text-field-base';
+export { TextFieldSearch } from './text-field-search';
