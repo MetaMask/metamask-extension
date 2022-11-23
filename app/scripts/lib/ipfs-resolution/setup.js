@@ -41,12 +41,12 @@ export default function setupIpfsResolver({
     }
     // parse domain name
     const { hostname: name, pathname, search, hash: fragment } = new URL(url);
-    // if domain name contains an Unstoppable TLD, it will attempt tp resolve to IPFS 
+    // if domain name contains an Unstoppable TLD, it will attempt tp resolve to IPFS
     udTlds.forEach((tld) => {
       if (name.toLowerCase().endsWith(`.${tld}`)) {
         attemptResolveUns(tabId, name);
       }
-    })
+    });
 
     const domainParts = name.split('.');
     const topLevelDomain = domainParts[domainParts.length - 1];
@@ -60,10 +60,10 @@ export default function setupIpfsResolver({
   /**
    *  Checks for an IPFS site under an Unstoppable Domain,
    *  If the site exists, it will redirect to it, otherwise it redirects to the UD search page with the given domain
-   * 
-   * @param {tabId}  - tab ID from browser
-   * @param {domainName} - entered domain name 
-  */
+   *
+   * @param {number} tabId - from browser
+   * @param {string} domainName - entered domain name
+   */
   async function attemptResolveUns(tabId, domainName) {
     const ipfsGateway = getIpfsGateway();
     browser.tabs.update(tabId, { url: `unsLoading.html` });
@@ -80,7 +80,13 @@ export default function setupIpfsResolver({
     }
   }
 
-  async function attemptResolveEns({ tabId, name, pathname, search, fragment }) {
+  async function attemptResolveEns({
+    tabId,
+    name,
+    pathname,
+    search,
+    fragment,
+  }) {
     const ipfsGateway = getIpfsGateway();
     browser.tabs.update(tabId, { url: `loading.html` });
     let url = `https://app.ens.domains/name/${name}`;
@@ -106,13 +112,15 @@ export default function setupIpfsResolver({
           console.warn(err);
         }
       } else if (type === 'swarm-ns') {
-        url = `https://swarm-gateways.net/bzz:/${hash}${pathname}${search || ''
-          }${fragment || ''}`;
+        url = `https://swarm-gateways.net/bzz:/${hash}${pathname}${
+          search || ''
+        }${fragment || ''}`;
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${pathname}${search || ''}${fragment || ''}`;
       } else if (type === 'zeronet') {
-        url = `http://127.0.0.1:43110/${hash}${pathname}${search || ''}${fragment || ''
-          }`;
+        url = `http://127.0.0.1:43110/${hash}${pathname}${search || ''}${
+          fragment || ''
+        }`;
       } else if (type === 'skynet-ns') {
         const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), '=');
         const decoded = base64.toByteArray(padded);
@@ -123,8 +131,9 @@ export default function setupIpfsResolver({
           'RFC4648-HEX',
           options,
         ).toLowerCase();
-        url = `https://${base32EncodedSkylink}.siasky.net${pathname}${search || ''
-          }${fragment || ''}`;
+        url = `https://${base32EncodedSkylink}.siasky.net${pathname}${
+          search || ''
+        }${fragment || ''}`;
       }
     } catch (err) {
       console.warn(err);
