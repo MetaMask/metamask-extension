@@ -137,3 +137,12 @@ export function renderControlledInput(InputComponent, props) {
   };
   return { user: userEvent.setup(), ...render(<ControlledWrapper />) };
 }
+
+// userEvent setup function as per testing-library docs
+// https://testing-library.com/docs/user-event/intr
+export function renderWithUserEvent(jsx) {
+  return {
+    user: userEvent.setup(),
+    ...render(jsx),
+  };
+}

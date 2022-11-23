@@ -42,7 +42,7 @@ export default function SnapInstall({
     request?.permissions && Object.keys(request.permissions).length > 0;
 
   const warnings = getSnapInstallWarnings(
-    request.permissions,
+    request?.permissions ?? {},
     targetSubjectMetadata,
     t,
   );

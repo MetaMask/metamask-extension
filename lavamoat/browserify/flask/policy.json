@@ -1428,8 +1428,9 @@
         "@metamask/rpc-methods>@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
-        "@metamask/snap-utils": true,
-        "@metamask/snap-utils>superstruct": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
       }
@@ -1570,8 +1571,8 @@
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
-        "@metamask/snap-utils>@noble/hashes": true,
-        "@metamask/snap-utils>@scure/base": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
         "eth-block-tracker>@metamask/utils": true
       }
     },
@@ -1593,8 +1594,8 @@
     },
     "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
       "packages": {
-        "@metamask/snap-utils>@noble/hashes": true,
-        "@metamask/snap-utils>@scure/base": true
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1772,7 +1773,7 @@
         "setTimeout": true
       }
     },
-    "@metamask/snap-controllers": {
+    "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
         "clearTimeout": true,
@@ -1790,23 +1791,23 @@
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
-        "@metamask/snap-controllers>@metamask/browser-passworder": true,
-        "@metamask/snap-controllers>@metamask/controllers": true,
-        "@metamask/snap-controllers>@xstate/fsm": true,
-        "@metamask/snap-controllers>concat-stream": true,
-        "@metamask/snap-controllers>gunzip-maybe": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream": true,
-        "@metamask/snap-controllers>nanoid": true,
-        "@metamask/snap-controllers>readable-web-to-node-stream": true,
-        "@metamask/snap-controllers>tar-stream": true,
-        "@metamask/snap-utils": true,
+        "@metamask/snaps-controllers>@metamask/browser-passworder": true,
+        "@metamask/snaps-controllers>@metamask/controllers": true,
+        "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>concat-stream": true,
+        "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>json-rpc-middleware-stream": true,
+        "@metamask/snaps-controllers>nanoid": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
+        "@metamask/snaps-utils": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
       }
     },
-    "@metamask/snap-controllers>@metamask/browser-passworder": {
+    "@metamask/snaps-controllers>@metamask/browser-passworder": {
       "globals": {
         "btoa": true,
         "crypto.getRandomValues": true,
@@ -1819,7 +1820,7 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers": {
+    "@metamask/snaps-controllers>@metamask/controllers": {
       "globals": {
         "Headers": true,
         "URL": true,
@@ -1847,9 +1848,9 @@
         "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry": true,
-        "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet": true,
-        "@metamask/snap-controllers>nanoid": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry": true,
+        "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet": true,
+        "@metamask/snaps-controllers>nanoid": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
@@ -1869,21 +1870,21 @@
         "uuid": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs": true
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs": {
       "globals": {
         "clearInterval": true,
         "setInterval": true
       },
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1893,17 +1894,17 @@
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
         "ethjs-query>babel-runtime": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-util": true,
@@ -1911,15 +1912,15 @@
         "promise-to-callback": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
+    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
       "globals": {
         "console": true
       },
@@ -1930,9 +1931,9 @@
         "promise-to-callback": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet": {
+    "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet": {
       "packages": {
-        "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet>uuid": true,
+        "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet>uuid": true,
         "@truffle/codec>utf8": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
@@ -1944,20 +1945,20 @@
         "ethers>@ethersproject/json-wallets>scrypt-js": true
       }
     },
-    "@metamask/snap-controllers>@metamask/controllers>ethereumjs-wallet>uuid": {
+    "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet>uuid": {
       "globals": {
         "crypto": true,
         "msCrypto": true
       }
     },
-    "@metamask/snap-controllers>concat-stream": {
+    "@metamask/snaps-controllers>concat-stream": {
       "packages": {
-        "@metamask/snap-controllers>concat-stream>readable-stream": true,
+        "@metamask/snaps-controllers>concat-stream>readable-stream": true,
         "browserify>buffer": true,
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-controllers>concat-stream>readable-stream": {
+    "@metamask/snaps-controllers>concat-stream>readable-stream": {
       "packages": {
         "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
@@ -1968,19 +1969,19 @@
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe": {
+    "@metamask/snaps-controllers>gunzip-maybe": {
       "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>browserify-zlib": true,
-        "@metamask/snap-controllers>gunzip-maybe>is-deflate": true,
-        "@metamask/snap-controllers>gunzip-maybe>is-gzip": true,
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream": true,
-        "@metamask/snap-controllers>gunzip-maybe>pumpify": true,
-        "@metamask/snap-controllers>gunzip-maybe>through2": true
+        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": true,
+        "@metamask/snaps-controllers>gunzip-maybe>is-deflate": true,
+        "@metamask/snaps-controllers>gunzip-maybe>is-gzip": true,
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream": true,
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>through2": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>browserify-zlib": {
+    "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": {
       "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>browserify-zlib>pako": true,
+        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib>pako": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>process": true,
@@ -1988,15 +1989,15 @@
         "readable-stream": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream": {
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream": {
       "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream>duplexify": true,
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream>through2": true,
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": true,
         "browserify>buffer": true,
         "terser>source-map-support>buffer-from": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream>duplexify": {
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": {
       "packages": {
         "browserify>buffer": true,
         "browserify>process": true,
@@ -2006,7 +2007,7 @@
         "readable-stream": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream>through2": {
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": {
       "packages": {
         "browserify>process": true,
         "browserify>util": true,
@@ -2014,14 +2015,14 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify": {
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify": {
       "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>pumpify>duplexify": true,
-        "@metamask/snap-controllers>gunzip-maybe>pumpify>pump": true,
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": true,
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify>duplexify": {
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": {
       "packages": {
         "browserify>buffer": true,
         "browserify>process": true,
@@ -2031,14 +2032,14 @@
         "readable-stream": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify>pump": {
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": {
       "packages": {
         "browserify>browser-resolve": true,
         "end-of-stream": true,
         "pump>once": true
       }
     },
-    "@metamask/snap-controllers>gunzip-maybe>through2": {
+    "@metamask/snaps-controllers>gunzip-maybe>through2": {
       "packages": {
         "browserify>process": true,
         "browserify>util": true,
@@ -2046,8 +2047,9 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/snap-controllers>json-rpc-middleware-stream": {
+    "@metamask/snaps-controllers>json-rpc-middleware-stream": {
       "globals": {
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
@@ -2055,17 +2057,17 @@
         "readable-stream": true
       }
     },
-    "@metamask/snap-controllers>nanoid": {
+    "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snap-controllers>readable-web-to-node-stream": {
+    "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
-        "@metamask/snap-controllers>readable-web-to-node-stream>readable-stream": true
+        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
-    "@metamask/snap-controllers>readable-web-to-node-stream>readable-stream": {
+    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
       "packages": {
         "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
@@ -2076,10 +2078,10 @@
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-controllers>tar-stream": {
+    "@metamask/snaps-controllers>tar-stream": {
       "packages": {
-        "@metamask/snap-controllers>tar-stream>fs-constants": true,
-        "@metamask/snap-controllers>tar-stream>readable-stream": true,
+        "@metamask/snaps-controllers>tar-stream>fs-constants": true,
+        "@metamask/snaps-controllers>tar-stream>readable-stream": true,
         "browserify>buffer": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
@@ -2089,12 +2091,12 @@
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-controllers>tar-stream>fs-constants": {
+    "@metamask/snaps-controllers>tar-stream>fs-constants": {
       "packages": {
         "browserify>constants-browserify": true
       }
     },
-    "@metamask/snap-controllers>tar-stream>readable-stream": {
+    "@metamask/snaps-controllers>tar-stream>readable-stream": {
       "packages": {
         "@storybook/api>util-deprecate": true,
         "browserify>browser-resolve": true,
@@ -2105,18 +2107,18 @@
         "pumpify>inherits": true
       }
     },
-    "@metamask/snap-utils": {
+    "@metamask/snaps-utils": {
       "globals": {
         "URL": true
       },
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/types": true,
-        "@metamask/snap-utils>@noble/hashes": true,
-        "@metamask/snap-utils>@scure/base": true,
-        "@metamask/snap-utils>cron-parser": true,
-        "@metamask/snap-utils>rfdc": true,
-        "@metamask/snap-utils>superstruct": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>superstruct": true,
         "browserify": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
@@ -2127,25 +2129,25 @@
         "semver": true
       }
     },
-    "@metamask/snap-utils>@noble/hashes": {
+    "@metamask/snaps-utils>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
       }
     },
-    "@metamask/snap-utils>@scure/base": {
+    "@metamask/snaps-utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@metamask/snap-utils>cron-parser": {
+    "@metamask/snaps-utils>cron-parser": {
       "packages": {
         "browserify>browser-resolve": true,
         "luxon": true
       }
     },
-    "@metamask/snap-utils>rfdc": {
+    "@metamask/snaps-utils>rfdc": {
       "packages": {
         "browserify>buffer": true
       }
@@ -3137,7 +3139,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snap-utils>superstruct": true,
+        "@metamask/snaps-utils>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true
       }
