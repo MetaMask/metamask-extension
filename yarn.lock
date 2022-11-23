@@ -2559,6 +2559,13 @@
     through2 "^4.0.2"
     umd "^3.0.3"
 
+"@lavamoat/snow@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.2.1.tgz#87587e46940b26a966b665e62cd867d0cfbce47e"
+  integrity sha512-gC4oyvjNkFOOjhL9W4wP1YC0dcdQJPYKNW8fbwcP5iYogLL2fs1KIsHoF41WIhuWQ9mUdfg1jKBCTq41m+5VSw==
+  dependencies:
+    is-cross-origin "^1.0.1"
+
 "@ledgerhq/cryptoassets@^5.27.2":
   version "5.53.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-5.53.0.tgz#11dcc93211960c6fd6620392e4dd91896aaabe58"
@@ -5873,13 +5880,6 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
-
-"@weizman/snow@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@weizman/snow/-/snow-1.2.1.tgz#b5a7154808568d149800cddb3cd35b06589cbe92"
-  integrity sha512-Hj3gQUxXL9H5Yv8KWC7ufif8sg+YsBBotEgrOOSmjZdPEyoTnyDHi2mOM+B0rE+8PGL+pFgjHppDV84GDM5USg==
-  dependencies:
-    is-cross-origin "^1.0.1"
 
 "@xstate/fsm@^2.0.0":
   version "2.0.0"

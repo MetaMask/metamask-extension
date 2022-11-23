@@ -159,7 +159,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     },
     {
       src: shouldIncludeSnow
-        ? `./node_modules/@weizman/snow/snow.prod.js`
+        ? `./node_modules/@lavamoat/snow/snow.prod.js`
         : EMPTY_JS_FILE,
       dest: `snow.js`,
     },
