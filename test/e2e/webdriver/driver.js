@@ -1,6 +1,12 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError, By, Key } = require('selenium-webdriver');
+const {
+  By,
+  Condition,
+  error: webdriverError,
+  Key,
+  until,
+} = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
 /**
@@ -33,6 +39,14 @@ function wrapElementWithAPI(element, driver) {
   return element;
 }
 
+until.elementIsNotPresent = function elementIsNotPresent(locator) {
+  return new Condition(`Element not present`, function (driver) {
+    return driver.findElements(By.css(locator)).then(function (elements) {
+      return elements.length === 0;
+    });
+  });
+};
+
 /**
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -49,6 +63,7 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+    this.exceptions = [];
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -167,6 +182,10 @@ class Driver {
       const empty = elemText === '';
       return !empty;
     }, this.timeout);
+  }
+
+  async waitForElementNotPresent(element) {
+    return await this.driver.wait(until.elementIsNotPresent(element));
   }
 
   async quit() {
@@ -414,7 +433,9 @@ class Driver {
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
+      () =>
+        window.stateHooks?.getCleanAppState &&
+        window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
       `${filepathBase}-state.json`,
@@ -434,6 +455,15 @@ class Driver {
     await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
 
     return browserLogs;
+  }
+
+  async checkBrowserForExceptions() {
+    const { exceptions } = this;
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    await this.driver.onLogException(cdpConnection, function (exception) {
+      const { description } = exception.exceptionDetails.exception;
+      exceptions.push(description);
+    });
   }
 
   async checkBrowserForConsoleErrors() {

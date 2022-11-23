@@ -12,6 +12,7 @@ describe('ButtonLink', () => {
     expect(getByText('Button Link')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-link')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {
@@ -53,7 +54,7 @@ describe('ButtonLink', () => {
     );
   });
 
-  it('should render with different types', () => {
+  it('should render as danger', () => {
     const { getByTestId } = render(
       <>
         <ButtonLink danger data-testid="danger" />

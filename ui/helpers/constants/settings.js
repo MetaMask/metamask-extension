@@ -336,4 +336,18 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('improvedTokenAllowance'),
+    descriptionMessage: (t) => t('improvedTokenAllowanceDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#improved-token-allowance`,
+    icon: 'fa fa-flask',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('transactionSecurityCheck'),
+    descriptionMessage: (t) => t('transactionSecurityCheckDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
+    icon: 'fa fa-flask',
+  },
 ];

@@ -20,7 +20,7 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists } from '../lib/util';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -30,6 +30,22 @@ const defaultCaptureException = (err) => {
   setTimeout(() => {
     throw err;
   });
+};
+
+// The function is used to build a unique messageId for segment messages
+// It uses actionId and uniqueIdentifier from event if present
+const buildUniqueMessageId = (args) => {
+  let messageId = '';
+  if (args.uniqueIdentifier) {
+    messageId += `${args.uniqueIdentifier}-`;
+  }
+  if (args.actionId) {
+    messageId += args.actionId;
+  }
+  if (messageId.length) {
+    return messageId;
+  }
+  return generateRandomId();
 };
 
 const exceptionsToFilter = {
@@ -60,6 +76,8 @@ const exceptionsToFilter = {
  * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
  *  a user opts into metrics.
  * @property {object} [traits] - Traits that are not derived from other state keys.
+ * @property {Record<string any>} [previousUserTraits] - The user traits the last
+ *  time they were computed.
  */
 
 export default class MetaMetricsController {
@@ -110,6 +128,7 @@ export default class MetaMetricsController {
     this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
+    const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
@@ -119,6 +138,9 @@ export default class MetaMetricsController {
       ...initState,
       fragments: {
         ...initState?.fragments,
+      },
+      segmentApiCalls: {
+        ...segmentApiCalls,
       },
     });
 
@@ -142,6 +164,15 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
+    // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
+    if (isManifestV3) {
+      Object.values(segmentApiCalls).forEach(
+        ({ eventType, payload, callback }) => {
+          this._submitSegmentAPICall(eventType, payload, callback);
+        },
+      );
+    }
+
     // Close out event fragments that were created but not progressed. An
     // interval is used to routinely check if a fragment has not been updated
     // within the fragment's timeout window. When creating a new event fragment
@@ -162,17 +193,10 @@ export default class MetaMetricsController {
           });
         }
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = checkAlarmExists(
-            alarms,
-            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-          );
-
-          if (hasAlarm) {
-            this.finalizeAbandonedFragments();
-          }
-        });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
+          this.finalizeAbandonedFragments();
+        }
       });
     } else {
       setInterval(() => {
@@ -225,14 +249,6 @@ export default class MetaMetricsController {
       );
     }
 
-    const existingFragment = this.getExistingEventFragment(
-      options.actionId,
-      options.uniqueIdentifier,
-    );
-    if (existingFragment) {
-      return existingFragment;
-    }
-
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
@@ -260,6 +276,8 @@ export default class MetaMetricsController {
         value: fragment.value,
         currency: fragment.currency,
         environmentType: fragment.environmentType,
+        actionId: options.actionId,
+        uniqueIdentifier: options.uniqueIdentifier,
       });
     }
 
@@ -279,26 +297,6 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
-  }
-
-  /**
-   * Returns the fragment stored in memory with provided id or undefined if it
-   * does not exist.
-   *
-   * @param {string} actionId - actionId passed from UI
-   * @param {string} uniqueIdentifier - uniqueIdentifier of the event
-   * @returns {[MetaMetricsEventFragment]}
-   */
-  getExistingEventFragment(actionId, uniqueIdentifier) {
-    const { fragments } = this.store.getState();
-
-    const existingFragment = Object.values(fragments).find(
-      (fragment) =>
-        fragment.actionId === actionId &&
-        fragment.uniqueIdentifier === uniqueIdentifier,
-    );
-
-    return existingFragment;
   }
 
   /**
@@ -361,6 +359,8 @@ export default class MetaMetricsController {
       value: fragment.value,
       currency: fragment.currency,
       environmentType: fragment.environmentType,
+      actionId: fragment.actionId,
+      uniqueIdentifier: fragment.uniqueIdentifier,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -447,7 +447,10 @@ export default class MetaMetricsController {
    * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
    */
-  trackPage({ name, params, environmentType, page, referrer }, options) {
+  trackPage(
+    { name, params, environmentType, page, referrer, actionId },
+    options,
+  ) {
     try {
       if (this.state.participateInMetaMetrics === false) {
         return;
@@ -462,7 +465,8 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this.segment.page({
+      this._submitSegmentAPICall('page', {
+        messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
         name,
         properties: {
@@ -653,6 +657,7 @@ export default class MetaMetricsController {
     } = rawPayload;
     return {
       event,
+      messageId: buildUniqueMessageId(rawPayload),
       properties: {
         // These values are omitted from properties because they have special meaning
         // in segment. https://segment.com/docs/connections/spec/track/#properties.
@@ -682,7 +687,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    const { traits } = this.store.getState();
+    const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
@@ -703,15 +708,14 @@ export default class MetaMetricsController {
           },
           [],
         ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
-        metamaskState.allCollectibles,
+        metamaskState.allNfts,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
-        metamaskState.allCollectibles,
-      ).length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
+        .length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
@@ -719,17 +723,17 @@ export default class MetaMetricsController {
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
-    if (!this.previousTraits) {
-      this.previousTraits = currentTraits;
+    if (!previousUserTraits) {
+      this.store.updateState({ previousUserTraits: currentTraits });
       return currentTraits;
     }
 
-    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(
         currentTraits,
-        (v, k) => !isEqual(this.previousTraits[k], v),
+        (v, k) => !isEqual(previousUserTraits[k], v),
       );
-      this.previousTraits = currentTraits;
+      this.store.updateState({ previousUserTraits: currentTraits });
       return updates;
     }
 
@@ -762,11 +766,11 @@ export default class MetaMetricsController {
    * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {[]}
    */
-  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
-    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+  _getAllNFTsFlattened = memoize((allNfts = {}) => {
+    return Object.values(allNfts).reduce((result, chainNFTs) => {
       return result.concat(...Object.values(chainNFTs));
     }, []);
   });
@@ -775,11 +779,11 @@ export default class MetaMetricsController {
    * Returns the number of unique collectible/NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {number}
    */
-  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+  _getAllUniqueNFTAddressesLength(allNfts = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);
@@ -815,7 +819,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this.segment.identify({
+      this._submitSegmentAPICall('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -944,10 +948,49 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this.segment.track(payload, callback);
+      this._submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
     });
+  }
+
+  // Method below submits the request to analytics SDK.
+  // It will also add event to controller store
+  // and pass a callback to remove it from store once request is submitted to segment
+  // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
+  // even if service worker terminates before events are submiteed to segment.
+  _submitSegmentAPICall(eventType, payload, callback) {
+    const messageId = payload.messageId || generateRandomId();
+    let timestamp = new Date();
+    if (payload.timestamp) {
+      const payloadDate = new Date(payload.timestamp);
+      if (isValidDate(payloadDate)) {
+        timestamp = payloadDate;
+      }
+    }
+    const modifiedPayload = { ...payload, messageId, timestamp };
+    this.store.updateState({
+      segmentApiCalls: {
+        ...this.store.getState().segmentApiCalls,
+        [messageId]: {
+          eventType,
+          payload: {
+            ...modifiedPayload,
+            timestamp: modifiedPayload.timestamp.toString(),
+          },
+          callback,
+        },
+      },
+    });
+    const modifiedCallback = (result) => {
+      const { segmentApiCalls } = this.store.getState();
+      delete segmentApiCalls[messageId];
+      this.store.updateState({
+        segmentApiCalls,
+      });
+      return callback?.(result);
+    };
+    this.segment[eventType](modifiedPayload, modifiedCallback);
   }
 }

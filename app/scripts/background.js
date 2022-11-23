@@ -15,6 +15,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
@@ -25,6 +26,7 @@ import {
   EVENT_NAMES,
   TRAITS,
 } from '../../shared/constants/metametrics';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import migrations from './migrations';
@@ -79,7 +81,7 @@ const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.metamaskGetState = localStore.get.bind(localStore);
+  global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -88,19 +90,73 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
+const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
 /**
  * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
  * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ *
+ * @param remotePort
  */
-
 const initApp = async (remotePort) => {
   browser.runtime.onConnect.removeListener(initApp);
   await initialize(remotePort);
   log.info('MetaMask initialization complete.');
 };
 
+/**
+ * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
+ * the backend is not active. It is required to re-connect dapps after service worker re-activates.
+ * For non-dapp pages, the message will be sent and ignored.
+ */
+const sendReadyMessageToTabs = async () => {
+  const tabs = await browser.tabs
+    .query({
+      /**
+       * Only query tabs that our extension can run in. To do this, we query for all URLs that our
+       * extension can inject scripts in, which is by using the "<all_urls>" value and __without__
+       * the "tabs" manifest permission. If we included the "tabs" permission, this would also fetch
+       * URLs that we'd not be able to inject in, e.g. chrome://pages, chrome://extension, which
+       * is not what we'd want.
+       *
+       * You might be wondering, how does the "url" param work without the "tabs" permission?
+       *
+       * @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1}
+       *  "If the extension has access to inject scripts into Tab, then we can return the url
+       *   of Tab (because the extension could just inject a script to message the location.href)."
+       */
+      url: '<all_urls>',
+      windowType: 'normal',
+    })
+    .then((result) => {
+      checkForLastErrorAndLog();
+      return result;
+    })
+    .catch(() => {
+      checkForLastErrorAndLog();
+    });
+
+  /** @todo we should only sendMessage to dapp tabs, not all tabs. */
+  for (const tab of tabs) {
+    browser.tabs
+      .sendMessage(tab.id, {
+        name: EXTENSION_MESSAGES.READY,
+      })
+      .then(() => {
+        checkForLastErrorAndLog();
+      })
+      .catch(() => {
+        // An error may happen if the contentscript is blocked from loading,
+        // and thus there is no runtime.onMessage handler to listen to the message.
+        checkForLastErrorAndLog();
+      });
+  }
+};
+
 if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
+  sendReadyMessageToTabs();
 } else {
   // initialization flow
   initialize().catch(log.error);
@@ -438,7 +494,15 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
+        remotePort.postMessage({ name: EXTENSION_MESSAGES.CONNECTION_READY });
+
+        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
+        remotePort.onMessage.addListener((message) => {
+          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
+            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
+            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+          }
+        });
       }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -742,7 +806,7 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.sentryHooks.getSentryState = function () {
+  global.stateHooks.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {

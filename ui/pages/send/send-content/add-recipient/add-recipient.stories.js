@@ -29,13 +29,13 @@ export default {
     updateRecipient: {
       action: 'updateRecipient',
     },
-    ensResolution: {
+    domainResolution: {
       control: 'text',
     },
-    ensError: {
+    domainError: {
       control: 'text',
     },
-    ensWarning: {
+    domainWarning: {
       control: 'text',
     },
     addressBookEntryName: {
@@ -96,8 +96,8 @@ export const ErrorStory = (args) => {
 };
 
 ErrorStory.argTypes = {
-  // ensError must be the key for a translation
-  ensError: { type: 'text', defaultValue: 'loading' },
+  // domainError must be the key for a translation
+  domainError: { type: 'text', defaultValue: 'loading' },
 };
 
 ErrorStory.storyName = 'Error';
@@ -115,8 +115,8 @@ export const WarningStory = (args) => {
 };
 
 WarningStory.argTypes = {
-  // ensWarning must be the key for a translation
-  ensWarning: { type: 'text', defaultValue: 'loading' },
+  // domainWarning must be the key for a translation
+  domainWarning: { type: 'text', defaultValue: 'loading' },
 };
 
 WarningStory.storyName = 'Warning';

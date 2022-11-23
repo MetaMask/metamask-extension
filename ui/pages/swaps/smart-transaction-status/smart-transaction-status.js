@@ -73,8 +73,10 @@ export default function SmartTransactionStatus() {
   const history = useHistory();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
-  const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
-    fetchParams?.metaData || {};
+  const {
+    destinationTokenInfo: fetchParamsDestinationTokenInfo = {},
+    sourceTokenInfo: fetchParamsSourceTokenInfo = {},
+  } = fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
@@ -125,9 +127,14 @@ export default function SmartTransactionStatus() {
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,
-    token_from: sourceTokenInfo?.symbol,
-    token_from_amount: fetchParams?.value,
-    token_to: destinationTokenInfo?.symbol,
+    token_from:
+      fetchParamsSourceTokenInfo.symbol ??
+      latestSmartTransaction?.sourceTokenSymbol,
+    token_from_amount:
+      fetchParams?.value ?? latestSmartTransaction?.swapTokenValue,
+    token_to:
+      fetchParamsDestinationTokenInfo.symbol ??
+      latestSmartTransaction?.destinationTokenSymbol,
     request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
     slippage: fetchParams?.slippage,
     custom_slippage: fetchParams?.slippage === 2,
@@ -142,7 +149,8 @@ export default function SmartTransactionStatus() {
   if (usedQuote?.destinationAmount) {
     destinationValue = calcTokenAmount(
       usedQuote?.destinationAmount,
-      destinationTokenInfo.decimals,
+      fetchParamsDestinationTokenInfo.decimals ??
+        latestSmartTransaction?.destinationTokenDecimals,
     ).toPrecision(8);
   }
   const trackEvent = useContext(MetaMetricsContext);
@@ -214,8 +222,14 @@ export default function SmartTransactionStatus() {
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
     headerText = t('stxSuccess');
-    if (destinationTokenInfo?.symbol) {
-      description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
+    if (
+      fetchParamsDestinationTokenInfo.symbol ||
+      latestSmartTransaction?.destinationTokenSymbol
+    ) {
+      description = t('stxSuccessDescription', [
+        fetchParamsDestinationTokenInfo.symbol ??
+          latestSmartTransaction?.destinationTokenSymbol,
+      ]);
     }
     icon = <SuccessIcon />;
   } else if (
@@ -325,23 +339,34 @@ export default function SmartTransactionStatus() {
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1, marginRight: 2 }}
           >
-            {sourceTokenInfo?.symbol}
+            {fetchParamsSourceTokenInfo.symbol ??
+              latestSmartTransaction?.sourceTokenSymbol}
           </Typography>
-          <UrlIcon
-            url={sourceTokenInfo.iconUrl}
-            className="main-quote-summary__icon"
-            name={sourceTokenInfo.symbol}
-            fallbackClassName="main-quote-summary__icon-fallback"
-          />
+          {fetchParamsSourceTokenInfo.iconUrl ? (
+            <UrlIcon
+              url={fetchParamsSourceTokenInfo.iconUrl}
+              className="main-quote-summary__icon"
+              name={
+                fetchParamsSourceTokenInfo.symbol ??
+                latestSmartTransaction?.destinationTokenSymbol
+              }
+              fallbackClassName="main-quote-summary__icon-fallback"
+            />
+          ) : null}
           <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
             <ArrowIcon />
           </Box>
-          <UrlIcon
-            url={destinationTokenInfo.iconUrl}
-            className="main-quote-summary__icon"
-            name={destinationTokenInfo.symbol}
-            fallbackClassName="main-quote-summary__icon-fallback"
-          />
+          {fetchParamsDestinationTokenInfo.iconUrl ? (
+            <UrlIcon
+              url={fetchParamsDestinationTokenInfo.iconUrl}
+              className="main-quote-summary__icon"
+              name={
+                fetchParamsDestinationTokenInfo.symbol ??
+                latestSmartTransaction?.destinationTokenSymbol
+              }
+              fallbackClassName="main-quote-summary__icon-fallback"
+            />
+          ) : null}
           <Typography
             color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
@@ -355,7 +380,8 @@ export default function SmartTransactionStatus() {
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1 }}
           >
-            {destinationTokenInfo?.symbol}
+            {fetchParamsDestinationTokenInfo.symbol ??
+              latestSmartTransaction?.destinationTokenSymbol}
           </Typography>
         </Box>
         <Box

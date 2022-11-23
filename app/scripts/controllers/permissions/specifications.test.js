@@ -16,7 +16,7 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(4);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(6);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
@@ -29,6 +29,12 @@ describe('PermissionController specifications', () => {
       );
       expect(caveatSpecifications.snapKeyring.type).toStrictEqual(
         SnapCaveatType.SnapKeyring,
+      );
+      expect(caveatSpecifications.snapCronjob.type).toStrictEqual(
+        SnapCaveatType.SnapCronjob,
+      );
+      expect(caveatSpecifications.transactionOrigin.type).toStrictEqual(
+        SnapCaveatType.TransactionOrigin,
       );
     });
 

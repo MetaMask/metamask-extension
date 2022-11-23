@@ -21,11 +21,18 @@
       position: absolute;
       margin-top: 55px;
       margin-inline-start: -75px;
+      z-index: 1;
     }
   }
 
   #custom-spending-cap-input-value {
     color: var(--color-error-default);
     padding-inline-end: 60px;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']:hover::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
   }
 }

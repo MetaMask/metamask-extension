@@ -58,6 +58,14 @@ export const MESSAGE_TYPE = {
 } as const;
 
 /**
+ * Custom messages to send and be received by the extension
+ */
+export const EXTENSION_MESSAGES = {
+  CONNECTION_READY: 'CONNECTION_READY',
+  READY: 'METAMASK_EXTENSION_READY',
+} as const;
+
+/**
  * The different kinds of subjects that MetaMask may interact with, including
  * third parties and itself (e.g. when the background communicated with the UI).
  */

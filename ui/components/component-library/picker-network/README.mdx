@@ -1,0 +1,47 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { PickerNetwork } from './picker-network';
+
+# PickerNetwork
+
+The `PickerNetwork` is used for the action of changing a network.
+
+<Canvas>
+  <Story id="ui-components-component-library-picker-network-picker-network-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `PickerNetwork` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+
+<ArgsTable of={PickerNetwork} />
+
+### Src
+
+Use the `src` prop with an image url to render the `AvatarNetwork`.
+
+<Canvas>
+  <Story id="ui-components-component-library-picker-network-picker-network-stories-js--src" />
+</Canvas>
+
+```jsx
+import { PickerNetwork } from '../../ui/component-library/picker-network';
+  <PickerNetwork src="./images/arbitrum.svg" />
+  <PickerNetwork src="./images/matic-token.png" />
+  <PickerNetwork src="./images/optimism.svg" />
+```
+
+### Label
+
+Use the `label` prop for the text content of the `PickerNetwork` component
+
+<Canvas>
+  <Story id="ui-components-component-library-picker-network-picker-network-stories-js--label" />
+</Canvas>
+
+```jsx
+import { PickerNetwork } from '../../ui/component-library/picker-network';
+  <PickerNetwork label="Arbitrum One" />
+  <PickerNetwork label="Polygon Mainnet" />
+  <PickerNetwork label="Optimism" />
+```
