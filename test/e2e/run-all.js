@@ -52,27 +52,24 @@ async function main() {
 
   const { browser, retries, snaps, mv3 } = argv;
 
-  let testDir = path.join(__dirname, 'tests');
+  let testPaths;
 
   if (snaps) {
-    testDir = path.join(__dirname, 'snaps');
-  }
-
-  let testPaths = await getTestPathsForTestDir(testDir);
-
-  if (mv3) {
+    const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else {
+    const testDir = path.join(__dirname, 'tests');
     testPaths = [
-      ...testPaths,
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
-      path.join(__dirname, 'metamask-ui.spec.js'),
-    ];
-  } else if (!snaps) {
-    testPaths = [
-      ...testPaths,
+      ...(await getTestPathsForTestDir(testDir)),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
+
+    if (mv3) {
+      testPaths.push(
+        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      );
+    }
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
