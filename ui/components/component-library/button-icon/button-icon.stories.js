@@ -152,13 +152,18 @@ export const AriaLabel = (args) => (
 
 export const As = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
-    <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} />
+    <ButtonIcon
+      {...args}
+      iconName={ICON_NAMES.CLOSE_OUTLINE}
+      ariaLabel="close"
+    />
     <ButtonIcon
       as="a"
       href="#"
       {...args}
       color={COLORS.PRIMARY_DEFAULT}
       iconName={ICON_NAMES.EXPORT}
+      ariaLabel="demo"
     />
   </Box>
 );
@@ -168,12 +173,13 @@ export const Href = (args) => (
 );
 
 Href.args = {
+  ariaLabel: 'Visit Metamask.io',
   href: 'https://metamask.io/',
   color: COLORS.PRIMARY_DEFAULT,
 };
 
 export const Color = (args) => (
-  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
 );
 
 Color.args = {
@@ -181,7 +187,7 @@ Color.args = {
 };
 
 export const Disabled = (args) => (
-  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
 );
 
 Disabled.args = {
