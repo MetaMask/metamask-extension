@@ -44,6 +44,7 @@ import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-s
 import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
+import { setCustomTokenAmount } from '../../ducks/app/app';
 
 export default function TokenAllowance({
   origin,
@@ -131,6 +132,7 @@ export default function TokenAllowance({
 
   const handleReject = () => {
     dispatch(updateCustomNonce(''));
+    dispatch(setCustomTokenAmount(''));
 
     dispatch(cancelTx(fullTxData)).then(() => {
       dispatch(clearConfirmTransaction());
