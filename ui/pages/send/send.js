@@ -25,7 +25,7 @@ import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
 import SendFooter from './send-footer';
-import EnsInput from './send-content/add-recipient/ens-input';
+import DomainInput from './send-content/add-recipient/domain-input';
 
 const sendSliceIsCustomPriceExcessive = (state) =>
   isCustomPriceExcessive(state, true);
@@ -112,7 +112,7 @@ export default function SendTransactionScreen() {
   return (
     <div className="page-container">
       <SendHeader history={history} />
-      <EnsInput
+      <DomainInput
         userInput={userInput}
         className="send__to-row"
         onChange={(address) => dispatch(updateRecipientUserInput(address))}

@@ -1,0 +1,9 @@
+.mm-form-text-field {
+  --help-text-opacity-disabled: 0.5;
+
+  &--disabled {
+    .mm-form-text-field__help-text {
+      opacity: var(--help-text-opacity-disabled);
+    }
+  }
+}

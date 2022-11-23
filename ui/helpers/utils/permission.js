@@ -74,6 +74,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
+  [RestrictedMethods.snap_getEntropy]: {
+    label: (t) => t('permission_getEntropy'),
+    leftIcon: 'fas fa-key',
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_manageState]: {
     label: (t) => t('permission_manageState'),
     leftIcon: 'fas fa-download',
@@ -105,6 +110,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:cronjob']]: {
     label: (t) => t('permission_cronjob'),
     leftIcon: 'fas fa-clock',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:ethereum-provider']]: {
+    label: (t) => t('permission_ethereumProvider'),
+    leftIcon: 'fab fa-ethereum',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN
