@@ -21,6 +21,8 @@ describe('Add account', function () {
       },
     ],
   };
+  const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
+  const thirdAccount = '0xD38d853771Fb546bd8B18b2F3638491bC0B0E906';
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
@@ -81,10 +83,9 @@ describe('Add account', function () {
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');
         const secondAccountAddress = await driver.findElement({
-          text: '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59',
+          text: secondAccount,
           tag: 'div',
         });
-
         const secondAccountPublicAddress = await secondAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -109,10 +110,9 @@ describe('Add account', function () {
         );
         await driver.waitForSelector('.qr-code__address');
         const thirdAccountAddress = await driver.findElement({
-          text: '0xD38d853771Fb546bd8B18b2F3638491bC0B0E906',
+          text: thirdAccount,
           tag: 'div',
         });
-
         const thirdAccountPublicAddress = await thirdAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -167,10 +167,9 @@ describe('Add account', function () {
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');
         const recreatedSecondAccountAddress = await driver.findElement({
-          text: '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59',
+          text: secondAccount,
           tag: 'div',
         });
-
         assert.equal(
           await recreatedSecondAccountAddress.getText(),
           secondAccountPublicAddress,
@@ -194,10 +193,9 @@ describe('Add account', function () {
 
         // get the public address for the "third account"
         const recreatedThirdAccountAddress = await driver.findElement({
-          text: '0xD38d853771Fb546bd8B18b2F3638491bC0B0E906',
+          text: thirdAccount,
           tag: 'div',
         });
-
         assert.strictEqual(
           await recreatedThirdAccountAddress.getText(),
           thirdAccountPublicAddress,
