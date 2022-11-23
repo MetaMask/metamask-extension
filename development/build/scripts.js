@@ -894,6 +894,16 @@ function setupBundlerDefaults(
     fullPaths: isDevBuild(buildTarget) || isTestBuild(buildTarget),
     // For sourcemaps
     debug: true,
+    /**
+     * @see {@link https://github.com/browserify/browserify#browserifyfiles--opts}
+     * `opts.paths` is an array of directories that browserify searches when looking for modules which
+     * are not referenced using relative path. Can be absolute or relative to `basedir`. Equivalent of
+     * setting `NODE_PATH` environmental variable when calling `browserify` command.
+     *
+     * In the case of MetaMask, this allows imports like `a/b/c` instead of `../../../../a/b/c`
+     * This is important because VSCode autocomplete import will always suggest the path relative to the root package.json
+     */
+    paths: ['.'],
   });
 
   // Ensure react-devtools is only included in dev builds
