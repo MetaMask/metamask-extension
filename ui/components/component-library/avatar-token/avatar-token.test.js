@@ -50,9 +50,9 @@ describe('AvatarToken', () => {
   // className
   it('should render with custom className', () => {
     const { getByTestId } = render(
-      <AvatarToken data-testid="avatar-base" className="test-class" />,
+      <AvatarToken data-testid="avatar-token" className="test-class" />,
     );
-    expect(getByTestId('avatar-base')).toHaveClass('test-class');
+    expect(getByTestId('avatar-token')).toHaveClass('test-class');
   });
   // color
   it('should render with different colors', () => {
