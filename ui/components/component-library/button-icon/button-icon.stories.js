@@ -58,7 +58,7 @@ export default {
       control: 'boolean',
     },
     href: {
-      control: 'string',
+      control: 'text',
     },
     iconName: {
       control: 'select',
