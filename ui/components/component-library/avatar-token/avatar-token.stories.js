@@ -40,10 +40,10 @@ export default {
       options: Object.values(BORDER_COLORS),
       control: 'select',
     },
-    tokenName: {
+    name: {
       control: 'text',
     },
-    tokenImageUrl: {
+    src: {
       control: 'text',
     },
     showHalo: {
@@ -51,8 +51,8 @@ export default {
     },
   },
   args: {
-    tokenName: 'ast',
-    tokenImageUrl: './AST.png',
+    name: 'ast',
+    src: './AST.png',
     size: SIZES.MD,
     showHalo: false,
   },
@@ -75,12 +75,12 @@ export const Size = (args) => (
   </Box>
 );
 
-export const TokenName = Template.bind({});
-TokenName.args = {
-  tokenImageUrl: '',
+export const Name = Template.bind({});
+Name.args = {
+  src: '',
 };
 
-export const TokenImageUrl = Template.bind({});
+export const Src = Template.bind({});
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
@@ -93,18 +93,18 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
-      tokenName="G"
+      name="G"
       color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
     <AvatarToken
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      tokenName="G"
+      name="G"
       color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
   </Box>
 );
 ColorBackgroundColorAndBorderColor.args = {
-  tokenImageUrl: '',
+  src: '',
 };

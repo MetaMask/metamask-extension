@@ -34,29 +34,60 @@ Defaults to `md`
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--size" />
 </Canvas>
 
-### Token Name
+```jsx
+import { AvatarToken } from '../../component-library';
 
-Use the `tokenName` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `tokenImageUrl` prop.
+  <AvatarToken size={SIZES.XS} />
+  <AvatarToken size={SIZES.SM} />
+  <AvatarToken size={SIZES.MD} />
+  <AvatarToken size={SIZES.LG} />
+  <AvatarToken size={SIZES.XL} />
+```
+
+### Name
+
+Use the `name` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `src` prop.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-name" />
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--name" />
 </Canvas>
 
-### Token Image Url
+```jsx
+import { AvatarToken } from '../../component-library';
 
-Use the `tokenImageUrl` prop to set the image to be rendered of the `AvatarToken`.
+  <AvatarToken name="A" />
+  <AvatarToken name="G" />
+```
+
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarToken`.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-image-url" />
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--src" />
 </Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+  <AvatarToken src="./AST.png" />
+  <AvatarToken src="./BAT_icon.svg" />
+```
 
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `tokenImageUrl`
+If we want to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--show-halo" />
 </Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+  <AvatarToken src="./AST.png" showHalo/>
+  <AvatarToken src="./BAT_icon.svg" showHalo/>
+```
 
 ### Color, Background Color And Border Color
 
@@ -65,3 +96,25 @@ Use the `color`, `backgroundColor` and `borderColor` props to set the text color
 <Canvas>
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--color-background-color-and-border-color" />
 </Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken
+  backgroundColor={COLORS.GOERLI}
+  borderColor={COLORS.GOERLI}
+  name="G"
+  color={COLORS.PRIMARY_INVERSE}
+  >
+  G
+</AvatarBase>
+<AvatarToken
+  backgroundColor={COLORS.SEPOLIA}
+  borderColor={COLORS.SEPOLIA}
+  name="G"
+  color={COLORS.PRIMARY_INVERSE}
+>
+  S
+</AvatarToken>
+```
