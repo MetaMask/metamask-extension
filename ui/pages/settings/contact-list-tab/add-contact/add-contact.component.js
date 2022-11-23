@@ -143,7 +143,7 @@ export default class AddContact extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          disabled={Boolean(this.state.error)}
+          disabled={Boolean(this.state.error || !this.state.ethAddress)}
           onSubmit={async () => {
             await addToAddressBook(
               domainResolution || this.state.ethAddress,
