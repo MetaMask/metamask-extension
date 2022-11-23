@@ -8,8 +8,8 @@ import {
   BORDER_RADIUS,
   COLORS,
   DISPLAY,
-  TEXT,
   JUSTIFY_CONTENT,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 
 export const Tag = ({ label, className, labelProps, ...props }) => {

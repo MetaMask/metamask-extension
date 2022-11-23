@@ -5,8 +5,8 @@ import classnames from 'classnames';
 import {
   DISPLAY,
   SIZES,
-  TEXT,
   ALIGN_ITEMS,
+  TEXT,
   COLORS,
 } from '../../../helpers/constants/design-system';
 

@@ -5,9 +5,9 @@ import classnames from 'classnames';
 import {
   COLORS,
   FONT_WEIGHT,
+  TEXT,
   DISPLAY,
   ALIGN_ITEMS,
-  TEXT,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
 

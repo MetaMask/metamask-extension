@@ -10,8 +10,8 @@ import {
   COLORS,
   DISPLAY,
   SIZES,
-  TEXT,
   BORDER_RADIUS,
+  TEXT,
 } from '../../../helpers/constants/design-system';
 
 export const PickerNetwork = ({

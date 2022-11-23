@@ -5,6 +5,7 @@ import Box from '../../ui/box';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
+  TEXT,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
@@ -35,7 +36,7 @@ export const ValidTags = [
 export const Text = React.forwardRef(
   (
     {
-      variant = TEXT_VARIANTS.BODY_MD,
+      variant = TEXT.BODY_MD,
       color = TEXT_COLORS.TEXT_DEFAULT,
       fontWeight,
       fontStyle,

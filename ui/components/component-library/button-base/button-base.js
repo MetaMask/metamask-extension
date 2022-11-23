@@ -10,8 +10,8 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  TEXT,
   TEXT_COLORS,
+  TEXT,
   SIZES,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
