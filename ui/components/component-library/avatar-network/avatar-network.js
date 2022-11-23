@@ -69,7 +69,7 @@ export const AvatarNetwork = ({
             }
             onError={handleOnError}
             src={src}
-            alt={`${name} logo` || 'token logo'}
+            alt={`${name} logo` || 'network logo'}
           />
         </>
       )}
