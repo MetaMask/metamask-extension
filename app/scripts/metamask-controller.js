@@ -2436,6 +2436,7 @@ export default class MetamaskController extends EventEmitter {
             'submitEncryptionKey: Stored salt and vault salt do not match',
           );
           await this.clearLoginArtifacts();
+          return;
         }
 
         await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
