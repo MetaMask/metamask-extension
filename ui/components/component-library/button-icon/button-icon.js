@@ -92,7 +92,7 @@ ButtonIcon.propTypes = {
   iconProps: PropTypes.object,
   /**
    * The size of the ButtonIcon.
-   * Possible values could be 'SIZES.SM', 'SIZES.LG',
+   * Possible values could be 'SIZES.SM' 24px, 'SIZES.LG' 32px,
    */
   size: PropTypes.oneOf(Object.values(BUTTON_ICON_SIZES)),
   /**
