@@ -10,6 +10,7 @@ export { ButtonIcon } from './button-icon';
 export { ButtonLink } from './button-link';
 export { ButtonPrimary } from './button-primary';
 export { ButtonSecondary } from './button-secondary';
+export { FormTextField } from './form-text-field';
 export { HelpText } from './help-text';
 export { Icon, ICON_NAMES } from './icon';
 export { Label } from './label';
@@ -17,7 +18,7 @@ export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text } from './text';
-export { TextField } from './text-field';
+export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export {
   TextFieldBase,
   TEXT_FIELD_BASE_SIZES,
