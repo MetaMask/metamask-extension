@@ -1,4 +1,3 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 

@@ -9,6 +9,7 @@ import {
   COLORS,
   JUSTIFY_CONTENT,
   OVERFLOW_WRAP,
+  FLEX_DIRECTION,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
@@ -17,7 +18,7 @@ export const Copyable = ({ text }: { text: string }) => {
   return (
     <Box
       backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-      alignItems={ALIGN_ITEMS.CENTER}
+      alignItems={ALIGN_ITEMS.STRETCH}
       justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
       borderRadius={BORDER_RADIUS.SM}
       paddingLeft={4}
@@ -33,8 +34,11 @@ export const Copyable = ({ text }: { text: string }) => {
         {text}
       </Typography>
       <Box
+        flexDirection={FLEX_DIRECTION.COLUMN}
         alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JUSTIFY_CONTENT.FLEX_START}
+        marginTop={2}
+        marginBottom={1}
       >
         {copied ? (
           <IconCopied color="var(--color-icon-alternative)" size={18} />
