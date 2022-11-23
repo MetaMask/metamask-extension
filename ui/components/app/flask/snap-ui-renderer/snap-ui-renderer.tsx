@@ -2,23 +2,35 @@ import React from 'react';
 import { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import nanoid from 'nanoid';
+import {
+  isComponent,
+  Component,
+  Panel,
+  Heading,
+  Text,
+  NodeType,
+} from '@metamask/snaps-ui';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { getSnap } from '../../../../selectors';
 
 export type SnapUIRendererProps = {
+  snapId: string;
   data: Json;
 };
 
 // TODO: Types
-const UI_MAPPING = {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  panel: (props) => ({
+const UI_MAPPING: Record<
+  NodeType,
+  (arg: Component) => Record<string, unknown>
+> = {
+  panel: (props: Panel) => ({
     element: 'Box',
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     children: props.children.map(mapToTemplate),
   }),
-  heading: (props) => ({
+  heading: (props: Heading) => ({
     element: 'Typography',
     children: props.text,
     props: {
@@ -26,7 +38,7 @@ const UI_MAPPING = {
       fontWeight: 'bold',
     },
   }),
-  text: (props) => ({
+  text: (props: Text) => ({
     element: 'Typography',
     children: props.text,
     props: {
@@ -48,10 +60,14 @@ const UI_MAPPING = {
   divider: () => ({
     element: 'hr',
   }),
+  // TODO
+  copyable: () => ({
+    element: 'hr',
+  }),
 };
 
 // TODO: Type
-const mapToTemplate = (data: Json) => {
+const mapToTemplate = (data: Component) => {
   const { type } = data;
   const mapped = UI_MAPPING[type](data);
   // TODO: We may want to have deterministic keys at some point
@@ -65,7 +81,11 @@ export const SnapUIRenderer = ({ snapId, data }: SnapUIRendererProps) => {
   if (!snap) {
     return null;
   }
-  // TODO: Validate
+
+  if (!isComponent(data)) {
+    // TODO: Should this throw?
+    return null;
+  }
 
   const sections = mapToTemplate(data);
 
