@@ -13,10 +13,15 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
-function chunk(array, chunkSize) {
+function chunk(array, totalChunks) {
   const result = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
+  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+    result.push(
+      array.slice(
+        Math.ceil(((array.length + 1) / totalChunks) * chunkIndex),
+        Math.ceil(((array.length + 1) / totalChunks) * (chunkIndex + 1)),
+      ),
+    );
   }
   return result;
 }
@@ -77,8 +82,7 @@ async function main() {
   // For running E2Es in parallel in CI
   const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
   const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
-  const chunkSize = Math.ceil(testPaths.length / totalChunks);
-  const chunks = chunk(testPaths, chunkSize);
+  const chunks = chunk(testPaths, totalChunks);
   const currentChunk = chunks[currentChunkIndex];
 
   for (const testPath of currentChunk) {
