@@ -216,9 +216,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "Salva queste $1 come mie preferite per \"Avanzate\""
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Utilizzare sempre questi valori e l'impostazione avanzata come predefiniti."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Tariffa gas avanzata"
   },
