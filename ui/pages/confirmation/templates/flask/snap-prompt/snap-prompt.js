@@ -1,3 +1,4 @@
+import { ethErrors } from 'eth-rpc-errors';
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
@@ -76,7 +77,11 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
     submitText: t('submit'),
     onSubmit: (inputValue) =>
       actions.resolvePendingApproval(pendingApproval.id, inputValue),
-    onCancel: () => actions.rejectPendingApproval(pendingApproval.id, null),
+    onCancel: () =>
+      actions.rejectPendingApproval(
+        pendingApproval.id,
+        ethErrors.provider.userRejectedRequest().serialize(),
+      ),
   };
 }
 
