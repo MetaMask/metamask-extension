@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ALIGN_ITEMS,
@@ -11,12 +12,7 @@ import {
 import Box from '../../../ui/box';
 import { Icon, Text } from '../../../component-library';
 
-export type SnapDelineatorProps = {
-  snapName: string;
-  children: React.ReactNode;
-};
-
-export const SnapDelineator = ({ snapName, children }: SnapDelineatorProps) => {
+export const SnapDelineator = ({ snapName, children }) => {
   const t = useI18nContext();
 
   return (
@@ -52,4 +48,9 @@ export const SnapDelineator = ({ snapName, children }: SnapDelineatorProps) => {
       </Box>
     </Box>
   );
+};
+
+SnapDelineator.propTypes = {
+  snapName: PropTypes.string,
+  children: PropTypes.ReactNode,
 };

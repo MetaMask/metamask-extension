@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
 import IconCopied from '../../../ui/icon/icon-copied';
 import IconCopy from '../../../ui/icon/icon-copy';
@@ -13,7 +14,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
-export const Copyable = ({ text }: { text: string }) => {
+export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
   return (
     <Box
@@ -52,4 +53,8 @@ export const Copyable = ({ text }: { text: string }) => {
       </Box>
     </Box>
   );
+};
+
+Copyable.propTypes = {
+  text: PropTypes.string,
 };
