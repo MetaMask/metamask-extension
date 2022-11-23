@@ -13,7 +13,7 @@ describe('MV3 - Dapp interactions', function () {
       },
     ],
   };
-  it('should Dapp interaction continue to function after service worker re-start', async function () {
+  it('should continue to support dapp interactions after service worker re-start', async function () {
     await withFixtures(
       {
         dapp: true,
