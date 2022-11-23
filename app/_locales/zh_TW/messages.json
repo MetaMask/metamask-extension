@@ -1725,7 +1725,7 @@
     "message": "優先手續費 (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Total Gas Fee"
+    "message": "總燃料費用"
   },
   "transactionResubmitted": {
     "message": "交易重新送出，手續費提高至 $1 @ $2"
