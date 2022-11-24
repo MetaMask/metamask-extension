@@ -11,7 +11,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
-
 export const AvatarToken = ({
   size = AVATAR_TOKEN_SIZES.MD,
   name,
