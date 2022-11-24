@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-
 import {
   COLORS,
   SIZES,
@@ -11,6 +10,7 @@ import {
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export const AvatarNetwork = ({
   size = SIZES.MD,
@@ -95,7 +95,7 @@ AvatarNetwork.propTypes = {
    * Possible values could be 'SIZES.XS'(16px), 'SIZES.SM'(24px), 'SIZES.MD'(32px), 'SIZES.LG'(40px), 'SIZES.XL'(48px)
    * Defaults to SIZES.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_NETWORK_SIZES)),
   /**
    * The background color of the AvatarNetwork
    * Defaults to COLORS.BACKGROUND_ALTERNATIVE

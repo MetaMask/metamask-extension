@@ -13,6 +13,7 @@ import Box from '../../ui/box/box';
 
 import README from './README.mdx';
 import { AvatarNetwork } from './avatar-network';
+import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
@@ -53,7 +54,7 @@ export default {
   args: {
     name: 'Arbitrum One',
     src: './images/arbitrum.svg',
-    size: SIZES.MD,
+    size: AVATAR_NETWORK_SIZES.MD,
     showHalo: false,
   },
 };
@@ -67,11 +68,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarNetwork {...args} size={SIZES.XS} />
-    <AvatarNetwork {...args} size={SIZES.SM} />
-    <AvatarNetwork {...args} size={SIZES.MD} />
-    <AvatarNetwork {...args} size={SIZES.LG} />
-    <AvatarNetwork {...args} size={SIZES.XL} />
+    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.XS} />
+    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.SM} />
+    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.MD} />
+    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.LG} />
+    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.XL} />
   </Box>
 );
 
