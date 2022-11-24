@@ -5782,6 +5782,7 @@
         "Node": true
       },
       "packages": {
+        "@lavamoat/snow>is-cross-origin>is-window": true,
         "proxyquire>fill-keys>is-object": true,
         "react-inspector>is-dom>is-window": true
       }

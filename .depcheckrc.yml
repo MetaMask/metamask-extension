@@ -4,6 +4,7 @@ ignores:
   # webapp deps
   #
 
+  - '@lavamoat/snow'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'

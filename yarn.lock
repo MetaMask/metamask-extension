@@ -2559,6 +2559,13 @@
     through2 "^4.0.2"
     umd "^3.0.3"
 
+"@lavamoat/snow@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.2.1.tgz#87587e46940b26a966b665e62cd867d0cfbce47e"
+  integrity sha512-gC4oyvjNkFOOjhL9W4wP1YC0dcdQJPYKNW8fbwcP5iYogLL2fs1KIsHoF41WIhuWQ9mUdfg1jKBCTq41m+5VSw==
+  dependencies:
+    is-cross-origin "^1.0.1"
+
 "@ledgerhq/cryptoassets@^5.27.2":
   version "5.53.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-5.53.0.tgz#11dcc93211960c6fd6620392e4dd91896aaabe58"
@@ -14475,6 +14482,13 @@ is-core-module@^2.4.0, is-core-module@^2.8.1, is-core-module@^2.9.0:
   integrity sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==
   dependencies:
     has "^1.0.3"
+
+is-cross-origin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-cross-origin/-/is-cross-origin-1.0.1.tgz#b73ee0bbcf9f640a4c4f17bcf3cc229e3dae11e8"
+  integrity sha512-l0VqOliZJ0tJTFkNGa1kJilL9q+wCKw2wLX6qoXVtWUFKiqXvLaf4kAu4+9xAg6QJGKc41CDaFYSxmO9Iw1vuw==
+  dependencies:
+    is-window "^1.0.2"
 
 is-data-descriptor@^0.1.4:
   version "0.1.4"

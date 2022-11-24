@@ -9,7 +9,7 @@
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
-    "start": "yarn build:dev dev --apply-lavamoat=false",
+    "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
     "dist": "yarn build dist",
@@ -138,6 +138,7 @@
     "@spruceid/siwe-parser": "^1.1.3",
     "@truffle/codec": "^0.11.18",
     "@truffle/decoder": "^5.1.0",
+    "@lavamoat/snow": "^1.2.1",
     "@zxing/browser": "^0.0.10",
     "@zxing/library": "0.8.0",
     "await-semaphore": "^0.1.1",
