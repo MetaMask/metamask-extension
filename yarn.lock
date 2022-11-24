@@ -2842,12 +2842,7 @@
     pbkdf2 "^3.0.9"
     randombytes "^2.0.1"
 
-"@metamask/browser-passworder@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.1.tgz#bb2613bb1886774e18da4107ab94a21042e5e3da"
-  integrity sha512-mtekzCKph/S/15hRfWFDIUrpvz9mNoIU0CmH0SOlTHpLhalonEsZ+56MbQQUDshXbytzHp1eKr29OHrIx0u9iQ==
-
-"@metamask/browser-passworder@^4.0.2":
+"@metamask/browser-passworder@^4.0.1", "@metamask/browser-passworder@^4.0.2":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.2.tgz#436d7252aad56763baa5e5608e60a170ac9458d7"
   integrity sha512-fC1EdXCd2nRZXCNcoCUODOV3p7dGkwYfWzZlqocBrckCv0+J6MQw2aIjFPER0laS/+OB86w89QFOtwzPZuuYkw==
