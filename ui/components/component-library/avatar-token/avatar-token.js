@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
-import { BaseAvatar } from '../base-avatar';
+import { AvatarBase } from '../avatar-base';
 
 import {
   COLORS,
@@ -36,7 +36,7 @@ export const AvatarToken = ({
   const fallbackString = tokenName && tokenName[0] ? tokenName[0] : '?';
 
   return (
-    <BaseAvatar
+    <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
@@ -71,7 +71,7 @@ export const AvatarToken = ({
           />
         </>
       )}
-    </BaseAvatar>
+    </AvatarBase>
   );
 };
 

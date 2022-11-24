@@ -10,6 +10,8 @@ import {
   ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 
+import { ICON_SIZES } from './icon.constants';
+
 export const Icon = ({
   name,
   size = SIZES.MD,
@@ -21,15 +23,15 @@ export const Icon = ({
   return (
     <Box
       color={color}
-      className={classnames(className, 'icon', `icon--size-${size}`)}
+      className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
       style={{
         /**
          * To reduce the possibility of injection attacks
          * the icon component uses mask-image instead of rendering
          * the svg directly.
          */
-        maskImage: `url('./images/icons/icon-${name}.svg`,
-        WebkitMaskImage: `url('./images/icons/icon-${name}.svg`,
+        maskImage: `url('./images/icons/icon-${name}.svg')`,
+        WebkitMaskImage: `url('./images/icons/icon-${name}.svg')`,
         ...style,
       }}
       {...props}
@@ -44,10 +46,10 @@ Icon.propTypes = {
   name: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
    * The size of the Icon.
-   * Possible values could be 'SIZES.XXS', 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL',
-   * Default value is 'SIZES.MD'.
+   * Possible values could be SIZES.XXS (10px), SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
+   * Default value is SIZES.MD (20px).
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(ICON_SIZES)),
   /**
    * The color of the icon.
    * Defaults to COLORS.INHERIT.
