@@ -36,16 +36,16 @@ Defaults to `md`
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-  <AvatarNetwork size={SIZES.XS} />
-  <AvatarNetwork size={SIZES.SM} />
-  <AvatarNetwork size={SIZES.MD} />
-  <AvatarNetwork size={SIZES.LG} />
-  <AvatarNetwork size={SIZES.XL} />
+<AvatarNetwork size={SIZES.XS} />
+<AvatarNetwork size={SIZES.SM} />
+<AvatarNetwork size={SIZES.MD} />
+<AvatarNetwork size={SIZES.LG} />
+<AvatarNetwork size={SIZES.XL} />
 ```
 
 ###  Name
 
-Use the `name` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `src` prop.
+Use the `name` prop to set the initial letter of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `src` prop.
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--name" />
@@ -53,8 +53,8 @@ Use the `name` prop to set the initial alphabet of the `AvatarNetwork`. This wil
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-  <AvatarNetwork name="A" />
-  <AvatarNetwork name="G" />
+<AvatarNetwork name="A" />
+<AvatarNetwork name="G" />
 ```
 
 ###  Src
@@ -67,13 +67,13 @@ Use the `src` prop to set the image to be rendered of the `AvatarNetwork`.
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-  <AvatarNetwork src="./images/arbitrum.svg" />
-  <AvatarNetwork src="./images/optimism.svg" />
+<AvatarNetwork src="./images/arbitrum.svg" />
+<AvatarNetwork src="./images/optimism.svg" />
 ```
 
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `src`
+Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--show-halo" />
@@ -81,8 +81,8 @@ If we want to display the component with halo effect. Only works if an image url
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-  <AvatarNetwork src="./images/arbitrum.svg" showHalo/>
-  <AvatarNetwork src="./images/optimism.svg" showHalo/>
+<AvatarNetwork src="./images/arbitrum.svg" showHalo/>
+<AvatarNetwork src="./images/optimism.svg" showHalo/>
 ```
 
 ### Color, Background Color And Border Color
@@ -101,7 +101,7 @@ import { AvatarNetwork } from '../../component-library';
   borderColor={COLORS.GOERLI}
   name="G"
   color={COLORS.PRIMARY_INVERSE}
-  >
+>
   G
 </AvatarBase>
 <AvatarNetwork

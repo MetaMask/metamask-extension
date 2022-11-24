@@ -80,7 +80,19 @@ Name.args = {
   src: '',
 };
 
-export const Src = Template.bind({});
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarNetwork {...args} src="./images/matic-token.png" />
+    <AvatarNetwork {...args} src="./images/arbitrum.svg" />
+    <AvatarNetwork {...args} src="./images/optimism.svg" />
+    <AvatarNetwork {...args} src="./images/avax-token.png" />
+    <AvatarNetwork {...args} src="./images/palm.svg" />
+    <AvatarNetwork {...args} src="./images/bsc-filled.svg" />
+    <AvatarNetwork {...args} src="./images/fantom-opera.svg" />
+    <AvatarNetwork {...args} src="./images/harmony-one.svg" />
+    <AvatarNetwork {...args} src="./images/aurora.png" />
+  </Box>
+);
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
