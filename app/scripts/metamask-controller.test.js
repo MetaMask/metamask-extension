@@ -12,7 +12,7 @@ import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
-import { addHexPrefix } from './lib/util';
+import { addHexPrefix, deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -1238,11 +1238,3 @@ describe('MetaMaskController', function () {
     });
   });
 });
-
-function deferredPromise() {
-  let resolve;
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
-  });
-  return { promise, resolve };
-}
