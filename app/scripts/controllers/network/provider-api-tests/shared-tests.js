@@ -708,6 +708,32 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
       expect(results).toStrictEqual(mockResults);
     });
   });
+
+  it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
+    await withMockedCommunications({ type: providerType }, async (comms) => {
+      const request = { method };
+
+      comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+      // This is our request.
+      comms.mockRpcCall({
+        request,
+        response: {
+          result: {
+            blockNumber: '0x200',
+          },
+        },
+      });
+      comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
+
+      await withClient(
+        { type: providerType },
+        async ({ makeRpcCall, blockTracker }) => {
+          await makeRpcCall(request);
+          expect(blockTracker.getCurrentBlock()).toStrictEqual('0x300');
+        },
+      );
+    });
+  });
 }
 
 /**
