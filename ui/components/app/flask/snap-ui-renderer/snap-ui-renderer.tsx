@@ -20,7 +20,6 @@ export type SnapUIRendererProps = {
   data: Json;
 };
 
-// TODO: Types
 const UI_MAPPING: Record<NodeType, (arg: any) => Record<string, unknown>> = {
   panel: (props: Panel) => ({
     element: 'Box',
@@ -63,7 +62,6 @@ const UI_MAPPING: Record<NodeType, (arg: any) => Record<string, unknown>> = {
   }),
 };
 
-// TODO: Type
 const mapToTemplate = (data: Component) => {
   const { type } = data;
   const mapped = UI_MAPPING[type](data);
