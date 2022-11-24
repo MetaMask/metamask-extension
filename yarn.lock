@@ -2761,7 +2761,7 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
-"@metamask/address-book-controller@1.0.0":
+"@metamask/address-book-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/address-book-controller/-/address-book-controller-1.0.0.tgz#b9899164384672a0e85ddee49b7809dcf5083182"
   integrity sha512-LNDbSPxfFQPnUYAFE2JDTeeuvAwCcw07aqCvvePUGYVG4NJ1GXurcyhcTkMNr3RRuJIKni8YlvDo3H7X+fWVtg==
@@ -2769,14 +2769,14 @@
     "@metamask/base-controller" "~1.0.0"
     "@metamask/controller-utils" "~1.0.0"
 
-"@metamask/announcement-controller@1.0.0":
+"@metamask/announcement-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/announcement-controller/-/announcement-controller-1.0.0.tgz#4173ee68bfd10f8b2078b75f9f59665c7414c245"
   integrity sha512-9noNDpQ2x19VQkF5/TuBaPZFXw/lf73w/8rzZSItR5w91oIr7mvLC4gNQlXxC5S6thcrjEo+aY7vnw3IAFvRXQ==
   dependencies:
     "@metamask/base-controller" "~1.0.0"
 
-"@metamask/approval-controller@1.0.0", "@metamask/approval-controller@~1.0.0":
+"@metamask/approval-controller@^1.0.0", "@metamask/approval-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/approval-controller/-/approval-controller-1.0.0.tgz#2dc8144f89756b955250b183f07ba08e223aa441"
   integrity sha512-iP7SrvvSC6JQ78j6Yy4whs839xq15OAB81Q+UJ6tOqGaT9BpN/PBHeP8x5c1Ov3pCQkBi9Y+n5VlfJz5dGS7+Q==
@@ -2787,7 +2787,7 @@
     immer "^9.0.6"
     nanoid "^3.1.31"
 
-"@metamask/assets-controllers@1.0.0":
+"@metamask/assets-controllers@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.0.tgz#10ee4e0bd005a2d26b78562641250a153cba5618"
   integrity sha512-QUTtp4xJrh6sSkAByh0c7U7x2n50zU5wF++tkutsVyoQGwSurX8ZQwvf8W3l+3ARzHxy/l+Zc3JFhysJ9dn2Xw==
@@ -2824,7 +2824,7 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/base-controller@1.0.0", "@metamask/base-controller@~1.0.0":
+"@metamask/base-controller@^1.0.0", "@metamask/base-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
   integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
@@ -2857,7 +2857,7 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
   integrity sha512-weTsrXfDQHOgYaiI5giMcOAsD3ChcwnoryasT7xmAfLSKIbKP3RTTUu63VWYBoFCBZugHrhKD6z+N+nm8qAWBQ==
 
-"@metamask/controller-utils@1.0.0", "@metamask/controller-utils@~1.0.0":
+"@metamask/controller-utils@^1.0.0", "@metamask/controller-utils@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/controller-utils/-/controller-utils-1.0.0.tgz#2e2261b65c3f38ba0c5b893743fca8cce764339c"
   integrity sha512-LXIpnmF/C5/vCBX0u2DiUWA55utZy54guUV+A8qUYmz8PvZrXfK7mdq1zlk8z0aq+aO0rHHfSVbTNacEE3TlAQ==
@@ -3020,7 +3020,7 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/gas-fee-controller@1.0.0":
+"@metamask/gas-fee-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/gas-fee-controller/-/gas-fee-controller-1.0.0.tgz#d0922ce83c69ac7adaf1b5957d206190283efba7"
   integrity sha512-qzpS4lCzBDhWWwq+YmDXwGQdhNrXvsX3ltQYPI5RGPn5x3WYgyhvULdaP+nzk/wxH2sshPNNyyUmP6DhE+aYHQ==
@@ -3083,7 +3083,7 @@
     immer "^9.0.6"
     web3-provider-engine "^16.0.3"
 
-"@metamask/notification-controller@1.0.0":
+"@metamask/notification-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/notification-controller/-/notification-controller-1.0.0.tgz#46ffce7098c8965006796ed0b024224f478f3e4a"
   integrity sha512-M6LDHq1Lm4mLvr/2QkRS0pClntGqT740BPpa8Veu/LkB0Q/A2mU7Xg/yIW5Q+K5bc6VVVPQouYib8pGrN4ZU5A==
@@ -3119,7 +3119,7 @@
     "@metamask/safe-event-emitter" "^2.0.0"
     through2 "^2.0.3"
 
-"@metamask/permission-controller@1.0.0", "@metamask/permission-controller@~1.0.0":
+"@metamask/permission-controller@^1.0.0", "@metamask/permission-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/permission-controller/-/permission-controller-1.0.0.tgz#5f357b34bc98623b0109fda0e5a83aaece872336"
   integrity sha512-cZqdHw77PWXMxrNLU2gTgMTf3895VlUBfbld8bw2fRkYqybuVyT/risR3Md1ciMWhMek5qMUwD/pk8M+jSkAJw==
@@ -3135,7 +3135,7 @@
     json-rpc-engine "^6.1.0"
     nanoid "^3.1.31"
 
-"@metamask/phishing-controller@1.0.0":
+"@metamask/phishing-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/phishing-controller/-/phishing-controller-1.0.0.tgz#119721e4e0c0e2926445cdc3ae46a8afafadd174"
   integrity sha512-47dIlhdVfWcp2cJ2thVs9SsIxyscWFte4RJ/zLk4m/GpP4LaPZB5zcoAHBKWjDkSHlQyO9AScVnDGfurs1ziHA==
@@ -3201,7 +3201,7 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rate-limit-controller@1.0.0":
+"@metamask/rate-limit-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/rate-limit-controller/-/rate-limit-controller-1.0.0.tgz#06dd16c07e827965683060f93d9229c4d0751efd"
   integrity sha512-2ngqwufeZnMfOBDCUr0+a8vTLqTpgAIdlV5Gwk4YYaE3m3QsBK+uelZGMTV1b7mvYtf4KjARzij9zaACHseH3g==
@@ -3323,7 +3323,7 @@
     ses "^0.17.0"
     superstruct "^0.16.7"
 
-"@metamask/subject-metadata-controller@1.0.0":
+"@metamask/subject-metadata-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.0.tgz#a3f3390995c3541981aa4fe6cfcad0d69122f358"
   integrity sha512-ED6teocVxVQO7ykourRp+USHNg7LsxATBYgquFPkGgyIJAbOVMvHAuWFijhA1SiiuV51M3ehMl9oX3/f6Y7Tkg==
