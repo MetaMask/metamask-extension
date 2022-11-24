@@ -35,6 +35,7 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
+      href={href}
       paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       className={classnames(

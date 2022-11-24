@@ -166,11 +166,9 @@ export default class MetaMetricsController {
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(segmentApiCalls).forEach(
-        ({ eventType, payload, callback }) => {
-          this._submitSegmentAPICall(eventType, payload, callback);
-        },
-      );
+      Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
+        this._submitSegmentAPICall(eventType, payload);
+      });
     }
 
     // Close out event fragments that were created but not progressed. An
@@ -961,6 +959,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId) {
+      return;
+    }
+
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {
@@ -979,7 +982,6 @@ export default class MetaMetricsController {
             ...modifiedPayload,
             timestamp: modifiedPayload.timestamp.toString(),
           },
-          callback,
         },
       },
     });

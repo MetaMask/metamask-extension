@@ -12,6 +12,37 @@ describe('Icon', () => {
     );
     expect(getByTestId('icon')).toBeDefined();
     expect(container.querySelector('svg')).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
+  it('should render with a custom class', () => {
+    const { getByTestId } = render(
+      <Icon
+        name={ICON_NAMES.ADD_SQUARE_FILLED}
+        data-testid="icon"
+        className="test-class"
+      />,
+    );
+    expect(getByTestId('icon')).toHaveClass('test-class');
+  });
+  it('should render with an aria-label attribute', () => {
+    /**
+     * We aren't specifically adding an ariaLabel prop because in most cases
+     * the icon should be decorative or be accompanied by text. Also if the icon
+     * is to be used as a button in most cases ButtonIcon should be used. However
+     * we should test if it's possible to pass an aria-label attribute to the
+     * root html element.
+     */
+    const { getByTestId } = render(
+      <Icon
+        name={ICON_NAMES.ADD_SQUARE_FILLED}
+        data-testid="icon"
+        aria-label="test aria label"
+      />,
+    );
+    expect(getByTestId('icon')).toHaveAttribute(
+      'aria-label',
+      'test aria label',
+    );
   });
   it('should render with different icons using mask-image and image urls', () => {
     const { getByTestId } = render(
@@ -33,16 +64,16 @@ describe('Icon', () => {
     );
     expect(
       window.getComputedStyle(getByTestId('icon-add-square-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-add-square-filled.svg`);
+    ).toBe(`url('./images/icons/icon-add-square-filled.svg')`);
     expect(
       window.getComputedStyle(getByTestId('icon-bank-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-bank-filled.svg`);
+    ).toBe(`url('./images/icons/icon-bank-filled.svg')`);
     expect(
       window.getComputedStyle(getByTestId('icon-bookmark-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-bookmark-filled.svg`);
+    ).toBe(`url('./images/icons/icon-bookmark-filled.svg')`);
     expect(
       window.getComputedStyle(getByTestId('icon-calculator-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-calculator-filled.svg`);
+    ).toBe(`url('./images/icons/icon-calculator-filled.svg')`);
   });
   it('should render with different size classes', () => {
     const { getByTestId } = render(
@@ -84,13 +115,13 @@ describe('Icon', () => {
         />
       </>,
     );
-    expect(getByTestId('icon-xxs')).toHaveClass('icon--size-xxs');
-    expect(getByTestId('icon-xs')).toHaveClass('icon--size-xs');
-    expect(getByTestId('icon-sm')).toHaveClass('icon--size-sm');
-    expect(getByTestId('icon-md')).toHaveClass('icon--size-md');
-    expect(getByTestId('icon-lg')).toHaveClass('icon--size-lg');
-    expect(getByTestId('icon-xl')).toHaveClass('icon--size-xl');
-    expect(getByTestId('icon-auto')).toHaveClass('icon--size-auto');
+    expect(getByTestId('icon-xxs')).toHaveClass('mm-icon--size-xxs');
+    expect(getByTestId('icon-xs')).toHaveClass('mm-icon--size-xs');
+    expect(getByTestId('icon-sm')).toHaveClass('mm-icon--size-sm');
+    expect(getByTestId('icon-md')).toHaveClass('mm-icon--size-md');
+    expect(getByTestId('icon-lg')).toHaveClass('mm-icon--size-lg');
+    expect(getByTestId('icon-xl')).toHaveClass('mm-icon--size-xl');
+    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-auto');
   });
   it('should render with icon colors', () => {
     const { getByTestId } = render(

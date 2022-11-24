@@ -38,7 +38,7 @@
         "crypto.getRandomValues": true
       }
     },
-    "eth-keyring-controller>browser-passworder": {
+    "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
         "crypto": true
       }

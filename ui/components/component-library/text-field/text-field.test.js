@@ -1,20 +1,13 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
-import { renderControlledInput } from '../../../../test/lib/render-helpers';
+import {
+  renderControlledInput,
+  renderWithUserEvent,
+} from '../../../../test/lib/render-helpers';
 
 import { TextField } from './text-field';
-
-// userEvent setup function as per testing-library docs
-// https://testing-library.com/docs/user-event/intr
-function setup(jsx) {
-  return {
-    user: userEvent.setup(),
-    ...render(jsx),
-  };
-}
 
 describe('TextField', () => {
   it('should render correctly', () => {
@@ -22,7 +15,7 @@ describe('TextField', () => {
     expect(getByRole('textbox')).toBeDefined();
   });
   it('should render and be able to input text', async () => {
-    const { user, getByRole } = setup(<TextField />);
+    const { user, getByRole } = renderWithUserEvent(<TextField />);
     const textField = getByRole('textbox');
     await user.type(textField, 'text value');
     expect(textField).toHaveValue('text value');
@@ -46,7 +39,7 @@ describe('TextField', () => {
   });
   it('should render and fire onChange event', async () => {
     const onChange = jest.fn();
-    const { user, getByRole } = setup(
+    const { user, getByRole } = renderWithUserEvent(
       <TextField
         inputProps={{ 'data-testid': 'text-field' }}
         onChange={onChange}
@@ -60,7 +53,7 @@ describe('TextField', () => {
   });
   it('should render and fire onClick event', async () => {
     const onClick = jest.fn();
-    const { user, getByTestId } = setup(
+    const { user, getByTestId } = renderWithUserEvent(
       <TextField data-testid="text-field" onClick={onClick} />,
     );
     await user.click(getByTestId('text-field'));

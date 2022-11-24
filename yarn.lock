@@ -2559,6 +2559,13 @@
     through2 "^4.0.2"
     umd "^3.0.3"
 
+"@lavamoat/snow@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.2.1.tgz#87587e46940b26a966b665e62cd867d0cfbce47e"
+  integrity sha512-gC4oyvjNkFOOjhL9W4wP1YC0dcdQJPYKNW8fbwcP5iYogLL2fs1KIsHoF41WIhuWQ9mUdfg1jKBCTq41m+5VSw==
+  dependencies:
+    is-cross-origin "^1.0.1"
+
 "@ledgerhq/cryptoassets@^5.27.2":
   version "5.53.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-5.53.0.tgz#11dcc93211960c6fd6620392e4dd91896aaabe58"
@@ -2839,6 +2846,11 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-3.0.0.tgz#c06744e66a968ffa13f70cc71a7d3b15d86b0ee7"
   integrity sha512-hD10mgvhcDkZX8wnauw8udp1K2MzcbZfrN7Yon9sQ+OqVK9kiQ4VhZAyZNZTy9KJLtfoVD9Y2F6L4gEese7hDA==
+
+"@metamask/browser-passworder@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.1.tgz#bb2613bb1886774e18da4107ab94a21042e5e3da"
+  integrity sha512-mtekzCKph/S/15hRfWFDIUrpvz9mNoIU0CmH0SOlTHpLhalonEsZ+56MbQQUDshXbytzHp1eKr29OHrIx0u9iQ==
 
 "@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.35.0":
   version "1.36.0"
@@ -11315,6 +11327,18 @@ eth-keyring-controller@^7.0.2:
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
 
+eth-keyring-controller@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-8.0.1.tgz#02bddda96251aadc739179802ab3dd2f9415d12a"
+  integrity sha512-6LDnvOIxbA+P6lAAAzde4Kb6hyB70Zs8gPp/enuDrvvFO79LCWGCzP0rre7OQC+agwFsU0gSHJXkRZK8llgPSg==
+  dependencies:
+    "@metamask/bip39" "^4.0.0"
+    "@metamask/browser-passworder" "^4.0.1"
+    "@metamask/eth-hd-keyring" "^4.0.2"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    obs-store "^4.0.3"
+
 eth-lattice-keyring@^0.12.3:
   version "0.12.3"
   resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.12.3.tgz#32ee3db427d15f1d76f907a36ddc34f4aab205ba"
@@ -14610,6 +14634,13 @@ is-core-module@^2.4.0, is-core-module@^2.8.1, is-core-module@^2.9.0:
   integrity sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==
   dependencies:
     has "^1.0.3"
+
+is-cross-origin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-cross-origin/-/is-cross-origin-1.0.1.tgz#b73ee0bbcf9f640a4c4f17bcf3cc229e3dae11e8"
+  integrity sha512-l0VqOliZJ0tJTFkNGa1kJilL9q+wCKw2wLX6qoXVtWUFKiqXvLaf4kAu4+9xAg6QJGKc41CDaFYSxmO9Iw1vuw==
+  dependencies:
+    is-window "^1.0.2"
 
 is-data-descriptor@^0.1.4:
   version "0.1.4"
