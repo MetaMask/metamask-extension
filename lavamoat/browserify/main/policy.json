@@ -3105,6 +3105,7 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
+        "nock>debug": true,
         "watchify>xtend": true
       }
     },

@@ -1002,12 +1002,12 @@
         "path.join": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       }
     },
     "@lavamoat/lavapack>combine-source-map>inline-source-map": {
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
@@ -1040,6 +1040,16 @@
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
+      }
+    },
+    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": {
+      "packages": {
+        "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": true
+      }
+    },
+    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
       }
     },
     "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": {
@@ -2190,13 +2200,6 @@
         "string.prototype.matchall>es-abstract": true
       }
     },
-    "enzyme>object.values": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract": true
-      }
-    },
     "eslint": {
       "builtin": {
         "assert": true,
@@ -2772,7 +2775,6 @@
         "eslint-plugin-react-hooks": true,
         "eslint>ajv": true,
         "eslint>globals": true,
-        "eslint>import-fresh": true,
         "eslint>minimatch": true,
         "eslint>strip-json-comments": true,
         "globby>ignore": true,
@@ -3697,7 +3699,8 @@
         "path.sep": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.concat": true,
+        "Buffer.from": true
       },
       "packages": {
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map": true,
