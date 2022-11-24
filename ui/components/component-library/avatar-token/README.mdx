@@ -37,11 +37,11 @@ Defaults to `md`
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-  <AvatarToken size={SIZES.XS} />
-  <AvatarToken size={SIZES.SM} />
-  <AvatarToken size={SIZES.MD} />
-  <AvatarToken size={SIZES.LG} />
-  <AvatarToken size={SIZES.XL} />
+<AvatarToken size={SIZES.XS} />
+<AvatarToken size={SIZES.SM} />
+<AvatarToken size={SIZES.MD} />
+<AvatarToken size={SIZES.LG} />
+<AvatarToken size={SIZES.XL} />
 ```
 
 ### Name
@@ -55,8 +55,8 @@ Use the `name` prop to set the initial letter of the `AvatarToken`. This will be
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-  <AvatarToken name="A" />
-  <AvatarToken name="G" />
+<AvatarToken name="A" />
+<AvatarToken name="G" />
 ```
 
 ### Src
@@ -70,13 +70,13 @@ Use the `src` prop to set the image to be rendered of the `AvatarToken`.
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-  <AvatarToken src="./AST.png" />
-  <AvatarToken src="./BAT_icon.svg" />
+<AvatarToken src="./AST.png" />
+<AvatarToken src="./BAT_icon.svg" />
 ```
 
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `src`
+Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--show-halo" />
@@ -85,8 +85,8 @@ If we want to display the component with halo effect. Only works if an image url
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-  <AvatarToken src="./AST.png" showHalo/>
-  <AvatarToken src="./BAT_icon.svg" showHalo/>
+<AvatarToken src="./AST.png" showHalo/>
+<AvatarToken src="./BAT_icon.svg" showHalo/>
 ```
 
 ### Color, Background Color And Border Color
@@ -106,7 +106,7 @@ import { AvatarToken } from '../../component-library';
   borderColor={COLORS.GOERLI}
   name="G"
   color={COLORS.PRIMARY_INVERSE}
-  >
+>
   G
 </AvatarBase>
 <AvatarToken

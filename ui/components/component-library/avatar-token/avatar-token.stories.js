@@ -13,6 +13,7 @@ import Box from '../../ui/box/box';
 
 import README from './README.mdx';
 import { AvatarToken } from './avatar-token';
+import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
@@ -26,7 +27,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_TOKEN_SIZES),
     },
     color: {
       options: Object.values(TEXT_COLORS),
@@ -51,8 +52,8 @@ export default {
     },
   },
   args: {
-    name: 'ast',
-    src: './AST.png',
+    name: 'eth',
+    src: './images/eth_logo.svg',
     size: SIZES.MD,
     showHalo: false,
   },
@@ -67,11 +68,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarToken {...args} size={SIZES.XS} />
-    <AvatarToken {...args} size={SIZES.SM} />
-    <AvatarToken {...args} size={SIZES.MD} />
-    <AvatarToken {...args} size={SIZES.LG} />
-    <AvatarToken {...args} size={SIZES.XL} />
+    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.XS} />
+    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.SM} />
+    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.MD} />
+    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.LG} />
+    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.XL} />
   </Box>
 );
 
@@ -80,7 +81,29 @@ Name.args = {
   src: '',
 };
 
-export const Src = Template.bind({});
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarToken {...args} src="./images/eth_logo.svg" />
+    <AvatarToken {...args} src="./images/arbitrum.svg" />
+    <AvatarToken {...args} src="./images/bnb.png" />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format"
+    />
+  </Box>
+);
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {

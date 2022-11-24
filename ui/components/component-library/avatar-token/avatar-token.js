@@ -3,17 +3,17 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
 import { AvatarBase } from '../avatar-base';
-
 import {
   COLORS,
-  SIZES,
   DISPLAY,
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
+
 
 export const AvatarToken = ({
-  size = SIZES.MD,
+  size = AVATAR_TOKEN_SIZES.MD,
   name,
   src,
   showHalo,
@@ -92,10 +92,10 @@ AvatarToken.propTypes = {
   showHalo: PropTypes.bool,
   /**
    * The size of the AvatarToken.
-   * Possible values could be 'SIZES.XS'(16px), 'SIZES.SM'(24px), 'SIZES.MD'(32px), 'SIZES.LG'(40px), 'SIZES.XL'(48px)
-   * Defaults to SIZES.MD
+   * Possible values could be 'AVATAR_TOKEN_SIZES.XS'(16px), 'AVATAR_TOKEN_SIZES.SM'(24px), 'AVATAR_TOKEN_SIZES.MD'(32px), 'AVATAR_TOKEN_SIZES.LG'(40px), 'AVATAR_TOKEN_SIZES.XL'(48px)
+   * Defaults to AVATAR_TOKEN_SIZES.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_TOKEN_SIZES)),
   /**
    * The background color of the AvatarToken
    * Defaults to COLORS.BACKGROUND_ALTERNATIVE
