@@ -82,7 +82,6 @@ const getMaxPriorityFeeWarning = (
     return undefined;
   }
   if (
-    Number(maxPriorityFeePerGas) !== 0 &&
     bnLessThan(
       maxPriorityFeePerGas,
       gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,

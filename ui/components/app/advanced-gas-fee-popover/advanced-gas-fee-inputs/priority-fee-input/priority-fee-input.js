@@ -25,7 +25,6 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
-    Number(value) !== 0 &&
     gasFeeEstimates?.low &&
     bnLessThan(value, gasFeeEstimates.low.suggestedMaxPriorityFeePerGas)
   ) {
