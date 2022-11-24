@@ -635,6 +635,7 @@
         "@metamask/controllers>abort-controller": true,
         "@metamask/controllers>async-mutex": true,
         "@metamask/controllers>eth-json-rpc-infura": true,
+        "@metamask/controllers>eth-keyring-controller": true,
         "@metamask/controllers>eth-method-registry": true,
         "@metamask/controllers>eth-phishing-detect": true,
         "@metamask/controllers>ethereumjs-wallet": true,
@@ -649,7 +650,6 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
-        "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
@@ -803,6 +803,37 @@
       "packages": {
         "@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": true,
         "safe-event-emitter": true
+      }
+    },
+    "@metamask/controllers>eth-keyring-controller": {
+      "packages": {
+        "@metamask/controllers>eth-keyring-controller>browser-passworder": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true,
+        "eth-sig-util": true
+      }
+    },
+    "@metamask/controllers>eth-keyring-controller>browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": true
+      }
+    },
+    "@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": {
+      "globals": {
+        "atob": true,
+        "btoa": true
       }
     },
     "@metamask/controllers>eth-method-registry": {
@@ -1463,6 +1494,7 @@
         "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/rpc-methods>@metamask/controllers>eth-keyring-controller": true,
         "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": true,
         "@metamask/rpc-methods>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/rpc-methods>nanoid": true,
@@ -1471,7 +1503,6 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
-        "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
@@ -1483,6 +1514,18 @@
         "punycode": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>eth-keyring-controller": {
+      "packages": {
+        "@metamask/controllers>eth-keyring-controller>browser-passworder": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true,
+        "eth-sig-util": true
       }
     },
     "@metamask/rpc-methods>@metamask/controllers>eth-method-registry": {
@@ -1651,6 +1694,7 @@
         "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": true,
@@ -1659,7 +1703,6 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
-        "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
@@ -1671,6 +1714,18 @@
         "punycode": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": {
+      "packages": {
+        "@metamask/controllers>eth-keyring-controller>browser-passworder": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true,
+        "eth-sig-util": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": {
@@ -1848,6 +1903,7 @@
         "@metamask/controllers>web3": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller": true,
         "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry": true,
         "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/snaps-controllers>nanoid": true,
@@ -1856,7 +1912,6 @@
         "deep-freeze-strict": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
-        "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
@@ -1868,6 +1923,18 @@
         "punycode": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller": {
+      "packages": {
+        "@metamask/controllers>eth-keyring-controller>browser-passworder": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true,
+        "eth-sig-util": true
       }
     },
     "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry": {
@@ -3250,8 +3317,8 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/browser-passworder": true,
         "eth-keyring-controller>@metamask/eth-hd-keyring": true,
-        "eth-keyring-controller>browser-passworder": true,
         "eth-keyring-controller>eth-simple-keyring": true,
         "eth-keyring-controller>obs-store": true,
         "eth-sig-util": true
@@ -3263,6 +3330,15 @@
         "browserify>crypto-browserify>pbkdf2": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-wallet>randombytes": true
+      }
+    },
+    "eth-keyring-controller>@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto": true
+      },
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "eth-keyring-controller>@metamask/eth-hd-keyring": {
@@ -3292,21 +3368,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "eth-keyring-controller>browser-passworder": {
-      "globals": {
-        "btoa": true,
-        "crypto": true
-      },
-      "packages": {
-        "eth-keyring-controller>browser-passworder>browserify-unibabel": true
-      }
-    },
-    "eth-keyring-controller>browser-passworder>browserify-unibabel": {
-      "globals": {
-        "atob": true,
-        "btoa": true
       }
     },
     "eth-keyring-controller>eth-simple-keyring": {

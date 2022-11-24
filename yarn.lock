@@ -2786,6 +2786,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-3.0.0.tgz#c06744e66a968ffa13f70cc71a7d3b15d86b0ee7"
   integrity sha512-hD10mgvhcDkZX8wnauw8udp1K2MzcbZfrN7Yon9sQ+OqVK9kiQ4VhZAyZNZTy9KJLtfoVD9Y2F6L4gEese7hDA==
 
+"@metamask/browser-passworder@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.1.tgz#bb2613bb1886774e18da4107ab94a21042e5e3da"
+  integrity sha512-mtekzCKph/S/15hRfWFDIUrpvz9mNoIU0CmH0SOlTHpLhalonEsZ+56MbQQUDshXbytzHp1eKr29OHrIx0u9iQ==
+
 "@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.35.0":
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
@@ -11183,6 +11188,18 @@ eth-keyring-controller@^7.0.2:
     "@metamask/bip39" "^4.0.0"
     "@metamask/eth-hd-keyring" "^4.0.2"
     browser-passworder "^2.0.3"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    obs-store "^4.0.3"
+
+eth-keyring-controller@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-8.0.1.tgz#02bddda96251aadc739179802ab3dd2f9415d12a"
+  integrity sha512-6LDnvOIxbA+P6lAAAzde4Kb6hyB70Zs8gPp/enuDrvvFO79LCWGCzP0rre7OQC+agwFsU0gSHJXkRZK8llgPSg==
+  dependencies:
+    "@metamask/bip39" "^4.0.0"
+    "@metamask/browser-passworder" "^4.0.1"
+    "@metamask/eth-hd-keyring" "^4.0.2"
     eth-sig-util "^3.0.1"
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
