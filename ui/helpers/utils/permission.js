@@ -117,6 +117,12 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fab fa-ethereum',
     rightIcon: null,
   },
+  [EndowmentPermissions['endowment:rpc']]: {
+    // TODO: Icon and copy.
+    label: (t) => t('permission_rpc'),
+    leftIcon: 'fas fa-code',
+    rightIcon: null,
+  },
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: {
     label: (t, permissionName) =>
