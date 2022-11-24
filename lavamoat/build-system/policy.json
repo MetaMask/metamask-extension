@@ -1002,12 +1002,12 @@
         "path.join": true
       },
       "globals": {
-        "Buffer.from": true
+        "Buffer": true
       }
     },
     "@lavamoat/lavapack>combine-source-map>inline-source-map": {
       "globals": {
-        "Buffer.from": true
+        "Buffer": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
@@ -2190,6 +2190,13 @@
         "string.prototype.matchall>es-abstract": true
       }
     },
+    "enzyme>object.values": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract": true
+      }
+    },
     "eslint": {
       "builtin": {
         "assert": true,
@@ -2765,6 +2772,7 @@
         "eslint-plugin-react-hooks": true,
         "eslint>ajv": true,
         "eslint>globals": true,
+        "eslint>import-fresh": true,
         "eslint>minimatch": true,
         "eslint>strip-json-comments": true,
         "globby>ignore": true,
@@ -3689,8 +3697,7 @@
         "path.sep": true
       },
       "globals": {
-        "Buffer.concat": true,
-        "Buffer.from": true
+        "Buffer": true
       },
       "packages": {
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map": true,
