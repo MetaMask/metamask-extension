@@ -1,5 +1,4 @@
 /* eslint-disable jest/require-top-level-describe, jest/no-export, jest/no-identical-title */
-
 import { fill } from 'lodash';
 import {
   withMockedCommunications,
@@ -87,12 +86,12 @@ async function waitForPromiseToBeFulfilledAfterRunningAllTimers(
 /* eslint-disable-next-line jest/no-export */
 export function testsForRpcMethodNotHandledByMiddleware(
   method,
-  { numberOfParameters, providerType = 'infura' },
+  { providerType = 'infura' },
 ) {
   it(`attempts to pass the request off to a ${providerType} provider`, async () => {
     const request = {
-      method,
-      params: fill(Array(numberOfParameters), 'some value'),
+      method: method.name,
+      params: fill(Array(method.params.length), 'some value'),
     };
     const expectedResult = 'the result';
 
@@ -130,7 +129,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
   { providerType = 'infura' } = { providerType: 'infura' },
 ) {
   it(`does not hit ${providerType} provider more than once for identical requests`, async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = ['first result', 'second result'];
 
     await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -153,7 +152,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
   });
 
   it(`hits ${providerType} provider and does not reuse the result of a previous request if the latest block number was updated since`, async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = ['first result', 'second result'];
 
     await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -192,7 +191,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
   it.each([null, undefined, '\u003cnil\u003e'])(
     'does not reuse the result of a previous request if it was `%s`',
     async (emptyValue) => {
-      const requests = [{ method }, { method }];
+      const requests = [{ method: method.name }, { method: method.name }];
       const mockResults = [emptyValue, 'some result'];
 
       await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -220,7 +219,11 @@ export function testsForRpcMethodAssumingNoBlockParam(
   );
 
   it('queues requests while a previous identical call is still pending, then runs the queue when it finishes, reusing the result from the first request', async () => {
-    const requests = [{ method }, { method }, { method }];
+    const requests = [
+      { method: method.name },
+      { method: method.name },
+      { method: method.name },
+    ];
     const mockResults = ['first result', 'second result', 'third result'];
 
     await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -269,7 +272,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
   it(`throws a custom error if the request to ${providerType} provider returns a 405 response`, async () => {
     await withMockedCommunications({ type: providerType }, async (comms) => {
-      const request = { method };
+      const request = { method: method.name };
 
       // The first time a block-cacheable request is made, the latest block
       // number is retrieved through the block tracker first. It doesn't
@@ -294,7 +297,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
   it(`throws a custom error if the request to ${providerType} provider returns a 429 response`, async () => {
     await withMockedCommunications({ type: providerType }, async (comms) => {
-      const request = { method };
+      const request = { method: method.name };
 
       // The first time a block-cacheable request is made, the latest block
       // number is retrieved through the block tracker first. It doesn't
@@ -321,7 +324,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
   it(`throws a custom error if the request to ${providerType} provider returns a response that is not 405, 429, 503, or 504`, async () => {
     await withMockedCommunications({ type: providerType }, async (comms) => {
-      const request = { method };
+      const request = { method: method.name };
 
       // The first time a block-cacheable request is made, the latest block
       // number is retrieved through the block tracker first. It doesn't
@@ -352,7 +355,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
   [503, 504].forEach((httpStatus) => {
     it(`retries the request to ${providerType} provider up to 5 times if it returns a ${httpStatus} response, returning the successful result if there is one on the 5th try`, async () => {
       await withMockedCommunications({ type: providerType }, async (comms) => {
-        const request = { method };
+        const request = { method: method.name };
 
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
@@ -391,7 +394,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
     it(`causes a request to fail with a custom error if the request to ${providerType} provider returns a ${httpStatus} response 5 times in a row`, async () => {
       await withMockedCommunications({ type: providerType }, async (comms) => {
-        const request = { method };
+        const request = { method: method.name };
 
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
@@ -418,7 +421,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         const err =
           providerType === 'infura'
             ? infuraClientErrorTimeout
-            : jsonRpcClientErrorTimeout(method);
+            : jsonRpcClientErrorTimeout(method.name);
         await expect(promiseForResult).rejects.toThrow(err);
       });
     });
@@ -433,7 +436,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
-            const request = { method };
+            const request = { method: method.name };
 
             // The first time a block-cacheable request is made, the latest block
             // number is retrieved through the block tracker first. It doesn't
@@ -472,7 +475,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
     it(`causes a request to fail with a custom error if an "${errorMessagePrefix}" error is thrown while making the request to ${providerType} provider 5 times in a row`, async () => {
       await withMockedCommunications({ type: providerType }, async (comms) => {
-        const request = { method };
+        const request = { method: method.name };
 
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
@@ -499,7 +502,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         if (providerType === 'infura') {
           err = infuraClientErrorWithReason(errMsg);
         } else if (errorMessagePrefix === 'ETIMEDOUT') {
-          err = jsonRpcClientErrorTimeout(method);
+          err = jsonRpcClientErrorTimeout(method.name);
         } else {
           err = jsonRpcClientErrorWithReason(errMsg);
         }
@@ -525,7 +528,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   { providerType = 'infura' } = { providerType: 'infura' },
 ) {
   it(`does not hit ${providerType} provider more than once for identical requests and it has a valid blockHash`, async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
     await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -548,7 +551,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   });
 
   it(`hits ${providerType} provider and does not reuse the result of a previous request if the latest block number was updated since`, async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
     await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -587,7 +590,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   it.each([null, undefined, '\u003cnil\u003e'])(
     'does not reuse the result of a previous request if it was `%s`',
     async (emptyValue) => {
-      const requests = [{ method }, { method }];
+      const requests = [{ method: method.name }, { method: method.name }];
       const mockResults = [emptyValue, { blockHash: '0x100' }];
 
       await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -616,7 +619,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   );
 
   it('does not reuse the result of a previous request if result.blockHash was null', async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = [
       { blockHash: null, extra: 'some value' },
       { blockHash: '0x100', extra: 'some other value' },
@@ -646,7 +649,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   });
 
   it('does not reuse the result of a previous request if result.blockHash was undefined', async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = [
       { extra: 'some value' },
       { blockHash: '0x100', extra: 'some other value' },
@@ -676,7 +679,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
   });
 
   it('does not reuse the result of a previous request if result.blockHash was "0x0000000000000000000000000000000000000000000000000000000000000000"', async () => {
-    const requests = [{ method }, { method }];
+    const requests = [{ method: method.name }, { method: method.name }];
     const mockResults = [
       {
         blockHash:
@@ -711,7 +714,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
 
   it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
     await withMockedCommunications({ type: providerType }, async (comms) => {
-      const request = { method };
+      const request = { method: method.name };
 
       comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
       // This is our request.
@@ -749,8 +752,14 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
 /* eslint-disable-next-line jest/no-export */
 export function testsForRpcMethodSupportingBlockParam(
   method,
-  { blockParamIndex, providerType = 'infura' },
+  { providerType = 'infura' },
 ) {
+  const blockParamIndex = method.params.findIndex((p) => p.name === 'Block');
+
+  if (blockParamIndex === -1) {
+    throw new Error(`Block param not found in method: ${method.name}`);
+  }
+
   describe.each([
     ['given no block tag', 'none'],
     ['given a block tag of "latest"', 'latest', 'latest'],
@@ -762,8 +771,8 @@ export function testsForRpcMethodSupportingBlockParam(
 
     it(`does not hit ${providerType} provider more than once for identical requests`, async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        { method: method.name, params },
+        { method: method.name, params },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -799,8 +808,8 @@ export function testsForRpcMethodSupportingBlockParam(
     if (providerType === 'infura') {
       it(`hits ${providerType} provider and does not reuse the result of a previous request if the latest block number was updated since`, async () => {
         const requests = [
-          { method, params },
-          { method, params },
+          { method: method.name, params },
+          { method: method.name, params },
         ];
         const mockResults = ['first result', 'second result'];
 
@@ -856,8 +865,8 @@ export function testsForRpcMethodSupportingBlockParam(
       'does not reuse the result of a previous request if it was `%s`',
       async (emptyValue) => {
         const requests = [
-          { method, params },
-          { method, params },
+          { method: method.name, params },
+          { method: method.name, params },
         ];
         const mockResults = [emptyValue, 'some result'];
 
@@ -903,7 +912,11 @@ export function testsForRpcMethodSupportingBlockParam(
     );
 
     it('queues requests while a previous identical call is still pending, then runs the queue when it finishes, reusing the result from the first request', async () => {
-      const requests = [{ method }, { method }, { method }];
+      const requests = [
+        { method: method.name },
+        { method: method.name },
+        { method: method.name },
+      ];
       const mockResults = ['first result', 'second result', 'third result'];
 
       await withMockedCommunications({ type: providerType }, async (comms) => {
@@ -974,7 +987,7 @@ export function testsForRpcMethodSupportingBlockParam(
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
-            const request = { method };
+            const request = { method: method.name };
 
             // The first time a block-cacheable request is made, the
             // block-cache middleware will request the latest block number
@@ -1012,7 +1025,7 @@ export function testsForRpcMethodSupportingBlockParam(
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
-            const request = { method };
+            const request = { method: method.name };
 
             // The first time a block-cacheable request is made, the
             // block-cache middleware will request the latest block number
@@ -1053,7 +1066,7 @@ export function testsForRpcMethodSupportingBlockParam(
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
-            const request = { method };
+            const request = { method: method.name };
 
             // The first time a block-cacheable request is made, the
             // block-cache middleware will request the latest block number
@@ -1097,7 +1110,7 @@ export function testsForRpcMethodSupportingBlockParam(
           await withMockedCommunications(
             { type: providerType },
             async (comms) => {
-              const request = { method };
+              const request = { method: method.name };
 
               // The first time a block-cacheable request is made, the
               // block-cache middleware will request the latest block number
@@ -1154,8 +1167,7 @@ export function testsForRpcMethodSupportingBlockParam(
           await withMockedCommunications(
             { type: providerType },
             async (comms) => {
-              const request = { method };
-
+              const request = { method: method.name };
               // The first time a block-cacheable request is made, the
               // block-cache middleware will request the latest block number
               // through the block tracker to determine the cache key. Later,
@@ -1190,7 +1202,7 @@ export function testsForRpcMethodSupportingBlockParam(
               const err =
                 providerType === 'infura'
                   ? infuraClientErrorTimeout
-                  : jsonRpcClientErrorTimeout(method);
+                  : jsonRpcClientErrorTimeout(method.name);
               await expect(promiseForResult).rejects.toThrow(err);
             },
           );
@@ -1204,7 +1216,7 @@ export function testsForRpcMethodSupportingBlockParam(
               await withMockedCommunications(
                 { type: providerType },
                 async (comms) => {
-                  const request = { method };
+                  const request = { method: method.name };
 
                   // The first time a block-cacheable request is made, the
                   // block-cache middleware will request the latest block number
@@ -1259,7 +1271,7 @@ export function testsForRpcMethodSupportingBlockParam(
             await withMockedCommunications(
               { type: providerType },
               async (comms) => {
-                const request = { method };
+                const request = { method: method.name };
 
                 // The first time a block-cacheable request is made, the
                 // block-cache middleware will request the latest block number
@@ -1296,7 +1308,7 @@ export function testsForRpcMethodSupportingBlockParam(
                 if (providerType === 'infura') {
                   err = infuraClientErrorWithReason(reason);
                 } else if (errorMessagePrefix === 'ETIMEDOUT') {
-                  err = jsonRpcClientErrorTimeout(method);
+                  err = jsonRpcClientErrorTimeout(method.name);
                 } else {
                   err = jsonRpcClientErrorWithReason(reason);
                 }
@@ -1318,8 +1330,8 @@ export function testsForRpcMethodSupportingBlockParam(
 
     it(`does not hit ${providerType} provider more than once for identical requests`, async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        { method: method.name, params },
+        { method: method.name, params },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -1345,8 +1357,8 @@ export function testsForRpcMethodSupportingBlockParam(
 
     it('reuses the result of a previous request even if the latest block number was updated since', async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        { method: method.name, params },
+        { method: method.name, params },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -1387,8 +1399,8 @@ export function testsForRpcMethodSupportingBlockParam(
       'does not reuse the result of a previous request if it was `%s`',
       async (emptyValue) => {
         const requests = [
-          { method, params },
-          { method, params },
+          { method: method.name, params },
+          { method: method.name, params },
         ];
         const mockResults = [emptyValue, 'some result'];
 
@@ -1423,14 +1435,14 @@ export function testsForRpcMethodSupportingBlockParam(
       it('treats "0x00" as a synonym for "earliest"', async () => {
         const requests = [
           {
-            method,
+            method: method.name,
             params: buildMockParamsWithBlockParamAt(
               blockParamIndex,
               blockParam,
             ),
           },
           {
-            method,
+            method: method.name,
             params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x00'),
           },
         ];
@@ -1466,14 +1478,14 @@ export function testsForRpcMethodSupportingBlockParam(
           async (comms) => {
             const requests = [
               {
-                method,
+                method: method.name,
                 params: buildMockParamsWithBlockParamAt(
                   blockParamIndex,
                   '0x100',
                 ),
               },
               {
-                method,
+                method: method.name,
                 params: buildMockParamsWithBlockParamAt(
                   blockParamIndex,
                   '0x200',
@@ -1509,7 +1521,7 @@ export function testsForRpcMethodSupportingBlockParam(
           { type: providerType },
           async (comms) => {
             const request = {
-              method,
+              method: method.name,
               params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x100'),
             };
 
@@ -1538,7 +1550,7 @@ export function testsForRpcMethodSupportingBlockParam(
           { type: providerType },
           async (comms) => {
             const request = {
-              method,
+              method: method.name,
               params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x50'),
             };
 
@@ -1569,8 +1581,8 @@ export function testsForRpcMethodSupportingBlockParam(
 
     it(`hits ${providerType} provider on all calls and does not cache anything`, async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        { method: method.name, params },
+        { method: method.name, params },
       ];
       const mockResults = ['first result', 'second result'];
 

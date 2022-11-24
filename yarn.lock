@@ -11955,6 +11955,10 @@ execall@^2.0.0:
   dependencies:
     clone-regexp "^2.1.0"
 
+"execution-apis@https://github.com/ethereum/execution-apis.git#v1.0.0-beta.1":
+  version "0.0.0"
+  resolved "https://github.com/ethereum/execution-apis.git#d7f1ec54abd78eb0781ea7973e1d74c299aff19b"
+
 exit-on-epipe@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/exit-on-epipe/-/exit-on-epipe-1.0.1.tgz#0bdd92e87d5285d267daa8171d0eb06159689692"

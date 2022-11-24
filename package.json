@@ -407,7 +407,8 @@
     "webextension-polyfill": "^0.8.0",
     "webpack": "^4.41.6",
     "yargs": "^17.0.1",
-    "yarn-deduplicate": "^3.1.0"
+    "yarn-deduplicate": "^3.1.0",
+    "execution-apis": "https://github.com/ethereum/execution-apis.git#v1.0.0-beta.1"
   },
   "engines": {
     "node": "^16.0.0",

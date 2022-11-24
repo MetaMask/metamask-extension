@@ -47,6 +47,7 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  - 'execution-apis'
 
 # files depcheck should not parse
 ignorePatterns:
