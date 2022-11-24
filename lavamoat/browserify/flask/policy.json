@@ -76,7 +76,7 @@
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
         "browserify>process": true,
-        "stylelint>autoprefixer>browserslist": true
+        "webpack>browserslist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>semver": {
@@ -5854,12 +5854,7 @@
       },
       "packages": {
         "browserify>util": true,
-        "safe-event-emitter>events": true
-      }
-    },
-    "safe-event-emitter>events": {
-      "globals": {
-        "console": true
+        "webpack>events": true
       }
     },
     "semver": {
@@ -5909,15 +5904,6 @@
         "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
-      }
-    },
-    "stylelint>autoprefixer>browserslist": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true,
-        "stylelint>autoprefixer>caniuse-lite": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -6018,6 +6004,20 @@
         "console.error": true,
         "console.warn": true,
         "define": true
+      }
+    },
+    "webpack>browserslist": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "webpack>browserslist>caniuse-lite": true,
+        "webpack>browserslist>electron-to-chromium": true,
+        "webpack>browserslist>node-releases": true
+      }
+    },
+    "webpack>events": {
+      "globals": {
+        "console": true
       }
     }
   }

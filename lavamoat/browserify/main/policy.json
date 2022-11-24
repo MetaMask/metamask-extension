@@ -5265,12 +5265,7 @@
       },
       "packages": {
         "browserify>util": true,
-        "safe-event-emitter>events": true
-      }
-    },
-    "safe-event-emitter>events": {
-      "globals": {
-        "console": true
+        "webpack>events": true
       }
     },
     "semver": {
@@ -5372,6 +5367,11 @@
         "console.error": true,
         "console.warn": true,
         "define": true
+      }
+    },
+    "webpack>events": {
+      "globals": {
+        "console": true
       }
     }
   }
