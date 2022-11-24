@@ -1379,8 +1379,9 @@
       "packages": {
         "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/permission-controller": true,
+        "@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/rpc-methods>nanoid": true,
-        "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
@@ -1532,8 +1533,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs": {
       "globals": {
-        "clearInterval": true,
-        "setInterval": true
+        "crypto": true
       },
       "packages": {
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
@@ -3360,7 +3360,6 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
-        "nock>debug": true,
         "watchify>xtend": true
       }
     },

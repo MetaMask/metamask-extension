@@ -155,7 +155,7 @@ export default function ConfirmationPage({
     MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
   ];
 
-  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation.type);
+  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   ///: END:ONLY_INCLUDE_IN
 
   // Generating templatedValues is potentially expensive, and if done on every render

@@ -3,7 +3,7 @@ import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
   const { snapName, requestData } = pendingApproval;
-  const { title, description } = requestData;
+  const { title, description, placeholder } = requestData;
 
   return {
     content: [
@@ -56,7 +56,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
                 key: 'snap-prompt-input',
                 props: {
                   className: 'snap-prompt-input',
-                  placeholder: 'Answer here...', // TODO(guillaumerx): Replace this with the parameterized placeholder
+                  placeholder,
                   max: 300,
                   onChange: (event) => {
                     const inputValue = event.target.value ?? '';
