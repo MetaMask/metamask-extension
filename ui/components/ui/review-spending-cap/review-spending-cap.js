@@ -64,7 +64,7 @@ export default function ReviewSpendingCap({
                   color={COLORS.TEXT_ALTERNATIVE}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {tokenValue > currentTokenBalance &&
+                  {Number(tokenValue) > currentTokenBalance &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -76,14 +76,15 @@ export default function ReviewSpendingCap({
                         {t('beCareful')}
                       </Typography>,
                     ])}
-                  {tokenValue === 0 && t('revokeSpendingCapTooltipText')}
+                  {Number(tokenValue) === 0 &&
+                    t('revokeSpendingCapTooltipText')}
                 </Typography>
               }
             >
-              {tokenValue > currentTokenBalance && (
+              {Number(tokenValue) > currentTokenBalance && (
                 <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
               )}
-              {tokenValue === 0 && (
+              {Number(tokenValue) === 0 && (
                 <i className="far fa-question-circle review-spending-cap__heading-title__tooltip__question-icon" />
               )}
             </Tooltip>
@@ -105,11 +106,11 @@ export default function ReviewSpendingCap({
           </button>
         </Box>
       </Box>
-      <Box>
+      <Box className="review-spending-cap__value">
         <Typography
           as={TYPOGRAPHY.H6}
           color={
-            tokenValue > currentTokenBalance
+            Number(tokenValue) > currentTokenBalance
               ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }
@@ -126,6 +127,6 @@ export default function ReviewSpendingCap({
 ReviewSpendingCap.propTypes = {
   tokenName: PropTypes.string,
   currentTokenBalance: PropTypes.number,
-  tokenValue: PropTypes.number,
+  tokenValue: PropTypes.string,
   onEdit: PropTypes.func,
 };
