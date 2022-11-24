@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { memoize } from 'lodash';
@@ -184,40 +184,38 @@ const generateClassNames = memoize(
   (type, value) => [type, value],
 );
 
-const Box = React.forwardRef(function Box(
-  {
-    padding,
-    paddingTop,
-    paddingRight,
-    paddingBottom,
-    paddingLeft,
-    margin,
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    borderColor,
-    borderWidth,
-    borderRadius,
-    borderStyle,
-    alignItems,
-    justifyContent,
-    textAlign,
-    flexDirection = FLEX_DIRECTION.ROW,
-    flexWrap,
-    gap,
-    display,
-    width,
-    height,
-    children,
-    className,
-    backgroundColor,
-    color,
-    as = 'div',
-    ...props
-  },
-  ref,
-) {
+
+const Box = React.forwardRef<FunctionComponent>({
+  padding,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  margin,
+  marginTop,
+  marginRight,
+  marginBottom,
+  marginLeft,
+  borderColor,
+  borderWidth,
+  borderRadius,
+  borderStyle,
+  alignItems,
+  justifyContent,
+  textAlign,
+  flexDirection = FLEX_DIRECTION.ROW,
+  flexWrap,
+  gap,
+  display,
+  width,
+  height,
+  children,
+  className,
+  backgroundColor,
+  color,
+  as = 'div',
+  ...props
+}, ref) => {
   const boxClassName = classnames(
     BASE_CLASS_NAME,
     className,
