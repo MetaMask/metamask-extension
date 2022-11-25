@@ -8,6 +8,8 @@ import {
   providerFromMiddleware,
 } from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
+import createFilterMiddleware from 'eth-json-rpc-filters';
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { SECOND } from '../../../../shared/constants/time';
 
 const inTest = process.env.IN_TEST;
@@ -19,9 +21,20 @@ const getTestMiddlewares = () => {
 export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
+
+  // create subscription polyfill middleware
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,
     provider: blockProvider,
+  });
+
+  const filterMiddleware = createFilterMiddleware({
+    blockProvider,
+    blockTracker,
+  });
+  const subscriptionManager = createSubscriptionManager({
+    blockProvider,
+    blockTracker,
   });
 
   const networkMiddleware = mergeMiddleware([
@@ -32,9 +45,11 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
     createInflightCacheMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     fetchMiddleware,
+    filterMiddleware,
+    subscriptionManager.middleware,
   ]);
 
-  return { networkMiddleware, blockTracker };
+  return { networkMiddleware, blockTracker, subscriptionManager };
 }
 
 function createChainIdMiddleware(chainId) {

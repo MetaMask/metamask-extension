@@ -5,8 +5,6 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import {
@@ -3710,19 +3708,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
-
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
-
-    // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
-    });
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
+    const { provider } = this;
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
@@ -3890,8 +3876,6 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IN
 
     // filter and subscription polyfills
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
     if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(
