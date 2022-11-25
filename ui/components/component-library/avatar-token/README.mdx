@@ -88,8 +88,15 @@ Use the `showHalo` prop to display the component with halo effect. Only works if
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-<AvatarToken src="./AST.png" showHalo/>
-<AvatarToken src="./BAT_icon.svg" showHalo/>
+<Box display={DISPLAY.FLEX} gap={1}>
+<AvatarToken src="./images/eth_logo.svg" />
+<AvatarToken src="./images/arbitrum.svg" />
+<AvatarToken src="./images/bnb.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png" />
+<AvatarToken src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format" />
+</Box>
 ```
 
 ### Color, Background Color And Border Color
