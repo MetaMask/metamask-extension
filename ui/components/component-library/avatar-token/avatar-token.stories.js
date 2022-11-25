@@ -82,7 +82,7 @@ Name.args = {
 };
 
 export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+  <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken {...args} src="./images/eth_logo.svg" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
     <AvatarToken {...args} src="./images/bnb.png" />
