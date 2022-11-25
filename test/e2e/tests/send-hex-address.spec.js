@@ -1,5 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -17,7 +19,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -49,7 +51,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -62,7 +64,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -94,7 +96,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -107,6 +109,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 });
 
 describe('Send ERC20 to a 40 character hexadecimal address', function () {
+  const smartContract = SMART_CONTRACTS.HST;
   const ganacheOptions = {
     accounts: [
       {
@@ -120,41 +123,33 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
+        smartContract,
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Create TST
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#createToken');
-        await driver.waitUntilXWindowHandles(3);
+        await driver.openNewPage(
+          `http://127.0.0.1:8080/?contract=${contractAddress}`,
+        );
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
-        );
+
+        // Using the line below to make wait time deterministic and avoid using a delay
+        // See more here https://github.com/MetaMask/metamask-extension/pull/15604/files#r949300551
+        await driver.findClickableElement('#deployButton');
 
         // Add token
-        await driver.switchToWindow(dapp);
         await driver.clickElement('#watchAsset');
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -191,7 +186,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
@@ -199,7 +194,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -213,41 +208,32 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
+        smartContract,
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
         // Create TST
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#createToken');
-        await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
+        await driver.openNewPage(
+          `http://127.0.0.1:8080/?contract=${contractAddress}`,
         );
 
+        let windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+
         // Add token
-        await driver.switchToWindow(dapp);
+        await driver.findClickableElement('#deployButton');
         await driver.clickElement('#watchAsset');
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -284,7 +270,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
         const sendTransactionListItem = await driver.waitForSelector(
@@ -292,7 +278,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(

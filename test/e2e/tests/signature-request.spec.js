@@ -4,6 +4,7 @@ const {
   withFixtures,
   regularDelayMs,
 } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Sign Typed Data V4 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
@@ -20,7 +21,9 @@ describe('Sign Typed Data V4 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -50,20 +53,22 @@ describe('Sign Typed Data V4 Signature Request', function () {
         const content = await driver.findElements(
           '.signature-request-content__info',
         );
+        const verifyContractDetailsButton = await driver.findElement(
+          '.signature-request-content__verify-contract-details',
+        );
         const origin = content[0];
-        const address = content[1];
         const message = await driver.findElement(
-          '.signature-request-message--node-value',
+          '.signature-request-data__node__value',
         );
         assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await address.getText(),
-          `${publicAddress.slice(0, 8)}...${publicAddress.slice(
-            publicAddress.length - 8,
-          )}`,
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await message.getText(), 'Hello, Bob!');
         // Approve signing typed data
         await driver.clickElement(
@@ -102,7 +107,9 @@ describe('Sign Typed Data V3 Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -132,23 +139,29 @@ describe('Sign Typed Data V3 Signature Request', function () {
         const content = await driver.findElements(
           '.signature-request-content__info',
         );
+        const verifyContractDetailsButton = await driver.findElement(
+          '.signature-request-content__verify-contract-details',
+        );
         const origin = content[0];
-        const address = content[1];
         const messages = await driver.findElements(
-          '.signature-request-message--node-value',
+          '.signature-request-data__node__value',
         );
         assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
-        assert.equal(
-          await address.getText(),
-          `${publicAddress.slice(0, 8)}...${publicAddress.slice(
-            publicAddress.length - 8,
-          )}`,
-        );
+
+        verifyContractDetailsButton.click();
+        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
+
         assert.equal(await messages[4].getText(), 'Hello, Bob!');
 
         // Approve signing typed data
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -180,7 +193,9 @@ describe('Sign Typed Data Signature Request', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },

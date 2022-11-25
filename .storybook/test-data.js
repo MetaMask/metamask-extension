@@ -1,4 +1,6 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
+import { KEYRING_TYPES } from '../shared/constants/keyrings';
+
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -27,31 +29,9 @@ const state = {
       viewOnly: true,
     },
     {
-      blockExplorerUrl: 'https://ropsten.etherscan.io',
-      chainId: '0x3',
-      iconColor: 'var(--ropsten)',
-      isATestNetwork: true,
-      labelKey: 'ropsten',
-      providerType: 'ropsten',
-      rpcUrl: 'https://ropsten.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://rinkeby.etherscan.io',
-      chainId: '0x4',
-      iconColor: 'var(--rinkeby)',
-      isATestNetwork: true,
-      labelKey: 'rinkeby',
-      providerType: 'rinkeby',
-      rpcUrl: 'https://rinkeby.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
       blockExplorerUrl: 'https://goerli.etherscan.io',
       chainId: '0x5',
-      iconColor: 'var(--goerli)',
+      iconColor: 'var(--color-network-goerli-default)',
       isATestNetwork: true,
       labelKey: 'goerli',
       providerType: 'goerli',
@@ -60,20 +40,20 @@ const state = {
       viewOnly: true,
     },
     {
-      blockExplorerUrl: 'https://kovan.etherscan.io',
-      chainId: '0x2a',
-      iconColor: 'var(--kovan)',
+      blockExplorerUrl: 'https://sepolia.etherscan.io',
+      chainId: '0xaa36a7',
+      iconColor: 'var(--color-network-sepolia-default)',
       isATestNetwork: true,
-      labelKey: 'kovan',
-      providerType: 'kovan',
-      rpcUrl: 'https://kovan.infura.io/v3/',
+      labelKey: 'sepolia',
+      providerType: 'sepolia',
+      rpcUrl: 'https://sepolia.infura.io/v3/',
       ticker: 'ETH',
       viewOnly: true,
     },
     {
       blockExplorerUrl: '',
       chainId: '0x539',
-      iconColor: 'var(--localhost)',
+      iconColor: 'var(--color-network-localhost-default)',
       isATestNetwork: true,
       label: 'Localhost 8545',
       providerType: 'rpc',
@@ -83,7 +63,7 @@ const state = {
     {
       blockExplorerUrl: 'https://bscscan.com',
       chainId: '0x38',
-      iconColor: 'var(--localhost)',
+      iconColor: 'var(--color-network-localhost-default)',
       isATestNetwork: false,
       label: 'Binance Smart Chain',
       providerType: 'rpc',
@@ -93,7 +73,7 @@ const state = {
     {
       blockExplorerUrl: 'https://cchain.explorer.avax.network/',
       chainId: '0xa86a',
-      iconColor: 'var(--localhost)',
+      iconColor: 'var(--color-network-localhost-default)',
       isATestNetwork: false,
       label: 'Avalanche',
       providerType: 'rpc',
@@ -103,7 +83,7 @@ const state = {
     {
       blockExplorerUrl: 'https://polygonscan.com',
       chainId: '0x89',
-      iconColor: 'var(--localhost)',
+      iconColor: 'var(--color-network-localhost-default)',
       isATestNetwork: false,
       label: 'Polygon',
       providerType: 'rpc',
@@ -163,8 +143,8 @@ const state = {
         name: 'Falconswap',
         iconUrl:
           'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: ['CoinGecko', '1inch', 'Paraswap', 'Zapper', 'Zerion'],
-        occurrences: 12,
+        aggregators: ['CoinGecko', '1inch', 'Lifi'],
+        occurrences: 3,
         unlisted: false,
       },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
@@ -395,16 +375,15 @@ const state = {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
-        metamaskNetworkId: '3',
+        metamaskNetworkId: '5',
         msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x3',
+        chainId: '0x5',
         loadingDefaults: false,
         txParams: {
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
           value: '0x0',
-          data:
-            '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
           gas: '0xcb28',
           gasPrice: '0x77359400',
         },
@@ -416,15 +395,14 @@ const state = {
             id: 7786962153682822,
             time: 1620710815484,
             status: 'unapproved',
-            metamaskNetworkId: '3',
-            chainId: '0x3',
+            metamaskNetworkId: '5',
+            chainId: '0x5',
             loadingDefaults: true,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
               to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
               value: '0x0',
-              data:
-                '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+              data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
               gas: '0xcb28',
               gasPrice: '0x77359400',
             },
@@ -539,8 +517,8 @@ const state = {
       maxModeOn: false,
       editingTransactionId: null,
       toNickname: 'Account 2',
-      ensResolution: null,
-      ensResolutionError: '',
+      domainResolution: null,
+      domainResolutionError: '',
       token: {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
         symbol: 'DAI',
@@ -570,20 +548,20 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
     previousProviderStore: {
-      type: 'rinkeby',
+      type: 'goerli',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x4',
+      chainId: '0x5',
     },
-    network: '3',
+    network: '5',
     accounts: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -604,8 +582,7 @@ const state = {
         chainId: '0x38',
         dappSuggestedGasFees: null,
         firstRetryBlockNumber: '0x9c2686',
-        hash:
-          '0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6',
+        hash: '0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6',
         history: [
           {
             chainId: '0x38',
@@ -617,8 +594,7 @@ const state = {
             status: 'unapproved',
             time: 1629582710520,
             txParams: {
-              data:
-                '0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000',
+              data: '0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000',
               from: '0x17f62b1b2407c41c43e14da0699d6b4b0a521548',
               gas: '0x2eb27',
               gasPrice: '0x12a05f200',
@@ -802,8 +778,7 @@ const state = {
                     blockHash:
                       '0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0',
                     blockNumber: '9c2688',
-                    data:
-                      '0x00000000000000000000000000000000000000000000000028426c213d688000',
+                    data: '0x00000000000000000000000000000000000000000000000028426c213d688000',
                     logIndex: '245',
                     removed: false,
                     topics: [
@@ -820,8 +795,7 @@ const state = {
                     blockHash:
                       '0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0',
                     blockNumber: '9c2688',
-                    data:
-                      '0x000000000000000000000000000000000000000000000000006a94d74f430000',
+                    data: '0x000000000000000000000000000000000000000000000000006a94d74f430000',
                     logIndex: '246',
                     removed: false,
                     topics: [
@@ -838,8 +812,7 @@ const state = {
                     blockHash:
                       '0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0',
                     blockNumber: '9c2688',
-                    data:
-                      '0x000000000000000000000000000000000000000000000000001ff973cafa8000',
+                    data: '0x000000000000000000000000000000000000000000000000001ff973cafa8000',
                     logIndex: '247',
                     removed: false,
                     topics: [
@@ -963,8 +936,7 @@ const state = {
         submittedTime: 1629582711337,
         time: 1629582710520,
         txParams: {
-          data:
-            '0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000',
+          data: '0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000',
           from: '0x17f62b1b2407c41c43e14da0699d6b4b0a521548',
           gas: '0x2eb27',
           gasPrice: '0x12a05f200',
@@ -1002,8 +974,7 @@ const state = {
                 red: null,
                 words: [10233480, null],
               },
-              data:
-                '0x00000000000000000000000000000000000000000000000028426c213d688000',
+              data: '0x00000000000000000000000000000000000000000000000028426c213d688000',
               logIndex: {
                 length: 1,
                 negative: 0,
@@ -1035,8 +1006,7 @@ const state = {
                 red: null,
                 words: [10233480, null],
               },
-              data:
-                '0x000000000000000000000000000000000000000000000000006a94d74f430000',
+              data: '0x000000000000000000000000000000000000000000000000006a94d74f430000',
               logIndex: {
                 length: 1,
                 negative: 0,
@@ -1068,8 +1038,7 @@ const state = {
                 red: null,
                 words: [10233480, null],
               },
-              data:
-                '0x000000000000000000000000000000000000000000000000001ff973cafa8000',
+              data: '0x000000000000000000000000000000000000000000000000001ff973cafa8000',
               logIndex: {
                 length: 1,
                 negative: 0,
@@ -1121,7 +1090,7 @@ const state = {
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
       },
-      '0x3': {
+      5: {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x176e5b6f173ebe66',
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
@@ -1147,14 +1116,14 @@ const state = {
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
     keyringTypes: [
-      'Simple Key Pair',
-      'HD Key Tree',
-      'Trezor Hardware',
-      'Ledger Hardware',
+      KEYRING_TYPES.IMPORTED,
+      KEYRING_TYPES.HD_KEY_TREE,
+      KEYRING_TYPES.TREZOR,
+      KEYRING_TYPES.LEDGER,
     ],
     keyrings: [
       {
-        type: 'HD Key Tree',
+        type: KEYRING_TYPES.HD_KEY_TREE,
         accounts: [
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
@@ -1185,7 +1154,7 @@ const state = {
             decimals: 18,
           },
         ],
-        '0x3': [
+        '0x5': [
           {
             address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
             symbol: 'DAI',
@@ -1198,7 +1167,7 @@ const state = {
     },
     accountHiddenTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        '0x3': [],
+        '0x5': [],
       },
     },
     assetImages: {
@@ -1246,8 +1215,7 @@ const state = {
           to: '0x045c619e4d29bba3b92769508831b681b83d6a96',
           value: '0xbca9bce4d98ca3',
         },
-        hash:
-          '0x2de9256a7c604586f7ecfd87ae9509851e217f588f9f85feed793c54ed2ce0aa',
+        hash: '0x2de9256a7c604586f7ecfd87ae9509851e217f588f9f85feed793c54ed2ce0aa',
         transactionCategory: 'incoming',
       },
       '0x320a1fd769373578f78570e5d8f56e89bc7bce9657bb5f4c12d8fe790d471bfd': {
@@ -1264,8 +1232,7 @@ const state = {
           to: '0x045c619e4d29bba3b92769508831b681b83d6a96',
           value: '0xcdb08ab4254000',
         },
-        hash:
-          '0x320a1fd769373578f78570e5d8f56e89bc7bce9657bb5f4c12d8fe790d471bfd',
+        hash: '0x320a1fd769373578f78570e5d8f56e89bc7bce9657bb5f4c12d8fe790d471bfd',
         transactionCategory: 'incoming',
       },
       '0x8add6c1ea089a8de9b15fa2056b1875360f17916755c88ace9e5092b7a4b1239': {
@@ -1282,8 +1249,7 @@ const state = {
           to: '0x045c619e4d29bba3b92769508831b681b83d6a96',
           value: '0xe6ed27d6668000',
         },
-        hash:
-          '0x8add6c1ea089a8de9b15fa2056b1875360f17916755c88ace9e5092b7a4b1239',
+        hash: '0x8add6c1ea089a8de9b15fa2056b1875360f17916755c88ace9e5092b7a4b1239',
         transactionCategory: 'incoming',
       },
       '0x50be62ab1cabd03ff104c602c11fdef7a50f3d73c55006d5583ba97950ab1144': {
@@ -1300,16 +1266,13 @@ const state = {
           to: '0x045c619e4d29bba3b92769508831b681b83d6a96',
           value: '0x63eb89da4ed00000',
         },
-        hash:
-          '0x50be62ab1cabd03ff104c602c11fdef7a50f3d73c55006d5583ba97950ab1144',
+        hash: '0x50be62ab1cabd03ff104c602c11fdef7a50f3d73c55006d5583ba97950ab1144',
         transactionCategory: 'incoming',
       },
     },
     incomingTxLastFetchedBlocksByNetwork: {
-      ropsten: 8872820,
-      rinkeby: null,
-      kovan: null,
       goerli: null,
+      sepolia: null,
       mainnet: 10902989,
     },
     subjects: {
@@ -1407,12 +1370,6 @@ const state = {
         },
       },
     },
-    threeBoxSyncingAllowed: false,
-    showRestorePrompt: true,
-    threeBoxLastUpdated: 0,
-    threeBoxAddress: null,
-    threeBoxSynced: false,
-    threeBoxDisabled: false,
     swapsState: {
       quotes: {},
       fetchParams: null,
@@ -1503,8 +1460,6 @@ const state = {
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -1537,15 +1492,14 @@ const state = {
       id: 3111025347726181,
       time: 1620723786838,
       status: 'unapproved',
-      metamaskNetworkId: '3',
-      chainId: '0x3',
+      metamaskNetworkId: '5',
+      chainId: '0x5',
       loadingDefaults: false,
       txParams: {
         from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
         value: '0x0',
-        data:
-          '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+        data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
         gas: '0xea60',
         gasPrice: '0x4a817c800',
       },
@@ -1557,15 +1511,14 @@ const state = {
           id: 3111025347726181,
           time: 1620723786838,
           status: 'unapproved',
-          metamaskNetworkId: '3',
-          chainId: '0x3',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
           loadingDefaults: true,
           txParams: {
             from: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',
             to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
             value: '0x0',
-            data:
-              '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+            data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
             gas: '0xea60',
             gasPrice: '0x4a817c800',
           },

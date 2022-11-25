@@ -32,6 +32,20 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: (t) => t('permission_notifications'),
     rightIcon: null,
   },
+  [RestrictedMethods.snap_getBip32PublicKey]: {
+    label: (t, _, permissionValue) => {
+      return permissionValue.caveats[0].value.map(({ path, curve }) =>
+        t('permission_viewBip32PublicKeys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+      );
+    },
+    leftIcon: 'fas fa-eye',
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_getBip32Entropy]: {
     label: (t, _, permissionValue) => {
       return permissionValue.caveats[0].value.map(({ path, curve }) =>
@@ -60,15 +74,9 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
-  [RestrictedMethods['snap_getBip44Entropy_*']]: {
-    label: (t, permissionName) => {
-      const coinType = permissionName.split('_').slice(-1);
-      return t('permission_manageBip44Keys', [
-        coinTypeToProtocolName(coinType) ||
-          `${coinType} (Unrecognized protocol)`,
-      ]);
-    },
-    leftIcon: 'fas fa-door-open',
+  [RestrictedMethods.snap_getEntropy]: {
+    label: (t) => t('permission_getEntropy'),
+    leftIcon: 'fas fa-key',
     rightIcon: null,
   },
   [RestrictedMethods.snap_manageState]: {
@@ -92,6 +100,21 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:long-running']]: {
     label: (t) => t('permission_longRunning'),
     leftIcon: 'fas fa-infinity',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:transaction-insight']]: {
+    label: (t) => t('permission_transactionInsight'),
+    leftIcon: 'fas fa-info',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:cronjob']]: {
+    label: (t) => t('permission_cronjob'),
+    leftIcon: 'fas fa-clock',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:ethereum-provider']]: {
+    label: (t) => t('permission_ethereumProvider'),
+    leftIcon: 'fab fa-ethereum',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN

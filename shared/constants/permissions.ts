@@ -8,16 +8,16 @@ export const RestrictedMethods = Object.freeze({
   snap_confirm: 'snap_confirm',
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
+  snap_getBip32PublicKey: 'snap_getBip32PublicKey',
   snap_getBip32Entropy: 'snap_getBip32Entropy',
   snap_getBip44Entropy: 'snap_getBip44Entropy',
-  'snap_getBip44Entropy_*': 'snap_getBip44Entropy_*',
+  snap_getEntropy: 'snap_getEntropy',
   'wallet_snap_*': 'wallet_snap_*',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export const PermissionNamespaces = Object.freeze({
-  snap_getBip44Entropy_: 'snap_getBip44Entropy_*',
   wallet_snap_: 'wallet_snap_*',
 } as const);
 
@@ -25,8 +25,11 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:long-running': 'endowment:long-running',
   'endowment:transaction-insight': 'endowment:transaction-insight',
+  'endowment:cronjob': 'endowment:cronjob',
+  'endowment:ethereum-provider': 'endowment:ethereum-provider',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = new Set([]);
+export const ExcludedSnapPermissions = new Set(['snap_dialog']);
+export const ExcludedSnapEndowments = new Set(['endowment:keyring']);
 ///: END:ONLY_INCLUDE_IN

@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -21,6 +26,8 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+import DepositPopover from '../deposit-popover/deposit-popover';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -29,6 +36,8 @@ import {
 } from '.';
 
 export default class ConfirmPageContainer extends Component {
+  state = { setShowDepositPopover: false };
+
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -45,11 +54,14 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    accountBalance: PropTypes.string,
+    assetStandard: PropTypes.string,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
     // Content
@@ -59,6 +71,9 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
@@ -88,8 +103,8 @@ export default class ConfirmPageContainer extends Component {
     currentTransaction: PropTypes.object.isRequired,
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
-    showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
   };
 
   render() {
@@ -99,6 +114,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toMetadataName,
       toEns,
       toNickname,
       toAddress,
@@ -141,9 +157,14 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction,
       supportsEIP1559V2,
       nativeCurrency,
-      showBuyModal,
       isBuyableChain,
       networkIdentifier,
+      isApprovalOrRejection,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      insightComponent,
+      ///: END:ONLY_INCLUDE_IN
+      accountBalance,
+      assetStandard,
     } = this.props;
 
     const shouldDisplayWarning =
@@ -161,11 +182,13 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
+    const { setShowDepositPopover } = this.state;
+
     const { t } = this.context;
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container">
+        <div className="page-container" data-testid="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
             positionOfCurrentTx={positionOfCurrentTx}
@@ -178,23 +201,37 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          <ConfirmPageContainerHeader
-            showEdit={showEdit}
-            onEdit={() => onEdit()}
-            showAccountInHeader={showAccountInHeader}
-            accountAddress={fromAddress}
-          >
-            {hideSenderToRecipient ? null : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-              />
-            )}
-          </ConfirmPageContainerHeader>
+          {assetStandard === ERC20 ||
+          assetStandard === ERC721 ||
+          assetStandard === ERC1155 ? (
+            <NetworkAccountBalanceHeader
+              accountName={fromName}
+              accountBalance={accountBalance}
+              tokenName={nativeCurrency}
+              accountAddress={fromAddress}
+              networkName={networkName}
+              chainId={currentTransaction.chainId}
+            />
+          ) : (
+            <ConfirmPageContainerHeader
+              showEdit={showEdit}
+              onEdit={() => onEdit()}
+              showAccountInHeader={showAccountInHeader}
+              accountAddress={fromAddress}
+            >
+              {hideSenderToRecipient ? null : (
+                <SenderToRecipient
+                  senderName={fromName}
+                  senderAddress={fromAddress}
+                  recipientName={toName}
+                  recipientMetadataName={toMetadataName}
+                  recipientAddress={toAddress}
+                  recipientEns={toEns}
+                  recipientNickname={toNickname}
+                />
+              )}
+            </ConfirmPageContainerHeader>
+          )}
           <Box padding={4}>
             <EnableEIP1559V2Notice />
           </Box>
@@ -209,6 +246,9 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               dataHexComponent={dataHexComponent}
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+              insightComponent={insightComponent}
+              ///: END:ONLY_INCLUDE_IN
               errorMessage={errorMessage}
               errorKey={errorKey}
               tokenAddress={tokenAddress}
@@ -229,7 +269,6 @@ export default class ConfirmPageContainer extends Component {
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
-              showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
@@ -247,7 +286,9 @@ export default class ConfirmPageContainer extends Component {
                         <Button
                           type="inline"
                           className="confirm-page-container-content__link"
-                          onClick={showBuyModal}
+                          onClick={() =>
+                            this.setState({ setShowDepositPopover: true })
+                          }
                           key={`${nativeCurrency}-buy-button`}
                         >
                           {t('buyAsset', [nativeCurrency])}
@@ -269,12 +310,17 @@ export default class ConfirmPageContainer extends Component {
               />
             </div>
           )}
+          {setShowDepositPopover && (
+            <DepositPopover
+              onClose={() => this.setState({ setShowDepositPopover: false })}
+            />
+          )}
           {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && (
+          {isSetApproveForAll && isApprovalOrRejection && (
             <Dialog type="error" className="confirm-page-container__dialog">
               {/*
                 TODO: https://github.com/MetaMask/metamask-extension/issues/15745

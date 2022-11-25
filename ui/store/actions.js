@@ -2,12 +2,8 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyUrl from '../../app/scripts/lib/buy-url';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import switchDirection from '../helpers/utils/switch-direction';
+import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -17,7 +13,6 @@ import {
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
-import { decimalToHex } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -46,8 +41,14 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
+import { decimalToHex } from '../../shared/lib/transactions-controller-utils';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../helpers/utils/i18n-helper';
 import * as actionConstants from './actionConstants';
 import {
+  generateActionId,
   callBackgroundMethod,
   submitRequestToBackground,
 } from './action-queue';
@@ -894,7 +895,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   sendFlowHistory,
 ) {
   return async (dispatch) => {
-    const actionId = Date.now() + Math.random();
+    const actionId = generateActionId();
     try {
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground(
@@ -927,7 +928,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  */
 export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
-  const actionId = Date.now() + Math.random();
+  const actionId = generateActionId();
   const txMeta = await submitRequestToBackground(
     'addUnapprovedTransaction',
     [txParams, ORIGIN_METAMASK, type, undefined, actionId],
@@ -940,20 +941,25 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('updateAndApproveTransaction', [txData], (err) => {
-        dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(resetSendState());
+      const actionId = generateActionId();
+      callBackgroundMethod(
+        'updateAndApproveTransaction',
+        [txData, actionId],
+        (err) => {
+          dispatch(updateTransactionParams(txData.id, txData.txParams));
+          dispatch(resetSendState());
 
-        if (err) {
-          dispatch(txError(err));
-          dispatch(goHome());
-          log.error(err.message);
-          reject(err);
-          return;
-        }
+          if (err) {
+            dispatch(txError(err));
+            dispatch(goHome());
+            log.error(err.message);
+            reject(err);
+            return;
+          }
 
-        resolve(txData);
-      });
+          resolve(txData);
+        },
+      );
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1048,6 +1054,10 @@ export function removeSnap(snapId) {
 
 export async function removeSnapError(msgData) {
   return submitRequestToBackground('removeSnapError', [msgData]);
+}
+
+export async function handleSnapRequest(args) {
+  return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
 export function dismissNotifications(ids) {
@@ -1287,14 +1297,19 @@ export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('cancelTransaction', [txData.id], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      const actionId = generateActionId();
+      callBackgroundMethod(
+        'cancelTransaction',
+        [txData.id, actionId],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1328,7 +1343,8 @@ export function cancelTxs(txDataList) {
       const cancellations = txIds.map(
         (id) =>
           new Promise((resolve, reject) => {
-            callBackgroundMethod('cancelTransaction', [id], (err) => {
+            const actionId = generateActionId();
+            callBackgroundMethod('cancelTransaction', [id, actionId], (err) => {
               if (err) {
                 reject(err);
                 return;
@@ -1765,7 +1781,7 @@ export async function getBalancesInSingleCall(tokens) {
   return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
 }
 
-export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function addNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add collectible without address');
@@ -1777,7 +1793,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectible', [address, tokenID]);
+      await submitRequestToBackground('addNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1788,7 +1804,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export function addCollectibleVerifyOwnership(
+export function addNftVerifyOwnership(
   address,
   tokenID,
   dontShowLoadingIndicator,
@@ -1804,7 +1820,7 @@ export function addCollectibleVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectibleVerifyOwnership', [
+      await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
       ]);
@@ -1825,11 +1841,7 @@ export function addCollectibleVerifyOwnership(
   };
 }
 
-export function removeAndIgnoreCollectible(
-  address,
-  tokenID,
-  dontShowLoadingIndicator,
-) {
+export function removeAndIgnoreNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot ignore collectible without address');
@@ -1841,10 +1853,7 @@ export function removeAndIgnoreCollectible(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreCollectible', [
-        address,
-        tokenID,
-      ]);
+      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1855,7 +1864,7 @@ export function removeAndIgnoreCollectible(
   };
 }
 
-export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function removeNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot remove collectible without address');
@@ -1867,7 +1876,7 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeCollectible', [address, tokenID]);
+      await submitRequestToBackground('removeNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1878,31 +1887,27 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
-  await submitRequestToBackground(
-    'checkAndUpdateAllCollectiblesOwnershipStatus',
-  );
+export async function checkAndUpdateAllNftsOwnershipStatus() {
+  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus');
 }
 
-export async function isCollectibleOwner(
+export async function isNftOwner(
   ownerAddress,
   collectibleAddress,
   collectibleId,
 ) {
-  return await submitRequestToBackground('isCollectibleOwner', [
+  return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
     collectibleAddress,
     collectibleId,
   ]);
 }
 
-export async function checkAndUpdateSingleCollectibleOwnershipStatus(
-  collectible,
-) {
-  await submitRequestToBackground(
-    'checkAndUpdateSingleCollectibleOwnershipStatus',
-    [collectible, false],
-  );
+export async function checkAndUpdateSingleNftOwnershipStatus(collectible) {
+  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
+    collectible,
+    false,
+  ]);
 }
 
 export async function getTokenStandardAndDetails(
@@ -1974,19 +1979,16 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(
-  txId,
-  customGasSettings,
-  newTxMetaProps,
-) {
+export function createCancelTransaction(txId, customGasSettings, options) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
   return (dispatch) => {
+    const actionId = generateActionId();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createCancelTransaction',
-        [txId, customGasSettings, newTxMetaProps],
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1999,6 +2001,7 @@ export function createCancelTransaction(
           newTxId = id;
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2006,19 +2009,16 @@ export function createCancelTransaction(
   };
 }
 
-export function createSpeedUpTransaction(
-  txId,
-  customGasSettings,
-  newTxMetaProps,
-) {
+export function createSpeedUpTransaction(txId, customGasSettings, options) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
   return (dispatch) => {
+    const actionId = generateActionId();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings, newTxMetaProps],
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2030,6 +2030,7 @@ export function createSpeedUpTransaction(
           newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2042,9 +2043,10 @@ export function createRetryTransaction(txId, customGasSettings) {
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
+      const actionId = generateActionId();
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings],
+        [txId, customGasSettings, { actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2480,13 +2482,13 @@ export function showSendTokenPage() {
   };
 }
 
-export function buyEth(opts) {
+export function buy(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
     if (url) {
       global.platform.openTab({ url });
       dispatch({
-        type: actionConstants.BUY_ETH,
+        type: actionConstants.BUY,
       });
     }
   };
@@ -2716,11 +2718,11 @@ export function setUseTokenDetection(val) {
   };
 }
 
-export function setUseCollectibleDetection(val) {
+export function setUseNftDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseCollectibleDetection`);
-    callBackgroundMethod('setUseCollectibleDetection', [val], (err) => {
+    log.debug(`background.setUseNftDetection`);
+    callBackgroundMethod('setUseNftDetection', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2742,11 +2744,11 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
-export function detectCollectibles() {
+export function detectNfts() {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectCollectibles`);
-    await submitRequestToBackground('detectCollectibles');
+    log.debug(`background.detectNfts`);
+    await submitRequestToBackground('detectNfts');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3261,13 +3263,14 @@ export function getContractMethodData(data = '') {
   return (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
+    if (fourBytePrefix.length < 10) {
+      return Promise.resolve({});
+    }
     const { knownMethodData } = getState().metamask;
-
     if (
-      (knownMethodData &&
-        knownMethodData[fourBytePrefix] &&
-        Object.keys(knownMethodData[fourBytePrefix]).length !== 0) ||
-      fourBytePrefix === '0x'
+      knownMethodData &&
+      knownMethodData[fourBytePrefix] &&
+      Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
       return Promise.resolve(knownMethodData[fourBytePrefix]);
     }
@@ -3320,108 +3323,6 @@ export function setSeedPhraseBackedUp(seedPhraseBackupState) {
         },
       );
     });
-  };
-}
-
-export function initializeThreeBox() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('initializeThreeBox', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function setShowRestorePromptToFalse() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('setShowRestorePromptToFalse', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOn() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('turnThreeBoxSyncingOn', [], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function restoreFromThreeBox(accountAddress) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('restoreFromThreeBox', [accountAddress], (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  };
-}
-
-export function getThreeBoxLastUpdated() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod('getThreeBoxLastUpdated', [], (err, lastUpdated) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        resolve(lastUpdated);
-      });
-    });
-  };
-}
-
-export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'setThreeBoxSyncingPermission',
-        [threeBoxSyncingAllowed],
-        (err) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    });
-  };
-}
-
-export function turnThreeBoxSyncingOnAndInitialize() {
-  return async (dispatch) => {
-    await dispatch(setThreeBoxSyncingPermission(true));
-    await dispatch(turnThreeBoxSyncingOn());
-    await dispatch(initializeThreeBox(true));
   };
 }
 
@@ -3604,17 +3505,25 @@ export async function closeNotificationPopup() {
  * @returns {Promise<void>}
  */
 export function trackMetaMetricsEvent(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsEvent', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function createEventFragment(options) {
-  return submitRequestToBackground('createEventFragment', [options]);
+  const actionId = generateActionId();
+  return submitRequestToBackground('createEventFragment', [
+    { ...options, actionId },
+  ]);
 }
 
 export function createTransactionEventFragment(transactionId, event) {
+  const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
     transactionId,
     event,
+    actionId,
   ]);
 }
 
@@ -3631,7 +3540,10 @@ export function finalizeEventFragment(id, options) {
  * @param {MetaMetricsPageOptions} options - options for handling the page view
  */
 export function trackMetaMetricsPage(payload, options) {
-  return submitRequestToBackground('trackMetaMetricsPage', [payload, options]);
+  return submitRequestToBackground('trackMetaMetricsPage', [
+    { ...payload, actionId: generateActionId() },
+    options,
+  ]);
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap) {
@@ -3661,6 +3573,7 @@ export async function setSmartTransactionsOptInStatus(
   prevOptInState,
 ) {
   trackMetaMetricsEvent({
+    actionId: generateActionId(),
     event: 'STX OptIn',
     category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
@@ -3858,6 +3771,14 @@ export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
+export function hidePortfolioTooltip() {
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
+}
+
+export function hideBetaHeader() {
+  return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
@@ -3868,11 +3789,27 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
-export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+export function setImprovedTokenAllowanceEnabled(
+  improvedTokenAllowanceEnabled,
+) {
   return async () => {
     try {
-      await submitRequestToBackground('setCustomNetworkListEnabled', [
-        customNetworkListEnabled,
+      await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
+        improvedTokenAllowanceEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export function setTransactionSecurityCheckEnabled(
+  transactionSecurityCheckEnabled,
+) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
+        transactionSecurityCheckEnabled,
       ]);
     } catch (error) {
       log.error(error);
@@ -3918,7 +3855,10 @@ export function addCustomNetwork(customRpc) {
   return async (dispatch) => {
     try {
       dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [customRpc]);
+      await submitRequestToBackground('addCustomNetwork', [
+        customRpc,
+        generateActionId(),
+      ]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));

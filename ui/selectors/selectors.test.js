@@ -1,5 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -18,7 +18,7 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
@@ -35,7 +35,7 @@ describe('Selectors', () => {
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
@@ -125,7 +125,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x4',
+          chainId: '0x5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',
@@ -137,7 +137,7 @@ describe('Selectors', () => {
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
-    expect(accountsWithSendEther).toHaveLength(2);
+    expect(accountsWithSendEther).toHaveLength(4);
     expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

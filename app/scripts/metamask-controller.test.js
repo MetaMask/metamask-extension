@@ -9,11 +9,9 @@ import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
-import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
-import {
-  KEYRING_TYPES,
-  DEVICE_NAMES,
-} from '../../shared/constants/hardware-wallets';
+import { NETWORK_TYPES } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -24,7 +22,7 @@ const firstTimeState = {
   config: {},
   NetworkController: {
     provider: {
-      type: NETWORK_TYPE_RPC,
+      type: NETWORK_TYPES.RPC,
       rpcUrl: 'http://localhost:8545',
       chainId: '0x539',
     },
@@ -48,36 +46,6 @@ const firstTimeState = {
 };
 
 const ganacheServer = new Ganache();
-
-const threeBoxSpies = {
-  _registerUpdates: sinon.spy(),
-  init: sinon.stub(),
-  getLastUpdated: sinon.stub(),
-  getThreeBoxSyncingState: sinon.stub().returns(true),
-  restoreFromThreeBox: sinon.stub(),
-  setShowRestorePromptToFalse: sinon.stub(),
-  setThreeBoxSyncingPermission: sinon.stub(),
-  turnThreeBoxSyncingOn: sinon.stub(),
-};
-
-class ThreeBoxControllerMock {
-  constructor() {
-    this._registerUpdates = threeBoxSpies._registerUpdates;
-    this.init = threeBoxSpies.init;
-    this.getLastUpdated = threeBoxSpies.getLastUpdated;
-    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState;
-    this.restoreFromThreeBox = threeBoxSpies.restoreFromThreeBox;
-    this.setShowRestorePromptToFalse =
-      threeBoxSpies.setShowRestorePromptToFalse;
-    this.setThreeBoxSyncingPermission =
-      threeBoxSpies.setThreeBoxSyncingPermission;
-    this.store = {
-      subscribe: () => undefined,
-      getState: () => ({}),
-    };
-    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn;
-  }
-}
 
 const browserPolyfillMock = {
   runtime: {
@@ -116,11 +84,10 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 
 const MetaMaskController = proxyquire('./metamask-controller', {
-  './controllers/threebox': { default: ThreeBoxControllerMock },
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-const currentNetworkId = '42';
+const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -135,11 +102,14 @@ const CUSTOM_RPC_CHAIN_ID = '0x539';
 
 describe('MetaMaskController', function () {
   let metamaskController;
+
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -193,6 +163,18 @@ describe('MetaMaskController', function () {
     await ganacheServer.quit();
   });
 
+  describe('should reset states on first time profile load', function () {
+    it('should reset state', function () {
+      assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+
+    it('should not reset states if already set', function () {
+      // global.isFirstTime should also remain false
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+  });
+
   describe('#getAccounts', function () {
     it('returns first address when dapp calls web3.eth.getAccounts', async function () {
       const password = 'a-fake-password';
@@ -223,7 +205,7 @@ describe('MetaMaskController', function () {
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
-          'Simple Key Pair',
+          KEYRING_TYPES.IMPORTED,
         );
       const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
       const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
@@ -245,15 +227,10 @@ describe('MetaMaskController', function () {
   });
 
   describe('submitPassword', function () {
-    const password = 'password';
-
-    beforeEach(async function () {
-      await metamaskController.createNewVaultAndKeychain(password);
-      threeBoxSpies.init.reset();
-      threeBoxSpies.turnThreeBoxSyncingOn.reset();
-    });
-
     it('removes any identities that do not correspond to known accounts.', async function () {
+      const password = 'password';
+      await metamaskController.createNewVaultAndKeychain(password);
+
       const fakeAddress = '0xbad0';
       metamaskController.preferencesController.addAddresses([fakeAddress]);
       await metamaskController.submitPassword(password);
@@ -277,23 +254,6 @@ describe('MetaMaskController', function () {
           `identities should include all Addresses: ${address}`,
         );
       });
-    });
-
-    it('gets the address from threebox and creates a new 3box instance', async function () {
-      await metamaskController.submitPassword(password);
-      assert(threeBoxSpies.init.calledOnce);
-      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce);
-    });
-
-    it('succeeds even if blockTracker or threeBoxController throw', async function () {
-      const throwErr = sinon.fake.throws('foo');
-      metamaskController.blockTracker.checkForLatestBlock = throwErr;
-      metamaskController.threeBoxController.getThreeBoxSyncingState = throwErr;
-      await metamaskController.submitPassword(password);
-      assert.ok(
-        throwErr.calledTwice,
-        'should have called checkForLatestBlock and getThreeBoxSyncingState',
-      );
     });
   });
 

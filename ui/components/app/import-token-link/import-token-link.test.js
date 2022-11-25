@@ -23,11 +23,11 @@ jest.mock('../../../store/actions.js', () => ({
 }));
 
 describe('Import Token Link', () => {
-  it('should match snapshot for rinkeby chainId', () => {
+  it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
         provider: {
-          chainId: '0x4',
+          chainId: '0x5',
         },
       },
     };
@@ -59,7 +59,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         provider: {
-          chainId: '0x4',
+          chainId: '0x5',
         },
       },
     };
@@ -78,7 +78,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         provider: {
-          chainId: '0x4',
+          chainId: '0x5',
         },
       },
     };

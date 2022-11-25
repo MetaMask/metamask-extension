@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reveal Seed Page should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container"
+  >
+    <div
+      class="page-container__header"
+    >
+      <div
+        class="page-container__title"
+      >
+        Secret Recovery Phrase
+      </div>
+      <div
+        class="page-container__subtitle"
+      >
+        If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret.
+      </div>
+    </div>
+    <div
+      class="page-container__content"
+    >
+      <div
+        class="page-container__warning-container"
+      >
+        <i
+          class="fa fa-exclamation-triangle fa-2x page-container__warning-icon"
+        />
+        <div
+          class="page-container__warning-message"
+        >
+          <div
+            class="page-container__warning-title"
+          >
+            DO NOT share this phrase with anyone!
+          </div>
+          <div>
+            These words can be used to steal all your accounts.
+          </div>
+        </div>
+      </div>
+      <div
+        class="reveal-seed__content"
+      >
+        <form>
+          <label
+            class="input-label"
+            for="password-box"
+          >
+            Enter password to continue
+          </label>
+          <div
+            class="input-group"
+          >
+            <input
+              class="form-control"
+              data-testid="input-password"
+              id="password-box"
+              placeholder="Password"
+              type="password"
+              value=""
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary btn--large page-container__footer-button"
+          role="button"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary btn--large page-container__footer-button"
+          disabled=""
+          role="button"
+          tabindex="0"
+        >
+          Next
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

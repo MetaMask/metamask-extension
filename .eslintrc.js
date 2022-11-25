@@ -15,6 +15,7 @@ module.exports = {
     'development/ts-migration-dashboard/build/**',
     'dist/**/*',
     'node_modules/**/*',
+    'jest-coverage/**/*',
   ],
   overrides: [
     /**
@@ -258,16 +259,18 @@ module.exports = {
       files: [
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/network/**/*.test.js',
+        'app/scripts/controllers/network/provider-api-tests/*.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
         'development/**/*.test.js',
         'shared/**/*.test.js',
-        'test/jest/*.js',
         'test/helpers/*.js',
+        'test/jest/*.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
+        'shared/lib/error-utils.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       parserOptions: {

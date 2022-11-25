@@ -3,14 +3,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
-import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
-import DepositEtherModal from './deposit-ether-modal';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
@@ -79,39 +76,6 @@ const accountModalStyle = {
 };
 
 const MODALS = {
-  DEPOSIT_ETHER: {
-    contents: <DepositEtherModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      width: '100%',
-      height: '100%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
-      top: '0',
-      display: 'flex',
-    },
-    laptopModalStyle: {
-      width: 'initial',
-      maxWidth: '850px',
-      top: 'calc(10% + 10px)',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
-      borderRadius: '7px',
-      transform: 'none',
-      height: 'calc(80% - 20px)',
-      overflowY: 'hidden',
-    },
-    contentStyle: {
-      borderRadius: '7px',
-      height: '100%',
-    },
-  },
-
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {
@@ -232,35 +196,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  LEGACY_CUSTOMIZE_GAS: {
-    contents: <ConfirmCustomizeGasModal />,
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
-      top: '80px',
-      left: '0px',
-      transform: 'none',
-      margin: '0 auto',
-      position: 'relative',
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-    customOnHideOpts: {
-      action: resetCustomGasData,
-      args: [],
     },
   },
 

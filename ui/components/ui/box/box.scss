@@ -128,56 +128,19 @@ $attributesToApplyExtraProperties: margin;
       }
     }
   }
-
-  &--rounded-none {
-    border-radius: 0;
+  // border-radius
+  @each $radius, $value in design-system.$border-radius {
+    &--rounded-#{$radius} {
+      border-radius: $value;
+    }
   }
-
-  &--rounded-xs {
-    border-radius: 0.125rem;
-  }
-
-  &--rounded-sm {
-    border-radius: 0.25rem;
-  }
-
-  &--rounded-md {
-    border-radius: 0.375rem;
-  }
-
-  &--rounded-lg {
-    border-radius: 0.5rem;
-  }
-
-  &--rounded-xl {
-    border-radius: 0.75rem;
-  }
-
   // breakpoint classes
   @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:rounded-none {
-        border-radius: 0;
-      }
-
-      &--#{$breakpoint}\:rounded-xs {
-        border-radius: 0.125rem;
-      }
-
-      &--#{$breakpoint}\:rounded-sm {
-        border-radius: 0.25rem;
-      }
-
-      &--#{$breakpoint}\:rounded-md {
-        border-radius: 0.375rem;
-      }
-
-      &--#{$breakpoint}\:rounded-lg {
-        border-radius: 0.5rem;
-      }
-
-      &--#{$breakpoint}\:rounded-xl {
-        border-radius: 0.75rem;
+    @each $radius, $value in design-system.$border-radius {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:rounded-#{$radius} {
+          border-radius: $value;
+        }
       }
     }
   }

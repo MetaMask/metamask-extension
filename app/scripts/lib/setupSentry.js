@@ -9,7 +9,9 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
-const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_DEV =
+  process.env.SENTRY_DSN_DEV ||
+  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496';
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
@@ -51,11 +53,6 @@ export const SENTRY_STATE = {
       type: true,
     },
     seedPhraseBackedUp: true,
-    showRestorePrompt: true,
-    threeBoxDisabled: true,
-    threeBoxLastUpdated: true,
-    threeBoxSynced: true,
-    threeBoxSyncingAllowed: true,
     unapprovedDecryptMsgCount: true,
     unapprovedEncryptionPublicKeyMsgCount: true,
     unapprovedMsgCount: true,
@@ -224,7 +221,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
+  const filePath = origUrl.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }
