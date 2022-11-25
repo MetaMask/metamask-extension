@@ -68,11 +68,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.XS} />
-    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.SM} />
-    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.MD} />
-    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.LG} />
-    <AvatarToken {...args} size={AVATAR_TOKEN_SIZES.XL} />
+    <AvatarToken {...args} size={SIZES.XS} />
+    <AvatarToken {...args} size={SIZES.SM} />
+    <AvatarToken {...args} size={SIZES.MD} />
+    <AvatarToken {...args} size={SIZES.LG} />
+    <AvatarToken {...args} size={SIZES.XL} />
   </Box>
 );
 
@@ -123,7 +123,7 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      name="G"
+      name="S"
       color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
   </Box>
