@@ -203,7 +203,7 @@ const Box = React.forwardRef<FunctionComponent>({
   alignItems,
   justifyContent,
   textAlign,
-  flexDirection = FLEX_DIRECTION.ROW,
+  flexDirection,
   flexWrap,
   gap,
   display,
