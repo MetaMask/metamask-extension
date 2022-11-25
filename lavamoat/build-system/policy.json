@@ -1042,11 +1042,6 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@sentry/utils>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
     "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": {
       "packages": {
         "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": true
@@ -1128,8 +1123,13 @@
     },
     "@typescript-eslint/eslint-plugin>tsutils": {
       "packages": {
-        "@sentry/utils>tslib": true,
+        "@typescript-eslint/eslint-plugin>tsutils>tslib": true,
         "typescript": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin>tsutils>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@typescript-eslint/parser": {

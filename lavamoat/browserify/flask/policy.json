@@ -389,15 +389,10 @@
         "define": true
       },
       "packages": {
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": true,
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
+        "enzyme>cheerio>tslib": true,
         "ethereumjs-wallet>bs58check": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -772,12 +767,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/assets-controllers>async-mutex>tslib": true
-      }
-    },
-    "@metamask/assets-controllers>async-mutex>tslib": {
-      "globals": {
-        "define": true
+        "enzyme>cheerio>tslib": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -2011,9 +2001,9 @@
       },
       "packages": {
         "@sentry/browser>@sentry/core": true,
+        "@sentry/browser>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core": {
@@ -2024,9 +2014,9 @@
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
         "@sentry/browser>@sentry/core>@sentry/minimal": true,
+        "@sentry/browser>@sentry/core>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/hub": {
@@ -2035,15 +2025,35 @@
         "setInterval": true
       },
       "packages": {
+        "@sentry/browser>@sentry/core>@sentry/hub>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry/core>@sentry/hub>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/minimal": {
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
-        "@sentry/utils>tslib": true
+        "@sentry/browser>@sentry/core>@sentry/minimal>tslib": true
+      }
+    },
+    "@sentry/browser>@sentry/core>@sentry/minimal>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@sentry/browser>@sentry/core>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@sentry/browser>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/integrations": {
@@ -2054,10 +2064,15 @@
         "setTimeout": true
       },
       "packages": {
+        "@sentry/integrations>tslib": true,
         "@sentry/types": true,
         "@sentry/utils": true,
-        "@sentry/utils>tslib": true,
         "localforage": true
+      }
+    },
+    "@sentry/integrations>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/utils": {
@@ -2880,6 +2895,11 @@
       "packages": {
         "browserify>process": true,
         "pump>once": true
+      }
+    },
+    "enzyme>cheerio>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "enzyme>has": {
