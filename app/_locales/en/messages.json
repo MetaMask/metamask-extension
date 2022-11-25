@@ -3000,7 +3000,8 @@
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
-    "message": "Revoke spending cap for your"
+    "message": "Revoke spending cap for your $1",
+    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
@@ -3190,7 +3191,8 @@
     "description": "The token symbol that is being approved"
   },
   "setSpendingCap": {
-    "message": "Set a spending cap for your"
+    "message": "Set a spending cap for your $1",
+    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Settings"
