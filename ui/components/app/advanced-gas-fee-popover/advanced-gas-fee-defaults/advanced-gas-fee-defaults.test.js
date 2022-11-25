@@ -98,9 +98,6 @@ describe('AdvancedGasFeeDefaults', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(5);
     expect(screen.queryByText('new values')).toBeInTheDocument();
-    expect(
-      screen.queryByText('Save these as my default for "Advanced"'),
-    ).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
     render({
@@ -117,9 +114,6 @@ describe('AdvancedGasFeeDefaults', () => {
     });
     expect(document.getElementsByTagName('input')[1]).toHaveValue(5);
     expect(screen.queryByText('new values')).toBeInTheDocument();
-    expect(
-      screen.queryByText('Save these as my default for "Advanced"'),
-    ).toBeInTheDocument();
   });
 
   it('should call action setAdvancedGasFee when checkbox or label text is clicked', () => {

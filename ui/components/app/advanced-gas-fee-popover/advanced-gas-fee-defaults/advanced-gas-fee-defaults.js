@@ -102,6 +102,9 @@ const AdvancedGasFeeDefaults = () => {
               ])
             : t('advancedGasFeeDefaultOptIn', [
                 <strong key="default-value-change">{t('newValues')}</strong>,
+                currentProvider.type === NETWORK_TYPES.RPC
+                  ? currentProvider.nickname ?? t('privateNetwork')
+                  : t(currentProvider.type),
               ])}
         </Typography>
       </label>
