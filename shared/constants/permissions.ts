@@ -27,6 +27,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
+  'endowment:rpc': 'endowment:rpc',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
