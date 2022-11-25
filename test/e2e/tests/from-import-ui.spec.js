@@ -397,7 +397,7 @@ describe('MetaMask Import UI', function () {
         // error should occur
         await driver.waitForSelector({
           css: '.error',
-          text: "The account you're are trying to import is a duplicate",
+          text: 'The account you are trying to import is a duplicate',
         });
       },
     );

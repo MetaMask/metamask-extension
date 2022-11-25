@@ -1,4 +1,7 @@
-import { constructPermission, PermissionType } from '@metamask/controllers';
+import {
+  constructPermission,
+  PermissionType,
+} from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
