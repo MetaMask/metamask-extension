@@ -27,7 +27,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_NETWORK_SIZES),
     },
     color: {
       options: Object.values(TEXT_COLORS),
@@ -54,7 +54,7 @@ export default {
   args: {
     name: 'Arbitrum One',
     src: './images/arbitrum.svg',
-    size: AVATAR_NETWORK_SIZES.MD,
+    size: SIZES.MD,
     showHalo: false,
   },
 };
@@ -68,11 +68,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.XS} />
-    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.SM} />
-    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.MD} />
-    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.LG} />
-    <AvatarNetwork {...args} size={AVATAR_NETWORK_SIZES.XL} />
+    <AvatarNetwork {...args} size={SIZES.XS} />
+    <AvatarNetwork {...args} size={SIZES.SM} />
+    <AvatarNetwork {...args} size={SIZES.MD} />
+    <AvatarNetwork {...args} size={SIZES.LG} />
+    <AvatarNetwork {...args} size={SIZES.XL} />
   </Box>
 );
 
@@ -82,7 +82,7 @@ Name.args = {
 };
 
 export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+  <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarNetwork {...args} src="./images/matic-token.png" />
     <AvatarNetwork {...args} src="./images/arbitrum.svg" />
     <AvatarNetwork {...args} src="./images/optimism.svg" />
@@ -113,7 +113,7 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      name="G"
+      name="S"
       color={COLORS.PRIMARY_INVERSE} // This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
   </Box>
