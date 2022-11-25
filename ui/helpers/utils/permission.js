@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
+import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 ///: END:ONLY_INCLUDE_IN
 import {
   RestrictedMethods,
@@ -118,9 +119,21 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
   },
   [EndowmentPermissions['endowment:rpc']]: {
-    // TODO: Icon and copy.
-    label: (t) => t('permission_rpc'),
-    leftIcon: 'fas fa-code',
+    label: (t, _, permissionValue) => {
+      const { snaps, dapps } = getRpcCaveatOrigins(permissionValue);
+
+      const messages = [];
+      if (snaps) {
+        messages.push(t('permission_rpc', [t('otherSnaps')]));
+      }
+
+      if (dapps) {
+        messages.push(t('permission_rpc', [t('websites')]));
+      }
+
+      return messages;
+    },
+    leftIcon: 'fas fa-plug',
     rightIcon: null,
   },
   ///: END:ONLY_INCLUDE_IN
