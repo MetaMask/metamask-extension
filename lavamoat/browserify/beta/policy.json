@@ -1544,21 +1544,19 @@
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
-        "crypto": true,
-        "define": true
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
-    "@metamask/smart-transactions-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
+    "@metamask/snaps-utils>cron-parser": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "luxon": true
       }
     },
-    "@metamask/snaps-controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
+    "@metamask/snaps-utils>rfdc": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@metamask/subject-metadata-controller": {
