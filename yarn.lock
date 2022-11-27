@@ -3336,15 +3336,6 @@
     ses "^0.17.0"
     superstruct "^0.16.7"
 
-"@metamask/subject-metadata-controller@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.0.tgz#a3f3390995c3541981aa4fe6cfcad0d69122f358"
-  integrity sha512-ED6teocVxVQO7ykourRp+USHNg7LsxATBYgquFPkGgyIJAbOVMvHAuWFijhA1SiiuV51M3ehMl9oX3/f6Y7Tkg==
-  dependencies:
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/permission-controller" "~1.0.0"
-    "@metamask/types" "^1.1.0"
-    immer "^9.0.6"
 "@metamask/snaps-utils@^0.25.0":
   version "0.25.0"
   resolved "https://registry.yarnpkg.com/@metamask/snaps-utils/-/snaps-utils-0.25.0.tgz#1a84570d4c24f71e4b0ea3ac4d5003aa22ed5be2"
@@ -3363,6 +3354,16 @@
     semver "^7.3.7"
     ses "^0.17.0"
     superstruct "^0.16.7"
+
+"@metamask/subject-metadata-controller@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.0.tgz#a3f3390995c3541981aa4fe6cfcad0d69122f358"
+  integrity sha512-ED6teocVxVQO7ykourRp+USHNg7LsxATBYgquFPkGgyIJAbOVMvHAuWFijhA1SiiuV51M3ehMl9oX3/f6Y7Tkg==
+  dependencies:
+    "@metamask/base-controller" "~1.0.0"
+    "@metamask/permission-controller" "~1.0.0"
+    "@metamask/types" "^1.1.0"
+    immer "^9.0.6"
 
 "@metamask/test-dapp@^5.2.1":
   version "5.2.1"
