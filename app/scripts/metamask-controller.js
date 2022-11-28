@@ -3170,14 +3170,6 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case KEYRING_TYPES.LEDGER: {
-        return new Promise((_, reject) => {
-          reject(
-            new Error('Ledger does not support eth_getEncryptionPublicKey.'),
-          );
-        });
-      }
-
       case KEYRING_TYPES.TREZOR: {
         return new Promise((_, reject) => {
           reject(
