@@ -232,9 +232,7 @@ export default class ConfirmPageContainer extends Component {
               )}
             </ConfirmPageContainerHeader>
           )}
-          <Box padding={4}>
-            <EnableEIP1559V2Notice />
-          </Box>
+          <EnableEIP1559V2Notice />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
