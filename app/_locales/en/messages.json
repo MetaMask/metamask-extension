@@ -445,7 +445,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a BETA version. Please report bugs $1",
+    "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskDescription": {
@@ -796,6 +796,9 @@
   },
   "contractRequestingAccess": {
     "message": "Contract requesting access"
+  },
+  "contractRequestingSignature": {
+    "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
@@ -2720,6 +2723,14 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_ethereumProvider": {
+    "message": "Access the Ethereum provider.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive arbitrary keys unique to this snap.",
+    "description": "The description for the `snap_getEntropy` permission"
+  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
@@ -2996,7 +3007,8 @@
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
-    "message": "Revoke spending cap for your"
+    "message": "Revoke spending cap for your $1",
+    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
@@ -3186,7 +3198,8 @@
     "description": "The token symbol that is being approved"
   },
   "setSpendingCap": {
-    "message": "Set a spending cap for your"
+    "message": "Set a spending cap for your $1",
+    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Settings"

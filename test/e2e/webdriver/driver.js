@@ -1,6 +1,12 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError, By, Key } = require('selenium-webdriver');
+const {
+  By,
+  Condition,
+  error: webdriverError,
+  Key,
+  until,
+} = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
 /**
@@ -32,6 +38,14 @@ function wrapElementWithAPI(element, driver) {
   };
   return element;
 }
+
+until.elementIsNotPresent = function elementIsNotPresent(locator) {
+  return new Condition(`Element not present`, function (driver) {
+    return driver.findElements(By.css(locator)).then(function (elements) {
+      return elements.length === 0;
+    });
+  });
+};
 
 /**
  * For Selenium WebDriver API documentation, see:
@@ -168,6 +182,10 @@ class Driver {
       const empty = elemText === '';
       return !empty;
     }, this.timeout);
+  }
+
+  async waitForElementNotPresent(element) {
+    return await this.driver.wait(until.elementIsNotPresent(element));
   }
 
   async quit() {

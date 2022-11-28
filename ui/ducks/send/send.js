@@ -82,7 +82,7 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetEnsResolution } from '../ens';
+import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -133,16 +133,16 @@ import {
  *  import('../../../shared/constants/transaction').TransactionTypeString
  * )} TransactionTypeString
  * @typedef {(
- *  import('@metamask/controllers').LegacyGasPriceEstimate
+ *  import('@metamask/gas-fee-controller').LegacyGasPriceEstimate
  * )} LegacyGasPriceEstimate
  * @typedef {(
- *  import('@metamask/controllers').GasFeeEstimates
+ *  import('@metamask/gas-fee-controller').GasFeeEstimates
  * )} GasFeeEstimates
  * @typedef {(
- *  import('@metamask/controllers').EthGasPriceEstimate
+ *  import('@metamask/gas-fee-controller').EthGasPriceEstimate
  * )} EthGasPriceEstimate
  * @typedef {(
- *  import('@metamask/controllers').GasEstimateType
+ *  import('@metamask/gas-fee-controller').GasEstimateType
  * )} GasEstimateType
  * @typedef {(
  *  import('redux').AnyAction
@@ -2199,7 +2199,7 @@ export function resetRecipientInput() {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetEnsResolution());
+    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }

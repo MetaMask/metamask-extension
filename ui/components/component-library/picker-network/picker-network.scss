@@ -3,4 +3,8 @@
 
   max-width: fit-content;
   height: var(--picker-network-height);
+
+  &:active {
+    background-color: var(--color-background-default-hover);
+  }
 }

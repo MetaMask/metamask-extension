@@ -62,6 +62,10 @@ export default class AccountTracker {
     };
     this.store = new ObservableStore(initState);
 
+    this.resetState = () => {
+      this.store.updateState(initState);
+    };
+
     this._provider = opts.provider;
     this._query = pify(new EthQuery(this._provider));
     this._blockTracker = opts.blockTracker;

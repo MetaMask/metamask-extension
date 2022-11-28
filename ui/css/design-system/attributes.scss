@@ -48,6 +48,16 @@ $overflow-wrap: normal, break-word;
 $font-weight: bold, medium, normal, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 $font-style: normal, italic, oblique;
 $font-size: 10px, 12px;
+$border-radius: (
+  xs: 2px,
+  sm: 4px,
+  md: 6px,
+  lg: 8px,
+  xl: 12px,
+  full: 50%,
+  pill: 9999px,
+  none: 0,
+);
 
 // textarea
 $resize: none, both, horizontal, vertical, initial, inherit;

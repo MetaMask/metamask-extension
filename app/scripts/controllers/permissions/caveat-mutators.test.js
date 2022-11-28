@@ -1,4 +1,4 @@
-import { CaveatMutatorOperation } from '@metamask/controllers';
+import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { CaveatMutatorFactories } from './caveat-mutators';
 

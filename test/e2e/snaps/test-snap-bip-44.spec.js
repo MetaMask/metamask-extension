@@ -36,8 +36,11 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#connectBip44Snap');
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -53,8 +56,7 @@ describe('Test Snap bip-44', function () {
         await driver.delay(2000);
 
         // switch to metamask extension
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
 
         // approve install of snap
         await driver.switchToWindowWithTitle(
@@ -75,8 +77,7 @@ describe('Test Snap bip-44', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
         await driver.clickElement('#sendBip44Test');
@@ -98,8 +99,7 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -110,8 +110,7 @@ describe('Test Snap bip-44', function () {
         });
 
         // switch back to test-snaps page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.delay(1000);
 

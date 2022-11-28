@@ -115,6 +115,10 @@ export default class SwapsController {
       swapsState: { ...initialState.swapsState },
     });
 
+    this.resetState = () => {
+      this.store.updateState({ swapsState: { ...initialState.swapsState } });
+    };
+
     this._fetchTradesInfo = fetchTradesInfo;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
