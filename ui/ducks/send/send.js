@@ -13,6 +13,7 @@ import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
@@ -1277,7 +1278,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_ERROR if the account balance is lower
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
         case draftTransaction.asset.type === ASSET_TYPES.NATIVE &&
           !isBalanceSufficient({
@@ -1285,9 +1286,9 @@ const slice = createSlice({
             balance: draftTransaction.asset.balance,
             gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
           }):
-          draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
+          draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
-        // set error to INSUFFICIENT_FUNDS_ERROR if the token balance is lower
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
         case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
           !isTokenBalanceSufficient({
