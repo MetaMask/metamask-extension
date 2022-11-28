@@ -3183,25 +3183,7 @@
     "@metamask/base-controller" "~1.0.0"
     "@metamask/controller-utils" "~1.0.0"
 
-"@metamask/providers@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/providers/-/providers-10.2.0.tgz#8131de667db0c55a61a150438c2a7f17b2d53615"
-  integrity sha512-qO3cOZZr/YJ8LLOqhR+51GGBiRknalfV/na7hwXyqZ1R/uxeLeNdqCyg+g8l3Z8JcLoEiaKGNJOEV3FFyLw8mQ==
-  dependencies:
-    "@metamask/object-multiplex" "^1.1.0"
-    "@metamask/safe-event-emitter" "^2.0.0"
-    "@types/chrome" "^0.0.136"
-    detect-browser "^5.2.0"
-    eth-rpc-errors "^4.0.2"
-    extension-port-stream "^2.0.1"
-    fast-deep-equal "^2.0.1"
-    is-stream "^2.0.0"
-    json-rpc-engine "^6.1.0"
-    json-rpc-middleware-stream "^4.2.0"
-    pump "^3.0.0"
-    webextension-polyfill-ts "^0.25.0"
-
-"@metamask/providers@^10.2.1":
+"@metamask/providers@^10.2.0", "@metamask/providers@^10.2.1":
   version "10.2.1"
   resolved "https://registry.yarnpkg.com/@metamask/providers/-/providers-10.2.1.tgz#61304940adeccc7421dcda30ffd1d834273cc77b"
   integrity sha512-p2TXw2a1Nb8czntDGfeIYQnk4LLVbd5vlcb3GY//lylYlKdSqp+uUTegCvxiFblRDOT68jsY8Ib1VEEzVUOolA==
