@@ -47,7 +47,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform } from './lib/util';
+import { deferredPromise, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -94,16 +94,17 @@ const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 /**
- * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
- * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ * This deferred Promise is used to track whether initialization has finished.
  *
- * @param remotePort
+ * It is very important to ensure that `resolveInitialization` is *always*
+ * called once initialization has completed, and that `rejectInitialization` is
+ * called if initialization fails in an unrecoverable way.
  */
-const initApp = async (remotePort) => {
-  browser.runtime.onConnect.removeListener(initApp);
-  await initialize(remotePort);
-  log.info('MetaMask initialization complete.');
-};
+const {
+  promise: isInitialized,
+  resolve: resolveInitialization,
+  reject: rejectInitialization,
+} = deferredPromise();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -154,13 +155,26 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
-if (isManifestV3) {
-  browser.runtime.onConnect.addListener(initApp);
-  sendReadyMessageToTabs();
-} else {
-  // initialization flow
-  initialize().catch(log.error);
-}
+// These are set after initialization
+let connectRemote;
+let connectExternal;
+
+browser.runtime.onConnect.addListener(async (...args) => {
+  // Queue up connection attempts here, waiting until after initialization
+  await isInitialized;
+
+  // This is set in `setupController`, which is called as part of initialization
+  connectRemote(...args);
+});
+browser.runtime.onConnectExternal.addListener(async (...args) => {
+  // Queue up connection attempts here, waiting until after initialization
+  await isInitialized;
+
+  // This is set in `setupController`, which is called as part of initialization
+  connectExternal(...args);
+});
+
+initialize().catch(log.error);
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -220,17 +234,22 @@ if (isManifestV3) {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
- * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize(remotePort) {
-  const initState = await loadStateFromPersistence();
-  const initLangCode = await getFirstPreferredLangCode();
-  setupController(initState, initLangCode, remotePort);
-  if (!isManifestV3) {
-    await loadPhishingWarningPage();
+async function initialize() {
+  try {
+    const initState = await loadStateFromPersistence();
+    const initLangCode = await getFirstPreferredLangCode();
+    setupController(initState, initLangCode);
+    if (!isManifestV3) {
+      await loadPhishingWarningPage();
+    }
+    await sendReadyMessageToTabs();
+    log.info('MetaMask initialization complete.');
+    resolveInitialization();
+  } catch (error) {
+    rejectInitialization(error);
   }
-  log.info('MetaMask initialization complete.');
 }
 
 /**
@@ -362,9 +381,8 @@ async function loadStateFromPersistence() {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {string} remoteSourcePort - remote application port connecting to extension.
  */
-function setupController(initState, initLangCode, remoteSourcePort) {
+function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
@@ -413,16 +431,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
   setupSentryGetStateGlobal(controller);
 
-  //
-  // connect to other contexts
-  //
-  if (isManifestV3 && remoteSourcePort) {
-    connectRemote(remoteSourcePort);
-  }
-
-  browser.runtime.onConnect.addListener(connectRemote);
-  browser.runtime.onConnectExternal.addListener(connectExternal);
-
   const isClientOpenStatus = () => {
     return (
       popupIsOpen ||
@@ -463,7 +471,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  function connectRemote(remotePort) {
+  connectRemote = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -561,16 +569,16 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       }
       connectExternal(remotePort);
     }
-  }
+  };
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  connectExternal = (remotePort) => {
     const portStream = new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
-  }
+  };
 
   //
   // User Interface setup

@@ -87,12 +87,32 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/approval-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/notification-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

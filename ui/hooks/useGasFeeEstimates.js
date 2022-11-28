@@ -11,7 +11,7 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 /**
  * @typedef {object} GasEstimates
  * @property {import(
- *   '@metamask/controllers'
+ *   '@metamask/gas-fee-controller'
  * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
  * @property {object} gasEstimateType - The type of estimate provided
  * @property {boolean} isGasEstimateLoading - indicates whether the gas
