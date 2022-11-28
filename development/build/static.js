@@ -15,11 +15,21 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
+  shouldIncludeSnow = true,
   buildType,
 }) {
-  const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
-    shouldIncludeLockdown,
-  );
+  const copyTargetsProds = {};
+  const copyTargetsDevs = {};
+
+  browserPlatforms.forEach((browser) => {
+    const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
+      shouldIncludeLockdown,
+      // Snow currently only works on Chromium based browsers
+      shouldIncludeSnow && browser === 'chrome',
+    );
+    copyTargetsProds[browser] = copyTargetsProd;
+    copyTargetsDevs[browser] = copyTargetsDev;
+  });
 
   const additionalBuildTargets = {
     [BuildType.beta]: [
@@ -37,60 +47,60 @@ module.exports = function createStaticAssetTasks({
   };
 
   if (Object.keys(additionalBuildTargets).includes(buildType)) {
-    copyTargetsProd.push(...additionalBuildTargets[buildType]);
-    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+    Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
+      copyTargetsProd.push(...additionalBuildTargets[buildType]),
+    );
+    Object.entries(copyTargetsDevs).forEach(([_, copyTargetsDev]) =>
+      copyTargetsDev.push(...additionalBuildTargets[buildType]),
+    );
   }
 
-  const prod = createTask(
-    TASKS.STATIC_PROD,
-    composeSeries(
-      ...copyTargetsProd.map((target) => {
-        return async function copyStaticAssets() {
-          await performCopy(target);
-        };
-      }),
-    ),
-  );
-  const dev = createTask(
-    TASKS.STATIC_DEV,
-    composeSeries(
-      ...copyTargetsDev.map((target) => {
-        return async function copyStaticAssets() {
-          await setupLiveCopy(target);
-        };
-      }),
-    ),
-  );
+  const prodTasks = [];
+  Object.entries(copyTargetsProds).forEach(([browser, copyTargetsProd]) => {
+    copyTargetsProd.forEach((target) => {
+      prodTasks.push(async function copyStaticAssets() {
+        await performCopy(target, browser);
+      });
+    });
+  });
+
+  const devTasks = [];
+  Object.entries(copyTargetsDevs).forEach(([browser, copyTargetsDev]) => {
+    copyTargetsDev.forEach((target) => {
+      devTasks.push(async function copyStaticAssets() {
+        await setupLiveCopy(target, browser);
+      });
+    });
+  });
+
+  const prod = createTask(TASKS.STATIC_PROD, composeSeries(...prodTasks));
+  const dev = createTask(TASKS.STATIC_DEV, composeSeries(...devTasks));
 
   return { dev, prod };
 
-  async function setupLiveCopy(target) {
+  async function setupLiveCopy(target, browser) {
     const pattern = target.pattern || '/**/*';
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
-      performCopy(target);
+      performCopy(target, browser);
     });
-    await performCopy(target);
+    await performCopy(target, browser);
   }
 
-  async function performCopy(target) {
-    await Promise.all(
-      browserPlatforms.map(async (platform) => {
-        if (target.pattern) {
-          await copyGlob(
-            target.src,
-            `${target.src}${target.pattern}`,
-            `./dist/${platform}/${target.dest}`,
-          );
-        } else {
-          await copyGlob(
-            target.src,
-            `${target.src}`,
-            `./dist/${platform}/${target.dest}`,
-          );
-        }
-      }),
-    );
+  async function performCopy(target, browser) {
+    if (target.pattern) {
+      await copyGlob(
+        target.src,
+        `${target.src}${target.pattern}`,
+        `./dist/${browser}/${target.dest}`,
+      );
+    } else {
+      await copyGlob(
+        target.src,
+        `${target.src}`,
+        `./dist/${browser}/${target.dest}`,
+      );
+    }
   }
 
   async function copyGlob(baseDir, srcGlob, dest) {
@@ -104,7 +114,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -146,6 +156,16 @@ function getCopyTargets(shouldIncludeLockdown) {
     {
       src: `./node_modules/globalthis/dist/browser.js`,
       dest: `globalthis.js`,
+    },
+    {
+      src: shouldIncludeSnow
+        ? `./node_modules/@lavamoat/snow/snow.prod.js`
+        : EMPTY_JS_FILE,
+      dest: `snow.js`,
+    },
+    {
+      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
+      dest: `use-snow.js`,
     },
     {
       src: shouldIncludeLockdown

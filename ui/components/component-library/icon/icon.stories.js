@@ -8,12 +8,23 @@ import {
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
   TEXT,
+  FLEX_WRAP,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { Text } from '../text';
 
-import { Icon } from './icon';
-import { ICON_NAMES } from './icon.constants';
+import Box from '../../ui/box/box';
+
+import {
+  ButtonIcon,
+  ButtonLink,
+  ICON_NAMES,
+  ICON_SIZES,
+  Icon,
+  Label,
+  Text,
+  TextField,
+  TextFieldSearch,
+} from '..';
 
 import README from './README.mdx';
 
@@ -51,7 +62,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(ICON_SIZES),
     },
     color: {
       control: 'select',
@@ -88,11 +99,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <Icon {...args} />;
-
-DefaultStory.storyName = 'Default';
-
-export const Name = (args) => {
+export const DefaultStory = (args) => {
   const [search, setSearch] = useState('');
   const iconList = Object.keys(ICON_NAMES)
     .filter(
@@ -106,98 +113,134 @@ export const Name = (args) => {
     setSearch(e.target.value);
   };
 
+  const handleOnClear = () => {
+    setSearch('');
+  };
+
   return (
     <>
       <Text as="h2" marginBottom={2} variant={TEXT.HEADING_MD}>
         Icon search
       </Text>
-      <Box display={DISPLAY.FLEX}>
-        <Box
-          marginBottom={4}
-          borderColor={COLORS.BORDER_DEFAULT}
-          borderRadius={SIZES.SM}
-          as="input"
-          type="text"
-          onChange={handleSearch}
-          value={search}
-          placeholder="Search"
-          paddingLeft={2}
-          paddingRight={2}
-          style={{
-            height: '40px',
-            width: '100%',
-            maxWidth: '300px',
-            fontSize: 'var(--typography-l-body-md-font-size)',
-          }}
-        />
-      </Box>
-
       <Box
         display={DISPLAY.GRID}
         gap={2}
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}
+        style={{
+          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+        }}
       >
-        {iconList.length > 0 ? (
-          <>
-            {iconList.map((item) => {
-              return (
-                <Box
-                  borderColor={COLORS.BORDER_MUTED}
-                  borderRadius={SIZES.MD}
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.COLUMN}
-                  alignItems={ALIGN_ITEMS.CENTER}
-                  justifyContent={JUSTIFY_CONTENT.CENTER}
-                  padding={4}
-                  key={item}
-                >
-                  <Box>
-                    <Icon marginBottom={2} {...args} name={ICON_NAMES[item]} />
-                  </Box>
-                  <Text
-                    variant={TEXT.BODY_XS}
-                    as="pre"
-                    style={{ cursor: 'pointer' }}
-                    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-                    paddingLeft={2}
-                    paddingRight={2}
-                    paddingTop={1}
-                    paddingBottom={1}
-                    borderRadius={SIZES.SM}
-                    title="Copy to clipboard"
-                    onClick={() => {
-                      const tempEl = document.createElement('textarea');
-                      tempEl.value = item;
-                      document.body.appendChild(tempEl);
-                      tempEl.select();
-                      document.execCommand('copy');
-                      document.body.removeChild(tempEl);
-                    }}
-                  >
-                    {item}
-                  </Text>
-                </Box>
-              );
-            })}
-          </>
-        ) : (
-          <Text>
-            No matches. Please try again or ask in the{' '}
-            <Text
-              as="a"
-              color={COLORS.PRIMARY_DEFAULT}
-              href="https://consensys.slack.com/archives/C0354T27M5M"
-              target="_blank"
-            >
-              #metamask-design-system
-            </Text>{' '}
-            channel on slack.
-          </Text>
-        )}
+        <Box
+          style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+        >
+          {/* TODO replace with FormTextField */}
+          <Label htmlFor="icon-search">Name</Label>
+          <TextFieldSearch
+            id="icon-search"
+            marginBottom={4}
+            onChange={handleSearch}
+            clearButtonOnClick={handleOnClear}
+            value={search}
+            placeholder="Search icon name"
+          />
+        </Box>
       </Box>
+      {iconList.length > 0 ? (
+        <Box
+          display={DISPLAY.GRID}
+          gap={2}
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+          }}
+        >
+          {iconList.map((item) => {
+            return (
+              <Box
+                borderColor={COLORS.BORDER_MUTED}
+                borderRadius={SIZES.MD}
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+                alignItems={ALIGN_ITEMS.CENTER}
+                justifyContent={JUSTIFY_CONTENT.CENTER}
+                padding={4}
+                key={item}
+              >
+                <Icon marginBottom={2} {...args} name={ICON_NAMES[item]} />
+                <TextField
+                  placeholder={item}
+                  value={item}
+                  readOnly
+                  size={SIZES.SM}
+                  inputProps={{
+                    variant: TEXT.BODY_XS,
+                    textAlign: TEXT_ALIGN.CENTER,
+                  }}
+                  backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+                  rightAccessory={
+                    <ButtonIcon
+                      icon={ICON_NAMES.COPY_FILLED}
+                      size={SIZES.SM}
+                      color={COLORS.ICON_ALTERNATIVE}
+                      ariaLabel="Copy to clipboard"
+                      title="Copy to clipboard"
+                      onClick={() => {
+                        const tempEl = document.createElement('textarea');
+                        tempEl.value = item;
+                        document.body.appendChild(tempEl);
+                        tempEl.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempEl);
+                      }}
+                    />
+                  }
+                />
+              </Box>
+            );
+          })}
+        </Box>
+      ) : (
+        <Text>
+          No matches. Please try again or ask in the{' '}
+          <ButtonLink
+            size={SIZES.AUTO}
+            color={COLORS.PRIMARY_DEFAULT}
+            href="https://consensys.slack.com/archives/C0354T27M5M"
+            target="_blank"
+          >
+            #metamask-design-system
+          </ButtonLink>{' '}
+          channel on slack.
+        </Text>
+      )}
     </>
   );
 };
+DefaultStory.storyName = 'Default';
+
+export const Name = (args) => (
+  <>
+    <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
+      {Object.keys(ICON_NAMES).map((item) => {
+        console.log('item:', item);
+        return (
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderRadius={SIZES.MD}
+            display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            padding={4}
+            key={item}
+          >
+            <Icon {...args} name={ICON_NAMES[item]} />
+          </Box>
+        );
+      })}
+    </Box>
+  </>
+);
 
 export const Size = (args) => (
   <>
@@ -220,6 +263,7 @@ export const Size = (args) => (
     </Text>
   </>
 );
+
 export const Color = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE}>
     <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>

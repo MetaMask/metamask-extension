@@ -12,7 +12,7 @@ import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
-import { addHexPrefix } from './lib/util';
+import { addHexPrefix, deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -102,11 +102,14 @@ const CUSTOM_RPC_CHAIN_ID = '0x539';
 
 describe('MetaMaskController', function () {
   let metamaskController;
+
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -158,6 +161,18 @@ describe('MetaMaskController', function () {
 
   after(async function () {
     await ganacheServer.quit();
+  });
+
+  describe('should reset states on first time profile load', function () {
+    it('should reset state', function () {
+      assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+
+    it('should not reset states if already set', function () {
+      // global.isFirstTime should also remain false
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
   });
 
   describe('#getAccounts', function () {
@@ -1223,11 +1238,3 @@ describe('MetaMaskController', function () {
     });
   });
 });
-
-function deferredPromise() {
-  let resolve;
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
-  });
-  return { promise, resolve };
-}

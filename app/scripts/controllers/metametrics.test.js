@@ -362,7 +362,7 @@ describe('MetaMetricsController', function () {
     it('should track an event if user has not opted in, but isOptIn is true', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: true,
       });
       mock
         .expects('track')
@@ -394,7 +394,7 @@ describe('MetaMetricsController', function () {
     it('should track an event during optin and allow for metaMetricsId override', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: true,
       });
       mock
         .expects('track')
