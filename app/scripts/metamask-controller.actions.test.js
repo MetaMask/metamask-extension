@@ -2,10 +2,8 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import {
-  ApprovalRequestNotFoundError,
-  PermissionsRequestNotFoundError,
-} from '@metamask/controllers';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 
 const Ganache = require('../../test/e2e/ganache');

@@ -23,29 +23,33 @@ import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airga
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
+import { AddressBookController } from '@metamask/address-book-controller';
 import {
-  AddressBookController,
   ApprovalController,
-  ControllerMessenger,
+  ApprovalRequestNotFoundError,
+} from '@metamask/approval-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
+import {
   CurrencyRateController,
-  PhishingController,
-  AnnouncementController,
-  GasFeeController,
   TokenListController,
   TokensController,
   TokenRatesController,
   NftController,
   AssetsContractController,
   NftDetectionController,
+} from '@metamask/assets-controllers';
+import { PhishingController } from '@metamask/phishing-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import { GasFeeController } from '@metamask/gas-fee-controller';
+import {
   PermissionController,
-  SubjectMetadataController,
   PermissionsRequestNotFoundError,
-  ApprovalRequestNotFoundError,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  RateLimitController,
-  NotificationController,
-  ///: END:ONLY_INCLUDE_IN
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
+import { SubjectMetadataController } from '@metamask/subject-metadata-controller';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { RateLimitController } from '@metamask/rate-limit-controller';
+import { NotificationController } from '@metamask/notification-controller';
+///: END:ONLY_INCLUDE_IN
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
@@ -167,7 +171,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
-  // TODO: Add this and similar enums to @metamask/controllers and export them
+  // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
 
@@ -1276,8 +1280,8 @@ export default class MetamaskController extends EventEmitter {
    * changes.
    *
    * Some of the subscriptions in this method are ControllerMessenger selector
-   * event subscriptions. See the relevant @metamask/controllers documentation
-   * for more information.
+   * event subscriptions. See the relevant documentation for
+   * `@metamask/base-controller` for more information.
    *
    * Note that account-related notifications emitted when the extension
    * becomes unlocked are handled in MetaMaskController._onUnlock.

@@ -27,6 +27,9 @@ export const GAS_LIMITS = {
  * These are already declared in @metamask/controllers but importing them from
  * that module and re-exporting causes the UI bundle size to expand beyond 4MB
  *
+ * (TODO: This comment was added before @metamask/controllers was split up —
+ * revisit now that @metamask/gas-fee-controller is available)
+ *
  * @type {GasEstimateTypes}
  */
 export const GAS_ESTIMATE_TYPES = {
