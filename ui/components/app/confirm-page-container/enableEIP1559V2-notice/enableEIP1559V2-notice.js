@@ -32,11 +32,7 @@ export default function EnableEIP1559V2Notice() {
   }
 
   return (
-    <Box
-      padding={4}
-      // margin={4}
-      className="enableEIP1559V2-notice"
-    >
+    <Box margin={4} className="enableEIP1559V2-notice">
       <Dialog type="message" className="enableEIP1559V2-notice__dialog">
         <button
           onClick={setEnableEIP1559V2NoticeDismissed}
