@@ -12,7 +12,7 @@ export default {
       control: { type: 'number' },
     },
     dappProposedValue: {
-      control: { type: 'number' },
+      control: { type: 'text' },
     },
     siteOrigin: {
       control: { type: 'text' },
@@ -24,7 +24,7 @@ export default {
   args: {
     tokenName: 'DAI',
     currentTokenBalance: 200.12,
-    dappProposedValue: 7,
+    dappProposedValue: '7',
     siteOrigin: 'Uniswap.org',
   },
 };
