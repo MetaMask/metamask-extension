@@ -12,6 +12,7 @@ import {
 } from '../../../helpers/constants/error-keys';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
+import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
@@ -81,7 +82,6 @@ export default class SendContent extends Component {
       <PageContainerContent>
         <div className="send-v2__form">
           {assetError ? this.renderError(assetError) : null}
-          {gasError ? this.renderError(gasError) : null}
           {isEthGasPrice
             ? this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)
             : null}
@@ -97,6 +97,7 @@ export default class SendContent extends Component {
           <SendAmountRow />
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
+          <GasDisplay gasError={gasError} />
         </div>
       </PageContainerContent>
     );

@@ -56,3 +56,7 @@ tsout/
 
 # Test results
 test-results/
+
+# This file is used to authenticate with the GitHub Package registry, to
+# enable the use of @metamask preview builds.
+.npmrc

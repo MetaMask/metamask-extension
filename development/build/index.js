@@ -66,6 +66,7 @@ async function defineAndRunBuildTasks() {
     isLavaMoat,
     policyOnly,
     shouldIncludeLockdown,
+    shouldIncludeSnow,
     shouldLintFenceFiles,
     skipStats,
     version,
@@ -81,6 +82,7 @@ async function defineAndRunBuildTasks() {
     livereload,
     browserPlatforms,
     shouldIncludeLockdown,
+    shouldIncludeSnow,
     buildType,
   });
 
@@ -230,6 +232,12 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
             'Whether to include SES lockdown files in the extension bundle. Setting this to `false` can be useful during development if you want to handle lockdown errors later.',
           type: 'boolean',
         })
+        .option('snow', {
+          default: true,
+          description:
+            'Whether to include Snow files in the extension bundle. Setting this to `false` can be useful during development if you want to handle Snow errors later.',
+          type: 'boolean',
+        })
         .option('policy-only', {
           default: false,
           description:
@@ -263,6 +271,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     buildVersion,
     lintFenceFiles,
     lockdown,
+    snow,
     policyOnly,
     skipStats,
     task,
@@ -292,6 +301,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     isLavaMoat: process.argv[0].includes('lavamoat'),
     policyOnly,
     shouldIncludeLockdown: lockdown,
+    shouldIncludeSnow: snow,
     shouldLintFenceFiles,
     skipStats,
     version,
