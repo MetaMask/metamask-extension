@@ -3,6 +3,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 ///: END:ONLY_INCLUDE_IN
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -91,11 +92,28 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-infinity',
     rightIcon: null,
   }),
-  [EndowmentPermissions['endowment:transaction-insight']]: (t) => ({
-    label: t('permission_transactionInsight'),
-    leftIcon: 'fas fa-info',
-    rightIcon: null,
-  }),
+  [EndowmentPermissions['endowment:transaction-insight']]: (
+    t,
+    _,
+    permissionValue,
+  ) => {
+    const result = [
+      {
+        label: t('permission_transactionInsight'),
+        leftIcon: 'fas fa-info',
+        rightIcon: null,
+      },
+    ];
+
+    if (permissionValue.caveats[0].type === SnapCaveatType.TransactionOrigin) {
+      result.push({
+        label: t('permission_transactionInsightOrigin'),
+        leftIcon: 'fas fa-compass',
+        rightIcon: null,
+      });
+    }
+    return result;
+  },
   [EndowmentPermissions['endowment:cronjob']]: (t) => ({
     label: t('permission_cronjob'),
     leftIcon: 'fas fa-clock',

@@ -2763,6 +2763,10 @@
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
