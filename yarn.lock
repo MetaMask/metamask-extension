@@ -2788,15 +2788,15 @@
     nanoid "^3.1.31"
 
 "@metamask/assets-controllers@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.0.tgz#10ee4e0bd005a2d26b78562641250a153cba5618"
-  integrity sha512-QUTtp4xJrh6sSkAByh0c7U7x2n50zU5wF++tkutsVyoQGwSurX8ZQwvf8W3l+3ARzHxy/l+Zc3JFhysJ9dn2Xw==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.1.tgz#b9268628590617c34d86dd25e8e619c0a7443a7e"
+  integrity sha512-Bh7JXzCNKb2QdVTanv5YGZmr69sH8xKml0Y9M/xNkrLZburJDHn7ybAVmOZYh68Tm2gmw1AiO4s+uwPCktonVw==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
-    "@metamask/base-controller" "~1.0.0"
+    "@metamask/base-controller" "~1.1.0"
     "@metamask/contract-metadata" "^1.35.0"
     "@metamask/controller-utils" "~1.0.0"
     "@metamask/metamask-eth-abis" "3.0.0"
@@ -2824,7 +2824,15 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/base-controller@^1.0.0", "@metamask/base-controller@~1.0.0":
+"@metamask/base-controller@^1.0.0", "@metamask/base-controller@~1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.1.0.tgz#d83d65b18dc731d40e5fe221353ef98f1f4c1d05"
+  integrity sha512-u4dzf2tFmu6nqLgrETtSOiUgfgofVXUiauzLzWnIP9pJWA02CU7v71UBWpIOkgOYWRqXKn23XTCuo7IQOpVYYw==
+  dependencies:
+    "@metamask/controller-utils" "~1.0.0"
+    immer "^9.0.6"
+
+"@metamask/base-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
   integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
