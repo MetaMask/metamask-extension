@@ -61,9 +61,6 @@ export default function GasDisplay({ gasError }) {
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
-  const { confirmTransaction } = useSelector((state) => state);
-  const { txData } = confirmTransaction;
-  const { txParams = {} } = txData;
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
