@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -856,7 +857,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
+          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
         );
       });
 
