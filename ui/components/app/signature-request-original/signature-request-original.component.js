@@ -241,51 +241,42 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
-  renderWarning = () => {
-    const {
-      cancel,
-      clearConfirmTransaction,
-      history,
-      mostRecentOverviewPage,
-      sign,
-    } = this.props;
-    const { fromAccount } = this.state;
+  onSubmit = async (event) => {
+    const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
+      this.props;
     const { trackEvent, type } = this.context;
 
-    return (
-      <SignatureRequestOriginalWarning
-        senderAddress={fromAccount.address}
-        name={fromAccount.name}
-        onSubmit={async (event) => {
-          await sign(event);
-          trackEvent({
-            category: EVENT.CATEGORIES.TRANSACTIONS,
-            event: 'Confirm',
-            properties: {
-              action: 'Sign Request',
-              legacy_event: true,
-              type,
-            },
-          });
-          clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
-        }}
-        onCancel={async (event) => {
-          await cancel(event);
-          trackEvent({
-            category: EVENT.CATEGORIES.TRANSACTIONS,
-            event: 'Cancel',
-            properties: {
-              action: 'Sign Request',
-              legacy_event: true,
-              type,
-            },
-          });
-          clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
-        }}
-      />
-    );
+    await sign(event);
+    trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Confirm',
+      properties: {
+        action: 'Sign Request',
+        legacy_event: true,
+        type,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
+  };
+
+  onCancel = async (event) => {
+    const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
+      this.props;
+    const { trackEvent, type } = this.context;
+
+    await cancel(event);
+    trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Cancel',
+      properties: {
+        action: 'Sign Request',
+        legacy_event: true,
+        type,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
   };
 
   renderFooter = () => {
@@ -377,7 +368,7 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const { messagesCount } = this.props;
-    const { showSignatureRequestWarning } = this.state;
+    const { showSignatureRequestWarning, fromAccount } = this.state;
     const { t } = this.context;
     const rejectNText = t('rejectTxsN', [messagesCount]);
     return (
@@ -389,7 +380,14 @@ export default class SignatureRequestOriginal extends Component {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        {showSignatureRequestWarning && this.renderWarning()}
+        {showSignatureRequestWarning && (
+          <SignatureRequestOriginalWarning
+            senderAddress={fromAccount.address}
+            name={fromAccount.name}
+            onSubmit={async (event) => await this.onSubmit(event)}
+            onCancel={async (event) => await this.onCancel(event)}
+          />
+        )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <Button
