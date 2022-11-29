@@ -50,7 +50,7 @@ module.exports = {
       https: false,
       os: false,
       path: false,
-      stream: false,
+      stream: require.resolve('stream-browserify'),
       _stream_transform: false,
     };
     config.module.strictExportPresence = true;
