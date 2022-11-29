@@ -112,6 +112,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
+import createDupReqFilterMiddleware from './lib/createDupReqMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
@@ -3716,6 +3717,8 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
+
+    engine.push(createDupReqFilterMiddleware());
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
