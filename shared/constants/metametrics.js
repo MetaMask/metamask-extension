@@ -184,6 +184,8 @@
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
  * @property {'install_date_ext'} INSTALL_DATE_EXT - when the user installed the extension
+ * @property {'security_provider'} SECURITY_PROVIDER - when security provider feature is toggled we
+ * identify the security_provider trait
  */
 
 /**
@@ -206,6 +208,7 @@ export const TRAITS = {
   THEME: 'theme',
   THREE_BOX_ENABLED: 'three_box_enabled',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
+  SECURITY_PROVIDER: 'security_provider',
 };
 
 /**

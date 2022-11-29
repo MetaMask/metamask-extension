@@ -2157,8 +2157,8 @@ export default class TransactionController extends EventEmitter {
       originalApprovalAmount,
       finalApprovalAmount,
       contractMethodName,
+      flagAsDangerous,
     } = txMeta;
-
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
     const { assetType, tokenStandard } = await determineTransactionAssetType(
@@ -2322,6 +2322,7 @@ export default class TransactionController extends EventEmitter {
       token_standard: tokenStandard,
       transaction_type: transactionType,
       transaction_speed_up: type === TransactionType.retry,
+      ui_customizations: flagAsDangerous === 1 ? ['flagged_as_malicious'] : [],
     };
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {

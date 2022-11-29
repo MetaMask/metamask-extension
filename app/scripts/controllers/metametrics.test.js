@@ -943,6 +943,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        security_provider: [],
       });
 
       assert.deepEqual(traits, {
@@ -960,6 +961,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.SECURITY_PROVIDER]: [],
       });
     });
 
