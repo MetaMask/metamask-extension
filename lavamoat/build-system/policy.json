@@ -1113,12 +1113,12 @@
         "path": true
       },
       "packages": {
-        "@babel/eslint-parser>eslint-scope": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "@typescript-eslint/utils": true,
         "eslint": true,
-        "eslint>eslint-utils": true
+        "eslint>eslint-utils": true,
+        "webpack>eslint-scope": true
       }
     },
     "@typescript-eslint/eslint-plugin>tsutils": {
@@ -2498,7 +2498,6 @@
         "path": true
       },
       "packages": {
-        "@babel/eslint-parser>eslint-scope": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
