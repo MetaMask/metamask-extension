@@ -1503,7 +1503,7 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.0"
 
-"@ethersproject/abi@^5.6.0", "@ethersproject/abi@^5.7.0":
+"@ethersproject/abi@^5.5.0", "@ethersproject/abi@^5.6.0", "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
   integrity sha512-351ktp42TiRcYB3H1OP8yajPeAQstMW/yCFokj/AthP9bLHzQFPlOrxOcwYEDkUAICmOHljvN4K39OMTMUa9RA==
@@ -14389,12 +14389,13 @@ graphviz@0.0.9:
     temp "~0.4.0"
 
 gridplus-sdk@^2.2.9:
-  version "2.2.9"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.2.9.tgz#bd98257fee13d82e19ee267dfa21cd12f81eea21"
-  integrity sha512-U39YxeLisEJmw9KCtKCQB6C8UTVRKTonhDxwcDpN8T23VZuxk2SOzdmvq/HS01l5N+p1QEKKzQF6OCFQ7nVcYA==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.3.0.tgz#c8e32bc399b8ceedc68cd9a7e9bc61726e41a926"
+  integrity sha512-IdXL67TKvnCs8vH9XKHdKK7C+a61X69iqTiyp/ZtO6y28MXyIGCTgT5P3J24B6lKaVxlgdEvXf9uqo5XDB+PDQ==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
+    "@ethersproject/abi" "^5.5.0"
     aes-js "^3.1.1"
     bech32 "^2.0.0"
     bignumber.js "^9.0.1"
@@ -14409,6 +14410,7 @@ gridplus-sdk@^2.2.9:
     js-sha3 "^0.8.0"
     rlp "^3.0.0"
     secp256k1 "4.0.2"
+    uuid "^9.0.0"
 
 growl@1.10.5:
   version "1.10.5"
@@ -28159,6 +28161,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-compile-cache-lib@^3.0.0:
   version "3.0.0"
