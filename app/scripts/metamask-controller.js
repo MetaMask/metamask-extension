@@ -2127,7 +2127,6 @@ export default class MetamaskController extends EventEmitter {
         chain_id: chainId,
         network_name: chainName,
         symbol: ticker,
-        block_explorer_url: blockExplorerUrl,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
       },
       actionId,

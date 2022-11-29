@@ -299,7 +299,6 @@ async function addEthereumChainHandler(
         chain_id: _chainId,
         network_name: _chainName,
         symbol: ticker,
-        block_explorer_url: firstValidBlockExplorerUrl,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });
