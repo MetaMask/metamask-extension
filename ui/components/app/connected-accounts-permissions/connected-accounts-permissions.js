@@ -55,7 +55,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
                 className="connected-accounts-permissions__checkbox"
               />
               <label htmlFor={permissionName}>
-                {getPermissionDescription(t, permissionName).label}
+                {getPermissionDescription(t, permissionName)[0].label}
               </label>
             </li>
           ))}
