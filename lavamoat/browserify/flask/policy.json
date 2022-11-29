@@ -76,7 +76,7 @@
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
         "browserify>process": true,
-        "stylelint>autoprefixer>browserslist": true
+        "webpack>browserslist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>semver": {
@@ -389,15 +389,10 @@
         "define": true
       },
       "packages": {
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": true,
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
+        "enzyme>cheerio>tslib": true,
         "ethereumjs-wallet>bs58check": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -772,12 +767,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/assets-controllers>async-mutex>tslib": true
-      }
-    },
-    "@metamask/assets-controllers>async-mutex>tslib": {
-      "globals": {
-        "define": true
+        "enzyme>cheerio>tslib": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -2011,9 +2001,9 @@
       },
       "packages": {
         "@sentry/browser>@sentry/core": true,
+        "@sentry/browser>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core": {
@@ -2024,9 +2014,9 @@
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
         "@sentry/browser>@sentry/core>@sentry/minimal": true,
+        "@sentry/browser>@sentry/core>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/hub": {
@@ -2035,15 +2025,35 @@
         "setInterval": true
       },
       "packages": {
+        "@sentry/browser>@sentry/core>@sentry/hub>tslib": true,
         "@sentry/types": true,
-        "@sentry/utils": true,
-        "@sentry/utils>tslib": true
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry/core>@sentry/hub>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/minimal": {
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
-        "@sentry/utils>tslib": true
+        "@sentry/browser>@sentry/core>@sentry/minimal>tslib": true
+      }
+    },
+    "@sentry/browser>@sentry/core>@sentry/minimal>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@sentry/browser>@sentry/core>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@sentry/browser>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/integrations": {
@@ -2054,10 +2064,15 @@
         "setTimeout": true
       },
       "packages": {
+        "@sentry/integrations>tslib": true,
         "@sentry/types": true,
         "@sentry/utils": true,
-        "@sentry/utils>tslib": true,
         "localforage": true
+      }
+    },
+    "@sentry/integrations>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@sentry/utils": {
@@ -2880,6 +2895,11 @@
       "packages": {
         "browserify>process": true,
         "pump>once": true
+      }
+    },
+    "enzyme>cheerio>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "enzyme>has": {
@@ -5854,12 +5874,7 @@
       },
       "packages": {
         "browserify>util": true,
-        "safe-event-emitter>events": true
-      }
-    },
-    "safe-event-emitter>events": {
-      "globals": {
-        "console": true
+        "webpack>events": true
       }
     },
     "semver": {
@@ -5909,15 +5924,6 @@
         "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
-      }
-    },
-    "stylelint>autoprefixer>browserslist": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true,
-        "stylelint>autoprefixer>caniuse-lite": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -6018,6 +6024,20 @@
         "console.error": true,
         "console.warn": true,
         "define": true
+      }
+    },
+    "webpack>browserslist": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "webpack>browserslist>caniuse-lite": true,
+        "webpack>browserslist>electron-to-chromium": true,
+        "webpack>browserslist>node-releases": true
+      }
+    },
+    "webpack>events": {
+      "globals": {
+        "console": true
       }
     }
   }
