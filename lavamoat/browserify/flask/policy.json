@@ -1443,9 +1443,9 @@
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
-        "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/smart-transactions-controller>fast-json-patch": true,
+        "@metamask/snaps-controllers>@metamask/controllers": true,
         "lodash": true
       }
     },
