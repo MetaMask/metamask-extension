@@ -15,6 +15,7 @@ import {
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../../../ducks/metamask/metamask';
+import { getEIP1559V2Enabled } from '../../../selectors';
 
 import Typography from '../../ui/typography/typography';
 import {
@@ -44,6 +45,7 @@ export default function GasTiming({
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
