@@ -297,9 +297,14 @@ const setupPageStreams = () => {
   pageChannel = pageMux.createStream(PROVIDER);
 };
 
+// The field below is used to ensure that replay is done only once for each restart.
+let METAMASK_EXTENSION_CONNECT_SENT = false;
+
 const setupExtensionStreams = () => {
+  METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
+  extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -520,6 +525,38 @@ function logStreamDisconnectWarning(remoteLabel, error) {
     `MetaMask: Content script lost connection to "${remoteLabel}".`,
     error,
   );
+}
+
+/**
+ * The function notifies inpage when the extension stream connection is ready. When the
+ * 'metamask_chainChanged' method is received from the extension, it implies that the
+ * background state is completely initialized and it is ready to process method calls.
+ * This is used as a notification to replay any pending messages in MV3.
+ *
+ * @param {object} msg - instance of message received
+ */
+function extensionStreamMessageListener(msg) {
+  if (
+    METAMASK_EXTENSION_CONNECT_SENT &&
+    isManifestV3 &&
+    msg.data.method === 'metamask_chainChanged'
+  ) {
+    METAMASK_EXTENSION_CONNECT_SENT = false;
+    window.postMessage(
+      {
+        target: INPAGE, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PROVIDER, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+          },
+        },
+      },
+      window.location.origin,
+    );
+  }
 }
 
 /**

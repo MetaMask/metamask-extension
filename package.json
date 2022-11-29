@@ -130,7 +130,7 @@
     "@metamask/permission-controller": "^1.0.0",
     "@metamask/phishing-controller": "^1.0.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/providers": "^10.0.0",
+    "@metamask/providers": "^10.2.1",
     "@metamask/rate-limit-controller": "^1.0.0",
     "@metamask/rpc-methods": "^0.24.1",
     "@metamask/slip44": "^2.1.0",
