@@ -127,4 +127,15 @@ describe('PriorityfeeInput', () => {
       screen.queryByText('Priority fee must be greater than 0.'),
     ).not.toBeInTheDocument();
   });
+
+  it('should not show the error if priority fee is 0', () => {
+    render({
+      txParams: {
+        maxPriorityFeePerGas: '0x0',
+      },
+    });
+    expect(
+      screen.queryByText('Priority fee must be greater than 0.'),
+    ).not.toBeInTheDocument();
+  });
 });
