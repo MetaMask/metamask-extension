@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useArgs } from '@storybook/client-api';
+import PropTypes from 'prop-types';
 
 import {
   SIZES,
@@ -241,7 +242,6 @@ export const LeftAccessoryRightAccessory = (args) => {
         value={value.search}
         name="search"
         onChange={handleOnChange}
-        showClear
         leftAccessory={
           <Icon
             color={COLORS.ICON_ALTERNATIVE}
@@ -352,46 +352,52 @@ export const InputRef = (args) => {
   );
 };
 
-const CustomInputComponent = ({
-  as,
-  autoComplete,
-  autoFocus,
-  defaultValue,
-  disabled,
-  focused,
-  id,
-  maxLength,
-  name,
-  onBlur,
-  onChange,
-  onFocus,
-  padding,
-  paddingLeft,
-  paddingRight,
-  placeholder,
-  readOnly,
-  ref,
-  required,
-  value,
-  variant,
-  type,
-  className,
-  'aria-invalid': ariaInvalid,
-  ...props
-}) => {
-  return (
+const CustomInputComponent = React.forwardRef(
+  (
+    {
+      as,
+      autoComplete,
+      autoFocus,
+      defaultValue,
+      disabled,
+      focused,
+      id,
+      inputProps,
+      inputRef,
+      maxLength,
+      name,
+      onBlur,
+      onChange,
+      onFocus,
+      padding,
+      paddingLeft,
+      paddingRight,
+      placeholder,
+      readOnly,
+      required,
+      value,
+      variant,
+      type,
+      className,
+      'aria-invalid': ariaInvalid,
+      ...props
+    },
+    ref,
+  ) => (
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
+      ref={ref}
       {...{ padding, paddingLeft, paddingRight, ...props }}
     >
       <Box display={DISPLAY.INLINE_FLEX}>
         <Text
           style={{ padding: 0 }}
           aria-invalid={ariaInvalid}
+          ref={inputRef}
           {...{
-            as,
             className,
+            as,
             autoComplete,
             autoFocus,
             defaultValue,
@@ -405,11 +411,11 @@ const CustomInputComponent = ({
             onFocus,
             placeholder,
             readOnly,
-            ref,
             required,
             value,
             variant,
             type,
+            ...inputProps,
           }}
         />
         <Text variant={TEXT.BODY_XS} color={COLORS.TEXT_ALTERNATIVE}>
@@ -418,10 +424,41 @@ const CustomInputComponent = ({
       </Box>
       <Text variant={TEXT.BODY_XS}>No conversion rate available</Text>
     </Box>
-  );
-};
+  ),
+);
 
-CustomInputComponent.propTypes = { ...TextFieldBase.propTypes };
+CustomInputComponent.propTypes = {
+  /**
+   * The custom input component should accepts all props that the
+   * InputComponent accepts in ./text-field-base.js
+   */
+  autoFocus: PropTypes.bool,
+  className: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  disabled: PropTypes.bool,
+  id: PropTypes.string,
+  inputProps: PropTypes.object,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  maxLength: PropTypes.number,
+  name: PropTypes.string,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool,
+  required: PropTypes.bool,
+  type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
+  /**
+   * Because we manipulate the type in TextFieldBase so the html element
+   * receives the correct attribute we need to change the autoComplete
+   * propType to a string
+   */
+  autoComplete: PropTypes.string,
+  /**
+   * The custom input component should also accept all the props from Box
+   */
+  ...Box.propTypes,
+};
 
 export const InputComponent = (args) => (
   <TextFieldBase
@@ -435,6 +472,8 @@ export const InputComponent = (args) => (
     }
   />
 );
+
+InputComponent.args = { autoComplete: true };
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
