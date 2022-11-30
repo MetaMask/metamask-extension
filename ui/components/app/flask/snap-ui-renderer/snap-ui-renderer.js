@@ -16,7 +16,7 @@ const UI_MAPPING = {
   }),
   heading: (props) => ({
     element: 'Typography',
-    children: props.text,
+    children: props.value,
     props: {
       variant: TYPOGRAPHY.H3,
       fontWeight: 'bold',
@@ -24,7 +24,7 @@ const UI_MAPPING = {
   }),
   text: (props) => ({
     element: 'Typography',
-    children: props.text,
+    children: props.value,
     props: {
       variant: TYPOGRAPHY.H6,
     },
