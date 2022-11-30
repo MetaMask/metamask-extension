@@ -149,6 +149,7 @@ function getState(pendingApproval) {
   if (parseInt(pendingApproval.requestData.chainId, 16) === 1) {
     return { useWarningModal: true };
   }
+  return {};
 }
 
 function getValues(pendingApproval, t, actions, history) {
@@ -340,11 +341,13 @@ function getValues(pendingApproval, t, actions, history) {
         history.push(DEFAULT_ROUTE);
       }
     },
-    onCancel: () =>
+    onCancel: () => {
+      console.log('IN CANCELL?');
       actions.rejectPendingApproval(
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest().serialize(),
-      ),
+      );
+    },
     networkDisplay: !originIsMetaMask,
   };
 }

@@ -14,6 +14,7 @@ import { produce } from 'immer';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
+import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   COLORS,
@@ -145,10 +146,10 @@ function useTemplateState(pendingConfirmation) {
     if (pendingConfirmation) {
       getTemplateState(pendingConfirmation).then((state) => {
         if (isMounted && Object.values(state).length > 0) {
-          setTemplateState({
-            ...templateState,
+          setTemplateState((prevState) => ({
+            ...prevState,
             [pendingConfirmation.id]: state,
-          });
+          }));
         }
       });
     }
@@ -333,8 +334,11 @@ export default function ConfirmationPage({
         )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
-          <WarningModal
-            onSubmit={templatedValues.onSubmit}
+          <ConfirmationWarningModal
+            onSubmit={async () => {
+              await templatedValues.onSubmit();
+              setShowWarningModal(false);
+            }}
             onCancel={templatedValues.onCancel}
           />
         )}

@@ -1,5 +1,15 @@
 .confirmation-warning-modal {
     &__content {
+      ul {
+        list-style-type: disc;
+      }
+
+      li {
+        display: inline;
+        list-style-type: circle;
+        // margin-left: 10px;
+      }
+
       &__header {
         border-bottom: 1px solid var(--color-border-muted);
   
