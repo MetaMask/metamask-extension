@@ -1787,9 +1787,6 @@
   "sign": {
     "message": "Firma"
   },
-  "signNotice": {
-    "message": "Firmare questo messaggio può avere effetti collaterali pericolosi. \nFirma messaggi da siti di cui ti fidi totalmente. \nQuesto metodo pericoloso sarà rimosso in versioni future."
-  },
   "signatureRequest": {
     "message": "Firma Richiesta"
   },
