@@ -342,7 +342,6 @@ function getValues(pendingApproval, t, actions, history) {
       }
     },
     onCancel: () => {
-      console.log('IN CANCELL?');
       actions.rejectPendingApproval(
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest().serialize(),

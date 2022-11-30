@@ -52,11 +52,7 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
         className="confirmation-warning-modal__content__header"
       >
         <i className="fa fa-exclamation-triangle confirmation-warning-modal__content__header__warning-icon" />
-        <Typography
-          variant={TYPOGRAPHY.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
-          // align={TEXT_ALIGN.CENTER}
-        >
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
           You are adding a new RPC provider for Ethereum Mainnet
         </Typography>
       </Box>

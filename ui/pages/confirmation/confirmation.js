@@ -269,7 +269,6 @@ export default function ConfirmationPage({
   if (!pendingConfirmation) {
     return null;
   }
-  console.log('templateState:', templateState);
 
   return (
     <div className="confirmation-page">
