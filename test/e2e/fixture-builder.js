@@ -1,7 +1,4 @@
 const { merge } = require('lodash');
-const {
-  METAMETRICS_PARTICIPATION,
-} = require('../../shared/constants/metametrics');
 
 function defaultFixture() {
   return {
@@ -171,8 +168,7 @@ function defaultFixture() {
         eventsBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
-        metaMetricsParticipationMode:
-          METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+        metaMetricsParticipationMode: 'DO_NOT_PARTICIPATE',
         traits: {},
       },
       NetworkController: {
