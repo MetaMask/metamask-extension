@@ -110,10 +110,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 μπορεί να έχει πρόσβαση και να ξοδέψει μέχρι αυτό το μέγιστο ποσό",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "Το $1 ίσως αποκτήσει πρόσβαση και δαπανήσει αυτό το περιουσιακό στοιχείο",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Εγκρίθηκε"
-  },
-  "approvedAmountWithColon": {
-    "message": "Εγκεκριμένο ποσό:"
   },
   "approvedAsset": {
     "message": "Εγκεκριμένο περιουσιακό στοιχείο"

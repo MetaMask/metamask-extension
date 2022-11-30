@@ -110,10 +110,6 @@
     "message": "$1의 내용을 읽고 이에 동의합니다.",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1의 경우, 이 최대 금액까지 액세스 및 지출할 수 있습니다.",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1(은)는 이 자산에 접근하여 사용할 수 있습니다",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "승인됨"
-  },
-  "approvedAmountWithColon": {
-    "message": "승인 금액:"
   },
   "approvedAsset": {
     "message": "승인된 자산"

@@ -110,10 +110,6 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1はアクセスしてこの最大量まで消費できます",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 はこのアセットにアクセスし、使用できます",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "承認済み"
-  },
-  "approvedAmountWithColon": {
-    "message": "承認された金額:"
   },
   "approvedAsset": {
     "message": "承認済みのアセット"

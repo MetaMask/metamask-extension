@@ -110,10 +110,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 bu maksimum tutara kadar erişim sağlayabilir ve harcama yapabilir",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 bu varlığa erişebilir ve harcayabilir",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Onaylandı"
-  },
-  "approvedAmountWithColon": {
-    "message": "Onaylanan tutar:"
   },
   "approvedAsset": {
     "message": "Onaylanan varlık"

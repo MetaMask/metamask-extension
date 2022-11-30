@@ -110,10 +110,6 @@
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 可以访问并使用此最大金额",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1可以访问并使用此资产",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "已批准"
-  },
-  "approvedAmountWithColon": {
-    "message": "已批准金额："
   },
   "approvedAsset": {
     "message": "已获批准的资产"

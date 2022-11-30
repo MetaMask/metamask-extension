@@ -110,10 +110,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 có thể truy cập và chi tiêu đến số tiền tối đa",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 có thể truy cập và chi tiêu tài sản này",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Đã phê duyệt"
-  },
-  "approvedAmountWithColon": {
-    "message": "Số tiền được duyệt:"
   },
   "approvedAsset": {
     "message": "Tài sản được chấp nhận"

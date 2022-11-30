@@ -110,10 +110,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 kann bis zu diesem maximalen Betrag abrufen und ausgeben",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 kann auf dieses Asset zugreifen und es ausgeben",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Genehmigt"
-  },
-  "approvedAmountWithColon": {
-    "message": "Genehmigter Betrag:"
   },
   "approvedAsset": {
     "message": "Genehmigtes Asset"

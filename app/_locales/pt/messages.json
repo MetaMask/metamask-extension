@@ -110,10 +110,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 pode acessar e gastar até esse valor máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 pode(m) acessar e usar esse ativo",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Aprovado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Valor aprovado:"
   },
   "approvedAsset": {
     "message": "Ativo aprovado"

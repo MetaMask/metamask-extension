@@ -110,10 +110,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 может получить доступ и потратить до этой максимальной суммы",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 может получить доступ к этому активу и потратить его",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Одобрен"
-  },
-  "approvedAmountWithColon": {
-    "message": "Одобренная сумма:"
   },
   "approvedAsset": {
     "message": "Одобренный актив"

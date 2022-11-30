@@ -110,10 +110,6 @@
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "Maaaring i-access ng $1 ang max na halagang ito at gumastos hanggang sa max na halagang ito",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 maaaring i-access at gamitin ang asset na ito",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Inaprubahan"
-  },
-  "approvedAmountWithColon": {
-    "message": "Inaprubahang halaga:"
   },
   "approvedAsset": {
     "message": "Aprubadong asset"
