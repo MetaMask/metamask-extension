@@ -2,8 +2,8 @@ import deepFreeze from 'deep-freeze-strict';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
-///: END:ONLY_INCLUDE_IN
 import { SnapCaveatType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
