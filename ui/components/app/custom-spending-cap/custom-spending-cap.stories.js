@@ -20,12 +20,16 @@ export default {
     passTheErrorText: {
       action: 'passTheErrorText',
     },
+    decimals: {
+      control: 'text',
+    },
   },
   args: {
     tokenName: 'DAI',
     currentTokenBalance: 200.12,
     dappProposedValue: '7',
     siteOrigin: 'Uniswap.org',
+    decimals: '4',
   },
 };
 

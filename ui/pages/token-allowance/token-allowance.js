@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
@@ -50,6 +51,9 @@ import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+
+const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
 export default function TokenAllowance({
   origin,
@@ -94,26 +98,24 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
-  const customPermissionAmount = Number(customTokenAmount);
+  let customPermissionAmount = customTokenAmount.toString();
 
-  const customTxParamsData = customTokenAmount
+  const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
+  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
+    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+    if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+      customPermissionAmount = 0;
+    }
+  }
+
+  const customTxParamsData = Number(customTokenAmount)
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
       })
     : null;
 
-  let fullTxData = { ...txData };
-
-  if (customTxParamsData) {
-    fullTxData = {
-      ...fullTxData,
-      txParams: {
-        ...fullTxData.txParams,
-        data: customTxParamsData,
-      },
-    };
-  }
+  const fullTxData = { ...txData };
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
   const methodData = useSelector((state) => getKnownMethodData(state, data));
@@ -339,15 +341,16 @@ export default function TokenAllowance({
         {isFirstPage ? (
           <CustomSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
+            currentTokenBalance={Number(currentTokenBalance)}
             dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
+            decimals={decimals}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
+            currentTokenBalance={Number(currentTokenBalance)}
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
                 ? dappProposedTokenAmount

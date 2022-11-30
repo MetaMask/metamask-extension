@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
@@ -18,14 +19,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
+const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 export default function CustomSpendingCap({
   tokenName,
   currentTokenBalance,
   dappProposedValue,
   siteOrigin,
   passTheErrorText,
+  decimals,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -73,16 +77,23 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
-    const inputError =
-      typeof valueInput === 'string' && valueInput.charAt(0) === '.';
 
-    if (Number(valueInput) < 0 || isNaN(valueInput) || inputError) {
+    if (Number(valueInput) < 0 || isNaN(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
     } else {
       setCustomSpendingCapText(inputTextLogicDescription);
       setError('');
+    }
+
+    const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
+    if (Number(valueInput.length) > 1 && Number(valueInput)) {
+      const customSpendLimitNumber = new BigNumber(valueInput);
+      if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+        spendingCapError = t('spendLimitTooLarge');
+        setError(spendingCapError);
+      }
     }
 
     dispatch(setCustomTokenAmount(String(valueInput)));
@@ -226,4 +237,8 @@ CustomSpendingCap.propTypes = {
    * Parent component's callback function passed in order to get the error text
    */
   passTheErrorText: PropTypes.func,
+  /**
+   * Number of decimals
+   */
+  decimals: PropTypes.string,
 };
