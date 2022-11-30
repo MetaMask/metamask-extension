@@ -28,12 +28,17 @@ export default {
 function transformState(state) {
   const MetaMetricsController = state?.MetaMetricsController || {};
 
-  let metaMetricsParticipationMode = METAMETRICS_PARTICIPATION.NOT_CHOSEN;
+  let metaMetricsParticipationMode =
+    MetaMetricsController?.metaMetricsParticipationMode ??
+    METAMETRICS_PARTICIPATION.NOT_CHOSEN;
 
-  if (MetaMetricsController?.participateInMetaMetrics === false) {
-    metaMetricsParticipationMode = METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE;
-  } else if (MetaMetricsController?.participateInMetaMetrics === true) {
-    metaMetricsParticipationMode = METAMETRICS_PARTICIPATION.PARTICIPATE;
+  if (MetaMetricsController.metaMetricsParticipationMode === undefined) {
+    if (MetaMetricsController?.participateInMetaMetrics === false) {
+      metaMetricsParticipationMode =
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE;
+    } else if (MetaMetricsController?.participateInMetaMetrics === true) {
+      metaMetricsParticipationMode = METAMETRICS_PARTICIPATION.PARTICIPATE;
+    }
   }
 
   delete MetaMetricsController.participateInMetaMetrics;

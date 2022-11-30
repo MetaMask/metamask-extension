@@ -105,6 +105,82 @@ describe('migration #78', () => {
     });
   });
 
+  it('should not change metaMetricsParticipationMode if it is already set and participateInMetaMetrics is true', async () => {
+    const oldStorage = {
+      meta: {
+        version: 77,
+      },
+      data: {
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+          metaMetricsParticipationMode:
+            METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+        },
+      },
+    };
+    const newStorage = await migration78.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 78,
+      },
+      data: {
+        MetaMetricsController: {
+          metaMetricsParticipationMode:
+            METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+        },
+      },
+    });
+  });
+
+  it('should not change metaMetricsParticipationMode if it is already set and participateInMetaMetrics is false', async () => {
+    const oldStorage = {
+      meta: {
+        version: 77,
+      },
+      data: {
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
+        },
+      },
+    };
+    const newStorage = await migration78.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 78,
+      },
+      data: {
+        MetaMetricsController: {
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
+        },
+      },
+    });
+  });
+
+  it('should not change metaMetricsParticipationMode if it is already set and participateInMetaMetrics is null', async () => {
+    const oldStorage = {
+      meta: {
+        version: 77,
+      },
+      data: {
+        MetaMetricsController: {
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
+        },
+      },
+    };
+    const newStorage = await migration78.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 78,
+      },
+      data: {
+        MetaMetricsController: {
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
+        },
+      },
+    });
+  });
+
   it('should not alter any other data', async () => {
     const oldStorage = {
       meta: {
