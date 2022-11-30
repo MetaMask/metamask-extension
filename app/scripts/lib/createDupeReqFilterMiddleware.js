@@ -5,7 +5,7 @@ import log from 'loglevel';
  *
  * @returns {Function}
  */
-export default function createDupReqFilterMiddleware() {
+export default function createDupeReqFilterMiddleware() {
   const processedRequestId = [];
   return function filterDuplicateRequestMiddleware(
     /** @type {any} */ req,

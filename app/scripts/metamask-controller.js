@@ -112,7 +112,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupReqFilterMiddleware from './lib/createDupReqFilterMiddleware';
+import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
@@ -3718,7 +3718,9 @@ export default class MetamaskController extends EventEmitter {
       engine.emit('notification', message),
     );
 
-    engine.push(createDupReqFilterMiddleware());
+    if (isManifestV3) {
+      engine.push(createDupeReqFilterMiddleware());
+    }
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));

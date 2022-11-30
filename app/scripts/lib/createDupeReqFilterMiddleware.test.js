@@ -1,8 +1,8 @@
-import createDupReqFilterMiddleware from './createDupReqFilterMiddleware';
+import createDupeReqFilterMiddleware from './createDupeReqFilterMiddleware';
 
-describe('createDupReqFilterMiddleware', () => {
+describe('createDupeReqFilterMiddleware', () => {
   it('call function next if request is seen first time', () => {
-    const filterFn = createDupReqFilterMiddleware();
+    const filterFn = createDupeReqFilterMiddleware();
     const request = { id: 1 };
     const nextMock = jest.fn();
     const endMock = jest.fn();
@@ -11,7 +11,7 @@ describe('createDupReqFilterMiddleware', () => {
     expect(endMock).not.toBeCalled();
   });
   it('call function end if request is seen second time', () => {
-    const filterFn = createDupReqFilterMiddleware();
+    const filterFn = createDupeReqFilterMiddleware();
     const request = { id: 1 };
     const nextMock = jest.fn();
     const endMock = jest.fn();
