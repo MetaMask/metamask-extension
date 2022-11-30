@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import { clone } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -351,6 +352,27 @@ describe('MetaMetricsController', function () {
         METAMETRICS_PARTICIPATION.PARTICIPATE,
       );
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
+    });
+
+    it('should not clear or update the metaMetricsId when metaMetricsParticipationMode changes after metaMetricsId has been generated', function () {
+      const metaMetricsController = getMetaMetricsController({
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
+        metaMetricsId: null,
+      });
+      assert.equal(metaMetricsController.state.metaMetricsId, null);
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
+      );
+      assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
+      const localCopy = clone(metaMetricsController.state.metaMetricsId);
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+      );
+      assert.equal(localCopy, metaMetricsController.state.metaMetricsId);
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
+      );
+      assert.equal(localCopy, metaMetricsController.state.metaMetricsId);
     });
   });
 
