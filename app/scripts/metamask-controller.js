@@ -112,7 +112,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupReqFilterMiddleware from './lib/createDupReqMiddleware';
+import createDupReqFilterMiddleware from './lib/createDupReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
