@@ -32,7 +32,11 @@ import NetworkDisplay from '../../components/app/network-display/network-display
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
-import { getTemplateValues, getTemplateAlerts } from './templates';
+import {
+  getTemplateValues,
+  getTemplateAlerts,
+  getTemplateState,
+} from './templates';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -140,6 +144,7 @@ export default function ConfirmationPage({
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -200,11 +205,17 @@ export default function ConfirmationPage({
   };
 
   const handleSubmit = () =>
-    templatedValues.onSubmit(
-      hasInputState(pendingConfirmation.type)
-        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
-        : null,
-    );
+    templatedState.useWarningModal
+      ? setShowWarningModal(true)
+      : templatedValues.onSubmit(
+          hasInputState(pendingConfirmation.type)
+            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+            : null,
+        );
+
+  const templatedState = useMemo(() => {
+    return pendingConfirmation ? getTemplateState(pendingConfirmation) : {};
+  }, [pendingConfirmation]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -291,6 +302,12 @@ export default function ConfirmationPage({
           </Box>
         )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        {showWarningModal && (
+          <WarningModal
+            onSubmit={templatedValues.onSubmit}
+            onCancel={templatedValues.onCancel}
+          />
+        )}
       </div>
       <ConfirmationFooter
         alerts={
