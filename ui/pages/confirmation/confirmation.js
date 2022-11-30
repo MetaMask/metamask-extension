@@ -24,7 +24,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getSnaps,
+  getSnap,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
 } from '../../selectors';
@@ -147,7 +147,9 @@ export default function ConfirmationPage({
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const snaps = useSelector(getSnaps);
+  const {
+    manifest: { snapName: proposedName },
+  } = useSelector(getSnap);
 
   const SNAP_DIALOG_TYPE = [
     MESSAGE_TYPE.SNAP_DIALOG_ALERT,
@@ -158,6 +160,12 @@ export default function ConfirmationPage({
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   ///: END:ONLY_INCLUDE_IN
 
+  const INPUT_STATE_CONFIRMATIONS = [
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+    ///: END:ONLY_INCLUDE_IN
+  ];
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
@@ -166,9 +174,7 @@ export default function ConfirmationPage({
       ? getTemplateValues(
           {
             ///: BEGIN:ONLY_INCLUDE_IN(flask)
-            snapName:
-              isSnapDialog &&
-              snaps[pendingConfirmation.origin].manifest.proposedName,
+            snapName: isSnapDialog && proposedName,
             ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
@@ -185,11 +191,9 @@ export default function ConfirmationPage({
     history,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     isSnapDialog,
-    snaps,
+    proposedName,
     ///: END:ONLY_INCLUDE_IN
   ]);
-
-  const INPUT_STATE_CONFIRMATIONS = [MESSAGE_TYPE.SNAP_DIALOG_PROMPT];
 
   const hasInputState = (type) => {
     return INPUT_STATE_CONFIRMATIONS.includes(type);
