@@ -6,7 +6,9 @@ describe('createDupeReqFilterMiddleware', () => {
     const request = { id: 1 };
     const nextMock = jest.fn();
     const endMock = jest.fn();
+
     filterFn(request, undefined, nextMock, endMock);
+
     expect(nextMock).toBeCalledTimes(1);
     expect(endMock).not.toBeCalled();
   });
