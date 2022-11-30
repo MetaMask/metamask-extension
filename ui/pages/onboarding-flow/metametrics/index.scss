@@ -6,30 +6,7 @@
     align-items: center;
   }
 
-  ul {
-    margin: 24px 0 0 0;
-
-    li {
-      padding-bottom: 20px;
-      display: flex;
-    }
-  }
-
-  .fa {
-    width: 16px;
-  }
-
-  .fa-check {
-    margin-inline-end: 12px;
-    color: var(--color-success-default);
-  }
-
-  .fa-times {
-    margin-inline-end: 12px;
-    color: var(--color-error-default);
-  }
-
-  &__terms a {
+  &__grouping a {
     color: var(--color-primary-default);
   }
 

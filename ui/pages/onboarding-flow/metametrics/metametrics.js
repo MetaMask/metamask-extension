@@ -20,6 +20,7 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -115,67 +116,96 @@ export default function OnboardingMetametrics() {
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
-        {t('metametricsTitle')}
+        {t('metametricsHelpImproveMetaMask')}
       </Typography>
-      <Typography
-        className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.CENTER}
-      >
-        {t('metametricsOptInDescription2')}
+      <Typography align={TEXT_ALIGN.CENTER}>
+        {t('onboardingMetametricsIntro1')}
       </Typography>
-      <ul>
-        <li>
-          <i className="fa fa-check" />
-          {t('metametricsCommitmentsAllowOptOut2')}
-        </li>
-        <li>
-          <i className="fa fa-check" />
-          {t('metametricsCommitmentsSendAnonymizedEvents')}
-        </li>
-        <li>
-          <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverCollect')}
-        </li>
-        <li>
-          <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverIP')}
-        </li>
-        <li>
-          <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverSell')}
-        </li>
-      </ul>
-      <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
-        align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
-        className="onboarding-metametrics__terms"
-      >
-        {t('gdprMessage', [
-          <a
-            key="metametrics-bottom-text-wrapper"
-            href="https://metamask.io/privacy.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('gdprMessagePrivacyPolicy')}
-          </a>,
-        ])}
+      <Typography align={TEXT_ALIGN.CENTER} marginBottom={8}>
+        {t('onboardingMetametricsIntro2')}
       </Typography>
+
+      <div className="onboarding-metametrics__grouping">
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+          {t('onboardingMetametricsAnonymousTitle')}
+        </Typography>
+        <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
+          {t('onboardingMetametricsAnonymousText')}
+        </Typography>
+      </div>
+
+      <div className="onboarding-metametrics__grouping">
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+          {t('onboardingMetametricsPrivateTitle')}
+        </Typography>
+        <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
+          {t('onboardingMetametricsPrivateText', [
+            <a
+              href="https://consensys.net/privacy-policy/"
+              target="_blank"
+              rel="noopener noreferrer"
+              key="infura-link"
+            >
+              {t('infura')}
+            </a>,
+            <a
+              href={`#${SECURITY_ROUTE}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              key="settings-link"
+            >
+              {t('onboardingMetametricsPrivateSettingsText')}
+            </a>,
+            <Typography
+              variant={TYPOGRAPHY.Span}
+              fontWeight={FONT_WEIGHT.BOLD}
+              color={COLORS.TEXT_ALTERNATIVE}
+              key="emphasized-text"
+            >
+              {t('onboardingMetametricsPrivateEmphasizedText')}
+            </Typography>,
+          ])}
+        </Typography>
+      </div>
+
+      <div className="onboarding-metametrics__grouping">
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+          {t('onboardingMetametricsOptionalTitle')}
+        </Typography>
+        <Typography marginBottom={8} color={COLORS.TEXT_ALTERNATIVE}>
+          {t('onboardingMetametricsOptionalText')}
+        </Typography>
+      </div>
+
+      <div className="onboarding-metametrics__grouping">
+        <Typography color={COLORS.TEXT_ALTERNATIVE} align={TEXT_ALIGN.CENTER}>
+          {t('onboardingMetametricsFooter', [
+            <a
+              href="https://consensys.net/privacy-policy/"
+              key="link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('here')}
+            </a>,
+          ])}
+        </Typography>
+      </div>
+
       <div className="onboarding-metametrics__buttons">
         <Button
           data-testid="metametrics-no-thanks"
           type="secondary"
           onClick={onCancel}
         >
-          {t('noThanks')}
+          {t('onboardingMetametricsButtonDontShare')}
         </Button>
         <Button
           data-testid="metametrics-i-agree"
           type="primary"
           onClick={onConfirm}
         >
-          {t('affirmAgree')}
+          {t('onboardingMetametricsButtonShare')}
         </Button>
       </div>
     </div>
