@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { getAccountNameErrorMessage } from '../../helpers/utils/accounts';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -46,28 +47,12 @@ export default class NewAccountCreateForm extends Component {
         });
     };
 
-    const isDuplicateAccountName = accounts.some(
-      (item) => item.name === newAccountName,
+    const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+      accounts,
+      this.context,
+      newAccountName,
+      defaultAccountName,
     );
-
-    const localizedWordForAccount = this.context
-      .t('newAccountNumberName')
-      .replace(' $1', '');
-
-    const reservedRegEx = new RegExp(`^${localizedWordForAccount} \\d+$`, 'i'); // Match strings starting with ${localizedWordForAccount} and then any numeral, case insensitive
-    const isReservedAccountName = reservedRegEx.test(newAccountName);
-
-    const isValidAccountName =
-      newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
-      (!isDuplicateAccountName && !isReservedAccountName);
-
-    const getErrorMessage = () => {
-      if (isValidAccountName) return '\u200d'; // This is Unicode for an invisible character, so the spacing stays constant
-
-      if (isDuplicateAccountName) return this.context.t('accountNameDuplicate');
-
-      if (isReservedAccountName) return this.context.t('accountNameReserved');
-    };
 
     return (
       <div className="new-account-create-form">
@@ -76,10 +61,10 @@ export default class NewAccountCreateForm extends Component {
         </div>
         <div>
           <input
-            className={classnames(
-              'new-account-create-form__input',
-              !isValidAccountName && 'new-account-create-form__input__error',
-            )}
+            className={classnames({
+              'new-account-create-form__input': true,
+              'new-account-create-form__input__error': !isValidAccountName,
+            })}
             value={newAccountName}
             placeholder={defaultAccountName}
             onChange={(event) =>
@@ -87,16 +72,9 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
-          {
-            <div
-              className={classnames(
-                ' new-account-create-form__error',
-                ' new-account-create-form__error-amount',
-              )}
-            >
-              {getErrorMessage()}
-            </div>
-          }
+          <div className="new-account-create-form__error new-account-create-form__error-amount">
+            {errorMessage}
+          </div>
           <div className="new-account-create-form__buttons">
             <Button
               type="secondary"
