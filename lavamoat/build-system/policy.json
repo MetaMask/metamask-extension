@@ -1052,16 +1052,6 @@
         "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
       }
     },
-    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": {
-      "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": true
-      }
-    },
-    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
-      }
-    },
     "@storybook/api>telejson>is-symbol": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
