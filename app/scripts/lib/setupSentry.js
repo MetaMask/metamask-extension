@@ -116,7 +116,7 @@ export default function setupSentry({ release, getState }) {
     }
     const appState = getState();
     return (
-      appState?.store?.metamas?.metaMetricsParticipationMode ===
+      appState?.store?.metamask?.metaMetricsParticipationMode ===
       METAMETRICS_PARTICIPATION.PARTICIPATE
     );
   }
