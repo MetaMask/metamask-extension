@@ -104,14 +104,14 @@ function createRemoveFencedCodeTransform(
   // string.
 
   /**
-   * Returns a transform stream that removes fenced code from JavaScript files. For non-JavaScript
+   * Returns a transform stream that removes fenced code from JavaScript/TypeScript files. For non-JavaScript
    * files, a pass-through stream is returned.
    *
    * @param filePath - The file path to transform.
    * @returns {Transform} The transform stream.
    */
   return function removeFencedCodeTransform(filePath) {
-    if (!['.js', '.cjs', '.mjs'].includes(path.extname(filePath))) {
+    if (!['.js', '.cjs', '.mjs', '.ts'].includes(path.extname(filePath))) {
       return new PassThrough();
     }
 
