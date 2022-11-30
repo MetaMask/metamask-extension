@@ -2889,6 +2889,12 @@
   "rejectAll": {
     "message": "Reject all"
   },
+  "rejectRequestsDescription": {
+    "message": "You are about to batch reject $1 requests."
+  },
+  "rejectRequestsN": {
+    "message": "Reject $1 requests"
+  },
   "rejectTxsDescription": {
     "message": "You are about to batch reject $1 transactions."
   },
