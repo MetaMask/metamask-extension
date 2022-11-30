@@ -1379,17 +1379,12 @@
       "packages": {
         "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
@@ -1443,9 +1438,9 @@
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/smart-transactions-controller>fast-json-patch": true,
-        "@metamask/snaps-controllers>@metamask/controllers": true,
         "lodash": true
       }
     },
@@ -1703,6 +1698,8 @@
         "@metamask/snaps-controllers>gunzip-maybe": true,
         "@metamask/snaps-controllers>json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>nanoid": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
         "@metamask/subject-metadata-controller": true,
         "eth-block-tracker>@metamask/utils": true,
