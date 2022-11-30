@@ -23,29 +23,33 @@ import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airga
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
+import { AddressBookController } from '@metamask/address-book-controller';
 import {
-  AddressBookController,
   ApprovalController,
-  ControllerMessenger,
+  ApprovalRequestNotFoundError,
+} from '@metamask/approval-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
+import {
   CurrencyRateController,
-  PhishingController,
-  AnnouncementController,
-  GasFeeController,
   TokenListController,
   TokensController,
   TokenRatesController,
   NftController,
   AssetsContractController,
   NftDetectionController,
+} from '@metamask/assets-controllers';
+import { PhishingController } from '@metamask/phishing-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import { GasFeeController } from '@metamask/gas-fee-controller';
+import {
   PermissionController,
-  SubjectMetadataController,
   PermissionsRequestNotFoundError,
-  ApprovalRequestNotFoundError,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  RateLimitController,
-  NotificationController,
-  ///: END:ONLY_INCLUDE_IN
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
+import { SubjectMetadataController } from '@metamask/subject-metadata-controller';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { RateLimitController } from '@metamask/rate-limit-controller';
+import { NotificationController } from '@metamask/notification-controller';
+///: END:ONLY_INCLUDE_IN
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
@@ -55,6 +59,7 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import browser from 'webextension-polyfill';
 import {
   ASSET_TYPES,
   TRANSACTION_STATUSES,
@@ -140,6 +145,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+
 import {
   CaveatMutatorFactories,
   getCaveatSpecifications,
@@ -165,7 +171,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
-  // TODO: Add this and similar enums to @metamask/controllers and export them
+  // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
 
@@ -579,16 +585,20 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [
-      TrezorKeyring,
-      LedgerBridgeKeyring,
-      LatticeKeyring,
-      QRHardwareKeyring,
-    ];
+    let additionalKeyrings = [];
+    if (!isManifestV3) {
+      additionalKeyrings = [
+        TrezorKeyring,
+        LedgerBridgeKeyring,
+        LatticeKeyring,
+        QRHardwareKeyring,
+      ];
+    }
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
+      cacheEncryptionKey: isManifestV3,
     });
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
@@ -693,6 +703,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
         `${this.approvalController.name}:addRequest`,
         `${this.permissionController.name}:grantPermissions`,
+        `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -1118,7 +1129,6 @@ export default class MetamaskController extends EventEmitter {
       },
       controllerMessenger: this.controllerMessenger,
     });
-    this.memStore.subscribe(this.sendUpdate.bind(this));
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
@@ -1144,13 +1154,14 @@ export default class MetamaskController extends EventEmitter {
       this.resetStates(resetMethods);
     }
 
-    const password = process.env.CONF?.PASSWORD;
+    // Automatic login via config password or loginToken
     if (
-      password &&
       !this.isUnlocked() &&
       this.onboardingController.store.getState().completedOnboarding
     ) {
-      this.submitPassword(password);
+      this._loginUser();
+    } else {
+      this._startUISync();
     }
 
     // Lazily update the store with the current extension environment
@@ -1273,8 +1284,8 @@ export default class MetamaskController extends EventEmitter {
    * changes.
    *
    * Some of the subscriptions in this method are ControllerMessenger selector
-   * event subscriptions. See the relevant @metamask/controllers documentation
-   * for more information.
+   * event subscriptions. See the relevant documentation for
+   * `@metamask/base-controller` for more information.
    *
    * Note that account-related notifications emitted when the extension
    * becomes unlocked are handled in MetaMaskController._onUnlock.
@@ -2110,28 +2121,17 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    let rpcUrlOrigin;
-    try {
-      rpcUrlOrigin = new URL(rpcUrl).origin;
-    } catch {
-      // ignore
-    }
     this.metaMetricsController.trackEvent({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
       referrer: {
-        url: rpcUrlOrigin,
+        url: ORIGIN_METAMASK,
       },
       properties: {
         chain_id: chainId,
         network_name: chainName,
-        network: rpcUrlOrigin,
         symbol: ticker,
-        block_explorer_url: blockExplorerUrl,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-      },
-      sensitiveProperties: {
-        rpc_url: rpcUrlOrigin,
       },
       actionId,
     });
@@ -2386,6 +2386,68 @@ export default class MetamaskController extends EventEmitter {
     this.setLedgerTransportPreference(transportPreference);
 
     return this.keyringController.fullUpdate();
+  }
+
+  async _loginUser() {
+    try {
+      // Automatic login via config password
+      const password = process.env.CONF?.PASSWORD;
+      if (password) {
+        await this.submitPassword(password);
+      }
+      // Automatic login via storage encryption key
+      else if (isManifestV3) {
+        await this.submitEncryptionKey();
+      }
+      // Updating accounts in this.accountTracker before starting UI syncing ensure that
+      // state has account balance before it is synced with UI
+      await this.accountTracker._updateAccounts();
+    } finally {
+      this._startUISync();
+    }
+  }
+
+  _startUISync() {
+    // Message startUISync is used in MV3 to start syncing state with UI
+    // Sending this message after login is completed helps to ensure that incomplete state without
+    // account details are not flushed to UI.
+    this.emit('startUISync');
+    this.startUISync = true;
+    this.memStore.subscribe(this.sendUpdate.bind(this));
+  }
+
+  /**
+   * Submits a user's encryption key to log the user in via login token
+   */
+  async submitEncryptionKey() {
+    try {
+      const { loginToken, loginSalt } = await browser.storage.session.get([
+        'loginToken',
+        'loginSalt',
+      ]);
+      if (loginToken && loginSalt) {
+        const { vault } = this.keyringController.store.getState();
+
+        if (vault.salt !== loginSalt) {
+          console.warn(
+            'submitEncryptionKey: Stored salt and vault salt do not match',
+          );
+          await this.clearLoginArtifacts();
+          return;
+        }
+
+        await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
+      }
+    } catch (e) {
+      // If somehow this login token doesn't work properly,
+      // remove it and the user will get shown back to the unlock screen
+      await this.clearLoginArtifacts();
+      throw e;
+    }
+  }
+
+  async clearLoginArtifacts() {
+    await browser.storage.session.remove(['loginToken', 'loginSalt']);
   }
 
   /**
@@ -3526,6 +3588,23 @@ export default class MetamaskController extends EventEmitter {
       });
     };
     this.on('update', handleUpdate);
+    const startUISync = () => {
+      if (outStream._writableState.ended) {
+        return;
+      }
+      // send notification to client-side
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'startUISync',
+      });
+    };
+
+    if (this.startUISync) {
+      startUISync();
+    } else {
+      this.once('startUISync', startUISync);
+    }
+
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
@@ -3969,11 +4048,19 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const { keyrings } = state;
+    const {
+      keyrings,
+      encryptionKey: loginToken,
+      encryptionSalt: loginSalt,
+    } = state;
     const addresses = keyrings.reduce(
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
+
+    if (isManifestV3) {
+      await browser.storage.session.set({ loginToken, loginSalt });
+    }
 
     if (!addresses.length) {
       return;
@@ -4365,6 +4452,10 @@ export default class MetamaskController extends EventEmitter {
       KEYRING_TYPES.LEDGER,
     );
     ledgerKeyring?.destroy?.();
+
+    if (isManifestV3) {
+      this.clearLoginArtifacts();
+    }
 
     return this.keyringController.setLocked();
   }

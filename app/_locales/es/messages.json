@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Firmar"
   },
-  "signNotice": {
-    "message": "Firmar este mensaje puede tener \nefectos secundarios peligrosos. Firme solo los mensajes de \nsitios en los que confía totalmente con toda su cuenta.\n Este método peligroso se quitará en una versión futura. "
-  },
   "signatureRequest": {
     "message": "Solicitud de firma"
   },

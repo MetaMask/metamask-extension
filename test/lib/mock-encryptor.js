@@ -12,6 +12,12 @@ const mockEncryptor = {
     return Promise.resolve(cacheVal || {});
   },
 
+  encryptWithDetail(_, dataObj) {
+    cacheVal = dataObj;
+
+    return Promise.resolve({ vault: mockHex, exportedKeyString: '' });
+  },
+
   encryptWithKey(key, dataObj) {
     return this.encrypt(key, dataObj);
   },

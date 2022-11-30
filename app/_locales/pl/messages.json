@@ -819,9 +819,6 @@
   "sign": {
     "message": "Podpisz"
   },
-  "signNotice": {
-    "message": "Podpisanie tej wiadomości może mieć \nniebezpieczne skutki uboczne. Podpisuj wiadomości \ntylko ze stron, którym chcesz udostępnić swoje konto.\nTa niebezpieczna metoda będzie usunięta w przyszłych wersjach. "
-  },
   "signatureRequest": {
     "message": "Prośba o podpis"
   },

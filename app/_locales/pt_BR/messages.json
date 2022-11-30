@@ -2402,9 +2402,6 @@
   "sign": {
     "message": "Assinar"
   },
-  "signNotice": {
-    "message": "Assinar essa mensagem pode ser perigoso. Essa assinatura pode potencialmente realizar qualquer operação em seu nome, incluindo a concessão do controle total da sua conta e de todos os seus ativos ao site solicitante. Apenas assine essa mensagem se você sabe o que está fazendo ou se confia plenamente no site solicitante."
-  },
   "signatureRequest": {
     "message": "Solicitação de assinatura"
   },
