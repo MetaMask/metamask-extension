@@ -585,12 +585,15 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [
-      TrezorKeyring,
-      LedgerBridgeKeyring,
-      LatticeKeyring,
-      QRHardwareKeyring,
-    ];
+    let additionalKeyrings = [];
+    if (!isManifestV3) {
+      additionalKeyrings = [
+        TrezorKeyring,
+        LedgerBridgeKeyring,
+        LatticeKeyring,
+        QRHardwareKeyring,
+      ];
+    }
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
