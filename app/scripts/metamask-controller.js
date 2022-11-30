@@ -548,6 +548,7 @@ export default class MetamaskController extends EventEmitter {
       getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
       ),
+      preferencesController: this.preferencesController,
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -1597,6 +1598,10 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
+      setUseMultiAccountBalanceChecker:
+        preferencesController.setUseMultiAccountBalanceChecker.bind(
+          preferencesController,
+        ),
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),

@@ -78,6 +78,7 @@ export default class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
+    this.preferencesController = opts.preferencesController;
 
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
   }
@@ -205,8 +206,20 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async _updateAccounts() {
-    const { accounts } = this.store.getState();
-    const addresses = Object.keys(accounts);
+    const { useMultiAccountBalanceChecker } =
+      this.preferencesController.store.getState();
+
+    let addresses = [];
+    if (useMultiAccountBalanceChecker) {
+      const { accounts } = this.store.getState();
+
+      addresses = Object.keys(accounts);
+    } else {
+      const selectedAddress = this.preferencesController.getSelectedAddress();
+
+      addresses = [selectedAddress];
+    }
+
     const chainId = this.getCurrentChainId();
     const networkId = this.getNetworkIdentifier();
     const rpcUrl = 'http://127.0.0.1:8545';

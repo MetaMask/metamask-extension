@@ -83,4 +83,19 @@ describe('Security Tab', () => {
 
     expect(showIncomingCheckbox).toHaveAttribute('value', 'true');
   });
+
+  it('toggles batch balance checks', () => {
+    const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
+
+    const checkboxes = queryAllByRole('checkbox');
+    const batchBalanceChecksCheckbox = checkboxes[3];
+
+    expect(batchBalanceChecksCheckbox).toHaveAttribute('value', 'false');
+
+    fireEvent.change(batchBalanceChecksCheckbox, {
+      target: { value: true },
+    });
+
+    expect(batchBalanceChecksCheckbox).toHaveAttribute('value', 'true');
+  });
 });
