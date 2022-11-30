@@ -8,8 +8,16 @@ import { HelpText } from './help-text';
 
 describe('HelpText', () => {
   it('should render with text inside the HelpText', () => {
-    const { getByText } = render(<HelpText>help text</HelpText>);
+    const { getByText, container } = render(<HelpText>help text</HelpText>);
     expect(getByText('help text')).toBeDefined();
+    expect(getByText('help text')).toHaveClass('mm-help-text');
+    expect(container).toMatchSnapshot();
+  });
+  it('should render with and additional className', () => {
+    const { getByText } = render(
+      <HelpText className="test-class">help text</HelpText>,
+    );
+    expect(getByText('help text')).toHaveClass('mm-help-text test-class');
   });
   it('should render with react nodes inside the HelpText', () => {
     const { getByText, getByTestId } = render(
@@ -20,19 +28,8 @@ describe('HelpText', () => {
     expect(getByText('help text')).toBeDefined();
     expect(getByTestId('icon')).toBeDefined();
   });
-  it('should render with and additional className', () => {
-    const { getByText } = render(
-      <HelpText className="test-class">help text</HelpText>,
-    );
-    expect(getByText('help text')).toBeDefined();
-    expect(getByText('help text')).toHaveClass('test-class');
-  });
   it('should render with error state', () => {
-    const { getByText } = render(
-      <>
-        <HelpText error>error</HelpText>
-      </>,
-    );
+    const { getByText } = render(<HelpText error>error</HelpText>);
     expect(getByText('error')).toHaveClass('text--color-error-default');
   });
   it('should render with different colors', () => {

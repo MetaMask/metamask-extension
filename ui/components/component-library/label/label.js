@@ -20,15 +20,15 @@ export const Label = ({
   ...props
 }) => (
   <Text
-    as="label"
-    disabled={disabled}
-    htmlFor={htmlFor}
     className={classnames(
       'mm-label',
       { 'mm-label--disabled': disabled },
       { 'mm-label--html-for': htmlFor && !disabled },
       className,
     )}
+    as="label"
+    disabled={disabled}
+    htmlFor={htmlFor}
     variant={TEXT.BODY_MD}
     fontWeight={FONT_WEIGHT.BOLD}
     display={DISPLAY.INLINE_FLEX}
