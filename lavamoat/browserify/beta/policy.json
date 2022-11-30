@@ -76,7 +76,7 @@
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
         "browserify>process": true,
-        "stylelint>autoprefixer>browserslist": true
+        "webpack>browserslist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>semver": {
@@ -1302,6 +1302,53 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
+    "@metamask/rpc-methods": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>superstruct": true,
+        "eth-block-tracker>@metamask/utils": true,
+        "eth-rpc-errors": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "eth-block-tracker>@metamask/utils": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
+      "packages": {
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true
+      }
+    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1321,32 +1368,13 @@
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/smart-transactions-controller>fast-json-patch": true,
-        "@metamask/snaps-controllers>@metamask/controllers": true,
         "lodash": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/smart-transactions-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/smart-transactions-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/controllers": {
+    "@metamask/smart-transactions-controller>@metamask/controllers": {
       "globals": {
         "Headers": true,
         "URL": true,
@@ -1396,36 +1424,9 @@
         "uuid": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura": {
-      "globals": {
-        "setTimeout": true
-      },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>json-rpc-engine": true,
-        "node-fetch": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>eth-json-rpc-middleware": {
-      "packages": {
-        "safe-event-emitter": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>json-rpc-engine": {
-      "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-json-rpc-infura>eth-rpc-errors": true,
-        "safe-event-emitter": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller": {
-      "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller>browser-passworder": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>browser-passworder": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-keyring-controller>@metamask/bip39": true,
@@ -1435,7 +1436,7 @@
         "eth-sig-util": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller>browser-passworder": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>browser-passworder": {
       "globals": {
         "btoa": true,
         "crypto.getRandomValues": true,
@@ -1445,30 +1446,30 @@
         "crypto.subtle.importKey": true
       },
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": true
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>browser-passworder>browserify-unibabel": {
       "globals": {
         "atob": true,
         "btoa": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs": true
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs": {
       "globals": {
         "clearInterval": true,
         "setInterval": true
       },
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1478,17 +1479,17 @@
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
         "ethjs-query>babel-runtime": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-util": true,
@@ -1496,15 +1497,15 @@
         "promise-to-callback": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>ethjs-query": {
       "globals": {
         "console": true
       },
@@ -1515,9 +1516,9 @@
         "promise-to-callback": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": {
       "packages": {
-        "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet>uuid": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet>uuid": true,
         "@truffle/codec>utf8": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
@@ -1529,7 +1530,7 @@
         "ethers>@ethersproject/json-wallets>scrypt-js": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/controllers>ethereumjs-wallet>uuid": {
+    "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet>uuid": {
       "globals": {
         "crypto": true,
         "msCrypto": true
@@ -1589,6 +1590,53 @@
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/smart-transactions-controller>fast-json-patch": {
+      "globals": {
+        "addEventListener": true,
+        "clearTimeout": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/snaps-controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/types": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>superstruct": true,
+        "browserify": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "browserify>events": true,
+        "browserify>path-browserify": true,
+        "eslint>fast-deep-equal": true,
+        "eth-block-tracker>@metamask/utils": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -5587,15 +5635,6 @@
         "string.prototype.matchall>call-bind": true
       }
     },
-    "stylelint>autoprefixer>browserslist": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
-        "stylelint>autoprefixer>browserslist>node-releases": true,
-        "stylelint>autoprefixer>caniuse-lite": true
-      }
-    },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -5684,6 +5723,15 @@
         "console.error": true,
         "console.warn": true,
         "define": true
+      }
+    },
+    "webpack>browserslist": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "webpack>browserslist>caniuse-lite": true,
+        "webpack>browserslist>electron-to-chromium": true,
+        "webpack>browserslist>node-releases": true
       }
     },
     "webpack>events": {
