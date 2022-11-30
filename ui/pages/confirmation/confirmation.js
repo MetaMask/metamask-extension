@@ -129,6 +129,37 @@ function useAlertState(pendingConfirmation) {
   return [alertState, dismissAlert];
 }
 
+function useTemplateState(pendingConfirmation) {
+  const [templateState, setTemplateState] = useState({});
+
+  /**
+   * Computation of the current alert state happens every time the current
+   * pendingConfirmation changes. The async function getTemplateAlerts is
+   * responsible for returning alert state. Setting state on unmounted
+   * components is an anti-pattern, so we use a isMounted variable to keep
+   * track of the current state of the component. Returning a function that
+   * sets isMounted to false when the component is unmounted.
+   */
+  useEffect(() => {
+    let isMounted = true;
+    if (pendingConfirmation) {
+      getTemplateState(pendingConfirmation).then((state) => {
+        if (isMounted && Object.values(state).length > 0) {
+          setTemplateState({
+            ...templateState,
+            [pendingConfirmation.id]: state,
+          });
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [pendingConfirmation]);
+
+  return [templateState];
+}
+
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
@@ -144,8 +175,9 @@ export default function ConfirmationPage({
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
-
+  
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
@@ -170,6 +202,7 @@ export default function ConfirmationPage({
     MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
     ///: END:ONLY_INCLUDE_IN
   ];
+ 
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -213,10 +246,6 @@ export default function ConfirmationPage({
             : null,
         );
 
-  const templatedState = useMemo(() => {
-    return pendingConfirmation ? getTemplateState(pendingConfirmation) : {};
-  }, [pendingConfirmation]);
-
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -239,6 +268,7 @@ export default function ConfirmationPage({
   if (!pendingConfirmation) {
     return null;
   }
+  console.log('templateState:', templateState);
 
   return (
     <div className="confirmation-page">

@@ -147,7 +147,7 @@ async function getAlerts(pendingApproval) {
 
 function getState(pendingApproval) {
   if (parseInt(pendingApproval.requestData.chainId, 16) === 1) {
-    return { showWarningModal: true };
+    return { useWarningModal: true };
   }
 }
 

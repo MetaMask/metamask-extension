@@ -107,7 +107,7 @@ const ConfirmationWarningModal = ({
   );
 };
 
-SetApproveForAllWarning.propTypes = {
+ConfirmationWarningModal.propTypes = {
   /**
    * NFT collection name that is being approved
    */
@@ -138,4 +138,4 @@ SetApproveForAllWarning.propTypes = {
   onCancel: PropTypes.func,
 };
 
-export default SetApproveForAllWarning;
+export default ConfirmationWarningModal;
