@@ -86,6 +86,9 @@ function injectScript(content) {
  * SERVICE WORKER LOGIC
  */
 
+const EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR =
+  'Extension context invalidated.';
+
 const WORKER_KEEP_ALIVE_INTERVAL = 1000;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
@@ -108,14 +111,15 @@ let keepAliveTimer;
  * Sending a message to the extension to receive will keep the service worker alive.
  *
  * If the extension is unloaded or reloaded during a session and the user attempts to send a
- * message to the extension, an "Extension context invalidated." error will occur.
- * When this happens, prompt the user to reload the extension.
+ * message to the extension, an "Extension context invalidated." error will be thrown from
+ * chromium browsers. When this happens, prompt the user to reload the extension. Note: Handling
+ * this error is not supported in Firefox here.
  */
 const sendMessageWorkerKeepAlive = () => {
   browser.runtime
     .sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE })
     .catch((e) => {
-      e.message === 'Extension context invalidated.'
+      e.message === EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR
         ? log.error(`Please refresh the page. MetaMask: ${e}`)
         : log.error(`MetaMask: ${e}`);
     });
