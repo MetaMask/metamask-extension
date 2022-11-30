@@ -163,7 +163,7 @@ export default class SignatureRequestOriginal extends Component {
           margin={12}
           marginTop={3}
         >
-          {this.context.t('signatureRequestWarning')}
+          {this.context.t('signatureRequestGuidance')}
         </Typography>
 
         <div className={classnames('request-signature__notice')}>{notice}</div>

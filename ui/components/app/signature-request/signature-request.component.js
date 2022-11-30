@@ -213,7 +213,7 @@ export default class SignatureRequest extends PureComponent {
             margin={12}
             marginTop={3}
           >
-            {this.context.t('signatureRequestWarning')}
+            {this.context.t('signatureRequestGuidance')}
           </Typography>
           <div>
             <Button
