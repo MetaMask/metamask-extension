@@ -2418,9 +2418,6 @@
   "sign": {
     "message": "Firmar"
   },
-  "signNotice": {
-    "message": "Firmar este mensaje puede ser peligroso. Esta firma podría realizar potencialmente cualquier operación en nombre de su cuenta, incluida la concesión del control total de tu cuenta y de todos sus activos al sitio solicitante. Solo firme este mensaje si sabe lo que está haciendo o confía plenamente en el sitio solicitante."
-  },
   "signatureRequest": {
     "message": "Solicitud de firma"
   },
