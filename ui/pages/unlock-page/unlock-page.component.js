@@ -10,6 +10,7 @@ import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
+  METAMETRICS_PARTICIPATION,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
@@ -97,8 +98,8 @@ export default class UnlockPage extends Component {
       );
 
       if (
-        newState.participateInMetaMetrics === null ||
-        newState.participateInMetaMetrics === undefined
+        newState.metaMetricsParticipationMode ===
+        METAMETRICS_PARTICIPATION.NOT_CHOSEN
       ) {
         showOptInModal();
       }

@@ -9,13 +9,14 @@ import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
+import { METAMETRICS_PARTICIPATION } from '../../../../shared/constants/metametrics';
 import WelcomeFooter from './welcome-footer.component';
 import BetaWelcomeFooter from './beta-welcome-footer.component';
 
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    participateInMetaMetrics: PropTypes.bool,
+    metaMetricsParticipationMode: PropTypes.string,
     welcomeScreenSeen: PropTypes.bool,
     isInitialized: PropTypes.bool,
   };
@@ -33,7 +34,7 @@ export default class Welcome extends PureComponent {
   componentDidMount() {
     const {
       history,
-      participateInMetaMetrics,
+      metaMetricsParticipationMode,
       welcomeScreenSeen,
       isInitialized,
     } = this.props;
@@ -41,10 +42,13 @@ export default class Welcome extends PureComponent {
     if (
       welcomeScreenSeen &&
       isInitialized &&
-      participateInMetaMetrics !== null
+      metaMetricsParticipationMode !== METAMETRICS_PARTICIPATION.NOT_CHOSEN
     ) {
       history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
-    } else if (welcomeScreenSeen && participateInMetaMetrics !== null) {
+    } else if (
+      welcomeScreenSeen &&
+      metaMetricsParticipationMode !== METAMETRICS_PARTICIPATION.NOT_CHOSEN
+    ) {
       history.push(INITIALIZE_SELECT_ACTION_ROUTE);
     } else if (welcomeScreenSeen) {
       history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);

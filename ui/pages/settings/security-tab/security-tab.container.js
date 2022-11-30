@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   setFeatureFlag,
-  setParticipateInMetaMetrics,
+  setMetaMetricsParticipationMode,
   setUsePhishDetect,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
@@ -15,22 +15,22 @@ const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { showIncomingTransactions } = {},
-    participateInMetaMetrics,
+    metaMetricsParticipationMode,
     usePhishDetect,
   } = metamask;
 
   return {
     warning,
     showIncomingTransactions,
-    participateInMetaMetrics,
+    metaMetricsParticipationMode,
     usePhishDetect,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setParticipateInMetaMetrics: (val) =>
-      dispatch(setParticipateInMetaMetrics(val)),
+    setMetaMetricsParticipationMode: (val) =>
+      dispatch(setMetaMetricsParticipationMode(val)),
     setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),

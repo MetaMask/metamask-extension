@@ -10,14 +10,18 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { setMetaMetricsParticipationMode } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
+  getMetaMetricsParticipationMode,
 } from '../../../selectors';
 
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRICS_PARTICIPATION,
+} from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -29,17 +33,21 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const metaMetricsParticiationMode = useSelector(
+    getMetaMetricsParticipationMode,
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
-    const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
-
-    const isInitiallyNotParticipating = !participateInMetaMetrics;
+    await dispatch(
+      setMetaMetricsParticipationMode(METAMETRICS_PARTICIPATION.PARTICIPATE),
+    );
 
     try {
-      if (isInitiallyNotParticipating) {
+      if (
+        metaMetricsParticiationMode !== METAMETRICS_PARTICIPATION.PARTICIPATE
+      ) {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
@@ -68,7 +76,6 @@ export default function OnboardingMetametrics() {
         },
         {
           isOptIn: true,
-          metaMetricsId,
           flushImmediately: true,
         },
       );
@@ -78,13 +85,16 @@ export default function OnboardingMetametrics() {
   };
 
   const onCancel = async () => {
-    await dispatch(setParticipateInMetaMetrics(false));
-
-    const isInitiallyParticipatingOrNotSet =
-      participateInMetaMetrics === null || participateInMetaMetrics;
-
+    await dispatch(
+      setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+      ),
+    );
     try {
-      if (isInitiallyParticipatingOrNotSet) {
+      if (
+        metaMetricsParticiationMode !==
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE
+      ) {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,

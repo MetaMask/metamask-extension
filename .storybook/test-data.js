@@ -1,5 +1,6 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KEYRING_TYPES } from '../shared/constants/keyrings';
+import { METAMETRICS_PARTICIPATION } from '../shared/constants/metametrics';
 
 const state = {
   invalidCustomNetwork: {
@@ -542,7 +543,7 @@ const state = {
         name: 'Approve Tokens',
       },
     },
-    participateInMetaMetrics: true,
+    metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
     nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,

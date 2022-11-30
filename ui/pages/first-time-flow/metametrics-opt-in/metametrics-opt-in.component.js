@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRICS_PARTICIPATION,
+} from '../../../../shared/constants/metametrics';
 import { INITIALIZE_SELECT_ACTION_ROUTE } from '../../../helpers/constants/routes';
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
     history: PropTypes.object,
-    setParticipateInMetaMetrics: PropTypes.func,
-    participateInMetaMetrics: PropTypes.bool,
+    setMetaMetricsParticipationMode: PropTypes.func,
+    metaMetricsParticipationMode: PropTypes.string,
   };
 
   static contextTypes = {
@@ -19,8 +23,11 @@ export default class MetaMetricsOptIn extends Component {
 
   render() {
     const { trackEvent, t } = this.context;
-    const { history, setParticipateInMetaMetrics, participateInMetaMetrics } =
-      this.props;
+    const {
+      history,
+      setMetaMetricsParticipationMode,
+      metaMetricsParticipationMode,
+    } = this.props;
 
     return (
       <div className="metametrics-opt-in">
@@ -97,18 +104,22 @@ export default class MetaMetricsOptIn extends Component {
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
               onCancel={async () => {
-                await setParticipateInMetaMetrics(false);
+                await setMetaMetricsParticipationMode(
+                  METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+                );
 
                 history.push(INITIALIZE_SELECT_ACTION_ROUTE);
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
               onSubmit={async () => {
-                await setParticipateInMetaMetrics(true);
+                await setMetaMetricsParticipationMode(
+                  METAMETRICS_PARTICIPATION.PARTICIPATE,
+                );
                 try {
                   if (
-                    participateInMetaMetrics === null ||
-                    participateInMetaMetrics === false
+                    metaMetricsParticipationMode !==
+                    METAMETRICS_PARTICIPATION.PARTICIPATE
                   ) {
                     await trackEvent(
                       {

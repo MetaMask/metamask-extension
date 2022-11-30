@@ -18,6 +18,7 @@ import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { METAMETRICS_PARTICIPATION } from '../../../shared/constants/metametrics';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -45,7 +46,7 @@ export default function reduceMetamask(state = {}, action) {
     firstTimeFlowType: null,
     completedOnboarding: false,
     knownMethodData: {},
-    participateInMetaMetrics: null,
+    metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
     nextNonce: null,
     conversionRate: null,
     nativeCurrency: 'ETH',
@@ -125,12 +126,6 @@ export default function reduceMetamask(state = {}, action) {
         currentNetworkTxList,
       };
     }
-
-    case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
-      return {
-        ...metamaskState,
-        participateInMetaMetrics: action.value,
-      };
 
     case actionConstants.SET_USE_BLOCKIE:
       return {

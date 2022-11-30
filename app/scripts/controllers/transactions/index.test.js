@@ -10,7 +10,10 @@ import {
   getTestAccounts,
 } from '../../../../test/stub/provider';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  METAMETRICS_PARTICIPATION,
+} from '../../../../shared/constants/metametrics';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -78,7 +81,8 @@ describe('Transaction Controller', function () {
       getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
       getCurrentChainId: () => currentChainId,
-      getParticipateInMetrics: () => false,
+      getMetaMetricsParticipationMode: () =>
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,
       updateEventFragment: () => undefined,

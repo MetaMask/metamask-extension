@@ -2632,12 +2632,12 @@ export function toggleAccountMenu() {
   };
 }
 
-export function setParticipateInMetaMetrics(val) {
+export function setMetaMetricsParticipationMode(val) {
   return (dispatch) => {
-    log.debug(`background.setParticipateInMetaMetrics`);
+    log.debug(`background.setMetaMetricsParticipationMode`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
-        'setParticipateInMetaMetrics',
+        'setMetaMetricsParticipationMode',
         [val],
         (err, metaMetricsId) => {
           log.debug(err);
@@ -2646,11 +2646,6 @@ export function setParticipateInMetaMetrics(val) {
             reject(err);
             return;
           }
-
-          dispatch({
-            type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
-            value: val,
-          });
           resolve([val, metaMetricsId]);
         },
       );

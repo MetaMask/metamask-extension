@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
 import { BuildType } from '../../../shared/constants/app';
+import { METAMETRICS_PARTICIPATION } from '../../../shared/constants/metametrics';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -45,7 +46,7 @@ export const SENTRY_STATE = {
     nativeCurrency: true,
     network: true,
     nextNonce: true,
-    participateInMetaMetrics: true,
+    metaMetricsParticipationMode: true,
     preferences: true,
     provider: {
       nickname: true,
@@ -110,15 +111,14 @@ export default function setupSentry({ release, getState }) {
    * is enabled, `false` otherwise.
    */
   function getMetaMetricsEnabled() {
-    if (getState) {
-      const appState = getState();
-      if (!appState?.store?.metamask?.participateInMetaMetrics) {
-        return false;
-      }
-    } else {
+    if (!getState) {
       return false;
     }
-    return true;
+    const appState = getState();
+    return (
+      appState?.store?.metamas?.metaMetricsParticipationMode ===
+      METAMETRICS_PARTICIPATION.PARTICIPATE
+    );
   }
 
   Sentry.init({
@@ -137,7 +137,7 @@ export default function setupSentry({ release, getState }) {
         const appState = getState();
         if (
           Object.values(appState).length &&
-          (!appState?.store?.metamask?.participateInMetaMetrics ||
+          (getMetaMetricsEnabled() === false ||
             !appState?.store?.metamask?.completedOnboarding ||
             breadcrumb?.category === 'ui.input')
         ) {

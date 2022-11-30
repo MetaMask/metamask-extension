@@ -7,7 +7,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRICS_PARTICIPATION,
+} from '../../../../shared/constants/metametrics';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -18,8 +22,8 @@ export default class SecurityTab extends PureComponent {
   static propTypes = {
     warning: PropTypes.string,
     history: PropTypes.object,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    setParticipateInMetaMetrics: PropTypes.func.isRequired,
+    metaMetricsParticipationMode: PropTypes.string.isRequired,
+    setMetaMetricsParticipationMode: PropTypes.func.isRequired,
     showIncomingTransactions: PropTypes.bool.isRequired,
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
@@ -85,7 +89,7 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
+    const { metaMetricsParticipationMode, setMetaMetricsParticipationMode } =
       this.props;
 
     return (
@@ -99,8 +103,17 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={participateInMetaMetrics}
-              onToggle={(value) => setParticipateInMetaMetrics(!value)}
+              value={
+                metaMetricsParticipationMode ===
+                METAMETRICS_PARTICIPATION.PARTICIPATE
+              }
+              onToggle={(value) =>
+                setMetaMetricsParticipationMode(
+                  value
+                    ? METAMETRICS_PARTICIPATION.PARTICIPATE
+                    : METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+                )
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />

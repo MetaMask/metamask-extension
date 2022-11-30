@@ -178,8 +178,8 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
+export function getMetaMetricsParticipationMode(state) {
+  return state.metamask.metaMetricsParticipationMode;
 }
 
 export function isEIP1559Account() {

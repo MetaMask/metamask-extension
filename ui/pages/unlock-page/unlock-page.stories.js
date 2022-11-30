@@ -1,5 +1,6 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
+import { METAMETRICS_PARTICIPATION } from '../../../shared/constants/metametrics';
 import README from './README.mdx';
 import UnlockPage from './unlock-page.component';
 
@@ -31,7 +32,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   forceUpdateMetamaskState: () => ({
-    participateInMetaMetrics: true,
+    metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
   }),
 };
 

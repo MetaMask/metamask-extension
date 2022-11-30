@@ -2,6 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { METAMETRICS_PARTICIPATION } from '../../../../shared/constants/metametrics';
 import Welcome from './welcome.container';
 
 describe('Welcome', () => {
@@ -9,8 +10,9 @@ describe('Welcome', () => {
     sinon.restore();
   });
 
-  it('routes to the metametrics screen when participateInMetaMetrics is not initialized', () => {
+  it('routes to the metametrics screen when metaMetricsParticipationMode is NOT_CHOSEN', () => {
     const props = {
+      metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
       history: {
         push: sinon.spy(),
       },
@@ -27,10 +29,11 @@ describe('Welcome', () => {
     );
   });
 
-  it('routes to select action when participateInMetaMetrics is initialized', () => {
+  it('routes to select action when metaMetricsParticipationMode is not NOT_CHOSEN', () => {
     const props = {
       welcomeScreenSeen: true,
-      participateInMetaMetrics: false,
+      metaMetricsParticipationMode:
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
       history: {
         push: sinon.spy(),
       },

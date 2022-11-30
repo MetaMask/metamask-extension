@@ -10,7 +10,7 @@ export default {
 export const DefaultStory = () => {
   return (
     <MetaMetricsOptIn
-      setParticipateInMetaMetrics={action('Participating in MetaMetrics')}
+      setMetaMetricsParticipationMode={action('Participating in MetaMetrics')}
     />
   );
 };

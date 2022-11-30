@@ -5,6 +5,7 @@ import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  METAMETRICS_PARTICIPATION,
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
@@ -122,7 +123,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 };
 
 function getMetaMetricsController({
-  participateInMetaMetrics = true,
+  metaMetricsParticipationMode = METAMETRICS_PARTICIPATION.PARTICIPATE,
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
@@ -142,7 +143,7 @@ function getMetaMetricsController({
     version: '0.0.1',
     environment: 'test',
     initState: {
-      participateInMetaMetrics,
+      metaMetricsParticipationMode,
       metaMetricsId,
       fragments: {
         testid: SAMPLE_PERSISTED_EVENT,
@@ -181,8 +182,8 @@ describe('MetaMetricsController', function () {
       assert.strictEqual(metaMetricsController.network, NETWORK);
       assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID);
       assert.strictEqual(
-        metaMetricsController.state.participateInMetaMetrics,
-        true,
+        metaMetricsController.state.metaMetricsParticipationMode,
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
       );
       assert.strictEqual(
         metaMetricsController.state.metaMetricsId,
@@ -240,7 +241,7 @@ describe('MetaMetricsController', function () {
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
         metaMetricsId: TEST_META_METRICS_ID,
       });
       const mock = sinon.mock(segment);
@@ -262,7 +263,7 @@ describe('MetaMetricsController', function () {
 
     it('should transform date type traits into ISO-8601 timestamp strings', async function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
         metaMetricsId: TEST_META_METRICS_ID,
       });
       const mock = sinon.mock(segment);
@@ -290,7 +291,8 @@ describe('MetaMetricsController', function () {
 
     it('should not call segment.identify if user is not participating in metametrics', function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        metaMetricsParticipationMode:
+          METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
       });
       const mock = sinon.mock(segment);
 
@@ -302,7 +304,7 @@ describe('MetaMetricsController', function () {
 
     it('should not call segment.identify if there are no valid traits to identify', async function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
         metaMetricsId: TEST_META_METRICS_ID,
       });
       const mock = sinon.mock(segment);
@@ -314,31 +316,41 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', function () {
+  describe('setMetaMetricsParticipationMode', function () {
+    it('should update the value of metaMetricsParticipationMode', function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: null,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
         metaMetricsId: null,
       });
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
-      metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
+      assert.equal(
+        metaMetricsController.state.metaMetricsParticipationMode,
+        METAMETRICS_PARTICIPATION.NOT_CHOSEN,
+      );
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
+      );
+      assert.equal(
+        metaMetricsController.state.metaMetricsParticipationMode,
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
+      );
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+      );
+      assert.equal(
+        metaMetricsController.state.metaMetricsParticipationMode,
+        METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+      );
     });
-    it('should generate and update the metaMetricsId when set to true', function () {
+    it('should generate and update the metaMetricsId when metaMetricsParticipationMode changes to PARTICIPATE', function () {
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: null,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.metaMetricsId, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
+      metaMetricsController.setMetaMetricsParticipationMode(
+        METAMETRICS_PARTICIPATION.PARTICIPATE,
+      );
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
-    });
-    it('should nullify the metaMetricsId when set to false', function () {
-      const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
   });
 
@@ -346,7 +358,8 @@ describe('MetaMetricsController', function () {
     it('should not track an event if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        metaMetricsParticipationMode:
+          METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
       });
       mock.expects('track').never();
       metaMetricsController.submitEvent({
@@ -362,7 +375,7 @@ describe('MetaMetricsController', function () {
     it('should track an event if user has not opted in, but isOptIn is true', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
       });
       mock
         .expects('track')
@@ -394,7 +407,7 @@ describe('MetaMetricsController', function () {
     it('should track an event during optin and allow for metaMetricsId override', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
+        metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
       });
       mock
         .expects('track')
@@ -591,7 +604,8 @@ describe('MetaMetricsController', function () {
     it('should not track a page view if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: false,
+        metaMetricsParticipationMode:
+          METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
       });
       mock.expects('page').never();
       metaMetricsController.trackPage({
@@ -607,7 +621,7 @@ describe('MetaMetricsController', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         preferencesStore: getMockPreferencesStore({
-          participateInMetaMetrics: null,
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
         }),
       });
       mock
@@ -640,7 +654,7 @@ describe('MetaMetricsController', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         preferencesStore: getMockPreferencesStore({
-          participateInMetaMetrics: null,
+          metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.NOT_CHOSEN,
         }),
       });
       mock

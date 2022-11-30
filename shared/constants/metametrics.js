@@ -150,8 +150,8 @@
 /**
  * @typedef {object} MetaMetricsPageOptions
  * @property {boolean} [isOptInPath] - is the current path one of the pages in
- *  the onboarding workflow? If true and participateInMetaMetrics is null track
- *  the page view
+ *  the onboarding workflow? If true and metaMetricsParticipationMode is
+ *  NOT_CHOSEN track the page view
  */
 
 /**
@@ -236,6 +236,24 @@ export const TRAITS = {
  * @property {string} [theme] - which theme the user has selected
  * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
+
+/**
+ * This type defines whether or not the user has elected to participate in
+ * MetaMetrics or chose not to participate. It also has a third option for
+ * fresh installs where a user has not yet interacted with the option to
+ * participate.
+ *
+ * @typedef {'NOT_CHOSEN' | 'PARTICIPATE' | 'DO_NOT_PARTICIPATE'} MetaMetricsParticipation
+ */
+
+/**
+ * Describes the participation mode that a user has opted into for MetaMetrics.
+ */
+export const METAMETRICS_PARTICIPATION = {
+  DO_NOT_PARTICIPATE: 'DO_NOT_PARTICIPATE',
+  PARTICIPATE: 'PARTICIPATE',
+  NOT_CHOSEN: 'NOT_CHOSEN',
+};
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
 // speeds up reporting

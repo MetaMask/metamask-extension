@@ -6,11 +6,12 @@ import PageContainerFooter from '../../../ui/page-container/page-container-foote
 import {
   EVENT,
   EVENT_NAMES,
+  METAMETRICS_PARTICIPATION,
 } from '../../../../../shared/constants/metametrics';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
-    setParticipateInMetaMetrics: PropTypes.func,
+    setMetaMetricsParticipationMode: PropTypes.func,
     hideModal: PropTypes.func,
   };
 
@@ -21,7 +22,7 @@ export default class MetaMetricsOptInModal extends Component {
 
   render() {
     const { trackEvent, t } = this.context;
-    const { setParticipateInMetaMetrics, hideModal } = this.props;
+    const { setMetaMetricsParticipationMode, hideModal } = this.props;
 
     return (
       <div className="metametrics-opt-in metametrics-opt-in-modal">
@@ -112,7 +113,9 @@ export default class MetaMetricsOptInModal extends Component {
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
               onCancel={() => {
-                setParticipateInMetaMetrics(false).then(() => {
+                setMetaMetricsParticipationMode(
+                  METAMETRICS_PARTICIPATION.DO_NOT_PARTICIPATE,
+                ).then(() => {
                   trackEvent(
                     {
                       category: EVENT.CATEGORIES.ONBOARDING,
@@ -133,7 +136,9 @@ export default class MetaMetricsOptInModal extends Component {
               cancelText={t('noThanks')}
               hideCancel={false}
               onSubmit={() => {
-                setParticipateInMetaMetrics(true).then(() => {
+                setMetaMetricsParticipationMode(
+                  METAMETRICS_PARTICIPATION.PARTICIPATE,
+                ).then(() => {
                   trackEvent(
                     {
                       category: EVENT.CATEGORIES.ONBOARDING,

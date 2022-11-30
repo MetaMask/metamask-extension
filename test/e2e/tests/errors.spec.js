@@ -1,6 +1,9 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  METAMETRICS_PARTICIPATION,
+} = require('../../../shared/constants/metametrics');
 
 describe('Sentry errors', function () {
   async function mockSegment(mockServer) {
@@ -30,7 +33,7 @@ describe('Sentry errors', function () {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
+            metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
           })
           .build(),
         ganacheOptions,
@@ -58,7 +61,7 @@ describe('Sentry errors', function () {
         const mockJsonBody = mockedRequest.body.json;
         const { level, extra } = mockJsonBody;
         const [{ type, value }] = mockJsonBody.exception.values;
-        const { participateInMetaMetrics } = extra.appState.store.metamask;
+        const { metaMetricsParticipationMode } = extra.appState.store.metamask;
         // Verify request
         assert.equal(type, 'BigNumber Error');
         assert.equal(
@@ -66,7 +69,10 @@ describe('Sentry errors', function () {
           'new BigNumber() not a base 16 number: 0x-de0b6b3a7640000',
         );
         assert.equal(level, 'error');
-        assert.equal(participateInMetaMetrics, true);
+        assert.equal(
+          metaMetricsParticipationMode,
+          METAMETRICS_PARTICIPATION.PARTICIPATE,
+        );
       },
     );
   });

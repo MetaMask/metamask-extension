@@ -35,7 +35,10 @@ import {
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  METAMETRICS_PARTICIPATION,
+} from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
@@ -140,7 +143,8 @@ export default class TransactionController extends EventEmitter {
     this.signEthTx = opts.signTransaction;
     this.inProcessOfSigning = new Set();
     this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
-    this._getParticipateInMetrics = opts.getParticipateInMetrics;
+    this._getMetaMetricsParticipationMode =
+      opts.getMetaMetricsParticipationMode;
     this._getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
     this.createEventFragment = opts.createEventFragment;
     this.updateEventFragment = opts.updateEventFragment;
@@ -2009,7 +2013,11 @@ export default class TransactionController extends EventEmitter {
   }
 
   _trackSwapsMetrics(txMeta, approvalTxMeta) {
-    if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
+    if (
+      this._getMetaMetricsParticipationMode() ===
+        METAMETRICS_PARTICIPATION.PARTICIPATE &&
+      txMeta.swapMetaData
+    ) {
       if (txMeta.txReceipt.status === '0x0') {
         this._trackMetaMetricsEvent({
           event: 'Swap Failed',

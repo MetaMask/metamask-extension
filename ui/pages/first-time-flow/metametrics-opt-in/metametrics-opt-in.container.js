@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { setMetaMetricsParticipationMode } from '../../../store/actions';
 import MetaMetricsOptIn from './metametrics-opt-in.component';
 
 const firstTimeFlowTypeNameMap = {
@@ -8,19 +8,19 @@ const firstTimeFlowTypeNameMap = {
 };
 
 const mapStateToProps = (state) => {
-  const { firstTimeFlowType, participateInMetaMetrics } = state.metamask;
+  const { firstTimeFlowType, metaMetricsParticipationMode } = state.metamask;
 
   return {
     firstTimeSelectionMetaMetricsName:
       firstTimeFlowTypeNameMap[firstTimeFlowType],
-    participateInMetaMetrics,
+    metaMetricsParticipationMode,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setParticipateInMetaMetrics: (val) =>
-      dispatch(setParticipateInMetaMetrics(val)),
+    setMetaMetricsParticipationMode: (val) =>
+      dispatch(setMetaMetricsParticipationMode(val)),
   };
 };
 

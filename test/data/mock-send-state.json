@@ -25,7 +25,7 @@
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
-    "participateInMetaMetrics": false,
+    "metaMetricsParticipationMode": "DO_NOT_PARTICIPATE",
     "gasEstimateType": "fee-market",
     "gasFeeEstimates": {
       "low": {

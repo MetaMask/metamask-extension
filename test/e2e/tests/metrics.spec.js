@@ -1,6 +1,9 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  METAMETRICS_PARTICIPATION,
+} = require('../../../shared/constants/metametrics');
 
 describe('Segment metrics', function () {
   async function mockSegment(mockServer) {
@@ -31,7 +34,7 @@ describe('Segment metrics', function () {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
+            metaMetricsParticipationMode: METAMETRICS_PARTICIPATION.PARTICIPATE,
           })
           .build(),
         ganacheOptions,

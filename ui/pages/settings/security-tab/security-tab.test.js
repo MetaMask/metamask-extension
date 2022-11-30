@@ -6,13 +6,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SecurityTab from './security-tab.container';
 
 const mockSetFeatureFlag = jest.fn();
-const mockSetParticipateInMetaMetrics = jest.fn();
+const mockSetMetaMetricsParticipationMode = jest.fn();
 const mockSetUsePhishDetect = jest.fn();
 
 jest.mock('../../../store/actions.js', () => {
   return {
     setFeatureFlag: () => mockSetFeatureFlag,
-    setParticipateInMetaMetrics: () => mockSetParticipateInMetaMetrics,
+    setMetaMetricsParticipationMode: () => mockSetMetaMetricsParticipationMode,
     setUsePhishDetect: () => mockSetUsePhishDetect,
   };
 });

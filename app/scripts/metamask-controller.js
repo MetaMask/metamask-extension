@@ -854,8 +854,8 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
-      getParticipateInMetrics: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
+      getMetaMetricsParticipationMode: () =>
+        this.metaMetricsController.state.metaMetricsParticipationMode,
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getExternalPendingTransactions:
@@ -1608,8 +1608,8 @@ export default class MetamaskController extends EventEmitter {
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
+      setMetaMetricsParticipationMode:
+        metaMetricsController.setMetaMetricsParticipationMode.bind(
           metaMetricsController,
         ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
