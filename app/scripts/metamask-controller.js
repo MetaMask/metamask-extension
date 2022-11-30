@@ -1797,10 +1797,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setImprovedTokenAllowanceEnabled:
-        preferencesController.setImprovedTokenAllowanceEnabled.bind(
-          preferencesController,
-        ),
       setTransactionSecurityCheckEnabled:
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
