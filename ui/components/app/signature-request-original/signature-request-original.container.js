@@ -61,6 +61,7 @@ function mapDispatchToProps(dispatch) {
           name: 'REJECT_TRANSACTIONS',
           onSubmit,
           unapprovedTxCount: messagesCount,
+          isRequestType: true,
         }),
       );
     },

@@ -36,6 +36,14 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       unapprovedEncryptionPublicKeyMsgs: {},
       unapprovedEncryptionPublicKeyMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedEncryptionPublicKeyMsgs: {},
+        unapprovedEncryptionPublicKeyMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = opts.metricsEvent;
   }

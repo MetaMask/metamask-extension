@@ -6,6 +6,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -107,7 +108,10 @@ async function switchEthereumChainHandler(
         type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
         requestData,
       });
-      if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+      if (
+        chainId in CHAIN_ID_TO_TYPE_MAP &&
+        approvedRequestData.type !== NETWORK_TYPES.LOCALHOST
+      ) {
         setProviderType(approvedRequestData.type);
       } else {
         await updateRpcTarget(approvedRequestData);
