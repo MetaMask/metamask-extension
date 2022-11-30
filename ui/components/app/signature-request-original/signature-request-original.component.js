@@ -14,6 +14,7 @@ import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
 import SiteOrigin from '../../ui/site-origin';
+import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -46,6 +47,7 @@ export default class SignatureRequestOriginal extends Component {
 
   state = {
     fromAccount: this.props.fromAccount,
+    showSignatureRequestWarning: false,
   };
 
   renderHeader = () => {
@@ -195,7 +197,7 @@ export default class SignatureRequestOriginal extends Component {
 
   renderBody = () => {
     let rows;
-    let notice = `${this.context.t('youSign')}:`;
+    const notice = `${this.context.t('youSign')}:`;
 
     const { txData } = this.props;
     const {
@@ -211,32 +213,13 @@ export default class SignatureRequestOriginal extends Component {
       rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
       rows = [{ name: this.context.t('message'), value: data }];
-      notice = this.context.t('signNotice');
     }
 
     return (
       <div className="request-signature__body">
         {this.renderAccountInfo()}
         {this.renderOriginInfo()}
-        <div
-          className={classnames('request-signature__notice', {
-            'request-signature__warning': type === MESSAGE_TYPE.ETH_SIGN,
-          })}
-        >
-          {notice}
-          {type === MESSAGE_TYPE.ETH_SIGN ? (
-            <span
-              className="request-signature__help-link"
-              onClick={() => {
-                global.platform.openTab({
-                  url: 'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
-                });
-              }}
-            >
-              {this.context.t('learnMoreUpperCase')}
-            </span>
-          ) : null}
-        </div>
+        <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
             if (typeof value === 'boolean') {
@@ -258,13 +241,51 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
+  onSubmit = async (event) => {
+    const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
+      this.props;
+    const { trackEvent, type } = this.context;
+
+    await sign(event);
+    trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Confirm',
+      properties: {
+        action: 'Sign Request',
+        legacy_event: true,
+        type,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
+  };
+
+  onCancel = async (event) => {
+    const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
+      this.props;
+    const { trackEvent, type } = this.context;
+
+    await cancel(event);
+    trackEvent({
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      event: 'Cancel',
+      properties: {
+        action: 'Sign Request',
+        legacy_event: true,
+        type,
+      },
+    });
+    clearConfirmTransaction();
+    history.push(mostRecentOverviewPage);
+  };
+
   renderFooter = () => {
     const {
       cancel,
+      sign,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      sign,
       txData: { type },
       hardwareWalletRequiresConnection,
     } = this.props;
@@ -300,18 +321,22 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__footer__sign-button"
           disabled={hardwareWalletRequiresConnection}
           onClick={async (event) => {
-            await sign(event);
-            trackEvent({
-              category: EVENT.CATEGORIES.TRANSACTIONS,
-              event: 'Confirm',
-              properties: {
-                action: 'Sign Request',
-                legacy_event: true,
-                type,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
+            if (type === MESSAGE_TYPE.ETH_SIGN) {
+              this.setState({ showSignatureRequestWarning: true });
+            } else {
+              await sign(event);
+              trackEvent({
+                category: EVENT.CATEGORIES.TRANSACTIONS,
+                event: 'Confirm',
+                properties: {
+                  action: 'Sign Request',
+                  legacy_event: true,
+                  type,
+                },
+              });
+              clearConfirmTransaction();
+              history.push(mostRecentOverviewPage);
+            }
           }}
         >
           {t('sign')}
@@ -343,6 +368,7 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const { messagesCount } = this.props;
+    const { showSignatureRequestWarning, fromAccount } = this.state;
     const { t } = this.context;
     const rejectNText = t('rejectRequestsN', [messagesCount]);
     return (
@@ -354,6 +380,14 @@ export default class SignatureRequestOriginal extends Component {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
+        {showSignatureRequestWarning && (
+          <SignatureRequestOriginalWarning
+            senderAddress={fromAccount.address}
+            name={fromAccount.name}
+            onSubmit={async (event) => await this.onSubmit(event)}
+            onCancel={async (event) => await this.onCancel(event)}
+          />
+        )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <Button

@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Lumagda"
   },
-  "signNotice": {
-    "message": "Maaaring may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Tatanggalin ang mapanganib na paraang ito sa bersyon sa hinaharap."
-  },
   "signatureRequest": {
     "message": "Request na Paglagda"
   },

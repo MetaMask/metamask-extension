@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Ký"
   },
-  "signNotice": {
-    "message": "Việc ký vào thông báo này có thể gây nguy hiểm. Chữ ký này có thể được dùng để thực hiện bất kỳ hành động nào thay mặt cho tài khoản của bạn, bao gồm cả cấp toàn quyền kiểm soát tài khoản và tất cả tài sản bên trong cho trang web yêu cầu. Chỉ ký vào thông báo này nếu bạn biết mình đang làm gì hoặc hoàn toàn tin tưởng trang web yêu cầu."
-  },
   "signatureRequest": {
     "message": "Yêu cầu chữ ký"
   },

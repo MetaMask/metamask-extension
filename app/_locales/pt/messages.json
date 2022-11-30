@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Assinar"
   },
-  "signNotice": {
-    "message": "Assinar esta mensagem pode ter \nefeitos laterais perigosos. Apenas assine mensagens de sites que \ntotalmente confia com a sua conta total.\n Este método perigoso será removido numa versão posterior."
-  },
   "signatureRequest": {
     "message": "Pedido de assinatura"
   },
