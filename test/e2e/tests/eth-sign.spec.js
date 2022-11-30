@@ -42,7 +42,7 @@ describe('Eth sign', function () {
         );
 
         const title = await driver.findElement(
-          '.request-signature__header__text',
+          '.request-signature__content__title',
         );
         const origin = await driver.findElement('.request-signature__origin');
         assert.equal(await title.getText(), 'Signature request');
