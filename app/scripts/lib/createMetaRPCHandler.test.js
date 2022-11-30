@@ -1,7 +1,7 @@
 import { obj as createThoughStream } from 'through2';
 import createMetaRPCHandler from './createMetaRPCHandler';
 
-describe.only('createMetaRPCHandler', () => {
+describe('createMetaRPCHandler', () => {
   it('can call the api when handler receives a JSON-RPC request', () => {
     const api = {
       foo: (param1) => {
