@@ -149,7 +149,7 @@ export default function ConfirmationPage({
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const {
     manifest: { proposedName },
-  } = useSelector((state) => getSnap(state, pendingConfirmation.origin));
+  } = useSelector((state) => getSnap(state, pendingConfirmation?.origin));
 
   const SNAP_DIALOG_TYPE = [
     MESSAGE_TYPE.SNAP_DIALOG_ALERT,
