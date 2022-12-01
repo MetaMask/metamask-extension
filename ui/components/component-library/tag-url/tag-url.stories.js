@@ -53,14 +53,6 @@ ShowLockIcon.args = {
   showLockIcon: true,
 };
 
-export const Label = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <TagUrl {...args} label="https://widget.getacute.io" />
-    <TagUrl {...args} label="app.uniswap.org" />
-    <TagUrl {...args} label="https://metamask.github.io" />
-  </Box>
-);
-
 export const Src = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <TagUrl
@@ -78,5 +70,13 @@ export const Src = (args) => (
       label="app.uniswap.org"
       src="https://uniswap.org/favicon.ico"
     />
+  </Box>
+);
+
+export const Label = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <TagUrl {...args} label="https://peepeth.com/" />
+    <TagUrl {...args} label="app.uniswap.org" />
+    <TagUrl {...args} label="https://metamask.github.io" />
   </Box>
 );
