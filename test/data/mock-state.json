@@ -247,6 +247,7 @@
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
+    "useCurrencyRateCheck": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"

@@ -8,12 +8,14 @@ import SecurityTab from './security-tab.container';
 const mockSetFeatureFlag = jest.fn();
 const mockSetParticipateInMetaMetrics = jest.fn();
 const mockSetUsePhishDetect = jest.fn();
+const mockSetUseCurrencyRateCheck = jest.fn();
 
 jest.mock('../../../store/actions.js', () => {
   return {
     setFeatureFlag: () => mockSetFeatureFlag,
     setParticipateInMetaMetrics: () => mockSetParticipateInMetaMetrics,
     setUsePhishDetect: () => mockSetUsePhishDetect,
+    setUseCurrencyRateCheck: () => mockSetUseCurrencyRateCheck,
   };
 });
 

@@ -1351,3 +1351,13 @@ export function getShouldShowSeedPhraseReminder(state) {
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
+
+/**
+ * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCurrencyRateCheck(state) {
+  return Boolean(state.metamask.useCurrencyRateCheck);
+}

@@ -379,4 +379,23 @@ describe('preferences controller', function () {
       assert.equal(preferencesController.store.getState().theme, 'dark');
     });
   });
+
+  describe('setUseCurrencyRateCheck', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCurrencyRateCheck, false);
+    });
+
+    it('should set the useCurrencyRateCheck property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        false,
+      );
+      preferencesController.setUseCurrencyRateCheck(true);
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        true,
+      );
+    });
+  });
 });

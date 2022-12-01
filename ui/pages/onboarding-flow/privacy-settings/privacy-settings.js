@@ -14,6 +14,7 @@ import {
   setFeatureFlag,
   setUsePhishDetect,
   setUseTokenDetection,
+  setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Setting } from './setting';
@@ -24,6 +25,7 @@ export default function PrivacySettings() {
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
     useState(true);
 
@@ -33,6 +35,7 @@ export default function PrivacySettings() {
     );
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
+    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
@@ -103,6 +106,37 @@ export default function PrivacySettings() {
             setValue={setTurnOnTokenDetection}
             title={t('turnOnTokenDetection')}
             description={t('useTokenDetectionPrivacyDesc')}
+          />
+          <Setting
+            value={turnOnCurrencyRateCheck}
+            setValue={setTurnOnCurrencyRateCheck}
+            title={t('currencyRateCheckToggle')}
+            description={t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href="https://api.coingecko.com/api/v3"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingeckoAPI')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href="https://min-api.cryptocompare.com"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptocompareAPI')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href=""
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>

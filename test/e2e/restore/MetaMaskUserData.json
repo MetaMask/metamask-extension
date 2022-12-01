@@ -45,6 +45,7 @@
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,
-    "useTokenDetection": false
+    "useTokenDetection": false,
+    "useCurrencyRateCheck": false
   }
 }
