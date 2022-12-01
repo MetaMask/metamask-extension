@@ -242,13 +242,13 @@ export function getPermissionsForActiveTab(state) {
   const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
 
-  return Object.keys(subjects[activeTab.origin]?.permissions || {}).map(
-    (parentCapability) => {
-      return {
-        key: parentCapability,
-      };
-    },
-  );
+  const permissions = subjects[activeTab.origin]?.permissions ?? {};
+  return Object.keys(permissions).map((parentCapability) => {
+    return {
+      key: parentCapability,
+      value: permissions[parentCapability],
+    };
+  });
 }
 
 export function activeTabHasPermissions(state) {
