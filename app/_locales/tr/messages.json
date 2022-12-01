@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Giriş geçersiz! Gizli Kurtarma İfadesi büyük/küçük harf duyarlıdır."
   },
-  "ipfsGateway": {
-    "message": "IPFS Ağ Geçidi"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS içerik çözünürlüğünde kullanmak için IPFS CID ağ geçidi URL adresini girin."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
@@ -3021,7 +3015,8 @@
     "message": "Gelen İşlemleri Göster"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin"
+    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "İzinleri göster"

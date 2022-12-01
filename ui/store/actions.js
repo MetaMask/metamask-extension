@@ -2735,6 +2735,23 @@ export function setUseTokenDetection(val) {
   };
 }
 
+export function setShowGasFeeEstimationBuySwapTokens(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setShowGasFeeEstimationBuySwapTokens`);
+    callBackgroundMethod(
+      'setShowGasFeeEstimationBuySwapTokens',
+      [val],
+      (err) => {
+        dispatch(hideLoadingIndication());
+        if (err) {
+          dispatch(displayWarning(err.message));
+        }
+      },
+    );
+  };
+}
+
 export function setUseNftDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2798,10 +2815,8 @@ export function setTheme(val) {
 
 export function setIpfsGateway(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication());
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
-      dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
       } else {

@@ -183,6 +183,15 @@
   "addContact": {
     "message": "Add contact"
   },
+  "addCustomIPFSGateway": {
+    "message": "Add custom IPFS gateway"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "addCustomNetwork": {
+    "message": "Add custom network"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -415,6 +424,13 @@
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
   },
+  "autoDetectTokens": {
+    "message": "Autodetect tokens"
+  },
+  "autoDetectTokensDescription": {
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services. $1",
+    "description": "$1 is a link to a support article"
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -638,6 +654,13 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+  },
+  "chooseYourNetwork": {
+    "message": "Choose your network"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -1797,12 +1820,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2158,6 +2175,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkProvider": {
+    "message": "Network provider"
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
@@ -2857,6 +2877,9 @@
   "priorityFeeProperCase": {
     "message": "Priority Fee"
   },
+  "privacy": {
+    "message": "Privacy"
+  },
   "privacyMsg": {
     "message": "Privacy policy"
   },
@@ -3123,6 +3146,9 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "security": {
+    "message": "Security"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -3282,6 +3308,13 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Select this to show fiat conversion on test networks"
   },
+  "showGasFeeEstimationBuySwapTokens": {
+    "message": "Show gas fee estimation, buy crypto and swap tokens"
+  },
+  "showGasFeeEstimationBuySwapTokensDescription": {
+    "message": "We use ConsenSys APIs to display Gas fee estimation, and perform transactions like buying or swapping crypto. These services are provided through a proxy. Third parties will have access to your account address, but won’t have access to your IP address. $1",
+    "description": "$1 is the link to the privacy policy of consensys APIs"
+  },
   "showHexData": {
     "message": "Show hex data"
   },
@@ -3295,7 +3328,8 @@
     "message": "Show incoming transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+    "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Show permissions"
@@ -4104,6 +4138,9 @@
   "tokenList": {
     "message": "Token lists:"
   },
+  "tokenNftAutoDetection": {
+    "message": "Token and NFT autodetection"
+  },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
   },
@@ -4231,6 +4268,9 @@
   "transactionUpdated": {
     "message": "Transaction updated at $2."
   },
+  "transactions": {
+    "message": "Transactions"
+  },
   "transfer": {
     "message": "Transfer"
   },
@@ -4346,7 +4386,16 @@
     "message": "Autodetect NFTs"
   },
   "useCollectibleDetectionDescription": {
-    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to their servers. Leave this feature off if you don't want the app to pull data from those services."
+  },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "Additionally, be aware that:"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "NFT metadata may contain links to scams or phishing sites."
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
   },
   "useDefault": {
     "message": "Use default"

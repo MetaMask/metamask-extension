@@ -45,6 +45,8 @@
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,
-    "useTokenDetection": false
+    "useTokenDetection": false,
+    "showGasFeeEstimationBuySwapTokens": true,
+    "useMultiAccountBalanceChecker": true
   }
 }

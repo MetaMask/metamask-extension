@@ -43,7 +43,7 @@ describe('Security Tab', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
     const checkboxes = queryAllByRole('checkbox');
-    const showIncomingCheckbox = checkboxes[0];
+    const showIncomingCheckbox = checkboxes[1];
 
     expect(showIncomingCheckbox).toHaveAttribute('value', 'true');
 
@@ -58,37 +58,42 @@ describe('Security Tab', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
     const checkboxes = queryAllByRole('checkbox');
-    const showIncomingCheckbox = checkboxes[1];
+    const togglePhishingCheckbox = checkboxes[0];
 
-    expect(showIncomingCheckbox).toHaveAttribute('value', 'true');
+    expect(togglePhishingCheckbox).toHaveAttribute('value', 'true');
 
-    fireEvent.change(showIncomingCheckbox, {
+    fireEvent.change(togglePhishingCheckbox, {
       target: { value: false },
     });
 
-    expect(showIncomingCheckbox).toHaveAttribute('value', 'false');
+    expect(togglePhishingCheckbox).toHaveAttribute('value', 'false');
   });
 
   it('toggles metaMetrics', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
     const checkboxes = queryAllByRole('checkbox');
-    const showIncomingCheckbox = checkboxes[2];
 
-    expect(showIncomingCheckbox).toHaveAttribute('value', 'false');
+    let index = 5;
+    if (process.env.COLLECTIBLES_V1) {
+      index = 6;
+    }
+    const toggleMetaMetricsCheckbox = checkboxes[index];
 
-    fireEvent.change(showIncomingCheckbox, {
+    expect(toggleMetaMetricsCheckbox).toHaveAttribute('value', 'false');
+
+    fireEvent.change(toggleMetaMetricsCheckbox, {
       target: { value: true },
     });
 
-    expect(showIncomingCheckbox).toHaveAttribute('value', 'true');
+    expect(toggleMetaMetricsCheckbox).toHaveAttribute('value', 'true');
   });
 
   it('toggles batch balance checks', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
     const checkboxes = queryAllByRole('checkbox');
-    const batchBalanceChecksCheckbox = checkboxes[3];
+    const batchBalanceChecksCheckbox = checkboxes[4];
 
     expect(batchBalanceChecksCheckbox).toHaveAttribute('value', 'false');
 
@@ -97,5 +102,26 @@ describe('Security Tab', () => {
     });
 
     expect(batchBalanceChecksCheckbox).toHaveAttribute('value', 'true');
+  });
+
+  it('should toggle token detection', () => {
+    const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
+
+    const checkboxes = queryAllByRole('checkbox');
+    const tokenDetectionToggle = checkboxes[3];
+
+    expect(tokenDetectionToggle).toHaveAttribute('value', 'true');
+
+    fireEvent.change(tokenDetectionToggle, {
+      target: { value: false },
+    });
+
+    expect(tokenDetectionToggle).toHaveAttribute('value', 'false');
+
+    fireEvent.change(tokenDetectionToggle, {
+      target: { value: true },
+    });
+
+    expect(tokenDetectionToggle).toHaveAttribute('value', 'true');
   });
 });
