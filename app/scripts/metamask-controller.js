@@ -302,7 +302,8 @@ export default class MetamaskController extends EventEmitter {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
+          this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+            const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
               provider: {
