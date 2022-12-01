@@ -16,6 +16,38 @@ The `TagUrl` accepts all props below as well as all [Box](/docs/ui-components-ui
 
 <ArgsTable of={TagUrl} />
 
+### Action Button Label
+
+If we want to have a button in `TagUrl` component. You can update the `ButtonLink` component props used for the action button using `actionButtonProps`
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--action-button-label" />
+</Canvas>
+
+```jsx
+
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl label="https://app.uniswap.org" actionButtonLabel="Permissions"/>
+
+```
+
+### Show Lock Icon
+
+Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. Props for the lock icon can be changed using the `lockIconProps`.
+
+<Canvas>
+  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--show-lock-icon" />
+</Canvas>
+
+```jsx
+
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl label="https://app.uniswap.org" showLockIcon/>
+
+```
+
 ### Src
 
 Use the `src` prop with an image url to render the `AvatarFavicon`.
@@ -49,37 +81,5 @@ import { TagUrl } from '../../ui/component-library/tag-url';
   <TagUrl label="https://peepeth.com" />
   <TagUrl label="app.uniswap.org" />
   <TagUrl label="https://metamask.github.io" />
-
-```
-
-### Action Button Label
-
-If we want to have a button in `TagUrl` component. You can update the `ButtonLink` component props used for the action button using `actionButtonProps`
-
-<Canvas>
-  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--action-button-label" />
-</Canvas>
-
-```jsx
-
-import { TagUrl } from '../../ui/component-library/tag-url';
-
-<TagUrl label="https://app.uniswap.org" actionButtonLabel="Permissions"/>
-
-```
-
-### Show Lock Icon
-
-Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. Props for the lock icon can be changed using the `lockIconProps`.
-
-<Canvas>
-  <Story id="ui-components-component-library-tag-url-tag-url-stories-js--show-lock-icon" />
-</Canvas>
-
-```jsx
-
-import { TagUrl } from '../../ui/component-library/tag-url';
-
-<TagUrl label="https://app.uniswap.org" showLockIcon/>
 
 ```
