@@ -6,11 +6,12 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
+
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -21,12 +22,20 @@ import {
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { getUnapprovedTemplatedConfirmations } from '../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getSnap,
+  ///: END:ONLY_INCLUDE_IN
+  getUnapprovedTemplatedConfirmations,
+} from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
+
+// TODO(rekmarks): This component and all of its sub-components should probably
+// be renamed to "Dialog", now that we are using it in that manner.
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -132,14 +141,70 @@ export default function ConfirmationPage({
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
 
+  const [inputStates, setInputStates] = useState({});
+  const setInputState = (key, value) => {
+    setInputStates((currentState) => ({ ...currentState, [key]: value }));
+  };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const {
+    manifest: { proposedName },
+  } = useSelector((state) => getSnap(state, pendingConfirmation?.origin));
+
+  const SNAP_DIALOG_TYPE = [
+    MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+    MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
+    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+  ];
+
+  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  ///: END:ONLY_INCLUDE_IN
+
+  const INPUT_STATE_CONFIRMATIONS = [
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+    ///: END:ONLY_INCLUDE_IN
+  ];
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
-      ? getTemplateValues(pendingConfirmation, t, dispatch, history)
+      ? getTemplateValues(
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            snapName: isSnapDialog && proposedName,
+            ///: END:ONLY_INCLUDE_IN
+            ...pendingConfirmation,
+          },
+          t,
+          dispatch,
+          history,
+          setInputState,
+        )
       : {};
-  }, [pendingConfirmation, t, dispatch, history]);
+  }, [
+    pendingConfirmation,
+    t,
+    dispatch,
+    history,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    isSnapDialog,
+    proposedName,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
+
+  const hasInputState = (type) => {
+    return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const handleSubmit = () =>
+    templatedValues.onSubmit(
+      hasInputState(pendingConfirmation.type)
+        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+        : null,
+    );
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -245,9 +310,9 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        onApprove={templatedValues.onApprove}
+        onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
-        approveText={templatedValues.approvalText}
+        submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
       />
     </div>

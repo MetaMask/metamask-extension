@@ -30,6 +30,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-user-check',
     rightIcon: null,
   }),
+  [RestrictedMethods.snap_dialog]: (t) => ({
+    label: t('permission_dialog'),
+    leftIcon: 'fas fa-user-check',
+    rightIcon: null,
+  }),
   [RestrictedMethods.snap_notify]: (t) => ({
     leftIcon: 'fas fa-bell',
     label: t('permission_notifications'),
