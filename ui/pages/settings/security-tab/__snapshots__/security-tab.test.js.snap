@@ -254,7 +254,7 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-description"
         >
           <span>
-            Batch balance requests for all accounts to improve performance
+            We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet.
           </span>
         </div>
       </div>
