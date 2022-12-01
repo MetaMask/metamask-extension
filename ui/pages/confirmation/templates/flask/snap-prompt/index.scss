@@ -3,5 +3,10 @@
 }
 
 .snap-prompt-input {
+
+  & input {
+    @include H6;
+  }
+
   width: 100%;
 }

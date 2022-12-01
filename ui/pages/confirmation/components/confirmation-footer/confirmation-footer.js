@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Button from '../../../../components/ui/button';
 
 export default function ConfirmationFooter({
@@ -18,7 +19,13 @@ export default function ConfirmationFooter({
             {cancelText}
           </Button>
         ) : null}
-        <Button type="primary" onClick={onSubmit}>
+        <Button
+          type="primary"
+          onClick={onSubmit}
+          className={classnames({
+            centered: !onCancel,
+          })}
+        >
           {submitText}
         </Button>
       </div>
