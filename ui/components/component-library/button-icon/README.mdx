@@ -15,19 +15,21 @@ The `ButtonIcon` accepts all props below as well as all [Box](/docs/ui-component
 
 <ArgsTable of={ButtonIcon} />
 
-### Icon<span style={{ color: 'red' }}>\*</span>
+### Icon Name<span style={{ color: 'red' }}>\*</span>
 
-Use the required `icon` prop with `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the required `iconName` prop with `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+
+Use the [IconSearch](/story/ui-components-component-library-icon-icon-stories-js--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--icon" />
+  <Story id="ui-components-component-library-button-icon-button-icon-stories-js--icon-name" />
 </Canvas>
 
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />;
+<ButtonIcon iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />;
 ```
 
 ### Size
@@ -50,8 +52,8 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.SM} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon size={SIZES.LG} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon size={SIZES.SM} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon size={SIZES.LG} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
 ```
 
 ### Aria Label
@@ -66,8 +68,8 @@ Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibil
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -87,8 +89,8 @@ Button `as` options:
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button" icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" icon={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Href
@@ -105,7 +107,7 @@ import { ButtonIcon } from '../ui/component-library';
 <ButtonIcon
   href="https://metamask.io/"
   target="_blank"
-  icon={ICON_NAMES.EXPORT}
+  iconName={ICON_NAMES.EXPORT}
   color={COLORS.PRIMARY_DEFAULT}
   ariaLabel="Visit MetaMask.io"
 />;
@@ -123,7 +125,7 @@ Use the `color` prop and the `COLORS` object to change the color of the `ButtonI
 import { ButtonIcon } from '../ui/component-library';
 
 <ButtonIcon
-  icon={ICON_NAMES.EXPORT}
+  iconName={ICON_NAMES.EXPORT}
   color={COLORS.PRIMARY_DEFAULT}
   ariaLabel="Visit MetaMask.io"
 />;
@@ -140,5 +142,5 @@ Use the boolean `disabled` prop to disable button
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon icon={ICON_NAMES.CLOSE_OUTLINE} disabled ariaLabel="Close" />;
+<ButtonIcon iconName={ICON_NAMES.CLOSE_OUTLINE} disabled ariaLabel="Close" />;
 ```

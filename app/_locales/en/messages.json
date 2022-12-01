@@ -751,6 +751,10 @@
   "contacts": {
     "message": "Contacts"
   },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -2723,6 +2727,10 @@
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Display dialog windows in MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
@@ -2762,6 +2770,10 @@
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",

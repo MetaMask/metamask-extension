@@ -83,7 +83,7 @@ describe('FormTextField', () => {
     );
     expect(getByTestId('text-field')).toHaveClass('mm-text-field-base--error');
     expect(getByText('test help text')).toHaveClass(
-      'text--color-error-default',
+      'mm-text--color-error-default',
     );
   });
   // helpText
