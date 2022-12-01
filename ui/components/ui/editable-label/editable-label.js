@@ -21,7 +21,9 @@ export default class EditableLabel extends Component {
   };
 
   async handleSubmit(isValidAccountName) {
-    if (!isValidAccountName) return;
+    if (!isValidAccountName) {
+      return;
+    }
 
     await this.props.onSubmit(this.state.value);
     this.setState({ isEditing: false });
@@ -62,11 +64,9 @@ export default class EditableLabel extends Component {
         >
           <i className="fa fa-check editable-label__icon" />
         </button>
-        {/* {!isValidAccountName && ( */}
-          <div className="editable-label__error editable-label__error-amount">
-            {errorMessage}
-          </div>
-        {/* )} */}
+        <div className="editable-label__error editable-label__error-amount">
+          {errorMessage}
+        </div>
       </div>
     );
   }
