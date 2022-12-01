@@ -3,6 +3,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
 import {
   RestrictedMethods,
@@ -105,7 +106,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       },
     ];
 
-    if (permissionValue.caveats[0].type === SnapCaveatType.TransactionOrigin) {
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats[0].type === SnapCaveatType.TransactionOrigin &&
+      permissionValue.caveats[0].value
+    ) {
       result.push({
         label: t('permission_transactionInsightOrigin'),
         leftIcon: 'fas fa-compass',

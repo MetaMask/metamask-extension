@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getTransactionInsightCaveat } from '@metamask/snaps-controllers';
+import { getTransactionOriginCaveat } from '@metamask/snaps-controllers';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjects } from '../../selectors';
 
@@ -20,8 +20,7 @@ export function useTransactionInsightSnap({
     );
   }
 
-  const hasTransactionOriginCaveat =
-    getTransactionInsightCaveat(permission)?.allowTransactionOrigin;
+  const hasTransactionOriginCaveat = getTransactionOriginCaveat(permission);
   const transactionOrigin = hasTransactionOriginCaveat ? origin : null;
 
   const [loading, setLoading] = useState(true);
