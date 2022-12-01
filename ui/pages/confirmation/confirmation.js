@@ -239,7 +239,7 @@ export default function ConfirmationPage({
   };
 
   const handleSubmit = () =>
-    templatedState.useWarningModal
+    templateState[pendingConfirmation.id]?.useWarningModal
       ? setShowWarningModal(true)
       : templatedValues.onSubmit(
           hasInputState(pendingConfirmation.type)
