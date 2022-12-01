@@ -10,7 +10,7 @@ exports[`FormTextField should render correctly 1`] = `
     >
       <input
         autocomplete="off"
-        class="box text mm-text-field-base__input text--body-md text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
+        class="box mm-text mm-text-field-base__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
         focused="false"
         type="text"
         value=""
