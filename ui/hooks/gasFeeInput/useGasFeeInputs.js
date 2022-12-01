@@ -201,7 +201,7 @@ export function useGasFeeInputs(
       transaction,
     });
 
-  const { maximumCostInHexWei, minimumCostInHexWei } = useGasEstimates({
+  const { estimatedMinimumNative, maximumCostInHexWei, minimumCostInHexWei } = useGasEstimates({
     editGasMode,
     gasEstimateType,
     gasFeeEstimates,
@@ -292,6 +292,7 @@ export function useGasFeeInputs(
     properGasLimit,
     editGasMode,
     estimateToUse,
+    estimatedMinimumNative,
     maximumCostInHexWei,
     minimumCostInHexWei,
     estimateUsed,

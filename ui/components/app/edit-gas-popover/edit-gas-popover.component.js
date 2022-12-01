@@ -64,6 +64,7 @@ export default function EditGasPopover({
   }
 
   const {
+    estimatedMinimumNative,
     gasPrice,
     setGasPrice,
     gasLimit,
@@ -207,6 +208,7 @@ export default function EditGasPopover({
               setDappSuggestedGasFeeAcknowledged={
                 setDappSuggestedGasFeeAcknowledged
               }
+              estimatedMinimumNative={estimatedMinimumNative}
               gasPrice={gasPrice}
               setGasPrice={setGasPrice}
               gasLimit={gasLimit}

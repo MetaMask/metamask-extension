@@ -9,6 +9,7 @@ import Typography from '../../ui/typography/typography';
 
 import {
   COLORS,
+  TEXT_ALIGN,
   TYPOGRAPHY,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
@@ -23,6 +24,7 @@ import { I18nContext } from '../../../contexts/i18n';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
+  estimatedMinimumNative,
   transaction,
   gasPrice,
   setGasPrice,
@@ -108,6 +110,13 @@ export default function EditGasDisplay({
             </Typography>
           </div>
         )}
+        <Typography
+          color={COLORS.TEXT_DEFAULT}
+          variant={TYPOGRAPHY.H1}
+          align={TEXT_ALIGN.CENTER}
+        >
+          {estimatedMinimumNative}
+        </Typography>
         {requireDappAcknowledgement && (
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
@@ -135,6 +144,7 @@ export default function EditGasDisplay({
 
 EditGasDisplay.propTypes = {
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
+  estimatedMinimumNative: PropTypes.string,
   gasPrice: PropTypes.string,
   setGasPrice: PropTypes.func,
   gasLimit: PropTypes.number,

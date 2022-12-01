@@ -9,14 +9,19 @@ import {
   getMinimumGasTotalInHexWei,
 } from '../../../shared/modules/gas.utils';
 
+import { PRIMARY } from '../../helpers/constants/common';
 import { checkNetworkAndAccountSupports1559 } from '../../selectors';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
+import { useCurrencyDisplay } from '../useCurrencyDisplay';
+import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * @typedef {object} GasEstimatesReturnType
+ * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
+ *  current network transaction volume increases. Expressed in the network's native currency.
  * @property {HexWeiString} [maximumCostInHexWei] - the maximum amount this transaction will cost.
  * @property {HexWeiString} [minimumCostInHexWei] - the minimum amount this transaction will cost.
  */
@@ -48,6 +53,11 @@ export function useGasEstimates({
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
+
+  const {
+    currency: primaryCurrency,
+    numberOfDecimals: primaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(PRIMARY);
 
   // We have two helper methods that take an object that can have either
   // gasPrice OR the EIP-1559 fields on it, plus gasLimit. This object is
@@ -86,7 +96,13 @@ export function useGasEstimates({
   // The minimum amount this transaction will cost
   const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
 
+  const [estimatedMinimumNative] = useCurrencyDisplay(minimumCostInHexWei, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
+
   return {
+    estimatedMinimumNative,
     maximumCostInHexWei,
     minimumCostInHexWei,
   };

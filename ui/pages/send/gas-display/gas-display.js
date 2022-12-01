@@ -153,7 +153,7 @@ export default function GasDisplay({ gasError }) {
         <TransactionDetail
           userAcknowledgedGasMissing={false}
           rows={[
-            (<TransactionDetailItem
+            <TransactionDetailItem
               key="gas-item"
               detailTitle={
                 <Box display={DISPLAY.FLEX}>
@@ -256,7 +256,8 @@ export default function GasDisplay({ gasError }) {
                   )}
                 />
               }
-            />)(gasError || isInsufficientTokenError) && (
+            />,
+            (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
