@@ -162,11 +162,13 @@ export default class ExtensionPlatform {
 
     const url = getBlockExplorerLink(txMeta, rpcPrefs);
     const nonce = parseInt(txMeta.txParams.nonce, 16);
-    const view = getURLHostName(url).replace(/([.]\w+)$/u, '');
+    const view = startCase(
+      toLower(getURLHostName(url).replace(/([.]\w+)$/u, '')),
+    );
 
     const title = 'Confirmed transaction';
     const message = `Transaction ${nonce} confirmed! ${
-      url.length ? `View on ${startCase(toLower(view))}` : ''
+      url.length ? `View on ${view}` : ''
     }`;
     this._showNotification(title, message, url);
   }
