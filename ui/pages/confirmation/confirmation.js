@@ -169,7 +169,7 @@ export default function ConfirmationPage({
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  
+
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
     setInputStates((currentState) => ({ ...currentState, [key]: value }));

@@ -60,7 +60,9 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
       <Box marginLeft={6} marginRight={6} marginTop={0} marginBottom={3}>
         <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
           {t('addEthereumChainWarningModalHeader', [
-            <strong>{t('addEthereumChainWarningModalHeaderPartTwo')}</strong>,
+            <strong key="part-2">
+              {t('addEthereumChainWarningModalHeaderPartTwo')}
+            </strong>,
           ])}
         </Typography>
         <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
