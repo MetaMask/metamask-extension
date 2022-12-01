@@ -85,6 +85,9 @@ const NetworksForm = ({
   isCurrentRpcTarget,
   networksToRender,
   selectedNetwork,
+  navigateUponSuccess = true,
+  cancelCallback,
+  submitCallback,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -555,7 +558,12 @@ const NetworksForm = ({
           },
         });
         dispatch(setNewNetworkAdded(networkName));
-        history.push(DEFAULT_ROUTE);
+
+        submitCallback?.();
+
+        if (navigateUponSuccess) {
+          history.push(DEFAULT_ROUTE);
+        }
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -566,7 +574,10 @@ const NetworksForm = ({
   const onCancel = () => {
     if (addNewNetwork) {
       dispatch(setSelectedSettingsRpcUrl(''));
-      history.push(NETWORKS_ROUTE);
+      if (navigateUponSuccess) {
+        history.push(NETWORKS_ROUTE);
+      }
+      cancelCallback?.();
     } else {
       resetForm();
     }
@@ -720,6 +731,9 @@ NetworksForm.propTypes = {
   isCurrentRpcTarget: PropTypes.bool,
   networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
+  navigateUponSuccess: PropTypes.bool,
+  cancelCallback: PropTypes.func,
+  submitCallback: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {
