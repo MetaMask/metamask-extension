@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "Modifier le contact"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Ce choix est préférable pour les transactions urgentes (comme les swaps), car cela multiplie les chances de réussite de la transaction. Si le traitement d’un swap prend trop de temps, il peut échouer et vous faire perdre une partie de vos frais de carburant."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Des frais de carburant inférieurs ne doivent être utilisés que lorsque le temps de traitement est moins important. En effet, il est difficile de prévoir quand (ou si) votre transaction aboutira."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Des frais de carburant modérés conviennent pour l’envoi, le retrait ou d’autres transactions pour lesquelles le facteur temps n’est pas décisif. Ce paramètre permet le plus souvent de conclure une transaction avec succès."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Le choix du bon prix de carburant dépend du type de transaction et de son importance à vos yeux."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Comment choisir ?"
-  },
   "editGasFeeModalTitle": {
     "message": "Modifier le prix du carburant"
-  },
-  "editGasHigh": {
-    "message": "Élevé"
   },
   "editGasLimitOutOfBounds": {
     "message": "La limite de carburant doit être d’au moins $1"
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
-  },
-  "editGasLow": {
-    "message": "Bas"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Les frais de priorité sont faibles par rapport aux conditions actuelles du réseau"
-  },
-  "editGasMedium": {
-    "message": "Moyen"
   },
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"

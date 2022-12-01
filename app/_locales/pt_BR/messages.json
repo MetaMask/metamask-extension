@@ -735,26 +735,8 @@
   "editContact": {
     "message": "Editar contato"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Essa opção é mais indicada para transações urgentes (como trocas, ou \"swaps\"), pois aumenta a probabilidade de sucesso da transação. Se uma troca leva muito tempo para ser processada, pode falhar e resultar na perda de parte da sua taxa de gás."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Uma taxa de gás mais baixa só deve ser usada quando o tempo de processamento é menos importante. Taxas reduzidas dificultam a previsão de quando (ou se) a sua transação será bem-sucedida."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Uma taxa de gás média é indicada para envios, saques ou outras transações não urgentes. Essa configuração geralmente resulta em uma transação bem-sucedida."
-  },
-  "editGasEducationModalIntro": {
-    "message": "A escolha da taxa de gás ideal depende do tipo de transação e da importância dela para você."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Como escolher?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar taxa de gás"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
@@ -765,9 +747,6 @@
   },
   "editGasLimitTooltip": {
     "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
-  "editGasLow": {
-    "message": "Baixa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa de base máxima não pode ser inferior à taxa de prioridade"
@@ -804,9 +783,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
-  "editGasMedium": {
-    "message": "Média"
   },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"

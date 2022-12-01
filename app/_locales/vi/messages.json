@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "Chỉnh sửa địa chỉ liên hệ"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Đây là lựa chọn tốt nhất cho các giao dịch nhạy cảm với thời gian (chẳng hạn như Hoán đổi) vì nó làm tăng khả năng giao dịch thành công. Quá trình Hoán đổi diễn ra quá lâu có thể khiến giao dịch thất bại và bạn bị mất một phần phí gas."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Bạn nên sử dụng phí gas thấp hơn cho các giao dịch không quá quan trọng đến thời gian. Mức phí thấp hơn khiến khó dự đoán được khi nào (hoặc liệu) giao dịch của bạn thành công."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Phí gas trung bình phù hợp để gửi, rút hoặc thực hiện các giao dịch không nhạy cảm với thời gian khác. Thiết lập này thường cho kết quả giao dịch thành công."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Lựa chọn phí gas phù hợp tùy thuộc vào loại giao dịch và tầm quan trọng của nó đối với bạn."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Cách chọn?"
-  },
   "editGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas"
-  },
-  "editGasHigh": {
-    "message": "Cao"
   },
   "editGasLimitOutOfBounds": {
     "message": "Giới hạn gas tối thiểu phải là $1"
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Giới hạn gas là đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là hệ số nhân của \"Phí ưu tiên tối đa\" và \"Phí tối đa\"."
-  },
-  "editGasLow": {
-    "message": "Thấp"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Phí cơ bản tối đa không thể thấp hơn phí ưu tiên"
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Phí ưu tiên thấp so với tình trạng mạng hiện tại"
-  },
-  "editGasMedium": {
-    "message": "Trung bình"
   },
   "editGasPriceTooLow": {
     "message": "Giá gas phải lớn hơn 0"

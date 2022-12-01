@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "Edit kontak"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Ini adalah pilihan terbaik untuk transaksi di waktu sensitif (seperti Swap) karena meningkatkan kemungkinan keberhasilan transaksi. Jika pemrosesan Swap terlalu lama, maka berpotensi gagal dan mengakibatkan hilangnya sebagian biaya gas Anda."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Biaya gas yang lebih rendah hanya boleh digunakan saat waktu pemrosesan kurang penting. Biaya yang lebih rendah membuat sulit untuk memprediksi kapan (atau jika) transaksi Anda akan berhasil."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Biaya gas sedang cocok untuk mengirim, menarik, atau transaksi non-waktu sensitif lainnya. Pengaturan ini paling sering menghasilkan transaksi yang berhasil."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Memilih biaya gas yang tepat tergantung jenis transaksi dan seberapa penting bagi Anda."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Bagaimana cara memilihnya?"
-  },
   "editGasFeeModalTitle": {
     "message": "Edit biaya gas"
-  },
-  "editGasHigh": {
-    "message": "Tinggi"
   },
   "editGasLimitOutOfBounds": {
     "message": "Batas gas minimum adalah $1"
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Batas gas merupakan unit maksimum gas yang ingin Anda gunakan. Unit gas adalah pengganda untuk “Biaya prioritas maks” dan “Biaya maks”."
-  },
-  "editGasLow": {
-    "message": "Rendah"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Biaya dasar maks tidak boleh lebih rendah dari biaya prioritas"
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Biaya prioritas rendah untuk kondisi jaringan saat ini"
-  },
-  "editGasMedium": {
-    "message": "Sedang"
   },
   "editGasPriceTooLow": {
     "message": "Harga gas harus lebih besar dari 0"

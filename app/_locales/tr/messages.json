@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "Kişiyi Düzenle"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Başarılı işlem şansını artırdığı için zamana duyarlı işlemler (Takaslar gibi) için en iyi seçenektir. Bir Takas işleminin gerçekleşmesi çok uzun sürerse başarısız olabilir ya da gaz ücretinizin bir kısmını kaybetmenize neden olabilir."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Daha az bir gaz ücreti sadece işlem süresi daha az önemli olduğunda kullanılabilir. Daha az ücretler işleminizin ne zaman başarılı olacağını (ya da başarılı olup olamayacağını) öngörmeyi zorlaştırır."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Orta düzey bir gaz ücreti gönderme, çekme ya da zamanlaması önemli olmayan diğer işlemler için iyidir. Bu ayar çoğunlukla başarılı bir işlemle sonuçlanacaktır."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Doğru gaz ücretinin seçilmesi işlem türüne ve işlemin sizin için ne kadar önemli olduğuna bağlıdır."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Seçim nasıl yapılmalıdır?"
-  },
   "editGasFeeModalTitle": {
     "message": "Gaz ücretini düzenle"
-  },
-  "editGasHigh": {
-    "message": "Yüksek"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gaz limiti en az $1 olmalıdır"
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Gaz limiti, kullanmak istediğiniz maksimum gaz birimidir. Gaz birimleri \"Maks. öncelik ücreti\" ve \"Maks. ücretin\" bir çarpanıdır."
-  },
-  "editGasLow": {
-    "message": "Düşük"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Maks. baz ücret, öncelik ücretinden daha düşük olamaz"
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Öncelik ücreti mevcut ağ koşulları için düşük"
-  },
-  "editGasMedium": {
-    "message": "Orta"
   },
   "editGasPriceTooLow": {
     "message": "Gaz fiyatı 0'dan büyük olmalıdır"

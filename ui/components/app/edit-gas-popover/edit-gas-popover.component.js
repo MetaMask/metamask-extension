@@ -15,7 +15,6 @@ import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
-import EditGasDisplayEducation from '../edit-gas-display-education';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -42,8 +41,6 @@ export default function EditGasPopover({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-
-  const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [dappSuggestedGasFeeAcknowledged, setDappSuggestedGasFeeAcknowledged] =
     useState(false);
@@ -164,8 +161,6 @@ export default function EditGasPopover({
   let title = t('editGasTitle');
   if (popoverTitle) {
     title = popoverTitle;
-  } else if (showEducationContent) {
-    title = t('editGasEducationModalTitle');
   } else if (mode === EDIT_GAS_MODES.SPEED_UP) {
     title = t('speedUpPopoverTitle');
   } else if (mode === EDIT_GAS_MODES.CANCEL) {
@@ -178,53 +173,38 @@ export default function EditGasPopover({
       title={title}
       onClose={closePopover}
       className="edit-gas-popover__wrapper"
-      onBack={
-        showEducationContent ? () => setShowEducationContent(false) : undefined
-      }
       footer={
-        showEducationContent ? null : (
-          <>
-            <Button
-              type="primary"
-              onClick={onSubmit}
-              disabled={
-                hasGasErrors || balanceError || !txParamsHaveBeenCustomized
-              }
-            >
-              {footerButtonText}
-            </Button>
-          </>
-        )
+        <Button
+          type="primary"
+          onClick={onSubmit}
+          disabled={hasGasErrors || balanceError || !txParamsHaveBeenCustomized}
+        >
+          {footerButtonText}
+        </Button>
       }
     >
       <div style={{ padding: '0 20px 20px 20px', position: 'relative' }}>
-        {showEducationContent ? (
-          <EditGasDisplayEducation />
-        ) : (
-          <>
-            {process.env.IN_TEST ? null : <LoadingHeartBeat />}
-            <EditGasDisplay
-              dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
-              setDappSuggestedGasFeeAcknowledged={
-                setDappSuggestedGasFeeAcknowledged
-              }
-              estimatedMinimumNative={estimatedMinimumNative}
-              gasPrice={gasPrice}
-              setGasPrice={setGasPrice}
-              gasLimit={gasLimit}
-              setGasLimit={setGasLimit}
-              properGasLimit={properGasLimit}
-              mode={mode}
-              transaction={updatedTransaction}
-              onManualChange={onManualChange}
-              minimumGasLimit={minimumGasLimitDec}
-              balanceError={balanceError}
-              txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
-              gasErrors={gasErrors}
-              {...editGasDisplayProps}
-            />
-          </>
-        )}
+        {process.env.IN_TEST ? null : <LoadingHeartBeat />}
+        <EditGasDisplay
+          dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
+          setDappSuggestedGasFeeAcknowledged={
+            setDappSuggestedGasFeeAcknowledged
+          }
+          estimatedMinimumNative={estimatedMinimumNative}
+          gasPrice={gasPrice}
+          setGasPrice={setGasPrice}
+          gasLimit={gasLimit}
+          setGasLimit={setGasLimit}
+          properGasLimit={properGasLimit}
+          mode={mode}
+          transaction={updatedTransaction}
+          onManualChange={onManualChange}
+          minimumGasLimit={minimumGasLimitDec}
+          balanceError={balanceError}
+          txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
+          gasErrors={gasErrors}
+          {...editGasDisplayProps}
+        />
       </div>
     </Popover>
   );

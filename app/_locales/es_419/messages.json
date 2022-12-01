@@ -735,26 +735,8 @@
   "editContact": {
     "message": "Editar contacto"
   },
-  "editGasEducationHighExplanation": {
-    "message": "Esta es la mejor opción para las transacciones urgentes (como los Swaps) ya que aumenta la probabilidad de una transacción exitosa. Si un Swap tarda demasiado en procesarse, puede fallar y causar la pérdida de una parte de la tarifa de gas."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Una tarifa de gas más baja debería utilizarse solo cuando el tiempo de procesamiento es menos importante. Las tarifas reducidas dificultan la predicción de cuándo (o si) su transacción tendrá éxito."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Una tasa de gas media es buena para enviar, retirar o para otras transacciones no urgentes. Esta configuración suele dar lugar a una transacción exitosa."
-  },
-  "editGasEducationModalIntro": {
-    "message": "La selección de la tarifa de gas adecuada depende del tipo de transacción y de la importancia que tenga para usted."
-  },
-  "editGasEducationModalTitle": {
-    "message": "¿Cómo elegir?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar tarifa de gas"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "El límite de gas debe ser al menos $1"
@@ -765,9 +747,6 @@
   },
   "editGasLimitTooltip": {
     "message": "El límite de gas es el máximo de unidades de gas que está dispuesto a utilizar. Las unidades de gas son un multiplicador de la \"Tarifa de prioridad máxima\" y de la \"Tarifa máxima\"."
-  },
-  "editGasLow": {
-    "message": "Baja"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad"
@@ -804,9 +783,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "La tarifa de prioridad es baja para las condiciones actuales de la red"
-  },
-  "editGasMedium": {
-    "message": "Medio"
   },
   "editGasPriceTooLow": {
     "message": "El precio del gas debe ser superior a 0"

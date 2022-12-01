@@ -201,17 +201,18 @@ export function useGasFeeInputs(
       transaction,
     });
 
-  const { estimatedMinimumNative, maximumCostInHexWei, minimumCostInHexWei } = useGasEstimates({
-    editGasMode,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    minimumGasLimit,
-    transaction,
-  });
+  const { estimatedMinimumNative, maximumCostInHexWei, minimumCostInHexWei } =
+    useGasEstimates({
+      editGasMode,
+      gasEstimateType,
+      gasFeeEstimates,
+      gasLimit,
+      gasPrice,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      minimumGasLimit,
+      transaction,
+    });
 
   const { balanceError, gasErrors, hasGasErrors, hasSimulationError } =
     useGasFeeErrors({

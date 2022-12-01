@@ -1070,26 +1070,8 @@
   "editContact": {
     "message": "Edit contact"
   },
-  "editGasEducationHighExplanation": {
-    "message": "This is best for time sensitive transactions (like Swaps) as it increases the likelihood of a successful transaction. If a Swap takes too long to process it may fail and result in losing some of your gas fee."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be used when processing time is less important. Lower fees make it hard predict when (or if) your transaction will be successful."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive transactions. This setting will most often result in a successful transaction."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Selecting the right gas fee depends on the type of transaction and how important it is to you."
-  },
-  "editGasEducationModalTitle": {
-    "message": "How to choose?"
-  },
   "editGasFeeModalTitle": {
     "message": "Edit gas fee"
-  },
-  "editGasHigh": {
-    "message": "High"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
@@ -1100,9 +1082,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
-  },
-  "editGasLow": {
-    "message": "Low"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Max base fee cannot be lower than priority fee"
@@ -1139,9 +1118,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Priority fee is low for current network conditions"
-  },
-  "editGasMedium": {
-    "message": "Medium"
   },
   "editGasPriceTooLow": {
     "message": "Gas price must be greater than 0"

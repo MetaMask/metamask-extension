@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "연락처 편집"
   },
-  "editGasEducationHighExplanation": {
-    "message": "이는 거래 성공 가능성을 높이기 때문에 시간에 (스왑과 같이) 민감한 거래에 가장 적합합니다. 스왑 처리에 시간이 너무 오래 걸리면 실패하고 가스 요금의 일부를 손해볼 수 있습니다."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "처리 시간의 중요성이 낮을 때만 저렴한 가스 요금을 사용해야 합니다. 요금이 낮으면 거래 성공 시기(또는 거래 성공 여부)를 예측하기 어렵습니다."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "중간 정도의 가스 요금은 송금, 인출 등 시간에 민감한 거래에 적합합니다. 이러한 설정은 대부분 성공적인 거래로 이어집니다."
-  },
-  "editGasEducationModalIntro": {
-    "message": "거래 유형과 중요도에 따라 적절한 가스 요금을 선택해야 합니다."
-  },
-  "editGasEducationModalTitle": {
-    "message": "어떻게 선택하나요?"
-  },
   "editGasFeeModalTitle": {
     "message": "가스 요금 편집"
-  },
-  "editGasHigh": {
-    "message": "높음"
   },
   "editGasLimitOutOfBounds": {
     "message": "가스 최소 한도는 $1입니다."
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "가스 한도는 사용하려는 가스의 최대 단위입니다. 가스 단위는 \"최대 우선 요금\" 및 \"최대 요금\"의 승수입니다."
-  },
-  "editGasLow": {
-    "message": "낮음"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "최대 기본 요금은 우선 요금보다 낮을 수 없습니다."
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "우선 요금이 현재 네트워크 조건에 비해 낮습니다."
-  },
-  "editGasMedium": {
-    "message": "중간"
   },
   "editGasPriceTooLow": {
     "message": "가스 가격은 0보다 커야 합니다."

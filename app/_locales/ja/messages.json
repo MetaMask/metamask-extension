@@ -1008,26 +1008,8 @@
   "editContact": {
     "message": "連絡先を編集"
   },
-  "editGasEducationHighExplanation": {
-    "message": "これは、トランザクションが成功する可能性を高めるため、急ぎのトランザクション (スワップなど) に最適です。スワップは処理に時間がかかりすぎると失敗し、ガス代の一部が失われる可能性があります。"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "低いガス代は、処理時間が重要でない場合以外使用しないでください。ガス代を下げると、いつトランザクションが成功するか (または成功するかどうか) が予測しにくくなります。"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "中程度のガス代は、送金、引き出し、その他急ぎではないトランザクションに適しています。この設定のトランザクションは、ほとんどの場合成功します。"
-  },
-  "editGasEducationModalIntro": {
-    "message": "適切なガス代は、トランザクションのタイプと重要性によって異なります。"
-  },
-  "editGasEducationModalTitle": {
-    "message": "選び方"
-  },
   "editGasFeeModalTitle": {
     "message": "ガス代を編集"
-  },
-  "editGasHigh": {
-    "message": "高"
   },
   "editGasLimitOutOfBounds": {
     "message": "ガスの限度額は$1以上にする必要があります"
@@ -1038,9 +1020,6 @@
   },
   "editGasLimitTooltip": {
     "message": "ガスの限度額は、使用しても構わない最大のガス代です。 ガス代は、「最大優先手数料」と「最大手数料」の乗数です。"
-  },
-  "editGasLow": {
-    "message": "低"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基本手数料を優先手数料よりも低くすることはできません"
@@ -1077,9 +1056,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
-  "editGasMedium": {
-    "message": "中"
   },
   "editGasPriceTooLow": {
     "message": "ガス代は0より高くなければなりません"
