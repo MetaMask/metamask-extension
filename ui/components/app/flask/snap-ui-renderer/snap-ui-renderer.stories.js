@@ -1,7 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { object } from '@storybook/addon-knobs';
-import { panel, text, heading, divider } from '@metamask/snaps-ui';
+import {
+  panel,
+  text,
+  heading,
+  divider,
+  copyable,
+  spacer,
+} from '@metamask/snaps-ui';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { SnapUIRenderer } from '.';
@@ -19,6 +26,8 @@ const DATA = panel([
   text('Description'),
   divider(),
   text('More text'),
+  spacer(),
+  copyable('Text you can copy'),
 ]);
 
 export const DefaultStory = () => (

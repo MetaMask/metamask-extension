@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux';
 import nanoid from 'nanoid';
 import { isComponent } from '@metamask/snaps-ui';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { getSnap } from '../../../../selectors';
 
@@ -13,13 +18,18 @@ const UI_MAPPING = {
     element: 'Box',
     // eslint-disable-next-line no-use-before-define
     children: props.children.map(mapToTemplate),
+    props: {
+      display: DISPLAY.FLEX,
+      flexDirection: FLEX_DIRECTION.COLUMN,
+      className: 'snap-ui-renderer__panel',
+    },
   }),
   heading: (props) => ({
     element: 'Typography',
     children: props.value,
     props: {
       variant: TYPOGRAPHY.H3,
-      fontWeight: 'bold',
+      fontWeight: FONT_WEIGHT.BOLD,
     },
   }),
   text: (props) => ({
@@ -43,10 +53,15 @@ const UI_MAPPING = {
   }),
   divider: () => ({
     element: 'hr',
+    props: {
+      className: 'snap-ui-renderer__divider',
+    },
   }),
-  // TODO
-  copyable: () => ({
-    element: 'hr',
+  copyable: (props) => ({
+    element: 'Copyable',
+    props: {
+      text: props.value,
+    },
   }),
 };
 
