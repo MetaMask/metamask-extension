@@ -425,10 +425,25 @@ describe('selectors', () => {
       },
     };
 
-    it('should return a list of permissions strings', () => {
+    it('should return a list of permissions keys and values', () => {
       expect(getPermissionsForActiveTab(mockState)).toStrictEqual([
         {
           key: 'eth_accounts',
+          value: {
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [
+                  '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                  '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                ],
+              },
+            ],
+            date: 1586359844177,
+            id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
+            invoker: 'https://remix.ethereum.org',
+            parentCapability: 'eth_accounts',
+          },
         },
       ]);
     });
