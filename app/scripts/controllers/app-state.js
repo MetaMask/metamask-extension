@@ -50,6 +50,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
+      openSeaTransactionSecurityProviderPopoverHasBeenShown: false,
     });
     this.timer = null;
 
@@ -342,5 +343,16 @@ export default class AppStateController extends EventEmitter {
     usedNetworks[chainId] = true;
 
     this.store.updateState({ usedNetworks });
+  }
+
+  /**
+   * Record that the user has seen the transaction security provider info popover
+   *
+   * @returns {void}
+   */
+  setOpenSeaTransactionSecurityProviderPopoverHasBeenShown() {
+    this.store.updateState({
+      openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
+    });
   }
 }

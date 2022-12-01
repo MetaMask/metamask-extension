@@ -143,6 +143,8 @@ export default class Home extends PureComponent {
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
+    openSeaTransactionSecurityProviderPopoverHasBeenShown: PropTypes.bool,
+    setTransactionSecurityCheckEnabled: PropTypes.func,
   };
 
   state = {
@@ -273,6 +275,8 @@ export default class Home extends PureComponent {
       newCustomNetworkAdded,
       clearNewCustomNetworkAdded,
       setRpcTarget,
+      openSeaTransactionSecurityProviderPopoverHasBeenShown,
+      setTransactionSecurityCheckEnabled,
     } = this.props;
 
     const onAutoHide = () => {
@@ -542,6 +546,85 @@ export default class Home extends PureComponent {
                   {t('dismiss')}
                 </Typography>
               </Button>
+            </Box>
+          </Popover>
+        )}
+        {!openSeaTransactionSecurityProviderPopoverHasBeenShown && (
+          <Popover
+            title={t('transactionSecurityProviders')}
+            footer={
+              <>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setTransactionSecurityCheckEnabled();
+                    setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
+                  }}
+                >
+                  {t('enableOpenSeaSecurityProvider')}
+                </Button>
+                <Box marginTop={1}>
+                  <Typography variant={TYPOGRAPHY.H6}>
+                    <Button
+                      type="link"
+                      onClick={() =>
+                        setOpenSeaTransactionSecurityProviderPopoverHasBeenShown()
+                      }
+                      className="smart-transactions-popover__no-thanks-link"
+                    >
+                      {t('noThanksVariant2')}
+                    </Button>
+                  </Typography>
+                </Box>
+              </>
+            }
+            footerClassName="smart-transactions-popover__footer"
+            className="smart-transactions-popover"
+            onClose={() =>
+              setOpenSeaTransactionSecurityProviderPopoverHasBeenShown()
+            }
+          >
+            <Box
+              paddingRight={6}
+              paddingLeft={6}
+              paddingTop={0}
+              paddingBottom={0}
+              display={DISPLAY.FLEX}
+              className="smart-transactions-popover__content"
+            >
+              <Box
+                marginTop={0}
+                marginBottom={4}
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+              >
+                <img
+                  src="./images/logo/smart-transactions-header.png"
+                  alt={t('swapSwapSwitch')}
+                />
+              </Box>
+              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
+                {t('openSeaSecurityProviderDescription1')}
+                <br />
+                {t('openSeaSecurityProviderDescription2')}
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={3}
+              >
+                {t('thingsToKnow')}
+                <ol>1. {t('openSeaSecurityProviderBenefit1')}</ol>
+                <ol>2. {t('openSeaSecurityProviderBenefit2')}</ol>
+                <ol>3. {t('openSeaSecurityProviderBenefit3')}</ol>
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H8}
+                color={COLORS.TEXT_ALTERNATIVE}
+                boxProps={{ marginTop: 3 }}
+              >
+                {t('openSeaSecurityProviderSubDescription')}&nbsp;
+              </Typography>
             </Box>
           </Popover>
         )}

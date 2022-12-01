@@ -1266,6 +1266,9 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
+  "enableOpenSeaSecurityProvider": {
+    "message": "Enable OpenSea's security provider"
+  },
   "enableSmartTransactions": {
     "message": "Enable smart transactions"
   },
@@ -4259,6 +4262,9 @@
   },
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
+  },
+  "transactionSecurityProviders": {
+    "message": "Transaction security providers are here!"
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."

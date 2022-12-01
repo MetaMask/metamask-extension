@@ -1925,6 +1925,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
+      setOpenSeaTransactionSecurityProviderPopoverHasBeenShown:
+        appStateController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown.bind(
+          appStateController,
+        ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
