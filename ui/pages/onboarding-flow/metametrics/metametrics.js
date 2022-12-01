@@ -21,6 +21,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import { Icon } from '../../../components/component-library';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -126,55 +127,88 @@ export default function OnboardingMetametrics() {
       </Typography>
 
       <div className="onboarding-metametrics__grouping">
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('onboardingMetametricsAnonymousTitle')}
-        </Typography>
-        <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
-          {t('onboardingMetametricsAnonymousText')}
-        </Typography>
+        <Icon
+          name="eye-slash-filled"
+          color={COLORS.PRIMARY_DEFAULT}
+          marginRight={3}
+        />
+        <div className="onboarding-metametrics__grouping-text">
+          <Typography
+            variant={TYPOGRAPHY.H4}
+            fontWeight={FONT_WEIGHT.BOLD}
+            marginTop={0}
+          >
+            {t('onboardingMetametricsAnonymousTitle')}
+          </Typography>
+          <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
+            {t('onboardingMetametricsAnonymousText')}
+          </Typography>
+        </div>
       </div>
 
       <div className="onboarding-metametrics__grouping">
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('onboardingMetametricsPrivateTitle')}
-        </Typography>
-        <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
-          {t('onboardingMetametricsPrivateText', [
-            <a
-              href="https://consensys.net/privacy-policy/"
-              target="_blank"
-              rel="noopener noreferrer"
-              key="infura-link"
-            >
-              {t('infura')}
-            </a>,
-            <a
-              href={`#${SECURITY_ROUTE}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              key="settings-link"
-            >
-              {t('onboardingMetametricsPrivateSettingsText')}
-            </a>,
-            <Typography
-              variant={TYPOGRAPHY.Span}
-              fontWeight={FONT_WEIGHT.BOLD}
-              color={COLORS.TEXT_ALTERNATIVE}
-              key="emphasized-text"
-            >
-              {t('onboardingMetametricsPrivateEmphasizedText')}
-            </Typography>,
-          ])}
-        </Typography>
+        <Icon
+          name="security-key-filled"
+          color={COLORS.PRIMARY_DEFAULT}
+          marginRight={3}
+        />
+        <div className="onboarding-metametrics__grouping-text">
+          <Typography
+            variant={TYPOGRAPHY.H4}
+            fontWeight={FONT_WEIGHT.BOLD}
+            marginTop={0}
+          >
+            {t('onboardingMetametricsPrivateTitle')}
+          </Typography>
+          <Typography color={COLORS.TEXT_ALTERNATIVE} marginBottom={8}>
+            {t('onboardingMetametricsPrivateText', [
+              <a
+                href="https://consensys.net/privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                key="infura-link"
+              >
+                {t('infura')}
+              </a>,
+              <a
+                href={`#${SECURITY_ROUTE}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="settings-link"
+              >
+                {t('onboardingMetametricsPrivateSettingsText')}
+              </a>,
+              <Typography
+                variant={TYPOGRAPHY.Span}
+                fontWeight={FONT_WEIGHT.BOLD}
+                color={COLORS.TEXT_ALTERNATIVE}
+                key="emphasized-text"
+              >
+                {t('onboardingMetametricsPrivateEmphasizedText')}
+              </Typography>,
+            ])}
+          </Typography>
+        </div>
       </div>
 
       <div className="onboarding-metametrics__grouping">
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('onboardingMetametricsOptionalTitle')}
-        </Typography>
-        <Typography marginBottom={8} color={COLORS.TEXT_ALTERNATIVE}>
-          {t('onboardingMetametricsOptionalText')}
-        </Typography>
+        <Icon
+          name="setting-filled"
+          color={COLORS.PRIMARY_DEFAULT}
+          marginRight={3}
+        />
+        <div className="onboarding-metametrics__grouping-text">
+          <Typography
+            variant={TYPOGRAPHY.H4}
+            fontWeight={FONT_WEIGHT.BOLD}
+            marginTop={0}
+          >
+            {t('onboardingMetametricsOptionalTitle')}
+          </Typography>
+          <Typography marginBottom={8} color={COLORS.TEXT_ALTERNATIVE}>
+            {t('onboardingMetametricsOptionalText')}
+          </Typography>
+        </div>
       </div>
 
       <div className="onboarding-metametrics__grouping">
