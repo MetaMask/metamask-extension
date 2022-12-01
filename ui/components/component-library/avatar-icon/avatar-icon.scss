@@ -1,3 +1,34 @@
-.avatar-icon {
-  // To Do
+@use "design-system";
+@use "sass:map";
+
+
+$avatar-icon-severities: 'info', 'danger', 'success', 'warning';
+
+
+.mm-avatar-icon {
+  @each $severity in $avatar-icon-severities {
+    &--severity-#{$severity} {
+      @if $severity == "danger" {
+        color: var(--color-error-default) !important;
+        background-color: var(--color-error-muted) !important;
+      }
+
+      @else {
+        color: var(--color-#{$severity}-default) !important;
+        background-color: var(--color-#{$severity}-muted) !important;
+      }
+
+      &-filled {
+        color: var(--color-primary-inverse) !important;
+
+        @if $severity == "danger" {
+          background-color: var(--color-error-default) !important;
+        }
+
+        @else {
+          background-color: var(--color-#{$severity}-default) !important;
+        }
+      }
+    }
+  }
 }

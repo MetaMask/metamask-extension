@@ -14,11 +14,16 @@ import {
   BACKGROUND_COLORS,
 } from '../../../helpers/constants/design-system';
 
-import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
+import {
+  AVATAR_ICON_SEVERITIES,
+  AVATAR_ICON_SIZES,
+} from './avatar-icon.constants';
 
 export const AvatarIcon = ({
   ariaLabel,
   size = SIZES.MD,
+  severity,
+  filled,
   className,
   iconProps,
   iconName,
@@ -30,14 +35,22 @@ export const AvatarIcon = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
-      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
+      color={COLORS.PRIMARY_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
       borderColor={BORDER_COLORS.TRANSPARENT}
-      className={classnames('avatar-icon', className)}
+      className={classnames(
+        'mm-avatar-icon',
+        {
+          [`mm-avatar-icon--severity-${severity}`]: severity,
+          [`mm-avatar-icon--severity-${severity}-filled`]: filled,
+        },
+        className,
+      )}
       {...props}
     >
       <Icon
+        color={COLORS.INHERIT}
         name={iconName}
-        color={COLORS.INFO_DEFAULT}
         size={size}
         aria-label={ariaLabel}
         {...iconProps}
@@ -66,6 +79,11 @@ AvatarIcon.propTypes = {
    * Defaults to SIZES.MD
    */
   size: PropTypes.oneOf(Object.values(AVATAR_ICON_SIZES)),
+  severity: PropTypes.oneOf(Object.values(AVATAR_ICON_SEVERITIES)),
+  /**
+   * Additional classNames to be added to the AvatarIcon
+   */
+  filled: PropTypes.bool,
   /**
    * Additional classNames to be added to the AvatarIcon
    */

@@ -10,7 +10,7 @@ import Box from '../../ui/box/box';
 import { ICON_NAMES } from '..';
 
 import README from './README.mdx';
-import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
+import { AvatarIcon, AVATAR_ICON_SIZES, AVATAR_ICON_SEVERITIES } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
@@ -22,13 +22,17 @@ export default {
     },
   },
   argTypes: {
-    size: {
-      control: 'select',
-      options: Object.values(AVATAR_ICON_SIZES),
-    },
     iconName: {
       options: Object.values(ICON_NAMES),
       control: 'select',
+    },
+    severity: {
+      options: Object.values(AVATAR_ICON_SEVERITIES),
+      control: 'select',
+    },
+    size: {
+      control: 'select',
+      options: Object.values(AVATAR_ICON_SIZES),
     },
   },
   args: {
