@@ -341,12 +341,11 @@ function getValues(pendingApproval, t, actions, history) {
         history.push(DEFAULT_ROUTE);
       }
     },
-    onCancel: () => {
+    onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest().serialize(),
-      );
-    },
+      ),
     networkDisplay: !originIsMetaMask,
   };
 }

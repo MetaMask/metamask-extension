@@ -132,15 +132,6 @@ function useAlertState(pendingConfirmation) {
 
 function useTemplateState(pendingConfirmation) {
   const [templateState, setTemplateState] = useState({});
-
-  /**
-   * Computation of the current alert state happens every time the current
-   * pendingConfirmation changes. The async function getTemplateAlerts is
-   * responsible for returning alert state. Setting state on unmounted
-   * components is an anti-pattern, so we use a isMounted variable to keep
-   * track of the current state of the component. Returning a function that
-   * sets isMounted to false when the component is unmounted.
-   */
   useEffect(() => {
     let isMounted = true;
     if (pendingConfirmation) {
@@ -203,7 +194,6 @@ export default function ConfirmationPage({
     MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
     ///: END:ONLY_INCLUDE_IN
   ];
- 
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
