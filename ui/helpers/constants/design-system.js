@@ -301,6 +301,7 @@ export const FONT_WEIGHT = {
 
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
+  ANYWHERE: 'anywhere',
   NORMAL: 'normal',
 };
 
