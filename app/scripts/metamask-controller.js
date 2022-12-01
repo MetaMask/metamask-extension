@@ -703,6 +703,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
         `${this.approvalController.name}:addRequest`,
         `${this.permissionController.name}:grantPermissions`,
+        `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -2113,28 +2114,17 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    let rpcUrlOrigin;
-    try {
-      rpcUrlOrigin = new URL(rpcUrl).origin;
-    } catch {
-      // ignore
-    }
     this.metaMetricsController.trackEvent({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
       referrer: {
-        url: rpcUrlOrigin,
+        url: ORIGIN_METAMASK,
       },
       properties: {
         chain_id: chainId,
         network_name: chainName,
-        network: rpcUrlOrigin,
         symbol: ticker,
-        block_explorer_url: blockExplorerUrl,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-      },
-      sensitiveProperties: {
-        rpc_url: rpcUrlOrigin,
       },
       actionId,
     });

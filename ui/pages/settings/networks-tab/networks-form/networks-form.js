@@ -42,6 +42,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
+import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -530,28 +531,17 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
-        let rpcUrlOrigin;
-        try {
-          rpcUrlOrigin = new URL(rpcUrl).origin;
-        } catch {
-          // error
-        }
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
           referrer: {
-            url: rpcUrlOrigin,
+            url: ORIGIN_METAMASK,
           },
           properties: {
             chain_id: addHexPrefix(Number(chainId).toString(16)),
             network_name: networkName,
-            network: rpcUrlOrigin,
             symbol: ticker,
-            block_explorer_url: blockExplorerUrl,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
-          },
-          sensitiveProperties: {
-            rpc_url: rpcUrlOrigin,
           },
         });
         dispatch(setNewNetworkAdded(networkName));
