@@ -175,7 +175,7 @@ export default class SignatureRequest extends PureComponent {
       : null;
 
     return (
-      <div className="signature-request page-container">
+      <div className="signature-request">
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
