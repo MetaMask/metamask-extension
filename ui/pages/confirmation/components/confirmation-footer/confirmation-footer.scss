@@ -7,8 +7,14 @@
     background-color: var(--color-background-default);
     padding: 16px;
 
-    & .button:first-child {
-      margin-right: 16px;
+    & .button {
+      &:first-child {
+        margin-right: 16px;
+      }
+
+      &.centered {
+        margin-right: 0;
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import {
   OVERFLOW_WRAP,
   TEXT_COLORS,
 } from '../../../helpers/constants/design-system';
+import { TEXT_VARIANTS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -58,18 +59,18 @@ export const Text = React.forwardRef(
     }
 
     const computedClassName = classnames(
-      'text',
+      'mm-text',
       className,
-      `text--${variant}`,
+      `mm-text--${variant}`,
       (strongTagFontWeight || fontWeight) &&
-        `text--font-weight-${strongTagFontWeight || fontWeight}`,
+        `mm-text--font-weight-${strongTagFontWeight || fontWeight}`,
       {
-        [`text--font-style-${fontStyle}`]: Boolean(fontStyle),
-        [`text--ellipsis`]: Boolean(ellipsis),
-        [`text--text-transform-${textTransform}`]: Boolean(textTransform),
-        [`text--text-align-${textAlign}`]: Boolean(textAlign),
-        [`text--color-${color}`]: Boolean(color),
-        [`text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+        [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--ellipsis`]: Boolean(ellipsis),
+        [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
+        [`mm-text--color-${color}`]: Boolean(color),
+        [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
 
@@ -98,9 +99,21 @@ export const Text = React.forwardRef(
 
 Text.propTypes = {
   /**
-   * The variation of font styles including sizes and weights of the Text component (display, heading, body)
+   * The variation of font styles including sizes and weights of the Text component
+   * Possible values:
+   * `DISPLAY_MD` large screen: 48px / small screen: 32px,
+   * `HEADING_LG` large screen: 32px / small screen: 24px,
+   * `HEADING_MD` large screen: 24px / small screen: 18px,
+   * `HEADING_SM` large screen: 18px / small screen: 16px,
+   * `BODY_LG_MEDIUM` large screen: 18px / small screen: 16px,
+   * `BODY_MD` large screen: 16px / small screen: 14px,
+   * `BODY_MD_BOLD` large screen: 16px / small screen: 14px,
+   * `BODY_SM` large screen: 14px / small screen: 12px,
+   * `BODY_SM_BOLD` large screen: 14px / small screen: 12px,
+   * `BODY_XS` large screen: 12px / small screen: 10px,
+   * `INHERIT`
    */
-  variant: PropTypes.oneOf(Object.values(TEXT)),
+  variant: PropTypes.oneOf(Object.values(TEXT_VARIANTS)),
   /**
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js

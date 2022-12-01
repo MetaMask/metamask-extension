@@ -5,6 +5,7 @@ import {
   setFeatureFlag,
   setParticipateInMetaMetrics,
   setUsePhishDetect,
+  setUseMultiAccountBalanceChecker,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -17,6 +18,7 @@ const mapStateToProps = (state) => {
     featureFlags: { showIncomingTransactions } = {},
     participateInMetaMetrics,
     usePhishDetect,
+    useMultiAccountBalanceChecker,
   } = metamask;
 
   return {
@@ -24,6 +26,7 @@ const mapStateToProps = (state) => {
     showIncomingTransactions,
     participateInMetaMetrics,
     usePhishDetect,
+    useMultiAccountBalanceChecker,
   };
 };
 
@@ -34,6 +37,8 @@ const mapDispatchToProps = (dispatch) => {
     setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
+    setUseMultiAccountBalanceChecker: (val) =>
+      dispatch(setUseMultiAccountBalanceChecker(val)),
   };
 };
 

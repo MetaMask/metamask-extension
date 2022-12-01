@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { getTransactionOriginCaveat } from '@metamask/snaps-controllers';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjects } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
-export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
+export function useTransactionInsightSnap({
+  transaction,
+  chainId,
+  origin,
+  snapId,
+}) {
   const subjects = useSelector(getPermissionSubjects);
-  if (!subjects[snapId]?.permissions[INSIGHT_PERMISSION]) {
+  const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
+  if (!permission) {
     throw new Error(
       'This snap does not have the transaction insight endowment.',
     );
   }
+
+  const hasTransactionOriginCaveat = getTransactionOriginCaveat(permission);
+  const transactionOrigin = hasTransactionOriginCaveat ? origin : null;
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
@@ -30,7 +40,7 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
           request: {
             jsonrpc: '2.0',
             method: ' ',
-            params: { transaction, chainId },
+            params: { transaction, chainId, transactionOrigin },
           },
         });
         setData(d);
@@ -43,7 +53,7 @@ export function useTransactionInsightSnap({ transaction, chainId, snapId }) {
     if (transaction) {
       fetchInsight();
     }
-  }, [snapId, transaction, chainId]);
+  }, [snapId, transaction, chainId, transactionOrigin]);
 
   return { data, error, loading };
 }
