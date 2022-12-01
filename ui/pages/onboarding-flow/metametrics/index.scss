@@ -6,8 +6,16 @@
     align-items: center;
   }
 
-  &__grouping a {
-    color: var(--color-primary-default);
+  &__grouping {
+    display: flex;
+
+    .mm-icon {
+      margin-top: 2px;
+    }
+
+    a {
+      color: var(--color-primary-default);
+    }
   }
 
   &__buttons {
