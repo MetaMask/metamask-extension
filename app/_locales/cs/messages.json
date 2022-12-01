@@ -334,9 +334,6 @@
   "sign": {
     "message": "Podepsat"
   },
-  "signNotice": {
-    "message": "Podepsání zprávy může mít \nnebezpečný vedlejší učinek. Podepisujte zprávy pouze ze \nstránek, kterým plně důvěřujete celým svým účtem.\n Tato nebezpečná metoda bude odebrána v budoucí verzi. "
-  },
   "signatureRequest": {
     "message": "Požadavek podpisu"
   },

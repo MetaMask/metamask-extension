@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Unterschreiben"
   },
-  "signNotice": {
-    "message": "Das Unterschreiben dieser Nachricht kann gefährliche Nebeneffekte haben. Bitte nur Nachrichten von Webseiten unterschreiben denen du deinen vollständigen Account anvertrauen würdest. Diese gefährliche Variante wird in zukünftigen Versionen entfernt werden."
-  },
   "signatureRequest": {
     "message": "Unterschriftsanfrage"
   },

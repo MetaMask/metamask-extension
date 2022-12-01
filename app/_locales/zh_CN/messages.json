@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "签名"
   },
-  "signNotice": {
-    "message": "谨慎行事。此操作有可能用来从您的账户提取资产。确保您信任此站点。"
-  },
   "signatureRequest": {
     "message": "签名请求"
   },

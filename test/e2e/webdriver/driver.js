@@ -395,6 +395,11 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  // Close Alert Popup
+  async closeAlertPopup() {
+    return await this.driver.switchTo().alert().accept();
+  }
+
   /**
    * Closes all windows except those in the given list of exceptions
    *

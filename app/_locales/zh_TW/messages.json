@@ -1441,9 +1441,6 @@
   "sign": {
     "message": "簽署"
   },
-  "signNotice": {
-    "message": "簽署此訊息可能會產生危險的副作用。\n請只從您完全信任的網站上簽署。\n這種危險的方法將在未來的版本中被移除。"
-  },
   "signatureRequest": {
     "message": "請求簽署"
   },
