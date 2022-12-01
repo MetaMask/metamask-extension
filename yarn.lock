@@ -2908,9 +2908,9 @@
     web3-provider-engine "^16.0.3"
 
 "@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.9.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.11.0.tgz#c45d2951c976b9c906fd2a43323446248dbc1a09"
-  integrity sha512-1lZR8DoqKffBswMy3Jbp8z+zQTbRyi2k6XE9qhe4m5NZd9JfirH4tJzq740HC6Hvz/MI0I7MPJkNAkLPNx8ESA==
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.11.1.tgz#58cc57101e3f7024538b0bf4b56b8233008ff28d"
+  integrity sha512-N+exN94rudeeAqjq47/BEugOgkMP6te1Mak+6xujzuISBoFMi0VK3JvPivG8MYlFE33yz+75YL+kDqP9GrYfEQ==
 
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
