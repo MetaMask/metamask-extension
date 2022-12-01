@@ -111,7 +111,7 @@ describe('Test Snap RPC', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // click OK on the popup
-        await driver.delay(1000);
+        // await driver.delay(1000);
         await driver.closeAlertPopup();
         await driver.delay(1000);
 
