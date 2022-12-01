@@ -8,6 +8,7 @@ const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
+const { getPathInsideNodeModules } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -125,7 +126,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `images`,
     },
     {
-      src: `./node_modules/@metamask/contract-metadata/images/`,
+      src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
     {
@@ -137,11 +138,14 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `vendor`,
     },
     {
-      src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+      src: getPathInsideNodeModules(
+        '@fortawesome/fontawesome-free',
+        'webfonts/',
+      ),
       dest: `fonts/fontawesome`,
     },
     {
-      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
       dest: 'react-gallery/',
     },
     {
@@ -154,7 +158,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `loading.html`,
     },
     {
-      src: `./node_modules/globalthis/dist/browser.js`,
+      src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
       dest: `globalthis.js`,
     },
     {
@@ -169,7 +173,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     },
     {
       src: shouldIncludeLockdown
-        ? `./node_modules/ses/dist/lockdown.umd.min.js`
+        ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
       dest: `lockdown-install.js`,
     },
@@ -190,13 +194,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `lockdown-more.js`,
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `runtime-lavamoat.js`,
     },
   ];
@@ -210,7 +212,10 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
 
   for (const tag of languageTags) {
     allCopyTargets.push({
-      src: `./node_modules/@formatjs/intl-relativetimeformat/dist/locale-data/${tag}.json`,
+      src: getPathInsideNodeModules(
+        '@formatjs/intl-relativetimeformat',
+        `dist/locale-data/${tag}.json`,
+      ),
       dest: `intl/${tag}/relative-time-format-data.json`,
     });
   }
