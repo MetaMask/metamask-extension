@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmationWarningModal from '.';
 
 export default {
-  title: 'Components/App/ConfirmWarningModal',
+  title: 'Components/App/ConfirmationWarningModal',
   id: __filename,
 };
 

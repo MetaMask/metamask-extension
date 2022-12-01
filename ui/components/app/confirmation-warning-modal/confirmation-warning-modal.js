@@ -48,44 +48,38 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         alignItems={ALIGN_ITEMS.CENTER}
-        padding={4}
+        padding={3}
+        margin={0}
         className="confirmation-warning-modal__content__header"
       >
         <i className="fa fa-exclamation-triangle confirmation-warning-modal__content__header__warning-icon" />
         <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          You are adding a new RPC provider for Ethereum Mainnet
+          {t('addEthereumChainWarningModalTitle')}
         </Typography>
       </Box>
-      <Box marginLeft={6} marginRight={6} marginTop={3} marginBottom={3}>
+      <Box marginLeft={6} marginRight={6} marginTop={0} marginBottom={3}>
+        <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
+          {t('addEthereumChainWarningModalHeader', [
+            <strong>{t('addEthereumChainWarningModalHeaderPartTwo')}</strong>,
+          ])}
+        </Typography>
+        <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
+          {t('addEthereumChainWarningModalListHeader')}
+        </Typography>
         <ul>
           <li>
-            <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.BOLD}>
-              Only add this alternative RPC provider if you are certain you can
-              trust it.
+            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+              {t('addEthereumChainWarningModalListPointOne')}
             </Typography>
           </li>
           <li>
-            <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
-              A malicious network provider can lie about the state of the
-              blockchain and record your network activity.
+            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+              {t('addEthereumChainWarningModalListPointTwo')}
             </Typography>
           </li>
           <li>
-            <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
-              The network provider will be able to see and associate your
-              accounts together.
-            </Typography>
-          </li>
-          <li>
-            <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
-              The network provider will be responsible for broadcasting your
-              transactions, and their reliability.
-            </Typography>
-          </li>
-          <li>
-            <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
-              The network provider will be trusted to provide an accurate view
-              of account balances and other on-chain state.
+            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+              {t('addEthereumChainWarningModalListPointThree')}
             </Typography>
           </li>
         </ul>
