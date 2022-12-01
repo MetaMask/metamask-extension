@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextFieldSearch should render correctly 1`] = `
+<div>
+  <div
+    class="box mm-text-field-base mm-text-field-base--size-md mm-text-field-base--truncate mm-text-field mm-text-field-search box--padding-left-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+  >
+    <div
+      class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-inherit"
+      style="mask-image: url('./images/icons/icon-search-filled.svg');"
+    />
+    <input
+      autocomplete="off"
+      class="box text mm-text-field-base__input text--body-md text--color-text-default box--margin-right-6 box--padding-right-4 box--padding-left-2 box--flex-direction-row box--background-color-transparent"
+      focused="false"
+      type="search"
+      value=""
+    />
+  </div>
+</div>
+`;
