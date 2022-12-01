@@ -26,6 +26,8 @@ export default class SecurityTab extends PureComponent {
     usePhishDetect: PropTypes.bool.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useCurrencyRateCheck: PropTypes.bool.isRequired,
+    setUseCurrencyRateCheck: PropTypes.bool.isRequired,
   };
 
   settingsRefs = Array(
@@ -194,6 +196,57 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderCurrencyRateCheckToggle() {
+    const { t } = this.context;
+    const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
+
+    return (
+      <div ref={this.settingsRefs[5]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('currencyRateCheckToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href="https://www.coingecko.com/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingecko')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href="https://www.cryptocompare.com/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptoCompare')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href="https://consensys.net/privacy-policy/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useCurrencyRateCheck}
+              onToggle={(value) => setUseCurrencyRateCheck(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -205,6 +258,7 @@ export default class SecurityTab extends PureComponent {
         {this.renderPhishingDetectionToggle()}
         {this.renderMetaMetricsOptIn()}
         {this.renderMultiAccountBalanceCheckerOptIn()}
+        {this.renderCurrencyRateCheckToggle()}
       </div>
     );
   }

@@ -2748,6 +2748,19 @@ export function setUseNftDetection(val) {
   };
 }
 
+export function setUseCurrencyRateCheck(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCurrencyRateCheck`);
+    callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setOpenSeaEnabled(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

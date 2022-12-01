@@ -1644,6 +1644,10 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUseCurrencyRateCheck:
+        preferencesController.setUseCurrencyRateCheck.bind(
+          preferencesController,
+        ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),

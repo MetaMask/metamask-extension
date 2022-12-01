@@ -137,6 +137,10 @@ const t = (key) => {
       return 'Contact us';
     case 'snaps':
       return 'Snaps';
+    case 'currencyRateCheckToggle':
+      return 'Show balance and token price checker';
+    case 'currencyRateCheckToggleDescription':
+      return 'We use Coingecko API and CryptoCompare API to display your balance and token price. Privacy Policy';
     default:
       return '';
   }

@@ -263,4 +263,9 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test,
     ]);
   });
+
+  it('#getUseCurrencyRateCheck', () => {
+    const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
+    expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
 });

@@ -22,6 +22,7 @@ describe('Privacy Settings Onboarding View', () => {
   const setFeatureFlagStub = jest.fn();
   const setUsePhishDetectStub = jest.fn();
   const setUseTokenDetectionStub = jest.fn();
+  const setUseCurrencyRateCheckStub = jest.fn();
   const completeOnboardingStub = jest
     .fn()
     .mockImplementation(() => Promise.resolve());
@@ -31,6 +32,7 @@ describe('Privacy Settings Onboarding View', () => {
     setFeatureFlag: setFeatureFlagStub,
     setUsePhishDetect: setUsePhishDetectStub,
     setUseTokenDetection: setUseTokenDetectionStub,
+    setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
     completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
   });
@@ -46,6 +48,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
 
+    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
 
@@ -66,6 +69,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
+    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
 
     // toggle back to true
     fireEvent.click(toggles[0]);
@@ -83,5 +87,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[1][0]).toStrictEqual(
       true,
     );
+    expect(setUseCurrencyRateCheckStub.mock.calls[1][0]).toStrictEqual(true);
   });
 });

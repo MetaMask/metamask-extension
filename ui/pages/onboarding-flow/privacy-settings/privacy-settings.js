@@ -22,6 +22,7 @@ import {
   showModal,
   setIpfsGateway,
   showNetworkDropdown,
+  setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Icon, TextField } from '../../../components/component-library';
@@ -35,6 +36,7 @@ export default function PrivacySettings() {
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
     useState(true);
   const [
@@ -57,6 +59,7 @@ export default function PrivacySettings() {
     dispatch(
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
+    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
 
     if (ipfsURL && !ipfsError) {
@@ -240,6 +243,37 @@ export default function PrivacySettings() {
                 </Box>
               </>
             }
+          />
+          <Setting
+            value={turnOnCurrencyRateCheck}
+            setValue={setTurnOnCurrencyRateCheck}
+            title={t('currencyRateCheckToggle')}
+            description={t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href="https://api.coingecko.com/api/v3"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingeckoAPI')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href="https://min-api.cryptocompare.com"
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptocompareAPI')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href=""
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>
