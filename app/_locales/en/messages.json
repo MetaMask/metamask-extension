@@ -2571,6 +2571,9 @@
   "onboardingMetametricsIntro2": {
     "message": "When we gather metrics, it's always:"
   },
+  "onboardingMetametricsModalTitle": {
+    "message": "Add custom network"
+  },
   "onboardingMetametricsOptionalText": {
     "message": "You’re in control of whether to share your data. You can always change your preferences and delete your extension usage data via settings at any time."
   },
