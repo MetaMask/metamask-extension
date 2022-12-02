@@ -18,32 +18,33 @@ import {
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();
 
-  const footer = (
-    <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      className="confirmation-warning-modal__footer"
-    >
-      <Button
-        className="confirmation-warning-modal__footer__approve-button"
-        type="danger-primary"
-        onClick={onSubmit}
-      >
-        {t('approveButtonText')}
-      </Button>
-      <Button
-        className="confirmation-warning-modal__footer__cancel-button"
-        type="secondary"
-        onClick={onCancel}
-      >
-        {t('reject')}
-      </Button>
-    </Box>
-  );
-
   return (
-    <Popover className="confirmation-warning-modal__content" footer={footer}>
+    <Popover
+      className="confirmation-warning-modal__content"
+      footer={
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+          className="confirmation-warning-modal__footer"
+        >
+          <Button
+            className="confirmation-warning-modal__footer__approve-button"
+            type="danger-primary"
+            onClick={onSubmit}
+          >
+            {t('approveButtonText')}
+          </Button>
+          <Button
+            className="confirmation-warning-modal__footer__cancel-button"
+            type="secondary"
+            onClick={onCancel}
+          >
+            {t('reject')}
+          </Button>
+        </Box>
+      }
+    >
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
