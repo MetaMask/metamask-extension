@@ -13,7 +13,7 @@ import {
 import { SnapDelineator } from '../snap-delineator';
 import { getSnap } from '../../../../selectors';
 
-const UI_MAPPING = {
+export const UI_MAPPING = {
   panel: (props) => ({
     element: 'Box',
     // eslint-disable-next-line no-use-before-define
@@ -43,12 +43,6 @@ const UI_MAPPING = {
     element: 'Spinner',
     props: {
       className: 'snap-ui-renderer__spinner',
-    },
-  }),
-  spacer: () => ({
-    element: 'Box',
-    props: {
-      className: 'snap-ui-renderer__spacer',
     },
   }),
   divider: () => ({
