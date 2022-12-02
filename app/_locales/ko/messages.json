@@ -598,16 +598,6 @@
   "confirm": {
     "message": "확인"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "향후 소유할 수 있는 모든 $1에 대한 액세스를 허용하는 것입니다. 이 허용을 취소하지 않는 한, 상대방이 언제든지 허락 없이 지갑에서 NFT를 전송할 수 있습니다. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "이 계약의 모든 NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "주의하여 진행하세요."
-  },
   "confirmPassword": {
     "message": "비밀번호 확인"
   },

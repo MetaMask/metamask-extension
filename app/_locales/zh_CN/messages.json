@@ -598,16 +598,6 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "您正在向$1授予访问权限，包括对您将来可能拥有的任何资产的访问权限。另一端的一方可以随时从您的钱包中转移NFT，无需询问您，直到您撤销此项批准。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "此合约中的所有NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "请谨慎行事。"
-  },
   "confirmPassword": {
     "message": "确认密码"
   },
