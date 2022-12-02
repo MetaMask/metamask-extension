@@ -125,7 +125,9 @@ export default class IncomingTransactionsController {
 
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
-        if (!prevState.completedOnboarding && currState.completedOnboarding) {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const address = this.preferencesController.getSelectedAddress();
           await this._update(address);
         }

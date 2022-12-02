@@ -573,7 +573,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
-        if (!prevState.completedOnboarding && currState.completedOnboarding) {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
           this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
