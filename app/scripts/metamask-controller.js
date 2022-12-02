@@ -91,6 +91,7 @@ import {
   ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -112,6 +113,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
+import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
@@ -302,7 +304,8 @@ export default class MetamaskController extends EventEmitter {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
+          this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+            const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
               provider: {
@@ -548,6 +551,7 @@ export default class MetamaskController extends EventEmitter {
       getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
       ),
+      preferencesController: this.preferencesController,
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -703,6 +707,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
         `${this.approvalController.name}:addRequest`,
         `${this.permissionController.name}:grantPermissions`,
+        `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -1230,8 +1235,14 @@ export default class MetamaskController extends EventEmitter {
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
-            type: MESSAGE_TYPE.SNAP_CONFIRM,
+            type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
+          }),
+        showDialog: (origin, type, requestData) =>
+          this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: SNAP_DIALOG_TYPES[type],
+            requestData,
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
@@ -1397,7 +1408,7 @@ export default class MetamaskController extends EventEmitter {
         ).filter(
           (approval) =>
             approval.origin === truncatedSnap.id &&
-            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+            approval.type.startsWith(RestrictedMethods.snap_dialog),
         );
         for (const approval of approvals) {
           this.approvalController.reject(
@@ -1596,6 +1607,10 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
+      setUseMultiAccountBalanceChecker:
+        preferencesController.setUseMultiAccountBalanceChecker.bind(
+          preferencesController,
+        ),
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
@@ -2120,28 +2135,17 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    let rpcUrlOrigin;
-    try {
-      rpcUrlOrigin = new URL(rpcUrl).origin;
-    } catch {
-      // ignore
-    }
     this.metaMetricsController.trackEvent({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
       referrer: {
-        url: rpcUrlOrigin,
+        url: ORIGIN_METAMASK,
       },
       properties: {
         chain_id: chainId,
         network_name: chainName,
-        network: rpcUrlOrigin,
         symbol: ticker,
-        block_explorer_url: blockExplorerUrl,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-      },
-      sensitiveProperties: {
-        rpc_url: rpcUrlOrigin,
       },
       actionId,
     });
@@ -3726,6 +3730,10 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
+
+    if (isManifestV3) {
+      engine.push(createDupeReqFilterMiddleware());
+    }
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));

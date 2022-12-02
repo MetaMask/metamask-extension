@@ -3139,9 +3139,6 @@
   "sign": {
     "message": "Signer"
   },
-  "signNotice": {
-    "message": "La signature de ce message peut avoir des effets secondaires dangereux, interférant en votre nom via le contrôle de votre compte et de ses actifs par le site demandeur. Signez uniquement les messages de sites auxquels vous faites entièrement confiance."
-  },
   "signatureRequest": {
     "message": "Demande de Signature"
   },

@@ -751,6 +751,10 @@
   "contacts": {
     "message": "Contacts"
   },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -2640,6 +2644,10 @@
   "osTheme": {
     "message": "System"
   },
+  "otherSnaps": {
+    "message": "other snaps",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "padlock": {
     "message": "Padlock"
   },
@@ -2719,6 +2727,10 @@
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Display dialog windows in MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
@@ -2751,9 +2763,17 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "Allow $1 to communicate directly with this snap.",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -2888,6 +2908,12 @@
   },
   "rejectAll": {
     "message": "Reject all"
+  },
+  "rejectRequestsDescription": {
+    "message": "You are about to batch reject $1 requests."
+  },
+  "rejectRequestsN": {
+    "message": "Reject $1 requests"
   },
   "rejectTxsDescription": {
     "message": "You are about to batch reject $1 transactions."
@@ -3262,14 +3288,17 @@
   "sign": {
     "message": "Sign"
   },
-  "signNotice": {
-    "message": "Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site."
-  },
   "signatureRequest": {
     "message": "Signature request"
   },
   "signatureRequest1": {
     "message": "Message"
+  },
+  "signatureRequestGuidance": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
+  },
+  "signatureRequestWarning": {
+    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -4292,6 +4321,12 @@
   "useDefault": {
     "message": "Use default"
   },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  },
   "usePhishingDetection": {
     "message": "Use phishing detection"
   },
@@ -4408,6 +4443,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "websites",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "Welcome to MetaMask"
   },
@@ -4465,6 +4504,9 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Your funds may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"
