@@ -15,6 +15,8 @@ import Typography from '../../ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  COLORS,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
@@ -151,6 +153,16 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('sigRequest')}
         </Typography>
+        <Typography
+          className="request-signature__content__subtitle"
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          align={TEXT_ALIGN.CENTER}
+          margin={12}
+          marginTop={3}
+        >
+          {this.context.t('signatureRequestGuidance')}
+        </Typography>
 
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
@@ -263,13 +275,16 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const { messagesCount, conversionRate, nativeCurrency } = this.props;
-    const { fromAccount, showSignatureRequestWarning } = this.state;
+    const {
+      fromAccount: { address, balance, name },
+      showSignatureRequestWarning,
+    } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = conversionUtil(fromAccount.balance, {
+    const balanceInBaseAsset = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -282,10 +297,10 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
-            accountName={fromAccount.name}
+            accountName={name}
             accountBalance={balanceInBaseAsset}
             tokenName={nativeCurrency}
-            accountAddress={fromAccount.address}
+            accountAddress={address}
           />
         </div>
         {this.renderBody()}
@@ -296,8 +311,8 @@ export default class SignatureRequestOriginal extends Component {
         ) : null}
         {showSignatureRequestWarning && (
           <SignatureRequestOriginalWarning
-            senderAddress={fromAccount.address}
-            name={fromAccount.name}
+            senderAddress={address}
+            name={name}
             onSubmit={async (event) => await this.onSubmit(event)}
             onCancel={async (event) => await this.onCancel(event)}
           />
