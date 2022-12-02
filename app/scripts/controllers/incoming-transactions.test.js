@@ -80,7 +80,9 @@ function getMockPreferencesController({
 function getMockOnboardingController() {
   return {
     store: {
-      completedOnboarding: true,
+      getState: sinon.stub().returns({
+        completedOnboarding: true,
+      }),
     },
   };
 }

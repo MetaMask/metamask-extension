@@ -167,8 +167,7 @@ export default class IncomingTransactionsController {
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
    */
   async _update(address, newBlockNumberDec) {
-    const completedOnboarding =
-      this.onboardingController.store.getState().completedOnboarding;
+    const { completedOnboarding } = this.onboardingController.store.getState();
     const chainId = this.getCurrentChainId();
     if (
       !etherscanSupportedNetworks.includes(chainId) ||

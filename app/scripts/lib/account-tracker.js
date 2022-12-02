@@ -218,8 +218,7 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async _updateAccounts() {
-    const completedOnboarding =
-      this.onboardingController.store.getState().completedOnboarding;
+    const { completedOnboarding } = this.onboardingController.store.getState();
     if (!completedOnboarding) {
       return;
     }

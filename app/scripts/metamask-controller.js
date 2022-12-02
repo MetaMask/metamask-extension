@@ -562,8 +562,8 @@ export default class MetamaskController extends EventEmitter {
 
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const completedOnboarding =
-        this.onboardingController.store.getState().completedOnboarding;
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
       if (activeControllerConnections > 0 && completedOnboarding) {
         this.triggerNetworkrequests();
       } else {
