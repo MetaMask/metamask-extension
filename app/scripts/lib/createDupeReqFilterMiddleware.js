@@ -9,7 +9,7 @@ export default function createDupeReqFilterMiddleware() {
   const processedRequestId = [];
   return function filterDuplicateRequestMiddleware(
     /** @type {any} */ req,
-    /** @type {any} */ _,
+    /** @type {any} */ _res,
     /** @type {Function} */ next,
     /** @type {Function} */ end,
   ) {
