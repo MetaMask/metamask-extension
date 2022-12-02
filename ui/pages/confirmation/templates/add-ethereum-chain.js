@@ -322,9 +322,9 @@ function getValues(pendingApproval, t, actions, history) {
         },
       },
     ],
-    approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
-    onApprove: async () => {
+    submitText: t('approveButtonText'),
+    onSubmit: async () => {
       await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
