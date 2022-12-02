@@ -10,7 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics, showModal } from '../../../store/actions';
+import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
@@ -183,10 +183,6 @@ export default function OnboardingMetametrics() {
                 href={`#${SECURITY_ROUTE}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                }}
                 key="settings-link"
               >
                 {t('onboardingMetametricsPrivateSettingsText')}
