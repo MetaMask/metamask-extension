@@ -4318,6 +4318,12 @@
   "useDefault": {
     "message": "Use default"
   },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  },
   "usePhishingDetection": {
     "message": "Use phishing detection"
   },

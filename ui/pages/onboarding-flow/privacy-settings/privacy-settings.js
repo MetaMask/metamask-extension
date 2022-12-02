@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setCompletedOnboarding,
   setFeatureFlag,
+  setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
 } from '../../../store/actions';
@@ -26,6 +27,10 @@ export default function PrivacySettings() {
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
     useState(true);
+  const [
+    isMultiAccountBalanceCheckerEnabled,
+    setMultiAccountBalanceCheckerEnabled,
+  ] = useState(true);
 
   const handleSubmit = () => {
     dispatch(
@@ -33,6 +38,9 @@ export default function PrivacySettings() {
     );
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
+    dispatch(
+      setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
+    );
     dispatch(setCompletedOnboarding());
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
@@ -103,6 +111,12 @@ export default function PrivacySettings() {
             setValue={setTurnOnTokenDetection}
             title={t('turnOnTokenDetection')}
             description={t('useTokenDetectionPrivacyDesc')}
+          />
+          <Setting
+            value={isMultiAccountBalanceCheckerEnabled}
+            setValue={setMultiAccountBalanceCheckerEnabled}
+            title={t('useMultiAccountBalanceChecker')}
+            description={t('useMultiAccountBalanceCheckerDescription')}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>
