@@ -83,8 +83,8 @@ function getMockOnboardingController() {
       getState: sinon.stub().returns({
         completedOnboarding: true,
       }),
+      subscribe: sinon.spy(),
     },
-    subscribe: sinon.spy(),
   };
 }
 
