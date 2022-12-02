@@ -17,6 +17,7 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -179,7 +180,9 @@ export default function OnboardingMetametrics() {
                 {t('infura')}
               </a>,
               <a
-                href=""
+                href={`#${SECURITY_ROUTE}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => {
                   e.preventDefault();
                   dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
