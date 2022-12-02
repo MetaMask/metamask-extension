@@ -2415,6 +2415,9 @@
   "notifications14ActionText": {
     "message": "Show backup settings"
   },
+  "notifications17ActionText": {
+    "message": "Show Security & Privacy settings"
+  },
   "notifications14Description": {
     "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
     "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
@@ -2434,6 +2437,12 @@
   },
   "notifications16Description": {
     "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
+  },
+  "notifications17Description": {
+    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  },
+  "notifications17Title": {
+    "message": "Security & Privacy Settings"
   },
   "notifications16Title": {
     "message": "Improved token allowance experience"
