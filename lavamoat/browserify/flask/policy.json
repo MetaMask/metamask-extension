@@ -757,6 +757,11 @@
         "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
+    "@metamask/assets-controllers>abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "@metamask/assets-controllers>async-mutex": {
       "globals": {
         "setTimeout": true
@@ -3218,6 +3223,7 @@
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
+        "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,
@@ -3227,12 +3233,35 @@
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "eth-lattice-keyring>gridplus-sdk>js-sha3": true,
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>uuid": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "ethers>@ethersproject/signing-key>elliptic": true,
         "ganache>secp256k1": true,
         "lodash": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz": {
+      "packages": {
+        "browserify>buffer": true,
+        "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>@chainsafe/as-sha256": true,
+        "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": true,
+        "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>case": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>@chainsafe/as-sha256": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": {
+      "globals": {
+        "WeakRef": true
+      },
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>@chainsafe/ssz>@chainsafe/as-sha256": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
@@ -3342,6 +3371,11 @@
         "TextEncoder": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "eth-lattice-keyring>rlp": {
       "globals": {
         "TextEncoder": true
@@ -3355,6 +3389,7 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
+        "nock>debug": true,
         "watchify>xtend": true
       }
     },
