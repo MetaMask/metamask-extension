@@ -71,8 +71,9 @@ DefaultStory.args = {
           ],
         },
       }),
-      origin: 'https://happydapp.website/governance?futarchy=true',
+      origin: 'https://happydapp.website/',
     },
   },
   fromAccount: MOCK_PRIMARY_IDENTITY,
+  provider: { name: 'Goerli ETH' },
 };
