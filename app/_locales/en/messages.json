@@ -655,8 +655,8 @@
   "close": {
     "message": "Close"
   },
-  "coingeckoAPI": {
-    "message": "Coingecko API"
+  "coingecko": {
+    "message": "Coingecko"
   },
   "collectibleAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
@@ -870,8 +870,8 @@
   "createPassword": {
     "message": "Create password"
   },
-  "cryptocompareAPI": {
-    "message": "CryptoCompare API"
+  "cryptoCompare": {
+    "message": "CryptoCompare"
   },
   "currencyConversion": {
     "message": "Currency conversion"
@@ -880,8 +880,8 @@
     "message": "Show balance and token price checker"
   },
   "currencyRateCheckToggleDescription": {
-    "message": "We use $1 and $2 to display your balance and token price. $3",
-    "description": "$1 represents Coingecko API, $2 represents CryptoCompare API and $3 represents Privacy Policy"
+    "message": "We use $1 and $2 APIs to display your balance and token price. $3",
+    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Currency symbol"

@@ -140,7 +140,7 @@ const t = (key) => {
     case 'currencyRateCheckToggle':
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
-      return 'We use Coingecko API and CryptoCompare API to display your balance and token price. Privacy Policy';
+      return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
     default:
       return '';
   }

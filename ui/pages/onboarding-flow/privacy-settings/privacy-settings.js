@@ -251,23 +251,23 @@ export default function PrivacySettings() {
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"
-                href="https://api.coingecko.com/api/v3"
+                href="https://www.coingecko.com/"
                 rel="noreferrer"
                 target="_blank"
               >
-                {t('coingeckoAPI')}
+                {t('coingecko')}
               </a>,
               <a
                 key="cryptocompare_link"
-                href="https://min-api.cryptocompare.com"
+                href="https://www.cryptocompare.com/"
                 rel="noreferrer"
                 target="_blank"
               >
-                {t('cryptocompareAPI')}
+                {t('cryptoCompare')}
               </a>,
               <a
                 key="privacy_policy_link"
-                href=""
+                href=" https://consensys.net/privacy-policy/"
                 rel="noreferrer"
                 target="_blank"
               >
