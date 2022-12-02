@@ -5,7 +5,6 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
@@ -23,7 +22,6 @@ import SignatureRequestOriginalWarning from './signature-request-original-warnin
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -179,18 +177,8 @@ export default class SignatureRequestOriginal extends Component {
   onSubmit = async (event) => {
     const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
       this.props;
-    const { trackEvent, type } = this.context;
 
     await sign(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Confirm',
-      properties: {
-        action: 'Sign Request',
-        legacy_event: true,
-        type,
-      },
-    });
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
@@ -198,18 +186,8 @@ export default class SignatureRequestOriginal extends Component {
   onCancel = async (event) => {
     const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
       this.props;
-    const { trackEvent, type } = this.context;
 
     await cancel(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Cancel',
-      properties: {
-        action: 'Sign Request',
-        legacy_event: true,
-        type,
-      },
-    });
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
@@ -224,7 +202,7 @@ export default class SignatureRequestOriginal extends Component {
       txData: { type },
       hardwareWalletRequiresConnection,
     } = this.props;
-    const { trackEvent, t } = this.context;
+    const { t } = this.context;
 
     return (
       <div className="request-signature__footer">
@@ -234,15 +212,6 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
             await cancel(event);
-            trackEvent({
-              category: EVENT.CATEGORIES.TRANSACTIONS,
-              event: 'Cancel',
-              properties: {
-                action: 'Sign Request',
-                legacy_event: true,
-                type,
-              },
-            });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
@@ -260,15 +229,6 @@ export default class SignatureRequestOriginal extends Component {
               this.setState({ showSignatureRequestWarning: true });
             } else {
               await sign(event);
-              trackEvent({
-                category: EVENT.CATEGORIES.TRANSACTIONS,
-                event: 'Confirm',
-                properties: {
-                  action: 'Sign Request',
-                  legacy_event: true,
-                  type,
-                },
-              });
               clearConfirmTransaction();
               history.push(mostRecentOverviewPage);
             }
