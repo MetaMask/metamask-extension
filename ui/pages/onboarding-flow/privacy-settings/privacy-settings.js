@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
@@ -10,6 +11,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
+import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
 import {
@@ -22,7 +24,7 @@ import {
   setIpfsGateway,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, TextField } from '../../../components/component-library';
+import { Icon, TextField, Tag } from '../../../components/component-library';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -39,6 +41,10 @@ export default function PrivacySettings() {
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
   const [ipfsError, setIPFSError] = useState(null);
+
+  const currentNetworkNickname = useSelector(
+    (state) => state.metamask.provider.nickname,
+  );
 
   const handleSubmit = () => {
     dispatch(
@@ -160,19 +166,25 @@ export default function PrivacySettings() {
                     {t('privacyMsg')}
                   </a>,
                 ])}
+
                 <Box paddingTop={2}>
-                  <Button
-                    type="secondary"
-                    rounded
-                    large
-                    onClick={(e) => {
-                      e.preventDefault();
-                      dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                    }}
-                    icon={<Icon name="add-outline" marginRight={2} />}
-                  >
-                    {t('onboardingAdvancedPrivacyNetworkButton')}
-                  </Button>
+                  {currentNetworkNickname &&
+                  currentNetworkNickname !== MAINNET_DISPLAY_NAME ? (
+                    <Tag label={currentNetworkNickname} />
+                  ) : (
+                    <Button
+                      type="secondary"
+                      rounded
+                      large
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+                      }}
+                      icon={<Icon name="add-outline" marginRight={2} />}
+                    >
+                      {t('onboardingAdvancedPrivacyNetworkButton')}
+                    </Button>
+                  )}
                 </Box>
               </>
             }
