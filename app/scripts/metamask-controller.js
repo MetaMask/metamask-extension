@@ -476,15 +476,11 @@ export default class MetamaskController extends EventEmitter {
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
-      enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
         nativeCurrency: this.networkController.providerStore.getState().ticker,
       },
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
     });
 
     this.phishingController = new PhishingController();
@@ -501,7 +497,6 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
-        enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -520,12 +515,31 @@ export default class MetamaskController extends EventEmitter {
             };
             return cb(modifiedNetworkState);
           }),
-        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-          this.preferencesController.store,
-        ),
       },
-      undefined,
+      {
+        disabled:
+          !this.preferencesController.store.getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
+    );
+
+    this.preferencesController.store.subscribe(
+      (
+        { useCurrencyRateCheck: oldCurrencyRateCheck },
+        { useCurrencyRateCheck: newCurrencyRateCheck },
+      ) => {
+        if (newCurrencyRateCheck && !oldCurrencyRateCheck) {
+          this.currencyRateController.start();
+          this.tokenRatesController.configure(
+            { disabled: false },
+            false,
+            false,
+          );
+        } else if (!newCurrencyRateCheck && oldCurrencyRateCheck) {
+          this.currencyRateController.stop();
+          this.tokenRatesController.configure({ disabled: true }, false, false);
+        }
+      },
     );
 
     this.ensController = new EnsController({
@@ -972,12 +986,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, async () => {
       const { ticker } = this.networkController.getProviderConfig();
+      // const { useCurrencyRateCheck } = this.preferencesController.store.getState();
+      // if(useCurrencyRateCheck) {
       try {
         await this.currencyRateController.setNativeCurrency(ticker);
       } catch (error) {
         // TODO: Handle failure to get conversion rate more gracefully
         console.error(error);
       }
+      // }
     });
 
     this.networkController.lookupNetwork();

@@ -5,11 +5,8 @@ import {
   setFeatureFlag,
   setParticipateInMetaMetrics,
   setUsePhishDetect,
-<<<<<<< HEAD
   setUseMultiAccountBalanceChecker,
-=======
   setUseCurrencyRateCheck,
->>>>>>> 90219e20f (adding a new toggle to enable and disable conversion rate checking using thirdparty api)
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
