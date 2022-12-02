@@ -132,6 +132,9 @@ export default function PrepareSwap({
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
+  const [isSwapToOpen, setIsSwapToOpen] = useState(false);
+  const onSwapToOpen = () => setIsSwapToOpen(true);
+  const onSwapToClose = () => setIsSwapToOpen(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
@@ -516,10 +519,7 @@ export default function PrepareSwap({
     }
   }
 
-  const swapYourTokenBalance = t('swapYourTokenBalance', [
-    fromTokenString || '0',
-    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
-  ]);
+  const swapYourTokenBalance = `${t('balance')}: ${fromTokenString || '0'}`;
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(
     chainId,
@@ -661,74 +661,74 @@ export default function PrepareSwap({
             </Box>
           </Popover>
         )}
-        <DropdownInputPair
-          onSelect={onFromSelect}
-          itemsToSearch={tokensToSearchSwapFrom}
-          onInputChange={(value) => {
-            /* istanbul ignore next */
-            onInputChange(value, fromTokenBalance);
-          }}
-          inputValue={fromTokenInputValue}
-          leftValue={fromTokenInputValue && swapFromFiatValue}
-          selectedItem={selectedFromToken}
-          maxListItems={30}
-          loading={
-            loading &&
-            (!tokensToSearchSwapFrom?.length ||
-              !topAssets ||
-              !Object.keys(topAssets).length)
-          }
-          selectPlaceHolderText={t('swapSelect')}
-          hideItemIf={(item) =>
-            isEqualCaseInsensitive(item.address, selectedToToken?.address)
-          }
-          listContainerClassName="prepare-swap__open-dropdown"
-          autoFocus
-        />
-        <div
-          className={classnames('prepare-swap__balance-message', {
-            'prepare-swap__balance-message--error':
-              balanceError || fromTokenError,
-          })}
-        >
-          {!fromTokenError &&
-            !balanceError &&
-            fromTokenSymbol &&
-            swapYourTokenBalance}
-          {!fromTokenError && balanceError && fromTokenSymbol && (
-            <div className="build-quite__insufficient-funds">
-              <div className="build-quite__insufficient-funds-first">
-                {t('swapsNotEnoughForTx', [fromTokenSymbol])}
+        <div className="prepare-swap__swap-from-content">
+          <DropdownInputPair
+            onSelect={onFromSelect}
+            itemsToSearch={tokensToSearchSwapFrom}
+            onInputChange={(value) => {
+              /* istanbul ignore next */
+              onInputChange(value, fromTokenBalance);
+            }}
+            inputValue={fromTokenInputValue}
+            leftValue={fromTokenInputValue && swapFromFiatValue}
+            selectedItem={selectedFromToken}
+            maxListItems={30}
+            loading={
+              loading &&
+              (!tokensToSearchSwapFrom?.length ||
+                !topAssets ||
+                !Object.keys(topAssets).length)
+            }
+            selectPlaceHolderText={t('swapSelect')}
+            hideItemIf={(item) =>
+              isEqualCaseInsensitive(item.address, selectedToToken?.address)
+            }
+            listContainerClassName="prepare-swap__open-dropdown"
+            autoFocus
+          />
+          <div
+            className={classnames('prepare-swap__balance-message', {
+              'prepare-swap__balance-message--error':
+                balanceError || fromTokenError,
+            })}
+          >
+            {!fromTokenError &&
+              !balanceError &&
+              fromTokenSymbol &&
+              swapYourTokenBalance}
+            {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
+              <div
+                className="prepare-swap__max-button"
+                data-testid="prepare-swap__max-button"
+                onClick={() =>
+                  onInputChange(fromTokenBalance || '0', fromTokenBalance)
+                }
+              >
+                {t('max')}
               </div>
-              <div className="build-quite__insufficient-funds-second">
-                {swapYourTokenBalance}
+            )}
+            {!fromTokenError && balanceError && fromTokenSymbol && (
+              <div className="build-quite__insufficient-funds">
+                <div className="build-quite__insufficient-funds-first">
+                  {t('swapsNotEnoughForTx', [fromTokenSymbol])}
+                </div>
+                <div className="build-quite__insufficient-funds-second">
+                  {swapYourTokenBalance}
+                </div>
               </div>
-            </div>
-          )}
-          {fromTokenError && (
-            <>
-              <div className="prepare-swap__form-error">
-                {t('swapTooManyDecimalsError', [
-                  fromTokenSymbol,
-                  fromTokenDecimals,
-                ])}
-              </div>
-              <div>{swapYourTokenBalance}</div>
-            </>
-          )}
-        </div>
-        <div className="prepare-swap__dropdown-input-pair-header">
-          {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
-            <div
-              className="prepare-swap__max-button"
-              data-testid="prepare-swap__max-button"
-              onClick={() =>
-                onInputChange(fromTokenBalance || '0', fromTokenBalance)
-              }
-            >
-              {t('max')}
-            </div>
-          )}
+            )}
+            {fromTokenError && (
+              <>
+                <div className="prepare-swap__form-error">
+                  {t('swapTooManyDecimalsError', [
+                    fromTokenSymbol,
+                    fromTokenDecimals,
+                  ])}
+                </div>
+                <div>{swapYourTokenBalance}</div>
+              </>
+            )}
+          </div>
         </div>
         <div className="prepare-swap__swap-arrows-row">
           <button
@@ -743,27 +743,34 @@ export default function PrepareSwap({
             <i className="fa fa-arrow-down" title={t('swapSwapSwitch')} />
           </button>
         </div>
-        <div className="dropdown-input-pair dropdown-input-pair__to">
-          <DropdownSearchList
-            startingItem={selectedToToken}
-            itemsToSearch={tokensToSearchSwapTo}
-            fuseSearchKeys={fuseSearchKeys}
-            selectPlaceHolderText={t('swapSelectAToken')}
-            maxListItems={30}
-            onSelect={onToSelect}
-            loading={
-              loading &&
-              (!tokensToSearchSwapTo?.length ||
-                !topAssets ||
-                !Object.keys(topAssets).length)
-            }
-            externallySelectedItem={selectedToToken}
-            hideItemIf={hideDropdownItemIf}
-            listContainerClassName="prepare-swap__open-to-dropdown"
-            hideRightLabels
-            defaultToAll
-            shouldSearchForImports
-          />
+        <div className="prepare-swap__swap-to-content">
+          <div className="dropdown-input-pair dropdown-input-pair__to">
+            <DropdownSearchList
+              startingItem={selectedToToken}
+              itemsToSearch={tokensToSearchSwapTo}
+              fuseSearchKeys={fuseSearchKeys}
+              selectPlaceHolderText={t('swapSelectAToken')}
+              maxListItems={30}
+              onSelect={onToSelect}
+              loading={
+                loading &&
+                (!tokensToSearchSwapTo?.length ||
+                  !topAssets ||
+                  !Object.keys(topAssets).length)
+              }
+              onOpen={onSwapToOpen}
+              onClose={onSwapToClose}
+              className={
+                isSwapToOpen ? 'dropdown-input-pair__list--full-width' : ''
+              }
+              externallySelectedItem={selectedToToken}
+              hideItemIf={hideDropdownItemIf}
+              listContainerClassName="prepare-swap__open-to-dropdown"
+              hideRightLabels
+              defaultToAll
+              shouldSearchForImports
+            />
+          </div>
         </div>
         {toTokenIsNotDefault &&
           (occurrences < 2 ? (

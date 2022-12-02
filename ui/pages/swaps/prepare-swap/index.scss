@@ -3,8 +3,7 @@
   flex-flow: column;
   align-items: center;
   flex: 1;
-  width: 100%;
-  padding-top: 4px;
+  width: 100%;  
 
   &__content {
     display: flex;
@@ -16,6 +15,22 @@
 
   &__content {
     display: flex;
+  }  
+  
+  &__swap-from-content {
+    padding: 20px 16px;
+    border-radius: 6px 6px 0 0;
+    box-shadow: none;
+    border: 1px solid var(--color-border-default);
+    margin-top: 16px;
+  }
+
+  &__swap-to-content {
+    padding: 20px 16px;
+    border-radius: 0 0 6px 6px;
+    box-shadow: none;
+    border: 1px solid var(--color-border-default);
+    border-top: 0;
   }
 
   &__dropdown-swap-to-header {
@@ -48,7 +63,8 @@
 
   &__swap-arrows-row {
     width: 100%;
-    display: flex;
+    display: none;
+    // display: flex;
     justify-content: flex-end;
     padding-right: 16px;
     padding-top: 12px;
@@ -70,6 +86,7 @@
 
     color: var(--color-primary-default);
     cursor: pointer;
+    padding-left: 4px;
   }
 
   &__balance-message {
@@ -79,7 +96,7 @@
     color: var(--color-text-muted);
     margin-top: 4px;
     display: flex;
-    flex-flow: column;
+    flex-flow: row;
     height: 18px;
 
     &--error {
@@ -115,7 +132,21 @@
     width: 100%;
   }
 
+  .dropdown-search-list {
+    background-color: #F2F4F6;
+    border-radius: 100px;    
+  }
+
   .dropdown-input-pair {
+    height: 32px;
+
+    .dropdown-input-pair__selector--closed {
+      height: 32px;
+      width: 180px;
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+    }
+
     .searchable-item-list {
       &__item--add-token {
         display: none;
@@ -132,8 +163,9 @@
 
     &__input {
       div {
-        border: 1px solid var(--color-border-default);
-        border-left: 0;
+        border: 0;
+        // border: 1px solid var(--color-border-default);
+        // border-left: 0;
       }
     }
   }
@@ -176,9 +208,33 @@
     text-decoration: underline;
   }
 
-  /* Prevents the swaps "Swap to" field from overflowing */
-  .dropdown-input-pair__to .dropdown-search-list {
-    width: 100%;
+  .dropdown-search-list__selector-closed-container {
+    border: 0;
+    border-radius: 100px;
+    height: 32px;
+    max-height: 32px;
+    width: 180px;
+  }
+
+  .dropdown-search-list__selector-closed-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dropdown-search-list__selector-closed {
+    height: 32px;
+
+    div {
+      display: flex;
+    }
+
+    .dropdown-search-list__default-dropdown-icon {
+      display: none;
+    }
+
+    .dropdown-search-list__item-labels {
+      width: 85%;
+    }
   }
 }
 

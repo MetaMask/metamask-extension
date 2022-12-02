@@ -430,16 +430,16 @@ export default function Swap() {
               path={PREPARE_SWAP_ROUTE}
               exact
               render={() => {
-                // if (!process.env.PREPARE_SWAP) {
-                //   return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
-                // }
-
                 if (tradeTxData && !conversionError) {
                   return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
                 } else if (tradeTxData && routeState) {
                   return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
                 } else if (routeState === 'loading' && aggregatorMetadata) {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
+                }
+
+                if (!swapsRedesignEnabled) {
+                  return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
                 }
 
                 return (
