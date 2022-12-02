@@ -84,7 +84,7 @@ export const UI_NOTIFICATIONS = {
   },
   17: {
     id: 17,
-    date: null, // ???
+    date: null,
   },
 };
 
