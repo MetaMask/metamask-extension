@@ -6,10 +6,12 @@ import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
+  COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
 import {
   setCompletedOnboarding,
   setFeatureFlag,
@@ -17,6 +19,7 @@ import {
   setUsePhishDetect,
   setUseTokenDetection,
   showModal,
+  setIpfsGateway,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Icon, TextField } from '../../../components/component-library';
@@ -34,6 +37,8 @@ export default function PrivacySettings() {
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(true);
+  const [ipfsURL, setIPFSURL] = useState('');
+  const [ipfsError, setIPFSError] = useState(null);
 
   const handleSubmit = () => {
     dispatch(
@@ -45,7 +50,26 @@ export default function PrivacySettings() {
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
     dispatch(setCompletedOnboarding());
+
+    if (ipfsURL && !ipfsError) {
+      const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
+      dispatch(setIpfsGateway(host));
+    }
+
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  };
+
+  const handleIPFSChange = (url) => {
+    setIPFSURL(url);
+    try {
+      const { host } = new URL(addUrlProtocolPrefix(url));
+      if (!host || host === 'gateway.ipfs.io') {
+        throw new Error();
+      }
+      setIPFSError(null);
+    } catch (error) {
+      setIPFSError(t('onboardingAdvancedPrivacyIPFSInvalid'));
+    }
   };
 
   return (
@@ -162,8 +186,22 @@ export default function PrivacySettings() {
                 <Box paddingTop={2}>
                   <TextField
                     style={{ width: '100%' }}
-                    onChange={(e) => console.log(e.target.value)}
+                    onChange={(e) => {
+                      handleIPFSChange(e.target.value);
+                    }}
                   />
+                  {ipfsURL ? (
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      color={
+                        ipfsError
+                          ? COLORS.ERROR_DEFAULT
+                          : COLORS.SUCCESS_DEFAULT
+                      }
+                    >
+                      {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}
+                    </Typography>
+                  ) : null}
                 </Box>
               </>
             }
