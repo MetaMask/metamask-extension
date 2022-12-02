@@ -81,7 +81,9 @@ const SetApproveForAllWarning = ({
             <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
           </Typography>
         </Box>
-        {isERC721 && <Typography>{`${t('total')}: ${total}`}</Typography>}
+        {isERC721 && total && (
+          <Typography>{`${t('total')}: ${total}`}</Typography>
+        )}
       </Box>
 
       <Typography
