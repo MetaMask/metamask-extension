@@ -199,7 +199,8 @@ export default function setupSentry({ release, getState }) {
         report.extra.appState = appState;
       }
     } catch (err) {
-      console.warn(err);
+      console.error(err);
+      throw err;
     }
     return report;
   }
