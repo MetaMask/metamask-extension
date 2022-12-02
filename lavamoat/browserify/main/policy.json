@@ -612,11 +612,6 @@
         "@ethersproject/bignumber>@ethersproject/logger": true
       }
     },
-    "@metamask/assets-controllers>abort-controller": {
-      "globals": {
-        "AbortController": true
-      }
-    },
     "@metamask/assets-controllers>async-mutex": {
       "globals": {
         "setTimeout": true
@@ -2832,7 +2827,6 @@
     "eth-query": {
       "packages": {
         "eth-query>json-rpc-random-id": true,
-        "nock>debug": true,
         "watchify>xtend": true
       }
     },
