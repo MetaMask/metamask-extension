@@ -2583,6 +2583,15 @@
   "on": {
     "message": "On"
   },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "Add custom network"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "Choose your network"
+  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
@@ -2637,6 +2646,34 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
+  },
+  "onboardingMetametricsAnonymousText": {
+    "message": "MetaMask only collects relevant data like your country, but not your specific location. Your clicks and page views are anonymous."
+  },
+  "onboardingMetametricsAnonymousTitle": {
+    "message": "Anonymous"
+  },
+  "onboardingMetametricsFooter": {
+    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1."
+  },
+  "onboardingMetametricsIntro2": {
+    "message": "When we gather metrics, it's always:"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "Add custom network"
+  },
+  "onboardingMetametricsOptionalText": {
+    "message": "You’re in control of whether to share your data. You can always change your preferences and delete your extension usage data via settings at any time."
+  },
+  "onboardingMetametricsOptionalTitle": {
+    "message": "Optional"
+  },
+  "onboardingMetametricsPrivateText": {
+    "message": "Your keys, transactions, full IP address, and any personal information are private. MetaMask doesn’t collect this information, but to enable certain features we use third-party service providers who might. For example, RPC providers collect your IP address when you send a transaction. $1 is the default RPC for MetaMask. You can change this to another provider in settings.",
+    "description": "$1 represents `infura`"
+  },
+  "onboardingMetametricsPrivateTitle": {
+    "message": "Private"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
