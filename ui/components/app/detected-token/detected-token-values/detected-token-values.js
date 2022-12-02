@@ -46,7 +46,7 @@ const DetectedTokenValues = ({
           {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-          {formattedFiatBalance || '$0'}
+          {formattedFiatBalance}
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">
