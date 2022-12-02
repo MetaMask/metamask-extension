@@ -2592,12 +2592,9 @@
   "onboardingMetametricsPrivateEmphasizedText": {
     "message": "We will never sell your data. Ever!"
   },
-  "onboardingMetametricsPrivateSettingsText": {
-    "message": "settings"
-  },
   "onboardingMetametricsPrivateText": {
-    "message": "Your keys, transactions, full IP address, and any personal information are private. MetaMask doesn’t collect this information, but to enable certain features we use third-party service providers who might. For example, RPC providers collect your IP address when you send a transaction. $1 is the default RPC for MetaMask. You can change this to another provider in $2.",
-    "description": "$1 represents `infura`, $2 represents `onboardingMetametricsPrivateSettingsText`"
+    "message": "Your keys, transactions, full IP address, and any personal information are private. MetaMask doesn’t collect this information, but to enable certain features we use third-party service providers who might. For example, RPC providers collect your IP address when you send a transaction. $1 is the default RPC for MetaMask. You can change this to another provider in settings.",
+    "description": "$1 represents `infura`"
   },
   "onboardingMetametricsPrivateTitle": {
     "message": "Private"
