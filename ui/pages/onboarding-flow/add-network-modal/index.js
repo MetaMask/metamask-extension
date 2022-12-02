@@ -7,18 +7,15 @@ import NetworksForm from '../../settings/networks-tab/networks-form/networks-for
 
 export default function AddNetworkModal() {
   const dispatch = useDispatch();
+  const closeCallback = () =>
+    dispatch(hideModal({ name: 'ONBOARDING_ADD_NETWORK' }));
 
   return (
     <NetworksForm
-      navigateUponSuccess={false}
       addNewNetwork
       networksToRender={[]}
-      cancelCallback={() =>
-        dispatch(hideModal({ name: 'ONBOARDING_ADD_NETWORK' }))
-      }
-      submitCallback={() =>
-        dispatch(hideModal({ name: 'ONBOARDING_ADD_NETWORK' }))
-      }
+      cancelCallback={closeCallback}
+      submitCallback={closeCallback}
     />
   );
 }

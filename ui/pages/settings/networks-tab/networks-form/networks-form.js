@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
@@ -29,10 +28,6 @@ import {
   showModal,
   setNewNetworkAdded,
 } from '../../../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  NETWORKS_ROUTE,
-} from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -85,13 +80,11 @@ const NetworksForm = ({
   isCurrentRpcTarget,
   networksToRender,
   selectedNetwork,
-  navigateUponSuccess = true,
   cancelCallback,
   submitCallback,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName = label || (labelKey && t(labelKey));
@@ -560,10 +553,6 @@ const NetworksForm = ({
         dispatch(setNewNetworkAdded(networkName));
 
         submitCallback?.();
-
-        if (navigateUponSuccess) {
-          history.push(DEFAULT_ROUTE);
-        }
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -574,9 +563,6 @@ const NetworksForm = ({
   const onCancel = () => {
     if (addNewNetwork) {
       dispatch(setSelectedSettingsRpcUrl(''));
-      if (navigateUponSuccess) {
-        history.push(NETWORKS_ROUTE);
-      }
       cancelCallback?.();
     } else {
       resetForm();
@@ -731,7 +717,6 @@ NetworksForm.propTypes = {
   isCurrentRpcTarget: PropTypes.bool,
   networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
-  navigateUponSuccess: PropTypes.bool,
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
 };
