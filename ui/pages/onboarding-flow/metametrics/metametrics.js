@@ -17,6 +17,7 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
