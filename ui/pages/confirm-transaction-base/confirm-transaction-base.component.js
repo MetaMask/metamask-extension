@@ -164,6 +164,7 @@ export default class ConfirmTransactionBase extends Component {
     insightSnaps: PropTypes.arrayOf(PropTypes.object),
     ///: END:ONLY_INCLUDE_IN
     assetStandard: PropTypes.string,
+    useCurrencyRateCheck: PropTypes.bool,
   };
 
   state = {
@@ -353,6 +354,7 @@ export default class ConfirmTransactionBase extends Component {
       isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
+      useCurrencyRateCheck,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -641,7 +643,7 @@ export default class ConfirmTransactionBase extends Component {
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
-                detailText={renderTotalDetailText()}
+                detailText={useCurrencyRateCheck && renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={

@@ -36,6 +36,7 @@ import {
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
+  getUseCurrencyRateCheck,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getInsightSnaps,
   ///: END:ONLY_INCLUDE_IN
@@ -252,6 +253,7 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps,
     ///: END:ONLY_INCLUDE_IN
+    useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
 

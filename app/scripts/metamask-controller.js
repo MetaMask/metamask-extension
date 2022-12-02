@@ -476,11 +476,15 @@ export default class MetamaskController extends EventEmitter {
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
+      enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
         nativeCurrency: this.networkController.providerStore.getState().ticker,
       },
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
     });
 
     this.phishingController = new PhishingController();
@@ -497,6 +501,7 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -515,6 +520,9 @@ export default class MetamaskController extends EventEmitter {
             };
             return cb(modifiedNetworkState);
           }),
+        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+          this.preferencesController.store,
+        ),
       },
       undefined,
       initState.TokenRatesController,
