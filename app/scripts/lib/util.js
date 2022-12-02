@@ -218,3 +218,31 @@ export function deferredPromise() {
   });
   return { promise, resolve, reject };
 }
+
+/**
+ * Returns a function with arity 1 that caches the argument that the function
+ * is called with and invokes the comparator with both the cached, previous,
+ * value and the current value. If specified, the initialValue will be passed
+ * in as the previous value on the first invocation of the returned method.
+ *
+ * @template A - The type of the compared value.
+ * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
+ * the previous and next values.
+ * @param {A} [initialValue] - The initial value to supply to prevValue
+ * on first call of the method.
+ */
+export function previousValueComparator(comparator, initialValue) {
+  let first = true;
+  let cache;
+  return (value) => {
+    try {
+      if (first) {
+        first = false;
+        return comparator(initialValue ?? value, value);
+      }
+      return comparator(cache, value);
+    } finally {
+      cache = value;
+    }
+  };
+}
