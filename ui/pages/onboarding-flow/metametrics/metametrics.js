@@ -120,7 +120,16 @@ export default function OnboardingMetametrics() {
         {t('metametricsHelpImproveMetaMask')}
       </Typography>
       <Typography align={TEXT_ALIGN.CENTER}>
-        {t('onboardingMetametricsIntro1')}
+        {t('onboardingMetametricsIntro1', [
+          <Typography
+            variant={TYPOGRAPHY.Span}
+            fontWeight={FONT_WEIGHT.BOLD}
+            color={COLORS.TEXT_ALTERNATIVE}
+            key="emphasized-text"
+          >
+            {t('onboardingMetametricsPrivateEmphasizedText')}
+          </Typography>,
+        ])}
       </Typography>
       <Typography align={TEXT_ALIGN.CENTER} marginBottom={8}>
         {t('onboardingMetametricsIntro2')}
@@ -178,14 +187,6 @@ export default function OnboardingMetametrics() {
               >
                 {t('onboardingMetametricsPrivateSettingsText')}
               </a>,
-              <Typography
-                variant={TYPOGRAPHY.Span}
-                fontWeight={FONT_WEIGHT.BOLD}
-                color={COLORS.TEXT_ALTERNATIVE}
-                key="emphasized-text"
-              >
-                {t('onboardingMetametricsPrivateEmphasizedText')}
-              </Typography>,
             ])}
           </Typography>
         </div>
@@ -220,7 +221,7 @@ export default function OnboardingMetametrics() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('here')}
+              {t('gdprMessagePrivacyPolicy')}
             </a>,
           ])}
         </Typography>
