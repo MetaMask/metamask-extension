@@ -470,7 +470,6 @@ export default class MetamaskController extends EventEmitter {
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
-      enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
@@ -495,7 +494,6 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
-        enableRateChecking: this.preferencesController.store._getState().useCurrencyRateCheck,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -518,9 +516,21 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store,
         ),
       },
-      undefined,
+      {
+        disabled: !this.preferencesController.store._getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
     );
+
+    this.preferencesController.store.subscribe(({ useCurrencyRateCheck: oldCurrencyRateCheck }, { useCurrencyRateCheck: newCurrencyRateCheck }) => {
+      if (newCurrencyRateCheck && !oldCurrencyRateCheck) {
+        this.currencyRateController.start();
+        this.tokenRatesController.configure({ disabled: false }, false, false);
+      } else if (!newCurrencyRateCheck && oldCurrencyRateCheck) {
+        this.currencyRateController.stop();
+        this.tokenRatesController.configure({ disabled: true }, false, false);
+      }
+    });
 
     this.ensController = new EnsController({
       provider: this.provider,
@@ -572,12 +582,8 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
-        if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-          this.currencyRateController.stop();
-        }
-        if (this.preferencesController.store.getState().useTokenDetection) {
-          this.tokenListController.stop();
-        }
+        this.currencyRateController.stop();
+        this.tokenListController.stop();
       }
     });
 
