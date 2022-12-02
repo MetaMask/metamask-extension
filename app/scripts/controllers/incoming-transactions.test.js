@@ -84,6 +84,7 @@ function getMockOnboardingController() {
         completedOnboarding: true,
       }),
     },
+    subscribe: sinon.spy(),
   };
 }
 
