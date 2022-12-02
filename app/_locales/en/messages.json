@@ -2547,6 +2547,12 @@
   "on": {
     "message": "On"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "Add custom IPFS Gateway"
+  },
   "onboardingAdvancedPrivacyNetworkButton": {
     "message": "Add custom network"
   },

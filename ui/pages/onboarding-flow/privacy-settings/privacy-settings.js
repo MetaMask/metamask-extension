@@ -19,7 +19,7 @@ import {
   showModal,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon } from '../../../components/component-library';
+import { Icon, TextField } from '../../../components/component-library';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -149,6 +149,21 @@ export default function PrivacySettings() {
                   >
                     {t('onboardingAdvancedPrivacyNetworkButton')}
                   </Button>
+                </Box>
+              </>
+            }
+          />
+          <Setting
+            title={t('onboardingAdvancedPrivacyIPFSTitle')}
+            showToggle={false}
+            description={
+              <>
+                {t('onboardingAdvancedPrivacyIPFSDescription')}
+                <Box paddingTop={2}>
+                  <TextField
+                    style={{ width: '100%' }}
+                    onChange={(e) => console.log(e.target.value)}
+                  />
                 </Box>
               </>
             }
