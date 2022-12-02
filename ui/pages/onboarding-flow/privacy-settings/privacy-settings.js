@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
+import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
@@ -15,8 +16,10 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
+  showModal,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
+import { Icon } from '../../../components/component-library';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -117,6 +120,38 @@ export default function PrivacySettings() {
             setValue={setMultiAccountBalanceCheckerEnabled}
             title={t('useMultiAccountBalanceChecker')}
             description={t('useMultiAccountBalanceCheckerDescription')}
+          />
+          <Setting
+            title={t('onboardingAdvancedPrivacyNetworkTitle')}
+            showToggle={false}
+            description={
+              <>
+                {t('onboardingAdvancedPrivacyNetworkDescription', [
+                  <a
+                    href="https://consensys.net/privacy-policy/"
+                    key="link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('privacyMsg')}
+                  </a>,
+                ])}
+                <Box paddingTop={2}>
+                  <Button
+                    type="secondary"
+                    rounded
+                    large
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+                    }}
+                    icon={<Icon name="add-outline" marginRight={2} />}
+                  >
+                    {t('onboardingAdvancedPrivacyNetworkButton')}
+                  </Button>
+                </Box>
+              </>
+            }
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>
