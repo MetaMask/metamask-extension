@@ -207,6 +207,28 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "It's important that your provider is reliable, as it has the power to:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "See your accounts and IP address, and associate them together"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Show account balances and other on-chain states"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Broadcast your transactions"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "You are adding a new RPC provider for Ethereum Mainnet"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -2438,6 +2460,15 @@
   "notifications16Title": {
     "message": "Improved token allowance experience"
   },
+  "notifications17ActionText": {
+    "message": "Show Security & Privacy settings"
+  },
+  "notifications17Description": {
+    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  },
+  "notifications17Title": {
+    "message": "Security & Privacy Settings"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -3293,6 +3324,9 @@
   },
   "signatureRequest1": {
     "message": "Message"
+  },
+  "signatureRequestGuidance": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
   },
   "signatureRequestWarning": {
     "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
@@ -4317,6 +4351,12 @@
   },
   "useDefault": {
     "message": "Use default"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

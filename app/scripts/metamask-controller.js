@@ -113,6 +113,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
+import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
@@ -146,6 +147,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { previousValueComparator } from './lib/util';
 
 import {
   CaveatMutatorFactories,
@@ -527,6 +529,10 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    this.onboardingController = new OnboardingController({
+      initState: initState.OnboardingController,
+    });
+
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
       onNetworkDidChange: this.networkController.on.bind(
@@ -537,6 +543,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       preferencesController: this.preferencesController,
+      onboardingController: this.onboardingController,
       initState: initState.IncomingTransactionsController,
     });
 
@@ -550,26 +557,30 @@ export default class MetamaskController extends EventEmitter {
       getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
       ),
+      preferencesController: this.preferencesController,
+      onboardingController: this.onboardingController,
     });
 
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      if (activeControllerConnections > 0) {
-        this.accountTracker.start();
-        this.incomingTransactionsController.start();
-        this.currencyRateController.start();
-        if (this.preferencesController.store.getState().useTokenDetection) {
-          this.tokenListController.start();
-        }
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+      if (activeControllerConnections > 0 && completedOnboarding) {
+        this.triggerNetworkrequests();
       } else {
-        this.accountTracker.stop();
-        this.incomingTransactionsController.stop();
-        this.currencyRateController.stop();
-        if (this.preferencesController.store.getState().useTokenDetection) {
-          this.tokenListController.stop();
-        }
+        this.stopNetworkRequests();
       }
     });
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.triggerNetworkrequests();
+        }
+      }, this.onboardingController.store.getState()),
+    );
 
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
@@ -577,10 +588,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
-    });
-
-    this.onboardingController = new OnboardingController({
-      initState: initState.OnboardingController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -1190,6 +1197,24 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
+  triggerNetworkrequests() {
+    this.accountTracker.start();
+    this.incomingTransactionsController.start();
+    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useTokenDetection) {
+      this.tokenListController.start();
+    }
+  }
+
+  stopNetworkRequests() {
+    this.accountTracker.stop();
+    this.incomingTransactionsController.stop();
+    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useTokenDetection) {
+      this.tokenListController.stop();
+    }
+  }
+
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
       try {
@@ -1605,6 +1630,10 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
+      setUseMultiAccountBalanceChecker:
+        preferencesController.setUseMultiAccountBalanceChecker.bind(
+          preferencesController,
+        ),
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
@@ -2137,7 +2166,6 @@ export default class MetamaskController extends EventEmitter {
       },
       properties: {
         chain_id: chainId,
-        network_name: chainName,
         symbol: ticker,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
       },
@@ -3724,6 +3752,10 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
+
+    if (isManifestV3) {
+      engine.push(createDupeReqFilterMiddleware());
+    }
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
