@@ -539,7 +539,6 @@ const NetworksForm = ({
           },
           properties: {
             chain_id: addHexPrefix(Number(chainId).toString(16)),
-            network_name: networkName,
             symbol: ticker,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
           },

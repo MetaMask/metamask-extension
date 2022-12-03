@@ -288,7 +288,6 @@ async function addEthereumChainHandler(
       },
       properties: {
         chain_id: _chainId,
-        network_name: _chainName,
         symbol: ticker,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
