@@ -207,6 +207,28 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "It's important that your provider is reliable, as it has the power to:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "See your accounts and IP address, and associate them together"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Show account balances and other on-chain states"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Broadcast your transactions"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "You are adding a new RPC provider for Ethereum Mainnet"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
