@@ -1,0 +1,102 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TextFieldBase, TextField } from '..';
+
+import { TextFieldSearch } from './text-field-search';
+
+# TextFieldSearch
+
+The `TextFieldSearch` allows users to enter text to search
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `TextFieldSearch` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={TextFieldSearch} />
+
+`TextFieldSearch` accepts all [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextField} />
+
+`TextFieldSearch` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextFieldBase} />
+
+### Clear Button On Click
+
+`TextFieldSearch` displays a clear button when text is entered into the input. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. To hide the clear button, pass `false` to the `showClearButton` prop.
+
+The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all props from that component.
+
+**NOTE: The `showClearButton` only works with a controlled input.**
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--clear-button-on-click" />
+</Canvas>
+
+```jsx
+import { TextFieldSearch } from '../../component-library';
+
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
+<TextFieldSearch
+  placeholder="Enter text to show clear"
+  value={value}
+  onChange={handleOnChange}
+  clearButtonOnClick={handleOnClear}
+/>;
+```
+
+### Clear Button Props
+
+Use the `clearButtonProps` to access other props of the clear button.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--clear-button-props" />
+</Canvas>
+
+```jsx
+import React, { useState } from 'react';
+import {
+  SIZES,
+  COLORS,
+  BORDER_RADIUS,
+} from '../../../helpers/constants/design-system';
+
+import { TextFieldSearch } from '../../component-library';
+
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
+<TextFieldSearch
+  value={value}
+  onChange={handleOnChange}
+  clearButtonOnClick={handleOnClear}
+  clearButtonProps={{
+    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
+    borderRadius: BORDER_RADIUS.XS,
+    'data-testid': 'clear-button',
+  }}
+/>;
+```

@@ -96,6 +96,7 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
  *
+ * @deprecated use checkForLastError in shared/modules/browser-runtime.utils.js
  * @returns {Error|undefined}
  */
 function checkForError() {
@@ -190,3 +191,58 @@ export const generateRandomId = () => {
 export const isValidDate = (d) => {
   return d instanceof Date && !isNaN(d);
 };
+
+/**
+ * A deferred Promise.
+ *
+ * A deferred Promise is one that can be resolved or rejected independently of
+ * the Promise construction.
+ *
+ * @typedef {object} DeferredPromise
+ * @property {Promise} promise - The Promise that has been deferred.
+ * @property {() => void} resolve - A function that resolves the Promise.
+ * @property {() => void} reject - A function that rejects the Promise.
+ */
+
+/**
+ * Create a defered Promise.
+ *
+ * @returns {DeferredPromise} A deferred Promise.
+ */
+export function deferredPromise() {
+  let resolve;
+  let reject;
+  const promise = new Promise((innerResolve, innerReject) => {
+    resolve = innerResolve;
+    reject = innerReject;
+  });
+  return { promise, resolve, reject };
+}
+
+/**
+ * Returns a function with arity 1 that caches the argument that the function
+ * is called with and invokes the comparator with both the cached, previous,
+ * value and the current value. If specified, the initialValue will be passed
+ * in as the previous value on the first invocation of the returned method.
+ *
+ * @template A - The type of the compared value.
+ * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
+ * the previous and next values.
+ * @param {A} [initialValue] - The initial value to supply to prevValue
+ * on first call of the method.
+ */
+export function previousValueComparator(comparator, initialValue) {
+  let first = true;
+  let cache;
+  return (value) => {
+    try {
+      if (first) {
+        first = false;
+        return comparator(initialValue ?? value, value);
+      }
+      return comparator(cache, value);
+    } finally {
+      cache = value;
+    }
+  };
+}

@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEnvironmentType, checkForError } from '../lib/util';
+import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
@@ -13,70 +13,32 @@ export default class ExtensionPlatform {
     browser.runtime.reload();
   }
 
-  openTab(options) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.create(options).then((newTab) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(newTab);
-      });
-    });
+  async openTab(options) {
+    const newTab = await browser.tabs.create(options);
+    return newTab;
   }
 
-  openWindow(options) {
-    return new Promise((resolve, reject) => {
-      browser.windows.create(options).then((newWindow) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(newWindow);
-      });
-    });
+  async openWindow(options) {
+    const newWindow = await browser.windows.create(options);
+    return newWindow;
   }
 
-  focusWindow(windowId) {
-    return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { focused: true }).then(() => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve();
-      });
-    });
+  async focusWindow(windowId) {
+    await browser.windows.update(windowId, { focused: true });
   }
 
-  updateWindowPosition(windowId, left, top) {
-    return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { left, top }).then(() => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve();
-      });
-    });
+  async updateWindowPosition(windowId, left, top) {
+    await browser.windows.update(windowId, { left, top });
   }
 
-  getLastFocusedWindow() {
-    return new Promise((resolve, reject) => {
-      browser.windows.getLastFocused().then((windowObject) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(windowObject);
-      });
-    });
+  async getLastFocusedWindow() {
+    const windowObject = await browser.windows.getLastFocused();
+    return windowObject;
   }
 
-  closeCurrentWindow() {
-    return browser.windows.getCurrent().then((windowDetails) => {
-      return browser.windows.remove(windowDetails.id);
-    });
+  async closeCurrentWindow() {
+    const windowDetails = await browser.windows.getCurrent();
+    browser.windows.remove(windowDetails.id);
   }
 
   getVersion() {
@@ -169,67 +131,28 @@ export default class ExtensionPlatform {
     browser.windows.onRemoved.addListener(listener);
   }
 
-  getAllWindows() {
-    return new Promise((resolve, reject) => {
-      browser.windows.getAll().then((windows) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(windows);
-      });
-    });
+  async getAllWindows() {
+    const windows = await browser.windows.getAll();
+    return windows;
   }
 
-  getActiveTabs() {
-    return new Promise((resolve, reject) => {
-      browser.tabs.query({ active: true }).then((tabs) => {
-        const error = checkForError();
-        if (error) {
-          return reject(error);
-        }
-        return resolve(tabs);
-      });
-    });
+  async getActiveTabs() {
+    const tabs = await browser.tabs.query({ active: true });
+    return tabs;
   }
 
-  currentTab() {
-    return new Promise((resolve, reject) => {
-      browser.tabs.getCurrent().then((tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
+  async currentTab() {
+    const tab = await browser.tabs.getCurrent();
+    return tab;
   }
 
-  switchToTab(tabId) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.update(tabId, { highlighted: true }).then((tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
+  async switchToTab(tabId) {
+    const tab = await browser.tabs.update(tabId, { highlighted: true });
+    return tab;
   }
 
-  closeTab(tabId) {
-    return new Promise((resolve, reject) => {
-      browser.tabs.remove(tabId).then(() => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  async closeTab(tabId) {
+    await browser.tabs.remove(tabId);
   }
 
   _showConfirmedTransaction(txMeta, rpcPrefs) {

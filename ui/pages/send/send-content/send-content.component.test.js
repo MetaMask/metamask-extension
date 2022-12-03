@@ -150,21 +150,6 @@ describe('SendContent Component', () => {
       ).toStrictEqual(true);
       expect(wrapper.find(Dialog)).toHaveLength(0);
     });
-
-    it('should render insufficient gas dialog', () => {
-      wrapper.setProps({
-        showHexData: false,
-        getIsBalanceInsufficient: true,
-      });
-      const PageContainerContentChild = wrapper
-        .find(PageContainerContent)
-        .children();
-      const errorDialogProps = PageContainerContentChild.childAt(0).props();
-      expect(errorDialogProps.className).toStrictEqual('send__error-dialog');
-      expect(errorDialogProps.children).toStrictEqual(
-        'insufficientFundsForGas_t',
-      );
-    });
   });
 
   it('should not render the asset dropdown if token length is 0', () => {
