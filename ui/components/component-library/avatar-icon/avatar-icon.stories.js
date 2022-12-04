@@ -3,6 +3,8 @@ import {
   SIZES,
   DISPLAY,
   ALIGN_ITEMS,
+  COLORS,
+  BACKGROUND_COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -10,7 +12,7 @@ import Box from '../../ui/box/box';
 import { ICON_NAMES } from '..';
 
 import README from './README.mdx';
-import { AvatarIcon, AVATAR_ICON_SIZES, AVATAR_ICON_SEVERITIES } from '.';
+import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
@@ -22,28 +24,37 @@ export default {
     },
   },
   argTypes: {
+    ariaLabel: {
+      control: 'text',
+    },
     iconName: {
       options: Object.values(ICON_NAMES),
-      control: 'select',
-    },
-    severity: {
-      options: Object.values(AVATAR_ICON_SEVERITIES),
       control: 'select',
     },
     size: {
       control: 'select',
       options: Object.values(AVATAR_ICON_SIZES),
     },
+    backgroundColor: {
+      control: 'select',
+      options: Object.values(BACKGROUND_COLORS),
+    },
+    color: {
+      control: 'select',
+      options: Object.values(COLORS),
+    },
+    className: {
+      control: 'text',
+    },
   },
   args: {
     size: SIZES.MD,
-    iconName: ICON_NAMES.COPY_FILLED,
     ariaLabel: 'Test Avatar Icon',
   },
 };
 
 const Template = (args) => {
-  return <AvatarIcon {...args} />;
+  return <AvatarIcon iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE} {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -59,4 +70,89 @@ export const Size = (args) => (
   </Box>
 );
 
-export const IconName = (args) => <AvatarIcon {...args} />;
+Size.args = {
+  iconName: ICON_NAMES.CHECK_CIRCLE_ON_FILLED,
+};
+
+export const IconName = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <AvatarIcon
+      color={COLORS.PRIMARY_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.SUCCESS_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.SUCCESS_MUTED}
+      iconName={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.INFO_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
+      iconName={ICON_NAMES.INFO_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.WARNING_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.WARNING_MUTED}
+      iconName={ICON_NAMES.WARNING_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.ERROR_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.ERROR_MUTED}
+      iconName={ICON_NAMES.DANGER_FILLED}
+      {...args}
+    />
+  </Box>
+);
+
+export const AriaLabel = (args) => <AvatarIcon {...args} />;
+
+AriaLabel.args = {
+  ariaLabel: 'Swap',
+  iconName: ICON_NAMES.CHECK_CIRCLE_ON_FILLED,
+};
+
+export const ColorAndBackgroundColor = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <AvatarIcon
+      color={COLORS.PRIMARY_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.PRIMARY_INVERSE}
+      backgroundColor={BACKGROUND_COLORS.PRIMARY_DEFAULT}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.SUCCESS_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.SUCCESS_MUTED}
+      iconName={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.INFO_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
+      iconName={ICON_NAMES.INFO_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.WARNING_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.WARNING_MUTED}
+      iconName={ICON_NAMES.WARNING_FILLED}
+      {...args}
+    />
+    <AvatarIcon
+      color={COLORS.ERROR_DEFAULT}
+      backgroundColor={BACKGROUND_COLORS.ERROR_MUTED}
+      iconName={ICON_NAMES.DANGER_FILLED}
+      {...args}
+    />
+  </Box>
+);

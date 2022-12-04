@@ -11,19 +11,15 @@ import {
   DISPLAY,
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
-  BACKGROUND_COLORS,
 } from '../../../helpers/constants/design-system';
 
-import {
-  AVATAR_ICON_SEVERITIES,
-  AVATAR_ICON_SIZES,
-} from './avatar-icon.constants';
+import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
 export const AvatarIcon = ({
   ariaLabel,
   size = SIZES.MD,
-  severity,
-  filled,
+  color = COLORS.PRIMARY_DEFAULT,
+  backgroundColor = COLORS.PRIMARY_MUTED,
   className,
   iconProps,
   iconName,
@@ -35,17 +31,10 @@ export const AvatarIcon = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
-      color={COLORS.PRIMARY_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
+      color={color}
+      backgroundColor={backgroundColor}
       borderColor={BORDER_COLORS.TRANSPARENT}
-      className={classnames(
-        'mm-avatar-icon',
-        {
-          [`mm-avatar-icon--severity-${severity}`]: severity,
-          [`mm-avatar-icon--severity-${severity}-filled`]: filled,
-        },
-        className,
-      )}
+      className={classnames('mm-avatar-icon', className)}
       {...props}
     >
       <Icon
@@ -65,25 +54,30 @@ AvatarIcon.propTypes = {
    */
   ariaLabel: PropTypes.string.isRequired,
   /**
-   * Props for the fallback icon. All Icon props can be used
-   */
-  iconProps: PropTypes.shape(Icon.PropTypes),
-  /**
    *
    * The name of the icon to display. Should be one of ICON_NAMES
    */
   iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  /**
+   * Props for the icon inside AvatarIcon. All Icon props can be used
+   */
+  iconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The size of the AvatarIcon
    * Possible values could be 'SIZES.XS' 16px, 'SIZES.SM' 24px, 'SIZES.MD' 32px, 'SIZES.LG' 40px, 'SIZES.XL' 48px
    * Defaults to SIZES.MD
    */
   size: PropTypes.oneOf(Object.values(AVATAR_ICON_SIZES)),
-  severity: PropTypes.oneOf(Object.values(AVATAR_ICON_SEVERITIES)),
   /**
-   * Additional classNames to be added to the AvatarIcon
+   * The background color of the AvatarIcon
+   * Defaults to COLORS.PRIMARY_MUTED
    */
-  filled: PropTypes.bool,
+  backgroundColor: Box.propTypes.backgroundColor,
+  /**
+   * The color of the text inside the AvatarIcon
+   * Defaults to COLORS.PRIMARY_DEFAULT
+   */
+  color: Box.propTypes.color,
   /**
    * Additional classNames to be added to the AvatarIcon
    */

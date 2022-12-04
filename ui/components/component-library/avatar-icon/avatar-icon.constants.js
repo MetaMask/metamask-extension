@@ -1,4 +1,4 @@
-import { SIZES, SEVERITIES } from '../../../helpers/constants/design-system';
+import { SIZES } from '../../../helpers/constants/design-system';
 
 export const AVATAR_ICON_SIZES = {
   XS: SIZES.XS,
@@ -6,11 +6,4 @@ export const AVATAR_ICON_SIZES = {
   MD: SIZES.MD,
   LG: SIZES.LG,
   XL: SIZES.XL,
-};
-
-export const AVATAR_ICON_SEVERITIES = {
-  DANGER: SEVERITIES.DANGER,
-  WARNING: SEVERITIES.WARNING,
-  INFO: SEVERITIES.INFO,
-  SUCCESS: SEVERITIES.SUCCESS,
 };
