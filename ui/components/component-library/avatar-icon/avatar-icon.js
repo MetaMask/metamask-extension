@@ -27,6 +27,8 @@ export const AvatarIcon = ({
 }) => {
   return (
     <AvatarBase
+      aria-label={ariaLabel}
+      role="img"
       size={size}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
@@ -37,13 +39,7 @@ export const AvatarIcon = ({
       className={classnames('mm-avatar-icon', className)}
       {...props}
     >
-      <Icon
-        color={COLORS.INHERIT}
-        name={iconName}
-        size={size}
-        aria-label={ariaLabel}
-        {...iconProps}
-      />
+      <Icon color={COLORS.INHERIT} name={iconName} size={size} {...iconProps} />
     </AvatarBase>
   );
 };
