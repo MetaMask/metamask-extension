@@ -721,9 +721,6 @@ function setupController(initState, initLangCode) {
           REJECT_NOTFICIATION_CLOSE,
         ),
       );
-
-    console.log(controller.approvalController.state.pendingApprovals);
-
     // Finally, resolve snap dialog approvals and reject all the others managed by the ApprovalController
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
