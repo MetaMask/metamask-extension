@@ -8,10 +8,15 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   COLORS,
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  MAINNET_RPC_URL,
+  CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
+import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
 import {
@@ -22,9 +27,12 @@ import {
   setUseTokenDetection,
   showModal,
   setIpfsGateway,
+  setRpcTarget,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon, TextField, Tag } from '../../../components/component-library';
+import { Icon, TextField } from '../../../components/component-library';
+import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
+import { Icon } from '../../../components/component-library';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -42,9 +50,7 @@ export default function PrivacySettings() {
   const [ipfsURL, setIPFSURL] = useState('');
   const [ipfsError, setIPFSError] = useState(null);
 
-  const currentNetworkNickname = useSelector(
-    (state) => state.metamask.provider.nickname,
-  );
+  const networks = useSelector((state) => state.metamask.frequentRpcListDetail);
 
   const handleSubmit = () => {
     dispatch(
@@ -168,23 +174,57 @@ export default function PrivacySettings() {
                 ])}
 
                 <Box paddingTop={2}>
-                  {currentNetworkNickname &&
-                  currentNetworkNickname !== MAINNET_DISPLAY_NAME ? (
-                    <Tag label={currentNetworkNickname} />
-                  ) : (
-                    <Button
-                      type="secondary"
-                      rounded
-                      large
-                      onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                      }}
-                      icon={<Icon name="add-outline" marginRight={2} />}
-                    >
-                      {t('onboardingAdvancedPrivacyNetworkButton')}
-                    </Button>
-                  )}
+                  <select
+                    onChange={({ target }) => {
+                      const { value } = target;
+                      if (value === CHAIN_IDS.MAINNET) {
+                        dispatch(
+                          setRpcTarget(
+                            MAINNET_RPC_URL,
+                            CHAIN_IDS.MAINNET,
+                            CURRENCY_SYMBOLS.ETH,
+                            MAINNET_DISPLAY_NAME,
+                          ),
+                        );
+                        return;
+                      }
+
+                      const chosenNetwork = networks.find(
+                        ({ chainId }) => chainId === value,
+                      );
+                      if (chosenNetwork) {
+                        dispatch(
+                          setRpcTarget(
+                            chosenNetwork.rpcUrl,
+                            chosenNetwork.chainId,
+                            chosenNetwork.ticker,
+                            chosenNetwork.nickname,
+                          ),
+                        );
+                      }
+                    }}
+                  >
+                    <option value={CHAIN_IDS.MAINNET}>
+                      {MAINNET_DISPLAY_NAME}
+                    </option>
+                    {networks.map(({ chainId, nickname }) => (
+                      <option key={chainId} value={chainId}>
+                        {nickname}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    type="secondary"
+                    rounded
+                    large
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+                    }}
+                    icon={<Icon name="add-outline" marginRight={2} />}
+                  >
+                    {t('onboardingAdvancedPrivacyNetworkButton')}
+                  </Button>
                 </Box>
               </>
             }
