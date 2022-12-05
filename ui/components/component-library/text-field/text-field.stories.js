@@ -178,6 +178,7 @@ export default {
     size: SIZES.MD,
     type: 'text',
     truncate: false,
+    value: '',
   },
 };
 
