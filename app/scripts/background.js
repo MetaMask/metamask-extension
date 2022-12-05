@@ -29,6 +29,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { RestrictedMethods } from '../../shared/constants/permissions';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -721,9 +722,20 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // Finally, reject all approvals managed by the ApprovalController
-    controller.approvalController.clear(
-      ethErrors.provider.userRejectedRequest(),
+    console.log(controller.approvalController.state.pendingApprovals);
+
+    // Finally, resolve snap dialog approvals and reject all the others managed by the ApprovalController
+    Object.values(controller.approvalController.state.pendingApprovals).forEach(
+      ({ id, type }) => {
+        if (type.startsWith(RestrictedMethods.snap_dialog)) {
+          controller.approvalController.accept(id, null);
+        } else {
+          controller.appStateController.reject(
+            id,
+            ethErrors.provider.userRejectedRequest(),
+          );
+        }
+      },
     );
 
     updateBadge();
