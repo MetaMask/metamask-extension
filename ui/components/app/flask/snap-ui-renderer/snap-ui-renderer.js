@@ -81,8 +81,6 @@ export const SnapUIRenderer = ({ snapId, data }) => {
 
   const sections = mapToTemplate(data);
 
-  console.log(data, sections);
-
   return (
     <SnapDelineator snapName={snap.manifest.proposedName}>
       <MetaMaskTemplateRenderer sections={sections} />
