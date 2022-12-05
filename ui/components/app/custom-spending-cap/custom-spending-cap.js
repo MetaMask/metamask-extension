@@ -90,7 +90,14 @@ export default function CustomSpendingCap({
     } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
       return {
         className: 'custom-spending-cap__higherValue',
-        description: t('inputLogicHigherNumber'),
+        description: t('inputLogicHigherNumber', [
+          <b key="custom-spending-cap-input-bold">
+            {currentTokenBalance} {tokenName}
+          </b>,
+          <b key="custom-spending-cap-future-bold">
+            {inputNumber - currentTokenBalance} {tokenName}
+          </b>,
+        ]),
       };
     }
     return {
