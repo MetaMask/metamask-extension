@@ -2776,13 +2776,24 @@
   dependencies:
     "@metamask/base-controller" "~1.0.0"
 
-"@metamask/approval-controller@^1.0.0", "@metamask/approval-controller@~1.0.0":
+"@metamask/approval-controller@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/approval-controller/-/approval-controller-1.0.0.tgz#2dc8144f89756b955250b183f07ba08e223aa441"
   integrity sha512-iP7SrvvSC6JQ78j6Yy4whs839xq15OAB81Q+UJ6tOqGaT9BpN/PBHeP8x5c1Ov3pCQkBi9Y+n5VlfJz5dGS7+Q==
   dependencies:
     "@metamask/base-controller" "~1.0.0"
     "@metamask/controller-utils" "~1.0.0"
+    eth-rpc-errors "^4.0.0"
+    immer "^9.0.6"
+    nanoid "^3.1.31"
+
+"@metamask/approval-controller@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/approval-controller/-/approval-controller-1.0.1.tgz#903e44e762b209c95d0fc7aed8cb3870d0baead0"
+  integrity sha512-QpIE5z+3wRZyt2cHJ8kbG7xxI+VBLBbo5qUi56/XPTtKn8lo6dpP3oznMVSjdEe926tShLPSR0mHLVaE0saX5w==
+  dependencies:
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/controller-utils" "^1.0.0"
     eth-rpc-errors "^4.0.0"
     immer "^9.0.6"
     nanoid "^3.1.31"
@@ -2824,7 +2835,15 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/base-controller@^1.0.0", "@metamask/base-controller@~1.0.0":
+"@metamask/base-controller@^1.0.0", "@metamask/base-controller@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.1.1.tgz#34c2db471328b92a3a46f9c2547bbb9d37803258"
+  integrity sha512-erDfd+OcHnixSZObPNHuDn2G3rRT2B9J/JaOmjjQN64o9RqDYid87Zb0z03wK8cbJ/pEHhhDIBn6t2gMWcdwrQ==
+  dependencies:
+    "@metamask/controller-utils" "^1.0.0"
+    immer "^9.0.6"
+
+"@metamask/base-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
   integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
@@ -3114,14 +3133,14 @@
     "@metamask/safe-event-emitter" "^2.0.0"
     through2 "^2.0.3"
 
-"@metamask/permission-controller@^1.0.0", "@metamask/permission-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/permission-controller/-/permission-controller-1.0.0.tgz#5f357b34bc98623b0109fda0e5a83aaece872336"
-  integrity sha512-cZqdHw77PWXMxrNLU2gTgMTf3895VlUBfbld8bw2fRkYqybuVyT/risR3Md1ciMWhMek5qMUwD/pk8M+jSkAJw==
+"@metamask/permission-controller@^1.0.0", "@metamask/permission-controller@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/permission-controller/-/permission-controller-1.0.1.tgz#3b75381cdf0fd919fb979a59586afad8aa79bd88"
+  integrity sha512-u3wxPx3WeuCk8W9VMCvwu8ZCBtgZJx2nxBpLNH9niqaOPPnfwbVMNynxa1jQUZJh2acVsZEguGw6syCXe4mKeQ==
   dependencies:
-    "@metamask/approval-controller" "~1.0.0"
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/controller-utils" "~1.0.0"
+    "@metamask/approval-controller" "^1.0.1"
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/controller-utils" "^1.0.0"
     "@metamask/types" "^1.1.0"
     "@types/deep-freeze-strict" "^1.1.0"
     deep-freeze-strict "^1.1.1"
@@ -3322,12 +3341,12 @@
     superstruct "^0.16.7"
 
 "@metamask/subject-metadata-controller@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.0.tgz#a3f3390995c3541981aa4fe6cfcad0d69122f358"
-  integrity sha512-ED6teocVxVQO7ykourRp+USHNg7LsxATBYgquFPkGgyIJAbOVMvHAuWFijhA1SiiuV51M3ehMl9oX3/f6Y7Tkg==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/subject-metadata-controller/-/subject-metadata-controller-1.0.1.tgz#222aad9b8f34a63a24a7d31bf5360ec26a0093a0"
+  integrity sha512-lX5ui2N8jEQwzsJXFf1rCKCuWqVA9UzK9bV7SwbOiANtEmt64/qs1qpjRs5iXfYcA2fxB9UrDgY1lpP3scz67Q==
   dependencies:
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/permission-controller" "~1.0.0"
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/permission-controller" "^1.0.1"
     "@metamask/types" "^1.1.0"
     immer "^9.0.6"
 
