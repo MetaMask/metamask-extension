@@ -114,7 +114,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Give permission to access your TestDappCollectibles (#1)?',
+          'Allow access to and transfer of your TestDappCollectibles (#1)?',
         );
         assert.equal(await func.getText(), 'Function: Approve');
 

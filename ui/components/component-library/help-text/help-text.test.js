@@ -30,7 +30,7 @@ describe('HelpText', () => {
   });
   it('should render with error state', () => {
     const { getByText } = render(<HelpText error>error</HelpText>);
-    expect(getByText('error')).toHaveClass('text--color-error-default');
+    expect(getByText('error')).toHaveClass('mm-text--color-error-default');
   });
   it('should render with different colors', () => {
     const { getByText } = render(
@@ -41,9 +41,9 @@ describe('HelpText', () => {
         <HelpText color={COLORS.INFO_DEFAULT}>info</HelpText>
       </>,
     );
-    expect(getByText('default')).toHaveClass('text--color-text-default');
-    expect(getByText('warning')).toHaveClass('text--color-warning-default');
-    expect(getByText('success')).toHaveClass('text--color-success-default');
-    expect(getByText('info')).toHaveClass('text--color-info-default');
+    expect(getByText('default')).toHaveClass('mm-text--color-text-default');
+    expect(getByText('warning')).toHaveClass('mm-text--color-warning-default');
+    expect(getByText('success')).toHaveClass('mm-text--color-success-default');
+    expect(getByText('info')).toHaveClass('mm-text--color-info-default');
   });
 });
