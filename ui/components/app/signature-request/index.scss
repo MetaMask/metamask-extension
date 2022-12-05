@@ -8,9 +8,17 @@
   flex: 1 1 auto;
   flex-direction: column;
   min-width: 0;
+  width: 408px;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  border-radius: 8px;
 
   @include screen-sm-min {
-    flex: initial;
+    max-height: 55vh;
+    min-height: 570px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -29,7 +37,6 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 25px;
   min-height: min-content;
 
   &__title {

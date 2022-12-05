@@ -140,6 +140,11 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       >
         Signature request
       </h3>
+      <h6
+        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      >
+        Only sign this message if you fully understand the content and trust the requesting site.
+      </h6>
       <div
         class="request-signature__notice"
       >

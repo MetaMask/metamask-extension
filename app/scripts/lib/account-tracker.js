@@ -30,6 +30,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
 } from '../constants/contracts';
+import { previousValueComparator } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -79,8 +80,19 @@ export default class AccountTracker {
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
+    this.onboardingController = opts.onboardingController;
 
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this._updateAccounts();
+        }
+      }, this.onboardingController.store.getState()),
+    );
   }
 
   start() {
@@ -206,6 +218,10 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async _updateAccounts() {
+    const { completedOnboarding } = this.onboardingController.store.getState();
+    if (!completedOnboarding) {
+      return;
+    }
     const { useMultiAccountBalanceChecker } =
       this.preferencesController.store.getState();
 
