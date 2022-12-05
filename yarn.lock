@@ -8168,10 +8168,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/lockfile@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@yarnpkg/lockfile@npm:1.1.0"
-  checksum: 05b881b4866a3546861fee756e6d3812776ea47fa6eb7098f983d6d0eefa02e12b66c3fff931574120f196286a7ad4879ce02743c8bb2be36c6a576c7852083a
+"@yarnpkg/parsers@npm:^3.0.0-rc.6":
+  version: 3.0.0-rc.26
+  resolution: "@yarnpkg/parsers@npm:3.0.0-rc.26"
+  dependencies:
+    js-yaml: ^3.10.0
+    tslib: ^2.4.0
+  checksum: a6a30d4a3dca3efb79800e1dd41fad568e309abbf6042cba35808a1d641be9890675f1e38d40fb61cadc31a16c9d0199f5a7626bb8584c37720bd3a7329ca59f
   languageName: node
   linkType: hard
 
@@ -12399,16 +12402,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cosmiconfig@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "cosmiconfig@npm:7.0.0"
+"cosmiconfig@npm:^7.0.0, cosmiconfig@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "cosmiconfig@npm:7.0.1"
   dependencies:
     "@types/parse-json": ^4.0.0
     import-fresh: ^3.2.1
     parse-json: ^5.0.0
     path-type: ^4.0.0
     yaml: ^1.10.0
-  checksum: 6801feaa0249e9b9fdde5b3d70dc33b4f9c69095bec94d67e3fe08b66eac24dc7e2099f053597cfbc94b743de269aa5d2cfa7da3fde765433423b06bd122941a
+  checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
   languageName: node
   linkType: hard
 
@@ -21212,7 +21215,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0":
+"js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
@@ -22412,27 +22415,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lockfile-lint-api@npm:^5.0.12":
-  version: 5.0.12
-  resolution: "lockfile-lint-api@npm:5.0.12"
+"lockfile-lint-api@npm:5.4.6":
+  version: 5.4.6
+  resolution: "lockfile-lint-api@npm:5.4.6"
   dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    debug: ^4.1.1
-    object-hash: ^2.0.1
-  checksum: 674566b276f24db2256cffdbc48a3a6758473745a26e014bde7d464a4b3cfb7bcb605e47486baa6412a9a20e614243c2b80ee46b5a8240e983c7b0a16ac09bf3
+    "@yarnpkg/parsers": ^3.0.0-rc.6
+    object-hash: ^3.0.0
+  checksum: ed659ad25712126e7385c60bda6dfca38fb292b61114edd2ec8990224c63879208d8183b17548fd13181d1229727ca85b4fd9d4ae474ad209ebe04beaa699144
   languageName: node
   linkType: hard
 
-"lockfile-lint@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "lockfile-lint@npm:4.0.0"
+"lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::locator=metamask-crx%40workspace%3A.":
+  version: 5.4.6
+  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=ae58c6&locator=metamask-crx%40workspace%3A."
   dependencies:
+    "@yarnpkg/parsers": ^3.0.0-rc.6
+    object-hash: ^3.0.0
+  checksum: d08c6b8fbd19330bfebde24917b3ec544a31be0383cbb35d76453bba4d4248218837b04d74cf5cf943306ed5e8a21aea2e28eb0e574d797e5b07288a1e2a02d2
+  languageName: node
+  linkType: hard
+
+"lockfile-lint@npm:^4.9.6":
+  version: 4.9.6
+  resolution: "lockfile-lint@npm:4.9.6"
+  dependencies:
+    cosmiconfig: ^7.0.1
     debug: ^4.1.1
-    lockfile-lint-api: ^5.0.12
-    yargs: ^15.0.2
+    lockfile-lint-api: ^5.4.6
+    yargs: ^16.0.0
   bin:
     lockfile-lint: ./bin/lockfile-lint.js
-  checksum: a32f0fa9f88ad5ee265d2748f32bf5bf1f5d4dcce27eb161d0e46ba17272da876dc7ba1a30f2dbeb4b578474737b4c48f165b24f0fb585b3eeafcd33d1737dcc
+  checksum: f573f3fe111d5499c3a7de8636f330b008123c23ad117102d297c3b5e7085b1524f96be6563e0d151a0e63b1080ac56f45d0c6ffdd7cc02fd3c1e5a496a118cf
   languageName: node
   linkType: hard
 
@@ -23481,7 +23494,7 @@ __metadata:
     lavamoat-browserify: ^15.2.0
     lavamoat-viz: ^6.0.9
     localforage: ^1.9.0
-    lockfile-lint: ^4.0.0
+    lockfile-lint: ^4.9.6
     lodash: ^4.17.21
     loglevel: ^1.4.1
     loose-envify: ^1.4.0
@@ -25089,10 +25102,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-hash@npm:^2.0.1":
-  version: 2.0.3
-  resolution: "object-hash@npm:2.0.3"
-  checksum: ba6a1e48534adafafc98e2f5ea65833dbb721a4945932e2e6cf1710cfe2f9a2fdbc7c037d3a7d8d0c2d5195efc8b11b7b6e57884e3fb1333f377d90e44299b86
+"object-hash@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "object-hash@npm:3.0.0"
+  checksum: 80b4904bb3857c52cc1bfd0b52c0352532ca12ed3b8a6ff06a90cd209dfda1b95cee059a7625eb9da29537027f68ac4619363491eedb2f5d3dddbba97494fd6c
   languageName: node
   linkType: hard
 
@@ -32388,7 +32401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.2.0, tslib@npm:^2.3.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0":
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113

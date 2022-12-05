@@ -53,7 +53,7 @@
     "lint:eslint:fix": "yarn lint:eslint --fix",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe --strategy highest",
-    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname false --allowed-schemes \"https:\" \"git+https:\"",
+    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname true --allowed-schemes \"https:\" \"git+https:\" \"npm:\" \"patch:\" \"workspace:\"",
     "lint:shellcheck": "./development/shellcheck.sh",
     "lint:styles": "stylelint '*/**/*.scss'",
     "lint:styles:fix": "yarn lint:styles --fix",
@@ -184,7 +184,8 @@
     "stylelint@^13.6.1": "patch:stylelint@npm%3A13.6.1#./.yarn/patches/stylelint-npm-13.6.1-47aaddf62b.patch",
     "luxon@^3.1.0": "patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch",
     "luxon@^3.0.1": "patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch",
-    "improved-yarn-audit@^3.0.0": "patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch"
+    "improved-yarn-audit@^3.0.0": "patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch",
+    "lockfile-lint-api@^5.4.6": "patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
@@ -452,7 +453,7 @@
     "lavamoat": "^6.2.0",
     "lavamoat-browserify": "^15.2.0",
     "lavamoat-viz": "^6.0.9",
-    "lockfile-lint": "^4.0.0",
+    "lockfile-lint": "^4.9.6",
     "loose-envify": "^1.4.0",
     "madge": "^5.0.1",
     "mocha": "^7.2.0",
