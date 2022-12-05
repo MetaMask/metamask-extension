@@ -194,10 +194,14 @@ export default function CustomSpendingCap({
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
+            id={
+              value > (currentTokenBalance || error)
+                ? 'custom-spending-cap-input-value'
+                : 'custom-spending-cap'
+            }
           >
             <FormField
               dataTestId="custom-spending-cap-input"
-              autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
                 decConversionGreaterThan(value, currentTokenBalance)
@@ -235,6 +239,7 @@ export default function CustomSpendingCap({
                   </ButtonLink>
                 )
               }
+              suffix={tokenName}
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
             />
             <Box
