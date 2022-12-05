@@ -62,7 +62,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
                 className="snap-insight__container__data"
               >
                 {Object.keys(data).map((key, i) => (
-                  <div key={i}>
+                  <div key={i} data-testid={`${key}-${i}`}>
                     <Typography
                       fontWeight="bold"
                       marginTop={3}
