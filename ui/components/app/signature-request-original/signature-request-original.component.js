@@ -5,7 +5,6 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
@@ -16,6 +15,8 @@ import Typography from '../../ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  COLORS,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
@@ -23,7 +24,6 @@ import SignatureRequestOriginalWarning from './signature-request-original-warnin
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -153,6 +153,16 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('sigRequest')}
         </Typography>
+        <Typography
+          className="request-signature__content__subtitle"
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          align={TEXT_ALIGN.CENTER}
+          margin={12}
+          marginTop={3}
+        >
+          {this.context.t('signatureRequestGuidance')}
+        </Typography>
 
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
@@ -179,18 +189,8 @@ export default class SignatureRequestOriginal extends Component {
   onSubmit = async (event) => {
     const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
       this.props;
-    const { trackEvent, type } = this.context;
 
     await sign(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Confirm',
-      properties: {
-        action: 'Sign Request',
-        legacy_event: true,
-        type,
-      },
-    });
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
@@ -198,18 +198,8 @@ export default class SignatureRequestOriginal extends Component {
   onCancel = async (event) => {
     const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
       this.props;
-    const { trackEvent, type } = this.context;
 
     await cancel(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Cancel',
-      properties: {
-        action: 'Sign Request',
-        legacy_event: true,
-        type,
-      },
-    });
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
@@ -224,7 +214,7 @@ export default class SignatureRequestOriginal extends Component {
       txData: { type },
       hardwareWalletRequiresConnection,
     } = this.props;
-    const { trackEvent, t } = this.context;
+    const { t } = this.context;
 
     return (
       <div className="request-signature__footer">
@@ -234,15 +224,6 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
             await cancel(event);
-            trackEvent({
-              category: EVENT.CATEGORIES.TRANSACTIONS,
-              event: 'Cancel',
-              properties: {
-                action: 'Sign Request',
-                legacy_event: true,
-                type,
-              },
-            });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
@@ -260,15 +241,6 @@ export default class SignatureRequestOriginal extends Component {
               this.setState({ showSignatureRequestWarning: true });
             } else {
               await sign(event);
-              trackEvent({
-                category: EVENT.CATEGORIES.TRANSACTIONS,
-                event: 'Confirm',
-                properties: {
-                  action: 'Sign Request',
-                  legacy_event: true,
-                  type,
-                },
-              });
               clearConfirmTransaction();
               history.push(mostRecentOverviewPage);
             }
@@ -303,13 +275,16 @@ export default class SignatureRequestOriginal extends Component {
 
   render = () => {
     const { messagesCount, conversionRate, nativeCurrency } = this.props;
-    const { fromAccount, showSignatureRequestWarning } = this.state;
+    const {
+      fromAccount: { address, balance, name },
+      showSignatureRequestWarning,
+    } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = conversionUtil(fromAccount.balance, {
+    const balanceInBaseAsset = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -322,10 +297,10 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
-            accountName={fromAccount.name}
+            accountName={name}
             accountBalance={balanceInBaseAsset}
             tokenName={nativeCurrency}
-            accountAddress={fromAccount.address}
+            accountAddress={address}
           />
         </div>
         {this.renderBody()}
@@ -336,8 +311,8 @@ export default class SignatureRequestOriginal extends Component {
         ) : null}
         {showSignatureRequestWarning && (
           <SignatureRequestOriginalWarning
-            senderAddress={fromAccount.address}
-            name={fromAccount.name}
+            senderAddress={address}
+            name={name}
             onSubmit={async (event) => await this.onSubmit(event)}
             onCancel={async (event) => await this.onCancel(event)}
           />

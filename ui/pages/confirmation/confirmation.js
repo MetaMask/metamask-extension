@@ -14,6 +14,7 @@ import { produce } from 'immer';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
+import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   COLORS,
@@ -32,7 +33,11 @@ import NetworkDisplay from '../../components/app/network-display/network-display
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
-import { getTemplateValues, getTemplateAlerts } from './templates';
+import {
+  getTemplateValues,
+  getTemplateAlerts,
+  getTemplateState,
+} from './templates';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -125,6 +130,28 @@ function useAlertState(pendingConfirmation) {
   return [alertState, dismissAlert];
 }
 
+function useTemplateState(pendingConfirmation) {
+  const [templateState, setTemplateState] = useState({});
+  useEffect(() => {
+    let isMounted = true;
+    if (pendingConfirmation) {
+      getTemplateState(pendingConfirmation).then((state) => {
+        if (isMounted && Object.values(state).length > 0) {
+          setTemplateState((prevState) => ({
+            ...prevState,
+            [pendingConfirmation.id]: state,
+          }));
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [pendingConfirmation]);
+
+  return [templateState];
+}
+
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
@@ -140,6 +167,8 @@ export default function ConfirmationPage({
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [templateState] = useTemplateState(pendingConfirmation);
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -200,11 +229,13 @@ export default function ConfirmationPage({
   };
 
   const handleSubmit = () =>
-    templatedValues.onSubmit(
-      hasInputState(pendingConfirmation.type)
-        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
-        : null,
-    );
+    templateState[pendingConfirmation.id]?.useWarningModal
+      ? setShowWarningModal(true)
+      : templatedValues.onSubmit(
+          hasInputState(pendingConfirmation.type)
+            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+            : null,
+        );
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -291,6 +322,15 @@ export default function ConfirmationPage({
           </Box>
         )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        {showWarningModal && (
+          <ConfirmationWarningModal
+            onSubmit={async () => {
+              await templatedValues.onSubmit();
+              setShowWarningModal(false);
+            }}
+            onCancel={templatedValues.onCancel}
+          />
+        )}
       </div>
       <ConfirmationFooter
         alerts={
