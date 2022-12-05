@@ -265,7 +265,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         const gasPriceInput = inputs[1];
         await gasPriceInput.fill('100');
         await driver.waitForSelector({
-          text: '0.00021 ETH',
+          text: '0.0021 ETH',
         });
         await driver.clickElement({ text: 'Save', tag: 'button' });
         await driver.waitForSelector({
