@@ -111,15 +111,4 @@ describe('AvatarIcon', () => {
       'box--background-color-success-muted',
     );
   });
-
-  it('should render with aria-label', () => {
-    const { getByLabelText } = render(
-      <AvatarIcon
-        iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-        ariaLabel="swap"
-      />,
-    );
-
-    expect(getByLabelText('swap')).toBeDefined();
-  });
 });

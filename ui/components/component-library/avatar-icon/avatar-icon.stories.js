@@ -109,13 +109,6 @@ export const IconName = (args) => (
   </Box>
 );
 
-export const AriaLabel = (args) => <AvatarIcon {...args} />;
-
-AriaLabel.args = {
-  ariaLabel: 'Swap',
-  iconName: ICON_NAMES.CHECK_CIRCLE_ON_FILLED,
-};
-
 export const ColorAndBackgroundColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarIcon

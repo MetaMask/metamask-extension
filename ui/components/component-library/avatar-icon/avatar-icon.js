@@ -16,7 +16,6 @@ import {
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
 export const AvatarIcon = ({
-  ariaLabel,
   size = SIZES.MD,
   color = COLORS.PRIMARY_DEFAULT,
   backgroundColor = COLORS.PRIMARY_MUTED,
@@ -27,8 +26,6 @@ export const AvatarIcon = ({
 }) => {
   return (
     <AvatarBase
-      aria-label={ariaLabel}
-      role="img"
       size={size}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
@@ -45,10 +42,6 @@ export const AvatarIcon = ({
 };
 
 AvatarIcon.propTypes = {
-  /**
-   *  String that adds an accessible name for AvatarIcon
-   */
-  ariaLabel: PropTypes.string.isRequired,
   /**
    *
    * The name of the icon to display. Should be one of ICON_NAMES
