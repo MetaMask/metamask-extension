@@ -18,7 +18,7 @@ index 0f0c951027ec83c61769bb6a48943420dff133b8..bad2d251cf376bf3ef4b444a0d49f03a
    )
  }
  /**
-@@ -41,7 +41,25 @@ function yarnParseAndVerify (lockfileBuffer) {
+@@ -41,7 +41,24 @@ function yarnParseAndVerify (lockfileBuffer) {
    if (!hasSensibleContent) {
      throw Error('Lockfile does not seem to contain a valid dependency list')
    }
@@ -32,7 +32,7 @@ index 0f0c951027ec83c61769bb6a48943420dff133b8..bad2d251cf376bf3ef4b444a0d49f03a
 +    let resolvedPackageName;
 +    let host;
 +    if (splitByAt.length > 2 && resolution[0] === '@') {
-+      resolvedPackageName = `${splitByAt[0]}${splitByAt[1]}`;
++      resolvedPackageName = `@${splitByAt[1]}`;
 +      host = splitByAt[2];
 +    } else {
 +      [resolvedPackageName, host] = splitByAt;

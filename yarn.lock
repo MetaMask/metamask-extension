@@ -22052,11 +22052,11 @@ __metadata:
 
 "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::locator=metamask-crx%40workspace%3A.":
   version: 5.4.6
-  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=40b48f&locator=metamask-crx%40workspace%3A."
+  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=ae58c6&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@yarnpkg/parsers": ^3.0.0-rc.6
     object-hash: ^3.0.0
-  checksum: 8c019e8bfa514cbd4d8e38be1e0e9c22ea9ea08892e7b4b9fe86954eff68a45edfe318b49c55b9322cf68ca8e2b68aa0b83fa1eb980f2b721d4b6b5c746e7ac4
+  checksum: d08c6b8fbd19330bfebde24917b3ec544a31be0383cbb35d76453bba4d4248218837b04d74cf5cf943306ed5e8a21aea2e28eb0e574d797e5b07288a1e2a02d2
   languageName: node
   linkType: hard
 
