@@ -257,7 +257,7 @@ export const LeftAccessoryRightAccessory = (args) => {
         onChange={handleOnChange}
         rightAccessory={
           <ButtonIcon
-            name={ICON_NAMES.SCAN_BARCODE_FILLED}
+            iconName={ICON_NAMES.SCAN_BARCODE_FILLED}
             ariaLabel="Scan QR code"
             iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
           />
@@ -459,6 +459,8 @@ CustomInputComponent.propTypes = {
    */
   ...Box.propTypes,
 };
+
+CustomInputComponent.displayName = 'CustomInputComponent';
 
 export const InputComponent = (args) => (
   <TextFieldBase
