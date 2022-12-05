@@ -10,6 +10,8 @@
     align-items: center;
     position: relative;
     height: 100%;
+    margin-left: auto;
+    margin-right: auto;
 
     @include screen-sm-max {
       width: 100%;
@@ -78,7 +80,7 @@
     @include H6;
 
     text-align: center;
-    margin-top: 41px;
+    margin-top: 21px;
     margin-bottom: 11px;
     width: 100%;
   }

@@ -874,6 +874,14 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
+export const getSnap = createSelector(
+  getSnaps,
+  (_, snapId) => snapId,
+  (snaps, snapId) => {
+    return snaps[snapId];
+  },
+);
+
 export function getInsightSnaps(state) {
   const snaps = Object.values(state.metamask.snaps);
   const subjects = getPermissionSubjects(state);
@@ -973,6 +981,7 @@ function getAllowedAnnouncementIds(state) {
     14: false,
     15: false,
     16: true,
+    17: true,
   };
 }
 

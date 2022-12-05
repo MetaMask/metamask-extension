@@ -114,4 +114,12 @@ describe('Signature Request', () => {
 
     expect(props.sign.calledOnce).toStrictEqual(true);
   });
+
+  it('have user warning', () => {
+    const warningText = screen.getByText(
+      'Only sign this message if you fully understand the content and trust the requesting site.',
+    );
+
+    expect(warningText).toBeInTheDocument();
+  });
 });
