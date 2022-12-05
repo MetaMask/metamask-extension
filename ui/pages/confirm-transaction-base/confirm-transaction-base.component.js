@@ -754,7 +754,7 @@ export default class ConfirmTransactionBase extends Component {
   renderInsight() {
     const { txData, insightSnaps } = this.props;
     const { selectedInsightSnapId } = this.state;
-    const { txParams, chainId } = txData;
+    const { txParams, chainId, origin } = txData;
 
     const selectedSnap = insightSnaps.find(
       ({ id }) => id === selectedInsightSnapId,
@@ -790,6 +790,7 @@ export default class ConfirmTransactionBase extends Component {
       >
         <SnapInsight
           transaction={txParams}
+          origin={origin}
           chainId={caip2ChainId}
           selectedSnap={selectedSnap}
         />
@@ -801,6 +802,7 @@ export default class ConfirmTransactionBase extends Component {
       >
         <SnapInsight
           transaction={txParams}
+          origin={origin}
           chainId={caip2ChainId}
           selectedSnap={selectedSnap}
         />

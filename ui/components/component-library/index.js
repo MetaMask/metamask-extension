@@ -6,7 +6,7 @@ export { AvatarWithBadge } from './avatar-with-badge';
 export { AvatarBase } from './avatar-base';
 export { Button } from './button';
 export { ButtonBase } from './button-base';
-export { ButtonIcon } from './button-icon';
+export { ButtonIcon, BUTTON_ICON_SIZES } from './button-icon';
 export { ButtonLink } from './button-link';
 export { ButtonPrimary } from './button-primary';
 export { ButtonSecondary } from './button-secondary';
@@ -17,7 +17,7 @@ export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
-export { Text } from './text';
+export { Text, TEXT_VARIANTS } from './text';
 export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export {
   TextFieldBase,

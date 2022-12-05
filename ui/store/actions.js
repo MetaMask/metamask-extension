@@ -2709,6 +2709,19 @@ export function setUsePhishDetect(val) {
   };
 }
 
+export function setUseMultiAccountBalanceChecker(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseMultiAccountBalanceChecker`);
+    callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

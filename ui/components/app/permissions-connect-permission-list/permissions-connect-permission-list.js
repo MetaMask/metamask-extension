@@ -12,29 +12,19 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
  * @returns {JSX.Element[]} An array of permission description nodes.
  */
 function getDescriptionNodes(t, permissionName, permissionValue) {
-  const { label, leftIcon, rightIcon } = getPermissionDescription(
+  const permissions = getPermissionDescription(
     t,
     permissionName,
     permissionValue,
   );
 
-  if (Array.isArray(label)) {
-    return label.map((labelValue, index) => (
-      <div className="permission" key={`${permissionName}-${index}`}>
-        <i className={leftIcon} />
-        {labelValue}
-        {rightIcon && <i className={rightIcon} />}
-      </div>
-    ));
-  }
-
-  return [
-    <div className="permission" key={permissionName}>
+  return permissions.map(({ label, leftIcon, rightIcon }, index) => (
+    <div className="permission" key={`${permissionName}-${index}`}>
       <i className={leftIcon} />
       {label}
       {rightIcon && <i className={rightIcon} />}
-    </div>,
-  ];
+    </div>
+  ));
 }
 
 export default function PermissionsConnectPermissionList({ permissions }) {

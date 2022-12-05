@@ -110,6 +110,11 @@ function defaultFixture() {
             id: 16,
             isShown: true,
           },
+          17: {
+            date: null,
+            id: 17,
+            isShown: true,
+          },
         },
       },
       AppStateController: {
