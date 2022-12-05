@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { ICON_NAMES } from '..';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
 
 describe('AvatarIcon', () => {
@@ -68,5 +69,57 @@ describe('AvatarIcon', () => {
     expect(getByTestId(AVATAR_ICON_SIZES.XL)).toHaveClass(
       `mm-avatar-base--size-${AVATAR_ICON_SIZES.XL}`,
     );
+  });
+
+  it('should render with added classname', () => {
+    const { getByTestId } = render(
+      <AvatarIcon
+        iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+        ariaLabel="swap"
+        className="mm-avatar-icon--test"
+        data-testid="classname"
+      />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-avatar-icon--test');
+  });
+
+  it('should render with icon', () => {
+    const { getByTestId } = render(
+      <AvatarIcon
+        iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+        ariaLabel="swap"
+        iconProps={{ 'data-testid': 'avatar-icon' }}
+      />,
+    );
+
+    expect(getByTestId('avatar-icon')).toBeDefined();
+  });
+
+  it('should render with success color icon and background color', () => {
+    const { getByTestId } = render(
+      <AvatarIcon
+        iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+        ariaLabel="swap"
+        color={COLORS.SUCCESS_DEFAULT}
+        backgroundColor={COLORS.SUCCESS_MUTED}
+        data-testid="success"
+      />,
+    );
+
+    expect(getByTestId('success')).toHaveClass('box--color-success-default');
+    expect(getByTestId('success')).toHaveClass(
+      'box--background-color-success-muted',
+    );
+  });
+
+  it('should render with aria-label', () => {
+    const { getByLabelText } = render(
+      <AvatarIcon
+        iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+        ariaLabel="swap"
+      />,
+    );
+
+    expect(getByLabelText('swap')).toBeDefined();
   });
 });
