@@ -29,13 +29,12 @@ index 0f0c951027ec83c61769bb6a48943420dff133b8..bad2d251cf376bf3ef4b444a0d49f03a
 +      return [packageName, packageDetails];
 +    }
 +    const splitByAt = resolution.split('@');
-+    let [resolvedPackageName, host] = splitByAt;
-+    if (splitByAt.length > 2) {
++    let resolvedPackageName;
++    let host;
++    if (splitByAt.length > 2 && resolution[0] === '@') {
 +      resolvedPackageName = `${splitByAt[0]}${splitByAt[1]}`;
 +      host = splitByAt[2];
-+    }
-+
-+    if (splitByAt.length > 2 && resolution[0] !== '@') {
++    } else {
 +      [resolvedPackageName, host] = splitByAt;
 +    }
 +
