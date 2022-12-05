@@ -185,7 +185,8 @@
     "luxon@^3.1.0": "patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch",
     "luxon@^3.0.1": "patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch",
     "improved-yarn-audit@^3.0.0": "patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch",
-    "lockfile-lint-api@^5.4.6": "patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch"
+    "lockfile-lint-api@^5.4.6": "patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch",
+    "@lavamoat/snow@^1.2.1": "patch:@lavamoat/snow@npm%3A1.2.1#./.yarn/patches/@lavamoat-snow-npm-1.2.1-6cb0e8f916.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

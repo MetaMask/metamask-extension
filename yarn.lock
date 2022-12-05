@@ -3418,12 +3418,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.2.1":
+"@lavamoat/snow@npm:1.2.1":
   version: 1.2.1
   resolution: "@lavamoat/snow@npm:1.2.1"
   dependencies:
     is-cross-origin: ^1.0.1
   checksum: f079c87253add0e01b3a14d34a72cab9c64e004eb04ba88ec88d69ac91e5094abf6f52e8c71231ed83a4ff98b69cecd325b125c772a9fe71d515d25cd6024849
+  languageName: node
+  linkType: hard
+
+"@lavamoat/snow@patch:@lavamoat/snow@npm%3A1.2.1#./.yarn/patches/@lavamoat-snow-npm-1.2.1-6cb0e8f916.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.2.1
+  resolution: "@lavamoat/snow@patch:@lavamoat/snow@npm%3A1.2.1#./.yarn/patches/@lavamoat-snow-npm-1.2.1-6cb0e8f916.patch::version=1.2.1&hash=d8c9be&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    is-cross-origin: ^1.0.1
+  checksum: 3e4e7043ea7731dc9313fe643ee4368ee5ded5dd250cf71180016f14266e861bb2f74f03b2a1e79d98dc8622725c33bb7831e6fca150cfc276a1439f1c85ff45
   languageName: node
   linkType: hard
 
