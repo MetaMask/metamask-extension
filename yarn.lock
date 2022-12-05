@@ -3418,15 +3418,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@lavamoat/snow@npm:1.2.1"
-  dependencies:
-    is-cross-origin: ^1.0.1
-  checksum: 580a8378a098936d0d4df31abc1f688c57194225414baea0292ece51efcc0865565af5e974784ee5156291380e86da91996efa00637363ceb76335824122a6f4
-  languageName: node
-  linkType: hard
-
 "@lavamoat/snow@npm:^1.3.0":
   version: 1.3.0
   resolution: "@lavamoat/snow@npm:1.3.0"
