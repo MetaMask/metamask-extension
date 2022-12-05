@@ -4266,7 +4266,7 @@
     "message": "Enable transaction security providers"
   },
   "transactionSecurityCheckDescription": {
-    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests. Understand the benefits, risks, and any privacy concerns before enabling a provider. $1",
+    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests. Be sure you understand the potential benefits, risks, and privacy concerns before enabling any provider. $1",
     "description": "$1 is Learn more link"
   },
   "transactionSubmitted": {
