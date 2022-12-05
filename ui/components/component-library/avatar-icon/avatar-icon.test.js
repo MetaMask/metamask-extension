@@ -12,7 +12,6 @@ describe('AvatarIcon', () => {
       <AvatarIcon
         iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
         data-testid="avatar-icon"
-        ariaLabel="swap"
       />,
     );
     expect(getByTestId('avatar-icon')).toBeDefined();
@@ -24,31 +23,26 @@ describe('AvatarIcon', () => {
       <>
         <AvatarIcon
           iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-          ariaLabel={`${AVATAR_ICON_SIZES.XS} icon`}
           size={AVATAR_ICON_SIZES.XS}
           data-testid={AVATAR_ICON_SIZES.XS}
         />
         <AvatarIcon
           iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-          ariaLabel={`${AVATAR_ICON_SIZES.SM} icon`}
           size={AVATAR_ICON_SIZES.SM}
           data-testid={AVATAR_ICON_SIZES.SM}
         />
         <AvatarIcon
           iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-          ariaLabel={`${AVATAR_ICON_SIZES.MD} icon`}
           size={AVATAR_ICON_SIZES.MD}
           data-testid={AVATAR_ICON_SIZES.MD}
         />
         <AvatarIcon
           iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-          ariaLabel={`${AVATAR_ICON_SIZES.LG} icon`}
           size={AVATAR_ICON_SIZES.LG}
           data-testid={AVATAR_ICON_SIZES.LG}
         />
         <AvatarIcon
           iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-          ariaLabel={`${AVATAR_ICON_SIZES.XL} icon`}
           size={AVATAR_ICON_SIZES.XL}
           data-testid={AVATAR_ICON_SIZES.XL}
         />
@@ -75,7 +69,6 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <AvatarIcon
         iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-        ariaLabel="swap"
         className="mm-avatar-icon--test"
         data-testid="classname"
       />,
@@ -87,7 +80,6 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <AvatarIcon
         iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-        ariaLabel="swap"
         iconProps={{ 'data-testid': 'avatar-icon' }}
       />,
     );
@@ -99,7 +91,6 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <AvatarIcon
         iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
-        ariaLabel="swap"
         color={COLORS.SUCCESS_DEFAULT}
         backgroundColor={COLORS.SUCCESS_MUTED}
         data-testid="success"
