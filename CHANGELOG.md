@@ -25,13 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All fields containing the word `Buffer` has also been renamed to `Bytes`
   - Please update your snap to use the latest version 
 
-
 ### Fixed
 - Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
 - Fix Balance not updating when using a duplicated `chainId` network ([#14245](https://github.com/MetaMask/metamask-extension/pull/14245))
 - [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
 - [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
 - [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
+
 ## [10.22.3]
 ### Added
 - [Beta]: Add Beta banner to all screens ([#16307](https://github.com/MetaMask/metamask-extension/pull/16307))
@@ -3337,8 +3337,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...HEAD
-[10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.23.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...HEAD
+[10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...v10.23.0
 [10.22.3]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.22.3
 [10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
 [10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1
