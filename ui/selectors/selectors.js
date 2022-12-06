@@ -956,12 +956,13 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
     13: false,
     14: false,
-    15: true,
+    15: false,
+    16: true,
   };
 }
 
