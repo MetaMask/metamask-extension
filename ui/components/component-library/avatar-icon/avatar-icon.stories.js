@@ -24,9 +24,6 @@ export default {
     },
   },
   argTypes: {
-    ariaLabel: {
-      control: 'text',
-    },
     iconName: {
       options: Object.values(ICON_NAMES),
       control: 'select',
@@ -49,7 +46,6 @@ export default {
   },
   args: {
     size: SIZES.MD,
-    ariaLabel: 'Test Avatar Icon',
   },
 };
 
