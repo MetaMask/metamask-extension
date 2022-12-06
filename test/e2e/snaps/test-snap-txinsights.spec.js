@@ -72,10 +72,11 @@ describe('Test Snap TxInsights', function () {
 
         await driver.delay(1000);
 
-        // switch to test-snaps page and send a tx
+        // switch to test-snaps page and get accounts
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement('#sendInsights');
+        await driver.clickElement('#getAccounts');
+        await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
@@ -92,22 +93,24 @@ describe('Test Snap TxInsights', function () {
           text: 'Connect',
           tag: 'button',
         });
+
+        // switch to test-snaps page and send tx
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
+        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.clickElement('#sendInsights');
         await driver.delay(1000);
+
+        // switch back to MetaMask window and switch to tx insights pane
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.delay(2000);
         await driver.clickElement({
           text: 'TxInsightsTest',
           tag: 'button',
         });
-
-        // Check that the test was successful
-        // windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        // await driver.switchToWindowWithTitle(
-        //   'MetaMask Notification',
-        //   windowHandles,
-        // );
-        // const result = await driver.findElement('#txInsightsData');
-        // await driver.scrollToElement(result);
-        // await driver.delay(1000);
-        // assert.equal(await result.getText(), 'Test Successful');
       },
     );
   });
