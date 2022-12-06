@@ -2395,15 +2395,6 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
-  "notifications16ActionText": {
-    "message": "Try it out here"
-  },
-  "notifications16Description": {
-    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
-  },
-  "notifications16Title": {
-    "message": "Improved token allowance experience"
-  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."

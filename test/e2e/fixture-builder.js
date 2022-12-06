@@ -74,12 +74,12 @@ function defaultFixture() {
               src: 'images/token-detection.svg',
               width: '100%',
             },
-            isShown: false,
+            isShown: true,
           },
           11: {
             date: '2022-09-15',
             id: 11,
-            isShown: false,
+            isShown: true,
           },
           12: {
             date: '2022-05-18',
@@ -98,16 +98,11 @@ function defaultFixture() {
           14: {
             date: '2022-09-15',
             id: 14,
-            isShown: false,
+            isShown: true,
           },
           15: {
             date: '2022-09-15',
             id: 15,
-            isShown: false,
-          },
-          16: {
-            date: null,
-            id: 16,
             isShown: true,
           },
         },

@@ -58,10 +58,6 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 14: true });
       history.push(`${ADVANCED_ROUTE}#backup-userdata`);
     },
-    16: () => {
-      updateViewedNotifications({ 16: true });
-      history.push(EXPERIMENTAL_ROUTE);
-    },
   };
 
   return actionFunctions[id];
