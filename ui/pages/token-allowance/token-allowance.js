@@ -57,6 +57,9 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
+import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 
 export default function TokenAllowance({
   origin,
@@ -231,6 +234,38 @@ export default function TokenAllowance({
 
   const isEmpty = customTokenAmount === '';
 
+  const network = hexToDecimal(fullTxData.chainId);
+
+  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+    .filter((key) =>
+      transactionMatchesNetwork(
+        unapprovedTxs[key],
+        fullTxData.chainId,
+        network,
+      ),
+    )
+    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
+
+  const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
+  const currentPosition = enumUnapprovedTxs.indexOf(
+    fullTxData.id ? fullTxData.id.toString() : '',
+  );
+
+  const totalTx = enumUnapprovedTxs.length;
+  const positionOfCurrentTx = currentPosition + 1;
+  const nextTxId = enumUnapprovedTxs[currentPosition + 1];
+  const prevTxId = enumUnapprovedTxs[currentPosition - 1];
+  const showNavigation = enumUnapprovedTxs.length > 1;
+  const firstTx = enumUnapprovedTxs[0];
+  const lastTx = enumUnapprovedTxs[enumUnapprovedTxs.length - 1];
+
+  const handleNextTx = (txId) => {
+    if (txId) {
+      dispatch(clearConfirmTransaction());
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
+    }
+  };
+
   const renderContractTokenValues = (
     <Box marginTop={4} key={tokenAddress}>
       <ContractTokenValues
@@ -245,7 +280,18 @@ export default function TokenAllowance({
   return (
     <Box className="token-allowance-container page-container">
       <Box>
-        <ConfirmPageContainerNavigation />
+        <ConfirmPageContainerNavigation
+          totalTx={totalTx}
+          positionOfCurrentTx={positionOfCurrentTx}
+          nextTxId={nextTxId}
+          prevTxId={prevTxId}
+          showNavigation={showNavigation}
+          onNextTx={(txId) => handleNextTx(txId)}
+          firstTx={firstTx}
+          lastTx={lastTx}
+          ofText={t('ofTextNofM')}
+          requestsWaitingText={t('requestsAwaitingAcknowledgement')}
+        />
       </Box>
       <Box
         paddingLeft={4}
