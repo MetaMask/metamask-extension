@@ -32,7 +32,7 @@ export default {
     },
   },
   args: {
-    label: 'app.uniswap.org',
+    label: 'https://app.uniswap.org',
     src: 'https://uniswap.org/favicon.ico',
     showLockIcon: true,
     actionButtonLabel: 'Permissions',
@@ -44,10 +44,28 @@ const Template = (args) => <TagUrl {...args} />;
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const ActionButtonLabel = Template.bind({});
-ActionButtonLabel.args = {
-  actionButtonLabel: 'Permissions',
-};
+export const ActionButtonLabel = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+    <TagUrl
+      {...args}
+      label="peepeth.com"
+      src="https://peepeth.com/favicon-32x32.png"
+      actionButtonLabel="Permissions"
+    />
+    <TagUrl
+      {...args}
+      label="1inch.exchange"
+      src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+      actionButtonLabel="Action"
+    />
+    <TagUrl
+      {...args}
+      label="app.uniswap.org"
+      src="https://uniswap.org/favicon.ico"
+      actionButtonLabel="Click"
+    />
+  </Box>
+);
 
 export const ShowLockIcon = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
