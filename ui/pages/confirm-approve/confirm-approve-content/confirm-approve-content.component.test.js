@@ -42,14 +42,14 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Give permission to access your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
-        'By granting permission, you are allowing the following contract to access your funds',
+        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
+    expect(queryByText('Verify contract details')).toBeInTheDocument();
     expect(queryByText('View full transaction details')).toBeInTheDocument();
 
     const editButtons = getAllByText('Edit');
@@ -77,7 +77,13 @@ describe('ConfirmApproveContent Component', () => {
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved asset:')).toBeInTheDocument();
     expect(getByText('Granted to:')).toBeInTheDocument();
-    expect(getByText('0x9bc5...fef4')).toBeInTheDocument();
+    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
     expect(getByText('Data')).toBeInTheDocument();
+    expect(getByText('Function: Approve')).toBeInTheDocument();
+    expect(
+      getByText(
+        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+      ),
+    ).toBeInTheDocument();
   });
 });
