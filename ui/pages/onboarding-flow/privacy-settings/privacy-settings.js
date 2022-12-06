@@ -8,8 +8,6 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   COLORS,
-} from '../../../../shared/constants/network';
-import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
@@ -27,8 +25,6 @@ import {
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Icon, TextField } from '../../../components/component-library';
-import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import { Icon } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import { Setting } from './setting';
