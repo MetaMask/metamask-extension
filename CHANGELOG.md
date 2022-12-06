@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.23.0]
+### Added
+- Add Picker Network Component ([#16340](https://github.com/MetaMask/metamask-extension/pull/16340))
+- Add Button component, unifying primary, secondary and link buttons([#16305](https://github.com/MetaMask/metamask-extension/pull/16305))
+- Add Button Icon component ([#16277](https://github.com/MetaMask/metamask-extension/pull/16277))
+- Swaps: enable Swaps functionality on Arbitrum and Optimism networks ([#16396](https://github.com/MetaMask/metamask-extension/pull/16396))
+- [FLASK] Add snap cronjobs ([#16239](https://github.com/MetaMask/metamask-extension/pull/16239))
+
+### Changed
+- Replace every Address value by the Address component on SignTypedData v4 Signature screen ([#16018](https://github.com/MetaMask/metamask-extension/pull/16018))
+- Update Address component on Transaction data screen by displaying Account name, Contact name, or Contract name when corresponds ([#15888](https://github.com/MetaMask/metamask-extension/pull/15888))
+- Bump `@metamask/providers` from `10.0.0` to `10.2.0` ([#16361](https://github.com/MetaMask/metamask-extension/pull/16361))
+- [FLASK] **BREAKING**: Snaps no longer automatically receive a `Buffer` polyfill ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - To work around this you can either use typed arrays or include a polyfill yourself.
+- [FLASK] **BREAKING**: Snap RPC methods now use `@metamask/key-tree@6.0.0` ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - In the new version, all hexadecimal values are prefixed with `0x`
+  - All fields containing the word `Buffer` has also been renamed to `Bytes`
+  - Please update your snap to use the latest version 
+
+### Fixed
+- Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
+- Fix Balance not updating when using a duplicated `chainId` network ([#14245](https://github.com/MetaMask/metamask-extension/pull/14245))
+- [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
+- [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
+- [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
+
 ## [10.22.3]
 ### Added
 - [Beta]: Add Beta banner to all screens ([#16307](https://github.com/MetaMask/metamask-extension/pull/16307))
@@ -30,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add Aurora network to the Popular Custom Network list ([#16039](https://github.com/MetaMask/metamask-extension/pull/16039))
 - Add array of valid sizes for Box `height` and `width` to support responsive layout ([#16111](https://github.com/MetaMask/metamask-extension/pull/16111))
+- Add Warning on a Send transaction request when user doesn't have funds ([#16220](https://github.com/MetaMask/metamask-extension/pull/16220))
 - [FLASK] Allow snaps insights to show on regular EOA transactions ([#16093](https://github.com/MetaMask/metamask-extension/pull/16093))
 
 ### Changed
@@ -3309,7 +3336,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...HEAD
+[10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...v10.23.0
 [10.22.3]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.22.3
 [10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
 [10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1

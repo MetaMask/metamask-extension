@@ -16,58 +16,78 @@ The `TextField` accepts all props below as well as all [Box](/docs/ui-components
 
 <ArgsTable of={TextField} />
 
-### Show Clear
+### Show Clear Button
 
-Use the `showClear` prop to display a clear button when `TextField` has a value. Clicking the button will clear the value.
-You can also attach an `onClear` handler to the `TextField` to perform additional actions when the clear button is clicked.
+Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input.
+
+The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all props from that component.
+
+**NOTE: The `showClearButton` only works with a controlled input.**
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear" />
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear-button" />
 </Canvas>
 
 ```jsx
 import { TextField } from '../../ui/component-library/text-field';
 
-<TextField showClear />;
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
+<TextField
+  placeholder="Enter text to show clear"
+  value={value}
+  onChange={handleOnChange}
+  showClearButton
+  clearButtonOnClick={handleOnClear}
+/>;
 ```
 
-### On Clear
+### Clear Button Props
 
-Use the `onClear` prop to perform additional actions when the clear button is clicked.
+Use the `clearButtonProps` to access other props of the clear button.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--on-clear" />
+  <Story id="ui-components-component-library-text-field-text-field-stories-js--clear-button-props" />
 </Canvas>
 
 ```jsx
-import { TextField } from '../../ui/component-library/text-field';
-
-<TextField showClear onClear={() => console.log('cleared input')} />;
-```
-
-### Clear Button Props and Clear Button Icon Props
-
-Use the `clearButtonProps` and `clearButtonIconProps` props to pass props to the clear button and clear button icon respectively.
-
-<Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--clear-button-props-clear-button-icon-props" />
-</Canvas>
-
-```jsx
+import React, { useState } from 'react';
 import {
   SIZES,
   COLORS,
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
+
 import { TextField } from '../../ui/component-library/text-field';
 
+const [value, setValue] = useState('show clear');
+
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+const handleOnClear = () => {
+  setValue('');
+};
+
 <TextField
-  showClear
+  placeholder="Enter text to show clear"
+  value={value}
+  onChange={handleOnChange}
+  showClearButton
+  clearButtonOnClick={handleOnClear}
   clearButtonProps={{
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderRadius: BORDER_RADIUS.XS,
     'data-testid': 'clear-button',
   }}
-  clearButtonIconProps={{ size: SIZES.MD }}
 />;
 ```

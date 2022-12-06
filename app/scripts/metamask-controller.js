@@ -27,15 +27,10 @@ import {
   AddressBookController,
   ApprovalController,
   ControllerMessenger,
-  CurrencyRateController,
   PhishingController,
   AnnouncementController,
   GasFeeController,
-  TokenListController,
-  TokensController,
-  TokenRatesController,
   CollectiblesController,
-  AssetsContractController,
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
@@ -46,9 +41,17 @@ import {
   NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
+import {
+  CurrencyRateController,
+  TokenListController,
+  TokensController,
+  TokenRatesController,
+  AssetsContractController,
+} from '@metamask/assets-controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
+  CronjobController,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
@@ -296,7 +299,8 @@ export default class MetamaskController extends EventEmitter {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
+          this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+            const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
               provider: {
@@ -539,6 +543,9 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
+      getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
+        this.networkController,
+      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -664,7 +671,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.9.1',
+        'https://metamask.github.io/iframe-execution-environment/0.10.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -749,6 +756,24 @@ export default class MetamaskController extends EventEmitter {
           return null;
         },
       },
+    });
+    // --- Snaps Cronjob Controller configuration
+    const cronjobControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'CronjobController',
+      allowedEvents: [
+        'SnapController:snapInstalled',
+        'SnapController:snapUpdated',
+        'SnapController:snapRemoved',
+      ],
+      allowedActions: [
+        `${this.permissionController.name}:getPermissions`,
+        'SnapController:handleRequest',
+        'SnapController:getAll',
+      ],
+    });
+    this.cronjobController = new CronjobController({
+      state: initState.CronjobController,
+      messenger: cronjobControllerMessenger,
     });
     ///: END:ONLY_INCLUDE_IN
     this.detectTokensController = new DetectTokensController({
@@ -1041,6 +1066,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
@@ -1082,6 +1108,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
@@ -1130,10 +1157,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        addSnap: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:add',
-        ),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
@@ -2042,7 +2065,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async addCustomNetwork(customRpc) {
+  async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
     await this.preferencesController.addToFrequentRpcList(
@@ -2078,6 +2101,7 @@ export default class MetamaskController extends EventEmitter {
       sensitiveProperties: {
         rpc_url: rpcUrlOrigin,
       },
+      actionId,
     });
   }
 

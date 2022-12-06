@@ -49,6 +49,7 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+    this.exceptions = [];
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -414,7 +415,9 @@ class Driver {
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
+      () =>
+        window.stateHooks.getCleanAppState &&
+        window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
       `${filepathBase}-state.json`,
@@ -434,6 +437,15 @@ class Driver {
     await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
 
     return browserLogs;
+  }
+
+  async checkBrowserForExceptions() {
+    const { exceptions } = this;
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    await this.driver.onLogException(cdpConnection, function (exception) {
+      const { description } = exception.exceptionDetails.exception;
+      exceptions.push(description);
+    });
   }
 
   async checkBrowserForConsoleErrors() {

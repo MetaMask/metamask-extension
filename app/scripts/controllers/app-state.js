@@ -193,11 +193,9 @@ export default class AppStateController extends EventEmitter {
     const { timeoutMinutes } = this.store.getState();
 
     if (this.timer) {
-      if (isManifestV3) {
-        chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-      } else {
-        clearTimeout(this.timer);
-      }
+      clearTimeout(this.timer);
+    } else if (isManifestV3) {
+      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -209,16 +207,11 @@ export default class AppStateController extends EventEmitter {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = alarms.find(
-            (alarm) => alarm.name === AUTO_LOCK_TIMEOUT_ALARM,
-          );
-          if (hasAlarm) {
-            this.onInactiveTimeout();
-            chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+          this.onInactiveTimeout();
+          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+        }
       });
     } else {
       this.timer = setTimeout(

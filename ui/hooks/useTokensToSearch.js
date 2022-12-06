@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
-import { formatIconUrlWithProxy } from '@metamask/controllers';
+import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -65,7 +65,10 @@ export function getRenderableTokenData(
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
     (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
     (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
-    (symbol === CURRENCY_SYMBOLS.AVALANCHE && chainId === CHAIN_IDS.AVALANCHE)
+    (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
+      chainId === CHAIN_IDS.AVALANCHE) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM)
       ? iconUrl
       : formatIconUrlWithProxy({
           chainId: chainIdForTokenIcons,

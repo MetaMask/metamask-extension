@@ -2153,6 +2153,9 @@
   "networkName": {
     "message": "Network name"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2167,6 +2170,9 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
+  },
+  "networkNameOptimism": {
+    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2664,6 +2670,10 @@
     "message": "Connect to the $1 Snap.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "Schedule and execute periodic actions.",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
@@ -2947,6 +2957,10 @@
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
+  "revokeSpendingCap": {
+    "message": "Revoke spending cap for your $1",
+    "description": "$1 is a token symbol"
+  },
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
   },
@@ -3135,7 +3149,8 @@
     "description": "The token symbol that is being approved"
   },
   "setSpendingCap": {
-    "message": "Set a spending cap for your"
+    "message": "Set a spending cap for your $1",
+    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Settings"
@@ -3270,6 +3285,10 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsInsightError": {
+    "message": "An error occured with $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -3287,6 +3306,9 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
+  },
+  "somethingIsWrong": {
+    "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
