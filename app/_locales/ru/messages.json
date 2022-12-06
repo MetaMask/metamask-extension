@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Подтвердить"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Вы предоставляете доступ к $1, включая все, что может принадлежать вам в будущем. Сторона на другом конце может перевести NFT с вашего кошелька в любое время, не спрашивая вас, пока вы не отзовете это одобрение. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "все NFT по этому контракту"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Действуйте с осторожностью."
-  },
   "confirmPassword": {
     "message": "Подтвердить пароль"
   },

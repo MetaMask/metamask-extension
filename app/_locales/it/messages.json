@@ -551,16 +551,6 @@
   "confirm": {
     "message": "Conferma"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Stai concedendo l'accesso a $1, inclusi quelli che potresti possedere in futuro. L'ente a cui stai concedendo l'accesso potrà trasferire NFT dal tuo portafoglio in qualsiasi momento senza chiederti conferma fino a quando non revocherai questa approvazione. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "tutti gli NFT in questo contratto"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Procedi con cautela."
-  },
   "confirmPassword": {
     "message": "Conferma Password"
   },

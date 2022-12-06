@@ -450,25 +450,17 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
-  getTitleTokenDescription() {
+  getTokenName() {
     const {
       tokenId,
       assetName,
-      tokenAddress,
-      rpcPrefs,
-      chainId,
       assetStandard,
       tokenSymbol,
       isSetApproveForAll,
-      userAddress,
     } = this.props;
     const { t } = this.context;
-    const useBlockExplorer =
-      rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
 
     let titleTokenDescription = t('token');
-    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -486,33 +478,46 @@ export default class ConfirmApproveContent extends Component {
       } else {
         titleTokenDescription = t('nft');
       }
+    }
 
-      if (useBlockExplorer) {
-        const blockExplorerLink = getTokenTrackerLink(
-          tokenAddress,
-          chainId,
-          null,
-          userAddress,
-          {
-            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-          },
-        );
-        const blockExplorerElement = (
-          <>
-            <a
-              href={blockExplorerLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={tokenAddress}
-              className="confirm-approve-content__approval-asset-link"
-            >
-              {titleTokenDescription}
-            </a>
-            {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
-          </>
-        );
-        return blockExplorerElement;
-      }
+    return titleTokenDescription;
+  }
+
+  getTitleTokenDescription() {
+    const { tokenId, tokenAddress, rpcPrefs, chainId, userAddress } =
+      this.props;
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+
+    const titleTokenDescription = this.getTokenName();
+    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
+
+    if (useBlockExplorer) {
+      const blockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        userAddress,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const blockExplorerElement = (
+        <>
+          <a
+            href={blockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={tokenAddress}
+            className="confirm-approve-content__approval-asset-link"
+          >
+            {titleTokenDescription}
+          </a>
+          {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+        </>
+      );
+      return blockExplorerElement;
     }
 
     return (

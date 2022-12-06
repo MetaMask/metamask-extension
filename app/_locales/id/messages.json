@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Anda memberikan akses ke $1, termasuk setiap akses yang Anda miliki di masa mendatang. Pihak lain dapat mentransfer NFT dari dompet Anda kapan saja tanpa meminta izin Anda sampai Anda membatalkan persetujuan ini. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "semua NFT dalam kontrak ini"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Lanjutkan dengan hati-hati."
-  },
   "confirmPassword": {
     "message": "Konfirmasikan kata sandi"
   },

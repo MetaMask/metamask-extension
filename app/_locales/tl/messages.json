@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Kumpirmahin"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Nagbibigay ka ng access sa $1, kabilang ang anumang maaaring maging pag-aari mo sa hinaharap. Ang partido sa kabilang panig ay maaaring maglipat ng mga NFT mula sa iyong wallet sa anumang oras nang hindi ka tinatanong hanggang sa bawiin mo ang pag-aprubang ito. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "lahat na NFT sa kontratang ito"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Magpatuloy nang may pag-iingat."
-  },
   "confirmPassword": {
     "message": "Kumpirmahin ang password"
   },
