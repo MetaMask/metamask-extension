@@ -238,7 +238,6 @@ jobs:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-            - build-artifacts/yarn-install-har/
       - run:
           name: Postinstall
           command: |
@@ -316,9 +315,9 @@ jobs:
                 command: yarn build --build-type beta dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod
@@ -356,9 +355,9 @@ jobs:
                 command: yarn build --build-type flask dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod

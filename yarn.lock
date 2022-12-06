@@ -19233,7 +19233,7 @@ __metadata:
 
 "improved-yarn-audit@patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch::locator=metamask-crx%40workspace%3A.":
   version: 3.0.0
-  resolution: "improved-yarn-audit@patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch::version=3.0.0&hash=1e7141&locator=metamask-crx%40workspace%3A."
+  resolution: "improved-yarn-audit@patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch::version=3.0.0&hash=1ed2d1&locator=metamask-crx%40workspace%3A."
   bin:
     improved-yarn-audit: bin/improved-yarn-audit
   checksum: 688411fc37bdb417a23fb203968ca3db8f68bbffd8af4f3817c963d256bfb1675bfbb4d389bf4410a57e95dd55c98b7b6767c37a046c80b0c69b7dad279db915
@@ -22427,7 +22427,7 @@ __metadata:
 
 "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::locator=metamask-crx%40workspace%3A.":
   version: 5.4.6
-  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=ae58c6&locator=metamask-crx%40workspace%3A."
+  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=9339a7&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@yarnpkg/parsers": ^3.0.0-rc.6
     object-hash: ^3.0.0

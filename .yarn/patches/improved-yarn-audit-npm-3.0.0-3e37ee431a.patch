@@ -1,3 +1,7 @@
+# Improved yarn audit is patched to work with yarn version 2+. The primary need
+# is to retool the script to first use yarn's new audit command and parameters
+# as well as to change the process for how it reads the result due to an update
+# in returned shape of audit command's data.
 diff --git a/bin/improved-yarn-audit b/bin/improved-yarn-audit
 index 52df548151aa28289565e3335b2cd7a92fa38325..7e058df6a4a159596df72c9475a36b747580cd98 100755
 --- a/bin/improved-yarn-audit

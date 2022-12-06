@@ -1,3 +1,5 @@
+# Lockfile lint's current version does not work with the updated structure of the yarn v2 lockfile
+# This patch updates it so that it can parse and read the lockfile entries.
 diff --git a/src/ParseLockfile.js b/src/ParseLockfile.js
 index 0f0c951027ec83c61769bb6a48943420dff133b8..bad2d251cf376bf3ef4b444a0d49f03a602d7a6e 100644
 --- a/src/ParseLockfile.js
