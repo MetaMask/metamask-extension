@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, Icon } from '../icon';
+import { Icon } from '../icon';
 import {
   COLORS,
   BORDER_COLORS,
@@ -46,7 +46,7 @@ AvatarIcon.propTypes = {
    *
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  iconName: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */
