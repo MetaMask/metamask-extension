@@ -43,6 +43,26 @@ export default {
     className: {
       control: 'text',
     },
+    marginTop: {
+      options: marginSizeControlOptions,
+      control: 'select',
+      table: { category: 'box props' },
+    },
+    marginRight: {
+      options: marginSizeControlOptions,
+      control: 'select',
+      table: { category: 'box props' },
+    },
+    marginBottom: {
+      options: marginSizeControlOptions,
+      control: 'select',
+      table: { category: 'box props' },
+    },
+    marginLeft: {
+      options: marginSizeControlOptions,
+      control: 'select',
+      table: { category: 'box props' },
+    },
   },
   args: {
     size: SIZES.MD,
