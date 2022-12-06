@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
