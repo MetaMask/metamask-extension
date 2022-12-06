@@ -42,9 +42,24 @@ Use the `showLockIcon` prop to render a lock icon next to the `label`. It's inte
 
 ```jsx
 
-import { TagUrl } from '../../ui/component-library/tag-url';
+import { TagUrl } from '../../ui/component-library';
 
-<TagUrl label="https://app.uniswap.org" showLockIcon/>
+<TagUrl
+  label="peepeth.com"
+  src="https://peepeth.com/favicon-32x32.png"
+  showLockIcon
+/>
+<TagUrl
+  label="1inch.exchange"
+  src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+    showLockIcon
+/>
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+/>
+<TagUrl label="fallback" src="" />
 
 ```
 
@@ -60,9 +75,9 @@ Use the `src` prop with an image url to render the `AvatarFavicon`.
 
 import { TagUrl } from '../../ui/component-library/tag-url';
 
-  <TagUrl src="https://peepeth.com/favicon-32x32.png" />
-  <TagUrl src="https://1inch.exchange/assets/favicon/favicon-32x32.png"/>
-  <TagUrl src="https://uniswap.org/favicon.ico" />
+<TagUrl src="https://peepeth.com/favicon-32x32.png" />
+<TagUrl src="https://1inch.exchange/assets/favicon/favicon-32x32.png"/>
+<TagUrl src="https://uniswap.org/favicon.ico" />
 
 ```
 
@@ -78,8 +93,8 @@ Use the `label` prop for the text content of the `TagUrl` component
 
 import { TagUrl } from '../../ui/component-library/tag-url';
 
-  <TagUrl label="https://peepeth.com" />
-  <TagUrl label="app.uniswap.org" />
-  <TagUrl label="https://metamask.github.io" />
+<TagUrl label="https://peepeth.com" />
+<TagUrl label="app.uniswap.org" />
+<TagUrl label="https://metamask.github.io" />
 
 ```
