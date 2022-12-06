@@ -207,6 +207,28 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "It's important that your provider is reliable, as it has the power to:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "See your accounts and IP address, and associate them together"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Show account balances and other on-chain states"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Broadcast your transactions"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "You are adding a new RPC provider for Ethereum Mainnet"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -343,6 +365,13 @@
     "message": "Approve $1 spend limit",
     "description": "The token symbol that is being approved"
   },
+  "approveTokenDescription": {
+    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenTitle": {
+    "message": "Allow access to and transfer of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approved": {
     "message": "Approved"
   },
@@ -438,21 +467,31 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a BETA version. Please report bugs $1",
+    "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Beta version disclaimer"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "By proceeding, you accept and acknowledge these risks, our $1, and $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Beta Terms"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
+    "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -461,13 +500,13 @@
     "message": "beta portfolio site"
   },
   "betaTerms": {
-    "message": "BETA Terms of use"
+    "message": "Beta Terms of use"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -626,16 +665,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "all the NFTs on this contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Proceed with caution."
-  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -741,6 +770,10 @@
   "contacts": {
     "message": "Contacts"
   },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -773,6 +806,15 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractNFT": {
+    "message": "NFT contract"
+  },
+  "contractRequestingAccess": {
+    "message": "Contract requesting access"
+  },
+  "contractRequestingSignature": {
+    "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
@@ -958,6 +1000,9 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
+  },
+  "deposit": {
+    "message": "Deposit"
   },
   "depositCrypto": {
     "message": "Deposit $1",
@@ -1737,6 +1782,10 @@
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
   },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or $4 from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
+  },
   "insufficientCurrencyDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network"
@@ -2275,6 +2324,17 @@
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
+  "nftWarningContent": {
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "all your $1 NFTs",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "Proceed with caution."
+  },
   "nfts": {
     "message": "NFTs"
   },
@@ -2407,6 +2467,15 @@
   },
   "notifications16Title": {
     "message": "Improved token allowance experience"
+  },
+  "notifications17ActionText": {
+    "message": "Show Security & Privacy settings"
+  },
+  "notifications17Description": {
+    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  },
+  "notifications17Title": {
+    "message": "Security & Privacy Settings"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
@@ -2614,6 +2683,10 @@
   "osTheme": {
     "message": "System"
   },
+  "otherSnaps": {
+    "message": "other snaps",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "padlock": {
     "message": "Padlock"
   },
@@ -2693,9 +2766,21 @@
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Display dialog windows in MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_ethereumProvider": {
+    "message": "Access the Ethereum provider.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive arbitrary keys unique to this snap.",
+    "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
     "message": "Run indefinitely.",
@@ -2717,9 +2802,17 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "Allow $1 to communicate directly with this snap.",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -2854,6 +2947,12 @@
   },
   "rejectAll": {
     "message": "Reject all"
+  },
+  "rejectRequestsDescription": {
+    "message": "You are about to batch reject $1 requests."
+  },
+  "rejectRequestsN": {
+    "message": "Reject $1 requests"
   },
   "rejectTxsDescription": {
     "message": "You are about to batch reject $1 transactions."
@@ -3228,14 +3327,17 @@
   "sign": {
     "message": "Sign"
   },
-  "signNotice": {
-    "message": "Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site."
-  },
   "signatureRequest": {
     "message": "Signature request"
   },
   "signatureRequest1": {
     "message": "Message"
+  },
+  "signatureRequestGuidance": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
+  },
+  "signatureRequestWarning": {
+    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -4126,6 +4228,12 @@
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
+  "transactionSecurityCheck": {
+    "message": "Transaction security check"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
@@ -4252,6 +4360,12 @@
   "useDefault": {
     "message": "Use default"
   },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  },
   "usePhishingDetection": {
     "message": "Use phishing detection"
   },
@@ -4368,6 +4482,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "websites",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "Welcome to MetaMask"
   },
@@ -4425,6 +4543,12 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Your funds may be at risk"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"

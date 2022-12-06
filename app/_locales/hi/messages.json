@@ -598,16 +598,6 @@
   "confirm": {
     "message": "पुष्टि करें"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "आप $1 तक ऐक्सेस प्रदान कर रहे हैं, इसमें वह भी शामिल है जिसे आप भविष्य में प्राप्त कर सकते हैं। दूसरी ओर की पार्टी आपसे पूछे बिना किसी भी समय आपके वॉलेट से NFTs ट्रान्स्फर कर सकती है, जब तक आप इस स्वीकृति को रद्द नहीं करते। $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "इस अनुबंध में सभी NFTs"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "सावधानी के साथ आगे बढ़ें।"
-  },
   "confirmPassword": {
     "message": "पासवर्ड की पुष्टि करें"
   },
@@ -3138,9 +3128,6 @@
   },
   "sign": {
     "message": "हस्ताक्षर करें"
-  },
-  "signNotice": {
-    "message": "इस संदेश पर हस्ताक्षर करना खतरनाक हो सकता है। यह हस्ताक्षर संभावित रूप से आपके खाते की ओर से कोई भी संचालन कर सकता है, जिसमें अनुरोध करने वाली साइट को आपके खाते और उसकी सभी संपत्तियों पर पूर्ण नियंत्रण प्रदान करना शामिल है। इस संदेश पर केवल तभी हस्ताक्षर करें जब आप जानते हों कि आप क्या कर रहे हैं या अनुरोध करने वाली साइट पर पूरा भरोसा है"
   },
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"

@@ -7,7 +7,7 @@ exports[`Button should render button element correctly 1`] = `
     data-testid="button"
   >
     <span
-      class="box text mm-button__content text--body-md text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button
     </span>
@@ -22,7 +22,7 @@ exports[`Button should render with different button types 1`] = `
     data-testid="primary"
   >
     <span
-      class="box text mm-button__content text--body-md text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button
     </span>
@@ -32,17 +32,17 @@ exports[`Button should render with different button types 1`] = `
     data-testid="secondary"
   >
     <span
-      class="box text mm-button__content text--body-md text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button
     </span>
   </button>
   <button
-    class="box mm-button mm-button--size-md mm-button-link box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+    class="box mm-button mm-button--size-md mm-button-link box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-transparent"
     data-testid="link"
   >
     <span
-      class="box text mm-button__content text--body-md text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button
     </span>

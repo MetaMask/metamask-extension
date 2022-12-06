@@ -110,6 +110,11 @@ function defaultFixture() {
             id: 16,
             isShown: true,
           },
+          17: {
+            date: null,
+            id: 17,
+            isShown: true,
+          },
         },
       },
       AppStateController: {
@@ -230,7 +235,7 @@ function defaultFixture() {
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -343,7 +348,7 @@ function onboardingFixture() {
         },
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -412,9 +417,9 @@ class FixtureBuilder {
 
   withCollectiblesController(data) {
     merge(
-      this.fixture.data.CollectiblesController
-        ? this.fixture.data.CollectiblesController
-        : (this.fixture.data.CollectiblesController = {}),
+      this.fixture.data.NftController
+        ? this.fixture.data.NftController
+        : (this.fixture.data.NftController = {}),
       data,
     );
     return this;

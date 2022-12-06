@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Bạn đang cấp quyền truy cập vào $1, bao gồm bất cứ tài sản nào mà bạn có thể sở hữu trong tương lai. Bên được cấp quyền có thể chuyển NFT khỏi ví của bạn bất cứ lúc nào mà không cần hỏi bạn cho đến khi bạn thu hồi sự chấp thuận này. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "tất cả NFT trên hợp đồng này"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Hãy tiến hành thận trọng."
-  },
   "confirmPassword": {
     "message": "Xác nhận mật khẩu"
   },
@@ -3138,9 +3128,6 @@
   },
   "sign": {
     "message": "Ký"
-  },
-  "signNotice": {
-    "message": "Việc ký vào thông báo này có thể gây nguy hiểm. Chữ ký này có thể được dùng để thực hiện bất kỳ hành động nào thay mặt cho tài khoản của bạn, bao gồm cả cấp toàn quyền kiểm soát tài khoản và tất cả tài sản bên trong cho trang web yêu cầu. Chỉ ký vào thông báo này nếu bạn biết mình đang làm gì hoặc hoàn toàn tin tưởng trang web yêu cầu."
   },
   "signatureRequest": {
     "message": "Yêu cầu chữ ký"

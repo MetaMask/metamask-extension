@@ -14,14 +14,16 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useCollectibleDetection: PropTypes.bool,
-    setUseCollectibleDetection: PropTypes.func,
+    useNftDetection: PropTypes.bool,
+    setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
     improvedTokenAllowanceEnabled: PropTypes.bool,
     setImprovedTokenAllowanceEnabled: PropTypes.func,
+    transactionSecurityCheckEnabled: PropTypes.bool,
+    setTransactionSecurityCheckEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -52,8 +54,8 @@ export default class ExperimentalTab extends PureComponent {
 
     const { t } = this.context;
     const {
-      useCollectibleDetection,
-      setUseCollectibleDetection,
+      useNftDetection,
+      setUseNftDetection,
       openSeaEnabled,
       setOpenSeaEnabled,
     } = this.props;
@@ -72,7 +74,7 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={useCollectibleDetection}
+              value={useNftDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
@@ -85,7 +87,7 @@ export default class ExperimentalTab extends PureComponent {
                 if (!value && !openSeaEnabled) {
                   setOpenSeaEnabled(!value);
                 }
-                setUseCollectibleDetection(!value);
+                setUseNftDetection(!value);
               }}
               offLabel={t('off')}
               onLabel={t('on')}
@@ -104,8 +106,8 @@ export default class ExperimentalTab extends PureComponent {
     const {
       openSeaEnabled,
       setOpenSeaEnabled,
-      useCollectibleDetection,
-      setUseCollectibleDetection,
+      useNftDetection,
+      setUseNftDetection,
     } = this.props;
 
     return (
@@ -133,8 +135,8 @@ export default class ExperimentalTab extends PureComponent {
                   },
                 });
                 // value is positive when being toggled off
-                if (value && useCollectibleDetection) {
-                  setUseCollectibleDetection(false);
+                if (value && useNftDetection) {
+                  setUseNftDetection(false);
                 }
                 setOpenSeaEnabled(!value);
               }}
@@ -198,7 +200,7 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('improvedTokenAllowance')}</span>
           <div className="settings-page__content-description">
@@ -229,9 +231,51 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderTransactionSecurityCheckToggle() {
+    const { t } = this.context;
+
+    const {
+      transactionSecurityCheckEnabled,
+      setTransactionSecurityCheckEnabled,
+    } = this.props;
+
+    return (
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('transactionSecurityCheck')}</span>
+          <div className="settings-page__content-description">
+            {t('transactionSecurityCheckDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={transactionSecurityCheckEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Enabled/Disable TransactionSecurityCheck',
+                  properties: {
+                    action: 'Enabled/Disable TransactionSecurityCheck',
+                    legacy_event: true,
+                  },
+                });
+                setTransactionSecurityCheckEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
+        {process.env.TRANSACTION_SECURITY_PROVIDER &&
+          this.renderTransactionSecurityCheckToggle()}
         {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}

@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Confirmar"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Você está concedendo acesso a $1, incluindo todos os que vier a adquirir. A parte na outra ponta pode transferir NFTs de sua carteira a qualquer momento, sem consultá-lo, até que você revogue essa aprovação. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "todos os NFTs neste contrato"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Prossiga com cautela."
-  },
   "confirmPassword": {
     "message": "Confirmar Palavra-passe"
   },
@@ -3138,9 +3128,6 @@
   },
   "sign": {
     "message": "Assinar"
-  },
-  "signNotice": {
-    "message": "Assinar esta mensagem pode ter \nefeitos laterais perigosos. Apenas assine mensagens de sites que \ntotalmente confia com a sua conta total.\n Este método perigoso será removido numa versão posterior."
   },
   "signatureRequest": {
     "message": "Pedido de assinatura"

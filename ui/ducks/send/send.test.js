@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -12,6 +13,7 @@ import {
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import {
   ASSET_TYPES,
   TOKEN_STANDARDS,
@@ -128,7 +130,7 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
     jest
-      .spyOn(Actions, 'isCollectibleOwner')
+      .spyOn(Actions, 'isNftOwner')
       .mockImplementation(() => Promise.resolve(true));
     jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
       type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
@@ -855,7 +857,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
+          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
         );
       });
 
@@ -1276,7 +1278,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: 'HD Key Tree',
+                type: KEYRING_TYPES.HD_KEY_TREE,
                 accounts: ['0xAddress'],
               },
             ],
@@ -2107,7 +2109,7 @@ describe('Send Slice', () => {
         expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[9].type).toStrictEqual('DNS/resetDomainResolution');
         expect(actionResult[10].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
@@ -2566,9 +2568,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(
-          editExistingTransaction(ASSET_TYPES.COLLECTIBLE, 1),
-        );
+        await store.dispatch(editExistingTransaction(ASSET_TYPES.NFT, 1));
         const actionResult = store.getActions();
         expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
@@ -2635,7 +2635,7 @@ describe('Send Slice', () => {
                 tokenId: '15000',
               },
               error: null,
-              type: ASSET_TYPES.COLLECTIBLE,
+              type: ASSET_TYPES.NFT,
             },
             initialAssetSet: true,
           },
@@ -3114,7 +3114,14 @@ describe('Send Slice', () => {
         expect(
           getSendTo({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('');
         expect(
@@ -3122,7 +3129,14 @@ describe('Send Slice', () => {
             send: getInitialSendStateWithExistingTxState({
               recipient: { address: '0xb' },
             }),
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              addressBook: {},
+              identities: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('0xb');
       });
@@ -3163,7 +3177,14 @@ describe('Send Slice', () => {
         expect(
           getRecipient({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toMatchObject(
           getTestUUIDTx(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT).recipient,

@@ -27,10 +27,10 @@ const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
+const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
-const phishingWarningManifest = require('../../node_modules/@metamask/phishing-warning/package.json');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -1044,6 +1044,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
+    TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
   };
 }
 

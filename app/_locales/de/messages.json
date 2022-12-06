@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Bestätigen"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Sie gewähren den Zugriff auf $1, auch auf solche, die Sie in Zukunft besitzen könnten. Die Gegenseite kann jederzeit NFTs aus Ihrer Brieftasche übertragen, ohne Sie zu fragen, bis Sie diese Genehmigung widerrufen. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "alle NFTs in diesem Contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Seien Sie vorsichtig."
-  },
   "confirmPassword": {
     "message": "Passwort bestätigen"
   },
@@ -1853,7 +1843,7 @@
     "message": "Richtungspfeil"
   },
   "lightTheme": {
-    "message": "Leicht"
+    "message": "Hell"
   },
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
@@ -3138,9 +3128,6 @@
   },
   "sign": {
     "message": "Unterschreiben"
-  },
-  "signNotice": {
-    "message": "Das Unterschreiben dieser Nachricht kann gefährliche Nebeneffekte haben. Bitte nur Nachrichten von Webseiten unterschreiben denen du deinen vollständigen Account anvertrauen würdest. Diese gefährliche Variante wird in zukünftigen Versionen entfernt werden."
   },
   "signatureRequest": {
     "message": "Unterschriftsanfrage"

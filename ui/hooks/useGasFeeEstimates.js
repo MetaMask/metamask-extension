@@ -13,10 +13,10 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * @typedef {object} GasEstimates
  * @property {GasEstimateTypes} gasEstimateType - The type of estimate provided
  * @property {import(
- *   '@metamask/controllers'
+ *   '@metamask/gas-fee-controller'
  * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
  * @property {import(
- *   '@metamask/controllers'
+ *   '@metamask/gas-fee-controller'
  * ).GasFeeState['estimatedGasFeeTimeBounds']} [estimatedGasFeeTimeBounds] -
  *  estimated time boundaries for fee-market type estimates
  * @property {boolean} isGasEstimateLoading - indicates whether the gas
