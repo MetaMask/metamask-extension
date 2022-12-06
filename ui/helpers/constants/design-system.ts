@@ -51,75 +51,87 @@ export const COLORS = {
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
-};
-export const BACKGROUND_COLORS = pick(COLORS, [
-  'BACKGROUND_DEFAULT',
-  'BACKGROUND_ALTERNATIVE',
-  'OVERLAY_DEFAULT',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_ALTERNATIVE',
-  'PRIMARY_MUTED',
-  'ERROR_DEFAULT',
-  'ERROR_ALTERNATIVE',
-  'ERROR_MUTED',
-  'WARNING_DEFAULT',
-  'WARNING_ALTERNATIVE',
-  'WARNING_MUTED',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_ALTERNATIVE',
-  'SUCCESS_MUTED',
-  'INFO_DEFAULT',
-  'INFO_ALTERNATIVE',
-  'INFO_MUTED',
-  'MAINNET',
-  'GOERLI',
-  'SEPOLIA',
-  'TRANSPARENT',
-  'LOCALHOST',
-]);
+} as const;
 
-export const BORDER_COLORS = pick(COLORS, [
-  'BORDER_DEFAULT',
-  'BORDER_MUTED',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_ALTERNATIVE',
-  'PRIMARY_MUTED',
-  'ERROR_DEFAULT',
-  'ERROR_ALTERNATIVE',
-  'ERROR_MUTED',
-  'WARNING_DEFAULT',
-  'WARNING_ALTERNATIVE',
-  'WARNING_MUTED',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_ALTERNATIVE',
-  'SUCCESS_MUTED',
-  'INFO_DEFAULT',
-  'INFO_ALTERNATIVE',
-  'INFO_MUTED',
-  'MAINNET',
-  'GOERLI',
-  'SEPOLIA',
-  'TRANSPARENT',
-  'LOCALHOST',
-]);
+type COLORS = typeof COLORS[keyof typeof COLORS];
 
-export const TEXT_COLORS = pick(COLORS, [
-  'TEXT_DEFAULT',
-  'TEXT_ALTERNATIVE',
-  'TEXT_MUTED',
-  'OVERLAY_INVERSE',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_INVERSE',
-  'ERROR_DEFAULT',
-  'ERROR_INVERSE',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_INVERSE',
-  'WARNING_DEFAULT',
-  'WARNING_INVERSE',
-  'INFO_DEFAULT',
-  'INFO_INVERSE',
-  'INHERIT',
-]);
+export type BACKGROUND_COLORS = Extract<
+  COLORS,
+  
+    COLORS.BACKGROUND_DEFAULT |
+    COLORS.BACKGROUND_ALTERNATIVE |
+    COLORS.OVERLAY_DEFAULT |
+    COLORS.PRIMARY_DEFAULT |
+    COLORS.PRIMARY_ALTERNATIVE |
+    COLORS.PRIMARY_MUTED |
+    COLORS.ERROR_DEFAULT |
+    COLORS.ERROR_ALTERNATIVE |
+    COLORS.ERROR_MUTED |
+    COLORS.WARNING_DEFAULT |
+    COLORS.WARNING_ALTERNATIVE |
+    COLORS.WARNING_MUTED |
+    COLORS.SUCCESS_DEFAULT |
+    COLORS.SUCCESS_ALTERNATIVE |
+    COLORS.SUCCESS_MUTED |
+    COLORS.INFO_DEFAULT |
+    COLORS.INFO_ALTERNATIVE |
+    COLORS.INFO_MUTED |
+    COLORS.MAINNET |
+    COLORS.GOERLI |
+    COLORS.SEPOLIA |
+    COLORS.TRANSPARENT |
+    COLORS.LOCALHOST |
+  
+>;
+
+export type BORDER_COLORS = Extract<
+  COLORS,
+  [
+    'border-besdefault',
+    'border-muted',
+    'primary-default',
+    'primary-alternative',
+    'primary-muted',
+    'error-default',
+    'error-alternative',
+    'error-muted',
+    'warning-default',
+    'warning-alternative',
+    'warning-muted',
+    'success-default',
+    'success-alternative',
+    'success-muted',
+    'info-default',
+    'info-alternative',
+    'info-muted',
+    'mainnet',
+    'goerli',
+    'sepolia',
+    'transparent',
+    'localhost',
+  ]
+>;
+
+export type TEXT_COLORS = Extract<
+  COLORS,
+  [
+    'text-default',
+    'text-alternative',
+    'text-muted',
+    'overlay-inverse',
+    'primary-default',
+    'primary-inverse',
+    'error-default',
+    'error-inverse',
+    'success-default',
+    'success-inverse',
+    'warning-default',
+    'warning-inverse',
+    'info-default',
+    'info-inverse',
+    'inherit',
+  ]
+>;
 
 export const ICON_COLORS = pick(COLORS, [
   'ICON_DEFAULT',
