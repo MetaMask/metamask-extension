@@ -179,7 +179,7 @@ export const DefaultStory = (args) => {
                   backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
                   rightAccessory={
                     <ButtonIcon
-                      icon={ICON_NAMES.COPY_FILLED}
+                      iconName={ICON_NAMES.COPY_FILLED}
                       size={SIZES.SM}
                       color={COLORS.ICON_ALTERNATIVE}
                       ariaLabel="Copy to clipboard"
