@@ -108,7 +108,11 @@ describe('TagUrl', () => {
   // className
   it('should render with custom className', () => {
     const { getByTestId } = render(
-      <TagUrl data-testid="tag-url" className="test-class" />,
+      <TagUrl
+        label="app.uniswap.org"
+        data-testid="tag-url"
+        className="test-class"
+      />,
     );
     expect(getByTestId('tag-url')).toHaveClass('test-class');
   });
