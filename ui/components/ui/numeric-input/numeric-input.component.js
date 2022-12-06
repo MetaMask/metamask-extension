@@ -26,10 +26,8 @@ export default function NumericInput({
     const valueString = String(value);
     const valueLength = valueString.length || 1;
     const decimalPointDeficit = valueString.match(/,/u) ? -0.5 : 0;
-    console.log(valueString.match(/1/gu));
-    const onePointDeficit = valueString.match(/1/gu)?.length * -0.5 || 0;
-    console.log('onePointDeficit', onePointDeficit);
-    return `${3 + valueLength + decimalPointDeficit + onePointDeficit}ch`;
+    const oneSizeDeficit = valueString.match(/1/gu)?.length * -0.5 || 0;
+    return `${3 + valueLength + decimalPointDeficit + oneSizeDeficit}ch`;
   };
 
   return (
