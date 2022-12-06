@@ -44,7 +44,9 @@ export default function PrivacySettings() {
   const [ipfsURL, setIPFSURL] = useState('');
   const [ipfsError, setIPFSError] = useState(null);
 
-  const networks = useSelector((state) => state.metamask.frequentRpcListDetail);
+  const networks = useSelector(
+    (state) => state.metamask.frequentRpcListDetail || [],
+  );
 
   const handleSubmit = () => {
     dispatch(
