@@ -2559,10 +2559,10 @@
     through2 "^4.0.2"
     umd "^3.0.3"
 
-"@lavamoat/snow@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.2.1.tgz#87587e46940b26a966b665e62cd867d0cfbce47e"
-  integrity sha512-gC4oyvjNkFOOjhL9W4wP1YC0dcdQJPYKNW8fbwcP5iYogLL2fs1KIsHoF41WIhuWQ9mUdfg1jKBCTq41m+5VSw==
+"@lavamoat/snow@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.3.0.tgz#f819e4a3fbb09e4a061af4cbb2168dcc7a7d3ad4"
+  integrity sha512-U+dZAmbX6NRcczAJXxd5C0LqbA5hMkX5oOCs+i91lnQuAbCWNS1eH2otv73ILO7vI3YfU3KQxk/xPC1O66qAnw==
   dependencies:
     is-cross-origin "^1.0.1"
 

@@ -11,6 +11,7 @@ export default function Dialog(props) {
         'dialog--error': type === 'error',
         'dialog--warning': type === 'warning',
       })}
+      data-testid="dialog-message"
       onClick={onClick}
     >
       {children}
