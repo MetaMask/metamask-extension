@@ -32,6 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
 - [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
 - [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
+## [10.22.3]
+### Added
+- [Beta]: Add Beta banner to all screens ([#16307](https://github.com/MetaMask/metamask-extension/pull/16307))
+
+### Changed
+- [Beta]: Update MetaMask logo imagery ([#16304](https://github.com/MetaMask/metamask-extension/pull/16304))
+- [Beta]: Update MetaMask long logo to new imagery ([#16505](https://github.com/MetaMask/metamask-extension/pull/16505))
 
 ## [10.22.2]
 ### Changed
@@ -3331,6 +3338,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...HEAD
 [10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.23.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...HEAD
+[10.22.3]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.22.3
 [10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
 [10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1
 [10.22.0]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.0
