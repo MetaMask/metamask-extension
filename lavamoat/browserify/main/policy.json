@@ -1444,6 +1444,12 @@
         "browserify>buffer": true
       }
     },
+    "@ngraveio/bc-ur>crc>buffer": {
+      "packages": {
+        "base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
@@ -2462,8 +2468,8 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -2508,6 +2514,13 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/utils": {
+      "packages": {
+        "@metamask/snaps-utils>superstruct": true,
+        "eslint>fast-deep-equal": true,
+        "nock>debug": true
       }
     },
     "eth-keyring-controller": {
@@ -2625,9 +2638,17 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": true,
+        "ethereumjs-util": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
         "ethereumjs-util": true
       }
     },
@@ -5272,6 +5293,68 @@
       },
       "packages": {
         "@babel/runtime": true
+      }
+    },
+    "remote-redux-devtools": {
+      "packages": {
+        "remote-redux-devtools>jsan": true,
+        "remote-redux-devtools>redux-devtools-core": true,
+        "remote-redux-devtools>redux-devtools-instrument": true,
+        "remote-redux-devtools>rn-host-detect": true,
+        "remote-redux-devtools>socketcluster-client": true
+      }
+    },
+    "remote-redux-devtools>redux-devtools-core": {
+      "packages": {
+        "lodash": true,
+        "nanoid": true,
+        "remote-redux-devtools>jsan": true,
+        "remote-redux-devtools>redux-devtools-core>get-params": true,
+        "remote-redux-devtools>redux-devtools-core>remotedev-serialize": true
+      }
+    },
+    "remote-redux-devtools>redux-devtools-instrument": {
+      "packages": {
+        "browserify>process": true,
+        "lodash": true,
+        "remote-redux-devtools>redux-devtools-instrument>symbol-observable": true
+      }
+    },
+    "remote-redux-devtools>socketcluster-client": {
+      "globals": {
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ngraveio/bc-ur>crc>buffer": true,
+        "browserify>querystring-es3": true,
+        "remote-redux-devtools>socketcluster-client>buffer": true,
+        "remote-redux-devtools>socketcluster-client>clone": true,
+        "remote-redux-devtools>socketcluster-client>component-emitter": true,
+        "remote-redux-devtools>socketcluster-client>linked-list": true,
+        "remote-redux-devtools>socketcluster-client>sc-channel": true,
+        "remote-redux-devtools>socketcluster-client>sc-errors": true,
+        "remote-redux-devtools>socketcluster-client>sc-formatter": true,
+        "remote-redux-devtools>socketcluster-client>uuid": true
+      }
+    },
+    "remote-redux-devtools>socketcluster-client>buffer": {
+      "packages": {
+        "base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
+    "remote-redux-devtools>socketcluster-client>clone": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "remote-redux-devtools>socketcluster-client>sc-channel": {
+      "packages": {
+        "base64-js": true,
+        "remote-redux-devtools>socketcluster-client>component-emitter": true,
+        "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
       }
     },
     "safe-event-emitter": {
