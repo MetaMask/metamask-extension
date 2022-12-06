@@ -18,6 +18,27 @@
     },
     "warning": null
   },
+  "confirmTransaction": {
+    "txData": {
+      "id": 3111025347726181,
+      "time": 1620723786838,
+      "status": "unapproved",
+      "metamaskNetworkId": "5",
+      "chainId": "0x5",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+        "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
+        "value": "0x0",
+        "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
+        "gas": "0xea60",
+        "gasPrice": "0x4a817c800"
+      },
+      "type": "transfer",
+      "origin": "https://metamask.github.io",
+      "transactionCategory": "approve"
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
