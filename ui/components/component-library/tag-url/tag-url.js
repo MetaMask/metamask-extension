@@ -49,6 +49,7 @@ export const TagUrl = ({
           color={COLORS.ICON_ALTERNATIVE}
           size={SIZES.SM}
           aria-label="https://"
+          role="img"
           {...lockIconProps}
         />
       )}
