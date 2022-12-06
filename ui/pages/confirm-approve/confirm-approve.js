@@ -27,7 +27,6 @@ import {
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getEIP1559V2Enabled,
-  getIsImprovedTokenAllowanceEnabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
@@ -87,10 +86,6 @@ export default function ConfirmApprove({
 
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
   const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
-
-  const improvedTokenAllowanceEnabled = useSelector(
-    getIsImprovedTokenAllowanceEnabled,
-  );
 
   const previousTokenAmount = useRef(tokenAmount);
   const {
@@ -166,7 +161,7 @@ export default function ConfirmApprove({
   if (tokenSymbol === undefined && assetName === undefined) {
     return <Loading />;
   }
-  if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
+  if (process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>

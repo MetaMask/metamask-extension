@@ -1255,16 +1255,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
 }
 
-/**
- * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsImprovedTokenAllowanceEnabled(state) {
-  return state.metamask.improvedTokenAllowanceEnabled;
-}
-
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

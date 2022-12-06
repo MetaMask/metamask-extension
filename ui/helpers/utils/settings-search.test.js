@@ -182,7 +182,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        2,
+        1,
       );
     });
 
