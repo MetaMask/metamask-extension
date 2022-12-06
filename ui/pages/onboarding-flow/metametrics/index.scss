@@ -42,16 +42,14 @@
 
   &__buttons {
     margin-top: 24px;
-    width: 100%;
 
     @include screen-sm-min {
       margin-top: 40px;
-      justify-content: space-between;
-      display: flex;
     }
 
     button {
       margin-bottom: 24px;
+      width: 50%;
 
       @include screen-sm-min {
         width: 200px;

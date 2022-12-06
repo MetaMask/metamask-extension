@@ -10,7 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { setParticipateInMetaMetrics, showModal } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
@@ -190,7 +190,14 @@ export default function OnboardingMetametrics() {
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
-          <a href="" key="configure-rpc">
+          <a
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+            }}
+            key="configure-rpc"
+          >
             {t('onboardingMetametricsInfuraTermsConfigureRPC')}
           </a>,
           <a
@@ -214,20 +221,20 @@ export default function OnboardingMetametrics() {
 
       <div className="onboarding-metametrics__buttons">
         <Button
-          data-testid="metametrics-no-thanks"
-          type="secondary"
-          large
-          onClick={onCancel}
-        >
-          {t('onboardingMetametricsDisagree')}
-        </Button>
-        <Button
           data-testid="metametrics-i-agree"
           type="primary"
           large
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}
+        </Button>
+        <Button
+          data-testid="metametrics-no-thanks"
+          type="secondary"
+          large
+          onClick={onCancel}
+        >
+          {t('onboardingMetametricsDisagree')}
         </Button>
       </div>
     </div>
