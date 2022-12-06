@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { AvatarBase } from '../avatar-base';
-import Box from '../../ui/box/box';
-import { Icon } from '../icon';
 import {
   COLORS,
   BORDER_COLORS,
@@ -12,6 +9,11 @@ import {
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box/box';
+
+import { Icon } from '../icon';
+import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
