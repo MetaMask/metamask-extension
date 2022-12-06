@@ -34,7 +34,8 @@ export default {
   args: {
     label: 'app.uniswap.org',
     src: 'https://uniswap.org/favicon.ico',
-    showLockIcon: false,
+    showLockIcon: true,
+    actionButtonLabel: 'Permissions',
   },
 };
 
@@ -94,8 +95,8 @@ export const Src = (args) => (
 
 export const Label = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <TagUrl {...args} label="https://peepeth.com/" />
+    <TagUrl {...args} label="peepeth.com/" />
     <TagUrl {...args} label="app.uniswap.org" />
-    <TagUrl {...args} label="https://metamask.github.io" />
+    <TagUrl {...args} label="metamask.github.io" />
   </Box>
 );
