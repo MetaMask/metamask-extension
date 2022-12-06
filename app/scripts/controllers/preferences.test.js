@@ -1,7 +1,9 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { ControllerMessenger } from '@metamask/controllers';
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  ControllerMessenger,
+  TokenListController,
+} from '@metamask/controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';

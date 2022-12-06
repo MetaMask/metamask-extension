@@ -3,7 +3,7 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
+import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {

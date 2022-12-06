@@ -2754,33 +2754,6 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
-"@metamask/assets-controllers@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.0.tgz#10ee4e0bd005a2d26b78562641250a153cba5618"
-  integrity sha512-QUTtp4xJrh6sSkAByh0c7U7x2n50zU5wF++tkutsVyoQGwSurX8ZQwvf8W3l+3ARzHxy/l+Zc3JFhysJ9dn2Xw==
-  dependencies:
-    "@ethersproject/abi" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/providers" "^5.7.0"
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/contract-metadata" "^1.35.0"
-    "@metamask/controller-utils" "~1.0.0"
-    "@metamask/metamask-eth-abis" "3.0.0"
-    "@metamask/network-controller" "~1.0.0"
-    "@metamask/preferences-controller" "~1.0.0"
-    "@types/uuid" "^8.3.0"
-    abort-controller "^3.0.0"
-    async-mutex "^0.2.6"
-    babel-runtime "^6.26.0"
-    eth-query "^2.1.2"
-    eth-rpc-errors "^4.0.0"
-    ethereumjs-util "^7.0.10"
-    immer "^9.0.6"
-    multiformats "^9.5.2"
-    single-call-balance-checker-abi "^1.0.0"
-    uuid "^8.3.2"
-
 "@metamask/auto-changelog@^2.1.0":
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.6.1.tgz#5a6291df6c1592f010bd54f1a97814a4570b1eaf"
@@ -2790,14 +2763,6 @@
     execa "^5.1.1"
     semver "^7.3.5"
     yargs "^17.0.1"
-
-"@metamask/base-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
-  integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
-  dependencies:
-    "@metamask/controller-utils" "~1.0.0"
-    immer "^9.0.6"
 
 "@metamask/bip39@^4.0.0":
   version "4.0.0"
@@ -2818,18 +2783,6 @@
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
   integrity sha512-weTsrXfDQHOgYaiI5giMcOAsD3ChcwnoryasT7xmAfLSKIbKP3RTTUu63VWYBoFCBZugHrhKD6z+N+nm8qAWBQ==
-
-"@metamask/controller-utils@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controller-utils/-/controller-utils-1.0.0.tgz#2e2261b65c3f38ba0c5b893743fca8cce764339c"
-  integrity sha512-LXIpnmF/C5/vCBX0u2DiUWA55utZy54guUV+A8qUYmz8PvZrXfK7mdq1zlk8z0aq+aO0rHHfSVbTNacEE3TlAQ==
-  dependencies:
-    eth-ens-namehash "^2.0.8"
-    eth-rpc-errors "^4.0.0"
-    ethereumjs-util "^7.0.10"
-    ethjs-unit "^0.1.6"
-    fast-deep-equal "^3.1.3"
-    isomorphic-fetch "^3.0.0"
 
 "@metamask/controllers@^32.0.2":
   version "32.0.2"
@@ -3032,20 +2985,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
 
-"@metamask/network-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/network-controller/-/network-controller-1.0.0.tgz#35180bdc56c918719eaa1e00455faa55ecf87824"
-  integrity sha512-i/7IMqFqbnfZZY8jVs/ptG0aaU8Po01/7kQ5aZgWR+sk7FxdOzs6rYD78qm5f6bU2PNBDSTN3TyN29n50ksmIA==
-  dependencies:
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/controller-utils" "~1.0.0"
-    async-mutex "^0.2.6"
-    babel-runtime "^6.26.0"
-    eth-json-rpc-infura "^5.1.0"
-    eth-query "^2.1.2"
-    immer "^9.0.6"
-    web3-provider-engine "^16.0.3"
-
 "@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.2.0.tgz#38fc15c142f61939391e1b9a8eed679696c7e4f4"
@@ -3099,14 +3038,6 @@
   dependencies:
     "@metamask/utils" "^2.0.0"
     readable-stream "2.3.3"
-
-"@metamask/preferences-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/preferences-controller/-/preferences-controller-1.0.0.tgz#39c246d78a892712bfc0b82f9eb3ecc4053950ef"
-  integrity sha512-Kg/HslnPqtSkPOeDLDApBDBl6128LxO3aEYBxGiNWRJpzPWZvgAuwGufPkvKABuw5JnYq4L/MJWv4w+cpOfqTg==
-  dependencies:
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/controller-utils" "~1.0.0"
 
 "@metamask/providers@^10.0.0":
   version "10.2.0"

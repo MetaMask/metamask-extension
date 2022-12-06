@@ -3,12 +3,12 @@ import sinon from 'sinon';
 import nock from 'nock';
 import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
-import { ControllerMessenger } from '@metamask/controllers';
 import {
+  ControllerMessenger,
   TokenListController,
   TokensController,
   AssetsContractController,
-} from '@metamask/assets-controllers';
+} from '@metamask/controllers';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';

@@ -27,10 +27,15 @@ import {
   AddressBookController,
   ApprovalController,
   ControllerMessenger,
+  CurrencyRateController,
   PhishingController,
   AnnouncementController,
   GasFeeController,
+  TokenListController,
+  TokensController,
+  TokenRatesController,
   CollectiblesController,
+  AssetsContractController,
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
@@ -41,13 +46,6 @@ import {
   NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
-import {
-  CurrencyRateController,
-  TokenListController,
-  TokensController,
-  TokenRatesController,
-  AssetsContractController,
-} from '@metamask/assets-controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
