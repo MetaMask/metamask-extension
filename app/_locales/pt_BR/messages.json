@@ -2342,9 +2342,6 @@
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Definir configurações avançadas de privacidade"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
   },

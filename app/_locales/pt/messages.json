@@ -3055,9 +3055,6 @@
   "sepolia": {
     "message": "Rede de teste Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Definir configurações avançadas de privacidade"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
   },

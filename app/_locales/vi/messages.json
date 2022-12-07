@@ -3055,9 +3055,6 @@
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Thiết lập cài đặt quyền riêng tư nâng cao"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
   },

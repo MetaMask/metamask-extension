@@ -3055,9 +3055,6 @@
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "개인정보 설정 고급 지정"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
   },
