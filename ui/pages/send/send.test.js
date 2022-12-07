@@ -4,8 +4,11 @@ import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
-import { renderWithProvider } from '../../../test/jest';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  renderWithProvider,
+  setBackgroundConnection,
+} from '../../../test/jest';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -38,6 +41,12 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+setBackgroundConnection({
+  getGasFeeTimeEstimate: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn(),
+  promisifiedBackground: jest.fn(),
+});
+
 jest.mock('ethers', () => {
   const originalModule = jest.requireActual('ethers');
   return {
@@ -60,6 +69,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
+    unapprovedTxs: {
+      1: {
+        id: 1,
+        txParams: {
+          value: 'oldTxValue',
+        },
+      },
+    },
     gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
     gasFeeEstimates: {
       low: '0',
@@ -204,6 +221,27 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)({
         ...baseStore,
         send: { ...baseStore.send, stage: SEND_STAGES.DRAFT },
+        confirmTransaction: {
+          txData: {
+            id: 3111025347726181,
+            time: 1620723786838,
+            status: 'unapproved',
+            metamaskNetworkId: '5',
+            chainId: '0x5',
+            loadingDefaults: false,
+            txParams: {
+              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+              value: '0x0',
+              data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+              gas: '0xea60',
+              gasPrice: '0x4a817c800',
+            },
+            type: 'transfer',
+            origin: 'https://metamask.github.io',
+            transactionCategory: 'approve',
+          },
+        },
       });
       const { getByText } = renderWithProvider(<Send />, store);
       expect(getByText('Send')).toBeTruthy();
@@ -221,6 +259,27 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)({
         ...baseStore,
         send: { ...baseStore.send, stage: SEND_STAGES.DRAFT },
+        confirmTransaction: {
+          txData: {
+            id: 3111025347726181,
+            time: 1620723786838,
+            status: 'unapproved',
+            metamaskNetworkId: '5',
+            chainId: '0x5',
+            loadingDefaults: false,
+            txParams: {
+              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+              value: '0x0',
+              data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+              gas: '0xea60',
+              gasPrice: '0x4a817c800',
+            },
+            type: 'transfer',
+            origin: 'https://metamask.github.io',
+            transactionCategory: 'approve',
+          },
+        },
       });
       const { getByText } = renderWithProvider(<Send />, store);
       expect(getByText('Next')).toBeTruthy();

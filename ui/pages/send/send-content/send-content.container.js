@@ -12,13 +12,13 @@ import {
   acknowledgeRecipientWarning,
   getRecipientWarningAcknowledgement,
 } from '../../../ducks/send';
-
 import SendContent from './send-content.component';
 
 function mapStateToProps(state) {
   const recipient = getRecipient(state);
   const recipientWarningAcknowledged =
     getRecipientWarningAcknowledgement(state);
+
   return {
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),

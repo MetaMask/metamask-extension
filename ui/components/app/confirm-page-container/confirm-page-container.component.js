@@ -27,6 +27,8 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import DepositPopover from '../deposit-popover/deposit-popover';
+import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -35,7 +37,10 @@ import {
 } from '.';
 
 export default class ConfirmPageContainer extends Component {
-  state = { setShowDepositPopover: false };
+  state = {
+    setShowDepositPopover: false,
+    collectionBalance: 0,
+  };
 
   static contextTypes = {
     t: PropTypes.func,
@@ -95,6 +100,8 @@ export default class ConfirmPageContainer extends Component {
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    onSetApprovalForAll: PropTypes.func,
+    showWarningModal: PropTypes.bool,
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
@@ -103,8 +110,22 @@ export default class ConfirmPageContainer extends Component {
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
-    isApprovalOrRejection: PropTypes.bool,
   };
+
+  async componentDidMount() {
+    const { tokenAddress, fromAddress, currentTransaction, assetStandard } =
+      this.props;
+    const isSetApproveForAll =
+      currentTransaction.type ===
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
+    if (isSetApproveForAll && assetStandard === ERC721) {
+      const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+      this.setState({
+        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+      });
+    }
+  }
 
   render() {
     const {
@@ -133,6 +154,8 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
+      onSetApprovalForAll,
+      showWarningModal,
       tokenAddress,
       nonce,
       unapprovedTxCount,
@@ -158,7 +181,6 @@ export default class ConfirmPageContainer extends Component {
       nativeCurrency,
       isBuyableChain,
       networkIdentifier,
-      isApprovalOrRejection,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
@@ -317,33 +339,22 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && isApprovalOrRejection && (
-            <Dialog type="error" className="confirm-page-container__dialog">
-              {/*
-                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
-                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
-              */}
-              {t('confirmPageDialogSetApprovalForAll', [
-                <b
-                  key="confirm-page-container__dialog-placeholder-1"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
-                </b>,
-                <b
-                  key="confirm-page-container__dialog-placeholder-2"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
-                </b>,
-              ])}
-            </Dialog>
+          {showWarningModal && (
+            <SetApproveForAllWarning
+              collectionName={title}
+              senderAddress={fromAddress}
+              name={fromName}
+              isERC721={assetStandard === ERC721}
+              total={this.state.collectionBalance}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+            />
           )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={onSubmit}
+              onSubmit={isSetApproveForAll ? onSetApprovalForAll : onSubmit}
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
