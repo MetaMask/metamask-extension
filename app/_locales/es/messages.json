@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Permitirle siempre optar por no participar a través de Configuración"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Siempre podrá excluirse a través de la Configuración"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nunca",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask…"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Nunca recopilará claves, direcciones, transacciones, saldos, hashes o cualquier otra información personal"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 recopilará su dirección IP completa",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 recopilará claves, direcciones, transacciones, saldos, hashes o cualquier otra información personal",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Nunca recolectará su dirección IP completa"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Nunca venderá datos con afán de lucro. ¡Jamás!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 venderá datos con afán de lucro. ¡Jamás!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "A MetaMask le gustaría recopilar datos de uso para entender mejor cómo los usuarios interactúan con la extensión. Estos datos se usarán para mejorar de manera continua la usabilidad y la experiencia de usuario de nuestro producto y del ecosistema de Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nos gustaría recopilar datos básicos de uso para mejorar la usabilidad de nuestro producto.  Estos indicadores..."
-  },
-  "metametricsTitle": {
-    "message": "Únase a más de 6 millones de usuarios para mejorar MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",

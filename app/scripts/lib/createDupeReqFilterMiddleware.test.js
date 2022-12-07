@@ -9,8 +9,8 @@ describe('createDupeReqFilterMiddleware', () => {
 
     filterFn(request, undefined, nextMock, endMock);
 
-    expect(nextMock).toBeCalledTimes(1);
-    expect(endMock).not.toBeCalled();
+    expect(nextMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 
   it('call function end if request is seen second time', () => {
@@ -20,11 +20,11 @@ describe('createDupeReqFilterMiddleware', () => {
     const endMock = jest.fn();
 
     filterFn(request, undefined, nextMock, endMock);
-    expect(nextMock).toBeCalledTimes(1);
-    expect(endMock).not.toBeCalled();
+    expect(nextMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
 
     filterFn(request, undefined, nextMock, endMock);
-    expect(nextMock).toBeCalledTimes(1);
-    expect(endMock).toBeCalledTimes(1);
+    expect(nextMock).toHaveBeenCalledTimes(1);
+    expect(endMock).toHaveBeenCalledTimes(1);
   });
 });
