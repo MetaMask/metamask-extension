@@ -238,10 +238,6 @@ jobs:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
       - persist_to_workspace:
           root: .
           paths:
