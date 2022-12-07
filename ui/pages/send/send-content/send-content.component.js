@@ -146,7 +146,7 @@ export default class SendContent extends Component {
     const { acknowledgeRecipientWarning } = this.props;
     const { t } = this.context;
     return (
-      <div className="send__warning-container">
+      <div className="send__warning-container" data-testid="send-warning">
         <ActionableMessage
           type="danger"
           useIcon

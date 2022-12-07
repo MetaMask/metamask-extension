@@ -598,16 +598,6 @@
   "confirm": {
     "message": "確認"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "今後取得する可能性のあるものも含め、$1 へのアクセスを許可しようとしています。相手はお客様がこの承認を取り消すまで、お客様のウォレットからいつでもお客様の許可なしに NFT を送ることができます。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "このコントラクトのすべての NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "慎重に進めてください。"
-  },
   "confirmPassword": {
     "message": "パスワードの確認"
   },
