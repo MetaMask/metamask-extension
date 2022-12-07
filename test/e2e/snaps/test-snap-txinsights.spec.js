@@ -77,7 +77,7 @@ describe('Test Snap TxInsights', function () {
         await driver.clickElement('#getAccounts');
         await driver.delay(1000);
 
-        // switch back to MetaMask window and switch to tx insights pane
+        // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
