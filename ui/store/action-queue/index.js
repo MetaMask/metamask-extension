@@ -110,7 +110,7 @@ export function submitRequestToBackground(
  * @param callback - Node style (error, result) callback for finishing the operation
  * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
  */
-export const callBackgroundMethod = (
+export const callBackgroundMethod = async (
   method,
   args = [],
   callback,

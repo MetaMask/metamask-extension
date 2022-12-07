@@ -1,49 +1,12 @@
 import EventEmitter from 'events';
-import { isFunction, isString, noop, pullAllBy, throttle } from 'lodash';
+import { differenceWith, isFunction } from 'lodash';
 import nanoid from 'nanoid';
-import { TransactionFactory } from '@ethereumjs/tx';
-import { bufferToHex, toBuffer } from 'ethereumjs-util';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   HARDWARE_KEYRING_INIT_OPTS,
   HARDWARE_KEYRINGS,
-  KEYRING_TYPES,
-} from '../../../shared/constants/hardware-wallets';
-import { MILLISECOND } from '../../../shared/constants/time';
-
-const ENFORCE_CLIENT_INVOCATION_METHODS = {
-  [KEYRING_TYPES.TREZOR]: [
-    'getFirstPage',
-    'signTypedData',
-    'addAccounts',
-    'signTransaction',
-    'signPersonalMessage',
-    'signMessage',
-    // TrezorKeyring.model isn't a part of serialised data returned
-    // back-and-forth, therefore we defer to clientside for this
-    // data, by intercepting TrezorKeyring.getModel
-    'getModel',
-  ],
-  [KEYRING_TYPES.LEDGER]: [
-    'updateTransportMethod',
-    'signTypedData',
-    'signTransaction',
-    'signPersonalMessage',
-    'signMessage',
-    'getFirstPage',
-    'addAccounts',
-    'attemptMakeApp',
-  ],
-  [KEYRING_TYPES.QR]: [],
-  [KEYRING_TYPES.LATTICE]: [],
-};
-
-const IGNORE_METHODS = {
-  [KEYRING_TYPES.TREZOR]: ['init'],
-  [KEYRING_TYPES.LEDGER]: ['init'],
-  [KEYRING_TYPES.QR]: [],
-  [KEYRING_TYPES.LATTICE]: [],
-};
+} from '../../../../shared/constants/hardware-wallets';
+import { getHardwareMethodHandler } from './handlers';
 
 /**
  * Returns methods contained in instanstiated classes
@@ -56,72 +19,6 @@ const getClassInstanceMethods = (classInstance) =>
   Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance)).filter(
     (method) => method !== 'constructor',
   );
-
-/**
- * Some methods require args that can't be serialised appropriately
- * via JSON-RPC (i.e., via JSON.stringify). This method is used to
- * assist in the serialization process.
- *
- * @param {*[]} args
- * @param {Keyring} keyring
- * @param {string|number|symbol} method
- * @returns {*[]}
- */
-const processClientArgs = (args, keyring, method) => {
-  if (method === 'signTransaction') {
-    console.log('processClientArgs', method, keyring.type);
-    const [address, transaction] = args;
-    const transactionHex = bufferToHex(transaction.serialize());
-    const commonMeta = {
-      chain: transaction.common.chainName(),
-      hardfork: transaction.common.hardfork(),
-      eips: transaction.common.eips(),
-    };
-
-    return [
-      address,
-      {
-        transactionHex,
-        commonMeta,
-      },
-      ...args.slice(2),
-    ];
-  }
-
-  return args;
-};
-
-/**
- * Some client-side methods return responses that can't be serialised/deserialised
- * appropriately via JSON-RPC (i.e., via JSON.stringify). This method is used to
- * assist in the deserialization process.
- *
- * @param {*} response
- * @param {*[]} args - the args that were first passed to the background method
- * @param {Keyring} keyring
- * @param {string|number|symbol} method
- */
-const processClientResponse = (response, args, keyring, method) => {
-  if (method === 'signTransaction') {
-    console.log('processClientResponse', method, keyring.type);
-    // All Keyrings return a Transaction object client-side when signing a tx
-    if (isString(response)) {
-      const bufferData = toBuffer(response);
-      const [, unsignedTx] = args;
-
-      // recreate signed transaction
-      return TransactionFactory.fromSerializedData(bufferData, {
-        common: unsignedTx._getCommon(),
-      });
-    }
-
-    throw new Error(
-      'KeyringController - signTransaction - response is not a string',
-    );
-  }
-
-  return response;
-};
 
 /**
  * Returns true if text resembles MV3 error message.
@@ -233,13 +130,6 @@ export default class KeyringEventsController extends EventEmitter {
         // of the Keyring's class (i.e., this execution context)
         const instanceProxy = this._getKeyringInstanceProxy(instance);
 
-        if (instanceProxy.init) {
-          // ... then call the wrapped version of the method.
-          // important distinction, as non-wrapped version
-          // will always error.
-          instanceProxy.init();
-        }
-
         return instanceProxy;
       },
     });
@@ -259,12 +149,12 @@ export default class KeyringEventsController extends EventEmitter {
       get: (keyring, prop) => {
         if (isFunction(keyring[prop])) {
           const wrappedFunction = (...args) => {
-            const shouldIgnoreMethod =
-              IGNORE_METHODS[keyring.type]?.includes(prop);
-
-            if (shouldIgnoreMethod) {
-              return noop;
-            }
+            // const shouldIgnoreMethod =
+            //   IGNORE_METHODS[keyring.type]?.includes(prop);
+            //
+            // if (shouldIgnoreMethod) {
+            //   return noop;
+            // }
 
             return this._catchKeyringMethodErrors(keyring, prop, args);
           };
@@ -313,9 +203,9 @@ export default class KeyringEventsController extends EventEmitter {
    * us to update the state of the keyring background-side
    * after a keyring method has been fired client-side.
    *
-   * @param {Keyring} keyring
    * @param {*[]} args - The args which were first attempted to be used by the method
-   * @param method
+   * @param {Keyring} keyring
+   * @param {string} method
    * @param {(value: *) => void} resolve
    * @private
    */
@@ -325,7 +215,13 @@ export default class KeyringEventsController extends EventEmitter {
       // Sync the state of the background-side keyring with client-side data
       await keyring.deserialize(newState);
       console.log('⬆️ State update for keyring', keyring.type, newState);
-      const response = processClientResponse(_response, args, keyring, method);
+      const handler = getHardwareMethodHandler(keyring.type, method);
+      const response = handler.clientResHandler(
+        _response,
+        args,
+        keyring,
+        method,
+      );
 
       resolve(response);
     };
@@ -335,7 +231,7 @@ export default class KeyringEventsController extends EventEmitter {
    * due to MV3 then the error is added to the event pool and the
    * promise stays open until it's resolved client-side.
    *
-   * @param {keyring} keyring
+   * @param {Keyring} keyring
    * @param {string|symbol|number} method
    * @param {*[]} args
    * @private
@@ -347,14 +243,16 @@ export default class KeyringEventsController extends EventEmitter {
     // Ensure that we serialize the state before we try
     // to call the method in the background-script
     const prevState = await keyring.serialize();
-    const shouldAlwaysRunClientSide =
-      ENFORCE_CLIENT_INVOCATION_METHODS[keyring.type]?.includes(method);
+    const handler = getHardwareMethodHandler(keyring.type, method);
 
     const getClientSidePromise = () => {
       return this._createClientSidePromise(keyring, method, args, prevState);
     };
 
-    if (shouldAlwaysRunClientSide) {
+    if (handler.skipBackground) {
+      console.log(
+        `💾🏹🖥️ Forcing client-side execution: ${keyring.type}.${method}`,
+      );
       // Intentionally not wrapped in a try/catch
       const clientSideResult = await getClientSidePromise();
 
@@ -406,8 +304,8 @@ export default class KeyringEventsController extends EventEmitter {
   _createClientSidePromise(keyring, method, _args, prevState) {
     return new Promise((resolve, reject) => {
       console.log(`🏹💾 Sending method ${keyring.type}.${method}`, _args);
-
-      const args = processClientArgs(_args, keyring, method);
+      const handler = getHardwareMethodHandler(keyring.type, method);
+      const args = handler.clientArgsHandler(_args, keyring, method);
 
       this._addToEventPool({
         type: keyring.type,
@@ -453,6 +351,10 @@ export default class KeyringEventsController extends EventEmitter {
    * @private
    */
   _clearEventPool(sentEvents) {
-    this.eventPool = pullAllBy(this.eventPool, sentEvents, 'id');
+    this.eventPool = differenceWith(
+      this.eventPool,
+      sentEvents,
+      (a, b) => a.id === b.id,
+    );
   }
 }

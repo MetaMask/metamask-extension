@@ -38,6 +38,7 @@ export default class ExtensionPlatform {
 
   async closeCurrentWindow() {
     const windowDetails = await browser.windows.getCurrent();
+
     browser.windows.remove(windowDetails.id);
   }
 

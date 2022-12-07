@@ -3076,6 +3076,7 @@ export default class MetamaskController extends EventEmitter {
       const rawSig = await this.keyringController.signPersonalMessage(
         cleanMsgParams,
       );
+
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
@@ -3660,8 +3661,6 @@ export default class MetamaskController extends EventEmitter {
         this.activeControllerConnections,
       );
 
-      // @TODO, should we be removing listeners even if there are active
-      // controller connections?
       this.removeListener(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
       this.removeListener(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
       this.removeListener(

@@ -42,7 +42,8 @@
     },
     {
       "matches": ["*://connect.trezor.io/*/popup.html"],
-      "js": ["vendor/trezor/content-script.js"]
+      "js": ["vendor/trezor/content-script.js"],
+      "run_at": "document_start"
     }
   ],
   "default_locale": "en",
@@ -72,6 +73,7 @@
     "notifications",
     "scripting",
     "storage",
+    "tabs",
     "unlimitedStorage",
     "webRequest"
   ],

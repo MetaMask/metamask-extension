@@ -1,0 +1,28 @@
+diff --git a/node_modules/eth-keyring-controller/index.js b/node_modules/eth-keyring-controller/index.js
+index f210ce2..f5305a2 100644
+--- a/node_modules/eth-keyring-controller/index.js
++++ b/node_modules/eth-keyring-controller/index.js
+@@ -239,6 +239,11 @@ class KeyringController extends EventEmitter {
+   async addNewKeyring(type, opts) {
+     const Keyring = this.getKeyringClassForType(type);
+     const keyring = new Keyring(opts);
++
++    if(keyring.init){
++      await keyring.init();
++    }
++
+     if ((!opts || !opts.mnemonic) && type === KEYRINGS_TYPE_MAP.HD_KEYRING) {
+       keyring.generateRandomMnemonic();
+       keyring.addAccounts();
+@@ -706,6 +711,11 @@ class KeyringController extends EventEmitter {
+       return undefined;
+     }
+     const keyring = new Keyring();
++
++    if(keyring.init) {
++      await keyring.init();
++    }
++
+     await keyring.deserialize(data);
+     // getAccounts also validates the accounts for some keyrings
+     await keyring.getAccounts();
