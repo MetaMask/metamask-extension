@@ -376,7 +376,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    process.env.COLLECTIBLES_V1 &&
+    process.env.NFTS_V1 &&
       (this.nftDetectionController = new NftDetectionController({
         onNftsStateChange: (listener) => this.nftController.subscribe(listener),
         onPreferencesStateChange:
@@ -2053,7 +2053,7 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // DetectCollectibleController
-      detectNfts: process.env.COLLECTIBLES_V1
+      detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
 
