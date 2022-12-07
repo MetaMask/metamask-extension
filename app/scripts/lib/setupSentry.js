@@ -212,7 +212,7 @@ function sanitizeUrlsFromErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
     const re =
       /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gu;
-    const urlsInMessage = errorMessage.match(re);
+    const urlsInMessage = errorMessage.match(re) || [];
     urlsInMessage.forEach((url) => {
       if (!ERROR_URL_ALLOWLIST.some((allowedUrl) => url.match(allowedUrl))) {
         errorMessage.replace(url, '**');
