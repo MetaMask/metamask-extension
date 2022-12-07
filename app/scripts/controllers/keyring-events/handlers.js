@@ -1,5 +1,5 @@
 import { bufferToHex, toBuffer } from 'ethereumjs-util';
-import { isString } from 'lodash';
+import { isString, noop } from 'lodash';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { HARDWARE_KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 
@@ -64,6 +64,7 @@ const METHOD_HANDLERS = {
   [HARDWARE_KEYRING_TYPES.TREZOR]: {
     init: {
       skipBackground: true,
+      backgroundSync: noop,
     },
     signTypedData: {
       skipBackground: true,
@@ -71,9 +72,14 @@ const METHOD_HANDLERS = {
     addAccounts: {
       skipBackground: true,
     },
+    forgetDevice: {
+      updateAll: true,
+      backgroundSync: noop,
+    },
     dispose: {
       skipBackground: true,
       global: true, // send to all listening clients
+      backgroundSync: noop,
     },
     getFirstPage: {
       skipBackground: true,
@@ -100,11 +106,13 @@ const METHOD_HANDLERS = {
       // back-and-forth, therefore we defer to clientside for this
       // data, by intercepting TrezorKeyring.getModel
       skipBackground: true,
+      backgroundSync: noop,
     },
   },
   [HARDWARE_KEYRING_TYPES.LEDGER]: {
     init: {
       skipBackground: true,
+      backgroundSync: noop,
     },
     updateTransportMethod: {
       skipBackground: true,
@@ -138,9 +146,14 @@ const METHOD_HANDLERS = {
     attemptMakeApp: {
       skipBackground: true,
     },
+    forgetDevice: {
+      updateAll: true,
+      backgroundSync: noop,
+    },
     destroy: {
       skipBackground: true,
       global: true, // send to all listening clients
+      backgroundSync: noop,
     },
   },
   [HARDWARE_KEYRING_TYPES.QR]: {},
@@ -148,8 +161,13 @@ const METHOD_HANDLERS = {
 };
 
 const HANDLER_DEFAULTS = {
+  updateAll: false,
   skipBackground: false,
   global: false,
+  backgroundSync: async (keyring, newState) => {
+    await keyring.deserialize(newState);
+    console.log('⬆️ State update for keyring', keyring.type, newState);
+  },
   clientArgsHandler: (args) => args,
   clientResHandler: (res) => res,
 };

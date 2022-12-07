@@ -213,9 +213,9 @@ export default class KeyringEventsController extends EventEmitter {
     (args, keyring, method, resolve) =>
     async ({ newState, response: _response }) => {
       // Sync the state of the background-side keyring with client-side data
-      await keyring.deserialize(newState);
-      console.log('⬆️ State update for keyring', keyring.type, newState);
       const handler = getHardwareMethodHandler(keyring.type, method);
+
+      await handler.backgroundSync(keyring, newState);
       const response = handler.clientResHandler(
         _response,
         args,
@@ -249,14 +249,16 @@ export default class KeyringEventsController extends EventEmitter {
       return this._createClientSidePromise(keyring, method, args, prevState);
     };
 
-    if (handler.skipBackground) {
+    if (handler.skipBackground || handler.updateAll) {
       console.log(
         `💾🏹🖥️ Forcing client-side execution: ${keyring.type}.${method}`,
       );
       // Intentionally not wrapped in a try/catch
       const clientSideResult = await getClientSidePromise();
 
-      return clientSideResult;
+      if (handler.skipBackground) {
+        return clientSideResult;
+      }
     }
 
     // ... otherwise, try to run the method in the background-script first
@@ -268,6 +270,7 @@ export default class KeyringEventsController extends EventEmitter {
 
       console.log(
         `✅💾 Keyring method ${keyring.type}.${method} resolved`,
+        args,
         res,
       );
 
@@ -275,6 +278,7 @@ export default class KeyringEventsController extends EventEmitter {
     } catch (e) {
       console.log(
         `❌💾 Keyring method ${keyring.type}.${method} resolved`,
+        args,
         isServiceWorkerMv3Error(e),
       );
 

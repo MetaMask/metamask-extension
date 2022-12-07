@@ -1,8 +1,8 @@
 diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-index 2c6a7de..69519e7 100644
+index 2c6a7de..1056025 100644
 --- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
 +++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-@@ -37,11 +37,20 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -37,26 +37,49 @@ class LedgerBridgeKeyring extends EventEmitter {
      this.deserialize(opts)
  
      this.iframeLoaded = false
@@ -12,11 +12,11 @@ index 2c6a7de..69519e7 100644
      this.messageCallbacks = {}
 +
 +    if(!opts.delayInit){
-+      this.init(opts);
++      this.init();
 +    }
 +  }
 +
-+  init(opts = {}){
++  init(){
 +    this._setupIframe()
      this._setupListener()
 +
@@ -25,3 +25,56 @@ index 2c6a7de..69519e7 100644
    }
  
    serialize () {
+     return Promise.resolve({
++      hdk: this.isUnlocked() ? {
++        publicKey: this.hdk.publicKey.toString('hex'),
++        chainCode: this.hdk.chainCode.toString('hex'),
++      } : null,
+       hdPath: this.hdPath,
+       accounts: this.accounts,
++      page: this.page,
+       accountDetails: this.accountDetails,
+       bridgeUrl: this.bridgeUrl,
+       implementFullBIP44: false,
++      unlockedAccount: this.unlockedAccount,
+     })
+   }
+ 
+   deserialize (opts = {}) {
++    console.log('Updating ledger state', opts);
++
++    if(opts.hdk){
++      this.setHdk(opts.hdk);
++    }
++
+     this.hdPath = opts.hdPath || hdPathString
++    this.page = opts.page || 0
+     this.bridgeUrl = opts.bridgeUrl || BRIDGE_URL
++    this.unlockedAccount = opts.unlockedAccount || 0;
+     this.accounts = opts.accounts || []
+     this.accountDetails = opts.accountDetails || {}
+     if (!opts.accountDetails) {
+@@ -99,6 +122,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+     }
+   }
+ 
++  setHdk ({ publicKey, chainCode }) {
++    this.hdk.publicKey = Buffer.from(publicKey, 'hex')
++    this.hdk.chainCode = Buffer.from(chainCode, 'hex')
++  }
++
+   isUnlocked () {
+     return Boolean(this.hdk && this.hdk.publicKey)
+   }
+@@ -133,10 +161,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+       },
+       ({ success, payload }) => {
+         if (success) {
+-          if (updateHdk) {
+-            this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex')
+-            this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex')
+-          }
++          this.setHdk(payload);
+           resolve(payload.address)
+         } else {
+           reject(payload.error || new Error('Unknown error'))

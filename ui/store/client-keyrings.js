@@ -140,6 +140,7 @@ export class ClientKeyringController extends EventEmitter {
       );
     } catch (e) {
       console.log(`❌🖥️ unsuccessful hardware call`, {
+        args,
         method,
         type: keyring.type,
         e,
@@ -174,7 +175,9 @@ export class ClientKeyringController extends EventEmitter {
       // Note that not every HW keyring has an init method, nor do they all
       // require special initialisation before calling their instance methods.
       if (keyring.init) {
+        console.time(`🖥️ initialising keyring ${keyring.type}`);
         await keyring.init();
+        console.timeEnd(`🖥️ initialising keyring ${keyring.type}`);
       }
     }
   }

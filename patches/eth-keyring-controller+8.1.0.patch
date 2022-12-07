@@ -1,11 +1,13 @@
 diff --git a/node_modules/eth-keyring-controller/index.js b/node_modules/eth-keyring-controller/index.js
-index f210ce2..f5305a2 100644
+index f210ce2..202c2aa 100644
 --- a/node_modules/eth-keyring-controller/index.js
 +++ b/node_modules/eth-keyring-controller/index.js
-@@ -239,6 +239,11 @@ class KeyringController extends EventEmitter {
+@@ -238,7 +238,12 @@ class KeyringController extends EventEmitter {
+    */
    async addNewKeyring(type, opts) {
      const Keyring = this.getKeyringClassForType(type);
-     const keyring = new Keyring(opts);
+-    const keyring = new Keyring(opts);
++    const keyring = new Keyring();
 +
 +    if(keyring.init){
 +      await keyring.init();
