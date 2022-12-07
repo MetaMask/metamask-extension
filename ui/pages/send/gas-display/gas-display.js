@@ -425,7 +425,10 @@ export default function GasDisplay({ gasError }) {
         />
       </Box>
       {(gasError || isInsufficientTokenError) && (
-        <Box className="gas-display__warning-message">
+        <Box
+          className="gas-display__warning-message"
+          data-testid="gas-warning-message"
+        >
           <Box
             paddingTop={0}
             paddingRight={4}
