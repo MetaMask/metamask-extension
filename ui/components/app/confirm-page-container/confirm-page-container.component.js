@@ -12,7 +12,6 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-import Dialog from '../../ui/dialog';
 import Button from '../../ui/button';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
