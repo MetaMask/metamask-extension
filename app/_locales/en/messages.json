@@ -665,16 +665,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "all the NFTs on this contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Proceed with caution."
-  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -2333,6 +2323,17 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
+  },
+  "nftWarningContent": {
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "all your $1 NFTs",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "Proceed with caution."
   },
   "nfts": {
     "message": "NFTs"
@@ -4545,6 +4546,9 @@
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"

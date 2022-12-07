@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Gelecekte sahip olabileceğiniz her şey dahil olmak üzere şuna erişim izni veriyorsunuz: $1. Diğer uçtaki taraf siz bu onayı geri çekene kadar dilediği zaman size sormadan cüzdanınızdan NFT transfer edebilir. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "bu sözleşmedeki tüm NFT'ler"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Dikkatli bir şekilde devam edin."
-  },
   "confirmPassword": {
     "message": "Şifreyi onayla"
   },

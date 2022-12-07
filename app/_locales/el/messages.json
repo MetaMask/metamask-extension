@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Παραχωρείτε πρόσβαση στον $1, συμπεριλαμβανομένου οτιδήποτε ενδέχεται να αποκτήσετε στο μέλλον. Ο συμβαλλόμενος στην άλλη πλευρά μπορεί να μεταφέρει NFT από το πορτοφόλι σας ανά πάσα στιγμή χωρίς να σας ρωτήσει, μέχρι να ανακαλέσετε αυτή την έγκριση. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "όλα τα NFT αυτού του συμβαλλόμενου"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Προχωρήστε με προσοχή."
-  },
   "confirmPassword": {
     "message": "Επιβεβαίωση Κωδικού Πρόσβασης"
   },
