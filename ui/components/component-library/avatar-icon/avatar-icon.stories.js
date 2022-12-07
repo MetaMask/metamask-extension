@@ -14,6 +14,24 @@ import { ICON_NAMES } from '..';
 import README from './README.mdx';
 import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
 
+const marginSizeControlOptions = [
+  undefined,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  'auto',
+];
+
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
   id: __filename,
