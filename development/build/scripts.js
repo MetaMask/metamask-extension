@@ -1044,6 +1044,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
+    TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
   };
 }
 

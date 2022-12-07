@@ -2559,10 +2559,10 @@
     through2 "^4.0.2"
     umd "^3.0.3"
 
-"@lavamoat/snow@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.2.1.tgz#87587e46940b26a966b665e62cd867d0cfbce47e"
-  integrity sha512-gC4oyvjNkFOOjhL9W4wP1YC0dcdQJPYKNW8fbwcP5iYogLL2fs1KIsHoF41WIhuWQ9mUdfg1jKBCTq41m+5VSw==
+"@lavamoat/snow@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@lavamoat/snow/-/snow-1.3.0.tgz#f819e4a3fbb09e4a061af4cbb2168dcc7a7d3ad4"
+  integrity sha512-U+dZAmbX6NRcczAJXxd5C0LqbA5hMkX5oOCs+i91lnQuAbCWNS1eH2otv73ILO7vI3YfU3KQxk/xPC1O66qAnw==
   dependencies:
     is-cross-origin "^1.0.1"
 
@@ -20474,9 +20474,9 @@ qs@^6.10.0, qs@^6.4.0, qs@^6.5.1:
     side-channel "^1.0.4"
 
 qs@~6.5.2:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
-  integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
+  integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
 
 query-ast@^1.0.3:
   version "1.0.4"
