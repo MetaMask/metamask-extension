@@ -38,6 +38,7 @@ import {
   getIsBuyableChain,
   transactionFeeSelector,
   getIsMainnet,
+  getUseCurrencyRateCheck,
 } from '../../../selectors';
 
 import {
@@ -57,6 +58,7 @@ export default function GasDisplay({ gasError }) {
   const isMainnet = useSelector(getIsMainnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
@@ -195,15 +197,15 @@ export default function GasDisplay({ gasError }) {
                 </Box>
               }
               detailTitleColor={COLORS.TEXT_DEFAULT}
-              detailText={
-                <Box className="gas-display__currency-container">
+              detailText={useCurrencyRateCheck && 
+                (<Box className="gas-display__currency-container">
                   <LoadingHeartBeat estimateUsed={estimateUsed} />
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
                     value={hexMinimumTransactionFee}
                     hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                   />
-                </Box>
+                </Box>)
               }
               detailTotal={
                 <Box className="gas-display__currency-container">
@@ -262,22 +264,24 @@ export default function GasDisplay({ gasError }) {
                 key="total-item"
                 detailTitle={t('total')}
                 detailText={
-                  <Box
-                    height={BLOCK_SIZES.MAX}
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
-                    className="gas-display__total-value"
-                  >
-                    <LoadingHeartBeat
-                      estimateUsed={transactionData?.userFeeLevel}
-                    />
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      key="total-detail-text"
-                      value={hexTransactionTotal}
-                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                    />
-                  </Box>
+                  useCurrencyRateCheck && (
+                    <Box
+                      height={BLOCK_SIZES.MAX}
+                      display={DISPLAY.FLEX}
+                      flexDirection={FLEX_DIRECTION.COLUMN}
+                      className="gas-display__total-value"
+                    >
+                      <LoadingHeartBeat
+                        estimateUsed={transactionData?.userFeeLevel}
+                      />
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        key="total-detail-text"
+                        value={hexTransactionTotal}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    </Box>
+                  )
                 }
                 detailTotal={detailTotal}
                 subTitle={t('transactionDetailGasTotalSubtitle')}

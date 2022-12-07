@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import AssetListItem from '../asset-list-item';
-import { getSelectedAddress } from '../../../selectors';
+import {
+  getSelectedAddress,
+  getUseCurrencyRateCheck,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 
@@ -17,6 +20,7 @@ export default function TokenCell({
   isERC721,
 }) {
   const userAddress = useSelector(getSelectedAddress);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const t = useI18nContext();
 
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
@@ -47,7 +51,7 @@ export default function TokenCell({
       tokenDecimals={decimals}
       warning={warning}
       primary={`${string || 0}`}
-      secondary={formattedFiat}
+      secondary={useCurrencyRateCheck && formattedFiat}
       isERC721={isERC721}
     />
   );

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Box from '../../../ui/box';
@@ -12,12 +13,14 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getUseCurrencyRateCheck } from '../../../../selectors';
 
 const DetectedTokenValues = ({
   token,
   handleTokenSelection,
   tokensListDetected,
 }) => {
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const [tokenSelection, setTokenSelection] = useState(() => {
     return tokensListDetected[token.address]?.selected;
   });
@@ -46,7 +49,7 @@ const DetectedTokenValues = ({
           {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-          {formattedFiatBalance}
+          {useCurrencyRateCheck && (formattedFiatBalance || '$0')}
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">

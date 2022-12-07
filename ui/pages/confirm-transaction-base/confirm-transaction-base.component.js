@@ -517,14 +517,16 @@ export default class ConfirmTransactionBase extends Component {
             )
           }
           detailText={
-            <div className="confirm-page-container-content__currency-container test">
-              {renderHeartBeatIfNotInTest()}
-              <UserPreferencedCurrencyDisplay
-                type={SECONDARY}
-                value={hexMinimumTransactionFee}
-                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-              />
-            </div>
+            useCurrencyRateCheck && (
+              <div className="confirm-page-container-content__currency-container test">
+                {renderHeartBeatIfNotInTest()}
+                <UserPreferencedCurrencyDisplay
+                  type={SECONDARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                />
+              </div>
+            )
           }
           detailTotal={
             <div className="confirm-page-container-content__currency-container">

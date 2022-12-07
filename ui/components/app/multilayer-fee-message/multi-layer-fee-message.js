@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -11,6 +12,7 @@ import {
   toBigNumber,
   toNormalizedDenomination,
 } from '../../../../shared/modules/conversion.utils';
+import { getUseCurrencyRateCheck } from '../../../selectors';
 
 export default function MultilayerFeeMessage({
   transaction,
@@ -19,6 +21,7 @@ export default function MultilayerFeeMessage({
   plainStyle,
 }) {
   const t = useContext(I18nContext);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
 
@@ -81,7 +84,7 @@ export default function MultilayerFeeMessage({
         key="total-item"
         detailTitle={t('gasFee')}
         detailTotal={layer1Total}
-        detailText={feeTotalInFiat}
+        detailText={useCurrencyRateCheck && feeTotalInFiat}
         noBold={plainStyle}
         flexWidthValues={plainStyle}
       />
@@ -89,7 +92,7 @@ export default function MultilayerFeeMessage({
         key="total-item"
         detailTitle={t('total')}
         detailTotal={totalInEth}
-        detailText={totalInFiat}
+        detailText={useCurrencyRateCheck && totalInFiat}
         subTitle={t('transactionDetailMultiLayerTotalSubtitle')}
         noBold={plainStyle}
         flexWidthValues={plainStyle}

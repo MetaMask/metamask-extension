@@ -27,7 +27,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     maxFeePerGas,
   } = useGasFeeContext();
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { useNativeCurrencyAsPrimaryCurrency, useCurrencyRateCheck } =
+    useSelector(getPreferences);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
@@ -39,14 +40,16 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={COLORS.TEXT_DEFAULT}
       detailText={
-        <div className="gas-details-item__currency-container">
-          <LoadingHeartBeat estimateUsed={estimateUsed} />
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
-        </div>
+        useCurrencyRateCheck && (
+          <div className="gas-details-item__currency-container">
+            <LoadingHeartBeat estimateUsed={estimateUsed} />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
+        )
       }
       detailTotal={
         <div className="gas-details-item__currency-container">
