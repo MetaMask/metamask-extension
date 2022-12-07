@@ -1,6 +1,5 @@
 export function addUrlProtocolPrefix(urlString) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
-  }
-  return urlString;
+  return urlString.match(/^https?:\/\//u)
+    ? urlString
+    : `https://${urlString}`;
 }
