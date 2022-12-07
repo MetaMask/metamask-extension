@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -110,6 +111,13 @@ describe('Test Snap TxInsights', function () {
           text: 'TxInsightsTest',
           tag: 'button',
         });
+
+        // check that txinsightstest tab contains the right info
+        await driver.delay(1000);
+        const txInsightsResult = await driver.findElement(
+          '[data-testid="Test-0"]',
+        );
+        assert.equal(await txInsightsResult.getText(), 'Test\nSuccessful');
       },
     );
   });
