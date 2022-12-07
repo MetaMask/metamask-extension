@@ -11,11 +11,7 @@ import {
 } from '../../selectors';
 import { addHexes } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
-import {
-  bnGreaterThan,
-  bnLessThan,
-  bnLessThanEqualTo,
-} from '../../helpers/utils/util';
+import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
@@ -36,7 +32,7 @@ const validateMaxPriorityFee = (maxPriorityFeePerGas, supportsEIP1559) => {
   if (!supportsEIP1559) {
     return undefined;
   }
-  if (bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
+  if (bnLessThan(maxPriorityFeePerGas, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
   return undefined;
@@ -68,7 +64,7 @@ const validateGasPrice = (
   }
   if (
     (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
-    bnLessThanEqualTo(gasPrice, 0)
+    bnLessThan(gasPrice, 0)
   ) {
     return GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
   }
