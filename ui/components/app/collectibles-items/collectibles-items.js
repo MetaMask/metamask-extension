@@ -161,12 +161,7 @@ export default function CollectiblesItems({
                 collectionImage,
                 collectionName,
               )}
-              <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H5}
-                marginTop={0}
-                marginBottom={2}
-              >
+              <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H5}>
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
                 })`}

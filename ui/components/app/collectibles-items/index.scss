@@ -16,6 +16,7 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
+      margin-right: 8px;
     }
 
     &-image-alt {
@@ -26,6 +27,7 @@
       background: var(--color-overlay-alternative);
       color: var(--color-overlay-inverse);
       text-align: center;
+      margin-right: 8px;
     }
   }
 
