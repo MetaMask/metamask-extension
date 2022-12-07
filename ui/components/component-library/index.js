@@ -1,3 +1,5 @@
+// TODO: Organize by atomicity
+
 export { AvatarAccount } from './avatar-account';
 export { AvatarFavicon } from './avatar-favicon';
 export { AvatarNetwork } from './avatar-network';
@@ -25,3 +27,4 @@ export {
   TEXT_FIELD_BASE_TYPES,
 } from './text-field-base';
 export { TextFieldSearch } from './text-field-search';
+export { BannerBase } from './banner-base';

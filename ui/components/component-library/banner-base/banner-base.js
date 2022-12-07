@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon, Icon, ICON_NAMES, Text } from '..';
+import { ButtonIcon, ICON_NAMES, Text } from '..';
 import Box from '../../ui/box';
 
 import {
-  ALIGN_ITEMS,
+  COLORS,
   DISPLAY,
-  JUSTIFY_CONTENT,
   SIZES,
   TEXT,
 } from '../../../helpers/constants/design-system';
@@ -18,40 +17,46 @@ export const BannerBase = ({
   title,
   description,
   action,
+  leftAccessory,
+  onClose,
+  closeButtonProps,
   ...props
 }) => {
   return (
     <Box
-      className={classnames('mm-banner', className)}
+      className={classnames('mm-banner-base', className)}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
+      gap={2}
+      backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderRadius={SIZES.SM}
-      paddingLeft={2}
-      paddingRight={3}
+      padding={3}
       {...props}
     >
-      <div className="mm-banner__left-accessory">
-        <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.LG} />
-      </div>
+      {leftAccessory && (
+        <div className="mm-banner-base__left-accessory">{leftAccessory}</div>
+      )}
 
-      <div className="mm-banner__content">
+      <div className="mm-banner-base__">
         {title && (
-          <Text className="mm-banner__content-title" variant={TEXT.BODY_LG}>
+          <Text className="mm-banner-base__title" variant={TEXT.BODY_LG_MEDIUM}>
             {title}
           </Text>
         )}
         {description && (
-          <Text className="mm-banner__content-description">{description}</Text>
+          <Text className="mm-banner-base__description">{description}</Text>
         )}
-        {action && <Text className="mm-banner__content-action">{action}</Text>}
+        {action && <Text className="mm-banner-base__action">{action}</Text>}
       </div>
-      <ButtonIcon
-        className="mm-banner__close"
-        iconName={ICON_NAMES.CLOSE}
-        size={SIZES.SM}
-        ariaLabel="close"
-      />
+      {onClose && (
+        <ButtonIcon
+          className="mm-banner-base__close-button"
+          iconName={ICON_NAMES.CLOSE_OUTLINE}
+          size={SIZES.SM}
+          ariaLabel="Close" // TODO: i18n
+          onClick={onClose}
+          {...closeButtonProps}
+        />
+      )}
     </Box>
   );
 };
@@ -70,13 +75,22 @@ BannerBase.propTypes = {
    */
   action: PropTypes.node,
   /**
+   * The left content area of BannerBase
+   */
+  leftAccessory: PropTypes.node,
+  /**
+   * The onClick handler for the close button
+   * When passed this will allow for the close button to show
+   */
+  onClose: PropTypes.func,
+  /**
+   * The props to pass to the close button
+   */
+  closeButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
+  /**
    * An additional className to apply to the BannerBase
    */
   className: PropTypes.string,
-  /**
-   * Addition style properties to apply to the button.
-   */
-  style: PropTypes.object,
   /**
    * BannerBase accepts all the props from Box
    */
