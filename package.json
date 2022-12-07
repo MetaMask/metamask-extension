@@ -497,7 +497,7 @@
     "vinyl-sourcemaps-apply": "^0.2.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^4.41.6",
+    "webpack": "^5.75.0",
     "yargs": "^17.0.1"
   },
   "engines": {

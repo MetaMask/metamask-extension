@@ -23581,7 +23581,7 @@ __metadata:
     watchify: ^4.0.0
     web3-stream-provider: ^4.0.0
     webextension-polyfill: ^0.8.0
-    webpack: ^4.41.6
+    webpack: ^5.75.0
     yargs: ^17.0.1
     zxcvbn: ^4.4.2
   languageName: unknown
@@ -33977,7 +33977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:4, webpack@npm:^4.41.6":
+"webpack@npm:4":
   version: 4.46.0
   resolution: "webpack@npm:4.46.0"
   dependencies:
@@ -34015,7 +34015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:>=4.43.0 <6.0.0, webpack@npm:^5.9.0":
+"webpack@npm:>=4.43.0 <6.0.0, webpack@npm:^5.75.0, webpack@npm:^5.9.0":
   version: 5.75.0
   resolution: "webpack@npm:5.75.0"
   dependencies:
