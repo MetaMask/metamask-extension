@@ -12,7 +12,7 @@
     background-color: var(--color-primary-alternative);
   }
 
-  &.mm-button--disabled {
+  &.mm-button-base--disabled {
     &:hover {
       box-shadow: none;
     }
@@ -36,7 +36,7 @@
       background-color: var(--color-error-alternative);
     }
 
-    &.mm-button--disabled:active {
+    &.mm-button-base--disabled:active {
       background-color: var(--color-error-default);
     }
   }

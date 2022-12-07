@@ -167,8 +167,8 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <ButtonBase {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
+export const IconName = (args) => (
+  <ButtonBase {...args} iconName={ICON_NAMES.ADD_SQUARE_FILLED}>
     Button
   </ButtonBase>
 );

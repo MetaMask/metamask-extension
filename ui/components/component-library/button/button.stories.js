@@ -64,7 +64,7 @@ export default {
     href: {
       control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -205,8 +205,8 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
-    Button
-  </Button>
-);
+export const IconName = (args) => <Button {...args}>Button</Button>;
+
+IconName.args = {
+  iconName: ICON_NAMES.ADD_SQUARE_FILLED,
+};

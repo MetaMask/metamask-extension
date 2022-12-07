@@ -15,7 +15,7 @@
     border-color: var(--color-primary-alternative);
   }
 
-  &.mm-button--disabled {
+  &.mm-button-base--disabled {
     &:hover {
       color: var(--color-primary-default);
       box-shadow: none;
@@ -44,7 +44,7 @@
       border-color: var(--color-error-alternative);
     }
 
-    &.mm-button--disabled:hover {
+    &.mm-button-base--disabled:hover {
       color: var(--color-error-default);
     }
   }
