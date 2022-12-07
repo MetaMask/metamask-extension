@@ -2607,11 +2607,8 @@
     "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. You can configure your RPC provider $1. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $2. For more information on our privacy practices in general, see our $3.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsConfigureRPC`, $2 represents `onboardingMetametricsInfuraTermsPolicyLink`, $3 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsConfigureRPC": {
-    "message": "before proceding"
+    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy here"

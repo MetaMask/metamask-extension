@@ -10,7 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics, showModal } from '../../../store/actions';
+import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
@@ -190,16 +190,6 @@ export default function OnboardingMetametrics() {
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
-          <a
-            href=""
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-            }}
-            key="configure-rpc"
-          >
-            {t('onboardingMetametricsInfuraTermsConfigureRPC')}
-          </a>,
           <a
             href="https://consensys.net/blog/news/consensys-data-retention-update/"
             target="_blank"
