@@ -173,6 +173,7 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    showWarningModal: false,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     selectedInsightSnapId: this.props.insightSnaps[0]?.id,
     ///: END:ONLY_INCLUDE_IN
@@ -972,6 +973,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  handleSetApprovalForAll() {
+    this.setState({ showWarningModal: true });
+  }
+
   renderTitleComponent() {
     const { title, hexTransactionAmount, txData } = this.props;
 
@@ -1137,6 +1142,7 @@ export default class ConfirmTransactionBase extends Component {
       ethGasPriceWarning,
       editingGas,
       userAcknowledgedGasMissing,
+      showWarningModal,
     } = this.state;
 
     const { name } = methodData;
@@ -1224,6 +1230,8 @@ export default class ConfirmTransactionBase extends Component {
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
           onSubmit={() => this.handleSubmit()}
+          onSetApprovalForAll={() => this.handleSetApprovalForAll()}
+          showWarningModal={showWarningModal}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}
