@@ -8,6 +8,11 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../../shared/lib/ui-utils';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -208,7 +213,7 @@ export default class SecurityTab extends PureComponent {
             {t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"
-                href="https://www.coingecko.com/"
+                href={COINGECKO_LINK}
                 rel="noreferrer"
                 target="_blank"
               >
@@ -216,7 +221,7 @@ export default class SecurityTab extends PureComponent {
               </a>,
               <a
                 key="cryptocompare_link"
-                href="https://www.cryptocompare.com/"
+                href={CRYPTOCOMPARE_LINK}
                 rel="noreferrer"
                 target="_blank"
               >
@@ -224,7 +229,7 @@ export default class SecurityTab extends PureComponent {
               </a>,
               <a
                 key="privacy_policy_link"
-                href="https://consensys.net/privacy-policy/"
+                href={PRIVACY_POLICY_LINK}
                 rel="noreferrer"
                 target="_blank"
               >

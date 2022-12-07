@@ -28,6 +28,11 @@ import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/route
 import { Icon, TextField } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
+import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../../shared/lib/ui-utils';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -251,7 +256,7 @@ export default function PrivacySettings() {
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"
-                href="https://www.coingecko.com/"
+                href={COINGECKO_LINK}
                 rel="noreferrer"
                 target="_blank"
               >
@@ -259,7 +264,7 @@ export default function PrivacySettings() {
               </a>,
               <a
                 key="cryptocompare_link"
-                href="https://www.cryptocompare.com/"
+                href={CRYPTOCOMPARE_LINK}
                 rel="noreferrer"
                 target="_blank"
               >
@@ -267,7 +272,7 @@ export default function PrivacySettings() {
               </a>,
               <a
                 key="privacy_policy_link"
-                href=" https://consensys.net/privacy-policy/"
+                href={PRIVACY_POLICY_LINK}
                 rel="noreferrer"
                 target="_blank"
               >
