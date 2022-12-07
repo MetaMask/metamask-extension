@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "始终允许您通过“设置”选择退出"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "始终可通过设置选择退出"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "永不",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "决不收集密钥、地址、交易、余额、哈希或任何个人信息"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 收集您的完整 IP 地址",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 收集密钥、地址、交易记录、余额、哈希或任何个人信息",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "永不收集您的完整 IP 地址"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "决不出售数据牟利。绝对不会！"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 为利益而出售您的数据，永远不会！",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展程序交互。这些数据将被用于持续改进我们产品和以太坊生态系统的可用性和用户体验。"
-  },
-  "metametricsOptInDescription2": {
-    "message": "我们想要收集基本使用数据以提高我们产品的可用性。这些数据将......"
-  },
-  "metametricsTitle": {
-    "message": "和600多万用户一起改进 MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",

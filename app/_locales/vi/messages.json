@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Luôn có thể chọn không tham gia trong phần Cài Đặt"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Không bao giờ",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask sẽ.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Không bao giờ thu thập mã khóa, địa chỉ, giao dịch, số dư, mã băm hoặc bất kỳ thông tin cá nhân nào"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 thu thập địa chỉ IP đầy đủ của bạn",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 thu thập mã khóa, địa chỉ, giao dịch, số dư, mã băm hoặc bất kỳ thông tin cá nhân nào",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Không bao giờ thu thập địa chỉ IP đầy đủ của bạn"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Không bao giờ bán dữ liệu để thu lợi. Tuyệt đối không bao giờ!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 bán dữ liệu để thu lợi. Tuyệt đối không bao giờ!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn về cách người dùng tương tác với tiện ích. Chúng tôi sẽ dùng dữ liệu này để liên tục cải thiện độ hữu ích và trải nghiệm người dùng trên sản phẩm của mình và hệ sinh thái Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng cơ bản để cải thiện mức độ hữu ích của sản phẩm. Các chỉ số này sẽ..."
-  },
-  "metametricsTitle": {
-    "message": "Tham gia cùng hơn 6 Triệu người dùng để cải thiện MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
