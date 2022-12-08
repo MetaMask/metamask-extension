@@ -159,7 +159,7 @@ async function withFixtures(options, testSuite) {
          * proving more helpful context
          */
         await driver.navigate(PAGES.BACKGROUND);
-        const errorMessage = `Errors found in browser console including the backgorund:\n${driver.exceptions.join(
+        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
           '\n',
         )}`;
         throw Error(errorMessage);
