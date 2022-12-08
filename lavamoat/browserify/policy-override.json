@@ -112,11 +112,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/rpc-methods>@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true

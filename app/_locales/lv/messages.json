@@ -821,9 +821,6 @@
   "sign": {
     "message": "Parakstīt"
   },
-  "signNotice": {
-    "message": "Šī ziņojuma parakstīšana var radīt \nbīstamas blaknes. Parakstiet tikai tādus ziņojumus,\nkuriem pilnībā uzticaties ar savu konta informāciju.\n Turpmākajās versijās šī bīstamā metode tiks noņemta. "
-  },
   "signatureRequest": {
     "message": "Paraksta pieprasījums"
   },

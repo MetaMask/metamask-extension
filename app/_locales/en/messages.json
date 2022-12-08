@@ -207,6 +207,28 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "It's important that your provider is reliable, as it has the power to:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "See your accounts and IP address, and associate them together"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Show account balances and other on-chain states"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Broadcast your transactions"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "You are adding a new RPC provider for Ethereum Mainnet"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -342,6 +364,13 @@
   "approveSpendLimit": {
     "message": "Approve $1 spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "approveTokenDescription": {
+    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenTitle": {
+    "message": "Allow access to and transfer of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approved": {
     "message": "Approved"
@@ -636,16 +665,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "all the NFTs on this contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Proceed with caution."
-  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -750,6 +769,10 @@
   },
   "contacts": {
     "message": "Contacts"
+  },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
   },
   "continue": {
     "message": "Continue"
@@ -2055,18 +2078,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Always allow you to opt-out via Settings"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Always be able to opt-out via Settings"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Never",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask will.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Never collect keys, addresses, transactions, balances, hashes, or any personal information"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 collect your full IP address",
@@ -2075,12 +2092,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Never collect your full IP address"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Never sell data for profit. Ever!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 sell data for profit. Ever!",
@@ -2094,12 +2105,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
-  },
-  "metametricsOptInDescription2": {
-    "message": "We would like to gather basic usage data to improve the usability of our product.  These metrics will..."
-  },
-  "metametricsTitle": {
-    "message": "Join 6M+ users to improve MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -2301,6 +2306,17 @@
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
+  "nftWarningContent": {
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "all your $1 NFTs",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "Proceed with caution."
+  },
   "nfts": {
     "message": "NFTs"
   },
@@ -2434,6 +2450,15 @@
   "notifications16Title": {
     "message": "Improved token allowance experience"
   },
+  "notifications17ActionText": {
+    "message": "Show Security & Privacy settings"
+  },
+  "notifications17Description": {
+    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  },
+  "notifications17Title": {
+    "message": "Security & Privacy Settings"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2564,6 +2589,55 @@
   "onboardingImportWallet": {
     "message": "Import an existing wallet"
   },
+  "onboardingMetametricsAgree": {
+    "message": "I agree"
+  },
+  "onboardingMetametricsAllowOptOut": {
+    "message": "Always allow you to opt-out via Settings"
+  },
+  "onboardingMetametricsDataTerms": {
+    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
+  },
+  "onboardingMetametricsDescription": {
+    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
+  },
+  "onboardingMetametricsDescription2": {
+    "message": "MetaMask will..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "No thanks"
+  },
+  "onboardingMetametricsInfuraTerms": {
+    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "Privacy Policy here"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLink": {
+    "message": "here"
+  },
+  "onboardingMetametricsNeverCollect": {
+    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIP": {
+    "message": "$1 collect your full IP address*",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasis": {
+    "message": "Never"
+  },
+  "onboardingMetametricsNeverSellData": {
+    "message": "$1 sell data.  Ever!",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsSendAnonymize": {
+    "message": "Send anonymized click and pageview events"
+  },
+  "onboardingMetametricsTitle": {
+    "message": "Help us improve MetaMask"
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
@@ -2639,6 +2713,10 @@
   },
   "osTheme": {
     "message": "System"
+  },
+  "otherSnaps": {
+    "message": "other snaps",
+    "description": "Used in the 'permission_rpc' message."
   },
   "padlock": {
     "message": "Padlock"
@@ -2719,6 +2797,10 @@
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Display dialog windows in MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
@@ -2751,9 +2833,17 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "Allow $1 to communicate directly with this snap.",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -2888,6 +2978,12 @@
   },
   "rejectAll": {
     "message": "Reject all"
+  },
+  "rejectRequestsDescription": {
+    "message": "You are about to batch reject $1 requests."
+  },
+  "rejectRequestsN": {
+    "message": "Reject $1 requests"
   },
   "rejectTxsDescription": {
     "message": "You are about to batch reject $1 transactions."
@@ -3262,14 +3358,17 @@
   "sign": {
     "message": "Sign"
   },
-  "signNotice": {
-    "message": "Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site."
-  },
   "signatureRequest": {
     "message": "Signature request"
   },
   "signatureRequest1": {
     "message": "Message"
+  },
+  "signatureRequestGuidance": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
+  },
+  "signatureRequestWarning": {
+    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -4292,6 +4391,12 @@
   "useDefault": {
     "message": "Use default"
   },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  },
   "usePhishingDetection": {
     "message": "Use phishing detection"
   },
@@ -4408,6 +4513,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "websites",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "Welcome to MetaMask"
   },
@@ -4465,6 +4574,12 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Your funds may be at risk"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"

@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useArgs } from '@storybook/client-api';
+import PropTypes from 'prop-types';
 
 import {
   SIZES,
@@ -10,16 +12,22 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
-import { AvatarToken } from '../avatar-token';
-import { AvatarAccount } from '../avatar-account';
-import { Text } from '../text';
+import {
+  AvatarAccount,
+  AvatarToken,
+  Button,
+  ButtonIcon,
+  ICON_NAMES,
+  Icon,
+  Text,
+} from '..';
 
 import {
   TEXT_FIELD_BASE_SIZES,
   TEXT_FIELD_BASE_TYPES,
 } from './text-field-base.constants';
 import { TextFieldBase } from './text-field-base';
+
 import README from './README.mdx';
 
 const marginSizeControlOptions = [
@@ -144,7 +152,13 @@ export default {
   },
 };
 
-const Template = (args) => <TextFieldBase {...args} />;
+const Template = (args) => {
+  const [{ value }, updateArgs] = useArgs();
+  const handleOnChange = (e) => {
+    updateArgs({ value: e.target.value });
+  };
+  return <TextFieldBase {...args} value={value} onChange={handleOnChange} />;
+};
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
@@ -228,7 +242,6 @@ export const LeftAccessoryRightAccessory = (args) => {
         value={value.search}
         name="search"
         onChange={handleOnChange}
-        showClear
         leftAccessory={
           <Icon
             color={COLORS.ICON_ALTERNATIVE}
@@ -243,17 +256,11 @@ export const LeftAccessoryRightAccessory = (args) => {
         name="address"
         onChange={handleOnChange}
         rightAccessory={
-          <Box
-            as="button"
-            display={DISPLAY.FLEX}
-            style={{ padding: 0 }}
-            backgroundColor={COLORS.TRANSPARENT}
-          >
-            <Icon
-              color={COLORS.PRIMARY_DEFAULT}
-              name={ICON_NAMES.SCAN_BARCODE_FILLED}
-            />
-          </Box>
+          <ButtonIcon
+            iconName={ICON_NAMES.SCAN_BARCODE_FILLED}
+            ariaLabel="Scan QR code"
+            iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
+          />
         }
       />
       <TextFieldBase
@@ -274,11 +281,11 @@ export const LeftAccessoryRightAccessory = (args) => {
             alignItems={ALIGN_ITEMS.CENTER}
           >
             <AvatarToken
-              tokenName="ast"
-              tokenImageUrl="./AST.png"
+              tokenName="eth"
+              tokenImageUrl="./images/eth_logo.svg"
               size={SIZES.SM}
             />
-            <Text>AST</Text>
+            <Text>ETH</Text>
             <Icon
               name={ICON_NAMES.ARROW_DOWN}
               color={COLORS.ICON_DEFAULT}
@@ -287,8 +294,12 @@ export const LeftAccessoryRightAccessory = (args) => {
           </Box>
         }
         rightAccessory={
-          <Text variant={TEXT.BODY_SM} color={COLORS.TEXT_ALTERNATIVE}>
-            = ${handleTokenPrice(value.amount, 0.11)}
+          <Text
+            variant={TEXT.BODY_SM}
+            color={COLORS.TEXT_ALTERNATIVE}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            = ${handleTokenPrice(value.amount, 1173.58)}
           </Text>
         }
       />
@@ -327,70 +338,66 @@ export const InputRef = (args) => {
     setValue(e.target.value);
   };
   return (
-    <>
+    <Box display={DISPLAY.FLEX}>
       <TextFieldBase
         {...args}
         inputRef={inputRef}
         value={value}
         onChange={handleOnChange}
       />
-      <Box
-        as="button"
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        color={COLORS.TEXT_DEFAULT}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderRadius={SIZES.XL}
-        marginLeft={1}
-        paddingLeft={2}
-        paddingRight={2}
-        onClick={handleOnClick}
-      >
+      <Button marginLeft={1} onClick={handleOnClick}>
         Edit
-      </Box>
-    </>
+      </Button>
+    </Box>
   );
 };
 
-const CustomInputComponent = ({
-  as,
-  autoComplete,
-  autoFocus,
-  defaultValue,
-  disabled,
-  focused,
-  id,
-  maxLength,
-  name,
-  onBlur,
-  onChange,
-  onFocus,
-  padding,
-  paddingLeft,
-  paddingRight,
-  placeholder,
-  readOnly,
-  ref,
-  required,
-  value,
-  variant,
-  type,
-  className,
-  'aria-invalid': ariaInvalid,
-  ...props
-}) => {
-  return (
+const CustomInputComponent = React.forwardRef(
+  (
+    {
+      as,
+      autoComplete,
+      autoFocus,
+      defaultValue,
+      disabled,
+      focused,
+      id,
+      inputProps,
+      inputRef,
+      maxLength,
+      name,
+      onBlur,
+      onChange,
+      onFocus,
+      padding,
+      paddingLeft,
+      paddingRight,
+      placeholder,
+      readOnly,
+      required,
+      value,
+      variant,
+      type,
+      className,
+      'aria-invalid': ariaInvalid,
+      ...props
+    },
+    ref,
+  ) => (
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
+      ref={ref}
       {...{ padding, paddingLeft, paddingRight, ...props }}
     >
       <Box display={DISPLAY.INLINE_FLEX}>
         <Text
           style={{ padding: 0 }}
           aria-invalid={ariaInvalid}
+          ref={inputRef}
           {...{
-            as,
             className,
+            as,
             autoComplete,
             autoFocus,
             defaultValue,
@@ -404,11 +411,11 @@ const CustomInputComponent = ({
             onFocus,
             placeholder,
             readOnly,
-            ref,
             required,
             value,
             variant,
             type,
+            ...inputProps,
           }}
         />
         <Text variant={TEXT.BODY_XS} color={COLORS.TEXT_ALTERNATIVE}>
@@ -417,10 +424,43 @@ const CustomInputComponent = ({
       </Box>
       <Text variant={TEXT.BODY_XS}>No conversion rate available</Text>
     </Box>
-  );
+  ),
+);
+
+CustomInputComponent.propTypes = {
+  /**
+   * The custom input component should accepts all props that the
+   * InputComponent accepts in ./text-field-base.js
+   */
+  autoFocus: PropTypes.bool,
+  className: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  disabled: PropTypes.bool,
+  id: PropTypes.string,
+  inputProps: PropTypes.object,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  maxLength: PropTypes.number,
+  name: PropTypes.string,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool,
+  required: PropTypes.bool,
+  type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
+  /**
+   * Because we manipulate the type in TextFieldBase so the html element
+   * receives the correct attribute we need to change the autoComplete
+   * propType to a string
+   */
+  autoComplete: PropTypes.string,
+  /**
+   * The custom input component should also accept all the props from Box
+   */
+  ...Box.propTypes,
 };
 
-CustomInputComponent.propTypes = { ...TextFieldBase.propTypes };
+CustomInputComponent.displayName = 'CustomInputComponent';
 
 export const InputComponent = (args) => (
   <TextFieldBase
@@ -434,6 +474,8 @@ export const InputComponent = (args) => (
     }
   />
 );
+
+InputComponent.args = { autoComplete: true };
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
