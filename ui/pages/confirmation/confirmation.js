@@ -176,7 +176,9 @@ export default function ConfirmationPage({
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const snap = useSelector((state) => getSnap(state, pendingConfirmation?.origin));
+  const snap = useSelector((state) =>
+    getSnap(state, pendingConfirmation?.origin),
+  );
 
   // When pendingConfirmation is undefined, this will also be undefined
   const proposedName = snap?.manifest.proposedName;
