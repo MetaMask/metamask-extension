@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Precio del gas"
   },
-  "advancedOptions": {
-    "message": "Opciones avanzadas"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
@@ -1001,29 +998,8 @@
   "editContact": {
     "message": "Editar contacto"
   },
-  "editGasEducationButtonText": {
-    "message": "¿Cómo debo elegir?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Esto es lo más conveniente para transacciones con límite de tiempo (como Swaps/Intercambios) ya que aumenta la probabilidad de que la transacción sea exitosa. Si un intercambio tarda demasiado en procesarse, puede que falle y esto resulte en la pérdida de parte de su tarifa de gas."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Una tarifa de gas más baja debería utilizarse solo cuando el tiempo de procesamiento es menos importante. Las tarifas reducidas dificultan la predicción de cuándo (o si) su transacción tendrá éxito."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Una tarifa de gas media es buena para enviar, retirar u otras transacciones sin límites de tiempo. Esta configuración será exitosa en la mayoría de los casos."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Seleccionar la tarifa de gas adecuada depende del tipo de transacción y de la importancia que tenga para usted."
-  },
-  "editGasEducationModalTitle": {
-    "message": "¿Cómo elegir?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar cuota de Gas"
-  },
-  "editGasHigh": {
-    "message": "Alto"
   },
   "editGasLimitOutOfBounds": {
     "message": "El límite de gas debe ser al menos $1"
@@ -1034,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "El límite de gas es el máximo de unidades de gas que está dispuesto a utilizar. Las unidades de gas son un multiplicador de la \"Tarifa de prioridad máxima\" y de la \"Tarifa máxima\"."
-  },
-  "editGasLow": {
-    "message": "Bajo"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad"
@@ -1056,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad máxima"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "La tarifa máxima es lo máximo que se pagará (tarifa básica + tarifa de prioridad)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "La tarifa máxima de prioridad debe ser superior a 0 GWEI"
   },
@@ -1076,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "La tarifa de prioridad es baja para las condiciones actuales de la red"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "La tarifa de prioridad máxima (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción. Lo más habitual es que se pague la configuración máxima"
-  },
-  "editGasMedium": {
-    "message": "Medio"
   },
   "editGasPriceTooLow": {
     "message": "El precio del gas debe ser superior a 0"
@@ -1102,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Se desconoce el tiempo de procesamiento"
   },
-  "editGasTooLowTooltip": {
-    "message": "Su tarifa máxima o su tarifa prioritaria máxima pueden ser bajas para las condiciones actuales del mercado. No sabemos cuándo (o si) se procesará su transacción. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Esto reduce su tarifa máxima, pero si el tráfico de la red aumenta, su transacción puede retrasarse o resultar fallida."
-  },
   "editNonceField": {
     "message": "Editar nonce"
   },
@@ -1122,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Activar autodetección"
-  },
-  "enableEIP1559V2": {
-    "message": "Activar interfaz de tarifa de gas mejorada"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Hemos actualizado la forma en que funciona la estimación y la personalización de la tarifa de gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Activar interfaz de tarifa de gas mejorada en Configuración"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Hemos actualizado la forma en que funciona la estimación y la personalización de la tarifa de gas. Actívela si desea utilizar la nueva experiencia de gas. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Nueva experiencia de gas"
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
@@ -1394,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nuestras estimaciones bajas, medias y altas no están disponibles."
   },
   "gasFee": {
     "message": "Cuota de gas"
@@ -3089,9 +3028,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostrar claves privadas"
-  },
-  "showRecommendations": {
-    "message": "Mostrar recomendaciones"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"

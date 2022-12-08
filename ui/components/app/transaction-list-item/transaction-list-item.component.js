@@ -27,10 +27,7 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import {
-  checkNetworkAndAccountSupports1559,
-  getEIP1559V2Enabled,
-} from '../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
@@ -53,7 +50,7 @@ function TransactionListItemInner({
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
-  const { supportsEIP1559V2 } = useGasFeeContext();
+  const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
 
   const {
@@ -74,14 +71,14 @@ function TransactionListItemInner({
           legacy_event: true,
         },
       });
-      if (supportsEIP1559V2) {
+      if (supportsEIP1559) {
         setEditGasMode(EDIT_GAS_MODES.SPEED_UP);
         openModal('cancelSpeedUpTransaction');
       } else {
         setShowRetryEditGasPopover(true);
       }
     },
-    [openModal, setEditGasMode, trackEvent, supportsEIP1559V2],
+    [openModal, setEditGasMode, trackEvent, supportsEIP1559],
   );
 
   const cancelTransaction = useCallback(
@@ -95,14 +92,14 @@ function TransactionListItemInner({
           legacy_event: true,
         },
       });
-      if (supportsEIP1559V2) {
+      if (supportsEIP1559) {
         setEditGasMode(EDIT_GAS_MODES.CANCEL);
         openModal('cancelSpeedUpTransaction');
       } else {
         setShowCancelEditGasPopover(true);
       }
     },
-    [trackEvent, openModal, setEditGasMode, supportsEIP1559V2],
+    [trackEvent, openModal, setEditGasMode, supportsEIP1559],
   );
 
   const shouldShowSpeedUp = useShouldShowSpeedUp(
@@ -253,14 +250,14 @@ function TransactionListItemInner({
           )}
         />
       )}
-      {!supportsEIP1559V2 && showRetryEditGasPopover && (
+      {!supportsEIP1559 && showRetryEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowRetryEditGasPopover(false)}
           mode={EDIT_GAS_MODES.SPEED_UP}
           transaction={transactionGroup.primaryTransaction}
         />
       )}
-      {!supportsEIP1559V2 && showCancelEditGasPopover && (
+      {!supportsEIP1559 && showCancelEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowCancelEditGasPopover(false)}
           mode={EDIT_GAS_MODES.CANCEL}
@@ -281,13 +278,10 @@ const TransactionListItem = (props) => {
   const { transactionGroup } = props;
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
-
-  const supportsEIP1559V2 = eip1559V2Enabled && supportsEIP1559;
 
   return (
     <GasFeeContextProvider
@@ -296,7 +290,7 @@ const TransactionListItem = (props) => {
     >
       <TransactionModalContextProvider>
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
-        {supportsEIP1559V2 && (
+        {supportsEIP1559 && (
           <>
             <CancelSpeedupPopover />
             <EditGasFeePopover />

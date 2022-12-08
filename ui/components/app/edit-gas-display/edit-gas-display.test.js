@@ -1,5 +1,4 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import EditGasDisplay from '.';
@@ -14,25 +13,7 @@ function render({ componentProps = {} } = {}) {
 }
 
 describe('EditGasDisplay', () => {
-  describe('if getIsNetworkBusy returns a truthy value', () => {
-    it('informs the user', () => {
-      render({ componentProps: { isNetworkBusy: true } });
-      expect(
-        screen.getByText(
-          'Network is busy. Gas prices are high and estimates are less accurate.',
-        ),
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe('if getIsNetworkBusy does not return a truthy value', () => {
-    it('does not inform the user', () => {
-      render({ componentProps: { isNetworkBusy: false } });
-      expect(
-        screen.queryByText(
-          'Network is busy. Gas prices are high and estimates are less accurate.',
-        ),
-      ).not.toBeInTheDocument();
-    });
+  it('if render correctly', () => {
+    expect(render).not.toThrow();
   });
 });
