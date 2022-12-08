@@ -49,7 +49,7 @@ export default function FormField({
         'form-field__row--error': error,
       })}
     >
-      <Box as="label" {...wrappingLabelProps}>
+      <Box {...wrappingLabelProps}>
         <div className="form-field__heading">
           <Box
             className="form-field__heading-title"
