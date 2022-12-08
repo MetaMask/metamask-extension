@@ -169,6 +169,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   type="primary"
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button-rounded-button"
+                  data-testid="speedup-button"
                 >
                   {t('speedUp')}
                 </Button>
@@ -186,6 +187,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     type="raised"
                     onClick={this.handleRetry}
                     className="transaction-list-item-details__header-button"
+                    data-testid="rety-button"
                   >
                     <i className="fa fa-sync"></i>
                   </Button>
