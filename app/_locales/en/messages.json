@@ -266,6 +266,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
+  "advancedConfiguration": {
+    "message": "Advanced configuration"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these $1 as my default for \"Advanced\""
   },
@@ -3248,9 +3251,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "Set advanced privacy settings"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
