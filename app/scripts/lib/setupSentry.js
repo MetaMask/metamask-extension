@@ -16,13 +16,13 @@ const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
 
-const ERROR_URL_ALLOWLIST = [
-  'cryptocompare.com',
-  'coingecko.com',
-  'etherscan.io',
-  'codefi.network',
-  'segment.io',
-];
+export const ERROR_URL_ALLOWLIST = {
+  CRYPTOCOMPARE: 'cryptocompare.com',
+  COINGECKO: 'coingecko.com',
+  ETHERSCAN: 'etherscan.io',
+  CODEFI: 'codefi.network',
+  SEGMENT: 'segment.io',
+};
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
@@ -139,7 +139,7 @@ export default function setupSentry({ release, getState }) {
       new ExtraErrorData(),
     ],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb(breadcrumb) {
       if (getState) {
         const appState = getState();
@@ -158,67 +158,76 @@ export default function setupSentry({ release, getState }) {
     },
   });
 
-  function getProtocolFromURL(url) {
-    return new URL(url).protocol;
-  }
-
-  function rewriteBreadcrumb(breadcrumb) {
-    /** @todo check URL allowlist, exclude URLs not in allowlist */
-
-    if (breadcrumb.data?.url) {
-      breadcrumb.data.url = getProtocolFromURL(breadcrumb.data.url);
-    }
-    if (breadcrumb.data?.to) {
-      breadcrumb.data.to = getProtocolFromURL(breadcrumb.data.to);
-    }
-    if (breadcrumb.data?.from) {
-      breadcrumb.data.from = getProtocolFromURL(breadcrumb.data.from);
-    }
-    return breadcrumb;
-  }
-
-  function rewriteReport(report) {
-    try {
-      // simplify certain complex error messages (e.g. Ethjs)
-      simplifyErrorMessages(report);
-      // remove urls from error message
-      sanitizeUrlsFromErrorMessages(report);
-      // Remove evm addresses from error message.
-      // Note that this is redundent with data scrubbing we do within our sentry dashboard,
-      // but putting the code here as well gives public visibility to how we are handling
-      // privacy with respect to sentry.
-      sanitizeAddressesFromErrorMessages(report);
-      // modify report urls
-      rewriteReportUrls(report);
-      // append app state
-      if (getState) {
-        const appState = getState();
-        if (!report.extra) {
-          report.extra = {};
-        }
-        report.extra.appState = appState;
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-    return report;
-  }
-
   return Sentry;
+}
+
+function hideUrlIfNotInternal(_url) {
+  const re = /^(chrome-extension|moz-extension):\/\//u;
+  if (!_url.match(re)) {
+    return '';
+  }
+  return _url;
+}
+
+export function rewriteBreadcrumb(breadcrumb) {
+  /** @todo check URL allowlist, exclude URLs not in allowlist */
+
+  if (breadcrumb.data?.url) {
+    breadcrumb.data.url = hideUrlIfNotInternal(breadcrumb.data.url);
+  }
+  if (breadcrumb.data?.to) {
+    breadcrumb.data.to = hideUrlIfNotInternal(breadcrumb.data.to);
+  }
+  if (breadcrumb.data?.from) {
+    breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
+  }
+  return breadcrumb;
+}
+
+export function rewriteReport(report, getState) {
+  try {
+    // simplify certain complex error messages (e.g. Ethjs)
+    simplifyErrorMessages(report);
+    // remove urls from error message
+    sanitizeUrlsFromErrorMessages(report);
+    // Remove evm addresses from error message.
+    // Note that this is redundent with data scrubbing we do within our sentry dashboard,
+    // but putting the code here as well gives public visibility to how we are handling
+    // privacy with respect to sentry.
+    sanitizeAddressesFromErrorMessages(report);
+    // modify report urls
+    rewriteReportUrls(report);
+    // append app state
+    if (getState) {
+      const appState = getState();
+      if (!report.extra) {
+        report.extra = {};
+      }
+      report.extra.appState = appState;
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+  return report;
 }
 
 function sanitizeUrlsFromErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
+    let newErrorMessage = errorMessage;
     const re =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gu;
-    const urlsInMessage = errorMessage.match(re) || [];
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,63}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gu;
+    const urlsInMessage = newErrorMessage.match(re) || [];
     urlsInMessage.forEach((url) => {
-      if (!ERROR_URL_ALLOWLIST.some((allowedUrl) => url.match(allowedUrl))) {
-        errorMessage.replace(url, '**');
+      if (
+        !Object.values(ERROR_URL_ALLOWLIST).some((allowedUrl) =>
+          url.match(allowedUrl),
+        )
+      ) {
+        newErrorMessage = newErrorMessage.replace(url, '**');
       }
     });
-    return errorMessage;
+    return newErrorMessage;
   });
 }
 
@@ -253,6 +262,7 @@ function rewriteErrorMessages(report, rewriteFn) {
     report.message = rewriteFn(report.message);
   }
   // rewrite each exception message
+  console.log('report', report);
   if (report.exception && report.exception.values) {
     report.exception.values.forEach((item) => {
       if (typeof item.value === 'string') {
@@ -278,7 +288,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(globalThis.location.origin)[1];
+  const filePath = origUrl?.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }
