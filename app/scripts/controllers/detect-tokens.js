@@ -172,7 +172,10 @@ export default class DetectTokensController {
               asset_type: ASSET_TYPES.TOKEN,
             },
           });
-          await this.tokensController.addDetectedTokens(tokensWithBalance);
+          await this.tokensController.addDetectedTokens(tokensWithBalance, {
+            selectedAddress: this.selectedAddress,
+            chainId: this.chainId,
+          });
         }
       }
     }
