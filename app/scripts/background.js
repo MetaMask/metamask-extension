@@ -29,7 +29,9 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { RestrictedMethods } from '../../shared/constants/permissions';
+///: END:ONLY_INCLUDE_IN
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -721,6 +723,7 @@ function setupController(initState, initLangCode) {
           REJECT_NOTFICIATION_CLOSE,
         ),
       );
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     // Finally, resolve snap dialog approvals and reject all the others managed by the ApprovalController
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
@@ -734,6 +737,13 @@ function setupController(initState, initLangCode) {
         }
       },
     );
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    controller.approvalController.clear(
+      ethErrors.provider.userRejectedRequest(),
+    );
+    ///: END:ONLY_INCLUDE_IN
 
     updateBadge();
   }
