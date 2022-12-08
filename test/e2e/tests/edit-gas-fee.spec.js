@@ -150,7 +150,7 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(1)',
           text: '0.00085 ETH',
         });
         await driver.waitForSelector({
@@ -241,9 +241,6 @@ describe('Editing Confirm Transaction', function () {
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
         assert.equal(await editedTransactionAmount.getText(), '0.00021');
-
-        const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '0.00021');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

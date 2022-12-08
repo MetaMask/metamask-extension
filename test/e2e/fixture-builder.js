@@ -351,6 +351,7 @@ function onboardingFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useCurrencyRateCheck: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
