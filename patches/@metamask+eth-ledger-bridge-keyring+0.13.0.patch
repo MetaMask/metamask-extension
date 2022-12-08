@@ -1,8 +1,8 @@
 diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-index 2c6a7de..1056025 100644
+index 2c6a7de..5ddd81e 100644
 --- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
 +++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-@@ -37,26 +37,49 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -37,26 +37,48 @@ class LedgerBridgeKeyring extends EventEmitter {
      this.deserialize(opts)
  
      this.iframeLoaded = false
@@ -16,12 +16,11 @@ index 2c6a7de..1056025 100644
 +    }
 +  }
 +
-+  init(){
++  init(opts){
 +    this._setupIframe()
      this._setupListener()
 +
-+    // @TODO, is the below necessary?
-+    return this.updateTransportMethod('hdk');
++    return this.updateTransportMethod('webhid');
    }
  
    serialize () {
@@ -54,7 +53,7 @@ index 2c6a7de..1056025 100644
      this.accounts = opts.accounts || []
      this.accountDetails = opts.accountDetails || {}
      if (!opts.accountDetails) {
-@@ -99,6 +122,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -99,6 +121,11 @@ class LedgerBridgeKeyring extends EventEmitter {
      }
    }
  
@@ -66,7 +65,16 @@ index 2c6a7de..1056025 100644
    isUnlocked () {
      return Boolean(this.hdk && this.hdk.publicKey)
    }
-@@ -133,10 +161,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -120,7 +147,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+   }
+ 
+   unlock (hdPath, updateHdk = true) {
+-    if (this.isUnlocked() && !hdPath) {
++    if (this.isUnlocked() && !updateHdk) {
+       return Promise.resolve('already unlocked')
+     }
+     const path = hdPath ? this._toLedgerPath(hdPath) : this.hdPath
+@@ -133,10 +160,7 @@ class LedgerBridgeKeyring extends EventEmitter {
        },
        ({ success, payload }) => {
          if (success) {
@@ -78,3 +86,19 @@ index 2c6a7de..1056025 100644
            resolve(payload.address)
          } else {
            reject(payload.error || new Error('Unknown error'))
+@@ -235,6 +259,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+         params: { transportType },
+       }, ({ success }) => {
+         if (success) {
++          console.log(`Ledger transport method updated to ${transportType}`);
+           resolve(true)
+         } else {
+           reject(new Error('Ledger transport could not be updated'))
+@@ -348,6 +373,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+             },
+           },
+           ({ success, payload }) => {
++
+             if (success) {
+               let v = payload.v - 27
+               v = v.toString(16)
