@@ -117,14 +117,14 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       name="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
+      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
     />
     <AvatarToken
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
       name="S"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
+      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
     />
   </Box>
 );

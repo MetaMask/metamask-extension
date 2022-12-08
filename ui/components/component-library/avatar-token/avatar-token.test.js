@@ -15,7 +15,7 @@ describe('AvatarToken', () => {
 
   it('should render correctly', () => {
     const { getByTestId, container } = render(
-      <AvatarToken data-testid="avatar-token" />,
+      <AvatarToken {...args} data-testid="avatar-token" />,
     );
     expect(getByTestId('avatar-token')).toBeDefined();
     expect(container).toMatchSnapshot();
