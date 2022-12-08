@@ -197,15 +197,17 @@ export default function GasDisplay({ gasError }) {
                 </Box>
               }
               detailTitleColor={COLORS.TEXT_DEFAULT}
-              detailText={useCurrencyRateCheck && 
-                (<Box className="gas-display__currency-container">
-                  <LoadingHeartBeat estimateUsed={estimateUsed} />
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                  />
-                </Box>)
+              detailText={
+                useCurrencyRateCheck && (
+                  <Box className="gas-display__currency-container">
+                    <LoadingHeartBeat estimateUsed={estimateUsed} />
+                    <UserPreferencedCurrencyDisplay
+                      type={SECONDARY}
+                      value={hexMinimumTransactionFee}
+                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                    />
+                  </Box>
+                )
               }
               detailTotal={
                 <Box className="gas-display__currency-container">
