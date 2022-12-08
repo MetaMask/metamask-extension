@@ -723,8 +723,10 @@ function setupController(initState, initLangCode) {
           REJECT_NOTFICIATION_CLOSE,
         ),
       );
+
+    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
+
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    // Finally, resolve snap dialog approvals and reject all the others managed by the ApprovalController
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         if (type.startsWith(RestrictedMethods.snap_dialog)) {
