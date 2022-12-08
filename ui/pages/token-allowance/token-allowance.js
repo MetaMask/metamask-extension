@@ -436,9 +436,15 @@ export default function TokenAllowance({
         disabled={disableNextButton || disableApproveButton}
       >
         {unapprovedTxCount > 1 && (
-          <a onClick={() => handleCancelAll()}>
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleCancelAll();
+            }}
+          >
             {t('rejectTxsN', [unapprovedTxCount])}
-          </a>
+          </Button>
         )}
       </PageContainerFooter>
       {showContractDetails && (
