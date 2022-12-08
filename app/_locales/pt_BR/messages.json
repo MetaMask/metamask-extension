@@ -1546,18 +1546,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Sempre permitirá que você se exclua por meio das Configurações"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Sempre conseguirá se excluir por meio das Configurações"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nunca",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "A MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Nunca coletarão chaves, endereços, transações, saldos, hashes ou qualquer informação pessoal"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 coletarão seu endereço IP completo",
@@ -1566,12 +1560,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 coletarão chaves, endereços, transações, saldos, hashes ou qualquer outra informação pessoal",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Nunca coletarão seu endereço IP completo"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Nunca venderão dados em troca de lucro. Jamais!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 venderão dados em troca de lucro. Jamais!",
@@ -1585,12 +1573,6 @@
   },
   "metametricsOptInDescription": {
     "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a extensão. Esses dados serão usados para melhorar continuamente a usabilidade e a experiência do usuário com o nosso produto e o ecossistema do Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Gostaríamos de reunir dados básicos de utilização para melhorar a usabilidade do nosso produto. Esses indicadores..."
-  },
-  "metametricsTitle": {
-    "message": "Junte-se a mais de 6 milhões de usuários para melhorar a MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",

@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "सेटिंग्स के माध्यम से हमेशा ऑप्ट-आउट करने में सक्षम हों"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "कभी नहीं",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "कभी भी चाभियां, पता, लेन-देन, शेष राशि, हैश, या कोई व्यक्तिगत सूचना एकत्र ना करें"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 आपका पूरा IP पता एकत्र करेगा",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "कभी भी आपका पूरा IP पता एकत्र नहीं करता"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "फायदे के लिए कभी डेटा नहीं बेचता। कभी भी!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
-  },
-  "metametricsOptInDescription2": {
-    "message": "हम अपने उत्पाद की उपयोगिता में सुधार के लिए बुनियादी उपयोग डेटा एकत्र करना चाहते हैं। ये मेट्रिक्स करेंगे..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask को बेहतर बनाने के लिए 6M+ उपयोगकर्ताओं से जुड़ें"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",

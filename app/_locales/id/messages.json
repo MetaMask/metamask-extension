@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Selalu dapat memilih keluar melalui Pengaturan"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Jangan",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask akan.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Jangan pernah mengumpulkan kunci, alamat, transaksi, saldo, hash, atau informasi pribadi apa pun"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 mengumpulkan alamat IP lengkap Anda",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 mengumpulkan kunci, alamat, transaksi, saldo, hash, atau informasi pribadi lainnya",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Jangan pernah mengumpulkan alamat IP lengkap Anda"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Jangan pernah menjual data untuk mendapatkan keuntungan!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 menjual data untuk mendapatkan keuntungan. Jangan pernah!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna berinteraksi dengan ekstensi. Data ini akan digunakan untuk meningkatkan kegunaan dan pengalaman pengguna atas produk kami dan ekosistem Ethereum secara berkala."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Kami ingin mengumpulkan data penggunaan dasar dalam rangka meningkatkan kegunaan produk kami. Metrik ini akan..."
-  },
-  "metametricsTitle": {
-    "message": "Bergabunglah bersama 6 Jt+ pengguna untuk meningkatkan MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "memverifikasi detail jaringan",

@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Palagi kang papayagang mag-opt out sa pamamagitan ng Mga Setting"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Palaging mag-opt out sa pamamagitan ng Settings"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Huwag Kailanman",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "Ang MetaMask ay.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Huwag mangolekta ng mga key, address, transaksyon, balanse, hash, o anumang personal na impormasyon"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 kolektahin ang iyong IP address",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 nangongolekta ng mga key, address, transaksyon, balanse, hash, o anumang personal na impormasyon",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Huwag magkolekta ng buong IP address"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Huwag magbenta ng data para sa profit. Kahit kailan!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 nagbebenta ng data para pagkakitaan. Kahit kailan!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "Gustong kunin ng MetaMask ang data ng paggamit para mas maunawaan kung paano ginagamit ng mga user namin ang extension. Gagamitin ang data na ito para patuloy na mapahusay ang kakayahang magamit at karanasan ng user sa paggamit ng produkto namin at Ethereum ecosystem."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nais naming mangalap ng pangunahing data ng paggamit upang mapabuti ang kakayahang magamit ang aming produkto. Ang mga sukatan na ito ay..."
-  },
-  "metametricsTitle": {
-    "message": "Sumali sa 6M+ user upang mapabuti ang MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "i-verify ang mga detalye ng network",
