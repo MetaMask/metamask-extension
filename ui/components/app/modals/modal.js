@@ -8,6 +8,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
+import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
@@ -76,6 +77,10 @@ const accountModalStyle = {
 };
 
 const MODALS = {
+  ONBOARDING_ADD_NETWORK: {
+    contents: <AddNetworkModal />,
+    ...accountModalStyle,
+  },
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {
