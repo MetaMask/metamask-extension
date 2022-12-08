@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mount, shallow } from 'enzyme';
 import { Router, MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
