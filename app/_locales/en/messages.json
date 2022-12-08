@@ -2638,6 +2638,9 @@
   "onboardingMetametricsInfuraTermsPolicyLink": {
     "message": "here"
   },
+  "onboardingMetametricsModalTitle": {
+    "message": "Add custom network"
+  },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
@@ -2658,9 +2661,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Add custom network"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
