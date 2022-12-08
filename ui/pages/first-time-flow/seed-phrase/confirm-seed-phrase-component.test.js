@@ -1,125 +1,43 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import ConfirmSeedPhrase from './confirm-seed-phrase/confirm-seed-phrase.component';
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent, waitFor } from '@testing-library/react';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import ConfirmSeedPhrase from './confirm-seed-phrase';
 
-function shallowRender(props = {}, context = {}) {
-  return shallow(<ConfirmSeedPhrase {...props} />, {
-    context: {
-      t: (str) => `${str}_t`,
-      ...context,
-    },
-  });
+jest.mock('../../../store/actions.js', () => ({
+  setSeedPhraseBackedUp: () => jest.fn().mockResolvedValue(),
+}));
+
+const seedPhrase = '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬';
+
+function shallowRender(props = {}) {
+  const mockState = {};
+  const mockStore = configureMockStore([thunk])(mockState);
+
+  return renderWithProvider(
+    <DragDropContextProvider backend={HTML5Backend}>
+      <ConfirmSeedPhrase {...props} />
+    </DragDropContextProvider>,
+    mockStore,
+  );
 }
 
 describe('ConfirmSeedPhrase Component', () => {
   it('should render correctly', () => {
-    const component = shallowRender({
-      seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
+    const { queryAllByTestId } = shallowRender({
+      seedPhrase,
     });
 
-    expect(
-      component.find('.confirm-seed-phrase__seed-word--sorted'),
-    ).toHaveLength(12);
-  });
-
-  it('should add/remove selected on click', () => {
-    const trackEventSpy = sinon.spy();
-    const replaceSpy = sinon.spy();
-    const component = shallowRender(
-      {
-        seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { replace: replaceSpy },
-      },
-      {
-        trackEvent: trackEventSpy,
-      },
+    // Regex ommitted the empty/undefined draggable boxes
+    expect(queryAllByTestId(/draggable-seed-(?!.*undefined)/u)).toHaveLength(
+      12,
     );
 
-    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
-
-    // Click on 3 seeds to add to selected
-    seeds.at(0).simulate('click');
-    seeds.at(1).simulate('click');
-    seeds.at(2).simulate('click');
-
-    expect(component.state().selectedSeedIndices).toStrictEqual([0, 1, 2]);
-
-    // Click on a selected seed to remove
-    component.state();
-    component.update();
-    component.state();
-    component
-      .find('.confirm-seed-phrase__seed-word--sorted')
-      .at(1)
-      .simulate('click');
-    expect(component.state().selectedSeedIndices).toStrictEqual([0, 2]);
-  });
-
-  it('should render correctly on hover', () => {
-    const trackEventSpy = sinon.spy();
-    const replaceSpy = sinon.spy();
-    const component = shallowRender(
-      {
-        seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { replace: replaceSpy },
-      },
-      {
-        trackEvent: trackEventSpy,
-      },
-    );
-
-    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
-
-    // Click on 3 seeds to add to selected
-    seeds.at(0).simulate('click');
-    seeds.at(1).simulate('click');
-    seeds.at(2).simulate('click');
-
-    // Dragging Seed # 2 to 0 placeth
-    component.instance().setDraggingSeedIndex(2);
-    component.instance().setHoveringIndex(0);
-
-    component.update();
-
-    const pendingSeeds = component.find(
-      '.confirm-seed-phrase__selected-seed-words__pending-seed',
-    );
-
-    expect(pendingSeeds.at(0).props().seedIndex).toStrictEqual(2);
-    expect(pendingSeeds.at(1).props().seedIndex).toStrictEqual(0);
-    expect(pendingSeeds.at(2).props().seedIndex).toStrictEqual(1);
-  });
-
-  it('should insert seed in place on drop', () => {
-    const trackEventSpy = sinon.spy();
-    const replaceSpy = sinon.spy();
-    const component = shallowRender(
-      {
-        seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { replace: replaceSpy },
-      },
-      {
-        trackEvent: trackEventSpy,
-      },
-    );
-
-    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
-
-    // Click on 3 seeds to add to selected
-    seeds.at(0).simulate('click');
-    seeds.at(1).simulate('click');
-    seeds.at(2).simulate('click');
-
-    // Drop Seed # 2 to 0 placeth
-    component.instance().setDraggingSeedIndex(2);
-    component.instance().setHoveringIndex(0);
-    component.instance().onDrop(0);
-
-    component.update();
-
-    expect(component.state().selectedSeedIndices).toStrictEqual([2, 0, 1]);
-    expect(component.state().pendingSeedIndices).toStrictEqual([2, 0, 1]);
+    // For 24 word mnemonic phrases.
+    expect(queryAllByTestId(/draggable-seed-undefined/u)).toHaveLength(24);
   });
 
   it('should submit correctly', async () => {
@@ -137,41 +55,25 @@ describe('ConfirmSeedPhrase Component', () => {
       '狗',
       '豬',
     ];
-    const trackEventSpy = sinon.spy();
-    const replaceSpy = sinon.spy();
-    const component = shallowRender(
-      {
-        seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { replace: replaceSpy },
-        setSeedPhraseBackedUp: () => Promise.resolve(),
-      },
-      {
-        trackEvent: trackEventSpy,
-      },
-    );
 
-    const sorted = component.state().sortedSeedWords;
-    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
+    const history = {
+      replace: jest.fn(),
+    };
+
+    const { queryByTestId } = shallowRender({
+      seedPhrase,
+      history,
+    });
 
     originalSeed.forEach((seed) => {
-      const seedIndex = sorted.findIndex((s) => s === seed);
-      seeds.at(seedIndex).simulate('click');
+      fireEvent.click(queryByTestId(`draggable-seed-${seed}`));
     });
 
-    component.update();
+    const confirmSeedPhrase = queryByTestId('confirm-dragged-seed-phrase');
+    fireEvent.click(confirmSeedPhrase);
 
-    component.find('.first-time-flow__button').simulate('click');
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    expect(trackEventSpy.args[0][0]).toStrictEqual({
-      category: 'Onboarding',
-      event: 'Wallet Created',
-      properties: {
-        account_type: 'metamask',
-        is_backup_skipped: false,
-      },
+    await waitFor(() => {
+      expect(history.replace).toHaveBeenCalledWith('/initialize/end-of-flow');
     });
-    expect(replaceSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
   });
 });
