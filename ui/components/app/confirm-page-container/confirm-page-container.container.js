@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import {
-  getAccountsWithLabels,
   getAddressBookEntry,
   getIsBuyableChain,
   getNetworkIdentifier,
@@ -8,6 +7,7 @@ import {
   getMetadataContractName,
   getAccountName,
   getMetaMaskIdentities,
+  getAccountsWithLabels,
 } from '../../../selectors';
 import ConfirmPageContainer from './confirm-page-container.component';
 

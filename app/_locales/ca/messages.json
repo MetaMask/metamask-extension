@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Configuració avançada"
   },
-  "advancedOptions": {
-    "message": "Opcions Avançades"
-  },
   "amount": {
     "message": "Quantitat"
   },
@@ -544,9 +541,6 @@
   },
   "newAccount": {
     "message": "Nou compte"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova adreça detectada! Clica aquí per afegir la teva llibreta d'adreces."
   },
   "newAccountNumberName": {
     "message": "Compte $1",

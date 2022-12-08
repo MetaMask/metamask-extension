@@ -93,7 +93,7 @@ export default function CreationSuccessful() {
           type="link"
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
         >
-          {t('setAdvancedPrivacySettings')}
+          {t('advancedConfiguration')}
         </Button>
         <Button
           data-testid="onboarding-complete-done"
