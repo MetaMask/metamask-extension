@@ -1,7 +1,9 @@
 import sinon from 'sinon';
 import nock from 'nock';
-import { getNetworkDisplayName } from './util';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import NetworkController, { NETWORK_EVENTS } from './network-controller';
+
+const getNetworkDisplayName = (key) => NETWORK_TO_NAME_MAP[key];
 
 /**
  * Construct a successful RPC response.
