@@ -238,6 +238,7 @@ function defaultFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useCurrencyRateCheck: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
