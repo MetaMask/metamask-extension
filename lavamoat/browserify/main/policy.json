@@ -481,13 +481,23 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/address-book-controller>@metamask/base-controller": true,
         "@metamask/controller-utils": true
+      }
+    },
+    "@metamask/address-book-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/announcement-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/announcement-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/approval-controller": {
@@ -516,10 +526,10 @@
         "@eth-optimism/contracts>@ethersproject/contracts": true,
         "@metamask/assets-controllers>@ethersproject/abi": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
@@ -591,6 +601,11 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -911,12 +926,17 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller>@metamask/base-controller": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/gas-fee-controller>@metamask/network-controller>eth-json-rpc-infura": {
@@ -1145,11 +1165,16 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/phishing-controller>@metamask/base-controller": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
         "punycode": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/phishing-controller>eth-phishing-detect": {

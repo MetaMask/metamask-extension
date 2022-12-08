@@ -1,150 +1,5 @@
 {
   "resources": {
-    "@babel/code-frame": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "lavamoat>@babel/highlight": true
-      }
-    },
-    "@babel/core": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@ampproject/remapping": true,
-        "@babel/core>@babel/generator": true,
-        "@babel/core>@babel/helper-compilation-targets": true,
-        "@babel/core>@babel/helper-module-transforms": true,
-        "@babel/core>@babel/helpers": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "@babel/core>gensync": true,
-        "@babel/core>semver": true,
-        "browserify": true,
-        "browserify>path-browserify": true,
-        "browserify>process": true,
-        "depcheck>@babel/traverse": true,
-        "nock>debug": true,
-        "nyc>convert-source-map": true
-      }
-    },
-    "@babel/core>@ampproject/remapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@babel/core>@babel/generator>jsesc": true,
-        "@babel/core>@babel/types": true,
-        "browserify>buffer": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
-      }
-    },
-    "@babel/core>@babel/generator>jsesc": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "@babel/core>@babel/helper-compilation-targets": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/core>@babel/helper-compilation-targets>semver": true,
-        "@babel/preset-env>@babel/compat-data": true,
-        "@babel/preset-env>@babel/helper-validator-option": true,
-        "browserify>process": true,
-        "webpack>browserslist": true
-      }
-    },
-    "@babel/core>@babel/helper-compilation-targets>semver": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@babel/core>@babel/helper-module-transforms": {
-      "packages": {
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "browserify>assert": true,
-        "browserify>path-browserify": true,
-        "depcheck>@babel/traverse": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
-      }
-    },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
-      "packages": {
-        "@babel/core>@babel/types": true,
-        "browserify>assert": true
-      }
-    },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/helpers": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse": true
-      }
-    },
-    "@babel/core>@babel/template": {
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/types": {
-      "globals": {
-        "console.trace": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "browserify>process": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
-      }
-    },
-    "@babel/core>semver": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
     "@babel/runtime": {
       "globals": {
         "regeneratorRuntime": "write"
@@ -626,13 +481,23 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/address-book-controller>@metamask/base-controller": true,
         "@metamask/controller-utils": true
+      }
+    },
+    "@metamask/address-book-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/announcement-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/announcement-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/approval-controller": {
@@ -661,10 +526,10 @@
         "@eth-optimism/contracts>@ethersproject/contracts": true,
         "@metamask/assets-controllers>@ethersproject/abi": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
@@ -736,6 +601,11 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -1056,12 +926,17 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller>@metamask/base-controller": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/gas-fee-controller>@metamask/network-controller>eth-json-rpc-infura": {
@@ -1248,9 +1123,14 @@
     },
     "@metamask/notification-controller": {
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/notification-controller>@metamask/base-controller": true,
         "@metamask/notification-controller>nanoid": true
+      }
+    },
+    "@metamask/notification-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/notification-controller>nanoid": {
@@ -1297,11 +1177,16 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/phishing-controller>@metamask/base-controller": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
         "punycode": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/phishing-controller>eth-phishing-detect": {
@@ -1373,8 +1258,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/rate-limit-controller>@metamask/base-controller": true,
         "eth-rpc-errors": true
+      }
+    },
+    "@metamask/rate-limit-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/rpc-methods": {
@@ -1689,7 +1579,7 @@
         "document.body.appendChild": true,
         "document.createElement": true,
         "document.getElementById": true,
-        "fetch": true,
+        "fetch.bind": true,
         "setTimeout": true
       },
       "packages": {
@@ -1872,22 +1762,16 @@
     },
     "@metamask/snaps-utils": {
       "globals": {
+        "TextDecoder": true,
         "URL": true
       },
       "packages": {
-        "@babel/core": true,
-        "@babel/core>@babel/types": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>superstruct": true,
-        "browserify": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "browserify>path-browserify": true,
-        "eslint>fast-deep-equal": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
         "eth-block-tracker>@metamask/utils": true,
         "semver": true
       }
@@ -1913,6 +1797,17 @@
     "@metamask/snaps-utils>rfdc": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name": {
+      "packages": {
+        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+      "packages": {
+        "browserify>process": true,
+        "semver": true
       }
     },
     "@metamask/subject-metadata-controller": {
@@ -2840,40 +2735,6 @@
       "packages": {
         "browserify>process": true,
         "browserify>stream-browserify": true
-      }
-    },
-    "depcheck>@babel/traverse": {
-      "globals": {
-        "console.log": true,
-        "console.trace": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true,
-        "nock>debug": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-hoist-variables": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-split-export-declaration": {
-      "packages": {
-        "@babel/core>@babel/types": true
       }
     },
     "depcheck>@vue/compiler-sfc>postcss>nanoid": {
@@ -5202,26 +5063,6 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "packages": {
-        "browserify>process": true,
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true,
-        "mocha>escape-string-regexp": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
@@ -5327,13 +5168,6 @@
         "await-semaphore": true,
         "browserify>assert": true,
         "ethjs-query": true
-      }
-    },
-    "nyc>convert-source-map": {
-      "packages": {
-        "browserify": true,
-        "browserify>buffer": true,
-        "browserify>path-browserify": true
       }
     },
     "obj-multiplex": {
@@ -5916,44 +5750,6 @@
         "string.prototype.matchall>call-bind": true
       }
     },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "TextDecoder": true,
-        "define": true
-      },
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
@@ -6009,15 +5805,6 @@
         "console.error": true,
         "console.warn": true,
         "define": true
-      }
-    },
-    "webpack>browserslist": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "webpack>browserslist>caniuse-lite": true,
-        "webpack>browserslist>electron-to-chromium": true,
-        "webpack>browserslist>node-releases": true
       }
     },
     "webpack>events": {
