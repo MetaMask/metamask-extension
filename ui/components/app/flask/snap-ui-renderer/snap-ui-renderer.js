@@ -11,6 +11,8 @@ import {
   FLEX_DIRECTION,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { getSnap } from '../../../../selectors';
 
 export const UI_MAPPING = {
@@ -68,21 +70,33 @@ const mapToTemplate = (data) => {
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 export const SnapUIRenderer = ({ snapId, data }) => {
+  const t = useI18nContext();
   const snap = useSelector((state) => getSnap(state, snapId));
 
   if (!snap) {
     return null;
   }
 
+  const snapName = snap.manifest.proposedName;
+
   if (!isComponent(data)) {
-    // TODO: Should this throw?
-    return null;
+    return (
+      <SnapDelineator snapName={snapName}>
+        <ActionableMessage
+          className="snap-ui-renderer__error"
+          message={t('snapsUIError')}
+          type="danger"
+          useIcon
+          iconFillColor="var(--color-error-default)"
+        />
+      </SnapDelineator>
+    );
   }
 
   const sections = mapToTemplate(data);
 
   return (
-    <SnapDelineator snapName={snap.manifest.proposedName}>
+    <SnapDelineator snapName={snapName}>
       <MetaMaskTemplateRenderer sections={sections} />
     </SnapDelineator>
   );
