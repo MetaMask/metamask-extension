@@ -7,6 +7,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
+  DEFAULT_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../store/actions';
 import Button from '../../../components/ui/button';
@@ -106,6 +108,8 @@ const NetworksTab = ({ addNewNetwork }) => {
           <NetworksForm
             networksToRender={networksToRender}
             addNewNetwork={addNewNetwork}
+            submitCallback={() => history.push(DEFAULT_ROUTE)}
+            cancelCallback={() => history.push(NETWORKS_ROUTE)}
           />
         ) : (
           <>

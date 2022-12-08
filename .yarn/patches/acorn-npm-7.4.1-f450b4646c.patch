@@ -1,0 +1,13 @@
+diff --git a/dist/acorn.js b/dist/acorn.js
+index 0523f0e3485d0100b6c83d9a290b6ea05bc1f921..1617d4aa489ae3fb014f3540e9b0df7a89a1944e 100644
+--- a/dist/acorn.js
++++ b/dist/acorn.js
+@@ -1835,7 +1835,7 @@
+       if (checkClashes) {
+         if (has(checkClashes, expr.name))
+           { this.raiseRecoverable(expr.start, "Argument name clash"); }
+-        checkClashes[expr.name] = true;
++          Object.defineProperty(checkClashes, expr.name, { value: true, writable: true, enumerable: true, configurable: true });
+       }
+       if (bindingType !== BIND_NONE && bindingType !== BIND_OUTSIDE) { this.declareName(expr.name, bindingType, expr.start); }
+       break
