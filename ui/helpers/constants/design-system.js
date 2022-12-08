@@ -150,6 +150,7 @@ export const TYPOGRAPHY = {
   H8: 'h8',
   H9: 'h9',
   Paragraph: 'p',
+  Span: 'span',
 };
 
 export const TEXT = {
