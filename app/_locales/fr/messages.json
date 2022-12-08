@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Toujours pouvoir vous désinscrire via les Paramètres"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Toujours pouvoir se désinscrire via les Paramètres"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Jamais",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ne collectera jamais vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "Ne collectera $1 votre adresse IP complète",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ne collectera jamais votre adresse IP complète"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ne vendra jamais de données à des fins lucratives. Jamais !"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nous aimerions recueillir des données d’utilisation de base pour améliorer la convivialité de notre produit. Ces indicateurs seront…"
-  },
-  "metametricsTitle": {
-    "message": "Rejoignez plus de 6 M d’utilisateurs pour améliorer MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",

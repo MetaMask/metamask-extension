@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Πάντα μπορείτε να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Ποτέ δεν",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ποτέ δεν θα συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ποτέ δεν συλλέγει την πλήρη IP διεύθυνσή σας"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ποτέ δεν πουλά δεδομένα για κέρδος. Ποτέ!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Θα θέλαμε να συγκεντρώσουμε βασικά δεδομένα χρήσης για τη βελτίωση της χρηστικότητας του προϊόντος μας. Αυτές οι μετρήσεις θα..."
-  },
-  "metametricsTitle": {
-    "message": "Συμμετάσχετε σε 6εκ+ χρήστες για να βελτιώσετε το MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",

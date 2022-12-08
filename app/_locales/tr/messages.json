@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilmenize olanak tanır"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilirsiniz"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Hiçbir zaman",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Hiçbir zaman anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 IP adresinizin tamamını almaz",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Hiçbir zaman IP adresinizin tamamını almaz"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Hiçbir zaman kâr elde etmek için verilerinizi satmaz. Asla!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 kâr elde etmek için verilerinizi satmaz. Asla!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask, kullanıcılarımızın uzantıyı nasıl kullandıklarını daha iyi anlamak amacıyla kullanım verilerini toplamak istiyor. Bu veriler ürünümüzün ve Ethereum eko-sisteminin kullanılabilirliği ve kullanıcı deneyimini geliştirmek için sürekli olarak kullanılacaktır."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Ürünümüzün kullanılabilirliğini geliştirmek için temel kullanım verilerini toplamak istiyoruz. Bu ölçümler..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask'i geliştirmek için 6 milyondan fazla kullanıcıya katılın"
   },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
