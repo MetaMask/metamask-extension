@@ -37,6 +37,21 @@ export default {
     className: {
       control: 'text',
     },
+    title: {
+      control: 'text',
+    },
+    description: {
+      control: 'text',
+    },
+    action: {
+      control: 'func',
+    },
+    leftAccessory: {
+      control: 'text',
+    },
+    onClose: {
+      action: 'onClose',
+    },
     marginTop: {
       options: marginSizeControlOptions,
       control: 'select',
