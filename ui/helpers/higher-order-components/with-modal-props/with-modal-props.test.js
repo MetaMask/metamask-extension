@@ -1,6 +1,6 @@
 import configureMockStore from 'redux-mock-store';
-import { mount } from 'enzyme';
 import React from 'react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import withModalProps from './with-modal-props';
 
 const mockState = {
@@ -22,16 +22,10 @@ describe('withModalProps', () => {
     const TestComponent = () => <div className="test">Testing</div>;
     const WrappedComponent = withModalProps(TestComponent);
     const store = configureMockStore()(mockState);
-    const wrapper = mount(<WrappedComponent store={store} />);
+    const { container } = renderWithProvider(
+      <WrappedComponent store={store} />,
+    );
 
-    expect(wrapper).toHaveLength(1);
-    const testComponent = wrapper.find(TestComponent).at(0);
-    expect(testComponent).toHaveLength(1);
-    expect(testComponent.find('.test').text()).toStrictEqual('Testing');
-    const testComponentProps = testComponent.props();
-    expect(testComponentProps.prop1).toStrictEqual('prop1');
-    expect(testComponentProps.prop2).toStrictEqual(2);
-    expect(testComponentProps.prop3).toStrictEqual(true);
-    expect(typeof testComponentProps.hideModal).toStrictEqual('function');
+    expect(container).toMatchSnapshot();
   });
 });
