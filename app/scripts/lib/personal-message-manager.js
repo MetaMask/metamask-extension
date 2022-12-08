@@ -90,9 +90,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {object} [req] - The original request object possibly containing the origin
    * @returns {promise} When the message has been signed or rejected
    */
-  async addUnapprovedMessageAsync(msgParams, req) {
-    const msgId = await this.addUnapprovedMessage(msgParams, req);
-
+  addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
         reject(
@@ -100,31 +98,32 @@ export default class PersonalMessageManager extends EventEmitter {
         );
         return;
       }
-
-      this.once(`${msgId}:finished`, (data) => {
-        switch (data.status) {
-          case 'signed':
-            resolve(data.rawSig);
-            return;
-          case 'rejected':
-            reject(
-              ethErrors.provider.userRejectedRequest(
-                'MetaMask Message Signature: User denied message signature.',
-              ),
-            );
-            return;
-          case 'errored':
-            reject(new Error(`MetaMask Message Signature: ${data.error}`));
-            return;
-          default:
-            reject(
-              new Error(
-                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
-                  msgParams,
-                )}`,
-              ),
-            );
-        }
+      this.addUnapprovedMessage(msgParams, req).then((msgId) => {
+        this.once(`${msgId}:finished`, (data) => {
+          switch (data.status) {
+            case 'signed':
+              resolve(data.rawSig);
+              return;
+            case 'rejected':
+              reject(
+                ethErrors.provider.userRejectedRequest(
+                  'MetaMask Message Signature: User denied message signature.',
+                ),
+              );
+              return;
+            case 'errored':
+              reject(new Error(`MetaMask Message Signature: ${data.error}`));
+              return;
+            default:
+              reject(
+                new Error(
+                  `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                    msgParams,
+                  )}`,
+                ),
+              );
+          }
+        });
       });
     });
   }

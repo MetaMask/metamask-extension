@@ -92,32 +92,32 @@ export default class TypedMessageManager extends EventEmitter {
    * @returns {promise} When the message has been signed or rejected
    */
   async addUnapprovedMessageAsync(msgParams, req, version) {
-    const msgId = await this.addUnapprovedMessage(msgParams, req, version);
-
     return new Promise((resolve, reject) => {
-      this.once(`${msgId}:finished`, (data) => {
-        switch (data.status) {
-          case 'signed':
-            return resolve(data.rawSig);
-          case 'rejected':
-            return reject(
-              ethErrors.provider.userRejectedRequest(
-                'MetaMask Message Signature: User denied message signature.',
-              ),
-            );
-          case 'errored':
-            return reject(
-              new Error(`MetaMask Message Signature: ${data.error}`),
-            );
-          default:
-            return reject(
-              new Error(
-                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
-                  msgParams,
-                )}`,
-              ),
-            );
-        }
+      this.addUnapprovedMessage(msgParams, req, version).then((msgId) => {
+        this.once(`${msgId}:finished`, (data) => {
+          switch (data.status) {
+            case 'signed':
+              return resolve(data.rawSig);
+            case 'rejected':
+              return reject(
+                ethErrors.provider.userRejectedRequest(
+                  'MetaMask Message Signature: User denied message signature.',
+                ),
+              );
+            case 'errored':
+              return reject(
+                new Error(`MetaMask Message Signature: ${data.error}`),
+              );
+            default:
+              return reject(
+                new Error(
+                  `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                    msgParams,
+                  )}`,
+                ),
+              );
+          }
+        });
       });
     });
   }
