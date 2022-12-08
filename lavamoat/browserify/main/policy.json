@@ -41,15 +41,15 @@
     },
     "@ensdomains/content-hash>cids>multicodec": {
       "packages": {
-        "@ensdomains/content-hash>cids>multicodec>varint": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec>varint": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multihashes>varint": true
+        "@ensdomains/content-hash>cids>multihashes>varint": true,
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -252,16 +252,11 @@
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
       "packages": {
-        "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": true,
         "browserify>assert": true,
         "browserify>crypto-browserify": true,
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
         "ethereumjs-wallet>bs58check": true,
         "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": {
-      "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -280,25 +275,11 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@keystonehq/bc-ur-registry-eth": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey": true,
+        "@keystonehq/bc-ur-registry-eth>hdkey": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": true,
         "browserify>buffer": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
         "uuid": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey": {
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": true,
-        "browserify>assert": true,
-        "browserify>crypto-browserify": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": {
-      "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": {
@@ -760,9 +741,9 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util": true,
+        "@metamask/eth-ledger-bridge-keyring>hdkey": true,
         "browserify>buffer": true,
         "browserify>events": true,
-        "eth-trezor-keyring>hdkey": true,
         "ethereumjs-util": true
       }
     },
@@ -793,6 +774,25 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>hdkey": {
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": true,
+        "browserify>assert": true,
+        "browserify>crypto-browserify": true,
+        "eth-trezor-keyring>hdkey>coinstring": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": {
+      "packages": {
+        "bn.js": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-trezor-keyring>hdkey>secp256k1>bip66": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-wallet>safe-buffer": true,
+        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -1720,8 +1720,14 @@
     },
     "@truffle/codec>@truffle/abi-utils>change-case>pascal-case": {
       "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>camel-case": true,
+        "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": true,
         "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
+      }
+    },
+    "@truffle/codec>@truffle/abi-utils>change-case>pascal-case>camel-case": {
+      "packages": {
+        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
+        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
       }
     },
     "@truffle/codec>@truffle/abi-utils>change-case>path-case": {
@@ -2704,11 +2710,11 @@
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "eth-lattice-keyring>gridplus-sdk>js-sha3": true,
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "ethers>@ethersproject/signing-key>elliptic": true,
-        "ganache>secp256k1": true,
         "lodash": true
       }
     },
@@ -2817,6 +2823,11 @@
     "eth-lattice-keyring>gridplus-sdk>rlp": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>secp256k1": {
+      "packages": {
+        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -4606,11 +4617,6 @@
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "ganache>secp256k1": {
-      "packages": {
-        "ethers>@ethersproject/signing-key>elliptic": true
       }
     },
     "gh-pages>async": {

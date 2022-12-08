@@ -266,6 +266,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
+  "advancedConfiguration": {
+    "message": "Advanced configuration"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these $1 as my default for \"Advanced\""
   },
@@ -2191,9 +2194,6 @@
   "newAccount": {
     "message": "New account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "New address detected! Click here to add to your address book."
-  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
@@ -2522,6 +2522,27 @@
   "on": {
     "message": "On"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "Please enter a valid URL"
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "Add custom IPFS Gateway"
+  },
+  "onboardingAdvancedPrivacyIPFSValid": {
+    "message": "IPFS gateway URL is valid"
+  },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "Add custom network"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "Choose your network"
+  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
@@ -2555,6 +2576,9 @@
   },
   "onboardingMetametricsInfuraTermsPolicyLink": {
     "message": "here"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "Add custom network"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
@@ -3218,9 +3242,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "Set advanced privacy settings"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
