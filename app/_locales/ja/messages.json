@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "ガス代"
   },
-  "advancedOptions": {
-    "message": "詳細オプション"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
@@ -1001,29 +998,8 @@
   "editContact": {
     "message": "連絡先を編集"
   },
-  "editGasEducationButtonText": {
-    "message": "どのように選択すればいいですか?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "これは、トランザクションが成功する可能性を高めるため、急ぎのトランザクション (スワップなど) に最適です。スワップは処理に時間がかかりすぎると失敗し、ガス代の一部が失われる可能性があります。"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "低いガス代は、処理時間が重要でない場合以外使用しないでください。ガス代を下げると、いつトランザクションが成功するか (または成功するかどうか) が予測しにくくなります。"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "中程度のガス代は、送金、引き出し、その他急ぎではないトランザクションに適しています。この設定のトランザクションは、ほとんどの場合成功します。"
-  },
-  "editGasEducationModalIntro": {
-    "message": "適切なガス代は、トランザクションのタイプと重要性によって異なります。"
-  },
-  "editGasEducationModalTitle": {
-    "message": "選び方"
-  },
   "editGasFeeModalTitle": {
     "message": "ガス代を編集"
-  },
-  "editGasHigh": {
-    "message": "高"
   },
   "editGasLimitOutOfBounds": {
     "message": "ガスの限度額は$1以上にする必要があります"
@@ -1034,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "ガスの限度額は、使用しても構わない最大のガス代です。 ガス代は、「最大優先手数料」と「最大手数料」の乗数です。"
-  },
-  "editGasLow": {
-    "message": "低"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基本手数料を優先手数料よりも低くすることはできません"
@@ -1056,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "最大手数料を優先手数料よりも低くすることはできません"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "最大手数料は、支払う可能性のある最高額です (基本手数料 + 優先手数料)。"
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0GWEIより高くなければなりません"
   },
@@ -1076,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "最大優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。通常最大設定額が支払われます"
-  },
-  "editGasMedium": {
-    "message": "中"
   },
   "editGasPriceTooLow": {
     "message": "ガス代は0より高くなければなりません"
@@ -1102,12 +1066,6 @@
   "editGasTooLow": {
     "message": "不明な処理時間"
   },
-  "editGasTooLowTooltip": {
-    "message": "現在の市場の状況に対し、最大手数料または最大優先手数料が低い可能性があります。トランザクションがいつ処理されるか (または処理されるかどうか) わかりません。 "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "これにより最大手数料は下がりますが、ネットワークトラフィックが増加するとトランザクションが遅延または失敗する可能性があります。"
-  },
   "editNonceField": {
     "message": "ナンスを編集"
   },
@@ -1122,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
-  },
-  "enableEIP1559V2": {
-    "message": "改善されたガス代 UI を有効にする"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "ガス代の見積もりとカスタマイズが新しくなりました。"
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "設定で、改善されたガス代 UI をオンにしてください"
-  },
-  "enableEIP1559V2Description": {
-    "message": "ガス代の見積もりとカスタマイズが新しくなりました。新しいガス代エクスペリエンスを利用するには、オンにしてください。$1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "新しいガス代エクスペリエンス"
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
@@ -1394,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "このガス代は$1により提案されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1までお問い合わせください。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "弊社の低・中・高の見積もりはご利用いただけません。"
   },
   "gasFee": {
     "message": "ガス代"
@@ -3089,9 +3028,6 @@
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
-  },
-  "showRecommendations": {
-    "message": "推奨を表示"
   },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"

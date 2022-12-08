@@ -1738,9 +1738,6 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
-      setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
-        preferencesController,
-      ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
       setImprovedTokenAllowanceEnabled:
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
@@ -1806,10 +1803,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setCollectiblesDetectionNoticeDismissed:
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
-          appStateController,
-        ),
-      setEnableEIP1559V2NoticeDismissed:
-        appStateController.setEnableEIP1559V2NoticeDismissed.bind(
           appStateController,
         ),
       updateCollectibleDropDownState:

@@ -35,7 +35,7 @@ export default {
     isMultiLayerFeeNetwork: {
       control: 'text',
     },
-    supportsEIP1559V2: {
+    supportsEIP1559: {
       control: 'boolean',
     },
     userAddress: {
@@ -82,7 +82,7 @@ export default {
     fiatTransactionTotal: '1.6',
     hexTransactionTotal: '0x44364c5bb0000',
     isMultiLayerFeeNetwork: false,
-    supportsEIP1559V2: false,
+    supportsEIP1559: false,
     userAddress: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
     data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',

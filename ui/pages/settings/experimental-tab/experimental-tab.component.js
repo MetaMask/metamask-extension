@@ -18,8 +18,6 @@ export default class ExperimentalTab extends PureComponent {
     setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
     openSeaEnabled: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
-    setEIP1559V2Enabled: PropTypes.func,
     improvedTokenAllowanceEnabled: PropTypes.bool,
     setImprovedTokenAllowanceEnabled: PropTypes.func,
     transactionSecurityCheckEnabled: PropTypes.bool,
@@ -149,51 +147,6 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  renderEIP1559V2EnabledToggle() {
-    const { t } = this.context;
-    const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
-
-    return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('enableEIP1559V2')}</span>
-          <div className="settings-page__content-description">
-            {t('enableEIP1559V2Description', [
-              <a
-                key="eip_page_link"
-                href="https://metamask.io/1559.html"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t('learnMoreUpperCase')}
-              </a>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={eip1559V2Enabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enable/Disable Advanced Gas UI',
-                  properties: {
-                    action: 'Enable/Disable Advanced Gas UI',
-                    legacy_event: true,
-                  },
-                });
-                setEIP1559V2Enabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderImprovedTokenAllowanceToggle() {
     const { t } = this.context;
     const { improvedTokenAllowanceEnabled, setImprovedTokenAllowanceEnabled } =
@@ -279,7 +232,6 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
-        {this.renderEIP1559V2EnabledToggle()}
       </div>
     );
   }

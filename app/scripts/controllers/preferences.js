@@ -183,15 +183,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `eip1559V2Enabled` property
-   *
-   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
-   */
-  setEIP1559V2Enabled(val) {
-    this.store.updateState({ eip1559V2Enabled: val });
-  }
-
-  /**
    * Setter for the `theme` property
    *
    * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
