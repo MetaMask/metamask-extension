@@ -1,8 +1,6 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { Button } from './button';
 import { ButtonBase } from '../button-base';
-import { ButtonPrimary } from '../button-primary';
-import { ButtonSecondary } from '../button-secondary';
 import { ButtonLink } from '../button-link';
 
 # Button
@@ -23,11 +21,7 @@ The `Button` accepts all [ButtonBase](/docs/ui-components-component-library-butt
 
 <ArgsTable of={ButtonBase} />
 
-The `Button` accepts all [ButtonPrimary](/docs/ui-components-component-library-button-primary-button-primary-stories-js--default-story) and [ButtonSecondary](/docs/ui-components-component-library-button-secondary-button-secondary-stories-js--default-story) component props
-
-<ArgsTable of={ButtonPrimary} />
-
-The `Button` accepts all [ButtonLink](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) component props
+The `Button` accepts all [ButtonPrimary](/docs/ui-components-component-library-button-primary-button-primary-stories-js--default-story), [ButtonSecondary](/docs/ui-components-component-library-button-secondary-button-secondary-stories-js--default-story), and [ButtonLink](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) component props
 
 <ArgsTable of={ButtonLink} />
 
@@ -61,7 +55,7 @@ Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
+- `SIZES.AUTO` inherits the font-size of the parent element. (Only used for `ButtonLink`)
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
