@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page Container Header should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container__header page-container__header--no-padding-bottom"
+    data-testid="page-container__header"
+  >
+    <div
+      class="page-container__header-row"
+    >
+      <span
+        class="page-container__back-button"
+      >
+        Back
+      </span>
+    </div>
+    <div
+      class="page-container__title"
+    >
+      Test Title
+    </div>
+    <div
+      class="page-container__subtitle"
+    >
+      Test Subtitle
+    </div>
+    <button
+      aria-label="close"
+      class="page-container__header-close"
+    />
+    <ul
+      class="page-container__tabs"
+    >
+      Test Tab
+    </ul>
+  </div>
+</div>
+`;
