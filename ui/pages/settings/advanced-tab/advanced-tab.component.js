@@ -14,6 +14,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
 
 import {
   LEDGER_TRANSPORT_TYPES,
@@ -841,11 +842,4 @@ export default class AdvancedTab extends PureComponent {
       </div>
     );
   }
-}
-
-function addUrlProtocolPrefix(urlString) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
-  }
-  return urlString;
 }
