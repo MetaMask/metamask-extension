@@ -24,6 +24,7 @@ export default class TokenInput extends PureComponent {
   };
 
   static propTypes = {
+    dataTestId: PropTypes.string,
     currentCurrency: PropTypes.string,
     onChange: PropTypes.func,
     value: PropTypes.string,

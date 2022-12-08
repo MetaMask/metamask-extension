@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokenInput Component Name of the group should render properly 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="token-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          TEST
+        </div>
+      </div>
+      <div
+        class="currency-input__conversion-component"
+      >
+        No conversion rate available
+      </div>
+    </div>
+  </div>
+</div>
+`;
