@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Tài khoản mới"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Đã tìm thấy địa chỉ mới! Nhấn vào đây để thêm địa chỉ này vào sổ địa chỉ của bạn."
-  },
   "newAccountNumberName": {
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"

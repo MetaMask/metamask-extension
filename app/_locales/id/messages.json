@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Akun baru"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Alamat baru terdeteksi! Klik di sini untuk menambahkan ke buku alamat Anda."
-  },
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"

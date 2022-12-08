@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "नया खाता"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "नया पता मिला है! अपनी पता पुस्तिका में जोड़ने के लिए यहां क्लिक करें।"
-  },
   "newAccountNumberName": {
     "message": "खाता $1",
     "description": "Default name of next account to be created on create account screen"

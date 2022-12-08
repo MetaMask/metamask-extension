@@ -1672,9 +1672,6 @@
   "newAccount": {
     "message": "Nova conta"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Novo endereço detectado! Clique aqui para adicionar à sua agenda de endereços."
-  },
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"

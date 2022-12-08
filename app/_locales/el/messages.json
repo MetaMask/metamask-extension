@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Νέος Λογαριασμός"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Εντοπίστηκε νέα διεύθυνση! Κάντε κλικ εδώ για να την προσθέσετε στο βιβλίο διευθύνσεών σας."
-  },
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"

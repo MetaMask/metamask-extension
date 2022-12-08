@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Новый счет"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Обнаружен новый адрес! Нажмите здесь, чтобы добавить этот адрес в свою адресную книгу."
-  },
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"

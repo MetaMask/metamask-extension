@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "新しいアカウント"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "新しいアドレスが検出されました! アドレス帳に追加するにはここをクリックしてください。"
-  },
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"

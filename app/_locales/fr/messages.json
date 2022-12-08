@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Nouveau compte"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d’adresses."
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"

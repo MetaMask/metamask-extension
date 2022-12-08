@@ -82,10 +82,6 @@ describe('Deploy contract and call contract methods', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: 'Deposit',
-        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

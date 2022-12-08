@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "새 계정"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "새 주소가 발견되었습니다! 여기를 클릭하여 주소록에 추가하세요."
-  },
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"

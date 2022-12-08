@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "新账户"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "检测到新地址！点击这里以添加到您的地址簿。"
-  },
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"

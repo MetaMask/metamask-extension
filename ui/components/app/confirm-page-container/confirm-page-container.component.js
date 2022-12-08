@@ -12,12 +12,9 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-import Dialog from '../../ui/dialog';
 import Button from '../../ui/button';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-
-import NicknamePopovers from '../modals/nickname-popovers';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
@@ -40,7 +37,6 @@ import {
 
 export default class ConfirmPageContainer extends Component {
   state = {
-    showNicknamePopovers: false,
     setShowDepositPopover: false,
     collectionBalance: 0,
   };
@@ -110,8 +106,6 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
-    contact: PropTypes.object,
-    isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
@@ -182,8 +176,6 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
-      contact = {},
-      isOwnedAccount,
       supportsEIP1559V2,
       nativeCurrency,
       isBuyableChain,
@@ -194,9 +186,6 @@ export default class ConfirmPageContainer extends Component {
       accountBalance,
       assetStandard,
     } = this.props;
-
-    const showAddToAddressDialog =
-      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
     const shouldDisplayWarning =
       contentComponent && disabled && (errorKey || errorMessage);
@@ -263,28 +252,7 @@ export default class ConfirmPageContainer extends Component {
               )}
             </ConfirmPageContainerHeader>
           )}
-          <div>
-            {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
-            )}
-          </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
+          <EnableEIP1559V2Notice />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
@@ -316,7 +284,6 @@ export default class ConfirmPageContainer extends Component {
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
-              hasTopBorder={showAddToAddressDialog}
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}

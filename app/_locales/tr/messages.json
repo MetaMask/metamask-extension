@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Yeni Hesap"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Yeni adres algılandı! Adres defterinize eklemek için buraya tıklayın."
-  },
   "newAccountNumberName": {
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
