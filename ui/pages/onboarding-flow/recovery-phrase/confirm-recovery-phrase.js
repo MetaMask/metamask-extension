@@ -17,6 +17,7 @@ import {
 } from '../../../components/app/step-progress-bar';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { setSeedPhraseBackedUp } from '../../../store/actions';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
@@ -94,6 +95,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           large
           className="recovery-phrase__footer__confirm--button"
           onClick={() => {
+            setSeedPhraseBackedUp(true);
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
           disabled={!matching}
