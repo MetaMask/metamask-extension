@@ -152,7 +152,7 @@ describe('Import Token', () => {
     });
 
     it('sets and error when a token is an NFT', async () => {
-      process.env.COLLECTIBLES_V1 = true;
+      process.env.NFTS_V1 = true;
       getTokenStandardAndDetails.mockImplementation(() =>
         Promise.resolve({ standard: 'ERC721' }),
       );

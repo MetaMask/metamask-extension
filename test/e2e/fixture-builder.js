@@ -74,12 +74,12 @@ function defaultFixture() {
               src: 'images/token-detection.svg',
               width: '100%',
             },
-            isShown: true,
+            isShown: false,
           },
           11: {
             date: '2022-09-15',
             id: 11,
-            isShown: true,
+            isShown: false,
           },
           12: {
             date: '2022-05-18',
@@ -98,11 +98,21 @@ function defaultFixture() {
           14: {
             date: '2022-09-15',
             id: 14,
-            isShown: true,
+            isShown: false,
           },
           15: {
             date: '2022-09-15',
             id: 15,
+            isShown: false,
+          },
+          16: {
+            date: null,
+            id: 16,
+            isShown: true,
+          },
+          17: {
+            date: null,
+            id: 17,
             isShown: true,
           },
         },
@@ -113,7 +123,6 @@ function defaultFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -225,7 +234,7 @@ function defaultFixture() {
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -279,7 +288,6 @@ function onboardingFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -338,7 +346,7 @@ function onboardingFixture() {
         },
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -407,9 +415,9 @@ class FixtureBuilder {
 
   withCollectiblesController(data) {
     merge(
-      this.fixture.data.CollectiblesController
-        ? this.fixture.data.CollectiblesController
-        : (this.fixture.data.CollectiblesController = {}),
+      this.fixture.data.NftController
+        ? this.fixture.data.NftController
+        : (this.fixture.data.NftController = {}),
       data,
     );
     return this;
@@ -979,6 +987,126 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withTransactionControllerApprovedTransaction() {
+    return this.withTransactionController({
+      transactions: {
+        4046084157914634: {
+          chainId: '0x539',
+          history: [
+            {
+              chainId: '0x539',
+              id: 4046084157914634,
+              loadingDefaults: true,
+              metamaskNetworkId: '1337',
+              origin: 'metamask',
+              status: 'unapproved',
+              time: 1617228030067,
+              txParams: {
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                gas: '0x61a8',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
+                to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+                type: '0x2',
+                value: '0xde0b6b3a7640000',
+              },
+              type: 'simpleSend',
+            },
+            [
+              {
+                note: 'Added new unapproved transaction.',
+                op: 'replace',
+                path: '/loadingDefaults',
+                timestamp: 1617228030069,
+                value: false,
+              },
+            ],
+            [
+              {
+                op: 'add',
+                path: '/txParams/nonce',
+                value: '0x0',
+                note: 'transactions#approveTransaction',
+                timestamp: 1617228031069,
+              },
+              {
+                op: 'add',
+                path: '/nonceDetails',
+                value: {
+                  params: {
+                    highestLocallyConfirmed: 0,
+                    highestSuggested: 0,
+                    nextNetworkNonce: 0,
+                  },
+                  local: {
+                    name: 'local',
+                    nonce: 0,
+                    details: {
+                      startPoint: 0,
+                      highest: 0,
+                    },
+                  },
+                  network: {
+                    name: 'network',
+                    nonce: 0,
+                    details: {
+                      blockNumber: '0x0',
+                      baseCount: 0,
+                    },
+                  },
+                },
+              },
+            ],
+          ],
+          id: 4046084157914634,
+          loadingDefaults: false,
+          metamaskNetworkId: '1337',
+          origin: 'metamask',
+          primaryTransaction: {
+            chainId: '0x539',
+            id: 4046084157914634,
+            loadingDefaults: true,
+            metamaskNetworkId: '1337',
+            origin: 'metamask',
+            status: 'approved',
+            time: 1617228030067,
+            txParams: {
+              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              gas: '0x61a8',
+              maxFeePerGas: '0x59682f0c',
+              maxPriorityFeePerGas: '0x59682f00',
+              to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+              type: '0x2',
+              value: '0xde0b6b3a7640000',
+            },
+            type: 'sentEther',
+          },
+          status: 'approved',
+          time: 1617228030067,
+          txParams: {
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            gas: '0x61a8',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
+            to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+            type: '0x2',
+            value: '0xde0b6b3a7640000',
+          },
+          type: 'simpleSend',
+        },
+      },
+    });
+  }
+
+  withNetworkSupportEIP1559() {
+    merge(this.fixture.data.NetworkController, {
+      networkDetails: {
+        EIPS: { 1559: true },
+      },
+    });
+    return this;
   }
 
   build() {

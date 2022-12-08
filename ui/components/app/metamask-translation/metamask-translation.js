@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import MetaMaskTemplateRenderer, {
-  SectionShape,
-} from '../metamask-template-renderer/metamask-template-renderer';
+import MetaMaskTemplateRenderer from '../metamask-template-renderer';
+import { SectionShape } from '../metamask-template-renderer/section-shape';
 
 /**
  * MetaMaskTranslation is a simple helper component for adding full translation

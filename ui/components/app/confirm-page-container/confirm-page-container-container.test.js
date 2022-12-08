@@ -15,6 +15,14 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
+jest.mock('../../../pages/swaps/swaps.util', () => {
+  const actual = jest.requireActual('../../../pages/swaps/swaps.util');
+  return {
+    ...actual,
+    fetchTokenBalance: jest.fn(() => Promise.resolve()),
+  };
+});
+
 describe('Confirm Page Container Container Test', () => {
   const props = {
     title: 'Title',
@@ -92,15 +100,8 @@ describe('Confirm Page Container Container Test', () => {
       expect(senderRecipient).toBeInTheDocument();
     });
     it('should render recipient as address', () => {
-      const recipientName = screen.queryByText(shortenAddress(props.toAddress));
+      const recipientName = screen.queryByText('New contract');
       expect(recipientName).toBeInTheDocument();
-    });
-
-    it('should render add address to address book dialog', () => {
-      const newAccountDetectDialog = screen.queryByText(
-        /New address detected!/u,
-      );
-      expect(newAccountDetectDialog).toBeInTheDocument();
     });
 
     it('should simulate click reject button', () => {
@@ -118,7 +119,7 @@ describe('Confirm Page Container Container Test', () => {
 
   describe('Contact/AddressBook name should appear in recipient header', () => {
     it('should not show add to address dialog if recipient is in contact list and should display contact name', () => {
-      const addressBookName = 'test save name';
+      const addressBookName = 'New contract';
 
       const addressBook = {
         '0x5': {

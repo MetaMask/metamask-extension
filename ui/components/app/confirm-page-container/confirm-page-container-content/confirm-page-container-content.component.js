@@ -9,7 +9,7 @@ import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
-import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+import DepositPopover from '../../deposit-popover/deposit-popover';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -48,15 +48,17 @@ export default class ConfirmPageContainerContent extends Component {
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
-    currentTransaction: PropTypes.object,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
-    showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+  };
+
+  state = {
+    setShowDepositPopover: false,
   };
 
   renderContent() {
@@ -151,12 +153,10 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      supportsEIP1559V2,
+      supportsEIP1559,
       hasTopBorder,
-      currentTransaction,
       nativeCurrency,
       networkName,
-      showBuyModal,
       toAddress,
       transactionType,
       isBuyableChain,
@@ -165,9 +165,11 @@ export default class ConfirmPageContainerContent extends Component {
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559V2 &&
+      supportsEIP1559 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+
+    const { setShowDepositPopover } = this.state;
 
     return (
       <div
@@ -198,13 +200,11 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559V2 &&
-          (errorKey || errorMessage) &&
-          currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
-            <div className="confirm-page-container-content__error-container">
-              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-            </div>
-          )}
+        {!supportsEIP1559 && (errorKey || errorMessage) && (
+          <div className="confirm-page-container-content__error-container">
+            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+          </div>
+        )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
@@ -219,7 +219,9 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={showBuyModal}
+                        onClick={() =>
+                          this.setState({ setShowDepositPopover: true })
+                        }
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -241,7 +243,11 @@ export default class ConfirmPageContainerContent extends Component {
             />
           </div>
         )}
-
+        {setShowDepositPopover && (
+          <DepositPopover
+            onClose={() => this.setState({ setShowDepositPopover: false })}
+          />
+        )}
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}

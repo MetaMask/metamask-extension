@@ -17,6 +17,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
+import { isBeta } from '../../../helpers/utils/build-types';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -52,12 +53,16 @@ export default function CreationSuccessful() {
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
-            {t('walletCreationSuccessReminder1')}
+            {isBeta()
+              ? t('betaWalletCreationSuccessReminder1')
+              : t('walletCreationSuccessReminder1')}
           </Typography>
         </li>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
-            {t('walletCreationSuccessReminder2')}
+            {isBeta()
+              ? t('betaWalletCreationSuccessReminder2')
+              : t('walletCreationSuccessReminder2')}
           </Typography>
         </li>
         <li>
@@ -88,7 +93,7 @@ export default function CreationSuccessful() {
           type="link"
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
         >
-          {t('setAdvancedPrivacySettings')}
+          {t('advancedConfiguration')}
         </Button>
         <Button
           data-testid="onboarding-complete-done"

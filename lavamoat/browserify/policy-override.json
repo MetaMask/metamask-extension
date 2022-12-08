@@ -38,7 +38,7 @@
         "crypto.getRandomValues": true
       }
     },
-    "eth-keyring-controller>browser-passworder": {
+    "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
         "crypto": true
       }
@@ -87,7 +87,22 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snap-controllers>nanoid": {
+    "@metamask/approval-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/notification-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

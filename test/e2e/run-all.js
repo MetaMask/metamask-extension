@@ -13,6 +13,17 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
+// Heavily inspired by: https://stackoverflow.com/a/51514813
+// Splits the array into totalChunks chunks with a decent spread of items in each chunk
+function chunk(array, totalChunks) {
+  const copyArray = [...array];
+  const result = [];
+  for (let chunkIndex = totalChunks; chunkIndex > 0; chunkIndex--) {
+    result.push(copyArray.splice(0, Math.ceil(copyArray.length / chunkIndex)));
+  }
+  return result;
+}
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -29,6 +40,10 @@ async function main() {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
+          .option('mv3', {
+            description: `run mv3 specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -38,22 +53,26 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps } = argv;
+  const { browser, retries, snaps, mv3 } = argv;
 
-  let testDir = path.join(__dirname, 'tests');
+  let testPaths;
 
   if (snaps) {
-    testDir = path.join(__dirname, 'snaps');
-  }
-
-  let testPaths = await getTestPathsForTestDir(testDir);
-
-  if (!snaps) {
+    const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else {
+    const testDir = path.join(__dirname, 'tests');
     testPaths = [
-      ...testPaths,
+      ...(await getTestPathsForTestDir(testDir)),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
+
+    if (mv3) {
+      testPaths.push(
+        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      );
+    }
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
@@ -66,7 +85,13 @@ async function main() {
     args.push('--retries', retries);
   }
 
-  for (const testPath of testPaths) {
+  // For running E2Es in parallel in CI
+  const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
+  const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
+  const chunks = chunk(testPaths, totalChunks);
+  const currentChunk = chunks[currentChunkIndex];
+
+  for (const testPath of currentChunk) {
     await runInShell('node', [...args, testPath]);
   }
 }

@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Gaspreis"
   },
-  "advancedOptions": {
-    "message": "Erweiterte Optionen"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Bestätigen"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Sie gewähren den Zugriff auf $1, auch auf solche, die Sie in Zukunft besitzen könnten. Die Gegenseite kann jederzeit NFTs aus Ihrer Brieftasche übertragen, ohne Sie zu fragen, bis Sie diese Genehmigung widerrufen. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "alle NFTs in diesem Contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Seien Sie vorsichtig."
   },
   "confirmPassword": {
     "message": "Passwort bestätigen"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "Kontakt bearbeiten"
   },
-  "editGasEducationButtonText": {
-    "message": "Wie soll ich wählen?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Dies ist am besten für zeitsensible Transaktionen (wie Swaps), da es die Wahrscheinlichkeit einer erfolgreichen Transaktion erhöht. Wenn es zu lange dauert, einen Swap zu verarbeiten, kann dies fehlschlagen und dazu führen, dass ein Teil Ihrer Gasgebühr verloren geht."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Eine geringere Gasgebühr sollte nur bei geringerer Verarbeitungszeit verwendet werden. Niedrigere Gebühren machen es schwer vorherzusagen, wann (oder ob) Ihre Transaktion erfolgreich sein wird."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Eine mittlere Gasgebühr ist gut zum Versenden, Abheben oder für andere nicht-zeitsensible Transaktionen. Diese Einstellung führt meist zu einer erfolgreichen Transaktion."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Die Auswahl der richtigen Gasgebühr hängt von der Art der Transaktion ab und wie wichtig sie für Sie ist."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Wie wählen?"
-  },
   "editGasFeeModalTitle": {
     "message": "Gasgebühr bearbeiten"
-  },
-  "editGasHigh": {
-    "message": "Hoch"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gaslimit muss mindestens 1$ betragen"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Gaslimit ist die maximale Gaseinheit die Sie zu verwenden bereit sind. Gaseinheiten sind ein Multiplikator der „Max. Prioritätsgebühr“ und der „Max. Gebühr“."
-  },
-  "editGasLow": {
-    "message": "Niedrig"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Maximale Basisgebühr darf nicht niedriger sein als die Prioritätsgebühr"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Die maximale Gebühr darf nicht niedriger sein als die maximale Prioritätsgebühr"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Die Maximalgebühr  ist der Höchstbetrag, den Sie zahlen müssen (Basisgebühr + Prioritätsgebühr)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Die maximale Prioritätsgebühr muss größer als 0 GWEI sein"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Die Prioritätsgebühr ist niedrig für aktuelle Netzwerkbedingungen"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Die max. Prioritätsgebühr (alias „Miner Tip“) geht direkt an die Miner und veranlasst sie, Ihre Transaktion zu priorisieren. Sie zahlen meist Ihre maximale Einstellung"
-  },
-  "editGasMedium": {
-    "message": "Mittel"
   },
   "editGasPriceTooLow": {
     "message": "Gaspreis muss größer als 0 sein"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Unbekannte Bearbeitungszeit"
   },
-  "editGasTooLowTooltip": {
-    "message": "Ihre Maximalgebühr oder die maximale Prioritätsgebühr kann für die aktuellen Marktbedingungen niedrig sein. Wir wissen nicht, wann (oder ob Ihre Transaktion verarbeitet wird). "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Dies senkt Ihre maximale Gebühr, aber wenn der Netzwerktraffic steigt, kann Ihre Transaktion sich verzögern oder scheitern."
-  },
   "editNonceField": {
     "message": "Nonce bearbeiten"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Auto-Erkennung aktivieren"
-  },
-  "enableEIP1559V2": {
-    "message": "Verbesserte Gasgebühr-UI aktivieren"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Wir haben die Funktionsweise der Gaspreisschätzung und -anpassung aktualisiert."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Verbesserte Gaspreis-UI in Einstellungen einschalten"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Wir haben die Funktionsweise der Gasschätzung und -anpassung aktualisiert. Schalten Sie ein, wenn Sie das neue Gaserlebnis nutzen möchten. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Neues Gaserlebnis"
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Diese Gasgebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Unsere niedrigen, mittleren und hohen Schätzungen sind nicht verfügbar."
   },
   "gasFee": {
     "message": "Gasgebühr"
@@ -1853,7 +1782,7 @@
     "message": "Richtungspfeil"
   },
   "lightTheme": {
-    "message": "Leicht"
+    "message": "Hell"
   },
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Erlaubt Ihnen immer die Abmeldung über Einstellungen"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Sie können sich immer über die Einstellungen abmelden"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nie",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask wird.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Erfassen Sie niemals Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 Erfassen Sie Ihre vollständige IP-Adresse",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$ erfassen Sie Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Erfassen Sie nie Ihre vollständige IP-Adresse"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Verkaufen Sie niemals Daten mit Gewinnabsicht. Niemals!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 Daten für Gewinn verkaufen. Niemals!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask möchte Nutzungsdaten sammeln, um besser zu verstehen, wie unsere Nutzer mit der Erweiterung umgehen. Diese Daten werden verwendet, um die Benutzerfreundlichkeit und das Benutzererlebnis unseres Produkts und des Ethereum-Ökosystems kontinuierlich zu verbessern."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Wir würden gerne grundlegende Nutzungsdaten sammeln, um die Benutzerfreundlichkeit unseres Produkts zu verbessern.  Diese Metriken werden..."
-  },
-  "metametricsTitle": {
-    "message": "6M+ Benutzern beitreten um MetaMask zu verbessern"
   },
   "mismatchedChainLinkText": {
     "message": "die Netzwerkdetails überprüfen",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Neues Konto"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Neue Adresse erkannt! Klicken Sie hier, um sie zu Ihrem Adressbuch hinzuzufügen."
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Erweiterte Privatsphäre-Einstellungen festlegen"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Private Keys anzeigen"
   },
-  "showRecommendations": {
-    "message": "Empfehlungen anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Unterschreiben"
-  },
-  "signNotice": {
-    "message": "Das Unterschreiben dieser Nachricht kann gefährliche Nebeneffekte haben. Bitte nur Nachrichten von Webseiten unterschreiben denen du deinen vollständigen Account anvertrauen würdest. Diese gefährliche Variante wird in zukünftigen Versionen entfernt werden."
   },
   "signatureRequest": {
     "message": "Unterschriftsanfrage"

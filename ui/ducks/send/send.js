@@ -13,6 +13,7 @@ import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
@@ -51,7 +52,7 @@ import {
   updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  isCollectibleOwner,
+  isNftOwner,
   getTokenStandardAndDetails,
   showModal,
   addUnapprovedTransactionAndRouteToConfirmationPage,
@@ -82,7 +83,7 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetEnsResolution } from '../ens';
+import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -133,16 +134,16 @@ import {
  *  import('../../../shared/constants/transaction').TransactionTypeString
  * )} TransactionTypeString
  * @typedef {(
- *  import('@metamask/controllers').LegacyGasPriceEstimate
+ *  import('@metamask/gas-fee-controller').LegacyGasPriceEstimate
  * )} LegacyGasPriceEstimate
  * @typedef {(
- *  import('@metamask/controllers').GasFeeEstimates
+ *  import('@metamask/gas-fee-controller').GasFeeEstimates
  * )} GasFeeEstimates
  * @typedef {(
- *  import('@metamask/controllers').EthGasPriceEstimate
+ *  import('@metamask/gas-fee-controller').EthGasPriceEstimate
  * )} EthGasPriceEstimate
  * @typedef {(
- *  import('@metamask/controllers').GasEstimateType
+ *  import('@metamask/gas-fee-controller').GasEstimateType
  * )} GasEstimateType
  * @typedef {(
  *  import('redux').AnyAction
@@ -298,7 +299,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  with the asset.
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
- *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
+ *  asset of the chain. Can also be 'TOKEN' or 'NFT'.
  */
 
 /**
@@ -562,7 +563,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * @typedef {object} Asset
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
- *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
+ *  asset of the chain. Can also be 'TOKEN' or 'NFT'.
  * @property {string} balance - A hex string representing the balance
  *  that the user holds of the asset that they are attempting to send.
  * @property {TokenDetails} [details] - An object that describes the
@@ -660,7 +661,7 @@ export const initializeSendState = createAsyncThunk(
     ) {
       gasLimit =
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+        draftTransaction.asset.type === ASSET_TYPES.NFT
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -960,7 +961,7 @@ const slice = createSlice({
 
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+        draftTransaction.asset.type === ASSET_TYPES.NFT
       ) {
         draftTransaction.asset.details = asset.details;
       } else {
@@ -1277,7 +1278,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_ERROR if the account balance is lower
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
         case draftTransaction.asset.type === ASSET_TYPES.NATIVE &&
           !isBalanceSufficient({
@@ -1285,9 +1286,9 @@ const slice = createSlice({
             balance: draftTransaction.asset.balance,
             gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
           }):
-          draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
+          draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
-        // set error to INSUFFICIENT_FUNDS_ERROR if the token balance is lower
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
         case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
           !isTokenBalanceSufficient({
@@ -1782,7 +1783,7 @@ export function editExistingTransaction(assetType, transactionId) {
             type: assetType,
             details: {
               address: transaction.txParams.to,
-              ...(assetType === ASSET_TYPES.COLLECTIBLE
+              ...(assetType === ASSET_TYPES.NFT
                 ? {
                     tokenId:
                       getTokenIdParam(tokenData) ??
@@ -2069,14 +2070,14 @@ export function updateSendAsset(
         );
       } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 &&
-        type === ASSET_TYPES.COLLECTIBLE
+        type === ASSET_TYPES.NFT
       ) {
         throw new Error('Sends of ERC1155 tokens are not currently supported');
       } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 ||
         details.standard === TOKEN_STANDARDS.ERC721
       ) {
-        if (type === ASSET_TYPES.TOKEN && process.env.COLLECTIBLES_V1) {
+        if (type === ASSET_TYPES.TOKEN && process.env.NFTS_V1) {
           dispatch(
             showModal({
               name: 'CONVERT_TOKEN_TO_NFT',
@@ -2088,7 +2089,7 @@ export function updateSendAsset(
         } else {
           let isCurrentOwner = true;
           try {
-            isCurrentOwner = await isCollectibleOwner(
+            isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
@@ -2199,7 +2200,7 @@ export function resetRecipientInput() {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetEnsResolution());
+    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }
@@ -2292,7 +2293,7 @@ export function signTransaction() {
 
       if (draftTransaction.asset.type !== ASSET_TYPES.NATIVE) {
         transactionType =
-          draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+          draftTransaction.asset.type === ASSET_TYPES.NFT
             ? TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
             : TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
       }

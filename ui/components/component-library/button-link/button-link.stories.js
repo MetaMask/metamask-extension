@@ -130,7 +130,7 @@ export const Size = (args) => (
         Large Button
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
+    <Text variant={TEXT.BODY_MD}>
       <ButtonLink {...args} size={SIZES.AUTO}>
         Button Auto
       </ButtonLink>{' '}
@@ -139,7 +139,7 @@ export const Size = (args) => (
   </>
 );
 
-export const Type = (args) => (
+export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <ButtonLink {...args}>Normal</ButtonLink>
     {/* Test Anchor tag to match exactly as button */}

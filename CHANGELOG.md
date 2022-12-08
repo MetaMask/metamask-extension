@@ -6,6 +6,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.23.0]
+### Added
+- Add Picker Network Component ([#16340](https://github.com/MetaMask/metamask-extension/pull/16340))
+- Add Button component, unifying primary, secondary and link buttons([#16305](https://github.com/MetaMask/metamask-extension/pull/16305))
+- Add Button Icon component ([#16277](https://github.com/MetaMask/metamask-extension/pull/16277))
+- Swaps: enable Swaps functionality on Arbitrum and Optimism networks ([#16396](https://github.com/MetaMask/metamask-extension/pull/16396))
+- [FLASK] Add snap cronjobs ([#16239](https://github.com/MetaMask/metamask-extension/pull/16239))
+
+### Changed
+- Replace every Address value by the Address component on SignTypedData v4 Signature screen ([#16018](https://github.com/MetaMask/metamask-extension/pull/16018))
+- Update Address component on Transaction data screen by displaying Account name, Contact name, or Contract name when corresponds ([#15888](https://github.com/MetaMask/metamask-extension/pull/15888))
+- Bump `@metamask/providers` from `10.0.0` to `10.2.0` ([#16361](https://github.com/MetaMask/metamask-extension/pull/16361))
+- [FLASK] **BREAKING**: Snaps no longer automatically receive a `Buffer` polyfill ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - To work around this you can either use typed arrays or include a polyfill yourself.
+- [FLASK] **BREAKING**: Snap RPC methods now use `@metamask/key-tree@6.0.0` ([#16394](https://github.com/MetaMask/metamask-extension/pull/16394))
+  - In the new version, all hexadecimal values are prefixed with `0x`
+  - All fields containing the word `Buffer` has also been renamed to `Bytes`
+  - Please update your snap to use the latest version 
+
+### Fixed
+- Fix Settings Search pointing into the incorrect row for Token Detection entry ([#16407](https://github.com/MetaMask/metamask-extension/pull/16407))
+- Fix Balance not updating when using a duplicated `chainId` network ([#14245](https://github.com/MetaMask/metamask-extension/pull/14245))
+- [FLASK] Fix an issue with updating snaps that require certain permissions ([#16473](https://github.com/MetaMask/metamask-extension/pull/16473))
+- [FLASK] Fix some issues with installing snaps that request `eth_accounts` ([#16365](https://github.com/MetaMask/metamask-extension/pull/16365))
+- [FLASK] Catch and display errors in snaps insight ([#16416](https://github.com/MetaMask/metamask-extension/pull/16416))
+
+## [10.22.3]
+### Added
+- [Beta]: Add Beta banner to all screens ([#16307](https://github.com/MetaMask/metamask-extension/pull/16307))
+
+### Changed
+- [Beta]: Update MetaMask logo imagery ([#16304](https://github.com/MetaMask/metamask-extension/pull/16304))
+- [Beta]: Update MetaMask long logo to new imagery ([#16505](https://github.com/MetaMask/metamask-extension/pull/16505))
+
+## [10.22.2]
+### Changed
+- Restore changes from v10.22.0
+- Fix deadlock encountered while performing Swaps on unsupported testnets ([#16511](https://github.com/MetaMask/metamask-extension/pull/16511))
+
+## [10.22.1]
+### Changed
+- Temporarily revert v10.22.0
+
+### Fixed
+- Prevent user from editing a contract interaction initiated by a dapp ([#16498](https://github.com/MetaMask/metamask-extension/pull/16498))
+
+## [10.22.0]
+### Added
+- Add Aurora network to the Popular Custom Network list ([#16039](https://github.com/MetaMask/metamask-extension/pull/16039))
+- Add array of valid sizes for Box `height` and `width` to support responsive layout ([#16111](https://github.com/MetaMask/metamask-extension/pull/16111))
+- Add Warning on a Send transaction request when user doesn't have funds ([#16220](https://github.com/MetaMask/metamask-extension/pull/16220))
+- [FLASK] Allow snaps insights to show on regular EOA transactions ([#16093](https://github.com/MetaMask/metamask-extension/pull/16093))
+
+### Changed
+- Update `eth-lattice-keyring` to `v0.12.3` ([#15997](https://github.com/MetaMask/metamask-extension/pull/15997))
+  - Updates `@ethereumjs/util` to `v8.0.0` to reduce bundle size
+  - Removes `secp256k1` and `@ethereumjs/common` to reduce bundle size
+  - Updates `gridplus-sdk` to v2.2.9
+    - Adds caching for calls to block explorers to improve UX ([PR](https://github.com/GridPlus/gridplus-sdk/pull/469))
+- Remove unused `zh` locales directory in favor of `zh_CN` for Chinese translations ([#16322](https://github.com/MetaMask/metamask-extension/pull/16322))
+- Remove 3box sync feature and delete the `ThreeBoxController` ([#14571](https://github.com/MetaMask/metamask-extension/pull/14571))
+
+### Fixed
+- Fix Secret Recovery Phrase video overlapping lateral box for smaller viewports ([#16345](https://github.com/MetaMask/metamask-extension/pull/16345))
+- Fix "Learn more" link on Connected Account notification ([#16339](https://github.com/MetaMask/metamask-extension/pull/16339))
+- Fix default users with browser language code `zh` to point the supported `zh_CN` language code ([#16329](https://github.com/MetaMask/metamask-extension/pull/16329))
+- Fix Forgot Password flow after Wallet Creation ([#16156](https://github.com/MetaMask/metamask-extension/pull/16156))
+- Fix fiat conversion for Popular Custom networks displaying it by default ([#16132](https://github.com/MetaMask/metamask-extension/pull/16132))
+- Fix restricted injection, by removing docs.google.com from blocked domains list ([#16154](https://github.com/MetaMask/metamask-extension/pull/16154))
+- Fix squeezing avatar, by adding a flex property to keep always the same ratio ([#16047](https://github.com/MetaMask/metamask-extension/pull/16047))
+- Fix domain names not always being rendered correctly in the connected sites list ([#16074](https://github.com/MetaMask/metamask-extension/pull/16074))
+- Fix transaction confirmation page performance ([#16205](https://github.com/MetaMask/metamask-extension/pull/16205))
+- Fix Add Network form by blocking the submission when `chainId` does not match the one returned by the `rpcUrl` ([#16452](https://github.com/MetaMask/metamask-extension/pull/16452))
+- Swaps: fix tokens being removed from the Asset lists, after canceling a Swap ([#16167](https://github.com/MetaMask/metamask-extension/pull/16167))
+- Swaps: add debouncing for the `Swap from` and `Swap to` form fields ([#16326](https://github.com/MetaMask/metamask-extension/pull/16326))
+- [FLASK] Fix crash on snaps settings page if snap has no permissions ([#16354](https://github.com/MetaMask/metamask-extension/pull/16354))
+- [FLASK] Fix crash after restoring MetaMask if you had snaps installed ([#16228](https://github.com/MetaMask/metamask-extension/pull/16228))
+- [FLASK] Fix a problem with displaying snaps transaction insight data ([#16023](https://github.com/MetaMask/metamask-extension/pull/16023))
+
+## [10.21.2]
+### Fixed
+- Fix undefined txParams when calling approveTransaction, by adding the id on the txMeta argument ([#16382](https://github.com/MetaMask/metamask-extension/pull/16382))
+
 ## [10.21.1]
 ### Changed
 - Improve rate limiting for metric events ([#16308](https://github.com/MetaMask/metamask-extension/pull/16308))
@@ -3253,7 +3336,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...HEAD
+[10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...v10.23.0
+[10.22.3]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.22.3
+[10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
+[10.22.1]: https://github.com/MetaMask/metamask-extension/compare/v10.22.0...v10.22.1
+[10.22.0]: https://github.com/MetaMask/metamask-extension/compare/v10.21.2...v10.22.0
+[10.21.2]: https://github.com/MetaMask/metamask-extension/compare/v10.21.1...v10.21.2
 [10.21.1]: https://github.com/MetaMask/metamask-extension/compare/v10.21.0...v10.21.1
 [10.21.0]: https://github.com/MetaMask/metamask-extension/compare/v10.20.0...v10.21.0
 [10.20.0]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...v10.20.0

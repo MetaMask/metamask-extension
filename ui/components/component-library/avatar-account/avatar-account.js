@@ -3,14 +3,14 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-import { BaseAvatar } from '../base-avatar';
+import { AvatarBase } from '../avatar-base';
 
 import { SIZES } from '../../../helpers/constants/design-system';
 import { DIAMETERS, TYPES } from './avatar-account.constants';
 
 export const AvatarAccount = ({ size, address, className, type, ...props }) => {
   return (
-    <BaseAvatar
+    <AvatarBase
       size={size}
       className={classnames('avatar-account', className)}
       {...props}
@@ -28,7 +28,7 @@ export const AvatarAccount = ({ size, address, className, type, ...props }) => {
           borderRadius="50%"
         />
       )}
-    </BaseAvatar>
+    </AvatarBase>
   );
 };
 

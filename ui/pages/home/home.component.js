@@ -695,7 +695,7 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.COLLECTIBLES_V1 ? (
+              {process.env.NFTS_V1 ? (
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"

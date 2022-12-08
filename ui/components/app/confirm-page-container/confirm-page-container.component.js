@@ -12,12 +12,9 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-import Dialog from '../../ui/dialog';
 import Button from '../../ui/button';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-
-import NicknamePopovers from '../modals/nickname-popovers';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
@@ -28,7 +25,9 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
+import DepositPopover from '../deposit-popover/deposit-popover';
+import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -37,7 +36,8 @@ import {
 
 export default class ConfirmPageContainer extends Component {
   state = {
-    showNicknamePopovers: false,
+    setShowDepositPopover: false,
+    collectionBalance: 0,
   };
 
   static contextTypes = {
@@ -63,6 +63,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
     // Content
@@ -97,19 +98,32 @@ export default class ConfirmPageContainer extends Component {
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    onSetApprovalForAll: PropTypes.func,
+    showWarningModal: PropTypes.bool,
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
-    contact: PropTypes.object,
-    isOwnedAccount: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     nativeCurrency: PropTypes.string,
-    showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
-    isApprovalOrRejection: PropTypes.bool,
   };
+
+  async componentDidMount() {
+    const { tokenAddress, fromAddress, currentTransaction, assetStandard } =
+      this.props;
+    const isSetApproveForAll =
+      currentTransaction.type ===
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
+    if (isSetApproveForAll && assetStandard === ERC721) {
+      const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+      this.setState({
+        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+      });
+    }
+  }
 
   render() {
     const {
@@ -118,6 +132,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toMetadataName,
       toEns,
       toNickname,
       toAddress,
@@ -137,6 +152,8 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
+      onSetApprovalForAll,
+      showWarningModal,
       tokenAddress,
       nonce,
       unapprovedTxCount,
@@ -158,23 +175,16 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
-      contact = {},
-      isOwnedAccount,
-      supportsEIP1559V2,
+      supportsEIP1559,
       nativeCurrency,
-      showBuyModal,
       isBuyableChain,
       networkIdentifier,
-      isApprovalOrRejection,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
       accountBalance,
       assetStandard,
     } = this.props;
-
-    const showAddToAddressDialog =
-      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
     const shouldDisplayWarning =
       contentComponent && disabled && (errorKey || errorMessage);
@@ -190,6 +200,8 @@ export default class ConfirmPageContainer extends Component {
     const isSetApproveForAll =
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
+    const { setShowDepositPopover } = this.state;
 
     const { t } = this.context;
 
@@ -231,6 +243,7 @@ export default class ConfirmPageContainer extends Component {
                   senderName={fromName}
                   senderAddress={fromAddress}
                   recipientName={toName}
+                  recipientMetadataName={toMetadataName}
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
@@ -238,28 +251,6 @@ export default class ConfirmPageContainer extends Component {
               )}
             </ConfirmPageContainerHeader>
           )}
-          <div>
-            {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
-            )}
-          </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
@@ -290,12 +281,10 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
-              supportsEIP1559V2={supportsEIP1559V2}
-              hasTopBorder={showAddToAddressDialog}
+              supportsEIP1559={supportsEIP1559}
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
-              showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
@@ -313,7 +302,9 @@ export default class ConfirmPageContainer extends Component {
                         <Button
                           type="inline"
                           className="confirm-page-container-content__link"
-                          onClick={showBuyModal}
+                          onClick={() =>
+                            this.setState({ setShowDepositPopover: true })
+                          }
                           key={`${nativeCurrency}-buy-button`}
                         >
                           {t('buyAsset', [nativeCurrency])}
@@ -335,38 +326,32 @@ export default class ConfirmPageContainer extends Component {
               />
             </div>
           )}
+          {setShowDepositPopover && (
+            <DepositPopover
+              onClose={() => this.setState({ setShowDepositPopover: false })}
+            />
+          )}
           {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && isApprovalOrRejection && (
-            <Dialog type="error" className="confirm-page-container__dialog">
-              {/*
-                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
-                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
-              */}
-              {t('confirmPageDialogSetApprovalForAll', [
-                <b
-                  key="confirm-page-container__dialog-placeholder-1"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
-                </b>,
-                <b
-                  key="confirm-page-container__dialog-placeholder-2"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
-                </b>,
-              ])}
-            </Dialog>
+          {showWarningModal && (
+            <SetApproveForAllWarning
+              collectionName={title}
+              senderAddress={fromAddress}
+              name={fromName}
+              isERC721={assetStandard === ERC721}
+              total={this.state.collectionBalance}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+            />
           )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={onSubmit}
+              onSubmit={isSetApproveForAll ? onSetApprovalForAll : onSubmit}
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
@@ -380,14 +365,14 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && !supportsEIP1559V2 && (
+          {editingGas && !supportsEIP1559 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
           )}
-          {supportsEIP1559V2 && (
+          {supportsEIP1559 && (
             <>
               <EditGasFeePopover />
               <AdvancedGasFeePopover />

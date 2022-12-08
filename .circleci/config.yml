@@ -14,6 +14,9 @@ executors:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
 
+orbs:
+  gh: circleci/github-cli@2.0
+
 workflows:
   test_and_release:
     jobs:
@@ -59,12 +62,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
-            - test-storybook
+            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -209,6 +209,27 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+      - gh/install
+      - run:
+          name: Set IS_DRAFT environment variable
+          command: |
+            PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
+            if [ -n "$PR_NUMBER" ]
+            then
+              echo "IS_DRAFT=$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")" >> "$BASH_ENV"
+              source "$BASH_ENV"
+            else
+              echo "Not a PR; skipping"
+            fi
+      - run:
+          name: Setup registry config for using package previews on draft PRs
+          command: |
+            if [[ $IS_DRAFT == 'true' ]]
+            then
+              printf '%s\n\n%s' '@metamask:registry=https://npm.pkg.github.com' "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGE_READ_TOKEN}" > .npmrc
+            else
+              echo "Not draft; skipping GitHub registry setup"
+            fi
       - run:
           name: Install deps
           command: |
@@ -217,11 +238,6 @@ jobs:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-            - build-artifacts/yarn-install-har/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
       - persist_to_workspace:
           root: .
           paths:
@@ -283,9 +299,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type beta dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type beta dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type beta prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -307,9 +339,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type flask dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type flask dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type flask prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -416,16 +464,6 @@ jobs:
           paths:
             - development/ts-migration-dashboard/build
 
-  test-storybook:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test Storybook
-          command: yarn storybook:test
-
   test-yarn-dedupe:
     executor: node-browsers
     steps:
@@ -434,7 +472,7 @@ jobs:
           at: .
       - run:
           name: Detect yarn lock deduplications
-          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
+          command: yarn dedupe --check
 
   test-lint:
     executor: node-browsers
@@ -516,6 +554,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -540,9 +579,10 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-    
+
   test-e2e-chrome-mv3:
     executor: node-browsers
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -561,7 +601,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -570,6 +610,7 @@ jobs:
 
   test-e2e-firefox-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -597,6 +638,7 @@ jobs:
 
   test-e2e-chrome-snaps:
     executor: node-browsers
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -624,6 +666,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
+    parallelism: 8
     steps:
       - checkout
       - run:
@@ -793,6 +836,11 @@ jobs:
           path: development/ts-migration-dashboard/build
           destination: ts-migration-dashboard
       - run:
+          name: Set branch parent commit env var
+          command: |
+            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
 
@@ -833,7 +881,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - checkout
       - attach_workspace:
           at: .

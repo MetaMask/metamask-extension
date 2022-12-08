@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Prix du gaz"
   },
-  "advancedOptions": {
-    "message": "Options avancées"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Confirmer"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Vous accordez l’accès à $1, y compris à ceux que vous pourriez posséder dans le futur. L’autre partie pourra transférer des NFT de votre portefeuille à tout moment sans demander votre consentement jusqu’à ce que vous révoquiez cette approbation. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "tous les NFT inclus dans ce contrat"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Soyez prudent."
   },
   "confirmPassword": {
     "message": "Confirmer le mot de passe"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "Modifier le contact"
   },
-  "editGasEducationButtonText": {
-    "message": "Comment puis-je choisir ?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Ce choix est préférable pour les transactions urgentes (comme les swaps), car cela multiplie les chances de réussite de la transaction. Si le traitement d’un swap prend trop de temps, il peut échouer et vous faire perdre une partie de vos frais de carburant."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Des frais de carburant inférieurs ne doivent être utilisés que lorsque le temps de traitement est moins important. En effet, il est difficile de prévoir quand (ou si) votre transaction aboutira."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Des frais de carburant modérés conviennent pour l’envoi, le retrait ou d’autres transactions pour lesquelles le facteur temps n’est pas décisif. Ce paramètre permet le plus souvent de conclure une transaction avec succès."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Le choix du bon prix de carburant dépend du type de transaction et de son importance à vos yeux."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Comment choisir ?"
-  },
   "editGasFeeModalTitle": {
     "message": "Modifier le prix du carburant"
-  },
-  "editGasHigh": {
-    "message": "Élevé"
   },
   "editGasLimitOutOfBounds": {
     "message": "La limite de carburant doit être d’au moins $1"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
-  },
-  "editGasLow": {
-    "message": "Bas"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Les frais maximaux ne peuvent pas être inférieurs aux frais de priorité maximaux"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Les frais maximaux correspondent au montant le plus élevé que vous aurez à payer (frais de base + frais de priorité)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Les frais de priorité maximaux doivent être supérieurs à 0 GWEI"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Les frais de priorité sont faibles par rapport aux conditions actuelles du réseau"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Les frais de priorité maximaux (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction. Vous paierez le plus souvent votre réglage maximal"
-  },
-  "editGasMedium": {
-    "message": "Moyen"
   },
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
   },
-  "editGasTooLowTooltip": {
-    "message": "Vos frais maximaux ou vos frais de priorité maximaux risquent d’être faibles compte tenu des conditions actuelles du marché. Nous ignorons quand (ou si) votre transaction sera traitée. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Cela réduit vos frais maximaux, mais si le trafic réseau augmente, votre transaction peut être retardée ou ne pas aboutir."
-  },
   "editNonceField": {
     "message": "Modifier le nonce"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Activer la détection automatique"
-  },
-  "enableEIP1559V2": {
-    "message": "Activer l’interface utilisateur améliorée des frais de transaction"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Nous avons mis à jour le fonctionnement de l’estimation et de la personnalisation des gas fees."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Activez l’interface utilisateur améliorée des frais de transaction dans les Paramètres"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Nous avons mis à jour le fonctionnement de l’estimation et de la personnalisation du gas. À activer si vous souhaitez utiliser la nouvelle expérience de gas. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Nouvelle expérience de gas"
   },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Ce prix de carburant a été suggéré par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nos estimations basses, moyennes et hautes ne sont pas disponibles."
   },
   "gasFee": {
     "message": "Frais de transaction"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Toujours pouvoir vous désinscrire via les Paramètres"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Toujours pouvoir se désinscrire via les Paramètres"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Jamais",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ne collectera jamais vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "Ne collectera $1 votre adresse IP complète",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ne collectera jamais votre adresse IP complète"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ne vendra jamais de données à des fins lucratives. Jamais !"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nous aimerions recueillir des données d’utilisation de base pour améliorer la convivialité de notre produit. Ces indicateurs seront…"
-  },
-  "metametricsTitle": {
-    "message": "Rejoignez plus de 6 M d’utilisateurs pour améliorer MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Nouveau compte"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d’adresses."
   },
   "newAccountNumberName": {
     "message": "Compte $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Définir des paramètres de confidentialité avancés"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Afficher les clés privées"
   },
-  "showRecommendations": {
-    "message": "Afficher les recommandations"
-  },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Signer"
-  },
-  "signNotice": {
-    "message": "La signature de ce message peut avoir des effets secondaires dangereux, interférant en votre nom via le contrôle de votre compte et de ses actifs par le site demandeur. Signez uniquement les messages de sites auxquels vous faites entièrement confiance."
   },
   "signatureRequest": {
     "message": "Demande de Signature"
