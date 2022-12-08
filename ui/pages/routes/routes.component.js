@@ -115,6 +115,7 @@ export default class Routes extends Component {
     portfolioTooltipIsBeingShown: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
+    completedOnboarding: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -379,6 +380,7 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       portfolioTooltipIsBeingShown,
       isCurrentProviderCustom,
+      completedOnboarding,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -391,6 +393,7 @@ export default class Routes extends Component {
       !isTestNet &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
+      completedOnboarding &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
@@ -436,7 +439,7 @@ export default class Routes extends Component {
         {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
           <OnboardingAppHeader />
         )}
-        <NetworkDropdown />
+        {completedOnboarding ? <NetworkDropdown /> : null}
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
