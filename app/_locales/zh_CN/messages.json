@@ -3034,9 +3034,6 @@
   "sepolia": {
     "message": "Sepolia测试网络"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "设置高级隐私设置"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
   },

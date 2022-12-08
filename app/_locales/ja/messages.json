@@ -3034,9 +3034,6 @@
   "sepolia": {
     "message": "Sepolia テストネットワーク"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "高度なプライバシー設定を設定"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティーサービスを使用して、製品の使いやすさと安全性を向上させています。"
   },

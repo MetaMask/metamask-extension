@@ -3034,9 +3034,6 @@
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Ορίστε ρυθμίσεις απορρήτου για προχωρημένους"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
   },
