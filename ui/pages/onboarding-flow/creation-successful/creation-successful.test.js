@@ -40,9 +40,9 @@ describe('Creation Successful Onboarding View', () => {
     expect(completeOnboardingStub).toHaveBeenCalledTimes(1);
   });
 
-  it('should redirect to privacy-settings view when "Set advanced privacy settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Advanced configuration" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const privacySettingsButton = getByText('Set advanced privacy settings');
+    const privacySettingsButton = getByText('Advanced configuration');
     fireEvent.click(privacySettingsButton);
     expect(pushMock).toHaveBeenCalledWith(ONBOARDING_PRIVACY_SETTINGS_ROUTE);
   });

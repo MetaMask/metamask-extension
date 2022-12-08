@@ -2202,7 +2202,7 @@ describe('Transaction Controller', function () {
         category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           chain_id: '0x5',
-          eip_1559_version: '1',
+          eip_1559_version: '2',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
           network: '5',

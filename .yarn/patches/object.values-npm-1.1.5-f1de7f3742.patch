@@ -1,0 +1,25 @@
+diff --git a/index.js b/index.js
+index abf0449c9546665ebc4fbe2601e75ad937d98c17..0b5722d3f2e7bebb4bf25b56a690e22aacc7beb3 100644
+--- a/index.js
++++ b/index.js
+@@ -1,18 +1,3 @@
+ 'use strict';
+ 
+-var define = require('define-properties');
+-var callBind = require('call-bind');
+-
+-var implementation = require('./implementation');
+-var getPolyfill = require('./polyfill');
+-var shim = require('./shim');
+-
+-var polyfill = callBind(getPolyfill(), Object);
+-
+-define(polyfill, {
+-	getPolyfill: getPolyfill,
+-	implementation: implementation,
+-	shim: shim
+-});
+-
+-module.exports = polyfill;
++module.exports = Object.values;
+\ No newline at end of file

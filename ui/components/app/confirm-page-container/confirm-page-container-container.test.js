@@ -104,13 +104,6 @@ describe('Confirm Page Container Container Test', () => {
       expect(recipientName).toBeInTheDocument();
     });
 
-    it('should render add address to address book dialog', () => {
-      const newAccountDetectDialog = screen.queryByText(
-        /New address detected!/u,
-      );
-      expect(newAccountDetectDialog).toBeInTheDocument();
-    });
-
     it('should simulate click reject button', () => {
       const rejectButton = screen.getByTestId('page-container-footer-cancel');
       fireEvent.click(rejectButton);
