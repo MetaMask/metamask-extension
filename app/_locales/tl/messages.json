@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Bagong Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "May natukoy na bagong address! Mag-click dito para idagdag sa iyong address book."
-  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
@@ -3036,9 +3033,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "Magtakda ng advanced privacy settings"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."

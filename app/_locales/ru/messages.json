@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Новый счет"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Обнаружен новый адрес! Нажмите здесь, чтобы добавить этот адрес в свою адресную книгу."
-  },
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
@@ -3036,9 +3033,6 @@
   },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "Задать дополнительные настройки конфиденциальности"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."

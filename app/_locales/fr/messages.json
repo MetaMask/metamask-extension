@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "Nouveau compte"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d’adresses."
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
@@ -3036,9 +3033,6 @@
   },
   "sepolia": {
     "message": "Réseau de test Sepolia"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "Définir des paramètres de confidentialité avancés"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."

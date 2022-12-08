@@ -47,7 +47,9 @@ describe('Editing Confirm Transaction', function () {
           text: 'sec',
           tag: 'span',
         });
-        await driver.clickElement('[data-testid="edit-gas-fee-item-high"]');
+        await driver.clickElement(
+          '[data-testid="edit-gas-fee-item-high"] > span:first-child',
+        );
         await driver.waitForSelector({ text: '🦍' });
         await driver.waitForSelector({
           text: 'Aggressive',
@@ -55,7 +57,9 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to medium
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.clickElement('[data-testid="edit-gas-fee-item-medium"]');
+        await driver.clickElement(
+          '[data-testid="edit-gas-fee-item-medium"] > span:first-child',
+        );
         await driver.waitForSelector({ text: '🦊' });
         await driver.waitForSelector({
           text: 'Market',
@@ -63,7 +67,9 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to low
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.clickElement('[data-testid="edit-gas-fee-item-low"]');
+        await driver.clickElement(
+          '[data-testid="edit-gas-fee-item-low"] > span:first-child',
+        );
         await driver.waitForSelector({ text: '🐢' });
         await driver.waitForSelector({
           text: 'Low',

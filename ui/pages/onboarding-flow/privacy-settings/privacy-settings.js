@@ -50,7 +50,7 @@ export default function PrivacySettings() {
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
           <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
-            {t('setAdvancedPrivacySettings')}
+            {t('advancedConfiguration')}
           </Typography>
           <Typography variant={TYPOGRAPHY.H4}>
             {t('setAdvancedPrivacySettingsDetails')}

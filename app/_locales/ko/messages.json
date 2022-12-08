@@ -2128,9 +2128,6 @@
   "newAccount": {
     "message": "새 계정"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "새 주소가 발견되었습니다! 여기를 클릭하여 주소록에 추가하세요."
-  },
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -3036,9 +3033,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "setAdvancedPrivacySettings": {
-    "message": "개인정보 설정 고급 지정"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
