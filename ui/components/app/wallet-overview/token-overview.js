@@ -75,7 +75,7 @@ const TokenOverview = ({ className, token }) => {
     isTokenBuyableWyre;
 
   useEffect(() => {
-    if (token.isERC721 && process.env.COLLECTIBLES_V1) {
+    if (token.isERC721 && process.env.NFTS_V1) {
       dispatch(
         showModal({
           name: 'CONVERT_TOKEN_TO_NFT',
