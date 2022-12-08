@@ -1552,9 +1552,6 @@
   "sign": {
     "message": "Lumagda"
   },
-  "signNotice": {
-    "message": "Puwedeng may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Aalisin ang mapanganib na paraang ito sa bersyon sa hinaharap. "
-  },
   "signatureRequest": {
     "message": "Request ng Signature"
   },

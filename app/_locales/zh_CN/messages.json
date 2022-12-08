@@ -598,16 +598,6 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "您正在向$1授予访问权限，包括对您将来可能拥有的任何资产的访问权限。另一端的一方可以随时从您的钱包中转移NFT，无需询问您，直到您撤销此项批准。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "此合约中的所有NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "请谨慎行事。"
-  },
   "confirmPassword": {
     "message": "确认密码"
   },
@@ -1970,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "始终允许您通过“设置”选择退出"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "始终可通过设置选择退出"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "永不",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "决不收集密钥、地址、交易、余额、哈希或任何个人信息"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 收集您的完整 IP 地址",
@@ -1990,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 收集密钥、地址、交易记录、余额、哈希或任何个人信息",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "永不收集您的完整 IP 地址"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "决不出售数据牟利。绝对不会！"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 为利益而出售您的数据，永远不会！",
@@ -2009,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展程序交互。这些数据将被用于持续改进我们产品和以太坊生态系统的可用性和用户体验。"
-  },
-  "metametricsOptInDescription2": {
-    "message": "我们想要收集基本使用数据以提高我们产品的可用性。这些数据将......"
-  },
-  "metametricsTitle": {
-    "message": "和600多万用户一起改进 MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
@@ -3138,9 +3110,6 @@
   },
   "sign": {
     "message": "签名"
-  },
-  "signNotice": {
-    "message": "谨慎行事。此操作有可能用来从您的账户提取资产。确保您信任此站点。"
   },
   "signatureRequest": {
     "message": "签名请求"

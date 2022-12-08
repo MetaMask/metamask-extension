@@ -63,12 +63,12 @@ describe('AdvancedGasFeePopover', () => {
     expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
   });
 
-  it('should disable save button if priority fee 0 is entered', () => {
+  it('should enable save button if priority fee 0 is entered', () => {
     render();
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 0 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeEnabled();
   });
 
   it('should disable save button if priority fee entered is greater than base fee', () => {

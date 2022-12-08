@@ -392,7 +392,17 @@ export function getAddressBook(state) {
 }
 
 export function getEnsResolutionByAddress(state, address) {
-  return state.metamask.ensResolutionsByAddress[address] || '';
+  if (state.metamask.ensResolutionsByAddress[address]) {
+    return state.metamask.ensResolutionsByAddress[address];
+  }
+
+  const entry =
+    getAddressBookEntry(state, address) ||
+    Object.values(state.metamask.identities).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+
+  return entry?.name || '';
 }
 
 export function getAddressBookEntry(state, address) {
@@ -841,7 +851,7 @@ export const getFullTxData = createDeepEqualSelector(
     return getTransaction(state, transactionId);
   },
   (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, _status, customTxParamsData) => {
+  (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       txData.simulationFails = transaction.simulationFails;
@@ -863,6 +873,14 @@ export const getFullTxData = createDeepEqualSelector(
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
+
+export const getSnap = createSelector(
+  getSnaps,
+  (_, snapId) => snapId,
+  (snaps, snapId) => {
+    return snaps[snapId];
+  },
+);
 
 export function getInsightSnaps(state) {
   const snaps = Object.values(state.metamask.snaps);
@@ -963,6 +981,7 @@ function getAllowedAnnouncementIds(state) {
     14: false,
     15: false,
     16: true,
+    17: true,
   };
 }
 

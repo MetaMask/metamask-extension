@@ -274,7 +274,8 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTransactionSecurityCheckToggle()}
+        {process.env.TRANSACTION_SECURITY_PROVIDER &&
+          this.renderTransactionSecurityCheckToggle()}
         {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
