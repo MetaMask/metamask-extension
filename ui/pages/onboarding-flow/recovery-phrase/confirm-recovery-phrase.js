@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
@@ -23,6 +24,7 @@ import RecoveryPhraseChips from './recovery-phrase-chips';
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
@@ -95,7 +97,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           large
           className="recovery-phrase__footer__confirm--button"
           onClick={() => {
-            setSeedPhraseBackedUp(true);
+            dispatch(setSeedPhraseBackedUp(true));
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
           disabled={!matching}

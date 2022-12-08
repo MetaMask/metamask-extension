@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
@@ -21,6 +22,8 @@ export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   return (
     <Popover
       className="skip-srp-backup-popover"
@@ -39,7 +42,7 @@ export default function SkipSRPBackup({ handleClose }) {
             type="primary"
             rounded
             onClick={() => {
-              setSeedPhraseBackedUp(false);
+              dispatch(setSeedPhraseBackedUp(false));
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}
           >
