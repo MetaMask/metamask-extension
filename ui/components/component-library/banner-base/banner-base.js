@@ -36,7 +36,7 @@ export const BannerBase = ({
         <div className="mm-banner-base__left-accessory">{leftAccessory}</div>
       )}
 
-      <div className="mm-banner-base__">
+      <>
         {title && (
           <Text className="mm-banner-base__title" variant={TEXT.BODY_LG_MEDIUM}>
             {title}
@@ -46,7 +46,7 @@ export const BannerBase = ({
           <Text className="mm-banner-base__description">{description}</Text>
         )}
         {action && <Text className="mm-banner-base__action">{action}</Text>}
-      </div>
+      </>
       {onClose && (
         <ButtonIcon
           className="mm-banner-base__close-button"
