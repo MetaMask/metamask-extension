@@ -1960,18 +1960,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "절대로",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask에서는.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다."
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "전체 IP 주소를 절대 수집하지 않습니다.",
@@ -1980,12 +1974,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "전체 IP 주소를 절대 수집하지 않습니다."
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "절대로 수익을 위해 데이터를 판매하지 않습니다!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 수익을 위해 데이터를 판매하지 않습니다!",
@@ -1999,12 +1987,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask는 사용자가 확장 프로그램과 상호작용하는 방식을 자세히 이해하기 위해 사용 데이터를 수집하고자 합니다. 수집한 데이터는 당사의 제품과 이더리움 에코시스템의 사용 편의성 및 사용자 경험을 지속적으로 개선하는 데 활용됩니다."
-  },
-  "metametricsOptInDescription2": {
-    "message": "당사 제품의 가용성 향상을 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 측정항목은..."
-  },
-  "metametricsTitle": {
-    "message": "6백만 명 이상의 사용자와 함께 MetaMask 기능 향상에 동참하세요."
   },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
