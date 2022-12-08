@@ -73,10 +73,6 @@ export const SnapUIRenderer = ({ snapId, data }) => {
   const t = useI18nContext();
   const snap = useSelector((state) => getSnap(state, snapId));
 
-  if (!snap) {
-    return null;
-  }
-
   const snapName = snap.manifest.proposedName;
 
   if (!isComponent(data)) {
