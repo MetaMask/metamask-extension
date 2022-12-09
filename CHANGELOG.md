@@ -40,7 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: ensure 0% slippage on Arbitrum for wrapping/unwrapping ETH (ETH -> WETH or WETH -> ETH) ([#16778](https://github.com/MetaMask/metamask-extension/pull/16778))
 - [Beta] Update to sentence case ([#16590](https://github.com/MetaMask/metamask-extension/pull/16590))
 - [Beta] Updating welcome message ([#16489](https://github.com/MetaMask/metamask-extension/pull/16489))
-- [FLASK] `snaps-monorepo@0.25.0` ([#16673](https://github.com/MetaMask/metamask-extension/pull/16673))
+- [FLASK] **BREAKING:** Snaps are now required to request the `endowment:rpc` permission to receive RPC requests on `onRpcRequest` ([#16673](https://github.com/MetaMask/metamask-extension/pull/16673))
+  - Snaps must specify if they want to receive RPC requests from dapps or snaps using the following permission `endowment:rpc: { dapps: true, snaps: true }`
 - [FLASK] `snaps-monorepo@0.24.1` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
 
 ### Fixed
