@@ -83,9 +83,9 @@ export default class DetectTokensController {
   /**
    * For each token in the tokenlist provided by the TokenListController, check selectedAddress balance.
    *
-   * @param options0
-   * @param options0.selectedAddress
-   * @param options0.chainId
+   * @param options
+   * @param options.selectedAddress - the selectedAddress against which to detect for token balances
+   * @param options.chainId - the chainId against which to detect for token balances
    */
   async detectNewTokens({ selectedAddress, chainId }) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
@@ -187,9 +187,9 @@ export default class DetectTokensController {
    * Restart token detection polling period and call detectNewTokens
    * in case of address change or user session initialization.
    *
-   * @param options0
-   * @param options0.selectedAddress
-   * @param options0.chainId
+   * @param options
+   * @param options.selectedAddress - the selectedAddress against which to detect for token balances
+   * @param options.chainId - the chainId against which to detect for token balances
    */
   restartTokenDetection({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
