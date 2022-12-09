@@ -479,7 +479,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
-        nativeCurrency: this.networkController.providerStore.getState().ticker,
+        nativeCurrency: this.networkController.store.getState().provider.ticker,
       },
     });
 
@@ -838,9 +838,11 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkState: () => this.networkController.networkStore.getState(),
-      onNetworkStateChange: (listener) =>
-        this.networkController.networkStore.subscribe(listener),
+      getNetworkState: () => this.networkController.store.getState().network,
+      onNetworkStateChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
@@ -4225,7 +4227,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Migrate address book state from old to new chainId.
    *
-   * Address book state is keyed by the `networkStore` state from the network controller. This value is set to the
+   * Address book state is keyed by the `network` state from the network controller. This value is set to the
    * `networkId` for our built-in Infura networks, but it's set to the `chainId` for custom networks.
    * When this `chainId` value is changed for custom RPC endpoints, we need to migrate any contacts stored under the
    * old key to the new key.

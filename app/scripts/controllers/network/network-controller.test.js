@@ -105,16 +105,16 @@ describe('NetworkController', () => {
         );
         await networkController.getEIP1559Compatibility();
         expect(
-          networkController.networkDetails.getState().EIPS[1559],
+          networkController.store.getState().networkDetails.EIPS[1559],
         ).toStrictEqual(true);
         getLatestBlockStub.callsFake(() => Promise.resolve({}));
         await setProviderTypeAndWait('mainnet');
         expect(
-          networkController.networkDetails.getState().EIPS[1559],
+          networkController.store.getState().networkDetails.EIPS[1559],
         ).toBeUndefined();
         await networkController.getEIP1559Compatibility();
         expect(
-          networkController.networkDetails.getState().EIPS[1559],
+          networkController.store.getState().networkDetails.EIPS[1559],
         ).toStrictEqual(false);
         expect(getLatestBlockStub.calledTwice).toStrictEqual(true);
       });

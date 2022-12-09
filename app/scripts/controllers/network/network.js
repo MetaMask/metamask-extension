@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
-import { ComposedStore, ObservableStore } from '@metamask/obs-store';
+import { ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
@@ -81,30 +81,14 @@ export default class NetworkController extends EventEmitter {
   constructor({ state = {}, infuraProjectId } = {}) {
     super();
 
-    // create stores
-    this.providerStore = new ObservableStore(
-      state.provider || { ...defaultProviderConfig },
-    );
-    this.previousProviderStore = new ObservableStore(
-      this.providerStore.getState(),
-    );
-    this.networkStore = new ObservableStore('loading');
-    // We need to keep track of a few details about the current network
-    // Ideally we'd merge this.networkStore with this new store, but doing so
-    // will require a decent sized refactor of how we're accessing network
-    // state. Currently this is only used for detecting EIP 1559 support but
-    // can be extended to track other network details.
-    this.networkDetails = new ObservableStore(
-      state.networkDetails || {
+    this.store = new ObservableStore({
+      provder: state.provider || { ...defaultProviderConfig },
+      network: 'loading',
+      networkDetails: state.networkDetails || {
         ...defaultNetworkDetailsState,
       },
-    );
-    this.store = new ComposedStore({
-      provider: this.providerStore,
-      previousProviderStore: this.previousProviderStore,
-      network: this.networkStore,
-      networkDetails: this.networkDetails,
     });
+    this._previousProvider = this.store.getState().provider;
 
     // provider and block tracker
     this._provider = null;
@@ -143,7 +127,7 @@ export default class NetworkController extends EventEmitter {
    * @returns {Promise<boolean>} true if current network supports EIP 1559
    */
   async getEIP1559Compatibility() {
-    const { EIPS } = this.networkDetails.getState();
+    const { EIPS } = this.store.getState().networkDetails;
     if (EIPS[1559] !== undefined) {
       return EIPS[1559];
     }
@@ -155,7 +139,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   getNetworkState() {
-    return this.networkStore.getState();
+    return this.store.getState().network;
   }
 
   isNetworkLoading() {
@@ -265,17 +249,19 @@ export default class NetworkController extends EventEmitter {
   }
 
   rollbackToPreviousProvider() {
-    const config = this.previousProviderStore.getState();
-    this.providerStore.updateState(config);
+    const config = this._previousProvider;
+    this.store.updateState({
+      provider: config,
+    });
     this._switchNetwork(config);
   }
 
   getProviderConfig() {
-    return this.providerStore.getState();
+    return this.store.getState().provider;
   }
 
   getNetworkIdentifier() {
-    const provider = this.providerStore.getState();
+    const { provider } = this.store.getState();
     return provider.type === NETWORK_TYPES.RPC
       ? provider.rpcUrl
       : provider.type;
@@ -307,7 +293,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setNetworkState(network) {
-    this.networkStore.putState(network);
+    this.store.updateState({ network });
   }
 
   /**
@@ -317,9 +303,11 @@ export default class NetworkController extends EventEmitter {
    * @param {boolean} isSupported - True if the EIP is supported
    */
   _setNetworkEIPSupport(EIPNumber, isSupported) {
-    this.networkDetails.updateState({
-      EIPS: {
-        [EIPNumber]: isSupported,
+    this.store.updateState({
+      networkDetails: {
+        EIPS: {
+          [EIPNumber]: isSupported,
+        },
       },
     });
   }
@@ -328,7 +316,9 @@ export default class NetworkController extends EventEmitter {
    * Reset EIP support to default (no support)
    */
   _clearNetworkDetails() {
-    this.networkDetails.putState({ ...defaultNetworkDetailsState });
+    this.store.updateState({
+      networkDetails: { ...defaultNetworkDetailsState },
+    });
   }
 
   /**
@@ -337,8 +327,10 @@ export default class NetworkController extends EventEmitter {
    * @param config
    */
   _setProviderConfig(config) {
-    this.previousProviderStore.updateState(this.getProviderConfig());
-    this.providerStore.updateState(config);
+    this._previousProvider = this.store.getState().provider;
+    this.store.updateState({
+      provider: config,
+    });
     this._switchNetwork(config);
   }
 
