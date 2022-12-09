@@ -893,8 +893,8 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta;
 
-        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
-        // in which case we will want to check and update ownership status of the transferred collectible.
+        // if this is a transferFrom method generated from within the app it may be a nft transfer transaction
+        // in which case we will want to check and update ownership status of the transferred nft.
         if (
           txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
           txMeta.txParams !== undefined
@@ -914,17 +914,17 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
-          // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
+          // check if its a known nft
+          const knownNft = allNfts?.[userAddress]?.[chainId].find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
           );
 
           // if it is we check and update ownership status.
-          if (knownCollectible) {
+          if (knownNft) {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-              knownCollectible,
+              knownNft,
               false,
               { userAddress, chainId },
             );
@@ -1795,14 +1795,12 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowPortfolioTooltip.bind(appStateController),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
-      setCollectiblesDetectionNoticeDismissed:
-        appStateController.setCollectiblesDetectionNoticeDismissed.bind(
+      setNftsDetectionNoticeDismissed:
+        appStateController.setNftsDetectionNoticeDismissed.bind(
           appStateController,
         ),
-      updateCollectibleDropDownState:
-        appStateController.updateCollectibleDropDownState.bind(
-          appStateController,
-        ),
+      updateNftDropDownState:
+        appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       // EnsController
@@ -2039,7 +2037,7 @@ export default class MetamaskController extends EventEmitter {
         detectTokensController,
       ),
 
-      // DetectCollectibleController
+      // DetectNftController
       detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,

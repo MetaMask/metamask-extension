@@ -30,7 +30,7 @@ export default class SendAssetRow extends Component {
     updateSendAsset: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
     nativeCurrencyImage: PropTypes.string,
-    collectibles: PropTypes.arrayOf(
+    nfts: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         tokenId: PropTypes.string.isRequired,
@@ -57,16 +57,15 @@ export default class SendAssetRow extends Component {
   state = {
     isShowingDropdown: false,
     sendableTokens: [],
-    sendableCollectibles: [],
+    sendableNfts: [],
   };
 
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
-    const sendableCollectibles = this.props.collectibles.filter(
-      (collectible) =>
-        collectible.isCurrentlyOwned && collectible.standard === ERC721,
+    const sendableNfts = this.props.nfts.filter(
+      (nft) => nft.isCurrentlyOwned && nft.standard === ERC721,
     );
-    this.setState({ sendableTokens, sendableCollectibles });
+    this.setState({ sendableTokens, sendableNfts });
   }
 
   openDropdown = () => this.setState({ isShowingDropdown: true });
@@ -121,8 +120,7 @@ export default class SendAssetRow extends Component {
           >
             {this.renderSendAsset()}
           </div>
-          {[...this.state.sendableTokens, ...this.state.sendableCollectibles]
-            .length > 0
+          {[...this.state.sendableTokens, ...this.state.sendableNfts].length > 0
             ? this.renderAssetDropdown()
             : null}
         </div>
@@ -134,7 +132,7 @@ export default class SendAssetRow extends Component {
     const {
       sendAsset: { details, type },
       tokens,
-      collectibles,
+      nfts,
     } = this.props;
 
     if (type === ASSET_TYPES.TOKEN) {
@@ -145,13 +143,13 @@ export default class SendAssetRow extends Component {
         return this.renderToken(token);
       }
     } else if (type === ASSET_TYPES.NFT) {
-      const collectible = collectibles.find(
+      const nft = nfts.find(
         ({ address, tokenId }) =>
           isEqualCaseInsensitive(address, details.address) &&
           tokenId === details.tokenId,
       );
-      if (collectible) {
-        return this.renderCollectible(collectible);
+      if (nft) {
+        return this.renderNft(nft);
       }
     }
     return this.renderNativeCurrency();
@@ -173,9 +171,7 @@ export default class SendAssetRow extends Component {
               }
             />
 
-            {this.state.sendableCollectibles.map((collectible) =>
-              this.renderCollectible(collectible, true),
-            )}
+            {this.state.sendableNfts.map((nft) => this.renderNft(nft, true))}
           </div>
         </div>
       )
@@ -187,13 +183,13 @@ export default class SendAssetRow extends Component {
     const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
       this.props;
 
-    const { sendableTokens, sendableCollectibles } = this.state;
+    const { sendableTokens, sendableNfts } = this.state;
 
     const balanceValue = accounts[selectedAddress]
       ? accounts[selectedAddress].balance
       : '';
 
-    const sendableAssets = [...sendableTokens, ...sendableCollectibles];
+    const sendableAssets = [...sendableTokens, ...sendableNfts];
     return (
       <div
         className={
@@ -260,15 +256,15 @@ export default class SendAssetRow extends Component {
     );
   }
 
-  renderCollectible(collectible, insideDropdown = false) {
-    const { address, name, image, tokenId } = collectible;
+  renderNft(nft, insideDropdown = false) {
+    const { address, name, image, tokenId } = nft;
     const { t } = this.context;
 
     return (
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(ASSET_TYPES.NFT, collectible)}
+        onClick={() => this.selectToken(ASSET_TYPES.NFT, nft)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} image={image} />

@@ -682,13 +682,6 @@
   "close": {
     "message": "Κλείσιμο"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
-  },
-  "collectibleAddressError": {
-    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Επιβεβαίωση"
   },
@@ -2222,9 +2215,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
-  },
   "newContact": {
     "message": "Νέα Επαφή"
   },
@@ -2239,6 +2229,9 @@
   },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
+  },
+  "newNftAddedMessage": {
+    "message": "Το Nft προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -2265,6 +2258,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
+  },
+  "nftAddressError": {
+    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Εισάγετε το συλλεκτικό αναγνωριστικό"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Η αποστολή συλλεκτικών (ERC-721) δεν υποστηρίζεται προς το παρόν",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Δεν μπορούμε να επαληθεύσουμε αυτή τη σύμβαση. Βεβαιωθείτε ότι εμπιστεύεστε αυτήν τη διεύθυνση."
@@ -4376,10 +4376,10 @@
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Αυτόματη Ανίχνευση NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "Η εμφάνιση πολυμέσων και δεδομένων NFT μπορεί να εκθέσει τη διεύθυνση IP σας σε κεντρικούς διακομιστές. Τα API τρίτων (όπως το OpenSea) χρησιμοποιούνται για την ανίχνευση NFT στο πορτοφόλι σας. Αυτό εκθέτει τη διεύθυνση του λογαριασμού σας με αυτές τις υπηρεσίες. Αφήστε το απενεργοποιημένο αν δεν θέλετε η εφαρμογή να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
   },
   "useCollectibleDetectionDescriptionLine2": {

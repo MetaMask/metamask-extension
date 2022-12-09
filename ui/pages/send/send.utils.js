@@ -13,7 +13,7 @@ import { ERC20, ERC721 } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-  COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
+  NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
 } from './send.constants';
 
 export {
@@ -150,7 +150,7 @@ function generateERC721TransferData({
     return undefined;
   }
   return (
-    COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE +
+    NFT_TRANSFER_FROM_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
         abi.rawEncode(

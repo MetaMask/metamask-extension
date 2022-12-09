@@ -45,8 +45,8 @@ class GanacheSeeder {
 
     await contract.deployTransaction.wait();
 
-    if (contractName === SMART_CONTRACTS.COLLECTIBLES) {
-      const transaction = await contract.mintCollectibles(1, {
+    if (contractName === SMART_CONTRACTS.NFTS) {
+      const transaction = await contract.mintNfts(1, {
         from: fromAddress,
       });
       await transaction.wait();

@@ -36,7 +36,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
         tokenAddress,
         userAddress,
         transactionData,
-        collectibles,
+        nfts,
       );
       setCurrentAsset(assetDetails);
       dispatch(hideLoadingIndication());

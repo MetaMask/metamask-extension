@@ -18,7 +18,7 @@ import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
-import AddCollectiblePage from '../add-collectible';
+import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
@@ -60,7 +60,7 @@ import {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   INITIALIZE_ROUTE,
   ONBOARDING_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
@@ -220,11 +220,7 @@ export default class Routes extends Component {
           exact
         />
         {process.env.NFTS_V1 ? (
-          <Authenticated
-            path={ADD_COLLECTIBLE_ROUTE}
-            component={AddCollectiblePage}
-            exact
-          />
+          <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         ) : null}
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}

@@ -682,13 +682,6 @@
   "close": {
     "message": "Cerrar"
   },
-  "collectibleAddFailedMessage": {
-    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
-  },
-  "collectibleAddressError": {
-    "message": "Este token es un NFT. Añadir a $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmar"
   },
@@ -2222,9 +2215,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "¡El coleccionable fue añadido con éxito!"
-  },
   "newContact": {
     "message": "Contacto nuevo"
   },
@@ -2239,6 +2229,9 @@
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
+  },
+  "newNftAddedMessage": {
+    "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"
@@ -2265,6 +2258,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
+  },
+  "nftAddressError": {
+    "message": "Este token es un NFT. Añadir a $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Ingrese el id del token"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "No podemos verificar este contrato. Asegúrese de que confía en esta dirección."
@@ -4376,10 +4376,10 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Detectar NFTs automáticamente"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
   },
   "useCollectibleDetectionDescriptionLine2": {

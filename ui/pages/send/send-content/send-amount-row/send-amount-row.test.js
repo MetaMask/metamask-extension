@@ -62,9 +62,9 @@ describe('SendAmountRow Component', () => {
       });
     });
 
-    describe('Collectible Asset Type', () => {
-      it('should match snapshot for token collectible type', () => {
-        const collectibleState = {
+    describe('Nft Asset Type', () => {
+      it('should match snapshot for token nft type', () => {
+        const nftState = {
           ...mockSendState,
           send: {
             currentTransactionUUID: '1-tx',
@@ -74,14 +74,14 @@ describe('SendAmountRow Component', () => {
                   balance: '',
                   details: null,
                   error: null,
-                  type: ASSET_TYPES.COLLECTIBLE,
+                  type: ASSET_TYPES.NFT,
                 },
               },
             },
           },
         };
 
-        const mockStore = configureMockStore([thunk])(collectibleState);
+        const mockStore = configureMockStore([thunk])(nftState);
 
         const { container } = renderWithProvider(<SendAmountRow />, mockStore);
 

@@ -7,7 +7,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-import CollectiblesTab from '../../components/app/collectibles-tab';
+import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -133,8 +133,8 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
-    newCollectibleAddedMessage: PropTypes.string,
-    setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    newNftAddedMessage: PropTypes.string,
+    setNewNftAddedMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -261,8 +261,8 @@ export default class Home extends PureComponent {
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
-      newCollectibleAddedMessage,
-      setNewCollectibleAddedMessage,
+      newNftAddedMessage,
+      setNewNftAddedMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
@@ -308,7 +308,7 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage === 'success' ? (
+        {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
@@ -319,12 +319,12 @@ export default class Home extends PureComponent {
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {t('newCollectibleAddedMessage')}
+                  {t('newNftAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setNewCollectibleAddedMessage('')}
+                  onClick={() => setNewNftAddedMessage('')}
                 />
               </Box>
             }
@@ -702,7 +702,7 @@ export default class Home extends PureComponent {
                   data-testid="home__nfts-tab"
                   name={t('nfts')}
                 >
-                  <CollectiblesTab
+                  <NftsTab
                     onAddNFT={() => {
                       history.push(ADD_COLLECTIBLE_ROUTE);
                     }}

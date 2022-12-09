@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash';
 const version = 76;
 
 /**
- * Update to `@metamask/controllers@33.0.0` (rename "Collectible" to "NFT").
+ * Update to `@metamask/controllers@33.0.0` (rename "Nft" to "NFT").
  */
 export default {
   version,
@@ -18,27 +18,20 @@ export default {
 };
 
 function transformState(state) {
-  if (state.CollectiblesController) {
-    const {
-      allCollectibleContracts,
-      allCollectibles,
-      ignoredCollectibles,
-      ...remainingState
-    } = state.CollectiblesController;
+  if (state.NftsController) {
+    const { allNftContracts, allNfts, ignoredNfts, ...remainingState } =
+      state.NftsController;
     state.NftController = {
-      ...(allCollectibleContracts
-        ? { allNftContracts: allCollectibleContracts }
-        : {}),
-      ...(allCollectibles ? { allNfts: allCollectibles } : {}),
-      ...(ignoredCollectibles ? { ignoredNfts: ignoredCollectibles } : {}),
+      ...(allNftContracts ? { allNftContracts } : {}),
+      ...(allNfts ? { allNfts } : {}),
+      ...(ignoredNfts ? { ignoredNfts } : {}),
       ...remainingState,
     };
-    delete state.CollectiblesController;
+    delete state.NftsController;
   }
 
-  if (state.PreferencesController?.useCollectibleDetection) {
-    state.PreferencesController.useNftDetection =
-      state.PreferencesController.useCollectibleDetection;
+  if (state.PreferencesController?.useNftDetection) {
+    state.PreferencesController.useNftDetection;
     delete state.PreferencesController.useCollectibleDetection;
   }
 

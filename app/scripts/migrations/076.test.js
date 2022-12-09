@@ -21,13 +21,13 @@ describe('migration #76', () => {
         version: 75,
       },
       data: {
-        CollectiblesController: {
-          allCollectibleContracts: 'foo',
-          allCollectibles: 'bar',
-          ignoredCollectibles: 'baz',
+        NftsController: {
+          allNftContracts: 'foo',
+          allNfts: 'bar',
+          ignoredNfts: 'baz',
         },
         PreferencesController: {
-          useCollectibleDetection: 'foobar',
+          useNftDetection: 'foobar',
         },
       },
     };
@@ -56,15 +56,15 @@ describe('migration #76', () => {
         version: 75,
       },
       data: {
-        CollectiblesController: {
-          allCollectibleContracts: 'foo',
-          allCollectibles: 'bar',
-          ignoredCollectibles: 'baz',
+        NftsController: {
+          allNftContracts: 'foo',
+          allNfts: 'bar',
+          ignoredNfts: 'baz',
           extra: 'extra',
         },
         PreferencesController: {
           extra: 'extra',
-          useCollectibleDetection: 'foobar',
+          useNftDetection: 'foobar',
         },
       },
     };
@@ -95,7 +95,7 @@ describe('migration #76', () => {
         version: 75,
       },
       data: {
-        CollectiblesController: {
+        NftsController: {
           extra: 'extra',
         },
         PreferencesController: {
@@ -120,7 +120,7 @@ describe('migration #76', () => {
     });
   });
 
-  it('should handle missing CollectiblesController and PreferencesController', async () => {
+  it('should handle missing NftsController and PreferencesController', async () => {
     const oldStorage = {
       meta: {
         version: 75,

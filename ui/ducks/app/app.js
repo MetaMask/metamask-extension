@@ -52,7 +52,7 @@ export default function reduceApp(state = {}, action) {
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
-    newCollectibleAddedMessage: '',
+    newNftAddedMessage: '',
     portfolioTooltipWasShownInThisSession: false,
     sendInputCurrencySwitched: false,
     newTokensImported: '',
@@ -313,10 +313,10 @@ export default function reduceApp(state = {}, action) {
         newTokensImported: action.value,
       };
 
-    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
       return {
         ...appState,
-        newCollectibleAddedMessage: action.value,
+        newNftAddedMessage: action.value,
       };
 
     case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:

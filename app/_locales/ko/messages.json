@@ -682,13 +682,6 @@
   "close": {
     "message": "닫기"
   },
-  "collectibleAddFailedMessage": {
-    "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
-  },
-  "collectibleAddressError": {
-    "message": "이 토큰은 NFT입니다. $1에 추가하세요",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "확인"
   },
@@ -2222,9 +2215,6 @@
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "수집이 성공적으로 추가되었습니다!"
-  },
   "newContact": {
     "message": "새 연락처"
   },
@@ -2239,6 +2229,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1”가 성공적으로 추가되었습니다!"
+  },
+  "newNftAddedMessage": {
+    "message": "수집이 성공적으로 추가되었습니다!"
   },
   "newPassword": {
     "message": "새 비밀번호(8자 이상)"
@@ -2265,6 +2258,13 @@
   },
   "nft": {
     "message": "NFT\n"
+  },
+  "nftAddFailedMessage": {
+    "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
+  },
+  "nftAddressError": {
+    "message": "이 토큰은 NFT입니다. $1에 추가하세요",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "토큰 ID 입력"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "수집 가능한(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "이 계약을 확인할 수 없습니다. 믿을 수 있는 주소인지 확인하세요."
@@ -4376,10 +4376,10 @@
   "urlExistsErrorMsg": {
     "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFT 자동 감지"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFT 미디어 및 데이터를 표시하면 IP 주소가 중앙 서버에 노출될 수 있습니다. 지갑에서 NFT를 감지하려면 (OpenSea와 같은) 타사 API를 사용해야 합니다. 이렇게 하면 해당 서비스의 계정 주소가 노출됩니다. 앱이 해당 서비스에서 데이터를 가져오지 않도록 하려면 비활성화된 상태로 유지하세요."
   },
   "useCollectibleDetectionDescriptionLine2": {

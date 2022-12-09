@@ -682,13 +682,6 @@
   "close": {
     "message": "閉じる"
   },
-  "collectibleAddFailedMessage": {
-    "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
-  },
-  "collectibleAddressError": {
-    "message": "このトークンは NFT です。$1で追加してください",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "確認"
   },
@@ -2222,9 +2215,6 @@
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "コレクティブルが追加されました!"
-  },
   "newContact": {
     "message": "新しい連絡先"
   },
@@ -2239,6 +2229,9 @@
   },
   "newNetworkAdded": {
     "message": "「$1」が追加されました!"
+  },
+  "newNftAddedMessage": {
+    "message": "コレクティブルが追加されました!"
   },
   "newPassword": {
     "message": "新しいパスワード (最低8文字)"
@@ -2265,6 +2258,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
+  },
+  "nftAddressError": {
+    "message": "このトークンは NFT です。$1で追加してください",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "トークンIDを入力してください"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "コレクティブル (ERC-721) トークンの送信は現在サポートされていません",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "このコントラクトを検証できません。このアドレスが信頼できることを確認してください。"
@@ -4376,10 +4376,10 @@
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFTを自動検出"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFTメディアとデータを表示すると、IPアドレスが集中型のサーバーに開示される可能性があります。ウォレット内のNFTの検出には、サードパーティーAPI (OpenSeaなど) が使用されます。これにより、これらのサービスにアカウントのアドレスが公開されます。これらのサービスからデータを取得しない場合は、この機能を無効にしてください。"
   },
   "useCollectibleDetectionDescriptionLine2": {

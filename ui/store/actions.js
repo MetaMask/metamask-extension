@@ -1784,10 +1784,10 @@ export async function getBalancesInSingleCall(tokens) {
 export function addNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add nft without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add nft without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -1811,10 +1811,10 @@ export function addNftVerifyOwnership(
 ) {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add nft without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add nft without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -1844,10 +1844,10 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot ignore collectible without address');
+      throw new Error('MetaMask - Cannot ignore nft without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+      throw new Error('MetaMask - Cannot ignore nft without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -1867,10 +1867,10 @@ export function removeAndIgnoreNft(address, tokenID, dontShowLoadingIndicator) {
 export function removeNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot remove collectible without address');
+      throw new Error('MetaMask - Cannot remove nft without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+      throw new Error('MetaMask - Cannot remove nft without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -1891,21 +1891,17 @@ export async function checkAndUpdateAllNftsOwnershipStatus() {
   await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus');
 }
 
-export async function isNftOwner(
-  ownerAddress,
-  collectibleAddress,
-  collectibleId,
-) {
+export async function isNftOwner(ownerAddress, nftAddress, nftId) {
   return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
-    collectibleAddress,
-    collectibleId,
+    nftAddress,
+    nftId,
   ]);
 }
 
-export async function checkAndUpdateSingleNftOwnershipStatus(collectible) {
+export async function checkAndUpdateSingleNftOwnershipStatus(nft) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
-    collectible,
+    nft,
     false,
   ]);
 }
@@ -2307,9 +2303,9 @@ export function hideAlert() {
   };
 }
 
-export function updateCollectibleDropDownState(value) {
+export function updateNftDropDownState(value) {
   return async (dispatch) => {
-    await submitRequestToBackground('updateCollectibleDropDownState', [value]);
+    await submitRequestToBackground('updateNftDropDownState', [value]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3184,10 +3180,10 @@ export function setNewNetworkAdded(newNetworkAdded) {
   };
 }
 
-export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
+export function setNewNftAddedMessage(newNftAddedMessage) {
   return {
-    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
-    value: newCollectibleAddedMessage,
+    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
+    value: newNftAddedMessage,
   };
 }
 
@@ -3782,10 +3778,8 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
-export function setCollectiblesDetectionNoticeDismissed() {
-  return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
-    true,
-  ]);
+export function setNftsDetectionNoticeDismissed() {
+  return submitRequestToBackground('setNftsDetectionNoticeDismissed', [true]);
 }
 
 export function setImprovedTokenAllowanceEnabled(
