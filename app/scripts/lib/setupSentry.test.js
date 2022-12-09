@@ -73,10 +73,34 @@ describe('Setup Sentry', () => {
       );
     });
 
-    it('should remove urls have allowed urls in their URL patch', () => {
+    it('should remove urls have allowed urls in their URL path', () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport.message).toStrictEqual(
+        'This report does not have an allowed url: **',
+      );
+    });
+
+    it('should remove urls with subdomains', () => {
+      const testReport = {
+        message:
+          'This report does not have an allowed url: https://subdomain.example.com/',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport.message).toStrictEqual(
+        'This report does not have an allowed url: **',
+      );
+    });
+
+    it('should remove invalid urls', () => {
+      const testReport = {
+        message:
+          'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
       const rewrittenReport = rewriteReport(testReport);

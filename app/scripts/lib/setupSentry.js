@@ -249,12 +249,16 @@ function sanitizeUrlsFromErrorMessages(report) {
     const re = /(([-.+a-zA-Z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
     const urlsInMessage = newErrorMessage.match(re) || [];
     urlsInMessage.forEach((url) => {
-      const urlObj = new URL(url);
-      if (
-        !Object.values(ERROR_URL_ALLOWLIST).some(
-          (allowedUrl) => allowedUrl === urlObj.hostname,
-        )
-      ) {
+      try {
+        const urlObj = new URL(url);
+        if (
+          !Object.values(ERROR_URL_ALLOWLIST).some(
+            (allowedUrl) => allowedUrl === urlObj.hostname,
+          )
+        ) {
+          newErrorMessage = newErrorMessage.replace(url, '**');
+        }
+      } catch (e) {
         newErrorMessage = newErrorMessage.replace(url, '**');
       }
     });
