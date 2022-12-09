@@ -1766,11 +1766,11 @@
         "URL": true
       },
       "packages": {
+        "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>superstruct": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "eth-block-tracker>@metamask/utils": true,
         "semver": true
