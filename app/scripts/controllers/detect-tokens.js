@@ -87,7 +87,7 @@ export default class DetectTokensController {
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
    * @param options.chainId - the chainId against which to detect for token balances
    */
-  async detectNewTokens({ selectedAddress, chainId }) {
+  async detectNewTokens({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
     const chainIdAgainstWhichToDetect =
       chainId ?? this.getChainIdFromNetworkStore(this._network);
