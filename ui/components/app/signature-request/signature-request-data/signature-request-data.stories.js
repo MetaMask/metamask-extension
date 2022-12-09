@@ -2,7 +2,7 @@ import React from 'react';
 import SignatureRequestData from './signature-request-data';
 
 export default {
-  title: 'Components/App/SignatureRequestData',
+  title: 'Components/App/SignatureRequest/SignatureRequestData',
   id: __filename,
   component: SignatureRequestData,
   argTypes: {
