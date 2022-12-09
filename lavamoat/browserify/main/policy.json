@@ -502,9 +502,14 @@
     },
     "@metamask/approval-controller": {
       "packages": {
+        "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "@metamask/base-controller": true,
         "eth-rpc-errors": true
+      }
+    },
+    "@metamask/approval-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -526,10 +531,10 @@
         "@eth-optimism/contracts>@ethersproject/contracts": true,
         "@metamask/assets-controllers>@ethersproject/abi": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
@@ -601,11 +606,6 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -1146,13 +1146,18 @@
     },
     "@metamask/permission-controller": {
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1443,7 +1448,12 @@
     },
     "@metamask/subject-metadata-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/subject-metadata-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/subject-metadata-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@ngraveio/bc-ur": {
