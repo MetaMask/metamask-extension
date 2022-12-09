@@ -30,10 +30,5 @@ function transformState(state) {
     delete state.NftsController;
   }
 
-  if (state.PreferencesController?.useNftDetection) {
-    state.PreferencesController.useNftDetection;
-    delete state.PreferencesController.useCollectibleDetection;
-  }
-
   return state;
 }
