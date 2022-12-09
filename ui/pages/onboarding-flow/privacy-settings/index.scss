@@ -56,6 +56,15 @@
     }
   }
 
+  &__network {
+    position: relative;
+
+    .dropdown-menu-item {
+      font-size: 14px !important;
+      padding: 8px !important;
+    }
+  }
+
   & button {
     max-width: 50%;
     padding: 15px;

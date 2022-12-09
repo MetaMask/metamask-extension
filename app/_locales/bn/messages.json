@@ -47,9 +47,6 @@
   "advanced": {
     "message": "উন্নত"
   },
-  "advancedOptions": {
-    "message": "উন্নত বিকল্পসমূহ"
-  },
   "amount": {
     "message": "পরিমান"
   },
@@ -560,9 +557,6 @@
   },
   "newAccount": {
     "message": "নতুন আ্যাকাউন্ট"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "নতুন ঠিকানা সনাক্ত করা হয়েছে। আপনার অ্যাড্রেস বুকে যোগ করতে এখানে ক্লিক করুন।"
   },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",

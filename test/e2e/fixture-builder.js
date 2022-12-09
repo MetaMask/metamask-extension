@@ -123,7 +123,6 @@ function defaultFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -289,7 +288,6 @@ function onboardingFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -1100,6 +1098,15 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withNetworkSupportEIP1559() {
+    merge(this.fixture.data.NetworkController, {
+      networkDetails: {
+        EIPS: { 1559: true },
+      },
+    });
+    return this;
   }
 
   build() {

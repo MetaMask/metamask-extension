@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Speciális"
   },
-  "advancedOptions": {
-    "message": "Haladó beállítások"
-  },
   "amount": {
     "message": "Összeg"
   },
@@ -553,9 +550,6 @@
   },
   "newAccount": {
     "message": "Új fiók"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Új címet észleltünk! Kattints ide, ha szeretnéd feljegyezni címtáradba."
   },
   "newAccountNumberName": {
     "message": "$1 fiók",
