@@ -246,7 +246,7 @@ export function rewriteReport(report, getState) {
 function sanitizeUrlsFromErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
     let newErrorMessage = errorMessage;
-    const re = /(([A-z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
+    const re = /(([-.+a-zA-Z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
     const urlsInMessage = newErrorMessage.match(re) || [];
     urlsInMessage.forEach((url) => {
       const urlObj = new URL(url);
