@@ -154,36 +154,62 @@ export default function setupSentry({ release, getState }) {
       } else {
         return null;
       }
-      return rewriteBreadcrumb(breadcrumb);
+      const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
+      return newBreadcrumb;
     },
   });
 
   return Sentry;
 }
 
-function hideUrlIfNotInternal(_url) {
+/**
+ * Receives a string and returns that stringif it is a
+ * regex match for a url with a `chrome-extension` or `moz-extension`
+ * protocol, and an empty string otherwise.
+ *
+ * @param {string} url
+ * @returns String
+ */
+function hideUrlIfNotInternal(url) {
   const re = /^(chrome-extension|moz-extension):\/\//u;
-  if (!_url.match(re)) {
+  if (!url.match(re)) {
     return '';
   }
-  return _url;
+  return url;
 }
 
-export function rewriteBreadcrumb(breadcrumb) {
-  /** @todo check URL allowlist, exclude URLs not in allowlist */
-
-  if (breadcrumb.data?.url) {
+/**
+ * Receives a Sentry breadcrumb object and potentially removes urls
+ * from its `data` property, it particular those possibly found at
+ * data.from, data.to and data.url
+ *
+ * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
+ * @returns Object - A modified Sentry breadcrumb object.
+ */
+export function removeUrlsFromBreadCrumb(breadcrumb) {
+  if (breadcrumb?.data?.url) {
     breadcrumb.data.url = hideUrlIfNotInternal(breadcrumb.data.url);
   }
-  if (breadcrumb.data?.to) {
+  if (breadcrumb?.data?.to) {
     breadcrumb.data.to = hideUrlIfNotInternal(breadcrumb.data.to);
   }
-  if (breadcrumb.data?.from) {
+  if (breadcrumb?.data?.from) {
     breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
   }
   return breadcrumb;
 }
 
+/**
+ * Receives a Sentry event object and modifies it before the
+ * error is sent to Sentry. Modifications include both sanitization
+ * of data via helper methods and addition of state data from the
+ * return value of the second parameter passed to the function.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @param {Function} getState - A function that should return an object representing some amount
+ * of app state that we wish to submit with our error reports
+ * @returns Object - A modified Sentry event object.
+ */
 export function rewriteReport(report, getState) {
   try {
     // simplify certain complex error messages (e.g. Ethjs)
@@ -206,22 +232,27 @@ export function rewriteReport(report, getState) {
       report.extra.appState = appState;
     }
   } catch (err) {
-    console.error(err);
-    throw err;
+    console.warn(err);
   }
   return report;
 }
 
+/**
+ * Receives a Sentry event object and modifies it so that urls are removed from any of its
+ * error messages.
+ *
+ * @param {object} report - the report to modify
+ */
 function sanitizeUrlsFromErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
     let newErrorMessage = errorMessage;
-    const re =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,63}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gu;
+    const re = /(([A-z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
     const urlsInMessage = newErrorMessage.match(re) || [];
     urlsInMessage.forEach((url) => {
+      const urlObj = new URL(url);
       if (
-        !Object.values(ERROR_URL_ALLOWLIST).some((allowedUrl) =>
-          url.match(allowedUrl),
+        !Object.values(ERROR_URL_ALLOWLIST).some(
+          (allowedUrl) => allowedUrl === urlObj.hostname,
         )
       ) {
         newErrorMessage = newErrorMessage.replace(url, '**');
@@ -231,9 +262,15 @@ function sanitizeUrlsFromErrorMessages(report) {
   });
 }
 
+/**
+ * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
+ * any of its error messages.
+ *
+ * @param {object} report - the report to modify
+ */
 function sanitizeAddressesFromErrorMessages(report) {
   rewriteErrorMessages(report, (errorMessage) => {
-    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '**');
+    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '0x**');
     return newErrorMessage;
   });
 }
@@ -258,11 +295,9 @@ function simplifyErrorMessages(report) {
 function rewriteErrorMessages(report, rewriteFn) {
   // rewrite top level message
   if (typeof report.message === 'string') {
-    /** @todo parse and remove/replace URL(s) found in report.message  */
     report.message = rewriteFn(report.message);
   }
   // rewrite each exception message
-  console.log('report', report);
   if (report.exception && report.exception.values) {
     report.exception.values.forEach((item) => {
       if (typeof item.value === 'string') {

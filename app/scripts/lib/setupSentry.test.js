@@ -1,4 +1,4 @@
-import { rewriteReport, rewriteBreadcrumb } from './setupSentry';
+import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
@@ -46,7 +46,7 @@ describe('Setup Sentry', () => {
       };
       const rewrittenReport = rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
-        'There is an ethereum address ** in this message',
+        'There is an ethereum address 0x** in this message',
       );
     });
 
@@ -73,6 +73,18 @@ describe('Setup Sentry', () => {
       );
     });
 
+    it('should remove urls have allowed urls in their URL patch', () => {
+      const testReport = {
+        message:
+          'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport.message).toStrictEqual(
+        'This report does not have an allowed url: **',
+      );
+    });
+
     it('should remove urls and ethereum addresses from error messages', () => {
       const testReport = {
         message:
@@ -81,7 +93,7 @@ describe('Setup Sentry', () => {
       };
       const rewrittenReport = rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
-        'This ** address used ** on Saturday',
+        'This 0x** address used ** on Saturday',
       );
     });
 
@@ -95,14 +107,14 @@ describe('Setup Sentry', () => {
     });
   });
 
-  describe('rewriteBreadcrumb', () => {
+  describe('removeUrlsFromBreadCrumb', () => {
     it('should hide the breadcrumb data url', () => {
       const testBreadcrumb = {
         data: {
           url: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual('');
     });
 
@@ -112,7 +124,7 @@ describe('Setup Sentry', () => {
           to: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual('');
     });
 
@@ -122,7 +134,7 @@ describe('Setup Sentry', () => {
           from: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual('');
     });
 
@@ -132,7 +144,7 @@ describe('Setup Sentry', () => {
           url: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -144,7 +156,7 @@ describe('Setup Sentry', () => {
           to: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -156,7 +168,7 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -170,7 +182,7 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = rewriteBreadcrumb(testBreadcrumb);
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data).toStrictEqual({
         url: 'chrome-extension://abcefg/home.html',
         to: '',
