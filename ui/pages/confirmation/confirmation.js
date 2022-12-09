@@ -227,19 +227,6 @@ export default function ConfirmationPage({
     ///: END:ONLY_INCLUDE_IN
   ]);
 
-  const hasInputState = (type) => {
-    return INPUT_STATE_CONFIRMATIONS.includes(type);
-  };
-
-  const handleSubmit = () =>
-    templateState[pendingConfirmation.id]?.useWarningModal
-      ? setShowWarningModal(true)
-      : templatedValues.onSubmit(
-          hasInputState(pendingConfirmation.type)
-            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
-            : null,
-        );
-
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -259,9 +246,23 @@ export default function ConfirmationPage({
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
+
   if (!pendingConfirmation) {
     return null;
   }
+
+  const hasInputState = (type) => {
+    return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const handleSubmit = () =>
+    templateState[pendingConfirmation.id]?.useWarningModal
+      ? setShowWarningModal(true)
+      : templatedValues.onSubmit(
+          hasInputState(pendingConfirmation.type)
+            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+            : null,
+        );
 
   return (
     <div className="confirmation-page">
