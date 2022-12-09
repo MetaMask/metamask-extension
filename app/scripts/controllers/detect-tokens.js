@@ -191,7 +191,7 @@ export default class DetectTokensController {
    * @param options0.selectedAddress
    * @param options0.chainId
    */
-  restartTokenDetection({ selectedAddress, chainId }) {
+  restartTokenDetection({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
     const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
     if (
