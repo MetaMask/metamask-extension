@@ -1,0 +1,17 @@
+.snap-ui-renderer {
+  &__error {
+    margin-top: 0 !important;
+  }
+
+  &__spinner {
+    width: 30px;
+  }
+
+  &__divider {
+    width: 100%;
+  }
+
+  &__panel {
+    height: 100%;
+  }
+}
