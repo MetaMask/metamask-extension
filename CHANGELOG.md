@@ -42,7 +42,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Beta] Updating welcome message ([#16489](https://github.com/MetaMask/metamask-extension/pull/16489))
 - [FLASK] **BREAKING:** Snaps are now required to request the `endowment:rpc` permission to receive RPC requests on `onRpcRequest` ([#16673](https://github.com/MetaMask/metamask-extension/pull/16673))
   - Snaps must specify if they want to receive RPC requests from dapps or snaps using the following permission `endowment:rpc: { dapps: true, snaps: true }`
-- [FLASK] `snaps-monorepo@0.24.1` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
+- [FLASK] **BREAKING:** Removed `wallet_enable` and `wallet_installSnaps` in favor of `wallet_requestSnaps` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
+- [FLASK] **BREAKING:** Removed `snap_getAppKey` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
+  - Snaps that need snap-specific entropy can use `snap_getEntropy` instead
+- [FLASK] **BREAKING:** The `wallet` global exposed to Snaps has been replaced with two new globals: `snap` and `ethereum` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
+  - `ethereum` is an EIP-1193 provider and can be accessed by requesting the `endowment:ethereum-provider` permission
+  - `snap` is always exposed and can be used to access snap specific functions using `snap.request()`
+- [FLASK] **BREAKING:** Named parameters are now required in all Snaps RPC methods ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
 
 ### Fixed
 - Fix resolving to the Account nickname or contact name when scanning the QR code in the Send screen ([#16204](https://github.com/MetaMask/metamask-extension/pull/16204))
