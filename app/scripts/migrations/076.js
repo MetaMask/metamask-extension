@@ -2,9 +2,6 @@ import { cloneDeep } from 'lodash';
 
 const version = 76;
 
-/**
- * Update to `@metamask/controllers@33.0.0` (rename "Nft" to "NFT").
- */
 export default {
   version,
   async migrate(originalVersionedData) {
