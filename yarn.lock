@@ -23368,7 +23368,6 @@ __metadata:
     "@metamask/snaps-utils": ^0.26.1
     "@metamask/subject-metadata-controller": ^1.0.0
     "@metamask/test-dapp": ^5.2.1
-    "@metamask/utils": ^3.3.1
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
     "@reduxjs/toolkit": ^1.6.2
