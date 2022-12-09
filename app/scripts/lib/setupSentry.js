@@ -184,7 +184,7 @@ function hideUrlIfNotInternal(url) {
  * data.from, data.to and data.url
  *
  * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
- * @returns Object - A modified Sentry breadcrumb object.
+ * @returns {object} A modified Sentry breadcrumb object.
  */
 export function removeUrlsFromBreadCrumb(breadcrumb) {
   if (breadcrumb?.data?.url) {
@@ -208,7 +208,7 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
  * @param {Function} getState - A function that should return an object representing some amount
  * of app state that we wish to submit with our error reports
- * @returns Object - A modified Sentry event object.
+ * @returns {object} A modified Sentry event object.
  */
 export function rewriteReport(report, getState) {
   try {
