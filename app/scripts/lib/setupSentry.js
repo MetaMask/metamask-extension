@@ -163,7 +163,7 @@ export default function setupSentry({ release, getState }) {
 }
 
 /**
- * Receives a string and returns that stringif it is a
+ * Receives a string and returns that string if it is a
  * regex match for a url with a `chrome-extension` or `moz-extension`
  * protocol, and an empty string otherwise.
  *
