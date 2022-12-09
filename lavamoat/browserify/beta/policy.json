@@ -2435,7 +2435,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snaps-utils>superstruct": true,
+        "@metamask/snaps-ui>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true
       }
