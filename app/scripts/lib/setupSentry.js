@@ -167,8 +167,8 @@ export default function setupSentry({ release, getState }) {
  * regex match for a url with a `chrome-extension` or `moz-extension`
  * protocol, and an empty string otherwise.
  *
- * @param {string} url
- * @returns String
+ * @param {string} url - The URL to check.
+ * @returns {string} An empty string if the URL was internal, or the unmodified URL otherwise.
  */
 function hideUrlIfNotInternal(url) {
   const re = /^(chrome-extension|moz-extension):\/\//u;
