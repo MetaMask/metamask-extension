@@ -80,11 +80,6 @@ export default {
         type: 'boolean',
       },
     },
-    supportsEIP1559V2: {
-      control: {
-        type: 'boolean',
-      },
-    },
   },
   args: {
     primaryFee: '1 ETH',

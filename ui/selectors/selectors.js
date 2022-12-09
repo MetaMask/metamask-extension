@@ -1160,10 +1160,6 @@ export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
 
-export function getEIP1559V2Enabled(state) {
-  return state.metamask.eip1559V2Enabled;
-}
-
 /**
  *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
  *

@@ -19,7 +19,7 @@ describe('Settings Search', function () {
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Enable Enhanced Gas Fee UI',
+    experimental: 'Transaction security check',
     about: 'Terms of Use',
   };
 

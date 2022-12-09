@@ -71,7 +71,7 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
@@ -97,7 +97,7 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559V2 } = this.props;
+    const { supportsEIP1559 } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -108,7 +108,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
+            {supportsEIP1559 && title === t('transactionFee') ? null : (
               <>
                 <div className="confirm-approve-content__card-header__symbol">
                   {symbol}
@@ -118,7 +118,7 @@ export default class ConfirmApproveContent extends Component {
                 </div>
               </>
             )}
-            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -129,7 +129,7 @@ export default class ConfirmApproveContent extends Component {
                 </Button>
               </Box>
             )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
               <EditGasFeeButton />
             )}
           </div>
@@ -151,9 +151,9 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       txData,
       isMultiLayerFeeNetwork,
-      supportsEIP1559V2,
+      supportsEIP1559,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
+    if (!isMultiLayerFeeNetwork && supportsEIP1559) {
       return <GasDetailsItem />;
     }
     return (
@@ -450,25 +450,17 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
-  getTitleTokenDescription() {
+  getTokenName() {
     const {
       tokenId,
       assetName,
-      tokenAddress,
-      rpcPrefs,
-      chainId,
       assetStandard,
       tokenSymbol,
       isSetApproveForAll,
-      userAddress,
     } = this.props;
     const { t } = this.context;
-    const useBlockExplorer =
-      rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
 
     let titleTokenDescription = t('token');
-    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -486,33 +478,46 @@ export default class ConfirmApproveContent extends Component {
       } else {
         titleTokenDescription = t('nft');
       }
+    }
 
-      if (useBlockExplorer) {
-        const blockExplorerLink = getTokenTrackerLink(
-          tokenAddress,
-          chainId,
-          null,
-          userAddress,
-          {
-            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-          },
-        );
-        const blockExplorerElement = (
-          <>
-            <a
-              href={blockExplorerLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={tokenAddress}
-              className="confirm-approve-content__approval-asset-link"
-            >
-              {titleTokenDescription}
-            </a>
-            {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
-          </>
-        );
-        return blockExplorerElement;
-      }
+    return titleTokenDescription;
+  }
+
+  getTitleTokenDescription() {
+    const { tokenId, tokenAddress, rpcPrefs, chainId, userAddress } =
+      this.props;
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+
+    const titleTokenDescription = this.getTokenName();
+    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
+
+    if (useBlockExplorer) {
+      const blockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        userAddress,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const blockExplorerElement = (
+        <>
+          <a
+            href={blockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={tokenAddress}
+            className="confirm-approve-content__approval-asset-link"
+          >
+            {titleTokenDescription}
+          </a>
+          {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+        </>
+      );
+      return blockExplorerElement;
     }
 
     return (

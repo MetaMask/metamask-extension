@@ -7,7 +7,7 @@ const commonConfigurationPropertyNames = ['PUBNUB_PUB_KEY', 'PUBNUB_SUB_KEY'];
 
 const configurationPropertyNames = [
   ...commonConfigurationPropertyNames,
-  'COLLECTIBLES_V1',
+  'NFTS_V1',
   'INFURA_PROJECT_ID',
   'ONBOARDING_V2',
   'PHISHING_WARNING_PAGE_URL',

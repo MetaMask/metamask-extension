@@ -238,11 +238,6 @@ jobs:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-            - build-artifacts/yarn-install-har/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
       - persist_to_workspace:
           root: .
           paths:
@@ -316,9 +311,9 @@ jobs:
                 command: yarn build --build-type beta dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod
@@ -356,9 +351,9 @@ jobs:
                 command: yarn build --build-type flask dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod
@@ -477,7 +472,7 @@ jobs:
           at: .
       - run:
           name: Detect yarn lock deduplications
-          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
+          command: yarn dedupe --check
 
   test-lint:
     executor: node-browsers
@@ -886,7 +881,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - checkout
       - attach_workspace:
           at: .
