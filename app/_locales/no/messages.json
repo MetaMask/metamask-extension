@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avansert"
   },
-  "advancedOptions": {
-    "message": "Avanserte valg"
-  },
   "amount": {
     "message": "Sum"
   },
@@ -547,9 +544,6 @@
   },
   "newAccount": {
     "message": "Ny konto "
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adresse oppdaget! Klikk her for å legge til adresseboken din."
   },
   "newAccountNumberName": {
     "message": "Konto $1 ",

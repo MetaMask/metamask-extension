@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Täpsemad"
   },
-  "advancedOptions": {
-    "message": "Täpsemad suvandid"
-  },
   "amount": {
     "message": "Summa"
   },
@@ -550,9 +547,6 @@
   },
   "newAccount": {
     "message": "Uus konto"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Leiti uus aadress! Klõpsake siia, et see oma aadressiraamatusse lisada."
   },
   "newAccountNumberName": {
     "message": "Konto $1",
