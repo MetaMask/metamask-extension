@@ -28,43 +28,43 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
-export default function AddCollectible() {
+export default function AddNft() {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectibleDetectionNoticeDismissed = useSelector(
+  const nftDetectionNoticeDismissed = useSelector(
     getNftsDetectionNoticeDismissed,
   );
   const addressEnteredOnImportTokensPage =
     history?.location?.state?.addressEnteredOnImportTokensPage;
-  const contractAddressToConvertFromTokenToCollectible =
+  const contractAddressToConvertFromTokenToNft =
     history?.location?.state?.tokenAddress;
 
   const [address, setAddress] = useState(
     addressEnteredOnImportTokensPage ??
-      contractAddressToConvertFromTokenToCollectible ??
+      contractAddressToConvertFromTokenToNft ??
       '',
   );
   const [tokenId, setTokenId] = useState('');
   const [disabled, setDisabled] = useState(true);
-  const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
+  const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleAddCollectible = async () => {
+  const handleAddNft = async () => {
     try {
       await dispatch(addNftVerifyOwnership(address, tokenId));
     } catch (error) {
       const { message } = error;
       dispatch(setNewNftAddedMessage(message));
-      setCollectibleAddFailed(true);
+      setNftAddFailed(true);
       return;
     }
-    if (contractAddressToConvertFromTokenToCollectible) {
+    if (contractAddressToConvertFromTokenToNft) {
       await dispatch(
         ignoreTokens({
-          tokensToIgnore: contractAddressToConvertFromTokenToCollectible,
+          tokensToIgnore: contractAddressToConvertFromTokenToNft,
           dontShowLoadingIndicator: true,
         }),
       );
@@ -107,7 +107,7 @@ export default function AddCollectible() {
     <PageContainer
       title={t('importNFT')}
       onSubmit={() => {
-        handleAddCollectible();
+        handleAddNft();
       }}
       submitText={t('add')}
       onCancel={() => {
@@ -119,12 +119,10 @@ export default function AddCollectible() {
       disabled={disabled}
       contentComponent={
         <Box>
-          {isMainnet &&
-          !useNftDetection &&
-          !collectibleDetectionNoticeDismissed ? (
+          {isMainnet && !useNftDetection && !nftDetectionNoticeDismissed ? (
             <NftsDetectionNotice />
           ) : null}
-          {collectibleAddFailed && (
+          {nftAddFailed && (
             <ActionableMessage
               type="danger"
               useIcon
@@ -136,12 +134,12 @@ export default function AddCollectible() {
                     fontWeight={FONT_WEIGHT.NORMAL}
                     margin={0}
                   >
-                    {t('collectibleAddFailedMessage')}
+                    {t('nftAddFailedMessage')}
                   </Typography>
                   <button
-                    className="fas fa-times add-collectible__close"
+                    className="fas fa-times add-nft__close"
                     title={t('close')}
-                    onClick={() => setCollectibleAddFailed(false)}
+                    onClick={() => setNftAddFailed(false)}
                   />
                 </Box>
               }
@@ -155,7 +153,7 @@ export default function AddCollectible() {
               value={address}
               onChange={(val) => {
                 validateAndSetAddress(val);
-                setCollectibleAddFailed(false);
+                setNftAddFailed(false);
               }}
               tooltipText={t('importNFTAddressToolTip')}
               autoFocus
@@ -167,7 +165,7 @@ export default function AddCollectible() {
               value={tokenId}
               onChange={(val) => {
                 validateAndSetTokenId(val);
-                setCollectibleAddFailed(false);
+                setNftAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
             />
