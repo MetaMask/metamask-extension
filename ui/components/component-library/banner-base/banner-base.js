@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon, ICON_NAMES, Text } from '..';
+import { ButtonIcon } from '../button-icon';
+import { ICON_NAMES } from '../icon';
+import { Text } from '../text';
 import Box from '../../ui/box';
 
 import {
