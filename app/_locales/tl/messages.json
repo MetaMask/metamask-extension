@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Presyo ng gas"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Ang priority fee (kilala rin bilang “tip ng miner”) ay direktang napupunta sa mga miner at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Kumpirmahin"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Nagbibigay ka ng access sa $1, kabilang ang anumang maaaring maging pag-aari mo sa hinaharap. Ang partido sa kabilang panig ay maaaring maglipat ng mga NFT mula sa iyong wallet sa anumang oras nang hindi ka tinatanong hanggang sa bawiin mo ang pag-aprubang ito. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "lahat na NFT sa kontratang ito"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Magpatuloy nang may pag-iingat."
   },
   "confirmPassword": {
     "message": "Kumpirmahin ang password"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "I-edit ang contact"
   },
-  "editGasEducationButtonText": {
-    "message": "Paano ako pipili?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Pinakamainam ito para sa mga transaksyong sensitibo sa oras (tulad ng Swap) dahil pinapataas nito ang posibilidad ng isang matagumpay na transaksyon. Kung ang isang Swap ay tumatagal ng masyadong mahaba upang maproseso ito ay maaaring mabigo at magresulta sa pagkawala ng ilan sa iyong gas fee."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Ang mas mababang bayad sa gas ay dapat lamang gamitin kapag ang oras ng pagproseso ay hindi gaanong mahalaga. Dahil sa mas mababang mga bayarin, mahirap hulaan kung kailan (o kung) ang iyong transaksyon ay magiging matagumpay."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Ang katamtamang gas fee ay mainam para sa pagpapadala, pag-withdraw o iba pang wala oras na sensitibong mga transaksyon. Ang setting na ito ay kadalasang magreresulta sa isang matagumpay na transaksyon."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Ang pagpili ng tamang gas fee ay depende sa uri ng transaksyon at kung gaano ito kahalaga sa iyo."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Paano pipili?"
-  },
   "editGasFeeModalTitle": {
     "message": "I-edit ang gas fee"
-  },
-  "editGasHigh": {
-    "message": "Mataas"
   },
   "editGasLimitOutOfBounds": {
     "message": "Ang limit ng gas ay dapat na $1 man lamang"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Ang limit ng gas ay ang pinakamataas na yunit ng gas na handa mong gamitin. Ang mga yunit ng gas ay isang multiplier sa “Max priority fee” at “Max fee”."
-  },
-  "editGasLow": {
-    "message": "Mababa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Ang max base fee ay hindi dapat mas mababa sa priority fee"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Ang max fee ay hindi dapat mas mababa kaysa max priority fee"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Ang max fee ay ang pinakamataas na babayaran mo (base fee + priority fee)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Ang max priority fee ay dapat mas mataas sa 0 GWEI"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Ang priority fee ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Ang max priority fee (kilala rin bilang “tip ng miner”) ay direktang napupunta sa mga miner at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon. Madalas kang magbabayad sa iyong max setting"
-  },
-  "editGasMedium": {
-    "message": "Medium"
   },
   "editGasPriceTooLow": {
     "message": "Ang presyo ng gas ay dapat mas mataas sa 0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Hindi kilalang oras ng pagproseso"
   },
-  "editGasTooLowTooltip": {
-    "message": "Ang iyong max fee o max priority fee ay maaaring mababa para sa kasalukuyang kondisyon ng market. Hindi namin alam kung kailan (o kung) ipoproseso ang iyong transaksyon. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Pinapababa nito ang iyong maximum fee ngunit kung network traffic ay maaaring maantala o mabigo ang iyong transaksyon."
-  },
   "editNonceField": {
     "message": "I-edit sa Nonce"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
-  },
-  "enableEIP1559V2": {
-    "message": "Paganahin ang Pinahusay na UI ng Singil sa Gas"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Na-update na namin kung paano gumagana ang pagtantiya at pag-customize ng singil sa gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "I-on sa Settings ang pinahusay na UI ng singil sa gas"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Na-update na namin kung paano gumagana ang pagtantiya at pag-customize ng gas. I-on kung gusto mong gamitin ang bagong karanasan sa gas. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Bagong karanasan sa gas"
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Settings."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Ang gas fee na ito ay iminungkahi ng $1. Ang pag-override dito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga tanong.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Ang aming low, medium at high na mga pagtantiya ay hindi available."
   },
   "gasFee": {
     "message": "Bayarin sa Gas"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Palagi kang papayagang mag-opt out sa pamamagitan ng Mga Setting"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Palaging mag-opt out sa pamamagitan ng Settings"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Huwag Kailanman",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "Ang MetaMask ay.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Huwag mangolekta ng mga key, address, transaksyon, balanse, hash, o anumang personal na impormasyon"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 kolektahin ang iyong IP address",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 nangongolekta ng mga key, address, transaksyon, balanse, hash, o anumang personal na impormasyon",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Huwag magkolekta ng buong IP address"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Huwag magbenta ng data para sa profit. Kahit kailan!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 nagbebenta ng data para pagkakitaan. Kahit kailan!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "Gustong kunin ng MetaMask ang data ng paggamit para mas maunawaan kung paano ginagamit ng mga user namin ang extension. Gagamitin ang data na ito para patuloy na mapahusay ang kakayahang magamit at karanasan ng user sa paggamit ng produkto namin at Ethereum ecosystem."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nais naming mangalap ng pangunahing data ng paggamit upang mapabuti ang kakayahang magamit ang aming produkto. Ang mga sukatan na ito ay..."
-  },
-  "metametricsTitle": {
-    "message": "Sumali sa 6M+ user upang mapabuti ang MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "i-verify ang mga detalye ng network",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Bagong Account"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "May natukoy na bagong address! Mag-click dito para idagdag sa iyong address book."
   },
   "newAccountNumberName": {
     "message": "Account $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Magtakda ng advanced privacy settings"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Ipakita ang Mga Pribadong Key"
   },
-  "showRecommendations": {
-    "message": "Ipakita ang mga Rekomendasyon"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Lumagda"
-  },
-  "signNotice": {
-    "message": "Maaaring may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Tatanggalin ang mapanganib na paraang ito sa bersyon sa hinaharap."
   },
   "signatureRequest": {
     "message": "Request na Paglagda"

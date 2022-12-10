@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "गैस की कीमत"
   },
-  "advancedOptions": {
-    "message": "उन्नत विकल्प"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेन-देन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "पुष्टि करें"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "आप $1 तक ऐक्सेस प्रदान कर रहे हैं, इसमें वह भी शामिल है जिसे आप भविष्य में प्राप्त कर सकते हैं। दूसरी ओर की पार्टी आपसे पूछे बिना किसी भी समय आपके वॉलेट से NFTs ट्रान्स्फर कर सकती है, जब तक आप इस स्वीकृति को रद्द नहीं करते। $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "इस अनुबंध में सभी NFTs"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "सावधानी के साथ आगे बढ़ें।"
   },
   "confirmPassword": {
     "message": "पासवर्ड की पुष्टि करें"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "संपर्क संपादित करें"
   },
-  "editGasEducationButtonText": {
-    "message": "मुझे कैसे चुनना चाहिए?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "समय के प्रति संवेदनशील लेन-देन (जैसे कि विनिमय) के लिए यह सबसे अच्छा है क्योंकि यह एक सफल लेन-देन की संभावना को बढ़ाता है। यदि विनिमय को प्रोसेस होने में ज्यादा समय लगता है तो यह विफल हो सकता है और इसके परिणामस्वरुप आपके गैस शुल्क की कुछ हानि हो सकती है।"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "एक निम्न गैस शुल्क का उपयोग केवल तभी किया जाना चाहिए जब प्रोसेस का समय कम महत्वपूर्ण हो। निम्न शुल्क से यह अनुमान लगाना मुश्किल हो जाता है कि आपका लेन-देन कब (या यदि) सफल होगा।"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "एक मध्यम गैस शुल्क भेजने, निकालने या अन्य गैर-समय संवेदनशील लेन-देन के लिए अच्छा है। इस सेटिंग के परिणामस्वरुप अक्सर एक सफल लेन-देन होता है।"
-  },
-  "editGasEducationModalIntro": {
-    "message": "सही गैस शुल्क का चयन लेन-देन के प्रकार और यह आपके लिए कितना महत्वपूर्ण है इस पर निर्भर करता है।"
-  },
-  "editGasEducationModalTitle": {
-    "message": "कैसे चुनें?"
-  },
   "editGasFeeModalTitle": {
     "message": "गैस शुल्क संपादित करें"
-  },
-  "editGasHigh": {
-    "message": "उच्च"
   },
   "editGasLimitOutOfBounds": {
     "message": "गैस सीमा कम से कम $1 होनी चाहिए"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "गैस सीमा, गैस की वो अधिकतम यूनिट है जिसका आप उपयोग करना चाहते हैं। गैस यूनिट “अधिकतम प्राथमिकता शुल्क” और “अधिकतम शुल्क” का गुणक होती हैं।"
-  },
-  "editGasLow": {
-    "message": "निम्न"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "अधिकतम आधार शुल्क प्राथमिकता शुल्क से कम नहीं हो सकता है।"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "अधिकतम शुल्क अधिकतम प्राथमिकता शुल्क से कम नहीं हो सकता है"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "अधिकतम शुल्क वह अधिकतम शुल्क है जिसका आप भुगतान करेंगे (आधार शुल्क + प्राथमिकता शुल्क)।"
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "अधिकतम प्राथमिकता शुल्क 0 GWEI से अधिक होना चाहिए"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "मौजूदा नेटवर्क स्थितियों के लिए प्राथमिकता शुल्क कम है"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "अधिकतम प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेनदेन को प्राथमिकता देने के लिए प्रोत्साहित करता है। आप अक्सर अपनी अधिकतम सेटिंग का भुगतान करेंगे"
-  },
-  "editGasMedium": {
-    "message": "माध्यम"
   },
   "editGasPriceTooLow": {
     "message": "गैस का मूल्य 0 से अधिक होना चाहिए"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "अज्ञात प्रोसेसिंग समय"
   },
-  "editGasTooLowTooltip": {
-    "message": "मौजूदा बाजार स्थितियों के लिए आपका अधिकतम शुल्क या अधिकतम प्राथमिकता शुल्क कम हो सकता है। हम नहीं जानते कि आपका लेन-देन कब (या यदि) प्रोसेस किया जाएगा। "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "यह आपके अधिकतम शुल्क को कम करता है लेकिन यदि नेटवर्क ट्रैफिक बढ़ता है तो आपके लेन-देन में देरी हो सकती है या लेन-देन विफल हो सकता है।"
-  },
   "editNonceField": {
     "message": "नॉन्स संपादित करें"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट सक्षम करें"
-  },
-  "enableEIP1559V2": {
-    "message": "उन्नत गैस शुल्क UI सक्षम करें"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "हमने अपडेट किया है कि गैस शुल्क अनुमान और कस्टमाइज़ेशन कैसे काम करता है।"
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "सेटिंग्स में उन्नत गैस शुल्क UI को चालू करें"
-  },
-  "enableEIP1559V2Description": {
-    "message": "हमने अपडेट किया है कि गैस शुल्क अनुमान और कस्टमाइज़ेशन कैसे काम करता है। अगर आप नए गैस अनुभव का इस्तेमाल करना चाहते हैं तो चालू करें। $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "नया गैस अनुभव"
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "यह गैस शुल्क $1 द्वारा सुझाया गया है। इसे ओवरराइड करने से आपके लेन-देन में समस्या हो सकती है। यदि आपके पास कोई सवाल हैं तो कृपया $1 तक पहुंचें।",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "हमारे निम्न, मध्यम और उच्च अनुमान उपलब्ध नहीं हैं।"
   },
   "gasFee": {
     "message": "गैस शुल्क"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "सेटिंग्स के माध्यम से हमेशा ऑप्ट-आउट करने में सक्षम हों"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "कभी नहीं",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "कभी भी चाभियां, पता, लेन-देन, शेष राशि, हैश, या कोई व्यक्तिगत सूचना एकत्र ना करें"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 आपका पूरा IP पता एकत्र करेगा",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "कभी भी आपका पूरा IP पता एकत्र नहीं करता"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "फायदे के लिए कभी डेटा नहीं बेचता। कभी भी!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
-  },
-  "metametricsOptInDescription2": {
-    "message": "हम अपने उत्पाद की उपयोगिता में सुधार के लिए बुनियादी उपयोग डेटा एकत्र करना चाहते हैं। ये मेट्रिक्स करेंगे..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask को बेहतर बनाने के लिए 6M+ उपयोगकर्ताओं से जुड़ें"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "नया खाता"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "नया पता मिला है! अपनी पता पुस्तिका में जोड़ने के लिए यहां क्लिक करें।"
   },
   "newAccountNumberName": {
     "message": "खाता $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "सेपोलिया टेस्ट नेटवर्क"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "एडवांस गोपनीयता सेटिंग्स निर्धारित करें"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का उपयोग करता है।"
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "निजी कुंजियां दिखाएं"
   },
-  "showRecommendations": {
-    "message": "सिफ़ारिशें दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "हस्ताक्षर करें"
-  },
-  "signNotice": {
-    "message": "इस संदेश पर हस्ताक्षर करना खतरनाक हो सकता है। यह हस्ताक्षर संभावित रूप से आपके खाते की ओर से कोई भी संचालन कर सकता है, जिसमें अनुरोध करने वाली साइट को आपके खाते और उसकी सभी संपत्तियों पर पूर्ण नियंत्रण प्रदान करना शामिल है। इस संदेश पर केवल तभी हस्ताक्षर करें जब आप जानते हों कि आप क्या कर रहे हैं या अनुरोध करने वाली साइट पर पूरा भरोसा है"
   },
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"

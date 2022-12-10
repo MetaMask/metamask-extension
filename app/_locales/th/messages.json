@@ -290,9 +290,6 @@
   "newAccount": {
     "message": "บัญชีใหม่"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "ตรวจพบที่อยู่ใหม่! คลิกที่นี่เพื่อเพิ่มลงในสมุดที่อยู่ของคุณ"
-  },
   "newAccountNumberName": {
     "message": "บัญชี $1",
     "description": "Default name of next account to be created on create account screen"
@@ -403,9 +400,6 @@
   },
   "sign": {
     "message": "เซ็นชื่อ"
-  },
-  "signNotice": {
-    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
   },
   "signatureRequest": {
     "message": "ขอลายเซ็น"

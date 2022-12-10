@@ -14,11 +14,15 @@ Good typography improves readability, legibility and hierarchy of information.
 
 ## Props
 
+The `Text` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
 <ArgsTable of={Text} />
 
 ### Variant
 
 Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+
+Optional: `TEXT_VARIANTS` from ./text object can also be used.
 
 <Canvas>
   <Story id="ui-components-component-library-text-text-stories-js--variant" />
@@ -32,8 +36,11 @@ import { TEXT } from '../../../helpers/constants/design-system';
 <Text variant={TEXT.HEADING_LG}>heading-lg</Text>
 <Text variant={TEXT.HEADING_MD}>heading-md</Text>
 <Text variant={TEXT.HEADING_SM}>heading-sm</Text>
+<Text variant={TEXT.BODY_LG_MEDIUM}>body-lg-medium</Text>
 <Text variant={TEXT.BODY_MD}>body-md</Text>
+<Text variant={TEXT.BODY_MD_BOLD}>body-md-bold</Text>
 <Text variant={TEXT.BODY_SM}>body-sm</Text>
+<Text variant={TEXT.BODY_SM_BOLD}>body-sm-bold</Text>
 <Text variant={TEXT.BODY_XS}>body-xs</Text>
 <Text variant={TEXT.INHERIT}>inherit</Text>
 ```

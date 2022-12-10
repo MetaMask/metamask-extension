@@ -82,9 +82,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "affirmAgree": {
     "message": "Sang-ayon ako"
   },
@@ -1072,9 +1069,6 @@
   "newAccount": {
     "message": "Bagong Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "May natukoy na bagong address! Mag-click dito para idagdag sa iyong address book."
-  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
@@ -1551,9 +1545,6 @@
   },
   "sign": {
     "message": "Lumagda"
-  },
-  "signNotice": {
-    "message": "Puwedeng may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Aalisin ang mapanganib na paraang ito sa bersyon sa hinaharap. "
   },
   "signatureRequest": {
     "message": "Request ng Signature"

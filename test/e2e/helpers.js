@@ -9,6 +9,7 @@ const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const { PAGES } = require('./webdriver/driver');
 const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
@@ -152,7 +153,13 @@ async function withFixtures(options, testSuite) {
         driver.exceptions.length > 0 &&
         failOnConsoleError
       ) {
-        const errorMessage = `Errors found in browser console:\n${driver.exceptions.join(
+        /**
+         * Navigate to the background
+         * forcing background exceptions to be captured
+         * proving more helpful context
+         */
+        await driver.navigate(PAGES.BACKGROUND);
+        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
           '\n',
         )}`;
         throw Error(errorMessage);

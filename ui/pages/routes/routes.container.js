@@ -29,6 +29,7 @@ function mapStateToProps(state) {
   const { appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
+  const { completedOnboarding } = state.metamask;
 
   return {
     alertOpen,
@@ -55,6 +56,7 @@ function mapStateToProps(state) {
     portfolioTooltipIsBeingShown: getShowPortfolioTooltip(state),
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
+    completedOnboarding,
   };
 }
 

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Zaawansowane"
   },
-  "advancedOptions": {
-    "message": "Opcje zaawansowane"
-  },
   "amount": {
     "message": "Ilość"
   },
@@ -558,9 +555,6 @@
   "newAccount": {
     "message": "Nowe konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Wykryto nowy adres! Kliknij tutaj, aby dodać go do książki adresowej."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -818,9 +812,6 @@
   },
   "sign": {
     "message": "Podpisz"
-  },
-  "signNotice": {
-    "message": "Podpisanie tej wiadomości może mieć \nniebezpieczne skutki uboczne. Podpisuj wiadomości \ntylko ze stron, którym chcesz udostępnić swoje konto.\nTa niebezpieczna metoda będzie usunięta w przyszłych wersjach. "
   },
   "signatureRequest": {
     "message": "Prośba o podpis"

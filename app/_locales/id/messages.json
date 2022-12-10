@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Harga gas"
   },
-  "advancedOptions": {
-    "message": "Opsi lanjutan"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Konfirmasikan"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Anda memberikan akses ke $1, termasuk setiap akses yang Anda miliki di masa mendatang. Pihak lain dapat mentransfer NFT dari dompet Anda kapan saja tanpa meminta izin Anda sampai Anda membatalkan persetujuan ini. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "semua NFT dalam kontrak ini"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Lanjutkan dengan hati-hati."
   },
   "confirmPassword": {
     "message": "Konfirmasikan kata sandi"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "Edit kontak"
   },
-  "editGasEducationButtonText": {
-    "message": "Bagaimana saya harus memilih?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Ini adalah pilihan terbaik untuk transaksi di waktu sensitif (seperti Swap) karena meningkatkan kemungkinan keberhasilan transaksi. Jika pemrosesan Swap terlalu lama, maka berpotensi gagal dan mengakibatkan hilangnya sebagian biaya gas Anda."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Biaya gas yang lebih rendah hanya boleh digunakan saat waktu pemrosesan kurang penting. Biaya yang lebih rendah membuat sulit untuk memprediksi kapan (atau jika) transaksi Anda akan berhasil."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Biaya gas sedang cocok untuk mengirim, menarik, atau transaksi non-waktu sensitif lainnya. Pengaturan ini paling sering menghasilkan transaksi yang berhasil."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Memilih biaya gas yang tepat tergantung jenis transaksi dan seberapa penting bagi Anda."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Bagaimana cara memilihnya?"
-  },
   "editGasFeeModalTitle": {
     "message": "Edit biaya gas"
-  },
-  "editGasHigh": {
-    "message": "Tinggi"
   },
   "editGasLimitOutOfBounds": {
     "message": "Batas gas minimum adalah $1"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Batas gas merupakan unit maksimum gas yang ingin Anda gunakan. Unit gas adalah pengganda untuk “Biaya prioritas maks” dan “Biaya maks”."
-  },
-  "editGasLow": {
-    "message": "Rendah"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Biaya dasar maks tidak boleh lebih rendah dari biaya prioritas"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Biaya maks tidak boleh lebih rendah dari biaya prioritas maks"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Biaya maks merupakan biaya tertinggi yang akan Anda bayarkan (biaya dasar + biaya prioritas)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Biaya prioritas maks harus lebih besar dari 0 GWEI"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Biaya prioritas rendah untuk kondisi jaringan saat ini"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Biaya prioritas maks (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda. Pengaturan maks akan menjadi yang paling sering Anda bayar"
-  },
-  "editGasMedium": {
-    "message": "Sedang"
   },
   "editGasPriceTooLow": {
     "message": "Harga gas harus lebih besar dari 0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Waktu pemrosesan tak diketahui"
   },
-  "editGasTooLowTooltip": {
-    "message": "Biaya maks atau biaya prioritas maks Anda mungkin rendah untuk kondisi pasar saat ini. Kami tidak tahu kapan (atau jika) transaksi Anda akan diproses. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Ini akan menurunkan biaya maks Anda, tetapi jika lalu lintas jaringan meningkat, transaksi Anda mungkin tertunda atau gagal."
-  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
-  },
-  "enableEIP1559V2": {
-    "message": "Aktifkan UI biaya gas yang ditingkatkan"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Kami telah memperbarui cara kerja estimasi dan penyesuaian biaya gas."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Aktifkan UI biaya gas yang ditingkatkan di Pengaturan"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Kami telah memperbarui cara kerja estimasi dan penyesuaian gas. Aktifkan jika Anda ingin menggunakan pengalaman gas baru. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Pengalaman gas baru"
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Biaya gas ini telah disarankan oleh $1. Pengabaian dapat menyebabkan masalah pada transaksi Anda. Hubungi $1 jika ada pertanyaan.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Estimasi rendah, sedang, dan tinggi kami tidak tersedia."
   },
   "gasFee": {
     "message": "Biaya gas"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Selalu dapat memilih keluar melalui Pengaturan"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Jangan",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask akan.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Jangan pernah mengumpulkan kunci, alamat, transaksi, saldo, hash, atau informasi pribadi apa pun"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 mengumpulkan alamat IP lengkap Anda",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 mengumpulkan kunci, alamat, transaksi, saldo, hash, atau informasi pribadi lainnya",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Jangan pernah mengumpulkan alamat IP lengkap Anda"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Jangan pernah menjual data untuk mendapatkan keuntungan!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 menjual data untuk mendapatkan keuntungan. Jangan pernah!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna berinteraksi dengan ekstensi. Data ini akan digunakan untuk meningkatkan kegunaan dan pengalaman pengguna atas produk kami dan ekosistem Ethereum secara berkala."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Kami ingin mengumpulkan data penggunaan dasar dalam rangka meningkatkan kegunaan produk kami. Metrik ini akan..."
-  },
-  "metametricsTitle": {
-    "message": "Bergabunglah bersama 6 Jt+ pengguna untuk meningkatkan MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "memverifikasi detail jaringan",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Akun baru"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Alamat baru terdeteksi! Klik di sini untuk menambahkan ke buku alamat Anda."
   },
   "newAccountNumberName": {
     "message": "Akun $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Jaringan uji Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Atur pengaturan privasi lanjutan"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Tampilkan Kunci Privat"
   },
-  "showRecommendations": {
-    "message": "Tampilkan rekomendasi"
-  },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Tanda tangan"
-  },
-  "signNotice": {
-    "message": "Menandatangani pesan ini bisa berakibat fatal. Tanda tangan ini berpotensi melakukan operasi atas nama akun Anda, termasuk memberikan kendali penuh atas akun Anda dan semua asetnya ke situs yang meminta tindakan ini. Hanya tanda tangani pesan ini jika Anda tahu apa yang Anda lakukan atau sepenuhnya memercayai situs yang meminta."
   },
   "signatureRequest": {
     "message": "Permintaan tanda tangan"

@@ -1,10 +1,12 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { TextFieldBase, TextField } from '..';
+
 import { TextFieldSearch } from './text-field-search';
 
 # TextFieldSearch
 
-The `TextFieldSearch` allows users to enter text to search. It wraps the `TextField` component that adds a search icon to the left of the input.
+The `TextFieldSearch` allows users to enter text to search
 
 <Canvas>
   <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--default-story" />
@@ -12,26 +14,34 @@ The `TextFieldSearch` allows users to enter text to search. It wraps the `TextFi
 
 ## Props
 
-The `TextFieldSearch` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props), [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props) component props
+The `TextFieldSearch` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={TextFieldSearch} />
 
-### Show Clear Button
+`TextFieldSearch` accepts all [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props)
+component props
 
-Use the `showClearButton` prop to display a clear button when `TextFieldSearch` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input.
+<ArgsTable of={TextField} />
 
-Defaults to `true`
+`TextFieldSearch` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextFieldBase} />
+
+### Clear Button On Click
+
+`TextFieldSearch` displays a clear button when text is entered into the input. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. To hide the clear button, pass `false` to the `showClearButton` prop.
 
 The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all props from that component.
 
 **NOTE: The `showClearButton` only works with a controlled input.**
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--show-clear-button" />
+  <Story id="ui-components-component-library-text-field-search-text-field-search-stories-js--clear-button-on-click" />
 </Canvas>
 
 ```jsx
-import { TextFieldSearch } from '../../ui/component-library/text-field';
+import { TextFieldSearch } from '../../component-library';
 
 const [value, setValue] = useState('show clear');
 
@@ -67,7 +77,7 @@ import {
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
-import { TextFieldSearch } from '../../ui/component-library/text-field';
+import { TextFieldSearch } from '../../component-library';
 
 const [value, setValue] = useState('show clear');
 

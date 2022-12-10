@@ -58,7 +58,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -187,6 +187,17 @@ export default function TokenAllowance({
 
   const isEmpty = customTokenAmount === '';
 
+  const renderContractTokenValues = (
+    <Box marginTop={4} key={tokenAddress}>
+      <ContractTokenValues
+        tokenName={tokenSymbol}
+        address={tokenAddress}
+        chainId={fullTxData.chainId}
+        rpcPrefs={rpcPrefs}
+      />
+    </Box>
+  );
+
   return (
     <Box className="token-allowance-container page-container">
       <Box
@@ -265,26 +276,27 @@ export default function TokenAllowance({
           </Typography>
         </Box>
       </Box>
-      <Box marginBottom={5} marginLeft={4} marginRight={4}>
+      <Box marginLeft={4} marginRight={4}>
         <Typography
           variant={TYPOGRAPHY.H3}
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {isFirstPage && t('setSpendingCap')}
-          {!isFirstPage &&
-            (customTokenAmount === '0' || isEmpty
-              ? t('revokeSpendingCap')
-              : t('reviewSpendingCap'))}
+          {isFirstPage ? (
+            t('setSpendingCap', [renderContractTokenValues])
+          ) : (
+            <Box>
+              {customTokenAmount === '0' || isEmpty ? (
+                t('revokeSpendingCap', [renderContractTokenValues])
+              ) : (
+                <Box>
+                  {t('reviewSpendingCap')}
+                  {renderContractTokenValues}
+                </Box>
+              )}
+            </Box>
+          )}
         </Typography>
-      </Box>
-      <Box>
-        <ContractTokenValues
-          tokenName={tokenSymbol}
-          address={tokenAddress}
-          chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
-        />
       </Box>
       <Box
         marginTop={1}
@@ -339,7 +351,7 @@ export default function TokenAllowance({
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
@@ -387,7 +399,7 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
@@ -466,7 +478,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */
