@@ -8,7 +8,8 @@ import pify from 'pify';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import gulp from 'gulp';
-import gulpDartSass from 'gulp-dart-sass';
+import gulpSass from 'gulp-sass';
+import sass from 'sass';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
 import fg from 'fast-glob';
@@ -94,7 +95,7 @@ async function compileStylesheets(src: string, dest: string): Promise<void> {
   await promisifiedPump(
     gulp.src(src),
     sourcemaps.init(),
-    gulpDartSass().on('error', (error: unknown) => {
+    gulpSass(sass)().on('error', (error: unknown) => {
       console.error(`Couldn't compile stylesheets: ${error}`);
     }),
     autoprefixer(),
