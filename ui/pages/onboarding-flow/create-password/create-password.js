@@ -63,69 +63,63 @@ export default function CreatePassword({
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const getPasswordStrengthLabel = (score, translation) => {
+  const getPasswordStrengthLabel = (isTooShort, score, translation) => {
+    if (isTooShort) {
+      return {
+        className: 'create-password__weak',
+        text: translation('passwordNotLongEnough'),
+        description: '',
+      };
+    }
     if (score >= 4) {
       return {
         className: 'create-password__strong',
         text: translation('strong'),
         description: '',
       };
-    } else if (score === 3) {
+    }
+    if (score === 3) {
       return {
         className: 'create-password__average',
         text: translation('average'),
-        description: t('passwordStrengthDescription'),
+        description: translation('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
       text: translation('weak'),
-      description: t('passwordStrengthDescription'),
+      description: translation('passwordStrengthDescription'),
     };
   };
 
   const handlePasswordChange = (passwordInput) => {
-    let confirmError = '';
-    let passwordInputError = '';
-    const passwordEvaluation = zxcvbn(passwordInput);
+    const isTooShort =
+      passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(
-      passwordEvaluation.score,
+      isTooShort,
+      score,
       t,
     );
-    let passwordStrengthDescription = passwordStrengthLabel.description;
-    let passwordStrengthInput = t('passwordStrength', [
-      <span
-        key={passwordEvaluation.score}
-        className={passwordStrengthLabel.className}
-      >
+    const passwordStrengthComponent = t('passwordStrength', [
+      <span key={score} className={passwordStrengthLabel.className}>
         {passwordStrengthLabel.text}
       </span>,
     ]);
-
-    if (passwordInput.length < PASSWORD_MIN_LENGTH) {
-      passwordInputError = passwordInput.length
-        ? t('passwordNotLongEnough')
-        : '';
-      passwordStrengthInput = null;
-      passwordStrengthDescription = '';
-    }
-
-    if (confirmPassword && passwordInput !== confirmPassword) {
-      confirmError = t('passwordsDontMatch');
-    }
+    const confirmError =
+      !confirmPassword || passwordInput === confirmPassword
+        ? ''
+        : t('passwordsDontMatch');
 
     setPassword(passwordInput);
-    setPasswordError(passwordInputError);
-    setPasswordStrength(passwordStrengthInput);
-    setPasswordStrengthText(passwordStrengthDescription);
+    setPasswordStrength(passwordStrengthComponent);
+    setPasswordStrengthText(passwordStrengthLabel.description);
     setConfirmPasswordError(confirmError);
   };
 
   const handleConfirmPasswordChange = (confirmPasswordInput) => {
-    let error = '';
-    if (password !== confirmPasswordInput) {
-      error = t('passwordsDontMatch');
-    }
+    const error =
+      password === confirmPasswordInput ? '' : t('passwordsDontMatch');
 
     setConfirmPassword(confirmPasswordInput);
     setConfirmPasswordError(error);
@@ -186,7 +180,6 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
-            error={passwordError}
             passwordStrength={passwordStrength}
             passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}
