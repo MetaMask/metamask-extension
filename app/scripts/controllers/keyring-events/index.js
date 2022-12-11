@@ -71,12 +71,6 @@ export default class KeyringEventsController extends EventEmitter {
     this.eventPool = [];
     this.sendPromisifiedHardwareCall = sendPromisifiedHardwareCall;
     this.keyrings = this._getKeyrings();
-
-    // use _.throttle to clear the eventPool every X milliseconds, as there
-    // are some limitations as there are some limitations in various browsers
-    // based on how often we can emit RPC events.
-    // this._sendEvents = throttle(this.__sendEvents, 10 * MILLISECOND);
-    this._sendEvents = this.__sendEvents;
   }
 
   /**
@@ -148,18 +142,7 @@ export default class KeyringEventsController extends EventEmitter {
     const keyringInstanceProxy = new Proxy(instance, {
       get: (keyring, prop) => {
         if (isFunction(keyring[prop])) {
-          const wrappedFunction = (...args) => {
-            // const shouldIgnoreMethod =
-            //   IGNORE_METHODS[keyring.type]?.includes(prop);
-            //
-            // if (shouldIgnoreMethod) {
-            //   return noop;
-            // }
-
-            return this._catchKeyringMethodErrors(keyring, prop, args);
-          };
-
-          return wrappedFunction;
+          return (...args) => this._keyringMethodWrapper(keyring, prop, args);
         }
 
         return keyring[prop];
@@ -236,25 +219,22 @@ export default class KeyringEventsController extends EventEmitter {
    * @param {*[]} args
    * @private
    */
-  _catchKeyringMethodErrors = async (keyring, method, args) => {
-    // @TODO, delay this function .serialize call until there are no
-    // remaining pending promises in the event pool
-
+  _keyringMethodWrapper = async (keyring, method, args) => {
     // Ensure that we serialize the state before we try
     // to call the method in the background-script
     const prevState = await keyring.serialize();
     const handler = getHardwareMethodHandler(keyring.type, method);
-
-    const getClientSidePromise = () => {
+    const forcefullySendToClient = handler.skipBackground || handler.updateAll;
+    const clientSidePromise = () => {
       return this._createClientSidePromise(keyring, method, args, prevState);
     };
 
-    if (handler.skipBackground || handler.updateAll) {
+    if (forcefullySendToClient) {
       console.log(
         `💾🏹🖥️ Forcing client-side execution: ${keyring.type}.${method}`,
       );
       // Intentionally not wrapped in a try/catch
-      const clientSideResult = await getClientSidePromise();
+      const clientSideResult = await clientSidePromise();
 
       if (handler.skipBackground) {
         return clientSideResult;
@@ -284,7 +264,7 @@ export default class KeyringEventsController extends EventEmitter {
 
       // if error is due to mv3 then re-open the promise
       if (isServiceWorkerMv3Error(e)) {
-        const clientSideResult = await getClientSidePromise();
+        const clientSideResult = await clientSidePromise();
 
         return clientSideResult;
       }
@@ -324,8 +304,6 @@ export default class KeyringEventsController extends EventEmitter {
   }
 
   /**
-   * NOTE: only to be called by `_sendEvents`
-   *
    * Given that multiple threads can interact with this class
    * ensure eventIds are tracked upon each call, so that the
    * `eventPool` can be cleared precisely, instead of clearing
@@ -333,7 +311,7 @@ export default class KeyringEventsController extends EventEmitter {
    *
    * @private
    */
-  __sendEvents = () => {
+  _sendEvents = () => {
     const sentEvents = [];
 
     for (const event of this.eventPool) {

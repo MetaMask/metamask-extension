@@ -1,8 +1,23 @@
 diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-index 2c6a7de..5ddd81e 100644
+index 2c6a7de..c7f331a 100644
 --- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
 +++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-@@ -37,26 +37,48 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -20,6 +20,10 @@ const NETWORK_API_URLS = {
+ 
+ const CONNECTION_EVENT = 'ledger-connection-change'
+ 
++// A function that sleeps for x ms
++const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
++
++
+ class LedgerBridgeKeyring extends EventEmitter {
+   constructor (opts = {}) {
+     super()
+@@ -34,29 +38,51 @@ class LedgerBridgeKeyring extends EventEmitter {
+     this.iframe = null
+     this.network = 'mainnet'
+     this.implementFullBIP44 = false
++    this.delayedPromises = [];
      this.deserialize(opts)
  
      this.iframeLoaded = false
@@ -19,7 +34,6 @@ index 2c6a7de..5ddd81e 100644
 +  init(opts){
 +    this._setupIframe()
      this._setupListener()
-+
 +    return this.updateTransportMethod('webhid');
    }
  
@@ -53,7 +67,7 @@ index 2c6a7de..5ddd81e 100644
      this.accounts = opts.accounts || []
      this.accountDetails = opts.accountDetails || {}
      if (!opts.accountDetails) {
-@@ -99,6 +121,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -99,6 +125,11 @@ class LedgerBridgeKeyring extends EventEmitter {
      }
    }
  
@@ -65,28 +79,62 @@ index 2c6a7de..5ddd81e 100644
    isUnlocked () {
      return Boolean(this.hdk && this.hdk.publicKey)
    }
-@@ -120,7 +147,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -119,12 +150,16 @@ class LedgerBridgeKeyring extends EventEmitter {
+     this.hdPath = hdPath
    }
  
-   unlock (hdPath, updateHdk = true) {
--    if (this.isUnlocked() && !hdPath) {
-+    if (this.isUnlocked() && !updateHdk) {
+-  unlock (hdPath, updateHdk = true) {
++  async unlock (hdPath, updateHdk = true) {
+     if (this.isUnlocked() && !hdPath) {
        return Promise.resolve('already unlocked')
      }
++
      const path = hdPath ? this._toLedgerPath(hdPath) : this.hdPath
-@@ -133,10 +160,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+-    return new Promise((resolve, reject) => {
++
++    await sleep(10000);
++
++    return new Promise(async (resolve, reject) => {
+       this._sendMessage({
+         action: 'ledger-unlock',
+         params: {
+@@ -133,15 +168,18 @@ class LedgerBridgeKeyring extends EventEmitter {
        },
        ({ success, payload }) => {
          if (success) {
 -          if (updateHdk) {
 -            this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex')
 -            this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex')
--          }
-+          this.setHdk(payload);
++          if(updateHdk) {
++            this.setHdk(payload);
+           }
            resolve(payload.address)
          } else {
            reject(payload.error || new Error('Unknown error'))
-@@ -235,6 +259,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+         }
+       })
++
++      await sleep(10000);
++
++      reject('timeout');
+     })
+   }
+ 
+@@ -222,11 +260,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+       // If the iframe isn't loaded yet, let's store the desired transportType value and
+       // optimistically return a successful promise
+       if (!this.iframeLoaded) {
+-        this.delayedPromise = {
++        this.delayedPromises.push({
+           resolve,
+           reject,
+           transportType,
+-        }
++        })
+         return
+       }
+ 
+@@ -235,6 +273,7 @@ class LedgerBridgeKeyring extends EventEmitter {
          params: { transportType },
        }, ({ success }) => {
          if (success) {
@@ -94,7 +142,27 @@ index 2c6a7de..5ddd81e 100644
            resolve(true)
          } else {
            reject(new Error('Ledger transport could not be updated'))
-@@ -348,6 +373,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -336,11 +375,14 @@ class LedgerBridgeKeyring extends EventEmitter {
+   }
+ 
+   // For personal_sign, we need to prefix the message:
+-  signPersonalMessage (withAccount, message) {
+-    return new Promise((resolve, reject) => {
+-      this.unlockAccountByAddress(withAccount)
+-        .then((hdPath) => {
+-          this._sendMessage({
++  async signPersonalMessage (withAccount, message) {
++
++    try {
++      const hdPath = await this.unlockAccountByAddress(withAccount);
++
++
++      return new Promise((resolve, reject) => {
++        this._sendMessage({
+             action: 'ledger-sign-personal-message',
+             params: {
+               hdPath,
+@@ -348,6 +390,7 @@ class LedgerBridgeKeyring extends EventEmitter {
              },
            },
            ({ success, payload }) => {
@@ -102,3 +170,47 @@ index 2c6a7de..5ddd81e 100644
              if (success) {
                let v = payload.v - 27
                v = v.toString(16)
+@@ -364,9 +407,14 @@ class LedgerBridgeKeyring extends EventEmitter {
+               reject(payload.error || new Error('Ledger: Unknown error while signing message'))
+             }
+           })
+-        })
+-        .catch(reject)
+-    })
++
++        sleep(1000);
++      });
++
++
++    } catch (e) {
++      throw e;
++    }
+   }
+ 
+   async unlockAccountByAddress (address) {
+@@ -455,18 +503,14 @@ class LedgerBridgeKeyring extends EventEmitter {
+       // If the ledger live preference was set before the iframe is loaded,
+       // set it after the iframe has loaded
+       this.iframeLoaded = true
+-      if (this.delayedPromise) {
+-        try {
+-          const result = await this.updateTransportMethod(
+-            this.delayedPromise.transportType,
+-          )
+-          this.delayedPromise.resolve(result)
+-        } catch (e) {
+-          this.delayedPromise.reject(e)
+-        } finally {
+-          delete this.delayedPromise
+-        }
++
++      for (const delayedPromise of this.delayedPromises) {
++        this.updateTransportMethod(delayedPromise.transportType)
++          .then((res) => delayedPromise.resolve(res))
++          .catch(e => delayedPromise.reject(e))
+       }
++
++      this.delayedPromises = [];
+     }
+     document.head.appendChild(this.iframe)
+   }

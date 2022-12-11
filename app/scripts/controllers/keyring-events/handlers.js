@@ -45,19 +45,19 @@ const signTransactionClientArgsHandler = (args, keyring, method) => {
 const signTransactionClientResHandler = (response, args, keyring, method) => {
   console.log('processClientResponse', method, keyring.type);
   // All Keyrings return a Transaction object client-side when signing a tx
-  if (isString(response)) {
-    const bufferData = toBuffer(response);
-    const [, unsignedTx] = args;
-
-    // recreate signed transaction
-    return TransactionFactory.fromSerializedData(bufferData, {
-      common: unsignedTx._getCommon(),
-    });
+  if (!isString(response)) {
+    throw new Error(
+      'KeyringController - signTransaction - response is not a string',
+    );
   }
 
-  throw new Error(
-    'KeyringController - signTransaction - response is not a string',
-  );
+  const bufferData = toBuffer(response);
+  const [, unsignedTx] = args;
+
+  // recreate signed transaction
+  return TransactionFactory.fromSerializedData(bufferData, {
+    common: unsignedTx._getCommon(),
+  });
 };
 
 const METHOD_HANDLERS = {

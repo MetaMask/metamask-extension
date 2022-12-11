@@ -28,7 +28,7 @@ export class ClientKeyringController extends EventEmitter {
   constructor() {
     super();
     /**
-     * @property {Array<string>} initialisedKeyrings - Keyring types that have been initialised
+     * @property {Array<string>} _initialisedKeyrings - Keyring types that have been initialised
      */
     this._initialisedKeyrings = [];
     this.keyrings = HARDWARE_KEYRINGS;
@@ -101,10 +101,10 @@ export class ClientKeyringController extends EventEmitter {
   async handleMethodCall({ type, method, args: _args, prevState, promiseId }) {
     const callback = (res, err) =>
       console.log('closeBackgroundPromise callback', res, err);
-    await this.updateKeyringData(type, prevState);
-
     const args = processArgs(_args, method);
     const keyring = this.getKeyringInstanceForType(type);
+
+    await this.updateKeyringData(type, prevState);
 
     if (method === 'init') {
       // Ensure that the type is marked as initialised even before
