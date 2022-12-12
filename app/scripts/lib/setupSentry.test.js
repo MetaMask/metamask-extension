@@ -61,10 +61,34 @@ describe('Setup Sentry', () => {
       );
     });
 
+    it('should not remove urls at subdomains of the urls in the allow list', () => {
+      const testReport = {
+        message:
+          'This report has an allowed url: https://subdomain.codefi.network/',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport.message).toStrictEqual(
+        'This report has an allowed url: https://subdomain.codefi.network/',
+      );
+    });
+
     it('should remove urls very similar to, but different from, those in our allow list', () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://nodefi.network/',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport.message).toStrictEqual(
+        'This report does not have an allowed url: **',
+      );
+    });
+
+    it('should remove urls with allow list urls in their domain path', () => {
+      const testReport = {
+        message:
+          'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
       const rewrittenReport = rewriteReport(testReport);
