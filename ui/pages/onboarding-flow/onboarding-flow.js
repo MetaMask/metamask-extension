@@ -27,6 +27,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  verifySeedPhrase,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
@@ -61,6 +62,18 @@ export default function OnboardingFlow() {
       history.push(DEFAULT_ROUTE);
     }
   }, [history, completedOnboarding, seedPhraseBackedUp]);
+
+  useEffect(() => {
+    const verifyAndSetSeedPhrase = async () => {
+      if (completedOnboarding && !secretRecoveryPhrase) {
+        const verifiedSeedPhrase = await verifySeedPhrase();
+        if (verifiedSeedPhrase) {
+          setSecretRecoveryPhrase(verifiedSeedPhrase);
+        }
+      }
+    };
+    verifyAndSetSeedPhrase();
+  }, [completedOnboarding, secretRecoveryPhrase]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
