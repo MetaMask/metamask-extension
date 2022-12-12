@@ -51,7 +51,7 @@ import createJsonRpcClient from '../createJsonRpcClient';
  */
 
 /**
- * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope}} Communications
+ * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string}} Communications
  *
  * Provides methods to mock different kinds of requests to the provider.
  */
@@ -110,36 +110,14 @@ function debug(...args) {
 /**
  * Builds a Nock scope object for mocking provider requests.
  *
- * @param {object} args - The arguments.
- * @param {string} args.providerType - The type of provider to use (either
- * "infura" or "custom").
- * @param {string} [args.infuraNetwork] - When `providerType` is "infura",
- * the Infura network that will be interpolated into the Infura RPC URL
- * (default: "mainnet").
- * @param {string} [args.customRpcUrl] - When `providerType` is "custom",
- * the URL of the RPC endpoint.
+ * @param {string} rpcUrl - The URL of the RPC endpoint.
  * @returns {NockScope} The nock scope.
  */
-function buildScopeForMockingRequests({
-  providerType,
-  infuraNetwork = 'mainnet',
-  customRpcUrl = MOCK_RPC_URL,
-}) {
-  if (providerType !== 'infura' && providerType !== 'custom') {
-    throw new Error(
-      `providerType must be either "infura" or "custom", was "${providerType}" instead`,
-    );
-  }
-
-  const rpcUrl =
-    providerType === 'infura'
-      ? `https://${infuraNetwork}.infura.io`
-      : customRpcUrl;
-
+function buildScopeForMockingRequests(rpcUrl) {
   return nock(rpcUrl).filteringRequestBody((body) => {
     const copyOfBody = JSON.parse(body);
-    // some ids are random, so remove them entirely from the request to
-    // make it possible to mock these requests
+    // Some IDs are random, so remove them entirely from the request to make it
+    // possible to mock these requests
     delete copyOfBody.id;
     return JSON.stringify(copyOfBody);
   });
@@ -299,11 +277,11 @@ export async function withMockedCommunications(...args) {
     );
   }
 
-  const nockScope = buildScopeForMockingRequests({
-    providerType,
-    infuraNetwork,
-    customRpcUrl,
-  });
+  const rpcUrl =
+    providerType === 'infura'
+      ? `https://${infuraNetwork}.infura.io`
+      : customRpcUrl;
+  const nockScope = buildScopeForMockingRequests(rpcUrl);
   const curriedMockNextBlockTrackerRequest = (localOptions) =>
     mockNextBlockTrackerRequest({ nockScope, ...localOptions });
   const curriedMockAllBlockTrackerRequests = (localOptions) =>
@@ -314,6 +292,7 @@ export async function withMockedCommunications(...args) {
     mockNextBlockTrackerRequest: curriedMockNextBlockTrackerRequest,
     mockAllBlockTrackerRequests: curriedMockAllBlockTrackerRequests,
     mockRpcCall: curriedMockRpcCall,
+    rpcUrl,
   };
 
   try {
