@@ -1392,7 +1392,6 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
 
-        // TODO: Does this work?
         expect(results).toStrictEqual(mockResults);
       });
     },
@@ -1578,59 +1577,56 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     });
 
-    // TODO: Document this
-    if (providerType === 'infura') {
-      it('hits Infura and does not reuse the result of a previous request if the latest block number was updated since', async () => {
-        const requests = [
-          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
-          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
-        ];
-        const mockResults = ['first result', 'second result'];
+    it('hits the RPC endpoint and does not reuse the result of a previous request if the latest block number was updated since', async () => {
+      const requests = [
+        { method, params: buildMockParams({ blockParamIndex, blockParam }) },
+        { method, params: buildMockParams({ blockParamIndex, blockParam }) },
+      ];
+      const mockResults = ['first result', 'second result'];
 
-        await withMockedCommunications({ providerType }, async (comms) => {
-          // Note that we have to mock these requests in a specific order.
-          // The first block tracker request occurs because of the first RPC
-          // request. The second block tracker request, however, does not
-          // occur because of the second RPC request, but rather because we
-          // call `clock.runAll()` below.
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          // The block-ref middleware will make the request as specified
-          // except that the block param is replaced with the latest block
-          // number.
-          comms.mockRpcCall({
-            request: buildRequestWithReplacedBlockParam(
-              requests[0],
-              blockParamIndex,
-              '0x100',
-            ),
-            response: { result: mockResults[0] },
-          });
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x200' });
-          comms.mockRpcCall({
-            request: buildRequestWithReplacedBlockParam(
-              requests[1],
-              blockParamIndex,
-              '0x200',
-            ),
-            response: { result: mockResults[1] },
-          });
-
-          const results = await withNetworkClient(
-            { providerType },
-            async (client) => {
-              const firstResult = await client.makeRpcCall(requests[0]);
-              // Proceed to the next iteration of the block tracker so that a
-              // new block is fetched and the current block is updated.
-              client.clock.runAll();
-              const secondResult = await client.makeRpcCall(requests[1]);
-              return [firstResult, secondResult];
-            },
-          );
-
-          expect(results).toStrictEqual(mockResults);
+      await withMockedCommunications({ providerType }, async (comms) => {
+        // Note that we have to mock these requests in a specific order.
+        // The first block tracker request occurs because of the first RPC
+        // request. The second block tracker request, however, does not
+        // occur because of the second RPC request, but rather because we
+        // call `clock.runAll()` below.
+        comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+        // The block-ref middleware will make the request as specified
+        // except that the block param is replaced with the latest block
+        // number.
+        comms.mockRpcCall({
+          request: buildRequestWithReplacedBlockParam(
+            requests[0],
+            blockParamIndex,
+            '0x100',
+          ),
+          response: { result: mockResults[0] },
         });
+        comms.mockNextBlockTrackerRequest({ blockNumber: '0x200' });
+        comms.mockRpcCall({
+          request: buildRequestWithReplacedBlockParam(
+            requests[1],
+            blockParamIndex,
+            '0x200',
+          ),
+          response: { result: mockResults[1] },
+        });
+
+        const results = await withNetworkClient(
+          { providerType },
+          async (client) => {
+            const firstResult = await client.makeRpcCall(requests[0]);
+            // Proceed to the next iteration of the block tracker so that a
+            // new block is fetched and the current block is updated.
+            client.clock.runAll();
+            const secondResult = await client.makeRpcCall(requests[1]);
+            return [firstResult, secondResult];
+          },
+        );
+
+        expect(results).toStrictEqual(mockResults);
       });
-    }
+    });
 
     it.each([null, undefined, '\u003cnil\u003e'])(
       'does not reuse the result of a previous request if it was `%s`',
@@ -1968,7 +1964,10 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     });
 
-    // TODO: Document
+    // Both the Infura middleware and custom RPC middleware detect a 503 or 504
+    // response and retry the request to the RPC endpoint automatically but
+    // differ in what sort of response is returned when the number of retries is
+    // exhausted.
     if (providerType === 'infura') {
       [503, 504].forEach((httpStatus) => {
         it(`retries the request to the RPC endpoint up to 5 times if it returns a ${httpStatus} response, returning the successful result if there is one on the 5th try`, async () => {
