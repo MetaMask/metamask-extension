@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import reactRouterDom from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { setBackgroundConnection } from '../../../../test/jest';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import SecureYourWallet from './secure-your-wallet';
 
@@ -15,6 +16,10 @@ describe('Secure Your Wallet Onboarding View', () => {
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
       .mockReturnValue({ push: pushMock });
+  });
+
+  setBackgroundConnection({
+    setSeedPhraseBackedUp: async () => true,
   });
 
   afterAll(() => {
@@ -54,7 +59,8 @@ describe('Secure Your Wallet Onboarding View', () => {
     expect(pushMock).toHaveBeenCalledTimes(0);
     const checkbox = getByTestId('skip-srp-backup-popover-checkbox');
     fireEvent.click(checkbox);
-    fireEvent.click(skipButton);
+    const confirmSkip = getByTestId('skip-srp-backup');
+    fireEvent.click(confirmSkip);
     expect(pushMock).toHaveBeenCalledTimes(1);
     expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
   });
