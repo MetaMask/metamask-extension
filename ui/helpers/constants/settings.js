@@ -184,6 +184,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
+    descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
+    route: `${SECURITY_ROUTE}#multi-account-balance-checker`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
