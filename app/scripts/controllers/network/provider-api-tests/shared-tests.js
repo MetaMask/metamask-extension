@@ -638,9 +638,9 @@ export function testsForRpcMethodSupportingBlockParam(
   { blockParamIndex },
 ) {
   describe.each([
-    ['given no block tag', 'none', undefined],
-    ['given a block tag of "latest"', 'latest', 'latest'],
-  ])('%s', (_desc, blockParamType, blockParam) => {
+    ['given no block tag', undefined],
+    ['given a block tag of "latest"', 'latest'],
+  ])('%s', (_desc, blockParam) => {
     it('does not hit Infura more than once for identical requests', async () => {
       const requests = [
         {
