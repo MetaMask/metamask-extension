@@ -96,8 +96,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           type="primary"
           large
           className="recovery-phrase__footer__confirm--button"
-          onClick={() => {
-            dispatch(setSeedPhraseBackedUp(true));
+          onClick={async () => {
+            await dispatch(setSeedPhraseBackedUp(true));
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
           disabled={!matching}

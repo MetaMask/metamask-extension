@@ -41,8 +41,8 @@ export default function SkipSRPBackup({ handleClose }) {
             disabled={!checked}
             type="primary"
             rounded
-            onClick={() => {
-              dispatch(setSeedPhraseBackedUp(false));
+            onClick={async () => {
+              await dispatch(setSeedPhraseBackedUp(false));
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}
           >
