@@ -48,7 +48,7 @@ AvatarIcon.propTypes = {
    *
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  iconName: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */

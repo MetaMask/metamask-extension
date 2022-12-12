@@ -23,10 +23,11 @@ export default {
   },
   argTypes: {
     insufficientBalance: {
-      name: 'Is Insufficient Balance',
       control: { type: 'boolean' },
-      defaultValue: false,
     },
+  },
+  args: {
+    insufficientBalance: false,
   },
 };
 

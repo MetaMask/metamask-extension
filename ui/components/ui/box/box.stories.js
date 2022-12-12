@@ -55,29 +55,24 @@ export default {
     size: {
       control: { type: 'range', min: 50, max: 500, step: 10 },
       table: { category: 'children' },
-      defaultValue: 100,
     },
     items: {
       control: 'number',
       table: { category: 'children' },
-      defaultValue: 1,
     },
     display: {
       options: Object.values(DISPLAY),
       control: 'select',
-      defaultValue: DISPLAY.BLOCK,
       table: { category: 'display' },
     },
     width: {
       options: Object.values(BLOCK_SIZES),
       control: 'select',
-      defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
     height: {
       options: Object.values(BLOCK_SIZES),
       control: 'select',
-      defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
     gap: {
@@ -100,7 +95,6 @@ export default {
     borderStyle: {
       options: Object.values(BORDER_STYLE),
       control: 'select',
-      defaultValue: BORDER_STYLE.DASHED,
       table: { category: 'border' },
     },
     borderWidth: {
@@ -111,7 +105,6 @@ export default {
     borderColor: {
       options: Object.values(BORDER_COLORS),
       control: 'select',
-      defaultValue: COLORS.BORDER_DEFAULT,
       table: { category: 'border' },
     },
     borderRadius: {
@@ -132,19 +125,16 @@ export default {
     justifyContent: {
       options: Object.values(JUSTIFY_CONTENT),
       control: 'select',
-      defaultValue: JUSTIFY_CONTENT.FLEX_START,
       table: { category: 'display' },
     },
     alignItems: {
       options: Object.values(ALIGN_ITEMS),
       control: 'select',
-      defaultValue: ALIGN_ITEMS.FLEX_START,
       table: { category: 'display' },
     },
     textAlign: {
       options: Object.values(TEXT_ALIGN),
       control: 'select',
-      defaultValue: TEXT_ALIGN.LEFT,
       table: { category: 'text' },
     },
     margin: {
@@ -203,6 +193,18 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
+  args: {
+    size: 100,
+    items: 1,
+    display: DISPLAY.BLOCK,
+    width: BLOCK_SIZES.HALF,
+    height: BLOCK_SIZES.HALF,
+    borderStyle: BORDER_STYLE.DASHED,
+    borderColor: COLORS.BORDER_DEFAULT,
+    justifyContent: JUSTIFY_CONTENT.FLEX_START,
+    alignItems: ALIGN_ITEMS.FLEX_START,
+    textAlign: TEXT_ALIGN.LEFT,
+  },
 };
 
 export const DefaultStory = (args) => {
@@ -220,7 +222,11 @@ export const DefaultStory = (args) => {
       />,
     );
   }
-  return <Box {...rest}>{children}</Box>;
+  return (
+    <Box {...rest} borderColor={COLORS.BORDER_MUTED}>
+      {children}
+    </Box>
+  );
 };
 
 DefaultStory.storyName = 'Default';
