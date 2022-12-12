@@ -27,19 +27,6 @@ function buildInfuraClientErrorWithReason(reason) {
 
 /**
  * Constructs an error message that the custom JSON-RPC client would produce in
- * the event that it has attempted to retry the request to the RPC endpoint and
- * has ultimately failed.
- *
- * @param rpcUrl - The URL of the RPC endpoint.
- * @param reason - The exact reason for failure.
- * @returns The error message.
- */
-function buildJsonRpcClientErrorWithReason(rpcUrl, reason) {
-  return new RegExp(`request to ${rpcUrl}/ failed, reason: ${reason}`, 'us');
-}
-
-/**
- * Constructs an error message that the custom JSON-RPC client would produce in
  * the event that it has timed out while attempting to forward the request on to
  * the RPC endpoint.
  *
