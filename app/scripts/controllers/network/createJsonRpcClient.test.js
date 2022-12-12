@@ -14,51 +14,39 @@ describe('createJsonRpcClient', () => {
   describe('methods specially handled', () => {
     describe('net_version', () => {
       it('hits the RPC endpoint', async () => {
-        const providerType = 'custom';
-        const method = 'net_version';
-        const result = '1';
+        await withMockedCommunications(
+          { providerType: 'custom' },
+          async (comms) => {
+            comms.mockRpcCall({
+              request: { method: 'net_version' },
+              response: { result: '1' },
+            });
 
-        await withMockedCommunications({ providerType }, async (comms) => {
-          comms.mockRpcCall({
-            request: { method },
-            response: { result },
-          });
+            const networkId = await withClient(
+              { providerType: 'custom' },
+              ({ makeRpcCall }) => {
+                return makeRpcCall({
+                  method: 'net_version',
+                });
+              },
+            );
 
-          const networkId = await withClient(
-            { providerType },
-            ({ makeRpcCall }) => {
-              return makeRpcCall({
-                method,
-              });
-            },
-          );
-
-          expect(networkId).toStrictEqual(result);
-        });
+            expect(networkId).toStrictEqual('1');
+          },
+        );
       });
     });
 
     describe('eth_chainId', () => {
-      it('hits the RPC endpoint', async () => {
-        const providerType = 'custom';
-        const method = 'eth_chainId';
-        const result = '0x1';
+      it('does not hit the RPC endpoint, instead returning the configured chain id', async () => {
+        const networkId = await withClient(
+          { providerType: 'custom', customChainId: '0x1' },
+          ({ makeRpcCall }) => {
+            return makeRpcCall({ method: 'eth_chainId' });
+          },
+        );
 
-        await withMockedCommunications({ providerType }, async (comms) => {
-          comms.mockRpcCall({
-            request: { method },
-            response: { result },
-          });
-
-          const networkId = await withClient(
-            { providerType },
-            ({ makeRpcCall }) => {
-              return makeRpcCall({ method });
-            },
-          );
-
-          expect(networkId).toStrictEqual(result);
-        });
+        expect(networkId).toStrictEqual('0x1');
       });
     });
   });
