@@ -195,13 +195,7 @@ export default class DetectTokensController {
   restartTokenDetection({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
     const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
-    if (
-      !(
-        this.isActive ||
-        !addressAgainstWhichToDetect ||
-        chainIdAgainstWhichToDetect !== CHAIN_IDS.MAINNET
-      )
-    ) {
+    if (!(this.isActive && addressAgainstWhichToDetect)) {
       return;
     }
     this.detectNewTokens({
