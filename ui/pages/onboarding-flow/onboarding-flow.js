@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
@@ -50,15 +55,15 @@ import MetaMetricsComponent from './metametrics/metametrics';
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
-  const currentLocation = useLocation();
+  const { pathName, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
-
+  const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   useEffect(() => {
-    if (completedOnboarding && seedPhraseBackedUp) {
+    if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
     }
   }, [history, completedOnboarding, seedPhraseBackedUp]);
@@ -74,6 +79,7 @@ export default function OnboardingFlow() {
     };
     verifyAndSetSeedPhrase();
   }, [completedOnboarding, secretRecoveryPhrase]);
+
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
@@ -110,7 +116,6 @@ export default function OnboardingFlow() {
             )}
           />
           <Route
-            exact
             path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
             component={SecureYourWallet}
           />
@@ -183,7 +188,7 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
-      {currentLocation?.pathname === ONBOARDING_COMPLETION_ROUTE && (
+      {pathName === ONBOARDING_COMPLETION_ROUTE && (
         <Button
           className="onboarding-flow__twitter-button"
           type="link"

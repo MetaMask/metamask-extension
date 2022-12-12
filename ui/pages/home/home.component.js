@@ -410,13 +410,13 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {shouldShowSeedPhraseReminder ? (
+        {showRecoveryPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}
             onAccept={() => {
               const backUpSRPRoute = process.env.ONBOARDING_V2
-                ? ONBOARDING_SECURE_YOUR_WALLET_ROUTE
+                ? `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`
                 : INITIALIZE_BACKUP_SEED_PHRASE_ROUTE;
               if (isPopup) {
                 global.platform.openExtensionInBrowser(backUpSRPRoute);
