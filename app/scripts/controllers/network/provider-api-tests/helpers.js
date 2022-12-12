@@ -23,19 +23,13 @@ import createJsonRpcClient from '../createJsonRpcClient';
 /**
  * @typedef {{providerType: "infura" | "custom", infuraNetwork?: string, customRpcUrl?: string, customChainId?: string}} WithClientOptions
  *
- * The options bag that `withClient` takes.
+ * The options bag that `withNetworkClient` takes.
  */
 
 /**
  * @typedef {(client: Client) => Promise<any>} WithClientCallback
  *
- * The callback that `withClient` takes.
- */
-
-/**
- * @typedef {[WithClientOptions, WithClientCallback] | [WithClientCallback]} WithClientArgs
- *
- * The arguments to `withClient`.
+ * The callback that `withNetworkClient` takes.
  */
 
 /**
@@ -66,12 +60,6 @@ import createJsonRpcClient from '../createJsonRpcClient';
  * @typedef {(comms: Communications) => Promise<any>} WithMockedCommunicationsCallback
  *
  * The callback that `mockingCommunications` takes.
- */
-
-/**
- * @typedef {[WithMockedCommunicationsOptions, WithMockedCommunicationsCallback] | [WithMockedCommunicationsCallback]} WithMockedCommunicationsArgs
- *
- * The arguments to `mockingCommunications`.
  */
 
 /**
@@ -255,22 +243,21 @@ function makeRpcCall(ethQuery, request) {
 /**
  * Sets up request mocks for requests to the provider.
  *
- * @param {WithMockedCommunicationsArgs} args - Either an options bag + a
- * function, or just a function. The options bag must contain `providerType`
- * (either "infura" or "custom"); if `providerType` is "infura" then it may
- * contain `infuraNetwork` (defaults to "mainnet"), and if the `providerType` is
- * "custom" then it may contain `customRpcUrl`. The function is called with an
- * object that allows you to mock different kinds of requests.
+ * @param {WithMockedCommunicationsOptions} options - An options bag.
+ * @param {"infura" | "custom"} options.providerType - The type of network
+ * client being tested.
+ * @param {string} [options.infuraNetwork] - The name of the Infura network being
+ * tested, assuming that `providerType` is "infura" (default: "mainnet").
+ * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
+ * assuming that `providerType` is "custom".
+ * @param {WithMockedCommunicationsCallback} fn - A function which will be
+ * called with an object that allows interaction with the network client.
  * @returns {Promise<any>} The return value of the given function.
  */
-export async function withMockedCommunications(...args) {
-  const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const {
-    providerType,
-    infuraNetwork = 'mainnet',
-    customRpcUrl = MOCK_RPC_URL,
-  } = options;
-
+export async function withMockedCommunications(
+  { providerType, infuraNetwork = 'mainnet', customRpcUrl = MOCK_RPC_URL },
+  fn,
+) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(
       `providerType must be either "infura" or "custom", was "${providerType}" instead`,
@@ -308,24 +295,29 @@ export async function withMockedCommunications(...args) {
  * block tracker, runs the given function with those two things, and then
  * ensures the block tracker is stopped at the end.
  *
- * @param {WithClientArgs} args - Either an options bag + a function, or just a
- * function. The options bag must contain `providerType` (either "infura" or
- * "custom"); if `providerType` is "infura" then it may contain `infuraNetwork`
- * (defaults to "mainnet"), and if the `providerType` is "custom" then it may
- * contain `customRpcUrl` and/or `customChainId` (defaults to "0x1").
- * The function is called with an object that allows
- * you to interact with the client via a couple of methods on that object.
+ * @param {WithClientOptions} options - An options bag.
+ * @param {"infura" | "custom"} options.providerType - The type of network
+ * client being tested.
+ * @param {string} [options.infuraNetwork] - The name of the Infura network being
+ * tested, assuming that `providerType` is "infura" (default: "mainnet").
+ * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
+ * assuming that `providerType` is "custom".
+ * @param {string} [options.customChainId] - The chain id belonging to the
+ * custom RPC endpoint, assuming that `providerType` is "custom" (default:
+ * "0x1").
+ * @param {WithClientCallback} fn - A function which will be called with an
+ * object that allows interaction with the network client.
  * @returns {Promise<any>} The return value of the given function.
  */
-export async function withClient(...args) {
-  const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const {
+export async function withNetworkClient(
+  {
     providerType,
     infuraNetwork = 'mainnet',
     customRpcUrl = MOCK_RPC_URL,
     customChainId = '0x1',
-  } = options;
-
+  },
+  fn,
+) {
   if (providerType !== 'infura' && providerType !== 'custom') {
     throw new Error(
       `providerType must be either "infura" or "custom", was "${providerType}" instead`,

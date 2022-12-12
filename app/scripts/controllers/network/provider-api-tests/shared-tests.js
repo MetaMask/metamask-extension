@@ -3,7 +3,7 @@
 import { fill } from 'lodash';
 import {
   withMockedCommunications,
-  withClient,
+  withNetworkClient,
   buildMockParams,
   buildRequestWithReplacedBlockParam,
 } from './helpers';
@@ -211,7 +211,7 @@ export function testsForProviderType(providerType) {
     describe('other methods', () => {
       describe('eth_chainId', () => {
         it('does not hit the RPC endpoint, instead returning the configured chain id', async () => {
-          const networkId = await withClient(
+          const networkId = await withNetworkClient(
             { providerType: 'custom', customChainId: '0x1' },
             ({ makeRpcCall }) => {
               return makeRpcCall({ method: 'eth_chainId' });
@@ -262,7 +262,7 @@ export function testsForProviderType(providerType) {
         // middleware, whereas the custom RPC middleware does not.
         if (providerType === 'infura') {
           it('does not hit Infura, instead returning the network ID that maps to the Infura network, as a decimal string', async () => {
-            const networkId = await withClient(
+            const networkId = await withNetworkClient(
               { providerType: 'infura', infuraNetwork: 'goerli' },
               ({ makeRpcCall }) => {
                 return makeRpcCall({
@@ -282,7 +282,7 @@ export function testsForProviderType(providerType) {
                   response: { result: '1' },
                 });
 
-                const networkId = await withClient(
+                const networkId = await withNetworkClient(
                   { providerType: 'custom' },
                   ({ makeRpcCall }) => {
                     return makeRpcCall({
@@ -339,7 +339,7 @@ export function testsForRpcMethodNotHandledByMiddleware(
         request,
         response: { result: expectedResult },
       });
-      const actualResult = await withClient(
+      const actualResult = await withNetworkClient(
         { providerType },
         ({ makeRpcCall }) => makeRpcCall(request),
       );
@@ -383,7 +383,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         response: { result: mockResults[0] },
       });
 
-      const results = await withClient(
+      const results = await withNetworkClient(
         { providerType },
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
@@ -413,14 +413,17 @@ export function testsForRpcMethodAssumingNoBlockParam(
         response: { result: mockResults[1] },
       });
 
-      const results = await withClient({ providerType }, async (client) => {
-        const firstResult = await client.makeRpcCall(requests[0]);
-        // Proceed to the next iteration of the block tracker so that a new
-        // block is fetched and the current block is updated.
-        client.clock.runAll();
-        const secondResult = await client.makeRpcCall(requests[1]);
-        return [firstResult, secondResult];
-      });
+      const results = await withNetworkClient(
+        { providerType },
+        async (client) => {
+          const firstResult = await client.makeRpcCall(requests[0]);
+          // Proceed to the next iteration of the block tracker so that a new
+          // block is fetched and the current block is updated.
+          client.clock.runAll();
+          const secondResult = await client.makeRpcCall(requests[1]);
+          return [firstResult, secondResult];
+        },
+      );
 
       expect(results).toStrictEqual(mockResults);
     });
@@ -446,7 +449,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           response: { result: mockResults[1] },
         });
 
-        const results = await withClient(
+        const results = await withNetworkClient(
           { providerType },
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
@@ -479,19 +482,22 @@ export function testsForRpcMethodAssumingNoBlockParam(
         response: { result: mockResults[2] },
       });
 
-      const results = await withClient({ providerType }, async (client) => {
-        const resultPromises = [
-          client.makeRpcCall(requests[0]),
-          client.makeRpcCall(requests[1]),
-          client.makeRpcCall(requests[2]),
-        ];
-        const firstResult = await resultPromises[0];
-        // The inflight cache middleware uses setTimeout to run the handlers,
-        // so run them now
-        client.clock.runAll();
-        const remainingResults = await Promise.all(resultPromises.slice(1));
-        return [firstResult, ...remainingResults];
-      });
+      const results = await withNetworkClient(
+        { providerType },
+        async (client) => {
+          const resultPromises = [
+            client.makeRpcCall(requests[0]),
+            client.makeRpcCall(requests[1]),
+            client.makeRpcCall(requests[2]),
+          ];
+          const firstResult = await resultPromises[0];
+          // The inflight cache middleware uses setTimeout to run the handlers,
+          // so run them now
+          client.clock.runAll();
+          const remainingResults = await Promise.all(resultPromises.slice(1));
+          return [firstResult, ...remainingResults];
+        },
+      );
 
       expect(results).toStrictEqual([
         mockResults[0],
@@ -515,7 +521,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           httpStatus: 405,
         },
       });
-      const promiseForResult = withClient(
+      const promiseForResult = withNetworkClient(
         { providerType },
         async ({ makeRpcCall }) => makeRpcCall(request),
       );
@@ -541,7 +547,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             httpStatus: 418,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -566,7 +572,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             httpStatus: 418,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -593,7 +599,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             httpStatus: 429,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -618,7 +624,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             httpStatus: 429,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -647,7 +653,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           httpStatus: 420,
         },
       });
-      const promiseForResult = withClient(
+      const promiseForResult = withNetworkClient(
         { providerType },
         async ({ makeRpcCall }) => makeRpcCall(request),
       );
@@ -686,7 +692,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             httpStatus: 200,
           },
         });
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -717,7 +723,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           times: 5,
         });
         comms.mockNextBlockTrackerRequest();
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -759,7 +765,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -787,7 +793,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -826,7 +832,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -854,7 +860,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -899,7 +905,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -927,7 +933,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -960,7 +966,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             request,
             error: errorMessage,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType, customRpcUrl },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -997,7 +1003,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1025,7 +1031,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1058,7 +1064,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             request,
             error: errorMessage,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType, customRpcUrl },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1089,7 +1095,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             request,
             error: errorMessage,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType, infuraNetwork },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1124,7 +1130,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1152,7 +1158,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1187,7 +1193,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
             request,
             error: errorMessage,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType, infuraNetwork },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1222,7 +1228,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           },
         });
 
-        const result = await withClient(
+        const result = await withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1250,7 +1256,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
           error: errorMessage,
           times: 5,
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall, clock }) => {
             return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -1302,7 +1308,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         response: { result: mockResults[0] },
       });
 
-      const results = await withClient(
+      const results = await withNetworkClient(
         { providerType },
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
@@ -1332,14 +1338,17 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         response: { result: mockResults[1] },
       });
 
-      const results = await withClient({ providerType }, async (client) => {
-        const firstResult = await client.makeRpcCall(requests[0]);
-        // Proceed to the next iteration of the block tracker so that a new
-        // block is fetched and the current block is updated.
-        client.clock.runAll();
-        const secondResult = await client.makeRpcCall(requests[1]);
-        return [firstResult, secondResult];
-      });
+      const results = await withNetworkClient(
+        { providerType },
+        async (client) => {
+          const firstResult = await client.makeRpcCall(requests[0]);
+          // Proceed to the next iteration of the block tracker so that a new
+          // block is fetched and the current block is updated.
+          client.clock.runAll();
+          const secondResult = await client.makeRpcCall(requests[1]);
+          return [firstResult, secondResult];
+        },
+      );
 
       expect(results).toStrictEqual(mockResults);
     });
@@ -1365,7 +1374,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
           response: { result: mockResults[1] },
         });
 
-        const results = await withClient(
+        const results = await withNetworkClient(
           { providerType },
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
@@ -1397,7 +1406,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         response: { result: mockResults[1] },
       });
 
-      const results = await withClient(
+      const results = await withNetworkClient(
         { providerType },
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
@@ -1427,7 +1436,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         response: { result: mockResults[1] },
       });
 
-      const results = await withClient(
+      const results = await withNetworkClient(
         { providerType },
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
@@ -1461,7 +1470,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         response: { result: mockResults[1] },
       });
 
-      const results = await withClient(
+      const results = await withNetworkClient(
         { providerType },
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
@@ -1486,7 +1495,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
       });
       comms.mockNextBlockTrackerRequest({ blockNumber: '0x300' });
 
-      await withClient(
+      await withNetworkClient(
         { providerType },
         async ({ makeRpcCall, blockTracker }) => {
           await makeRpcCall(request);
@@ -1547,7 +1556,7 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[0] },
         });
 
-        const results = await withClient(
+        const results = await withNetworkClient(
           { providerType },
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
@@ -1592,14 +1601,17 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: mockResults[1] },
           });
 
-          const results = await withClient({ providerType }, async (client) => {
-            const firstResult = await client.makeRpcCall(requests[0]);
-            // Proceed to the next iteration of the block tracker so that a
-            // new block is fetched and the current block is updated.
-            client.clock.runAll();
-            const secondResult = await client.makeRpcCall(requests[1]);
-            return [firstResult, secondResult];
-          });
+          const results = await withNetworkClient(
+            { providerType },
+            async (client) => {
+              const firstResult = await client.makeRpcCall(requests[0]);
+              // Proceed to the next iteration of the block tracker so that a
+              // new block is fetched and the current block is updated.
+              client.clock.runAll();
+              const secondResult = await client.makeRpcCall(requests[1]);
+              return [firstResult, secondResult];
+            },
+          );
 
           expect(results).toStrictEqual(mockResults);
         });
@@ -1643,7 +1655,7 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: mockResults[1] },
           });
 
-          const results = await withClient(
+          const results = await withNetworkClient(
             { providerType },
             ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
           );
@@ -1695,19 +1707,22 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[2] },
         });
 
-        const results = await withClient({ providerType }, async (client) => {
-          const resultPromises = [
-            client.makeRpcCall(requests[0]),
-            client.makeRpcCall(requests[1]),
-            client.makeRpcCall(requests[2]),
-          ];
-          const firstResult = await resultPromises[0];
-          // The inflight cache middleware uses setTimeout to run the
-          // handlers, so run them now
-          client.clock.runAll();
-          const remainingResults = await Promise.all(resultPromises.slice(1));
-          return [firstResult, ...remainingResults];
-        });
+        const results = await withNetworkClient(
+          { providerType },
+          async (client) => {
+            const resultPromises = [
+              client.makeRpcCall(requests[0]),
+              client.makeRpcCall(requests[1]),
+              client.makeRpcCall(requests[2]),
+            ];
+            const firstResult = await resultPromises[0];
+            // The inflight cache middleware uses setTimeout to run the
+            // handlers, so run them now
+            client.clock.runAll();
+            const remainingResults = await Promise.all(resultPromises.slice(1));
+            return [firstResult, ...remainingResults];
+          },
+        );
 
         expect(results).toStrictEqual([
           mockResults[0],
@@ -1741,7 +1756,7 @@ export function testsForRpcMethodSupportingBlockParam(
             httpStatus: 405,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -1777,7 +1792,7 @@ export function testsForRpcMethodSupportingBlockParam(
               httpStatus: 418,
             },
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1812,7 +1827,7 @@ export function testsForRpcMethodSupportingBlockParam(
               httpStatus: 418,
             },
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1849,7 +1864,7 @@ export function testsForRpcMethodSupportingBlockParam(
               httpStatus: 429,
             },
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1884,7 +1899,7 @@ export function testsForRpcMethodSupportingBlockParam(
               httpStatus: 429,
             },
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall }) => makeRpcCall(request),
           );
@@ -1923,7 +1938,7 @@ export function testsForRpcMethodSupportingBlockParam(
             httpStatus: 420,
           },
         });
-        const promiseForResult = withClient(
+        const promiseForResult = withNetworkClient(
           { providerType },
           async ({ makeRpcCall }) => makeRpcCall(request),
         );
@@ -1978,7 +1993,7 @@ export function testsForRpcMethodSupportingBlockParam(
                 httpStatus: 200,
               },
             });
-            const result = await withClient(
+            const result = await withNetworkClient(
               { providerType },
               async ({ makeRpcCall, clock }) => {
                 return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2018,7 +2033,7 @@ export function testsForRpcMethodSupportingBlockParam(
               },
               times: 5,
             });
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType },
               async ({ makeRpcCall, clock }) => {
                 return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2075,7 +2090,7 @@ export function testsForRpcMethodSupportingBlockParam(
                 httpStatus: 200,
               },
             });
-            const result = await withClient(
+            const result = await withNetworkClient(
               { providerType },
               async ({ makeRpcCall, clock }) => {
                 return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2115,7 +2130,7 @@ export function testsForRpcMethodSupportingBlockParam(
               },
               times: 5,
             });
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType },
               async ({ makeRpcCall, clock }) => {
                 return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2171,7 +2186,7 @@ export function testsForRpcMethodSupportingBlockParam(
             },
           });
 
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2211,7 +2226,7 @@ export function testsForRpcMethodSupportingBlockParam(
             times: 5,
           });
 
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2265,7 +2280,7 @@ export function testsForRpcMethodSupportingBlockParam(
             },
           });
 
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2305,7 +2320,7 @@ export function testsForRpcMethodSupportingBlockParam(
             times: 5,
           });
 
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2365,7 +2380,7 @@ export function testsForRpcMethodSupportingBlockParam(
             },
           });
 
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2404,7 +2419,7 @@ export function testsForRpcMethodSupportingBlockParam(
             times: 5,
           });
 
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2448,7 +2463,7 @@ export function testsForRpcMethodSupportingBlockParam(
               error: errorMessage,
             });
 
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType, customRpcUrl },
               async ({ makeRpcCall }) => makeRpcCall(request),
             );
@@ -2499,7 +2514,7 @@ export function testsForRpcMethodSupportingBlockParam(
               httpStatus: 200,
             },
           });
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2538,7 +2553,7 @@ export function testsForRpcMethodSupportingBlockParam(
             times: 5,
           });
 
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2582,7 +2597,7 @@ export function testsForRpcMethodSupportingBlockParam(
               error: errorMessage,
             });
 
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType, customRpcUrl },
               async ({ makeRpcCall }) => makeRpcCall(request),
             );
@@ -2624,7 +2639,7 @@ export function testsForRpcMethodSupportingBlockParam(
               error: errorMessage,
             });
 
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType, infuraNetwork },
               async ({ makeRpcCall }) => makeRpcCall(request),
             );
@@ -2674,7 +2689,7 @@ export function testsForRpcMethodSupportingBlockParam(
             },
           });
 
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2712,7 +2727,7 @@ export function testsForRpcMethodSupportingBlockParam(
             error: errorMessage,
             times: 5,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2758,7 +2773,7 @@ export function testsForRpcMethodSupportingBlockParam(
               error: errorMessage,
             });
 
-            const promiseForResult = withClient(
+            const promiseForResult = withNetworkClient(
               { providerType, infuraNetwork },
               async ({ makeRpcCall }) => makeRpcCall(request),
             );
@@ -2808,7 +2823,7 @@ export function testsForRpcMethodSupportingBlockParam(
             },
           });
 
-          const result = await withClient(
+          const result = await withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2846,7 +2861,7 @@ export function testsForRpcMethodSupportingBlockParam(
             error: errorMessage,
             times: 5,
           });
-          const promiseForResult = withClient(
+          const promiseForResult = withNetworkClient(
             { providerType },
             async ({ makeRpcCall, clock }) => {
               return await waitForPromiseToBeFulfilledAfterRunningAllTimers(
@@ -2892,7 +2907,7 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[0] },
         });
 
-        const results = await withClient(
+        const results = await withNetworkClient(
           { providerType },
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
@@ -2931,14 +2946,17 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[1] },
         });
 
-        const results = await withClient({ providerType }, async (client) => {
-          const firstResult = await client.makeRpcCall(requests[0]);
-          // Proceed to the next iteration of the block tracker so that a
-          // new block is fetched and the current block is updated.
-          client.clock.runAll();
-          const secondResult = await client.makeRpcCall(requests[1]);
-          return [firstResult, secondResult];
-        });
+        const results = await withNetworkClient(
+          { providerType },
+          async (client) => {
+            const firstResult = await client.makeRpcCall(requests[0]);
+            // Proceed to the next iteration of the block tracker so that a
+            // new block is fetched and the current block is updated.
+            client.clock.runAll();
+            const secondResult = await client.makeRpcCall(requests[1]);
+            return [firstResult, secondResult];
+          },
+        );
 
         expect(results).toStrictEqual([mockResults[0], mockResults[0]]);
       });
@@ -2973,7 +2991,7 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: mockResults[1] },
           });
 
-          const results = await withClient(
+          const results = await withNetworkClient(
             { providerType },
             ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
           );
@@ -3007,7 +3025,7 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: mockResults[0] },
           });
 
-          const results = await withClient(
+          const results = await withNetworkClient(
             { providerType },
             ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
           );
@@ -3044,7 +3062,7 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: 'second result' },
           });
 
-          const results = await withClient(
+          const results = await withNetworkClient(
             { providerType },
             ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
           );
@@ -3070,8 +3088,9 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: 'the result' },
           });
 
-          const result = await withClient({ providerType }, ({ makeRpcCall }) =>
-            makeRpcCall(request),
+          const result = await withNetworkClient(
+            { providerType },
+            ({ makeRpcCall }) => makeRpcCall(request),
           );
 
           expect(result).toStrictEqual('the result');
@@ -3095,8 +3114,9 @@ export function testsForRpcMethodSupportingBlockParam(
             response: { result: 'the result' },
           });
 
-          const result = await withClient({ providerType }, ({ makeRpcCall }) =>
-            makeRpcCall(request),
+          const result = await withNetworkClient(
+            { providerType },
+            ({ makeRpcCall }) => makeRpcCall(request),
           );
 
           expect(result).toStrictEqual('the result');
@@ -3129,7 +3149,7 @@ export function testsForRpcMethodSupportingBlockParam(
           response: { result: mockResults[1] },
         });
 
-        const results = await withClient(
+        const results = await withNetworkClient(
           { providerType },
           ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
         );
