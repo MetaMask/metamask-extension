@@ -32440,7 +32440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trim@npm:0.0.3":
+"trim@npm:^0.0.3":
   version: 0.0.3
   resolution: "trim@npm:0.0.3"
   checksum: 9a059ba56d5e22c9e571798a7c63640cb25478c495d8a9d001f6352927207c6bd224018751a0c5145fbedc943ee2ebab1d7cc2e8ccba3121a51a7d3428dd879c
