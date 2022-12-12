@@ -4,8 +4,7 @@ import { fill } from 'lodash';
 import {
   withMockedCommunications,
   withClient,
-  buildMockParamsWithoutBlockParamAt,
-  buildMockParamsWithBlockParamAt,
+  buildMockParams,
   buildRequestWithReplacedBlockParam,
 } from './helpers';
 
@@ -1515,18 +1514,16 @@ export function testsForRpcMethodSupportingBlockParam(
   { blockParamIndex, providerType = 'infura' },
 ) {
   describe.each([
-    ['given no block tag', 'none'],
-    ['given a block tag of "latest"', 'latest', 'latest'],
-  ])('%s', (_desc, blockParamType, blockParam) => {
-    const params =
-      blockParamType === 'none'
-        ? buildMockParamsWithoutBlockParamAt(blockParamIndex)
-        : buildMockParamsWithBlockParamAt(blockParamIndex, blockParam);
-
+    ['given no block tag', undefined],
+    ['given a block tag of "latest"', 'latest'],
+  ])('%s', (_desc, blockParam) => {
     it('does not hit the RPC endpoint more than once for identical requests', async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        {
+          method,
+          params: buildMockParams({ blockParamIndex, blockParam }),
+        },
+        { method, params: buildMockParams({ blockParamIndex, blockParam }) },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -1562,8 +1559,8 @@ export function testsForRpcMethodSupportingBlockParam(
     if (providerType === 'infura') {
       it('hits Infura and does not reuse the result of a previous request if the latest block number was updated since', async () => {
         const requests = [
-          { method, params },
-          { method, params },
+          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
+          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
         ];
         const mockResults = ['first result', 'second result'];
 
@@ -1613,8 +1610,8 @@ export function testsForRpcMethodSupportingBlockParam(
       'does not reuse the result of a previous request if it was `%s`',
       async (emptyValue) => {
         const requests = [
-          { method, params },
-          { method, params },
+          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
+          { method, params: buildMockParams({ blockParamIndex, blockParam }) },
         ];
         const mockResults = [emptyValue, 'some result'];
 
@@ -2871,12 +2868,16 @@ export function testsForRpcMethodSupportingBlockParam(
     ['given a block tag of "earliest"', 'earliest', 'earliest'],
     ['given a block number', 'block number', '0x100'],
   ])('%s', (_desc, blockParamType, blockParam) => {
-    const params = buildMockParamsWithBlockParamAt(blockParamIndex, blockParam);
-
     it('does not hit the RPC endpoint more than once for identical requests', async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        {
+          method,
+          params: buildMockParams({ blockParamIndex, blockParam }),
+        },
+        {
+          method,
+          params: buildMockParams({ blockParamIndex, blockParam }),
+        },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -2902,8 +2903,14 @@ export function testsForRpcMethodSupportingBlockParam(
 
     it('reuses the result of a previous request even if the latest block number was updated since', async () => {
       const requests = [
-        { method, params },
-        { method, params },
+        {
+          method,
+          params: buildMockParams({ blockParamIndex, blockParam }),
+        },
+        {
+          method,
+          params: buildMockParams({ blockParamIndex, blockParam }),
+        },
       ];
       const mockResults = ['first result', 'second result'];
 
@@ -2941,8 +2948,14 @@ export function testsForRpcMethodSupportingBlockParam(
       'does not reuse the result of a previous request if it was `%s`',
       async (emptyValue) => {
         const requests = [
-          { method, params },
-          { method, params },
+          {
+            method,
+            params: buildMockParams({ blockParamIndex, blockParam }),
+          },
+          {
+            method,
+            params: buildMockParams({ blockParamIndex, blockParam }),
+          },
         ];
         const mockResults = [emptyValue, 'some result'];
 
@@ -2975,14 +2988,11 @@ export function testsForRpcMethodSupportingBlockParam(
         const requests = [
           {
             method,
-            params: buildMockParamsWithBlockParamAt(
-              blockParamIndex,
-              blockParam,
-            ),
+            params: buildMockParams({ blockParamIndex, blockParam }),
           },
           {
             method,
-            params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x00'),
+            params: buildMockParams({ blockParamIndex, blockParam: '0x00' }),
           },
         ];
         const mockResults = ['first result', 'second result'];
@@ -3013,11 +3023,11 @@ export function testsForRpcMethodSupportingBlockParam(
           const requests = [
             {
               method,
-              params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x100'),
+              params: buildMockParams({ blockParamIndex, blockParam: '0x100' }),
             },
             {
               method,
-              params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x200'),
+              params: buildMockParams({ blockParamIndex, blockParam: '0x200' }),
             },
           ];
 
@@ -3047,7 +3057,7 @@ export function testsForRpcMethodSupportingBlockParam(
         await withMockedCommunications({ providerType }, async (comms) => {
           const request = {
             method,
-            params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x100'),
+            params: buildMockParams({ blockParamIndex, blockParam: '0x100' }),
           };
 
           // The first time a block-cacheable request is made, the latest
@@ -3072,7 +3082,7 @@ export function testsForRpcMethodSupportingBlockParam(
         await withMockedCommunications({ providerType }, async (comms) => {
           const request = {
             method,
-            params: buildMockParamsWithBlockParamAt(blockParamIndex, '0x50'),
+            params: buildMockParams({ blockParamIndex, blockParam: '0x50' }),
           };
 
           // The first time a block-cacheable request is made, the latest
@@ -3096,7 +3106,7 @@ export function testsForRpcMethodSupportingBlockParam(
   });
 
   describe('given a block tag of "pending"', () => {
-    const params = buildMockParamsWithBlockParamAt(blockParamIndex, 'pending');
+    const params = buildMockParams({ blockParamIndex, blockParam: 'pending' });
 
     it(`hits the RPC endpoint on all calls and does not cache anything`, async () => {
       const requests = [
