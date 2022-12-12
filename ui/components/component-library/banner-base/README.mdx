@@ -5,7 +5,7 @@ import { BannerBase } from './banner-base';
 
 # BannerBase
 
-The `BannerBase` is the base component for banners.
+The `BannerBase` is the base component for banners
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
   <Story id="ui-components-component-library-banner-base-banner-base-stories-js--default-story" />
@@ -26,17 +26,16 @@ Use the `title` prop to pass a string that is sentence case no period
 </Canvas>
 
 ```jsx
-import { BannerBase } from '../ui/component-library';
+import { BannerBase } from '../../component-library';
 
-<BannerBase
-  title="Title is sentence case no period"
-  description="Pass only a string through the title prop"
-/>;
+<BannerBase title="Title is sentence case no period">
+  Pass only a string through the title prop
+</BannerBase>;
 ```
 
-### Description
+### Children
 
-Use the `description` prop to pass a string or text element with hyperlink to describe the `BannerBase`. Description shouldn't repeat title and only 1-3 lines.
+The `children` is the description area of the `BannerBase` that can be a text or react node. Description shouldn't repeat title and only 1-3 lines.
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
   <Story id="ui-components-component-library-banner-base-banner-base-stories-js--description" />
@@ -44,18 +43,14 @@ Use the `description` prop to pass a string or text element with hyperlink to de
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { BannerBase } from '../ui/component-library';
+import { BannerBase } from '../../component-library';
 
-<BannerBase
-  description={
-    <>
-      {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-      <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
-        hyperlink.
-      </ButtonLink>
-    </>
-  }
-/>;
+<BannerBase>
+  {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+  <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+    hyperlink.
+  </ButtonLink>
+</BannerBase>;
 ```
 
 ### Action
@@ -67,13 +62,14 @@ Use the `action` prop to pass a call to action component below the description o
 </Canvas>
 
 ```jsx
-import { BannerBase } from '../ui/component-library';
+import { BannerBase } from '../../component-library';
 
 <BannerBase
   title="Action prop demo"
-  description="Call to action items will appear below this description"
   action={<ButtonLink size={SIZES.AUTO}>Action</ButtonLink>}
-/>;
+>
+  Call to action items will appear below this description
+</BannerBase>;
 ```
 
 ### On Close
@@ -87,13 +83,14 @@ Additional props can be passed to the close button with `closeButtonProps`
 </Canvas>
 
 ```jsx
-import { BannerBase } from '../ui/component-library';
+import { BannerBase } from '../../component-library';
 
 <BannerBase
   title="onClose demo"
-  description="Click the close button icon to hide this notifcation"
   onClose={() => console.log('close button clicked')}
-/>;
+>
+  Click the close button icon to hide this notifcation
+</BannerBase>;
 ```
 
 ### Left Accessory
@@ -106,11 +103,12 @@ Use the `leftAccessory` prop to add components such as icons or fox image to the
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { BannerBase, Icon, ICON_NAMES } from '../ui/component-library';
+import { BannerBase, Icon, ICON_NAMES } from '../../component-library';
 
 <BannerBase
   title="Left accessory demo"
-  description="The info icon on the left is passed through the leftAccessory prop"
   leftAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
-/>;
+>
+  The info icon on the left is passed through the leftAccessory prop
+</BannerBase>;
 ```

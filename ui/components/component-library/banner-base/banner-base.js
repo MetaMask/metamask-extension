@@ -17,7 +17,8 @@ import {
 export const BannerBase = ({
   className,
   title,
-  description,
+  titleProps,
+  children,
   action,
   leftAccessory,
   onClose,
@@ -38,17 +39,21 @@ export const BannerBase = ({
         <div className="mm-banner-base__left-accessory">{leftAccessory}</div>
       )}
 
-      <>
+      <div>
         {title && (
-          <Text className="mm-banner-base__title" variant={TEXT.BODY_LG_MEDIUM}>
+          <Text
+            className="mm-banner-base__title"
+            variant={TEXT.BODY_LG_MEDIUM}
+            {...titleProps}
+          >
             {title}
           </Text>
         )}
-        {description && (
-          <Text className="mm-banner-base__description">{description}</Text>
+        {children && (
+          <Text className="mm-banner-base__description">{children}</Text>
         )}
         {action && <Text className="mm-banner-base__action">{action}</Text>}
-      </>
+      </div>
       {onClose && (
         <ButtonIcon
           className="mm-banner-base__close-button"
@@ -69,11 +74,15 @@ BannerBase.propTypes = {
    */
   title: PropTypes.string,
   /**
-   * The description of the BannerBase below the title
+   * The title of the BannerBase
    */
-  description: PropTypes.node,
+  titleProps: PropTypes.shape(Text.PropTypes),
   /**
-   * The action of the BannerBase below the description
+   * The children is the description area of the BannerBase below the title
+   */
+  children: PropTypes.node,
+  /**
+   * The action of the BannerBase below the children
    */
   action: PropTypes.node,
   /**

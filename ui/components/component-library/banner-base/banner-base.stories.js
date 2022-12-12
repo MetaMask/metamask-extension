@@ -40,7 +40,7 @@ export default {
     title: {
       control: 'text',
     },
-    description: {
+    children: {
       control: 'text',
     },
     action: {
@@ -82,7 +82,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.args = {
   title: 'Title is sentence case no period',
-  description: "Description shouldn't repeat title. 1-3 lines.",
+  children: "Description shouldn't repeat title. 1-3 lines.",
   action: <ButtonLink size={SIZES.AUTO}>Action</ButtonLink>,
   leftAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
 };
@@ -95,22 +95,18 @@ export const Title = (args) => {
 
 Title.args = {
   title: 'Title is sentence case no period',
-  description: 'Pass only a string through the title prop',
+  children: 'Pass only a string through the title prop',
 };
 
-export const Description = (args) => {
-  return <BannerBase {...args} />;
-};
-
-Description.args = {
-  description: (
-    <>
+export const Children = (args) => {
+  return (
+    <BannerBase {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
       <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
         hyperlink.
       </ButtonLink>
-    </>
-  ),
+    </BannerBase>
+  );
 };
 
 export const Action = (args) => {
@@ -119,7 +115,7 @@ export const Action = (args) => {
 
 Action.args = {
   title: 'Action prop demo',
-  description: 'Call to action items will appear below this description',
+  children: 'Call to action items will appear below this description',
   action: <ButtonLink size={SIZES.AUTO}>Action</ButtonLink>,
 };
 
@@ -144,7 +140,7 @@ export const OnClose = (args) => {
 
 OnClose.args = {
   title: 'onClose demo',
-  description: 'Click the close button icon to hide this notifcation',
+  children: 'Click the close button icon to hide this notifcation',
 };
 
 export const LeftAccessory = (args) => {
@@ -153,7 +149,7 @@ export const LeftAccessory = (args) => {
 
 LeftAccessory.args = {
   title: 'Left accessory demo',
-  description:
+  children:
     'The info icon on the left is passed through the leftAccessory prop',
   leftAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
 };

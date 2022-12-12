@@ -10,11 +10,9 @@ import { BannerBase } from './banner-base';
 describe('BannerBase', () => {
   it('should render bannerbase element correctly', () => {
     const { getByTestId, container } = render(
-      <BannerBase
-        data-testid="banner-base"
-        title="Bannerbase test"
-        description="should render bannerbase element correctly"
-      />,
+      <BannerBase data-testid="banner-base" title="Bannerbase test">
+        should render bannerbase element correctly
+      </BannerBase>,
     );
     expect(getByTestId('banner-base')).toHaveClass('mm-banner-base');
     expect(container).toMatchSnapshot();
@@ -26,8 +24,9 @@ describe('BannerBase', () => {
         className="mm-banner-base--test"
         data-testid="banner-base"
         title="Bannerbase test"
-        description="should render bannerbase element correctly"
-      />,
+      >
+        should render bannerbase element correctly
+      </BannerBase>,
     );
     expect(getByTestId('banner-base')).toHaveClass('mm-banner-base--test');
   });
@@ -41,7 +40,7 @@ describe('BannerBase', () => {
 
   it('should render bannerbase description', () => {
     const { getByText } = render(
-      <BannerBase description="Bannerbase description test" />,
+      <BannerBase>Bannerbase description test</BannerBase>,
     );
     expect(getByText('Bannerbase description test')).toHaveClass(
       'mm-banner-base__description',
