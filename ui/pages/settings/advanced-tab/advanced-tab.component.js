@@ -14,7 +14,6 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
 
 import {
   LEDGER_TRANSPORT_TYPES,
