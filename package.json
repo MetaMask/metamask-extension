@@ -141,6 +141,7 @@
     "regenerator-runtime@^0.13.4": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
     "regenerator-runtime@^0.13.7": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
     "regenerator-runtime@^0.11.0": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
+    "trim": "^0.0.3",
     "@babel/runtime@^7.5.5": "patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch",
     "@babel/runtime@^7.7.6": "patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch",
     "@babel/runtime@^7.9.2": "patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch",
