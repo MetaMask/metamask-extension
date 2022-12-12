@@ -808,6 +808,10 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   }
 
+  // There is a difference in how we are testing the Infura middleware vs. the
+  // custom RPC middleware because only in the Infura case is ECONNRESET a
+  // innocuous error that is likely to disappear on a retry. We cannot make the
+  // same assumption in the other case.
   if (providerType === 'infura') {
     it('retries the request to the RPC endpoint up to 5 times if an "ECONNRESET" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
@@ -2257,6 +2261,10 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     }
 
+    // There is a difference in how we are testing the Infura middleware vs. the
+    // custom RPC middleware because only in the Infura case is ECONNRESET a
+    // innocuous error that is likely to disappear on a retry. We cannot make
+    // the same assumption in the other case.
     if (providerType === 'infura') {
       it('retries the request to the RPC endpoint up to 5 times if an "ECONNRESET" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
