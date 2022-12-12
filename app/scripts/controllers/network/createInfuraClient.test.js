@@ -10,7 +10,7 @@ describe('createInfuraClient', () => {
 
   describe('methods specially handled', () => {
     describe('net_version', () => {
-      it(`does not hit Infura, instead returning the network ID that maps to the Infura network, as a decimal string`, async () => {
+      it('does not hit Infura, instead returning the network ID that maps to the Infura network, as a decimal string', async () => {
         const networkId = await withClient(
           { providerType: 'infura', infuraNetwork: 'goerli' },
           ({ makeRpcCall }) => {

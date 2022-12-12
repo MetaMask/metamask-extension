@@ -292,7 +292,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
     );
   }
 
-  it(`does not hit the RPC endpoint more than once for identical requests`, async () => {
+  it('does not hit the RPC endpoint more than once for identical requests', async () => {
     const requests = [{ method }, { method }];
     const mockResults = ['first result', 'second result'];
 
@@ -424,7 +424,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   });
 
-  it(`throws a custom error if the request to the RPC endpoint returns a 405 response`, async () => {
+  it('throws a custom error if the request to the RPC endpoint returns a 405 response', async () => {
     await withMockedCommunications({ providerType }, async (comms) => {
       const request = { method };
 
@@ -825,7 +825,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
     );
   }
 
-  it(`does not hit the RPC endpoint more than once for identical requests and it has a valid blockHash`, async () => {
+  it('does not hit the RPC endpoint more than once for identical requests and it has a valid blockHash', async () => {
     const requests = [{ method }, { method }];
     const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
@@ -848,7 +848,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
     });
   });
 
-  it(`hits the RPC endpoint and does not reuse the result of a previous request if the latest block number was updated since`, async () => {
+  it('hits the RPC endpoint and does not reuse the result of a previous request if the latest block number was updated since', async () => {
     const requests = [{ method }, { method }];
     const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
@@ -1770,7 +1770,7 @@ export function testsForRpcMethodSupportingBlockParam(
   ])('%s', (_desc, blockParamType, blockParam) => {
     const params = buildMockParamsWithBlockParamAt(blockParamIndex, blockParam);
 
-    it(`does not hit the RPC endpoint more than once for identical requests`, async () => {
+    it('does not hit the RPC endpoint more than once for identical requests', async () => {
       const requests = [
         { method, params },
         { method, params },
