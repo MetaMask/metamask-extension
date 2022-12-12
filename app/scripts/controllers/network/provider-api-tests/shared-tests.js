@@ -532,6 +532,11 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   });
 
+  // There is a difference in how we are testing the Infura middleware vs. the
+  // custom RPC middleware (or, more specifically, the fetch middleware) because
+  // of what both middleware treat as rate limiting errors. In this case, the
+  // fetch middleware treats a 418 response from the RPC endpoint as such an
+  // error, whereas to the Infura middleware, it is a 429 response.
   if (providerType === 'infura') {
     it('throws an undescriptive error if the request to the RPC endpoint returns a 418 response', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
@@ -554,6 +559,31 @@ export function testsForRpcMethodAssumingNoBlockParam(
 
         await expect(promiseForResult).rejects.toThrow(
           '{"id":1,"jsonrpc":"2.0"}',
+        );
+      });
+    });
+
+    it('throws an error with a custom message if the request to the RPC endpoint returns a 429 response', async () => {
+      await withMockedCommunications({ providerType }, async (comms) => {
+        const request = { method };
+
+        // The first time a block-cacheable request is made, the latest block
+        // number is retrieved through the block tracker first. It doesn't
+        // matter what this is — it's just used as a cache key.
+        comms.mockNextBlockTrackerRequest();
+        comms.mockRpcCall({
+          request,
+          response: {
+            httpStatus: 429,
+          },
+        });
+        const promiseForResult = withNetworkClient(
+          { providerType },
+          async ({ makeRpcCall }) => makeRpcCall(request),
+        );
+
+        await expect(promiseForResult).rejects.toThrow(
+          'Request is being rate limited',
         );
       });
     });
@@ -582,34 +612,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         );
       });
     });
-  }
 
-  if (providerType === 'infura') {
-    it('throws an error with a custom message if the request to the RPC endpoint returns a 429 response', async () => {
-      await withMockedCommunications({ providerType }, async (comms) => {
-        const request = { method };
-
-        // The first time a block-cacheable request is made, the latest block
-        // number is retrieved through the block tracker first. It doesn't
-        // matter what this is — it's just used as a cache key.
-        comms.mockNextBlockTrackerRequest();
-        comms.mockRpcCall({
-          request,
-          response: {
-            httpStatus: 429,
-          },
-        });
-        const promiseForResult = withNetworkClient(
-          { providerType },
-          async ({ makeRpcCall }) => makeRpcCall(request),
-        );
-
-        await expect(promiseForResult).rejects.toThrow(
-          'Request is being rate limited',
-        );
-      });
-    });
-  } else {
     it('throws an undescriptive error if the request to the RPC endpoint returns a 429 response', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
         const request = { method };
@@ -741,6 +744,9 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   });
 
+  // Both the Infura and fetch middleware detect ETIMEDOUT errors and will
+  // automatically retry the request to the RPC endpoint in question, but both
+  // produce a different error if the number of retries is exhausted.
   if (providerType === 'infura') {
     it('retries the request to the RPC endpoint up to 5 times if an "ETIMEDOUT" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
@@ -877,10 +883,9 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   }
 
-  // There is a difference in how we are testing the Infura middleware vs. the
-  // custom RPC middleware because only in the Infura case is ECONNRESET a
-  // innocuous error that is likely to disappear on a retry. We cannot make the
-  // same assumption in the other case.
+  // The Infura middleware treats a response that contains an ECONNRESET message
+  // as an innocuous error that is likely to disappear on a retry. The custom
+  // RPC middleware, on the other hand, does not specially handle this error.
   if (providerType === 'infura') {
     it('retries the request to the RPC endpoint up to 5 times if an "ECONNRESET" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
@@ -979,6 +984,13 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   }
 
+  // Both the Infura and fetch middleware will attempt to parse the response
+  // body as JSON, and if this step produces an error, both middleware will also
+  // attempt to retry the request. However, this error handling code is slightly
+  // different between the two. As the error in this case is a SyntaxError, the
+  // Infura middleware will catch it immediately, whereas the custom RPC
+  // middleware will catch it and re-throw a separate error, which it then
+  // catches later.
   if (providerType === 'infura') {
     it('retries the request to the RPC endpoint up to 5 times if an "SyntaxError" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
@@ -1046,38 +1058,7 @@ export function testsForRpcMethodAssumingNoBlockParam(
         );
       });
     });
-  } else {
-    it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
-      const customRpcUrl = 'http://example.com';
 
-      await withMockedCommunications(
-        { providerType, customRpcUrl },
-        async (comms) => {
-          const request = { method };
-          const errorMessage = 'SyntaxError: Some message';
-
-          // The first time a block-cacheable request is made, the latest block
-          // number is retrieved through the block tracker first. It doesn't
-          // matter what this is — it's just used as a cache key.
-          comms.mockNextBlockTrackerRequest();
-          comms.mockRpcCall({
-            request,
-            error: errorMessage,
-          });
-          const promiseForResult = withNetworkClient(
-            { providerType, customRpcUrl },
-            async ({ makeRpcCall }) => makeRpcCall(request),
-          );
-
-          await expect(promiseForResult).rejects.toThrow(
-            buildFetchFailedErrorMessage(customRpcUrl, errorMessage),
-          );
-        },
-      );
-    });
-  }
-
-  if (providerType === 'infura') {
     it('does not retry the request to the RPC endpoint, but throws immediately, if a "failed to parse response body" error is thrown while making the request', async () => {
       const infuraNetwork = 'goerli';
 
@@ -1107,6 +1088,35 @@ export function testsForRpcMethodAssumingNoBlockParam(
       );
     });
   } else {
+    it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
+      const customRpcUrl = 'http://example.com';
+
+      await withMockedCommunications(
+        { providerType, customRpcUrl },
+        async (comms) => {
+          const request = { method };
+          const errorMessage = 'SyntaxError: Some message';
+
+          // The first time a block-cacheable request is made, the latest block
+          // number is retrieved through the block tracker first. It doesn't
+          // matter what this is — it's just used as a cache key.
+          comms.mockNextBlockTrackerRequest();
+          comms.mockRpcCall({
+            request,
+            error: errorMessage,
+          });
+          const promiseForResult = withNetworkClient(
+            { providerType, customRpcUrl },
+            async ({ makeRpcCall }) => makeRpcCall(request),
+          );
+
+          await expect(promiseForResult).rejects.toThrow(
+            buildFetchFailedErrorMessage(customRpcUrl, errorMessage),
+          );
+        },
+      );
+    });
+
     it('retries the request to the RPC endpoint up to 5 times if a "failed to parse response body" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
       await withMockedCommunications({ providerType }, async (comms) => {
         const request = { method };
@@ -1175,6 +1185,9 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
   }
 
+  // Only the custom RPC middleware will detect a "Failed to fetch" error and
+  // attempt to retry the request to the RPC endpoint; the Infura middleware
+  // does not.
   if (providerType === 'infura') {
     it('does not retry the request to the RPC endpoint, but throws immediately, if a "Failed to fetch" error is thrown while making the request', async () => {
       const infuraNetwork = 'goerli';
@@ -1565,6 +1578,7 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     });
 
+    // TODO: Document this
     if (providerType === 'infura') {
       it('hits Infura and does not reuse the result of a previous request if the latest block number was updated since', async () => {
         const requests = [
@@ -1767,6 +1781,11 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     });
 
+    // There is a difference in how we are testing the Infura middleware vs. the
+    // custom RPC middleware (or, more specifically, the fetch middleware)
+    // because of what both middleware treat as rate limiting errors. In this
+    // case, the fetch middleware treats a 418 response from the RPC endpoint as
+    // such an error, whereas to the Infura middleware, it is a 429 response.
     if (providerType === 'infura') {
       it('throws a generic, undescriptive error if the request to the RPC endpoint returns a 418 response', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
@@ -1802,44 +1821,7 @@ export function testsForRpcMethodSupportingBlockParam(
           );
         });
       });
-    } else {
-      it('throws an error with a custom message if the request to the RPC endpoint returns a 429 response', async () => {
-        await withMockedCommunications({ providerType }, async (comms) => {
-          const request = { method };
 
-          // The first time a block-cacheable request is made, the
-          // block-cache middleware will request the latest block number
-          // through the block tracker to determine the cache key. Later,
-          // the block-ref middleware will request the latest block number
-          // again to resolve the value of "latest", but the block number is
-          // cached once made, so we only need to mock the request once.
-          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-          // The block-ref middleware will make the request as specified
-          // except that the block param is replaced with the latest block
-          // number.
-          comms.mockRpcCall({
-            request: buildRequestWithReplacedBlockParam(
-              request,
-              blockParamIndex,
-              '0x100',
-            ),
-            response: {
-              httpStatus: 418,
-            },
-          });
-          const promiseForResult = withNetworkClient(
-            { providerType },
-            async ({ makeRpcCall }) => makeRpcCall(request),
-          );
-
-          await expect(promiseForResult).rejects.toThrow(
-            'Request is being rate limited.',
-          );
-        });
-      });
-    }
-
-    if (providerType === 'infura') {
       it('throws an error with a custom message if the request to the RPC endpoint returns a 429 response', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
           const request = { method };
@@ -1875,6 +1857,41 @@ export function testsForRpcMethodSupportingBlockParam(
         });
       });
     } else {
+      it('throws an error with a custom message if the request to the RPC endpoint returns a 418 response', async () => {
+        await withMockedCommunications({ providerType }, async (comms) => {
+          const request = { method };
+
+          // The first time a block-cacheable request is made, the
+          // block-cache middleware will request the latest block number
+          // through the block tracker to determine the cache key. Later,
+          // the block-ref middleware will request the latest block number
+          // again to resolve the value of "latest", but the block number is
+          // cached once made, so we only need to mock the request once.
+          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+          // The block-ref middleware will make the request as specified
+          // except that the block param is replaced with the latest block
+          // number.
+          comms.mockRpcCall({
+            request: buildRequestWithReplacedBlockParam(
+              request,
+              blockParamIndex,
+              '0x100',
+            ),
+            response: {
+              httpStatus: 418,
+            },
+          });
+          const promiseForResult = withNetworkClient(
+            { providerType },
+            async ({ makeRpcCall }) => makeRpcCall(request),
+          );
+
+          await expect(promiseForResult).rejects.toThrow(
+            'Request is being rate limited.',
+          );
+        });
+      });
+
       it('throws an undescriptive error if the request to the RPC endpoint returns a 429 response', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
           const request = { method };
@@ -1951,6 +1968,7 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     });
 
+    // TODO: Document
     if (providerType === 'infura') {
       [503, 504].forEach((httpStatus) => {
         it(`retries the request to the RPC endpoint up to 5 times if it returns a ${httpStatus} response, returning the successful result if there is one on the 5th try`, async () => {
@@ -2147,6 +2165,9 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     }
 
+    // Both the Infura and fetch middleware detect ETIMEDOUT errors and will
+    // automatically retry the request to the RPC endpoint in question, but both
+    // produce a different error if the number of retries is exhausted.
     if (providerType === 'infura') {
       it('retries the request to the RPC endpoint up to 5 times if an "ETIMEDOUT" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
@@ -2337,10 +2358,10 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     }
 
-    // There is a difference in how we are testing the Infura middleware vs. the
-    // custom RPC middleware because only in the Infura case is ECONNRESET a
-    // innocuous error that is likely to disappear on a retry. We cannot make
-    // the same assumption in the other case.
+    // The Infura middleware treats a response that contains an ECONNRESET
+    // message as an innocuous error that is likely to disappear on a retry. The
+    // custom RPC middleware, on the other hand, does not specially handle this
+    // error.
     if (providerType === 'infura') {
       it('retries the request to the RPC endpoint up to 5 times if an "ECONNRESET" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
@@ -2476,6 +2497,13 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     }
 
+    // Both the Infura and fetch middleware will attempt to parse the response
+    // body as JSON, and if this step produces an error, both middleware will
+    // also attempt to retry the request. However, this error handling code is
+    // slightly different between the two. As the error in this case is a
+    // SyntaxError, the Infura middleware will catch it immediately, whereas the
+    // custom RPC middleware will catch it and re-throw a separate error, which
+    // it then catches later.
     if (providerType === 'infura') {
       it('retries the request to the RPC endpoint up to 5 times if a "SyntaxError" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
@@ -2568,49 +2596,7 @@ export function testsForRpcMethodSupportingBlockParam(
           );
         });
       });
-    } else {
-      it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
-        const customRpcUrl = 'http://example.com';
 
-        await withMockedCommunications(
-          { providerType, customRpcUrl },
-          async (comms) => {
-            const request = { method };
-            const errorMessage = 'SyntaxError: Some message';
-
-            // The first time a block-cacheable request is made, the
-            // block-cache middleware will request the latest block number
-            // through the block tracker to determine the cache key. Later,
-            // the block-ref middleware will request the latest block number
-            // again to resolve the value of "latest", but the block number is
-            // cached once made, so we only need to mock the request once.
-            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-            // The block-ref middleware will make the request as specified
-            // except that the block param is replaced with the latest block
-            // number.
-            comms.mockRpcCall({
-              request: buildRequestWithReplacedBlockParam(
-                request,
-                blockParamIndex,
-                '0x100',
-              ),
-              error: errorMessage,
-            });
-
-            const promiseForResult = withNetworkClient(
-              { providerType, customRpcUrl },
-              async ({ makeRpcCall }) => makeRpcCall(request),
-            );
-
-            await expect(promiseForResult).rejects.toThrow(
-              buildFetchFailedErrorMessage(customRpcUrl, errorMessage),
-            );
-          },
-        );
-      });
-    }
-
-    if (providerType === 'infura') {
       it('does not retry the request to the RPC endpoint, but throws immediately, if a "failed to parse response body" error is thrown while making the request', async () => {
         const infuraNetwork = 'goerli';
 
@@ -2651,6 +2637,46 @@ export function testsForRpcMethodSupportingBlockParam(
         );
       });
     } else {
+      it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
+        const customRpcUrl = 'http://example.com';
+
+        await withMockedCommunications(
+          { providerType, customRpcUrl },
+          async (comms) => {
+            const request = { method };
+            const errorMessage = 'SyntaxError: Some message';
+
+            // The first time a block-cacheable request is made, the
+            // block-cache middleware will request the latest block number
+            // through the block tracker to determine the cache key. Later,
+            // the block-ref middleware will request the latest block number
+            // again to resolve the value of "latest", but the block number is
+            // cached once made, so we only need to mock the request once.
+            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+            // The block-ref middleware will make the request as specified
+            // except that the block param is replaced with the latest block
+            // number.
+            comms.mockRpcCall({
+              request: buildRequestWithReplacedBlockParam(
+                request,
+                blockParamIndex,
+                '0x100',
+              ),
+              error: errorMessage,
+            });
+
+            const promiseForResult = withNetworkClient(
+              { providerType, customRpcUrl },
+              async ({ makeRpcCall }) => makeRpcCall(request),
+            );
+
+            await expect(promiseForResult).rejects.toThrow(
+              buildFetchFailedErrorMessage(customRpcUrl, errorMessage),
+            );
+          },
+        );
+      });
+
       it('retries the request to the RPC endpoint up to 5 times if a "failed to parse response body" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
         await withMockedCommunications({ providerType }, async (comms) => {
           const request = { method };
@@ -2744,6 +2770,9 @@ export function testsForRpcMethodSupportingBlockParam(
       });
     }
 
+    // Only the custom RPC middleware will detect a "Failed to fetch" error and
+    // attempt to retry the request to the RPC endpoint; the Infura middleware
+    // does not.
     if (providerType === 'infura') {
       it('does not retry the request to the RPC endpoint, but throws immediately, if a "Failed to fetch" error is thrown while making the request', async () => {
         const infuraNetwork = 'goerli';
