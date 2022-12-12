@@ -3362,10 +3362,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^1.31.0, @metamask/contract-metadata@npm:^1.35.0":
+"@metamask/contract-metadata@npm:^1.35.0":
   version: 1.36.0
   resolution: "@metamask/contract-metadata@npm:1.36.0"
   checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
+  languageName: node
+  linkType: hard
+
+"@metamask/contract-metadata@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/contract-metadata@npm:2.1.0"
+  checksum: eebe2fb7c16c0f585f08e0de446efe5c7866316e3f663b409691aaf69333deead53fcc9f3f0a67db7d0d84309dc52a620512c441b5d020ad08baf2fed7ed773f
   languageName: node
   linkType: hard
 
@@ -22860,7 +22867,7 @@ __metadata:
     "@metamask/assets-controllers": ^1.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
-    "@metamask/contract-metadata": ^1.31.0
+    "@metamask/contract-metadata": ^2.1.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/eslint-config": ^9.0.0
