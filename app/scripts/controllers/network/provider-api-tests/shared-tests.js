@@ -165,6 +165,7 @@ export function testsForProviderType(providerType) {
       const assumingNoBlockParam = [
         'eth_blockNumber',
         'eth_estimateGas',
+        'eth_gasPrice',
         'eth_getBlockByHash',
         // NOTE: eth_getBlockTransactionCountByNumber does take a block param at
         // the 0th index, but this is not handled by our cache middleware
