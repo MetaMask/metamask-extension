@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import reactRouterDom from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
@@ -28,7 +29,8 @@ describe('Secure Your Wallet Onboarding View', () => {
     },
   };
 
-  const store = configureMockStore()(mockStore);
+  const store = configureMockStore([thunk])(mockStore);
+
   it('should show a popover asking the user if they want to skip account security if they click "Remind me later"', () => {
     const { queryAllByText, getByText } = renderWithProvider(
       <SecureYourWallet />,
