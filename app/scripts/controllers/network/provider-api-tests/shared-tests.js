@@ -208,6 +208,21 @@ export function testsForProviderType(providerType) {
         });
       });
     });
+
+    describe('other methods', () => {
+      describe('eth_chainId', () => {
+        it('does not hit the RPC endpoint, instead returning the configured chain id', async () => {
+          const networkId = await withClient(
+            { providerType: 'custom', customChainId: '0x1' },
+            ({ makeRpcCall }) => {
+              return makeRpcCall({ method: 'eth_chainId' });
+            },
+          );
+
+          expect(networkId).toStrictEqual('0x1');
+        });
+      });
+    });
   });
 
   describe('methods not included in the Ethereum JSON-RPC spec', () => {
@@ -240,6 +255,49 @@ export function testsForProviderType(providerType) {
           testsForRpcMethodAssumingNoBlockParam(name, { providerType });
         }),
       );
+    });
+
+    describe('other methods', () => {
+      describe('net_version', () => {
+        // The Infura middleware includes `net_version` in its scaffold
+        // middleware, whereas the custom RPC middleware does not.
+        if (providerType === 'infura') {
+          it('does not hit Infura, instead returning the network ID that maps to the Infura network, as a decimal string', async () => {
+            const networkId = await withClient(
+              { providerType: 'infura', infuraNetwork: 'goerli' },
+              ({ makeRpcCall }) => {
+                return makeRpcCall({
+                  method: 'net_version',
+                });
+              },
+            );
+            expect(networkId).toStrictEqual('5');
+          });
+        } else {
+          it('hits the RPC endpoint', async () => {
+            await withMockedCommunications(
+              { providerType: 'custom' },
+              async (comms) => {
+                comms.mockRpcCall({
+                  request: { method: 'net_version' },
+                  response: { result: '1' },
+                });
+
+                const networkId = await withClient(
+                  { providerType: 'custom' },
+                  ({ makeRpcCall }) => {
+                    return makeRpcCall({
+                      method: 'net_version',
+                    });
+                  },
+                );
+
+                expect(networkId).toStrictEqual('1');
+              },
+            );
+          });
+        }
+      });
     });
   });
 }
