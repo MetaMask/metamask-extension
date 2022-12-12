@@ -14,4 +14,20 @@
   &__panel {
     height: 100%;
   }
+
+  &__content > *:first-child {
+    margin-top: 0;
+  }
+
+  &__content > div > *:first-child {
+    margin-top: 0;
+  }
+
+  &__content:last-child {
+    margin-bottom: 0;
+  }
+
+  &__content > div:last-child > * {
+    margin-bottom: 0;
+  }
 }
