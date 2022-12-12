@@ -331,40 +331,27 @@ export async function withInfuraClient(...args) {
 }
 
 /**
- * Some JSON-RPC endpoints take a "block" param (example: `eth_blockNumber`)
- * which can optionally be left out. Additionally, the endpoint may support some
- * number of arguments, although the "block" param will always be last, even if
- * it is optional. Given this, this function builds a mock `params` array for
- * such an endpoint, filling it with arbitrary values, but with the "block"
- * param missing.
+ * Build mock parameters for a JSON-RPC call.
  *
- * @param {number} index - The index within the `params` array where the "block"
- * param *would* appear.
- * @returns {string[]} The mock params.
- */
-export function buildMockParamsWithoutBlockParamAt(index) {
-  const params = [];
-  for (let i = 0; i < index; i++) {
-    params.push('some value');
-  }
-  return params;
-}
-
-/**
- * Some JSON-RPC endpoints take a "block" param (example: `eth_blockNumber`)
- * which can optionally be left out. Additionally, the endpoint may support some
- * number of arguments, although the "block" param will always be last, even if
- * it is optional. Given this, this function builds a `params` array for such an
- * endpoint with the given "block" param added at the end.
+ * The string 'some value' is used as the default value for each entry. The
+ * block parameter index determines the number of parameters to generate.
  *
- * @param {number} index - The index within the `params` array to add the
- * "block" param.
- * @param {any} blockParam - The desired "block" param to add.
+ * The block parameter can be set to a custom value. If no value is given, it
+ * is set as undefined.
+ *
+ * @param {object} args - Arguments.
+ * @param {number} args.blockParamIndex - The index of the block parameter.
+ * @param {any} [args.blockParam] - The block parameter value to set.
  * @returns {any[]} The mock params.
  */
-export function buildMockParamsWithBlockParamAt(index, blockParam) {
-  const params = buildMockParamsWithoutBlockParamAt(index);
-  params.push(blockParam);
+export function buildMockParams({ blockParam, blockParamIndex }) {
+  if (blockParamIndex === undefined) {
+    throw new Error(`Missing 'blockParamIndex'`);
+  }
+
+  const params = new Array(blockParamIndex).fill('some value');
+  params[blockParamIndex] = blockParam;
+
   return params;
 }
 
