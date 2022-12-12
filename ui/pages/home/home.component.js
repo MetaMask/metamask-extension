@@ -410,7 +410,7 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {showRecoveryPhraseReminder ? (
+        {shouldShowSeedPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}

@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Switch,
-  Route,
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
@@ -79,7 +74,6 @@ export default function OnboardingFlow() {
     };
     verifyAndSetSeedPhrase();
   }, [completedOnboarding, secretRecoveryPhrase]);
-
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
