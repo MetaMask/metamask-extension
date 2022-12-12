@@ -767,7 +767,7 @@ export default class TransactionController extends EventEmitter {
    * actionId is fix used for making this action idempotent to deal with scenario when
    * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
    *
-   * @param method
+   * @param txMethodType
    * @param txParams
    * @param origin
    * @param transactionType
@@ -776,7 +776,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
-    method,
+    txMethodType,
     txParams,
     origin,
     transactionType,
@@ -859,10 +859,10 @@ export default class TransactionController extends EventEmitter {
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
 
-    if (method) {
+    if (txMethodType && this.securityProviderRequest) {
       const flagAsDangerous = await this.securityProviderRequest(
         txMeta,
-        method,
+        txMethodType,
       );
 
       txMeta.flagAsDangerous = flagAsDangerous;

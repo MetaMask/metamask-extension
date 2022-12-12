@@ -1328,6 +1328,32 @@ describe('Transaction Controller', function () {
         txController.txStateManager.getTransactions().length;
       assert.equal(transactionCount1 + 1, transactionCount2);
     });
+
+    it('should add multiple transactions when called with different actionId and txMethodType defined', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        'eth_sendTransaction',
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+      );
+      await txController.approveTransaction(txMeta.id);
+      await txController.createSpeedUpTransaction(
+        txMeta.id,
+        {},
+        { actionId: 12345 },
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.createSpeedUpTransaction(
+        txMeta.id,
+        {},
+        { actionId: 11111 },
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1 + 1, transactionCount2);
+    });
   });
 
   describe('#signTransaction', function () {
