@@ -166,20 +166,25 @@ export function testsForProviderType(providerType) {
         'eth_blockNumber',
         'eth_estimateGas',
         'eth_getBlockByHash',
-
-        // NOTE: eth_getBlockTransactionCountByNumber and
-        // eth_getTransactionByBlockNumberAndIndex does take a block param at
+        // NOTE: eth_getBlockTransactionCountByNumber does take a block param at
         // the 0th index, but this is not handled by our cache middleware
         // currently
         'eth_getBlockTransactionCountByNumber',
+        // NOTE: eth_getTransactionByBlockNumberAndIndex does take a block param
+        // at the 0th index, but this is not handled by our cache middleware
+        // currently
         'eth_getTransactionByBlockNumberAndIndex',
-
         'eth_getBlockTransactionCountByHash',
         'eth_getFilterLogs',
         'eth_getTransactionByBlockHashAndIndex',
         'eth_getUncleByBlockHashAndIndex',
+        // NOTE: eth_getUncleByBlockNumberAndIndex does take a block param at
+        // the 0th index, but this is not handled by our cache middleware
+        // currently
         'eth_getUncleByBlockNumberAndIndex',
         'eth_getUncleCountByBlockHash',
+        // NOTE: eth_getUncleCountByBlockNumber does take a block param at the
+        // 0th index, but this is not handled by our cache middleware currently
         'eth_getUncleCountByBlockNumber',
       ];
       assumingNoBlockParam.forEach((name) =>
