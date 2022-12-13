@@ -64,7 +64,8 @@ async function main() {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      // TODO: Enable the next line once the Swaps E2E tests are stable.
+      // ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
 
