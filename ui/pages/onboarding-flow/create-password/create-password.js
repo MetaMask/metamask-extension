@@ -182,16 +182,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <button
-                className="create-password__form--password-button"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? t('hide') : t('show')}
-              </button>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <a
+                  href=""
+                  className="create-password__form--password-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? t('hide') : t('show')}
+                </a>
+              </Typography>
             }
           />
           <FormField
