@@ -45,6 +45,7 @@ import {
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import Tooltip from '../../components/ui/tooltip';
@@ -414,12 +415,13 @@ export default class Home extends PureComponent {
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}
             onAccept={() => {
+              const backUpSRPRoute = process.env.ONBOARDING_V2
+                ? `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`
+                : INITIALIZE_BACKUP_SEED_PHRASE_ROUTE;
               if (isPopup) {
-                global.platform.openExtensionInBrowser(
-                  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-                );
+                global.platform.openExtensionInBrowser(backUpSRPRoute);
               } else {
-                history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE);
+                history.push(backUpSRPRoute);
               }
             }}
             infoText={t('backupApprovalInfo')}
