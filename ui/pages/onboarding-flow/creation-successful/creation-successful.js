@@ -21,9 +21,6 @@ export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
 
-  const onComplete = async () => {
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-  };
   return (
     <div className="creation-successful" data-testid="creation-successful">
       <Box textAlign={TEXT_ALIGN.CENTER}>
@@ -96,7 +93,7 @@ export default function CreationSuccessful() {
           type="primary"
           large
           rounded
-          onClick={onComplete}
+          onClick={() => history.push(ONBOARDING_PIN_EXTENSION_ROUTE)}
         >
           {t('gotIt')}
         </Button>

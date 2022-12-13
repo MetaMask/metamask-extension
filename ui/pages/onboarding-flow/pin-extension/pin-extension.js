@@ -20,6 +20,15 @@ export default function OnboardingPinExtension() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const handleClick = async () => {
+    if (selectedIndex === 0) {
+      setSelectedIndex(1);
+    } else {
+      await dispatch(setCompletedOnboarding());
+      history.push(DEFAULT_ROUTE);
+    }
+  };
+
   return (
     <div
       className="onboarding-pin-extension"
@@ -67,14 +76,7 @@ export default function OnboardingPinExtension() {
             selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
           }
           type="primary"
-          onClick={async () => {
-            if (selectedIndex === 0) {
-              setSelectedIndex(1);
-            } else {
-              await dispatch(setCompletedOnboarding());
-              history.push(DEFAULT_ROUTE);
-            }
-          }}
+          onClick={handleClick}
         >
           {selectedIndex === 0 ? t('next') : t('done')}
         </Button>
