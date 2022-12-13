@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import Typography from '../../../ui/typography/typography';
 
-const Paragraph = (props) => <Typography {...props} variant={TYPOGRAPHY.H6} />
+const Paragraph = (props) => <Typography {...props} variant={TYPOGRAPHY.H6} />;
 
 export const SnapUIMarkdown = ({ children }) => {
   return (
