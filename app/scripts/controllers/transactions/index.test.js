@@ -41,7 +41,12 @@ const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, fromAccount, fragmentExists;
+  let txController,
+    provider,
+    providerResultStub,
+    fromAccount,
+    fragmentExists,
+    networkStore;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -57,6 +62,8 @@ describe('Transaction Controller', function () {
       chainId: currentNetworkId,
     }).provider;
 
+    networkStore = new ObservableStore(currentNetworkId);
+
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
@@ -66,7 +73,8 @@ describe('Transaction Controller', function () {
       getGasPrice() {
         return '0xee6b2800';
       },
-      networkStore: new ObservableStore(currentNetworkId),
+      getNetworkState: () => networkStore.getState(),
+      onNetworkStateChange: (listener) => networkStore.subscribe(listener),
       getCurrentNetworkEIP1559Compatibility: () => Promise.resolve(false),
       getCurrentAccountEIP1559Compatibility: () => false,
       txHistoryLimit: 10,
@@ -455,7 +463,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should fail if netId is loading', async function () {
-      txController.networkStore = new ObservableStore('loading');
+      networkStore.putState('loading');
       await assert.rejects(
         () =>
           txController.addUnapprovedTransaction({
@@ -1067,7 +1075,7 @@ describe('Transaction Controller', function () {
 
   describe('#getChainId', function () {
     it('returns 0 when the chainId is NaN', function () {
-      txController.networkStore = new ObservableStore('loading');
+      networkStore.putState('loading');
       assert.equal(txController.getChainId(), 0);
     });
   });
