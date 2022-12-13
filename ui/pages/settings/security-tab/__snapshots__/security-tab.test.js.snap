@@ -492,7 +492,6 @@ exports[`Security Tab should match snapshot 1`] = `
       </div>
       <div
         class="settings-page__content-row"
-        data-testid="advanced-setting-gas-fee-estimation"
       >
         <div
           class="settings-page__content-item"
