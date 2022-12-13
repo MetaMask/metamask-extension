@@ -3,7 +3,7 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap onOff', function () {
+describe('Test Snap Management', function () {
   it('tests install disable enable and removal of a snap', async function () {
     const ganacheOptions = {
       accounts: [
