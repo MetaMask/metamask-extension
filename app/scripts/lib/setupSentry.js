@@ -254,8 +254,8 @@ function sanitizeUrlsFromErrorMessages(report) {
         const { hostname } = urlObj;
         if (
           !Object.values(ERROR_URL_ALLOWLIST).some(
-            (allowedUrl) =>
-              hostname === allowedUrl || hostname.endsWith(`.${allowedUrl}`),
+            (allowedHostname) =>
+              hostname === allowedUrl || hostname.endsWith(`.${allowedHostname}`),
           )
         ) {
           newErrorMessage = newErrorMessage.replace(url, '**');
