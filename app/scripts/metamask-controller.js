@@ -838,7 +838,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      networkStore: this.networkController.networkStore,
+      getNetworkState: () => this.networkController.networkStore.getState(),
+      onNetworkStateChange: (listener) =>
+        this.networkController.networkStore.subscribe(listener),
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
