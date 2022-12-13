@@ -6126,21 +6126,21 @@
   resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
-"@zxing/browser@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@zxing/browser/-/browser-0.0.10.tgz#63c0a762fc2fd4ee946a20953ef24fab225698a9"
-  integrity sha512-P2wQc5fs+cjSc39zFS4UDhejWqdikf4FjuWIlFrzXD8fOsZ4ASfmLDKGeg7mRgmJq11oMKcVXvFFI6kcIKtxuQ==
+"@zxing/browser@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@zxing/browser/-/browser-0.1.1.tgz#f5d6c0a57bda3b223539eadfa3d87c1260e0536f"
+  integrity sha512-fdcHrvvno1NnoiY5++kn/h2b9QnBNyqtK1JqbfY3dfmTdwyXCJr/aT2ZGyRcfe0D3I/THu1I5VJAcpoU0svQMQ==
   optionalDependencies:
     "@zxing/text-encoding" "^0.9.0"
 
-"@zxing/library@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@zxing/library/-/library-0.8.0.tgz#accd9f3cd5c06fa40a95c2c1f61398c41548a9e3"
-  integrity sha512-D7oopukr7cJ0Va01Er2zXiSPXvmvc6D1PpOq/THRvd/57yEsBs+setRsiDo7tSRnYHcw7FrRZSZ7rwyzNSLJeA==
+"@zxing/library@0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@zxing/library/-/library-0.12.4.tgz#0ff2f1bab3af32c1a3a7ebf3e426581e7ff1625f"
+  integrity sha512-GrIyYsbAPUtrUqdDknw0xnIa+iqTegs2TSyBfyq41Jz7a6tQCgIGiKciBEFyBtskADT/YL3teL9Ab9gAMk9oVw==
   dependencies:
-    ts-custom-error "^2.2.1"
+    ts-custom-error "^3.0.0"
   optionalDependencies:
-    text-encoding "^0.6.4"
+    text-encoding "^0.7.0"
 
 "@zxing/text-encoding@0.9.0", "@zxing/text-encoding@^0.9.0":
   version "0.9.0"
@@ -23730,10 +23730,10 @@ test-exclude@^6.0.0:
     glob "^7.1.4"
     minimatch "^3.0.4"
 
-text-encoding@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
-  integrity sha1-45mpgiV6J22uQou5KEXLcb3CbRk=
+text-encoding@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.7.0.tgz#f895e836e45990624086601798ea98e8f36ee643"
+  integrity sha512-oJQ3f1hrOnbRLOcwKz0Liq2IcrvDeZRHXhd9RgLrsT+DjWY/nty1Hi7v3dtkaEYbPYe0mUoOfzRrMwfXXwgPUA==
 
 text-table@^0.2.0:
   version "0.2.0"
@@ -24070,10 +24070,10 @@ trough@^1.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.1.tgz#a9fd8b0394b0ae8fff82e0633a0a36ccad5b5f86"
   integrity sha1-qf2LA5Swro//guBjOgo2zK1bX4Y=
 
-ts-custom-error@^2.2.1:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/ts-custom-error/-/ts-custom-error-2.2.2.tgz#ee769cd6a9cf35dc2e9fedefbb3842f3a2fbceae"
-  integrity sha512-I0FEdfdatDjeigRqh1JFj67bcIKyRNm12UVGheBjs2pXgyELg2xeiQLVaWu1pVmNGXZVnz/fvycSU41moBIpOg==
+ts-custom-error@^3.0.0:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ts-custom-error/-/ts-custom-error-3.3.1.tgz#8bd3c8fc6b8dc8e1cb329267c45200f1e17a65d1"
+  integrity sha512-5OX1tzOjxWEgsr/YEUWSuPrQ00deKLh6D7OTWcvNHm12/7QPyRh8SYpyWvA4IZv8H/+GQWQEh/kwo95Q9OVW1A==
 
 ts-dedent@^2.0.0, ts-dedent@^2.2.0:
   version "2.2.0"
