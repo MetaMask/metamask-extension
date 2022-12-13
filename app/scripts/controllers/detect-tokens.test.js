@@ -75,7 +75,7 @@ describe('DetectTokensController', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox
       .stub(tokensController, '_instantiateNewEthersProvider')

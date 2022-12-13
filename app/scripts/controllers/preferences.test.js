@@ -35,7 +35,7 @@ describe('preferences controller', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
     sandbox
