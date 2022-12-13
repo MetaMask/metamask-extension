@@ -35,6 +35,7 @@ export default function OnboardingPinExtension() {
         showThumbs={false}
         showStatus={false}
         showArrows={false}
+        onChange={(index) => setSelectedIndex(index)}
       >
         <div>
           <Typography align={TEXT_ALIGN.CENTER}>
