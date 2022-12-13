@@ -128,9 +128,9 @@ async function withFixtures(options, testSuite) {
           if (typeof originalProperty === 'function') {
             return (...args) => {
               console.log(
-                `[driver] Called '${prop}' with arguments '${JSON.stringify(
+                `[driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                )}'`,
+                )}`,
               );
               return originalProperty.bind(target)(...args);
             };
