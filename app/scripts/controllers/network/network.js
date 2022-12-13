@@ -175,13 +175,6 @@ export default class NetworkController extends EventEmitter {
     return supportsEIP1559;
   }
 
-  verifyNetwork() {
-    // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) {
-      this.lookupNetwork();
-    }
-  }
-
   getNetworkState() {
     return this.networkStore.getState();
   }
@@ -293,7 +286,7 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type) {
+  setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
