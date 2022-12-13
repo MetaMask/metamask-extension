@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { retryOnClosed, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -55,17 +55,17 @@ describe('Test Snap Management', function () {
           10000,
         );
 
-        await driver.delay(1000);
-
         // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Approve & install',
-          tag: 'button',
+        await retryOnClosed(async () => {
+          windowHandles = await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(
+            'MetaMask Notification',
+            windowHandles,
+          );
+          await driver.clickElement({
+            text: 'Approve & install',
+            tag: 'button',
+          });
         });
 
         // switch to the original MM tab

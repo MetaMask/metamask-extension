@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { retryOnClosed, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -56,17 +56,18 @@ describe('Test Snap update', function () {
           },
           10000,
         );
-        await driver.delay(2000);
 
         // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Approve & install',
-          tag: 'button',
+        await retryOnClosed(async () => {
+          windowHandles = await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindowWithTitle(
+            'MetaMask Notification',
+            windowHandles,
+          );
+          await driver.clickElement({
+            text: 'Approve & install',
+            tag: 'button',
+          });
         });
 
         // wait for permissions popover, click checkboxes and confirm

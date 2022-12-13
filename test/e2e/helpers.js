@@ -328,6 +328,36 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   });
 };
 
+/**
+ * Retry steps if the browser window closes.
+ *
+ * This can be useful for testing steps where the extension popup might rapidly close then open up
+ * again. For example, when approving snap installation, or using a dapp that performs two separate
+ * sequential actions. In these cases, there is no reliable way to know when the first popup has
+ * closed and the second one has opened.
+ *
+ * Instead we can capture this error and retry any related steps.
+ *
+ * Typically this callback should start with switching to the expected window. You may also want to
+ * update the window handles first, if the test using this function maintains a list of open window
+ * handles.
+ *
+ * The action must also include one or more interactions with the window. The error about the
+ * window already being closed usually doesn't occur until the first action in that window.
+ *
+ * @param {Function} stepsToRetry - The steps to retry upon close.
+ */
+async function retryOnClosed(stepsToRetry) {
+  try {
+    await stepsToRetry();
+  } catch (error) {
+    if (error.name === 'NoSuchWindowError') {
+      await stepsToRetry();
+    }
+    throw error;
+  }
+}
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -339,4 +369,5 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   createDownloadFolder,
+  retryOnClosed,
 };
