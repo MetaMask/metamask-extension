@@ -66,7 +66,7 @@ export default class DetectTokensController {
       ) {
         this.selectedAddress = selectedAddress;
         this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection();
+        this.restartTokenDetection({ selectedAddress });
       }
     });
     tokensController?.subscribe(
