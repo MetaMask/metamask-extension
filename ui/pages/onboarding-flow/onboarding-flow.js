@@ -19,10 +19,7 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import {
-  getCompletedOnboarding,
-  getSeedPhraseBackedUp,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -54,14 +51,13 @@ export default function OnboardingFlow() {
   const history = useHistory();
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
     }
-  }, [history, completedOnboarding, seedPhraseBackedUp]);
+  }, [history, completedOnboarding, isFromReminder]);
 
   useEffect(() => {
     const verifyAndSetSeedPhrase = async () => {
