@@ -117,6 +117,21 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          whitelist: [],
+          blacklist: ['127.0.0.1'],
+        }),
+      )
+      .get('/api/v1/lists/phishfort_hotlist.json')
+      .reply(200, JSON.stringify(['127.0.0.1']));
 
     sandbox.replace(browser, 'runtime', {
       sendMessage: sandbox.stub().rejects(),
