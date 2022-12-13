@@ -5413,6 +5413,120 @@
         "proxyquire>fill-keys>is-object": true
       }
     },
+    "react-markdown": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true,
+        "react-markdown>comma-separated-tokens": true,
+        "react-markdown>property-information": true,
+        "react-markdown>react-is": true,
+        "react-markdown>remark-parse": true,
+        "react-markdown>remark-rehype": true,
+        "react-markdown>space-separated-tokens": true,
+        "react-markdown>style-to-object": true,
+        "react-markdown>unified": true,
+        "react-markdown>unist-util-visit": true,
+        "react-markdown>vfile": true
+      }
+    },
+    "react-markdown>property-information": {
+      "packages": {
+        "watchify>xtend": true
+      }
+    },
+    "react-markdown>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
+    "react-markdown>remark-parse": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
+      "globals": {
+        "document.createElement": true
+      }
+    },
+    "react-markdown>remark-rehype": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
+        "react-markdown>unist-util-visit": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
+      "packages": {
+        "react-markdown>unist-util-visit": true
+      }
+    },
+    "react-markdown>style-to-object": {
+      "packages": {
+        "react-markdown>style-to-object>inline-style-parser": true
+      }
+    },
+    "react-markdown>unified": {
+      "packages": {
+        "jsdom>request>extend": true,
+        "react-markdown>unified>bail": true,
+        "react-markdown>unified>is-buffer": true,
+        "react-markdown>unified>is-plain-obj": true,
+        "react-markdown>unified>trough": true,
+        "react-markdown>vfile": true
+      }
+    },
+    "react-markdown>unist-util-visit": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-visit-parents": true
+      }
+    },
+    "react-markdown>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-is": true
+      }
+    },
+    "react-markdown>vfile": {
+      "packages": {
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "react-markdown>vfile>is-buffer": true,
+        "react-markdown>vfile>vfile-message": true,
+        "vinyl>replace-ext": true
+      }
+    },
+    "react-markdown>vfile>vfile-message": {
+      "packages": {
+        "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
     "react-popper": {
       "globals": {
         "document": true
@@ -5775,6 +5889,11 @@
     "vinyl>clone": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "vinyl>replace-ext": {
+      "packages": {
+        "browserify>path-browserify": true
       }
     },
     "web3": {
