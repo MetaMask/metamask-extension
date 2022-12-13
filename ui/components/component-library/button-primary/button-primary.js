@@ -8,6 +8,7 @@ import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 export const ButtonPrimary = ({
   className,
   danger,
+  disabled,
   size = BUTTON_PRIMARY_SIZES.MD,
   ...props
 }) => {
@@ -15,9 +16,10 @@ export const ButtonPrimary = ({
     <ButtonBase
       className={classnames(className, 'mm-button-primary', {
         'mm-button-primary--type-danger': danger,
+        'mm-button-primary--disabed': disabled,
       })}
       size={size}
-      {...props}
+      {...{ disabled, ...props }}
     />
   );
 };

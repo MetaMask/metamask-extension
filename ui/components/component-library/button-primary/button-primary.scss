@@ -12,7 +12,7 @@
     background-color: var(--color-primary-alternative);
   }
 
-  &.mm-button-base--disabled {
+  &--disabled {
     &:hover {
       box-shadow: none;
     }

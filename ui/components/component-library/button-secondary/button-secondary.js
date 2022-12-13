@@ -8,6 +8,7 @@ import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
 export const ButtonSecondary = ({
   className,
   danger,
+  disabled,
   size = BUTTON_SECONDARY_SIZES.MD,
   ...props
 }) => {
@@ -15,9 +16,10 @@ export const ButtonSecondary = ({
     <ButtonBase
       className={classnames(className, 'mm-button-secondary', {
         'mm-button-secondary--type-danger': danger,
+        'mm-button-secondary--disabled': disabled,
       })}
       size={size}
-      {...props}
+      {...{ disabled, ...props }}
     />
   );
 };

@@ -15,7 +15,7 @@
     border-color: var(--color-primary-alternative);
   }
 
-  &.mm-button-base--disabled {
+  &--disabled {
     &:hover {
       color: var(--color-primary-default);
       box-shadow: none;

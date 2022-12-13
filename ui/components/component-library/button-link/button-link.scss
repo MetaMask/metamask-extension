@@ -1,4 +1,4 @@
-.mm-button-base-link {
+.mm-button-link {
   color: var(--color-primary-default);
 
   &:hover {
@@ -11,7 +11,7 @@
     opacity: 0.5;
   }
 
-  &.mm-button-base--disabled {
+  &--disabled {
     &:hover {
       color: var(--color-primary-default);
       opacity: 0.3;
