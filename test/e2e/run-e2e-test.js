@@ -18,6 +18,12 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('debug', {
+            default: process.env.E2E_DEBUG === 'true',
+            description:
+              'Run tests in debug mode, logging each driver interaction',
+            type: 'boolean',
+          })
           .option('retries', {
             default: 0,
             description:
@@ -39,7 +45,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, e2eTestPath, retries, leaveRunning } = argv;
+  const { browser, debug, e2eTestPath, retries, leaveRunning } = argv;
 
   if (!browser) {
     exitWithError(
@@ -67,6 +73,10 @@ async function main() {
       return;
     }
     throw error;
+  }
+
+  if (debug) {
+    process.env.E2E_DEBUG = 'true';
   }
 
   let testTimeoutInMilliseconds = 60 * 1000;
