@@ -1275,9 +1275,9 @@
         "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>superstruct": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
       }
@@ -1766,11 +1766,11 @@
         "URL": true
       },
       "packages": {
+        "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>superstruct": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "eth-block-tracker>@metamask/utils": true,
         "semver": true
@@ -2804,7 +2804,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snaps-utils>superstruct": true,
+        "@metamask/snaps-ui>superstruct": true,
         "browserify>buffer": true,
         "nock>debug": true
       }

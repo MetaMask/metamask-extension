@@ -15,6 +15,7 @@ import Tooltip from '../../ui/tooltip/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapDelineator } from '../flask/snap-delineator';
 import { Copyable } from '../flask/copyable';
+import Spinner from '../../ui/spinner';
 ///: END:ONLY_INCLUDE_IN
 
 export const safeComponentList = {
@@ -41,5 +42,7 @@ export const safeComponentList = {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SnapDelineator,
   Copyable,
+  Spinner,
+  hr: 'hr',
   ///: END:ONLY_INCLUDE_IN
 };
