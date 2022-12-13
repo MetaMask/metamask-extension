@@ -286,7 +286,7 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type) {
+  setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
