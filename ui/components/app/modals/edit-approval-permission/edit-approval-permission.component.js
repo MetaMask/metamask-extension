@@ -48,6 +48,11 @@ export default class EditApprovalPermission extends PureComponent {
     const { name, address } = selectedIdentity || {};
     const { selectedOptionIsUnlimited } = this.state;
 
+    const displayTokenBalance =
+      tokenBalance?.replace('.', '').length > 8
+        ? parseFloat(tokenBalance).toPrecision(9)
+        : tokenBalance;
+
     return (
       <div className="edit-approval-permission">
         <div className="edit-approval-permission__header">
@@ -70,7 +75,7 @@ export default class EditApprovalPermission extends PureComponent {
             </div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
-            {`${parseFloat(tokenBalance)} ${tokenSymbol}`}
+            {`${displayTokenBalance} ${tokenSymbol}`}
           </div>
         </div>
         <div className="edit-approval-permission__edit-section">
