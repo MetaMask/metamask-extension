@@ -906,7 +906,7 @@ jobs:
             yarn ts-migration:dashboard:deploy
 
   test-unit-mocha:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
