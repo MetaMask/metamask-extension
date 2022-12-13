@@ -70,7 +70,7 @@ export default class EditApprovalPermission extends PureComponent {
             </div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
-            {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
+            {`${parseFloat(tokenBalance)} ${tokenSymbol}`}
           </div>
         </div>
         <div className="edit-approval-permission__edit-section">
