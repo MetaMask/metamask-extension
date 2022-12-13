@@ -51,6 +51,8 @@ export const COLORS = {
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
+  GOERLI_INVERSE: 'goerli-inverse',
+  SEPOLIA_INVERSE: 'sepolia-inverse',
 };
 export const BACKGROUND_COLORS = pick(COLORS, [
   'BACKGROUND_DEFAULT',

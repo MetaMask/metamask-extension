@@ -346,6 +346,12 @@ export const Color = (args) => {
       <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
         COLORS.INHERIT
       </Box>
+      <Box {...args} padding={3} color={COLORS.SEPOLIA_INVERSE} {...args}>
+        COLORS.SEPOLIA_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.GOERLI_INVERSE} {...args}>
+        COLORS.GOERLI_INVERSE
+      </Box>
     </>
   );
 };
