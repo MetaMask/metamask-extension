@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon } from '../icon';
+import { Icon, ICON_NAMES } from '../icon';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 

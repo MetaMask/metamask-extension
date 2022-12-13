@@ -10,7 +10,7 @@ import {
   ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 
-import { ICON_SIZES } from './icon.constants';
+import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 
 export const Icon = ({
   name,

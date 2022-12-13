@@ -12,7 +12,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon } from '../icon';
+import { Icon, ICON_NAMES } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
