@@ -20,8 +20,7 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
+    network = new NetworkController({ infuraProjectId: 'foo' });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
