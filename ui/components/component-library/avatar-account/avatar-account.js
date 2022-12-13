@@ -29,7 +29,7 @@ export const AvatarAccount = ({
         <Jazzicon
           className={classnames('mm-avatar-account__jazzicon')}
           address={address}
-          diameter={DIAMETERS[size]}
+          diameter={Number(DIAMETERS[size])}
         />
       ) : (
         <BlockieIdenticon
