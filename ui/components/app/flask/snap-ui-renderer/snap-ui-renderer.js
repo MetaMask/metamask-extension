@@ -35,11 +35,8 @@ export const UI_MAPPING = {
     },
   }),
   text: (props) => ({
-    element: 'Typography',
+    element: 'SnapUIMarkdown',
     children: props.value,
-    props: {
-      variant: TYPOGRAPHY.H6,
-    },
   }),
   spinner: () => ({
     element: 'Spinner',
