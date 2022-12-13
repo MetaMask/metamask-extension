@@ -113,21 +113,6 @@ export default function CustomSpendingCap({
   return (
     <>
       <Box
-        textAlign={TEXT_ALIGN.END}
-        className="custom-spending-cap__max-button"
-      >
-        <button
-          className="custom-spending-cap__input--max-button"
-          type="link"
-          onClick={(e) => {
-            e.preventDefault();
-            handleChange(currentTokenBalance);
-          }}
-        >
-          {t('max')}
-        </button>
-      </Box>
-      <Box
         className="custom-spending-cap"
         borderRadius={SIZES.SM}
         paddingTop={2}
@@ -190,6 +175,21 @@ export default function CustomSpendingCap({
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
               allowDecimals
             />
+            <Box
+              textAlign={TEXT_ALIGN.END}
+              className="custom-spending-cap__max-button"
+            >
+              <button
+                className="custom-spending-cap__input--max-button"
+                type="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleChange(currentTokenBalance);
+                }}
+              >
+                {t('max')}
+              </button>
+            </Box>
             <Typography
               color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H7}
