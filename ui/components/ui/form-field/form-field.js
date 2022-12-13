@@ -89,7 +89,6 @@ export default function FormField({
             <Box
               className="form-field__heading-detail"
               textAlign={TEXT_ALIGN.END}
-              marginBottom={3}
               marginRight={2}
               {...titleDetailWrapperProps}
             >
