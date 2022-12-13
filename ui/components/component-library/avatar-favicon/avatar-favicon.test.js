@@ -91,4 +91,15 @@ describe('AvatarFavicon', () => {
       `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.XL}`,
     );
   });
+
+  it('should render with custom classname', () => {
+    const { getByTestId } = render(
+      <AvatarFavicon
+        className="mm-avatar-favicon--test"
+        data-testid="classname"
+        {...args}
+      />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-avatar-favicon--test');
+  });
 });
