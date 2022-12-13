@@ -1,3 +1,5 @@
+import { SIZES } from '../../../helpers/constants/design-system';
+
 export const DIAMETERS = {
   xs: '16',
   sm: '24',
@@ -9,4 +11,12 @@ export const DIAMETERS = {
 export const TYPES = {
   JAZZICON: 'Jazzicon',
   BLOCKIES: 'Blockie',
+};
+
+export const AVATAR_ACCOUNT_SIZES = {
+  XS: SIZES.XS,
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
 };

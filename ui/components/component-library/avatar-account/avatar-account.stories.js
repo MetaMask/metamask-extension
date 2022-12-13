@@ -6,7 +6,7 @@ import {
   SIZES,
 } from '../../../helpers/constants/design-system';
 import { AvatarAccount } from './avatar-account';
-import { TYPES } from './avatar-account.constants';
+import { TYPES, AVATAR_ACCOUNT_SIZES } from './avatar-account.constants';
 
 import README from './README.mdx';
 
@@ -22,7 +22,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_ACCOUNT_SIZES),
     },
     address: { control: 'text' },
     type: {
@@ -55,5 +55,16 @@ export const Type = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarAccount {...args} type={TYPES.JAZZICON} />
     <AvatarAccount {...args} type={TYPES.BLOCKIES} />
+  </Box>
+);
+
+export const Address = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarAccount
+      {...args}
+      type={TYPES.JAZZICON}
+      address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    />
+    <AvatarAccount {...args} type={TYPES.BLOCKIES} address="0x0" />
   </Box>
 );
