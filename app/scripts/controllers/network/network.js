@@ -71,12 +71,19 @@ export const NETWORK_EVENTS = {
 };
 
 export default class NetworkController extends EventEmitter {
-  constructor(opts = {}) {
+  /**
+   * Construct a NetworkController.
+   *
+   * @param {object} [options] - NetworkController options.
+   * @param {object} [options.state] - Initial controller state.
+   * @param {string} [options.infuraProjectId] - The Infura project ID.
+   */
+  constructor({ state = {}, infuraProjectId } = {}) {
     super();
 
     // create stores
     this.providerStore = new ObservableStore(
-      opts.provider || { ...defaultProviderConfig },
+      state.provider || { ...defaultProviderConfig },
     );
     this.previousProviderStore = new ObservableStore(
       this.providerStore.getState(),
@@ -88,7 +95,7 @@ export default class NetworkController extends EventEmitter {
     // state. Currently this is only used for detecting EIP 1559 support but
     // can be extended to track other network details.
     this.networkDetails = new ObservableStore(
-      opts.networkDetails || {
+      state.networkDetails || {
         ...defaultNetworkDetailsState,
       },
     );
@@ -107,21 +114,12 @@ export default class NetworkController extends EventEmitter {
     this._providerProxy = null;
     this._blockTrackerProxy = null;
 
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
-  }
-
-  /**
-   * Sets the Infura project ID
-   *
-   * @param {string} projectId - The Infura project ID
-   * @throws {Error} If the project ID is not a valid string.
-   */
-  setInfuraProjectId(projectId) {
-    if (!projectId || typeof projectId !== 'string') {
+    if (!infuraProjectId || typeof infuraProjectId !== 'string') {
       throw new Error('Invalid Infura project ID');
     }
+    this._infuraProjectId = infuraProjectId;
 
-    this._infuraProjectId = projectId;
+    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
   initializeProvider(providerParams) {
