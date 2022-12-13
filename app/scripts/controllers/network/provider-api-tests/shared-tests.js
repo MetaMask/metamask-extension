@@ -1566,7 +1566,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
 /* eslint-disable-next-line jest/no-export */
 export function testsForRpcMethodSupportingBlockParam(
   method,
-  { blockParamIndex, providerType = 'infura' },
+  { providerType, blockParamIndex },
 ) {
   describe.each([
     ['given no block tag', undefined],
@@ -3190,7 +3190,7 @@ export function testsForRpcMethodSupportingBlockParam(
   describe('given a block tag of "pending"', () => {
     const params = buildMockParams({ blockParamIndex, blockParam: 'pending' });
 
-    it(`hits the RPC endpoint on all calls and does not cache anything`, async () => {
+    it('hits the RPC endpoint on all calls and does not cache anything', async () => {
       const requests = [
         { method, params },
         { method, params },
