@@ -533,7 +533,7 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
-function getUnapprovedTxCount(state) {
+export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
 }
@@ -1158,10 +1158,6 @@ export function getIsMultiLayerFeeNetwork(state) {
  */
 export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
-}
-
-export function getEIP1559V2Enabled(state) {
-  return state.metamask.eip1559V2Enabled;
 }
 
 /**

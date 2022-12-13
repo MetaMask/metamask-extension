@@ -184,6 +184,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
+    descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
+    route: `${SECURITY_ROUTE}#multi-account-balance-checker`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
@@ -291,13 +298,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     icon: 'fa fa-info-circle',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableEIP1559V2'),
-    descriptionMessage: (t) => t('enableEIP1559V2Description'),
-    route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),

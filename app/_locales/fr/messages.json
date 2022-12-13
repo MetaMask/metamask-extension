@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Prix du gaz"
   },
-  "advancedOptions": {
-    "message": "Options avancées"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
@@ -1001,29 +998,8 @@
   "editContact": {
     "message": "Modifier le contact"
   },
-  "editGasEducationButtonText": {
-    "message": "Comment puis-je choisir ?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Ce choix est préférable pour les transactions urgentes (comme les swaps), car cela multiplie les chances de réussite de la transaction. Si le traitement d’un swap prend trop de temps, il peut échouer et vous faire perdre une partie de vos frais de carburant."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Des frais de carburant inférieurs ne doivent être utilisés que lorsque le temps de traitement est moins important. En effet, il est difficile de prévoir quand (ou si) votre transaction aboutira."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Des frais de carburant modérés conviennent pour l’envoi, le retrait ou d’autres transactions pour lesquelles le facteur temps n’est pas décisif. Ce paramètre permet le plus souvent de conclure une transaction avec succès."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Le choix du bon prix de carburant dépend du type de transaction et de son importance à vos yeux."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Comment choisir ?"
-  },
   "editGasFeeModalTitle": {
     "message": "Modifier le prix du carburant"
-  },
-  "editGasHigh": {
-    "message": "Élevé"
   },
   "editGasLimitOutOfBounds": {
     "message": "La limite de carburant doit être d’au moins $1"
@@ -1034,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
-  },
-  "editGasLow": {
-    "message": "Bas"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
@@ -1056,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Les frais maximaux ne peuvent pas être inférieurs aux frais de priorité maximaux"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Les frais maximaux correspondent au montant le plus élevé que vous aurez à payer (frais de base + frais de priorité)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Les frais de priorité maximaux doivent être supérieurs à 0 GWEI"
   },
@@ -1076,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Les frais de priorité sont faibles par rapport aux conditions actuelles du réseau"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Les frais de priorité maximaux (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction. Vous paierez le plus souvent votre réglage maximal"
-  },
-  "editGasMedium": {
-    "message": "Moyen"
   },
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"
@@ -1102,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
   },
-  "editGasTooLowTooltip": {
-    "message": "Vos frais maximaux ou vos frais de priorité maximaux risquent d’être faibles compte tenu des conditions actuelles du marché. Nous ignorons quand (ou si) votre transaction sera traitée. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Cela réduit vos frais maximaux, mais si le trafic réseau augmente, votre transaction peut être retardée ou ne pas aboutir."
-  },
   "editNonceField": {
     "message": "Modifier le nonce"
   },
@@ -1122,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Activer la détection automatique"
-  },
-  "enableEIP1559V2": {
-    "message": "Activer l’interface utilisateur améliorée des frais de transaction"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Nous avons mis à jour le fonctionnement de l’estimation et de la personnalisation des gas fees."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Activez l’interface utilisateur améliorée des frais de transaction dans les Paramètres"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Nous avons mis à jour le fonctionnement de l’estimation et de la personnalisation du gas. À activer si vous souhaitez utiliser la nouvelle expérience de gas. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Nouvelle expérience de gas"
   },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
@@ -1394,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Ce prix de carburant a été suggéré par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nos estimations basses, moyennes et hautes ne sont pas disponibles."
   },
   "gasFee": {
     "message": "Frais de transaction"
@@ -3089,9 +3028,6 @@
   },
   "showPrivateKeys": {
     "message": "Afficher les clés privées"
-  },
-  "showRecommendations": {
-    "message": "Afficher les recommandations"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
