@@ -17,6 +17,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
@@ -725,27 +726,27 @@ function setupController(initState, initLangCode) {
       );
 
     // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
-
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
-        if (type.startsWith(RestrictedMethods.snap_dialog)) {
-          controller.approvalController.accept(id, null);
-        } else {
-          controller.appStateController.reject(
-            id,
-            ethErrors.provider.userRejectedRequest(),
-          );
+        switch (type) {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
+          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+            controller.approvalController.accept(id, null);
+            break;
+          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          default:
+            controller.appStateController.reject(
+              id,
+              ethErrors.provider.userRejectedRequest(),
+            );
+            break;
         }
       },
     );
-    ///: END:ONLY_INCLUDE_IN
-
-    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
-    controller.approvalController.clear(
-      ethErrors.provider.userRejectedRequest(),
-    );
-    ///: END:ONLY_INCLUDE_IN
 
     updateBadge();
   }
