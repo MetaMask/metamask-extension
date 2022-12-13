@@ -75,7 +75,6 @@ describe('DetectTokensController', function () {
           };
           return cb(modifiedNetworkState);
         }),
-      // config: { provider: this.provider },
     });
 
     assetsContractController = new AssetsContractController(

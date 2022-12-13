@@ -22,7 +22,6 @@ import {
   getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getUseCurrencyRateCheck,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -53,7 +52,6 @@ const EthOverview = ({ className }) => {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   return (
     <>
@@ -91,7 +89,7 @@ const EthOverview = ({ className }) => {
                   <span className="eth-overview__cached-star">*</span>
                 ) : null}
               </div>
-              {showFiat && balance && useCurrencyRateCheck && (
+              {showFiat && balance && (
                 <UserPreferencedCurrencyDisplay
                   className={classnames({
                     'eth-overview__cached-secondary-balance': balanceIsCached,

@@ -23,7 +23,6 @@ import {
   getIsBuyableTransakToken,
   getIsBuyableMoonpayToken,
   getIsBuyableWyreToken,
-  getUseCurrencyRateCheck,
 } from '../../../selectors/selectors';
 
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -68,7 +67,6 @@ const TokenOverview = ({ className, token }) => {
   const isTokenBuyableWyre = useSelector((state) =>
     getIsBuyableWyreToken(state, token.symbol),
   );
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const isBuyable =
     isTokenBuyableCoinbasePay ||
@@ -103,7 +101,7 @@ const TokenOverview = ({ className, token }) => {
               displayValue={balanceToRender}
               suffix={token.symbol}
             />
-            {formattedFiatBalance && useCurrencyRateCheck ? (
+            {formattedFiatBalance ? (
               <CurrencyDisplay
                 className="token-overview__secondary-balance"
                 displayValue={formattedFiatBalance}

@@ -12,7 +12,6 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getUseCurrencyRateCheck,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -38,7 +37,6 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
@@ -81,11 +79,7 @@ const AssetList = ({ onClickAsset }) => {
           primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
         }
         tokenSymbol={primaryCurrencyProperties.suffix}
-        secondary={
-          showFiat && useCurrencyRateCheck
-            ? secondaryCurrencyDisplay
-            : undefined
-        }
+        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         identiconBorder
       />

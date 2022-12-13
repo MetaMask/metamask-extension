@@ -74,6 +74,5 @@ describe('DetectedTokenValues', () => {
     renderWithProvider(<DetectedTokenValues {...args} />, store);
 
     expect(screen.getByText('0 SNX')).toBeInTheDocument();
-    expect(screen.getByText('$0')).toBeInTheDocument();
   });
 });

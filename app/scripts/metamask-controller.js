@@ -1004,7 +1004,6 @@ export default class MetamaskController extends EventEmitter {
         // TODO: Handle failure to get conversion rate more gracefully
         console.error(error);
       }
-      // }
     });
 
     this.networkController.lookupNetwork();

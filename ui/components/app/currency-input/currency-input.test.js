@@ -16,6 +16,7 @@ describe('CurrencyInput Component', () => {
       preferences: {
         showFiatInTestnets: true,
       },
+      useCurrencyRateCheck: true,
     },
   };
   describe('rendering', () => {
