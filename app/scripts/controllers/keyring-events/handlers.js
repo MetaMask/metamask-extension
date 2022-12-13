@@ -78,8 +78,10 @@ const METHOD_HANDLERS = {
     },
     dispose: {
       skipBackground: true,
-      global: true, // send to all listening clients
       backgroundSync: noop,
+      callSettings: {
+        global: true, // send to all listening clients
+      },
     },
     getFirstPage: {
       skipBackground: true,
@@ -152,8 +154,10 @@ const METHOD_HANDLERS = {
     },
     destroy: {
       skipBackground: true,
-      global: true, // send to all listening clients
       backgroundSync: noop,
+      callSettings: {
+        global: true, // send to all listening clients
+      },
     },
   },
   [HARDWARE_KEYRING_TYPES.QR]: {},
@@ -163,7 +167,9 @@ const METHOD_HANDLERS = {
 const HANDLER_DEFAULTS = {
   updateAll: false,
   skipBackground: false,
-  global: false,
+  callSettings: {
+    global: false,
+  },
   backgroundSync: async (keyring, newState) => {
     await keyring.deserialize(newState);
     console.log('⬆️ State update for keyring', keyring.type, newState);

@@ -4257,7 +4257,7 @@ export default class MetamaskController extends EventEmitter {
    * created by sendPromisifiedClientAction.
    *
    * @param {string} promiseId
-   * @param {'resolve'|'reject'}result
+   * @param {'resolve'|'reject'} result
    * @param {any} data
    */
   closeBackgroundPromise({ promiseId, result, data }) {

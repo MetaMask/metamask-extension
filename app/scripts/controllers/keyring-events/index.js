@@ -47,8 +47,7 @@ const isMv3ErrorMessage = (_text) => {
  */
 const isServiceWorkerMv3Error = (error) => {
   console.error('isServiceWorkerMv3Error', { error });
-  // @TODO, hacky as the MV3 error could be captured and rethrown with a user-set
-  // error message. Assess whether we should just only check if it's MV3.
+
   const isFormOfError = error instanceof Error;
   if (!isManifestV3 || !isFormOfError) {
     return false;
@@ -165,6 +164,8 @@ export default class KeyringEventsController extends EventEmitter {
    * @private
    */
   _addToEventPool = ({ type, method, args, prevState, resolve, reject }) => {
+    const { callSettings } = getHardwareMethodHandler(type, method);
+
     this.eventPool.push({
       payload: {
         method,
@@ -172,6 +173,7 @@ export default class KeyringEventsController extends EventEmitter {
         type,
         prevState,
         createdAt: new Date().toISOString(),
+        callSettings,
       },
       resolve,
       reject,
@@ -293,7 +295,7 @@ export default class KeyringEventsController extends EventEmitter {
 
       this._addToEventPool({
         type: keyring.type,
-        method, // @TODO, create a test for calling a symbol method
+        method,
         args,
         prevState,
         resolve: this._resolveWrapper(_args, keyring, method, resolve),

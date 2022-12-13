@@ -209,7 +209,9 @@ export const initializeClientKeyringController = () => {
   clientKeyringController = new ClientKeyringController();
 };
 
-export const handleHardwareCall = (params) => {
+export const handleHardwareCall = (_params) => {
+  const { callSettings, ...params } = _params;
+
   initializeClientKeyringController();
 
   clientKeyringController.handleMethodCall(params);
