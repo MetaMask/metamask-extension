@@ -166,7 +166,7 @@ describe('Setup Sentry', () => {
       expect(rewrittenBreadcrumb.data.url).toStrictEqual('');
     });
 
-    it('should hide the breadcrumb data to page', () => {
+    it('should hide the breadcrumb data "to" page', () => {
       const testBreadcrumb = {
         data: {
           to: 'https://example.com',
@@ -176,7 +176,7 @@ describe('Setup Sentry', () => {
       expect(rewrittenBreadcrumb.data.to).toStrictEqual('');
     });
 
-    it('should hide the breadcrumb data from page', () => {
+    it('should hide the breadcrumb data "from" page', () => {
       const testBreadcrumb = {
         data: {
           from: 'https://example.com',
@@ -198,7 +198,7 @@ describe('Setup Sentry', () => {
       );
     });
 
-    it('should NOT hide the breadcrumb data to page if the url is on the extension protocol', () => {
+    it('should NOT hide the breadcrumb data "to" page if the url is on the extension protocol', () => {
       const testBreadcrumb = {
         data: {
           to: 'chrome-extension://abcefg/home.html',
@@ -210,7 +210,7 @@ describe('Setup Sentry', () => {
       );
     });
 
-    it('should NOT hide the breadcrumb data from page if the url is on the extension protocol', () => {
+    it('should NOT hide the breadcrumb data "from" page if the url is on the extension protocol', () => {
       const testBreadcrumb = {
         data: {
           from: 'chrome-extension://abcefg/home.html',
@@ -222,7 +222,7 @@ describe('Setup Sentry', () => {
       );
     });
 
-    it('should hide to but not from or url if to is the only one not matching an internal url', () => {
+    it('should hide "to" but not "from" or url if "to" is the only one not matching an internal url', () => {
       const testBreadcrumb = {
         data: {
           url: 'chrome-extension://abcefg/home.html',
