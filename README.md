@@ -68,21 +68,26 @@ Our e2e test suite can be run on either Firefox or Chrome.
  * Firefox e2e tests can be run with `yarn test:e2e:firefox`.
  * Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
 
+These test scripts all support additional options, which might be helpful for debugging. Run the script with the flag `--help` to see all options.
+
 #### Running a single e2e test
 
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
---browser             Set the browser used; either 'chrome' or 'firefox'.
-
---leave-running       Leaves the browser running after a test fails, along with anything else
-                      that the test used (ganache, the test dapp, etc.).
-
---retries             Set how many times the test should be retried upon failure. Default is 0.
+  --browser        Set the browser used; either 'chrome' or 'firefox'.
+                                         [string] [choices: "chrome", "firefox"]
+  --debug          Run tests in debug mode, logging each driver interaction
+                                                      [boolean] [default: false]
+  --retries        Set how many times the test should be retried upon failure.
+                                                           [number] [default: 0]
+  --leave-running  Leaves the browser running after a test fails, along with
+                   anything else that the test used (ganache, the test dapp,
+                   etc.)                              [boolean] [default: false]
 ```
 
-An example for running `account-details` testcase with chrome and leaving the browser open would be:
-`yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --leave-running`
+For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
+`yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --debug --leave-running`
 
 ### Changing dependencies
 
