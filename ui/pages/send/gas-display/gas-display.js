@@ -56,7 +56,10 @@ export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
+
+  const [isLoading, setLoading] = useState(false);
   const [showDepositPopover, setShowDepositPopover] = useState(false);
+
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -151,8 +154,6 @@ export default function GasDisplay({ gasError }) {
     detailTotal = primaryTotalTextOverrideMaxAmount;
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
-
-  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(!(networkName || currentProvider.nickname));
