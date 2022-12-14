@@ -15,6 +15,12 @@
     }
   }
 
+  &__spinner {
+    height: 58px;
+    width: 58px;
+    margin: 44px auto;
+  }
+
   &__title {
     &__estimate {
       font-size: 12px;

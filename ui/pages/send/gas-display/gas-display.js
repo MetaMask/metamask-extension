@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -6,12 +6,15 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../../shared/lib/transactions-controller-utils';
+
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import GasTiming from '../../../components/app/gas-timing';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
+import Spinner from '../../../components/ui/spinner';
+
 import {
   TYPOGRAPHY,
   DISPLAY,
@@ -33,6 +36,7 @@ import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import DepositPopover from '../../../components/app/deposit-popover';
 import {
+  getCurrentChainId,
   getProvider,
   getPreferences,
   getIsBuyableChain,
@@ -58,10 +62,11 @@ export default function GasDisplay({ gasError }) {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { nativeCurrency, provider, unapprovedTxs } = useSelector(
+  const { nativeCurrency, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
-  const { chainId } = provider;
+  const chainId = useSelector(getCurrentChainId);
+
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
@@ -144,7 +149,18 @@ export default function GasDisplay({ gasError }) {
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
 
-  return (
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(!(networkName || currentProvider.nickname));
+  }, [networkName, currentProvider.nickname]);
+
+  return isLoading ? (
+    <Spinner
+      color="var(--color-secondary-muted)"
+      className="gas-display__spinner"
+    />
+  ) : (
     <>
       {showDepositPopover && (
         <DepositPopover onClose={() => setShowDepositPopover(false)} />
@@ -346,26 +362,30 @@ export default function GasDisplay({ gasError }) {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrencyBuyOrReceive', [
-                      draftTransaction.asset.details?.symbol ?? nativeCurrency,
-                      networkName ?? currentProvider.nickname,
-                      `${t('buyAsset', [
+                  (draftTransaction.asset.details?.symbol ||
+                    nativeCurrency) && (
+                    <Typography variant={TYPOGRAPHY.H7} align="left">
+                      {t('insufficientCurrencyBuyOrReceive', [
                         draftTransaction.asset.details?.symbol ??
                           nativeCurrency,
-                      ])}`,
-                      <Button
-                        type="inline"
-                        className="gas-display__link"
-                        onClick={() =>
-                          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
-                        }
-                        key="receive-button"
-                      >
-                        {t('deposit')}
-                      </Button>,
-                    ])}
-                  </Typography>
+                        networkName ?? currentProvider.nickname,
+                        `${t('buyAsset', [
+                          draftTransaction.asset.details?.symbol ??
+                            nativeCurrency,
+                        ])}`,
+                        <Button
+                          type="inline"
+                          className="gas-display__link"
+                          onClick={() =>
+                            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+                          }
+                          key="receive-button"
+                        >
+                          {t('deposit')}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  )
                 )
               }
               useIcon
