@@ -15,6 +15,7 @@ import {
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   SIZES,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
@@ -176,11 +177,15 @@ export default function CustomSpendingCap({
               allowDecimals
             />
             <Box
+              width={BLOCK_SIZES.MAX}
+              marginLeft="auto"
+              paddingRight={2}
+              paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
-              className="custom-spending-cap__max-button"
+              className="custom-spending-cap__max"
             >
               <button
-                className="custom-spending-cap__input--max-button"
+                className="custom-spending-cap__max--button"
                 type="link"
                 onClick={(e) => {
                   e.preventDefault();
