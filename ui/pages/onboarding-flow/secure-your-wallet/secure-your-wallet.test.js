@@ -18,8 +18,9 @@ describe('Secure Your Wallet Onboarding View', () => {
       .mockReturnValue({ push: pushMock });
   });
 
+  const setSeedPhraseBackedUpMock = jest.fn();
   setBackgroundConnection({
-    setSeedPhraseBackedUp: async () => true,
+    setSeedPhraseBackedUp: setSeedPhraseBackedUpMock,
   });
 
   afterAll(() => {
@@ -47,7 +48,10 @@ describe('Secure Your Wallet Onboarding View', () => {
     expect(queryAllByText('Skip account security?')).toHaveLength(1);
   });
 
-  it('should not be able to click "skip" until "Skip Account Security" terms are agreed to', () => {
+  it('should not be able to click "skip" until "Skip Account Security" terms are agreed to', async () => {
+    const mockDispatch = jest.fn();
+    store.dispatch = mockDispatch;
+
     const { getByText, getByTestId } = renderWithProvider(
       <SecureYourWallet />,
       store,
@@ -60,7 +64,8 @@ describe('Secure Your Wallet Onboarding View', () => {
     const checkbox = getByTestId('skip-srp-backup-popover-checkbox');
     fireEvent.click(checkbox);
     const confirmSkip = getByTestId('skip-srp-backup');
-    fireEvent.click(confirmSkip);
+    await fireEvent.click(confirmSkip);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(pushMock).toHaveBeenCalledTimes(1);
     expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
   });
