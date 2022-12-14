@@ -203,7 +203,7 @@ export default class NetworkController extends EventEmitter {
 
       this._setNetworkState('loading');
       // keep network details in sync with network state
-      this.clearNetworkDetails();
+      this._clearNetworkDetails();
       return;
     }
 
