@@ -70,7 +70,7 @@ export default {
     },
     width: {
       options: Object.values(BLOCK_SIZES),
-      control: 'select',
+      control: 'multi-select',
       defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
@@ -656,4 +656,38 @@ export const As = (args) => {
       <Box as="header">header</Box>
     </>
   );
+};
+
+export const Width = (args) => {
+  return (
+    <>
+      <Typography boxProps={{ marginBottom: 4 }}>
+        TODO: WRITE INFO HERE
+      </Typography>
+      <Box gap={2} display={DISPLAY.FLEX}>
+        <Box
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+          width={BLOCK_SIZES.HALF}
+        >
+          Non-responsive box at width size: {BLOCK_SIZES.HALF}
+        </Box>
+        <Box
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+          {...args}
+        >
+          Responsive box at size(s):{' '}
+          {args.width.map((width) => {
+            return `${width}, `;
+          })}
+          {console.log(args.width)}
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+Width.args = {
+  width: [BLOCK_SIZES.HALF, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.ONE_FIFTH],
 };
