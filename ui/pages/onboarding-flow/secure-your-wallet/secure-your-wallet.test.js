@@ -4,8 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import reactRouterDom from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../../test/jest';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import * as Actions from '../../../store/actions';
 import SecureYourWallet from './secure-your-wallet';
 
 describe('Secure Your Wallet Onboarding View', () => {
@@ -16,11 +16,6 @@ describe('Secure Your Wallet Onboarding View', () => {
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
       .mockReturnValue({ push: pushMock });
-  });
-
-  const setSeedPhraseBackedUpMock = jest.fn();
-  setBackgroundConnection({
-    setSeedPhraseBackedUp: setSeedPhraseBackedUpMock,
   });
 
   afterAll(() => {
@@ -49,8 +44,9 @@ describe('Secure Your Wallet Onboarding View', () => {
   });
 
   it('should not be able to click "skip" until "Skip Account Security" terms are agreed to', async () => {
-    const mockDispatch = jest.fn();
-    store.dispatch = mockDispatch;
+    const setSeedPhraseBackedUpSpy = jest
+      .spyOn(Actions, 'setSeedPhraseBackedUp')
+      .mockReturnValue({ type: 'setSeedPhraseBackedUp' });
 
     const { getByText, getByTestId } = renderWithProvider(
       <SecureYourWallet />,
@@ -65,7 +61,7 @@ describe('Secure Your Wallet Onboarding View', () => {
     fireEvent.click(checkbox);
     const confirmSkip = getByTestId('skip-srp-backup');
     await fireEvent.click(confirmSkip);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledTimes(1);
     expect(pushMock).toHaveBeenCalledTimes(1);
     expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
   });
