@@ -19,15 +19,15 @@
     margin-top: 0;
   }
 
-  &__content > div > *:first-child {
+  &__content > &__panel > *:first-child {
     margin-top: 0;
   }
 
-  &__content:last-child {
+  &__content > *:last-child {
     margin-bottom: 0;
   }
 
-  &__content > div:last-child > * {
+  &__content > &__panel > *:last-child {
     margin-bottom: 0;
   }
 }
