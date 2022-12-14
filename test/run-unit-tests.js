@@ -150,7 +150,7 @@ async function start() {
 
   if (fakeParallelism) {
     console.log(
-      `Using fake paralleism of ${fakeParallelism}. Your machine may become as useful as a brick during this operation.`,
+      `Using fake parallelism of ${fakeParallelism}. Your machine may become as useful as a brick during this operation.`,
     );
     if (jestGlobal && jestDev) {
       throw new Error(
