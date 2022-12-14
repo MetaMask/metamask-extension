@@ -224,38 +224,6 @@ export default function TokenAllowance({
 
   const isEmpty = customTokenAmount === '';
 
-  const network = hexToDecimal(fullTxData.chainId);
-
-  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(
-        unapprovedTxs[key],
-        fullTxData.chainId,
-        network,
-      ),
-    )
-    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
-
-  const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
-  const currentPosition = enumUnapprovedTxs.indexOf(
-    fullTxData.id ? fullTxData.id.toString() : '',
-  );
-
-  const totalTx = enumUnapprovedTxs.length;
-  const positionOfCurrentTx = currentPosition + 1;
-  const nextTxId = enumUnapprovedTxs[currentPosition + 1];
-  const prevTxId = enumUnapprovedTxs[currentPosition - 1];
-  const showNavigation = enumUnapprovedTxs.length > 1;
-  const firstTx = enumUnapprovedTxs[0];
-  const lastTx = enumUnapprovedTxs[enumUnapprovedTxs.length - 1];
-
-  const handleNextTx = (txId) => {
-    if (txId) {
-      dispatch(clearConfirmTransaction());
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
-    }
-  };
-
   const renderContractTokenValues = (
     <Box marginTop={4} key={tokenAddress}>
       <ContractTokenValues
@@ -270,18 +238,7 @@ export default function TokenAllowance({
   return (
     <Box className="token-allowance-container page-container">
       <Box>
-        <ConfirmPageContainerNavigation
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => handleNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={t('ofTextNofM')}
-          requestsWaitingText={t('requestsAwaitingAcknowledgement')}
-        />
+        <ConfirmPageContainerNavigation />
       </Box>
       <Box
         paddingLeft={4}

@@ -1,19 +1,48 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { getTxData, getUnapprovedTransactions } from '../../../../selectors';
+import { transactionMatchesNetwork } from '../../../../../shared/modules/transaction.utils';
+import { I18nContext } from '../../../../contexts/i18n';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
 
-const ConfirmPageContainerNavigation = (props) => {
-  const {
-    onNextTx,
-    totalTx,
-    positionOfCurrentTx,
-    nextTxId,
-    prevTxId,
-    showNavigation,
-    firstTx,
-    lastTx,
-    ofText,
-    requestsWaitingText,
-  } = props;
+const ConfirmPageContainerNavigation = () => {
+  const t = useContext(I18nContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const txData = useSelector(getTxData);
+
+  const network = hexToDecimal(txData.chainId);
+
+  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+    .filter((key) =>
+      transactionMatchesNetwork(unapprovedTxs[key], txData.chainId, network),
+    )
+    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
+
+  const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
+  const currentPosition = enumUnapprovedTxs.indexOf(
+    txData.id ? txData.id.toString() : '',
+  );
+
+  const totalTx = enumUnapprovedTxs.length;
+  const positionOfCurrentTx = currentPosition + 1;
+  const nextTxId = enumUnapprovedTxs[currentPosition + 1];
+  const prevTxId = enumUnapprovedTxs[currentPosition - 1];
+  const showNavigation = enumUnapprovedTxs.length > 1;
+  const firstTx = enumUnapprovedTxs[0];
+  const lastTx = enumUnapprovedTxs[enumUnapprovedTxs.length - 1];
+
+  const onNextTx = (txId) => {
+    if (txId) {
+      dispatch(clearConfirmTransaction());
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
+    }
+  };
 
   return (
     <div
@@ -46,10 +75,10 @@ const ConfirmPageContainerNavigation = (props) => {
       </div>
       <div className="confirm-page-container-navigation__textcontainer">
         <div className="confirm-page-container-navigation__navtext">
-          {positionOfCurrentTx} {ofText} {totalTx}
+          {positionOfCurrentTx} {t('ofTextNofM')} {totalTx}
         </div>
         <div className="confirm-page-container-navigation__longtext">
-          {requestsWaitingText}
+          {t('requestsAwaitingAcknowledgement')}
         </div>
       </div>
       <div
@@ -75,19 +104,6 @@ const ConfirmPageContainerNavigation = (props) => {
       </div>
     </div>
   );
-};
-
-ConfirmPageContainerNavigation.propTypes = {
-  totalTx: PropTypes.number,
-  positionOfCurrentTx: PropTypes.number,
-  onNextTx: PropTypes.func,
-  nextTxId: PropTypes.string,
-  prevTxId: PropTypes.string,
-  showNavigation: PropTypes.bool,
-  firstTx: PropTypes.string,
-  lastTx: PropTypes.string,
-  ofText: PropTypes.string,
-  requestsWaitingText: PropTypes.string,
 };
 
 export default ConfirmPageContainerNavigation;
