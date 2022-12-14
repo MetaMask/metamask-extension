@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add new zh_TW translations and apply a variety of fixes ([#11212](https://github.com/MetaMask/metamask-extension/pull/11212))
 - Add ES translations for getting Ethereum Accounts permission message ([#15660](https://github.com/MetaMask/metamask-extension/pull/15660))
 - Add "Verify contract details" link to SetApprovalForAll confirmation screens ([#15756](https://github.com/MetaMask/metamask-extension/pull/15756))
-- Added Reject transactions modal to be present in the footer of the Approve screen ([#16832](https://github.com/MetaMask/metamask-extension/pull/16832))
+- Add Reject Transactions modal to be present in the footer of the Approve screen ([#16832](https://github.com/MetaMask/metamask-extension/pull/16832))
 - [FLASK] Add snap alerts and prompts via `snap_dialog` RPC method ([#16048](https://github.com/MetaMask/metamask-extension/pull/16048))
 - [FLASK] Expose transaction origin to transaction insight snaps ([#16671](https://github.com/MetaMask/metamask-extension/pull/16671))
 
