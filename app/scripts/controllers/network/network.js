@@ -183,7 +183,6 @@ export default class NetworkController extends EventEmitter {
     }
 
     // Ping the RPC endpoint so we can confirm that it works
-    const ethQuery = new EthQuery(this._provider);
     const initialNetwork = this.getNetworkState();
     const { type } = this.getProviderConfig();
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
@@ -196,15 +195,7 @@ export default class NetworkController extends EventEmitter {
 
     let networkVersion;
     try {
-      networkVersion = await new Promise((resolve, reject) => {
-        ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        });
-      });
+      networkVersion = await this._getNetworkId();
     } catch (error) {
       if (initialNetwork !== this.getNetworkState()) {
         return;
@@ -298,6 +289,24 @@ export default class NetworkController extends EventEmitter {
   //
   // Private
   //
+
+  /**
+   * Get the network ID for the current selected network
+   *
+   * @returns {string} The network ID for the current network.
+   */
+  async _getNetworkId() {
+    const ethQuery = new EthQuery(this._provider);
+    return await new Promise((resolve, reject) => {
+      ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 
   /**
    * Method to return the latest block for the current network
