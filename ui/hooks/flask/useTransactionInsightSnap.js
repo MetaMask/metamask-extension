@@ -34,7 +34,7 @@ export function useTransactionInsightSnap({
         setError(undefined);
         setLoading(true);
 
-        const d = await handleSnapRequest({
+        const newData = await handleSnapRequest({
           snapId,
           origin: '',
           handler: 'onTransaction',
@@ -45,7 +45,7 @@ export function useTransactionInsightSnap({
           },
         });
         if (!cancelled) {
-          setData(d);
+          setData(newData);
         }
       } catch (err) {
         if (!cancelled) {
