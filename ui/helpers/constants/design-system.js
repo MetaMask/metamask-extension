@@ -121,6 +121,10 @@ export const TEXT_COLORS = pick(COLORS, [
   'INFO_DEFAULT',
   'INFO_INVERSE',
   'INHERIT',
+  'GOERLI',
+  'SEPOLIA',
+  'GOERLI_INVERSE',
+  'SEPOLIA_INVERSE',
 ]);
 
 export const ICON_COLORS = pick(COLORS, [
@@ -139,6 +143,10 @@ export const ICON_COLORS = pick(COLORS, [
   'INFO_DEFAULT',
   'INFO_INVERSE',
   'INHERIT',
+  'GOERLI',
+  'SEPOLIA',
+  'GOERLI_INVERSE',
+  'SEPOLIA_INVERSE',
 ]);
 
 export const TYPOGRAPHY = {

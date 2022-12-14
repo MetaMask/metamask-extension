@@ -346,10 +346,22 @@ export const Color = (args) => {
       <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
         COLORS.INHERIT
       </Box>
-      <Box {...args} padding={3} color={COLORS.SEPOLIA_INVERSE} {...args}>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={COLORS.SEPOLIA}
+        color={COLORS.SEPOLIA_INVERSE}
+        {...args}
+      >
         COLORS.SEPOLIA_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.GOERLI_INVERSE} {...args}>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={COLORS.GOERLI}
+        color={COLORS.GOERLI_INVERSE}
+        {...args}
+      >
         COLORS.GOERLI_INVERSE
       </Box>
     </>
@@ -411,6 +423,12 @@ export const BackgroundColor = () => {
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.WARNING_MUTED
         </Typography>
+      </Box>
+      <Box padding={3} backgroundColor={COLORS.SEPOLIA}>
+        <Typography color={COLORS.SEPOLIA_INVERSE}>COLORS.SEPOLIA</Typography>
+      </Box>
+      <Box padding={3} backgroundColor={COLORS.GOERLI}>
+        <Typography color={COLORS.GOERLI_INVERSE}>COLORS.GOERLI</Typography>
       </Box>
     </>
   );
