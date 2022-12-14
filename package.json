@@ -203,7 +203,7 @@
     "@metamask/address-book-controller": "^1.0.0",
     "@metamask/announcement-controller": "^1.0.0",
     "@metamask/approval-controller": "^1.0.0",
-    "@metamask/assets-controllers": "^1.0.0",
+    "@metamask/assets-controllers": "^1.0.1",
     "@metamask/base-controller": "^1.0.0",
     "@metamask/contract-metadata": "^1.31.0",
     "@metamask/controller-utils": "^1.0.0",
