@@ -3723,15 +3723,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/assets-controllers@npm:1.0.0"
+"@metamask/assets-controllers@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/assets-controllers@npm:1.0.1"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/base-controller": ~1.0.0
+    "@metamask/base-controller": ~1.1.0
     "@metamask/contract-metadata": ^1.35.0
     "@metamask/controller-utils": ~1.0.0
     "@metamask/metamask-eth-abis": 3.0.0
@@ -3748,7 +3748,7 @@ __metadata:
     multiformats: ^9.5.2
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
-  checksum: ac9bc8730abf1403ce3344e7c49f43b5ad1ec1fe472d291bf727f1bcab3a59c5d6ed81a946b26dfc22b29db17e5f2bf72b247a438395ed2499877c844a8a32f5
+  checksum: 678f32126aa84de769065581661218a247166ef2e4918290a8e082dd9c7b175d84c5a4d4f431c884dc83201b183f324c2b5047bc69a2ea7825d710470cae5f87
   languageName: node
   linkType: hard
 
@@ -3766,7 +3766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1":
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:~1.1.0":
   version: 1.1.1
   resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
@@ -23368,7 +23368,7 @@ __metadata:
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
     "@metamask/approval-controller": ^1.0.0
-    "@metamask/assets-controllers": ^1.0.0
+    "@metamask/assets-controllers": ^1.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
     "@metamask/contract-metadata": ^1.31.0
