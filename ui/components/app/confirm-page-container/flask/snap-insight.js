@@ -30,7 +30,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
     snapId: selectedSnap.id,
   });
 
-  const data = response?.ui;
+  const data = response?.content;
 
   const hasNoData =
     !error && (loading || !data || (data && Object.keys(data).length === 0));
