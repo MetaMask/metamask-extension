@@ -24,6 +24,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
+import { GAS_PRICE_FETCH_FAILURE_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import {
   ERC1155,
   ERC20,
@@ -76,6 +77,10 @@ export default function GasDisplay({ gasError }) {
     draftTransaction.asset.details?.symbol ?? nativeCurrency;
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
+  const showInsufficientTokenError =
+    (gasError && gasError !== GAS_PRICE_FETCH_FAILURE_ERROR_KEY) ||
+    isInsufficientTokenError;
+
   const editingTransaction = unapprovedTxs[draftTransaction.id];
 
   const transactionData = {
@@ -277,7 +282,7 @@ export default function GasDisplay({ gasError }) {
                 />
               }
             />,
-            (gasError || isInsufficientTokenError) && (
+            showInsufficientTokenError && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
@@ -324,7 +329,7 @@ export default function GasDisplay({ gasError }) {
           ]}
         />
       </Box>
-      {(gasError || isInsufficientTokenError) && (
+      {showInsufficientTokenError && (
         <Box
           className="gas-display__warning-message"
           data-testid="gas-warning-message"
