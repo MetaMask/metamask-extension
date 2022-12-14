@@ -315,11 +315,10 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.SUCCESS_INVERSE}
         backgroundColor={COLORS.SUCCESS_DEFAULT}
-        {...args}
       >
         COLORS.SUCCESS_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT}>
         COLORS.WARNING_DEFAULT
       </Box>
       <Box
@@ -327,11 +326,10 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.WARNING_INVERSE}
         backgroundColor={COLORS.WARNING_DEFAULT}
-        {...args}
       >
         COLORS.WARNING_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT}>
         COLORS.INFO_DEFAULT
       </Box>
       <Box
@@ -339,11 +337,10 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.INFO_INVERSE}
         backgroundColor={COLORS.INFO_DEFAULT}
-        {...args}
       >
         COLORS.INFO_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INHERIT}>
         COLORS.INHERIT
       </Box>
       <Box
@@ -351,7 +348,6 @@ export const Color = (args) => {
         padding={3}
         backgroundColor={COLORS.SEPOLIA}
         color={COLORS.SEPOLIA_INVERSE}
-        {...args}
       >
         COLORS.SEPOLIA_INVERSE
       </Box>
@@ -360,7 +356,6 @@ export const Color = (args) => {
         padding={3}
         backgroundColor={COLORS.GOERLI}
         color={COLORS.GOERLI_INVERSE}
-        {...args}
       >
         COLORS.GOERLI_INVERSE
       </Box>
