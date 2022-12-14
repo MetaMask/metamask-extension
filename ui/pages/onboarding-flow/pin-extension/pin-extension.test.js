@@ -3,12 +3,11 @@ import { fireEvent } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import {
   renderWithProvider,
   setBackgroundConnection,
 } from '../../../../test/jest';
-import CreationSuccessful from './creation-successful';
+import PinExtension from './pin-extension';
 
 const completeOnboardingStub = jest
   .fn()
@@ -33,10 +32,12 @@ describe('Creation Successful Onboarding View', () => {
       .mockReturnValue({ push: pushMock });
   });
 
-  it('should redirect to privacy-settings view when "Advanced configuration" button is clicked', () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const privacySettingsButton = getByText('Advanced configuration');
-    fireEvent.click(privacySettingsButton);
-    expect(pushMock).toHaveBeenCalledWith(ONBOARDING_PRIVACY_SETTINGS_ROUTE);
+  it('should call completeOnboarding in the background when Done" button is clicked', () => {
+    const { getByText } = renderWithProvider(<PinExtension />, store);
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+    const gotItButton = getByText('Done');
+    fireEvent.click(gotItButton);
+    expect(completeOnboardingStub).toHaveBeenCalledTimes(1);
   });
 });
