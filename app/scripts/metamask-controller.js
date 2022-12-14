@@ -1641,10 +1641,6 @@ export default class MetamaskController extends EventEmitter {
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
-      setShowGasFeeEstimationBuySwapTokens:
-        preferencesController.setShowGasFeeEstimationBuySwapTokens.bind(
-          preferencesController,
-        ),
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),

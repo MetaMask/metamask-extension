@@ -46,7 +46,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "useTokenDetection": false,
-    "showGasFeeEstimationBuySwapTokens": true,
     "useMultiAccountBalanceChecker": true
   }
 }

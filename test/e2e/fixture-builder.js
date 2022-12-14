@@ -238,7 +238,6 @@ function defaultFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
-        showGasFeeEstimationBuySwapTokens: true,
         useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
@@ -352,7 +351,6 @@ function onboardingFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
-        showGasFeeEstimationBuySwapTokens: true,
         useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {

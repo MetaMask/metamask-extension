@@ -74,9 +74,9 @@ describe('Security Tab', () => {
 
     const checkboxes = queryAllByRole('checkbox');
 
-    let index = 5;
+    let index = 4;
     if (process.env.COLLECTIBLES_V1) {
-      index = 6;
+      index = 5;
     }
     const toggleMetaMetricsCheckbox = checkboxes[index];
 
@@ -108,7 +108,7 @@ describe('Security Tab', () => {
     const { queryAllByRole } = renderWithProvider(<SecurityTab />, mockStore);
 
     const checkboxes = queryAllByRole('checkbox');
-    const tokenDetectionToggle = checkboxes[3];
+    const tokenDetectionToggle = checkboxes[2];
 
     expect(tokenDetectionToggle).toHaveAttribute('value', 'true');
 

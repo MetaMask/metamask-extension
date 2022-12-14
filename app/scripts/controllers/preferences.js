@@ -35,7 +35,6 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      showGasFeeEstimationBuySwapTokens: true,
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -135,15 +134,6 @@ export default class PreferencesController {
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
-  }
-
-  /**
-   * Setter for the `showGasFeeEstimationBuySwapTokens` property
-   *
-   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
-   */
-  setShowGasFeeEstimationBuySwapTokens(val) {
-    this.store.updateState({ showGasFeeEstimationBuySwapTokens: val });
   }
 
   /**

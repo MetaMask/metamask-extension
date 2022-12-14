@@ -41,8 +41,6 @@ export default class SecurityTab extends PureComponent {
     usePhishDetect: PropTypes.bool.isRequired,
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
-    showGasFeeEstimationBuySwapTokens: PropTypes.bool.isRequired,
-    setShowGasFeeEstimationBuySwapTokens: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
@@ -221,56 +219,6 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={participateInMetaMetrics}
               onToggle={(value) => setParticipateInMetaMetrics(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderShowGasFeeEstimationBuySwapTokensToggle() {
-    const { t } = this.context;
-    const {
-      showGasFeeEstimationBuySwapTokens,
-      setShowGasFeeEstimationBuySwapTokens,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-gas-fee-estimation"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showGasFeeEstimationBuySwapTokens')}</span>
-          <div className="settings-page__content-description">
-            {t('showGasFeeEstimationBuySwapTokensDescription', [
-              // TODO: Update to use real link
-              <a
-                href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="sgf-consensys-privacy-link"
-              >
-                {t('privacyMsg')}
-              </a>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={showGasFeeEstimationBuySwapTokens}
-              onToggle={(value) => {
-                this.toggleSetting(
-                  value,
-                  EVENT_NAMES.KEY_GAS_FEE_ESTIMATION_BUY_SWAP_TOKENS,
-                  EVENT_NAMES.KEY_GAS_FEE_ESTIMATION_BUY_SWAP_TOKENS,
-                  setShowGasFeeEstimationBuySwapTokens,
-                );
-              }}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -556,7 +504,6 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderIncomingTransactionsOptIn()}
-          {this.renderShowGasFeeEstimationBuySwapTokensToggle()}
         </div>
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('networkProvider')}

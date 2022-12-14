@@ -185,14 +185,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('showGasFeeEstimationBuySwapTokens'),
-    descriptionMessage: (t) =>
-      t('showGasFeeEstimationBuySwapTokensDescription'),
-    route: `${SECURITY_ROUTE}#-show-gas-fee-estimation`,
-    icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
     descriptionMessage: (t) => t('chooseYourNetworkDescription'),
     route: `${SECURITY_ROUTE}#-chose-your-network`,

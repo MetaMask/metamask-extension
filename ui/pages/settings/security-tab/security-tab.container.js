@@ -6,7 +6,6 @@ import {
   setParticipateInMetaMetrics,
   setUsePhishDetect,
   setUseTokenDetection,
-  setShowGasFeeEstimationBuySwapTokens,
   setIpfsGateway,
   setUseMultiAccountBalanceChecker,
   setUseNftDetection,
@@ -25,7 +24,6 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     usePhishDetect,
     useTokenDetection,
-    showGasFeeEstimationBuySwapTokens,
     ipfsGateway,
     useMultiAccountBalanceChecker,
   } = metamask;
@@ -36,7 +34,6 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     usePhishDetect,
     useTokenDetection,
-    showGasFeeEstimationBuySwapTokens,
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useNftDetection: getUseNftDetection(state),
@@ -53,9 +50,6 @@ const mapDispatchToProps = (dispatch) => {
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseTokenDetection: (value) => {
       return dispatch(setUseTokenDetection(value));
-    },
-    setShowGasFeeEstimationBuySwapTokens: (value) => {
-      return dispatch(setShowGasFeeEstimationBuySwapTokens(value));
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));

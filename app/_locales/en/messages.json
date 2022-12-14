@@ -3308,9 +3308,6 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Select this to show fiat conversion on test networks"
   },
-  "showGasFeeEstimationBuySwapTokens": {
-    "message": "Show gas fee estimation, buy crypto and swap tokens"
-  },
   "showGasFeeEstimationBuySwapTokensDescription": {
     "message": "We use ConsenSys APIs to display Gas fee estimation, and perform transactions like buying or swapping crypto. These services are provided through a proxy. Third parties will have access to your account address, but won’t have access to your IP address. $1",
     "description": "$1 is the link to the privacy policy of consensys APIs"
