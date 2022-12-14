@@ -239,9 +239,9 @@ export function testsForProviderType(providerType) {
         });
       });
 
-      describe('eth_getTransactionByReceipt', () => {
+      describe('eth_getTransactionReceipt', () => {
         it("refreshes the block tracker's current block if it is less than the block number that comes back in the response", async () => {
-          const method = 'eth_getTransactionByReceipt';
+          const method = 'eth_getTransactionReceipt';
 
           await withMockedCommunications({ providerType }, async (comms) => {
             const request = { method };
