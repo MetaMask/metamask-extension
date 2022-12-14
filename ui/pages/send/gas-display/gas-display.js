@@ -65,9 +65,12 @@ export default function GasDisplay({ gasError }) {
   const { nativeCurrency, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
-  const chainId = useSelector(getCurrentChainId);
 
+  const chainId = useSelector(getCurrentChainId);
   const networkName = NETWORK_TO_NAME_MAP[chainId];
+
+  const currencySymbol =
+    draftTransaction.asset.details?.symbol ?? nativeCurrency;
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
@@ -362,17 +365,12 @@ export default function GasDisplay({ gasError }) {
                     ])}
                   </Typography>
                 ) : (
-                  (draftTransaction.asset.details?.symbol ||
-                    nativeCurrency) && (
+                  currencySymbol && (
                     <Typography variant={TYPOGRAPHY.H7} align="left">
                       {t('insufficientCurrencyBuyOrReceive', [
-                        draftTransaction.asset.details?.symbol ??
-                          nativeCurrency,
+                        currencySymbol,
                         networkName ?? currentProvider.nickname,
-                        `${t('buyAsset', [
-                          draftTransaction.asset.details?.symbol ??
-                            nativeCurrency,
-                        ])}`,
+                        `${t('buyAsset', [currencySymbol])}`,
                         <Button
                           type="inline"
                           className="gas-display__link"
