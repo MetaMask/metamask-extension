@@ -738,7 +738,7 @@ function setupController(initState, initLangCode) {
             break;
           ///: END:ONLY_INCLUDE_IN
           default:
-            controller.appStateController.reject(
+            controller.approvalController.reject(
               id,
               ethErrors.provider.userRejectedRequest(),
             );
