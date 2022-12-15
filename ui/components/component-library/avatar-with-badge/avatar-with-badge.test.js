@@ -14,8 +14,8 @@ describe('AvatarWithBadge', () => {
         data-testid="avatar-with-badge"
         badge={
           <AvatarNetwork
-            networkName="Arbitrum One"
-            networkImageUrl="./images/arbitrum.svg"
+            name="Arbitrum One"
+            src="./images/arbitrum.svg"
             data-testid="badge"
           />
         }
@@ -32,8 +32,8 @@ describe('AvatarWithBadge', () => {
         badgePosition={BADGE_POSITIONS.BOTTOM}
         badge={
           <AvatarNetwork
-            networkName="Arbitrum One"
-            networkImageUrl="./images/arbitrum.svg"
+            name="Arbitrum One"
+            src="./images/arbitrum.svg"
             data-testid="badge"
           />
         }
@@ -54,8 +54,8 @@ describe('AvatarWithBadge', () => {
         badgePosition={BADGE_POSITIONS.TOP}
         badge={
           <AvatarNetwork
-            networkName="Arbitrum One"
-            networkImageUrl="./images/arbitrum.svg"
+            name="Arbitrum One"
+            src="./images/arbitrum.svg"
             data-testid="badge"
           />
         }
@@ -76,8 +76,8 @@ describe('AvatarWithBadge', () => {
         badgeWrapperProps={{ borderColor: COLORS.ERROR_DEFAULT }}
         badge={
           <AvatarNetwork
-            networkName="Arbitrum One"
-            networkImageUrl="./images/arbitrum.svg"
+            name="Arbitrum One"
+            src="./images/arbitrum.svg"
             data-testid="badge"
           />
         }
