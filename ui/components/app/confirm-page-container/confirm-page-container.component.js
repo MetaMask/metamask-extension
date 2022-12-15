@@ -66,6 +66,7 @@ export default class ConfirmPageContainer extends Component {
     toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
+    recipientIsOwnedAccount: PropTypes.bool,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -135,6 +136,7 @@ export default class ConfirmPageContainer extends Component {
       toMetadataName,
       toEns,
       toNickname,
+      recipientIsOwnedAccount,
       toAddress,
       disabled,
       errorKey,
@@ -247,6 +249,7 @@ export default class ConfirmPageContainer extends Component {
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
+                  recipientIsOwnedAccount={recipientIsOwnedAccount}
                 />
               )}
             </ConfirmPageContainerHeader>

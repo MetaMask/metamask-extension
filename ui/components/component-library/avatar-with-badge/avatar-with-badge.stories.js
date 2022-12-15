@@ -37,8 +37,8 @@ export const DefaultStory = (args) => (
     badge={
       <AvatarNetwork
         size={SIZES.XS}
-        networkName="Arbitrum One"
-        networkImageUrl="./images/arbitrum.svg"
+        name="Arbitrum One"
+        src="./images/arbitrum.svg"
       />
     }
     {...args}
@@ -59,8 +59,8 @@ export const BadgePosition = () => (
       badge={
         <AvatarNetwork
           size={SIZES.XS}
-          networkName="Arbitrum One"
-          networkImageUrl="./images/arbitrum.svg"
+          name="Arbitrum One"
+          src="./images/arbitrum.svg"
         />
       }
     >
@@ -76,8 +76,8 @@ export const BadgePosition = () => (
       badge={
         <AvatarNetwork
           size={SIZES.XS}
-          networkName="Arbitrum One"
-          networkImageUrl="./images/arbitrum.svg"
+          name="Arbitrum One"
+          src="./images/arbitrum.svg"
         />
       }
     >
