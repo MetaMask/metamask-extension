@@ -58,7 +58,7 @@ export const UI_MAPPING = {
   }),
 };
 
-const mapToTemplate = (data) => {
+export const mapToTemplate = (data) => {
   const { type } = data;
   const mapped = UI_MAPPING[type](data);
   // TODO: We may want to have deterministic keys at some point

@@ -1,8 +1,7 @@
-import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
+import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
 
 function getValues(pendingApproval, t, actions) {
-  const { snapName, requestData } = pendingApproval;
-  const { title, description, textAreaContent } = requestData;
+  const { snapName, requestData: content } = pendingApproval;
 
   return {
     content: [
@@ -19,46 +18,7 @@ function getValues(pendingApproval, t, actions) {
           props: {
             snapName,
           },
-          children: [
-            {
-              element: 'Typography',
-              key: 'title',
-              children: title,
-              props: {
-                variant: TYPOGRAPHY.H3,
-                fontWeight: 'bold',
-                boxProps: {
-                  marginBottom: 4,
-                },
-              },
-            },
-            ...(description
-              ? [
-                  {
-                    element: 'Typography',
-                    key: 'subtitle',
-                    children: description,
-                    props: {
-                      variant: TYPOGRAPHY.H6,
-                      boxProps: {
-                        marginBottom: 4,
-                      },
-                    },
-                  },
-                ]
-              : []),
-            ...(textAreaContent
-              ? [
-                  {
-                    element: 'Copyable',
-                    key: 'snap-dialog-content-text',
-                    props: {
-                      text: textAreaContent,
-                    },
-                  },
-                ]
-              : []),
-          ],
+          children: mapToTemplate(content),
         },
       },
     ],
