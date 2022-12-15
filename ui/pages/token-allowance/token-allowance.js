@@ -341,7 +341,7 @@ export default function TokenAllowance({
         {isFirstPage ? (
           <CustomSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={Number(currentTokenBalance)}
+            currentTokenBalance={currentTokenBalance}
             dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
@@ -350,7 +350,7 @@ export default function TokenAllowance({
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={Number(currentTokenBalance)}
+            currentTokenBalance={currentTokenBalance}
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
                 ? dappProposedTokenAmount

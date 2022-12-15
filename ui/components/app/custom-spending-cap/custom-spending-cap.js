@@ -43,7 +43,7 @@ export default function CustomSpendingCap({
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const getInputTextLogic = (inputNumber) => {
-    if (Number(inputNumber) <= currentTokenBalance) {
+    if (Number(inputNumber) <= Number(currentTokenBalance)) {
       return {
         className: 'custom-spending-cap__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
@@ -57,7 +57,7 @@ export default function CustomSpendingCap({
           </Typography>,
         ]),
       };
-    } else if (Number(inputNumber) > currentTokenBalance) {
+    } else if (Number(inputNumber) > Number(currentTokenBalance)) {
       return {
         className: 'custom-spending-cap__higherValue',
         description: t('inputLogicHigherNumber'),
@@ -77,8 +77,15 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+    const inputError =
+      typeof valueInput === 'string' && valueInput.charAt(0) === '.';
 
-    if (Number(valueInput) < 0 || isNaN(valueInput)) {
+    if (
+      Number(valueInput) < 0 ||
+      isNaN(valueInput) ||
+      inputError ||
+      /\s/u.test(valueInput)
+    ) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
@@ -110,7 +117,7 @@ export default function CustomSpendingCap({
   }, [error, passTheErrorText]);
 
   const chooseTooltipContentText =
-    Number(value) > currentTokenBalance
+    Number(value) > Number(currentTokenBalance)
       ? t('warningTooltipText', [
           <Typography
             key="tooltip-text"
@@ -159,7 +166,7 @@ export default function CustomSpendingCap({
         >
           <label
             htmlFor={
-              Number(value) > (currentTokenBalance || error)
+              Number(value) > (Number(currentTokenBalance) || error)
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
@@ -169,14 +176,20 @@ export default function CustomSpendingCap({
               autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
-                Number(value) > (currentTokenBalance || error)
+                Number(value) > (Number(currentTokenBalance) || error)
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
-                  tooltipContentText={value ? chooseTooltipContentText : ''}
-                  tooltipIcon={value ? Number(value) > currentTokenBalance : ''}
+                  tooltipContentText={
+                    Number(value) ? chooseTooltipContentText : ''
+                  }
+                  tooltipIcon={
+                    Number(value)
+                      ? Number(value) > Number(currentTokenBalance)
+                      : ''
+                  }
                 />
               }
               onChange={handleChange}
@@ -224,7 +237,7 @@ CustomSpendingCap.propTypes = {
   /**
    * The current token balance of the token
    */
-  currentTokenBalance: PropTypes.number,
+  currentTokenBalance: PropTypes.string,
   /**
    * The dapp suggested amount
    */

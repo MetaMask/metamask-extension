@@ -64,7 +64,7 @@ export default function ReviewSpendingCap({
                   color={COLORS.TEXT_ALTERNATIVE}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {Number(tokenValue) > currentTokenBalance &&
+                  {Number(tokenValue) > Number(currentTokenBalance) &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -81,7 +81,7 @@ export default function ReviewSpendingCap({
                 </Typography>
               }
             >
-              {Number(tokenValue) > currentTokenBalance && (
+              {Number(tokenValue) > Number(currentTokenBalance) && (
                 <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
               )}
               {Number(tokenValue) === 0 && (
@@ -110,7 +110,7 @@ export default function ReviewSpendingCap({
         <Typography
           as={TYPOGRAPHY.H6}
           color={
-            Number(tokenValue) > currentTokenBalance
+            Number(tokenValue) > Number(currentTokenBalance)
               ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }
@@ -126,7 +126,7 @@ export default function ReviewSpendingCap({
 
 ReviewSpendingCap.propTypes = {
   tokenName: PropTypes.string,
-  currentTokenBalance: PropTypes.number,
+  currentTokenBalance: PropTypes.string,
   tokenValue: PropTypes.string,
   onEdit: PropTypes.func,
 };
