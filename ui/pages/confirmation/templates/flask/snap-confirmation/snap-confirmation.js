@@ -18,6 +18,7 @@ function getValues(pendingApproval, t, actions) {
           props: {
             snapName,
           },
+          // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
           children: mapToTemplate(content),
         },
       },

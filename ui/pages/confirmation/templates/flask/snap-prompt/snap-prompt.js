@@ -23,6 +23,7 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
             snapName,
           },
           children: [
+            // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
             mapToTemplate(content),
             {
               element: 'div',

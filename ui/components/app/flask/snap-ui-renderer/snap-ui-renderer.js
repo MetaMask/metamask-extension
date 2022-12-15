@@ -58,6 +58,7 @@ export const UI_MAPPING = {
   }),
 };
 
+// TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
 export const mapToTemplate = (data) => {
   const { type } = data;
   const mapped = UI_MAPPING[type](data);
