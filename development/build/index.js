@@ -70,7 +70,11 @@ async function defineAndRunBuildTasks() {
     shouldLintFenceFiles,
     skipStats,
     version,
+    watch: isWatch,
+    minify: isMin,
   } = await parseArgv();
+
+  console.log({ isWatch, isMin });
 
   const browserPlatforms = ['firefox', 'chrome'];
 
@@ -129,6 +133,7 @@ async function defineAndRunBuildTasks() {
   );
 
   // build for test development (livereload)
+  // TODO: remove this
   createTask(
     TASKS.TEST_DEV,
     composeSeries(
@@ -187,6 +192,7 @@ async function defineAndRunBuildTasks() {
 }
 
 async function parseArgv() {
+  console.log('wat')
   const { argv } = yargs(hideBin(process.argv))
     .usage('$0 <task> [options]', 'Build the MetaMask extension.', (_yargs) =>
       _yargs
@@ -251,6 +257,17 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           hidden: true,
           type: 'boolean',
         })
+        .option('watch', {
+          default: false,
+          description:
+            'Whether to turn on watch mode. watch files and recompile whenever they change.',
+          type: 'string'
+        })
+        .option('minify', {
+          description:
+            'Whether to turn on minification. Optionally enable or disable minification for any type of build.',
+          type: 'boolean'
+        })
         .check((args) => {
           if (!Number.isInteger(args.buildVersion)) {
             throw new Error(
@@ -264,9 +281,11 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     )
     // TODO: Enable `.strict()` after this issue is resolved: https://github.com/LavaMoat/LavaMoat/issues/344
     .help('help');
-
+  
   const {
     applyLavamoat: applyLavaMoat,
+    watch,
+    minify,
     buildType,
     buildVersion,
     lintFenceFiles,
@@ -296,6 +315,8 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
 
   return {
     applyLavaMoat,
+    watch,
+    minify,
     buildType,
     entryTask: task,
     isLavaMoat: process.argv[0].includes('lavamoat'),

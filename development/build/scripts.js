@@ -723,6 +723,7 @@ function createFactoredBuild({
  * @param {string} options.version - The current version of the extension.
  * @returns {Function} A function that creates the bundle.
  */
+// TODO: these will need to be updated to accept new options
 function createNormalBundle({
   browserPlatforms,
   buildTarget,

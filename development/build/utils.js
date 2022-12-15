@@ -9,6 +9,7 @@ const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
  * @param {BUILD_TARGETS} buildTarget - The current build target.
  * @returns Whether the current build is a development build.
  */
+// TODO: remove these as they'll be replaced by new checks
 function isDevBuild(buildTarget) {
   return (
     buildTarget === BUILD_TARGETS.DEV || buildTarget === BUILD_TARGETS.TEST_DEV
