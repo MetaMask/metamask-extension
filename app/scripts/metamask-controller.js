@@ -1265,11 +1265,11 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
           }),
-        showDialog: (origin, type, requestData) =>
+        showDialog: (origin, type, content, placeholder) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: SNAP_DIALOG_TYPES[type],
-            requestData,
+            requestData: { content, placeholder },
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(

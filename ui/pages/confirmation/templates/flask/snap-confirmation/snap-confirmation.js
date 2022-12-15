@@ -1,7 +1,10 @@
 import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
 
 function getValues(pendingApproval, t, actions) {
-  const { snapName, requestData: content } = pendingApproval;
+  const {
+    snapName,
+    requestData: { content },
+  } = pendingApproval;
 
   return {
     content: [
