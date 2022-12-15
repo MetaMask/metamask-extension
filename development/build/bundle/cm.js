@@ -120,6 +120,10 @@ async function _makeBundle (bundleConfig) {
     tags,
     searchSuffixes,
   });
+
+  const bundleDest = bundleConfig.outputFile || './bundle.js'
+  fs.writeFileSync(bundleDest, bundle)
+  console.log('bundle written to', bundleDest)
   // const {
   //   packageLocation,
   //   packageDescriptorText,
