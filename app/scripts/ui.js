@@ -18,6 +18,7 @@ import {
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
@@ -289,7 +290,12 @@ async function queryCurrentActiveTab(windowType) {
     return {};
   }
 
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  const tabs = await browser.tabs
+    .query({ active: true, currentWindow: true })
+    .catch((e) => {
+      checkForLastErrorAndLog() || log.error(e);
+    });
+
   const [activeTab] = tabs;
   const { id, title, url } = activeTab;
   const { origin, protocol } = url ? new URL(url) : {};

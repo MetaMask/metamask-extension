@@ -19,14 +19,12 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import {
-  getCompletedOnboarding,
-  getSeedPhraseBackedUp,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  verifySeedPhrase,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
@@ -49,18 +47,29 @@ import MetaMetricsComponent from './metametrics/metametrics';
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
-  const currentLocation = useLocation();
+  const { pathName, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
-
+  const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   useEffect(() => {
-    if (completedOnboarding && seedPhraseBackedUp) {
+    if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
     }
-  }, [history, completedOnboarding, seedPhraseBackedUp]);
+  }, [history, completedOnboarding, isFromReminder]);
+
+  useEffect(() => {
+    const verifyAndSetSeedPhrase = async () => {
+      if (completedOnboarding && !secretRecoveryPhrase) {
+        const verifiedSeedPhrase = await verifySeedPhrase();
+        if (verifiedSeedPhrase) {
+          setSecretRecoveryPhrase(verifiedSeedPhrase);
+        }
+      }
+    };
+    verifyAndSetSeedPhrase();
+  }, [completedOnboarding, secretRecoveryPhrase]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
@@ -97,7 +106,6 @@ export default function OnboardingFlow() {
             )}
           />
           <Route
-            exact
             path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
             component={SecureYourWallet}
           />
@@ -170,7 +178,7 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
-      {currentLocation?.pathname === ONBOARDING_COMPLETION_ROUTE && (
+      {pathName === ONBOARDING_COMPLETION_ROUTE && (
         <Button
           className="onboarding-flow__twitter-button"
           type="link"

@@ -29,6 +29,7 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  verifySeedPhrase: jest.fn(),
 }));
 
 describe('Onboarding Flow', () => {

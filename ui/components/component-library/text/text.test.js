@@ -9,7 +9,7 @@ import {
   TEXT_ALIGN,
   TEXT_TRANSFORM,
 } from '../../../helpers/constants/design-system';
-import { Text } from '.';
+import { Text, TEXT_DIRECTIONS } from '.';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
@@ -237,5 +237,18 @@ describe('Text', () => {
     const mockRef = jest.fn();
     render(<Text ref={mockRef} />);
     expect(mockRef).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render the Text with proper direction', () => {
+    const { getByText } = render(
+      <>
+        <Text textDirection={TEXT_DIRECTIONS.AUTO}>auto</Text>
+        <Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>ltr</Text>
+        <Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>rtl</Text>
+      </>,
+    );
+    expect(getByText('auto')).toHaveAttribute('dir', 'auto');
+    expect(getByText('ltr')).toHaveAttribute('dir', 'ltr');
+    expect(getByText('rtl')).toHaveAttribute('dir', 'rtl');
   });
 });
