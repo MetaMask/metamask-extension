@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.23.1]
+### Uncategorized
+- Recipient name passed to confirm-page-container component should be u… ([#16961](https://github.com/MetaMask/metamask-extension/pull/16961))
+
 ## [10.23.0]
 ### Added
 - Add Picker Network Component ([#16340](https://github.com/MetaMask/metamask-extension/pull/16340))
@@ -3336,7 +3340,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.1...HEAD
+[10.23.1]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...v10.23.1
 [10.23.0]: https://github.com/MetaMask/metamask-extension/compare/v10.22.3...v10.23.0
 [10.22.3]: https://github.com/MetaMask/metamask-extension/compare/v10.22.2...v10.22.3
 [10.22.2]: https://github.com/MetaMask/metamask-extension/compare/v10.22.1...v10.22.2
