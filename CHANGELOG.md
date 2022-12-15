@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.23.1]
-### Uncategorized
-- Recipient name passed to confirm-page-container component should be u… ([#16961](https://github.com/MetaMask/metamask-extension/pull/16961))
+### Fixed
+- Fix incorrectly displaying "New Contract" instead of the recipient address, on the header from the Confirmation page ([#16961](https://github.com/MetaMask/metamask-extension/pull/16961))
 
 ## [10.23.0]
 ### Added
