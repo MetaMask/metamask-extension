@@ -113,7 +113,8 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  *
  * @param {object} opts
  * @param {object} opts.initState - initial transaction list default is an empty array
- * @param {object} opts.networkStore - an observable store for network number
+ * @param {Function} opts.getNetworkState - Get the current network state.
+ * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
  * @param {Function} opts.signTransaction - function the signs an @ethereumjs/tx
@@ -126,7 +127,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
-    this.networkStore = opts.networkStore || new ObservableStore({});
+    this.getNetworkState = opts.getNetworkState;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -163,7 +164,7 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
-      getNetwork: this.getNetwork.bind(this),
+      getNetworkState: this.getNetworkState,
       getCurrentChainId: opts.getCurrentChainId,
     });
 
@@ -205,7 +206,7 @@ export default class TransactionController extends EventEmitter {
     // memstore is computed from a few different stores
     this._updateMemstore();
     this.txStateManager.store.subscribe(() => this._updateMemstore());
-    this.networkStore.subscribe(() => {
+    opts.onNetworkStateChange(() => {
       this._onBootCleanUp();
       this._updateMemstore();
     });
@@ -222,7 +223,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkState = this.networkStore.getState();
+    const networkState = this.getNetworkState();
     const chainId = this._getCurrentChainId();
     const integerChainId = parseInt(chainId, 16);
     if (networkState === 'loading' || Number.isNaN(integerChainId)) {
@@ -273,7 +274,7 @@ export default class TransactionController extends EventEmitter {
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const networkId = this.networkStore.getState();
+    const networkId = this.getNetworkState();
 
     const customChainParams = {
       name,
@@ -1763,9 +1764,6 @@ export default class TransactionController extends EventEmitter {
   _mapMethods() {
     /** @returns {object} the state in transaction controller */
     this.getState = () => this.memStore.getState();
-
-    /** @returns {string|number} the network number stored in networkStore */
-    this.getNetwork = () => this.networkStore.getState();
 
     /** @returns {string} the user selected address */
     this.getSelectedAddress = () =>
