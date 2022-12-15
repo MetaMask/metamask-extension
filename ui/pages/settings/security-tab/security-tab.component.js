@@ -173,7 +173,7 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">

@@ -85,13 +85,14 @@ export default function CreatePassword({
 
   const handlePasswordChange = (passwordInput) => {
     let confirmError = '';
+    let passwordInputError = '';
     const passwordEvaluation = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(
       passwordEvaluation.score,
       t,
     );
-    const passwordStrengthDescription = passwordStrengthLabel.description;
-    const passwordStrengthInput = t('passwordStrength', [
+    let passwordStrengthDescription = passwordStrengthLabel.description;
+    let passwordStrengthInput = t('passwordStrength', [
       <span
         key={passwordEvaluation.score}
         className={passwordStrengthLabel.className}
@@ -100,11 +101,20 @@ export default function CreatePassword({
       </span>,
     ]);
 
+    if (passwordInput.length < 8) {
+      passwordInputError = passwordInput.length
+        ? t('passwordNotLongEnough')
+        : '';
+      passwordStrengthInput = null;
+      passwordStrengthDescription = '';
+    }
+
     if (confirmPassword && passwordInput !== confirmPassword) {
       confirmError = t('passwordsDontMatch');
     }
 
     setPassword(passwordInput);
+    setPasswordError(passwordInputError);
     setPasswordStrength(passwordStrengthInput);
     setPasswordStrengthText(passwordStrengthDescription);
     setConfirmPasswordError(confirmError);
@@ -175,6 +185,7 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
+            error={passwordError}
             passwordStrength={passwordStrength}
             passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}
@@ -182,16 +193,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <button
-                className="create-password__form--password-button"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? t('hide') : t('show')}
-              </button>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <a
+                  href=""
+                  className="create-password__form--password-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? t('hide') : t('show')}
+                </a>
+              </Typography>
             }
           />
           <FormField

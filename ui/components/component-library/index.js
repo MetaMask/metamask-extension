@@ -1,7 +1,7 @@
 export { AvatarAccount } from './avatar-account';
 export { AvatarFavicon } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
-export { AvatarNetwork } from './avatar-network';
+export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
 export { AvatarToken } from './avatar-token';
 export { AvatarWithBadge } from './avatar-with-badge';
 export { AvatarBase } from './avatar-base';
@@ -18,7 +18,7 @@ export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
-export { Text, TEXT_VARIANTS } from './text';
+export { Text, TEXT_VARIANTS, TEXT_DIRECTIONS } from './text';
 export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export {
   TextFieldBase,
