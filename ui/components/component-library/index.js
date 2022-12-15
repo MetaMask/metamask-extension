@@ -8,7 +8,7 @@ export { AvatarBase } from './avatar-base';
 export { Button } from './button';
 export { ButtonBase } from './button-base';
 export { ButtonIcon, BUTTON_ICON_SIZES } from './button-icon';
-export { ButtonLink } from './button-link';
+export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
 export { ButtonPrimary } from './button-primary';
 export { ButtonSecondary } from './button-secondary';
 export { FormTextField } from './form-text-field';
