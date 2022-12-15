@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import { getAssetDetails } from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { usePrevious } from './usePrevious';
 import { useTokenTracker } from './useTokenTracker';
 
@@ -12,19 +13,25 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   // state selectors
   const collectibles = useSelector(getCollectibles);
   const tokens = useSelector(getTokens, isEqual);
-  const currentToken = tokens.find(
-    (token) => token?.address?.toLowerCase() === tokenAddress.toLowerCase(),
+  const currentToken = tokens.find((token) =>
+    isEqualCaseInsensitive(token.address, tokenAddress),
   );
 
   // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
-  const { tokensWithBalances } = useTokenTracker([currentToken]);
+
+  let tokensWithBalance;
+  if (currentToken) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { tokensWithBalances } = useTokenTracker([currentToken]);
+    tokensWithBalance = tokensWithBalances;
+  }
 
   // previous state checkers
   const prevTokenAddress = usePrevious(tokenAddress);
   const prevUserAddress = usePrevious(userAddress);
   const prevTransactionData = usePrevious(transactionData);
-  const prevTokenBalance = usePrevious(tokensWithBalances);
+  const prevTokenBalance = usePrevious(tokensWithBalance);
 
   useEffect(() => {
     async function getAndSetAssetDetails() {
@@ -42,7 +49,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       tokenAddress !== prevTokenAddress ||
       userAddress !== prevUserAddress ||
       transactionData !== prevTransactionData ||
-      prevTokenBalance !== tokensWithBalances
+      (prevTokenBalance && prevTokenBalance !== tokensWithBalance)
     ) {
       getAndSetAssetDetails();
     }
@@ -55,7 +62,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     userAddress,
     transactionData,
     collectibles,
-    tokensWithBalances,
+    tokensWithBalance,
     prevTokenBalance,
   ]);
 
