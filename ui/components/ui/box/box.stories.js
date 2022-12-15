@@ -315,11 +315,10 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.SUCCESS_INVERSE}
         backgroundColor={COLORS.SUCCESS_DEFAULT}
-        {...args}
       >
         COLORS.SUCCESS_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT}>
         COLORS.WARNING_DEFAULT
       </Box>
       <Box
@@ -327,11 +326,10 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.WARNING_INVERSE}
         backgroundColor={COLORS.WARNING_DEFAULT}
-        {...args}
       >
         COLORS.WARNING_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT}>
         COLORS.INFO_DEFAULT
       </Box>
       <Box
@@ -339,12 +337,27 @@ export const Color = (args) => {
         padding={3}
         color={COLORS.INFO_INVERSE}
         backgroundColor={COLORS.INFO_DEFAULT}
-        {...args}
       >
         COLORS.INFO_INVERSE
       </Box>
-      <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INHERIT}>
         COLORS.INHERIT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={COLORS.SEPOLIA}
+        color={COLORS.SEPOLIA_INVERSE}
+      >
+        COLORS.SEPOLIA_INVERSE
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={COLORS.GOERLI}
+        color={COLORS.GOERLI_INVERSE}
+      >
+        COLORS.GOERLI_INVERSE
       </Box>
     </>
   );
@@ -405,6 +418,12 @@ export const BackgroundColor = () => {
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.WARNING_MUTED
         </Typography>
+      </Box>
+      <Box padding={3} backgroundColor={COLORS.SEPOLIA}>
+        <Typography color={COLORS.SEPOLIA_INVERSE}>COLORS.SEPOLIA</Typography>
+      </Box>
+      <Box padding={3} backgroundColor={COLORS.GOERLI}>
+        <Typography color={COLORS.GOERLI_INVERSE}>COLORS.GOERLI</Typography>
       </Box>
     </>
   );

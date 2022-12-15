@@ -113,6 +113,7 @@ import {
   hexWEIToDecGWEI,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
@@ -895,18 +896,30 @@ export default function ViewQuote() {
     }
     const getEstimatedL1Fee = async () => {
       try {
-        const result = await fetchEstimatedL1Fee(global.eth, {
+        const l1TradeFeeTotal = await fetchEstimatedL1Fee(global.eth, {
           txParams: unsignedTransaction,
           chainId,
         });
-        setMultiLayerL1FeeTotal(result);
+        let l1ApprovalFeeTotal = '0x0';
+        if (approveTxParams) {
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(global.eth, {
+            txParams: {
+              ...approveTxParams,
+              gasPrice: addHexPrefix(approveTxParams.gasPrice),
+              value: '0x0', // For approval txs we need to use "0x0" here.
+            },
+            chainId,
+          });
+        }
+        const l1FeeTotal = sumHexes(l1TradeFeeTotal, l1ApprovalFeeTotal);
+        setMultiLayerL1FeeTotal(l1FeeTotal);
       } catch (e) {
         captureException(e);
         setMultiLayerL1FeeTotal(null);
       }
     };
     getEstimatedL1Fee();
-  }, [unsignedTransaction, isMultiLayerFeeNetwork, chainId]);
+  }, [unsignedTransaction, approveTxParams, isMultiLayerFeeNetwork, chainId]);
 
   useEffect(() => {
     if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {

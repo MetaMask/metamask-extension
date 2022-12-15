@@ -1033,16 +1033,6 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": {
-      "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": true
-      }
-    },
-    "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit>unist-util-visit-parents": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
-      }
-    },
     "@storybook/api>telejson>is-symbol": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
@@ -6363,6 +6353,64 @@
         "define": true
       }
     },
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-reference-invalid": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": {
+      "packages": {
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
+      }
+    },
+    "react-markdown>unified": {
+      "packages": {
+        "jsdom>request>extend": true,
+        "react-markdown>unified>bail": true,
+        "react-markdown>unified>is-buffer": true,
+        "react-markdown>unified>is-plain-obj": true,
+        "react-markdown>unified>trough": true,
+        "react-markdown>vfile": true
+      }
+    },
+    "react-markdown>unist-util-visit": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-visit-parents": true
+      }
+    },
+    "react-markdown>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-is": true
+      }
+    },
+    "react-markdown>vfile": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "react-markdown>vfile>is-buffer": true,
+        "react-markdown>vfile>vfile-message": true,
+        "vinyl>replace-ext": true
+      }
+    },
+    "react-markdown>vfile>vfile-message": {
+      "packages": {
+        "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
     "readable-stream": {
       "builtin": {
         "events.EventEmitter": true,
@@ -6695,13 +6743,14 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark": {
       "packages": {
+        "react-markdown>unified": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified": true
+        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
       "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>collapse-white-space": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
@@ -6709,7 +6758,6 @@
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-word-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>trim": true,
@@ -6720,22 +6768,6 @@
         "watchify>xtend": true
       }
     },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities-legacy": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-reference-invalid": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-hexadecimal": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": {
       "packages": {
         "pumpify>inherits": true,
@@ -6744,16 +6776,16 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unist-util-remove-position": {
       "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": true
+        "react-markdown>unist-util-visit": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": {
       "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": true,
@@ -6772,53 +6804,21 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>mdast-util-compact": {
       "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>remark-slug>unist-util-visit": true
+        "react-markdown>unist-util-visit": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": {
       "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>character-entities-legacy": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-alphanumerical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified": {
-      "packages": {
-        "jsdom>request>extend": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>bail": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>is-buffer": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>is-plain-obj": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>trough": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified>vfile": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>is-buffer": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>vfile-message": true,
-        "vinyl>replace-ext": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>vfile-message": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>unist-util-stringify-position": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": {
       "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
+        "react-markdown>unist-util-visit>unist-util-is": true
       }
     },
     "stylelint>autoprefixer": {

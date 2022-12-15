@@ -34,29 +34,63 @@ Defaults to `md`
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--size" />
 </Canvas>
 
-### Token Name
+```jsx
+import { AvatarToken } from '../../component-library';
 
-Use the `tokenName` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `tokenImageUrl` prop.
+<AvatarToken size={SIZES.XS} />
+<AvatarToken size={SIZES.SM} />
+<AvatarToken size={SIZES.MD} />
+<AvatarToken size={SIZES.LG} />
+<AvatarToken size={SIZES.XL} />
+```
+
+### Name
+
+Use the `name` prop to set the initial letter of the `AvatarToken`. This will be used as the fallback display if no image url is passed to the `src` prop.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-name" />
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--name" />
 </Canvas>
 
-### Token Image Url
+```jsx
+import { AvatarToken } from '../../component-library';
+<AvatarToken name="eth" />
+```
 
-Use the `tokenImageUrl` prop to set the image to be rendered of the `AvatarToken`.
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarToken`.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--token-image-url" />
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--src" />
 </Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken src="./images/eth_logo.svg" />
+<AvatarToken src="./images/arbitrum.svg" />
+<AvatarToken src="./images/bnb.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png" />
+<AvatarToken src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png" />
+<AvatarToken src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format" />
+```
 
 ### Show Halo
 
-If we want to display the component with halo effect. Only works if an image url is supplied to `tokenImageUrl`
+Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--show-halo" />
 </Canvas>
+
+```jsx
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken src="./images/eth_logo.svg" showHalo/>
+
+```
 
 ### Color, Background Color And Border Color
 
@@ -65,3 +99,25 @@ Use the `color`, `backgroundColor` and `borderColor` props to set the text color
 <Canvas>
   <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--color-background-color-and-border-color" />
 </Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { AvatarToken } from '../../component-library';
+
+<AvatarToken
+  backgroundColor={COLORS.GOERLI}
+  borderColor={COLORS.GOERLI}
+  name="G"
+  color={COLORS.PRIMARY_INVERSE}
+>
+  G
+</AvatarToken>
+<AvatarToken
+  backgroundColor={COLORS.SEPOLIA}
+  borderColor={COLORS.SEPOLIA}
+  name="S"
+  color={COLORS.PRIMARY_INVERSE}
+>
+  S
+</AvatarToken>
+```

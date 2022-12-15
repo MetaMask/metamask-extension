@@ -13,11 +13,10 @@ describe('NetworkController', () => {
     };
 
     beforeEach(() => {
-      networkController = new NetworkController();
+      networkController = new NetworkController({ infuraProjectId: 'foo' });
       getLatestBlockStub = sinon
-        .stub(networkController, 'getLatestBlock')
+        .stub(networkController, '_getLatestBlock')
         .callsFake(() => Promise.resolve({}));
-      networkController.setInfuraProjectId('foo');
       setProviderTypeAndWait = () =>
         new Promise((resolve) => {
           networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -49,14 +48,6 @@ describe('NetworkController', () => {
       });
     });
 
-    describe('#setNetworkState', () => {
-      it('should update the network', () => {
-        networkController.setNetworkState('1');
-        const networkState = networkController.getNetworkState();
-        expect(networkState).toStrictEqual('1');
-      });
-    });
-
     describe('#setProviderType', () => {
       it('should update provider.type', () => {
         networkController.initializeProvider(networkControllerProviderConfig);
@@ -68,7 +59,7 @@ describe('NetworkController', () => {
       it('should set the network to loading', () => {
         networkController.initializeProvider(networkControllerProviderConfig);
 
-        const spy = sinon.spy(networkController, 'setNetworkState');
+        const spy = sinon.spy(networkController, '_setNetworkState');
         networkController.setProviderType('mainnet');
 
         expect(spy.callCount).toStrictEqual(1);
@@ -94,7 +85,7 @@ describe('NetworkController', () => {
         expect(supportsEIP1559).toStrictEqual(true);
       });
 
-      it('should store EIP1559 support in state to reduce calls to getLatestBlock', async () => {
+      it('should store EIP1559 support in state to reduce calls to _getLatestBlock', async () => {
         networkController.initializeProvider(networkControllerProviderConfig);
         getLatestBlockStub.callsFake(() =>
           Promise.resolve({ baseFeePerGas: '0xa ' }),
