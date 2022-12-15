@@ -63,32 +63,32 @@ export default function CreatePassword({
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const getPasswordStrengthLabel = (isTooShort, score, translation) => {
+  const getPasswordStrengthLabel = (isTooShort, score) => {
     if (isTooShort) {
       return {
         className: 'create-password__weak',
-        text: translation('passwordNotLongEnough'),
+        text: t('passwordNotLongEnough'),
         description: '',
       };
     }
     if (score >= 4) {
       return {
         className: 'create-password__strong',
-        text: translation('strong'),
+        text: t('strong'),
         description: '',
       };
     }
     if (score === 3) {
       return {
         className: 'create-password__average',
-        text: translation('average'),
-        description: translation('passwordStrengthDescription'),
+        text: t('average'),
+        description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
-      text: translation('weak'),
-      description: translation('passwordStrengthDescription'),
+      text: t('weak'),
+      description: t('passwordStrengthDescription'),
     };
   };
 
@@ -96,11 +96,7 @@ export default function CreatePassword({
     const isTooShort =
       passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
     const { score } = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(
-      isTooShort,
-      score,
-      t,
-    );
+    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
     const passwordStrengthComponent = t('passwordStrength', [
       <span key={score} className={passwordStrengthLabel.className}>
         {passwordStrengthLabel.text}
