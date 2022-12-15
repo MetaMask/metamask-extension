@@ -19,7 +19,7 @@ function mapStateToProps(state, ownProps) {
   const accountBalance = defaultToken.string;
   const identities = getMetaMaskIdentities(state);
   const ownedAccountName = getAccountName(identities, to);
-  const toName = ownedAccountName || contact?.name || ownProps.toName;
+  const toName = ownedAccountName || contact?.name;
   const toMetadataName = getMetadataContractName(state, to);
 
   return {

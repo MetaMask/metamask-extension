@@ -164,6 +164,7 @@ export function RecipientWithAddress({
                 recipientNickname ||
                 recipientMetadataName ||
                 recipientEns ||
+                shortenAddress(checksummedRecipientAddress) ||
                 t('newContract')}
           </div>
         </Tooltip>
