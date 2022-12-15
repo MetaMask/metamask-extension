@@ -1755,6 +1755,12 @@
         "pumpify>inherits": true
       }
     },
+    "@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "eth-block-tracker>@metamask/utils": true
+      }
+    },
     "@metamask/snaps-utils": {
       "globals": {
         "TextDecoder": true,
