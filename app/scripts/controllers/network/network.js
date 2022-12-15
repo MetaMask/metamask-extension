@@ -194,26 +194,25 @@ export default class NetworkController extends EventEmitter {
     }
 
     let networkVersion;
+    let networkVersionError;
     try {
       networkVersion = await this._getNetworkId();
     } catch (error) {
-      if (initialNetwork !== this.getNetworkState()) {
-        return;
-      }
-
-      this._setNetworkState('loading');
-      // keep network details in sync with network state
-      this._clearNetworkDetails();
-      return;
+      networkVersionError = error;
     }
-
     if (initialNetwork !== this.getNetworkState()) {
       return;
     }
 
-    this._setNetworkState(networkVersion);
-    // look up EIP-1559 support
-    await this.getEIP1559Compatibility();
+    if (networkVersionError) {
+      this._setNetworkState('loading');
+      // keep network details in sync with network state
+      this._clearNetworkDetails();
+    } else {
+      this._setNetworkState(networkVersion);
+      // look up EIP-1559 support
+      await this.getEIP1559Compatibility();
+    }
   }
 
   getCurrentChainId() {
