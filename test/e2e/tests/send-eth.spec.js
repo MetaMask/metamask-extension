@@ -129,7 +129,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        await driver.clickElement({ text: 'New contract' });
+        await driver.clickElement({ text: '0xc42...cd28' });
 
         const recipientAddress = await driver.findElements({
           text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
