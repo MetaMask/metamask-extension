@@ -19,34 +19,38 @@ async function _makeBundle (bundleConfig) {
     new URL(`file://${bundleConfig.projectDir}/`),
   ).toString();
   
-  const exitModules = {}
-  manualIgnore.forEach(specifier => {
-    exitModules[specifier] = inertModuleNamespace
+  const commonDependencies = {}
+  const endoIgnore = [
+    // false positives due to cjs parsing
+    'NativeModules'
+  ]
+  endoIgnore.forEach(specifier => {
+    commonDependencies[specifier] = 'empty-package'
   })
   manualIgnore.forEach(specifier => {
-    exitModules[specifier] = inertModuleNamespace
+    commonDependencies[specifier] = 'empty-package'
   })
-  Object.entries(builtinModules).forEach(([specifier, moduleNamespace]) => {
-    exitModules[specifier] = inertModuleNamespace
+  // builtin modules
+  Object.entries(builtinModules).forEach(([alias, packageName]) => {
+    commonDependencies[alias] = packageName
   })
+
   // babel runtime ugh (from transforms)
-  exitModules['@babel/runtime'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/interopRequireDefault'] = inertModuleNamespace
-  exitModules['@babel/runtime/regenerator'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/asyncToGenerator'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/classCallCheck'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/createClass'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/possibleConstructorReturn'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/getPrototypeOf'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/assertThisInitialized'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/inherits'] = inertModuleNamespace
-  exitModules['@babel/runtime/helpers/toConsumableArray'] = inertModuleNamespace
-  exitModules['babel-runtime/regenerator'] = inertModuleNamespace
-  exitModules['babel-runtime/core-js/object/assign'] = inertModuleNamespace
-  exitModules['babel-runtime/core-js/object/keys'] = inertModuleNamespace
-  exitModules['babel-runtime/core-js/object/define-property'] = inertModuleNamespace
-  exitModules['babel-runtime/core-js/json/stringify'] = inertModuleNamespace
-  exitModules['babel-runtime/helpers/asyncToGenerator'] = inertModuleNamespace
+  commonDependencies['react'] = 'react'
+  commonDependencies['react-dom'] = 'react-dom'
+  commonDependencies['react-devtools'] = 'react-devtools'
+
+  commonDependencies['@babel/runtime'] = '@babel/runtime'
+  commonDependencies['babel-runtime'] = 'babel-runtime'
+  commonDependencies['NativeModules'] = 'empty-package'
+  
+  // console.log({commonDependencies})
+
+  const extensions = ['.js', '.json', '.ts', '.tsx'];
+  const searchSuffixes = [
+    ...extensions,
+    ...extensions.map((ext) => `/index${ext}`),
+  ]
 
   // * @callback ModuleTransform
   // * @param {Uint8Array} bytes
@@ -110,7 +114,12 @@ async function _makeBundle (bundleConfig) {
 
   const { read } = makeReadPowers({ fs, url });
   const tags = new Set(['browser']);
-  const bundle = await makeBundle(read, moduleLocation, { moduleTransforms, exitModules, tags });
+  const bundle = await makeBundle(read, moduleLocation, {
+    moduleTransforms,
+    commonDependencies,
+    tags,
+    searchSuffixes,
+  });
   // const {
   //   packageLocation,
   //   packageDescriptorText,
