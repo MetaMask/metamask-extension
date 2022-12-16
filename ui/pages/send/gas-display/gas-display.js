@@ -66,7 +66,7 @@ export default function GasDisplay({ gasError }) {
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const currentNetworkName = networkName ? networkName : currentProvider.nickname;
+  const currentNetworkName = networkName || currentProvider.nickname;
 
   const transactionData = {
     txParams: {
