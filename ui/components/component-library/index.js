@@ -1,4 +1,4 @@
-export { AvatarAccount } from './avatar-account';
+export { AvatarAccount, AVATAR_ACCOUNT_SIZES } from './avatar-account';
 export { AvatarFavicon } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
