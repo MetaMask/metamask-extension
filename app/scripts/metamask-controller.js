@@ -726,11 +726,6 @@ export default class MetamaskController extends EventEmitter {
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      // Prefix subject with appKeyType to generate separate keys for separate uses
-      getAppKey: async (subject, appKeyType) => {
-        await this.appStateController.getUnlockPromise(true);
-        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
-      },
       checkBlockList: async (snapsToCheck) => {
         return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
