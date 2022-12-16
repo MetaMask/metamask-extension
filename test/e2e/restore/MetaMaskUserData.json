@@ -46,6 +46,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "useTokenDetection": false,
-    "useCurrencyRateCheck": false
+    "useCurrencyRateCheck": true
   }
 }

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, getUseCurrencyRateCheck } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -27,8 +27,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     maxFeePerGas,
   } = useGasFeeContext();
 
-  const { useNativeCurrencyAsPrimaryCurrency, useCurrencyRateCheck } =
-    useSelector(getPreferences);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
