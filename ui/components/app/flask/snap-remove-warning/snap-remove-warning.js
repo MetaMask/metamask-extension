@@ -21,6 +21,7 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
           {t('nevermind')}
         </Button>
         <Button
+          id="popoverRemoveSnapButton"
           className="snap-remove-warning__footer-button"
           type="danger-primary"
           onClick={onSubmit}

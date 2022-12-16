@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Τιμή τελών συναλλαγής"
   },
-  "advancedOptions": {
-    "message": "Σύνθετες Επιλογές"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Επιβεβαίωση"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Παραχωρείτε πρόσβαση στον $1, συμπεριλαμβανομένου οτιδήποτε ενδέχεται να αποκτήσετε στο μέλλον. Ο συμβαλλόμενος στην άλλη πλευρά μπορεί να μεταφέρει NFT από το πορτοφόλι σας ανά πάσα στιγμή χωρίς να σας ρωτήσει, μέχρι να ανακαλέσετε αυτή την έγκριση. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "όλα τα NFT αυτού του συμβαλλόμενου"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Προχωρήστε με προσοχή."
   },
   "confirmPassword": {
     "message": "Επιβεβαίωση Κωδικού Πρόσβασης"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "Επεξεργασία Επαφής"
   },
-  "editGasEducationButtonText": {
-    "message": "Πώς πρέπει να επιλέξω;"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Αυτό είναι καλύτερο για ευαίσθητες στον χρόνο συναλλαγές (όπως τα Swaps) καθώς αυξάνει την πιθανότητα επιτυχούς συναλλαγής. Εάν ένα Swap πάρει πολύ χρόνο για να επεξεργαστεί, μπορεί να αποτύχει και να έχει ως αποτέλεσμα την απώλεια κάποιων τελών συναλλαγής."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Ένα χαμηλότερο τέλος συναλλαγής θα πρέπει να χρησιμοποιείται μόνο όταν ο χρόνος επεξεργασίας είναι λιγότερο σημαντικός. Οι χαμηλότερες χρεώσεις καθιστούν δύσκολη την πρόβλεψη πότε (ή αν) η συναλλαγή σας θα είναι επιτυχής."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Ένα μέσο τέλος συναλλαγής είναι καλό για την αποστολή, την ανάληψη ή άλλες συναλλαγές που δεν είναι χρονικά ευαίσθητες. Αυτή η ρύθμιση θα οδηγήσει πιο συχνά σε μια επιτυχημένη συναλλαγή."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Η επιλογή του σωστού τέλους συναλλαγής εξαρτάται από το είδος της συναλλαγής και πόσο σημαντικό είναι για εσάς."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Πώς να επιλέξετε;"
-  },
   "editGasFeeModalTitle": {
     "message": "Επεξεργασία τέλους συναλλαγής"
-  },
-  "editGasHigh": {
-    "message": "Υψηλό"
   },
   "editGasLimitOutOfBounds": {
     "message": "Το όριο τελών συναλλαγής πρέπει να είναι τουλάχιστον $1"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Το τελών συναλλαγής είναι οι μέγιστες μονάδες τελών συναλλαγής που είστε πρόθυμοι να χρησιμοποιήσετε. Τα τέλη συναλλαγής είναι ένας πολλαπλασιαστής στο \"Μέγιστο τέλος προτεραιότητας\" και το \"Μέγιστο τέλος\"."
-  },
-  "editGasLow": {
-    "message": "Χαμηλό"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Η μέγιστη βασική χρέωση δεν μπορεί να είναι χαμηλότερη από το τέλος προτεραιότητας"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Η μέγιστη βασική χρέωση δεν μπορεί να είναι χαμηλότερη από το μέγιστο τέλος προτεραιότητας"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Το μέγιστο τέλος είναι το περισσότερο που θα πληρώσετε (βασικό τέλος + τέλος προτεραιότητας)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Το μέγιστο τέλος προτεραιότητας πρέπει να είναι μεγαλύτερο από 0 GWEI"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Το τέλος προτεραιότητας είναι χαμηλό για τις τρέχουσες συνθήκες δικτύου"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Το μέγιστο τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας. Συχνά θα πληρώνετε το μέγιστο που επιλέξατε"
-  },
-  "editGasMedium": {
-    "message": "Μεσαίο"
   },
   "editGasPriceTooLow": {
     "message": "Η τιμή τέλους συναλλαγής πρέπει να είναι μεγαλύτερη από 0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Άγνωστος χρόνος επεξεργασίας"
   },
-  "editGasTooLowTooltip": {
-    "message": "Η μέγιστη χρέωση ή το μέγιστο τέλος προτεραιότητας μπορεί να είναι χαμηλά για τις τρέχουσες συνθήκες της αγοράς. Δεν γνωρίζουμε πότε (ή εάν) η συναλλαγή σας θα επεξεργαστεί. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Αυτό μειώνει τη μέγιστη χρέωση αλλά αν η κίνηση δικτύου αυξήσει τη συναλλαγή σας μπορεί να καθυστερήσει ή να αποτύχει."
-  },
   "editNonceField": {
     "message": "Επεξεργασία Nonce"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Ενεργοποίηση Αυτόματου Εντοπισμού"
-  },
-  "enableEIP1559V2": {
-    "message": "Ενεργοποίηση βελτιωμένου περιβάλλοντος χρήστη για τέλη συναλλαγής"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Ενημερώσαμε τον τρόπο με τον οποίο λειτουργεί η εκτίμηση και η προσαρμογή των τελών συναλλαγής."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Ενεργοποίηση βελτιωμένου περιβάλλοντος χρήστη για τέλη συναλλαγής στις Ρυθμίσεις"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Ενημερώσαμε τον τρόπο με τον οποίο λειτουργεί η εκτίμηση και η προσαρμογή των τελών συναλλαγής. Ενεργοποιήστε εάν θέλετε να χρησιμοποιήσετε τα νέα τέλη συναλλαγής. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Νέα εμπειρία τελών συναλλαγής"
   },
   "enableFromSettings": {
     "message": " Ενεργοποίηση του από τις Ρυθμίσεις."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Αυτό το τέλος συναλλαγής έχει προταθεί από το $1. Η παράκαμψη μπορεί να προκαλέσει πρόβλημα με τη συναλλαγή σας. Εάν έχετε απορίες, επικοινωνήστε με $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Οι χαμηλές, μεσαίες και υψηλές εκτιμήσεις μας δεν είναι διαθέσιμες."
   },
   "gasFee": {
     "message": "Τέλη Συναλλαγής"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Πάντα μπορείτε να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Ποτέ δεν",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ποτέ δεν θα συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ποτέ δεν συλλέγει την πλήρη IP διεύθυνσή σας"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ποτέ δεν πουλά δεδομένα για κέρδος. Ποτέ!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Θα θέλαμε να συγκεντρώσουμε βασικά δεδομένα χρήσης για τη βελτίωση της χρηστικότητας του προϊόντος μας. Αυτές οι μετρήσεις θα..."
-  },
-  "metametricsTitle": {
-    "message": "Συμμετάσχετε σε 6εκ+ χρήστες για να βελτιώσετε το MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Νέος Λογαριασμός"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Εντοπίστηκε νέα διεύθυνση! Κάντε κλικ εδώ για να την προσθέσετε στο βιβλίο διευθύνσεών σας."
   },
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Ορίστε ρυθμίσεις απορρήτου για προχωρημένους"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
   },
-  "showRecommendations": {
-    "message": "Εμφάνιση Προτάσεων"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Υπογραφή"
-  },
-  "signNotice": {
-    "message": "Η υπογραφή αυτού του μηνύματος μπορεί να έχει\nεπικίνδυνες παρενέργειες. Υπογράφετε μηνύματα μόνο από\nτοποθεσίες που εμπιστεύεστε πλήρως με ολόκληρο τον λογαριασμό σας.\n  Αυτή η επικίνδυνη μέθοδος θα καταργηθεί σε μια μελλοντική έκδοση."
   },
   "signatureRequest": {
     "message": "Αίτημα Υπογραφής"

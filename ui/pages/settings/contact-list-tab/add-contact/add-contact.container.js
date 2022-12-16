@@ -8,17 +8,17 @@ import {
 } from '../../../../store/actions';
 import { getQrCodeData } from '../../../../ducks/app/app';
 import {
-  getEnsError,
-  getEnsResolution,
-  resetEnsResolution,
-} from '../../../../ducks/ens';
+  getDomainError,
+  getDomainResolution,
+  resetDomainResolution,
+} from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
   return {
     qrCodeData: getQrCodeData(state),
-    ensError: getEnsError(state),
-    ensResolution: getEnsResolution(state),
+    domainError: getDomainError(state),
+    domainResolution: getDomainResolution(state),
   };
 };
 
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToAddressBook(recipient, nickname)),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
-    resetEnsResolution: () => dispatch(resetEnsResolution()),
+    resetDomainResolution: () => dispatch(resetDomainResolution()),
   };
 };
 

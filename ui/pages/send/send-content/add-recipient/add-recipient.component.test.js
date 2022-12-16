@@ -136,7 +136,7 @@ describe('AddRecipient Component', () => {
     it('should render error when query has no results', () => {
       wrapper.setProps({
         addressBook: [],
-        ensError: 'bad',
+        domainError: 'bad',
         contacts: [],
         nonContacts: [],
       });
@@ -151,7 +151,7 @@ describe('AddRecipient Component', () => {
     it('should render error when query has ens does not resolve', () => {
       wrapper.setProps({
         addressBook: [],
-        ensError: 'very bad',
+        domainError: 'very bad',
         contacts: [],
         nonContacts: [],
       });
@@ -166,8 +166,8 @@ describe('AddRecipient Component', () => {
     it('should render error when ens resolved but ens error exists', () => {
       wrapper.setProps({
         addressBook: [],
-        ensError: 'bad',
-        ensResolution: '0x128',
+        domainError: 'bad',
+        domainResolution: '0x128',
       });
 
       const dialog = wrapper.find(Dialog);

@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "燃料价格"
   },
-  "advancedOptions": {
-    "message": "高级选项"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "优先费（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "确认"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "您正在向$1授予访问权限，包括对您将来可能拥有的任何资产的访问权限。另一端的一方可以随时从您的钱包中转移NFT，无需询问您，直到您撤销此项批准。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "此合约中的所有NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "请谨慎行事。"
   },
   "confirmPassword": {
     "message": "确认密码"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "编辑联系信息"
   },
-  "editGasEducationButtonText": {
-    "message": "我应该如何选择？"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "这最适合对时间敏感的交易（如交换），因为它能增加交易成功的可能性。如果交换需要太长的时间来处理，它可能会失败，并导致您损失一些燃料费。"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "只有在处理时间不太重要时才能使用较低的燃料费用。较低的费用使我们难以预测您的交易何时（或会否）成功。"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "中燃料费用适合用于发送、提取或其他非时间敏感交易。此设置最常导致交易成功。"
-  },
-  "editGasEducationModalIntro": {
-    "message": "选择合适的燃料费取决于交易的类型和它对您的重要性。"
-  },
-  "editGasEducationModalTitle": {
-    "message": "如何选择？"
-  },
   "editGasFeeModalTitle": {
     "message": "编辑网络费"
-  },
-  "editGasHigh": {
-    "message": "高"
   },
   "editGasLimitOutOfBounds": {
     "message": "燃料上限至少为 $1"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "燃料上限是您愿意使用的最大燃料单位。燃料单位是“最大优先费”和“最大费用”的乘数。"
-  },
-  "editGasLow": {
-    "message": "低"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基本费用不能低于优先费用"
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "最大费用不能低于最大优先费用"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "最大费用是您将支付的最大费用（基本费用+优先费用）。"
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大优先费用必须大于0 GWEI。"
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "对于当前网络条件而言，优先费用较低"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "最大优先费（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。您通常会支付您的最大设置"
-  },
-  "editGasMedium": {
-    "message": "中"
   },
   "editGasPriceTooLow": {
     "message": "燃料价格必须大于0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "处理时间未知"
   },
-  "editGasTooLowTooltip": {
-    "message": "对于当前的市场条件而言，您的最大费用或最大优先费用可能较低。我们不知道您的交易将在何时（或会否）处理。"
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "这降低了您的最大费用，但如果网络流量增加，您的交易可能会被延迟或失败。"
-  },
   "editNonceField": {
     "message": "编辑 Nonce"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " 启用自动检测"
-  },
-  "enableEIP1559V2": {
-    "message": "启用增强型燃料费用户界面"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "我们已经更新了燃料费用估算和定制的方式。"
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "在设置中开启增强型燃料费用户界面"
-  },
-  "enableEIP1559V2Description": {
-    "message": "我们已经更新了燃料估算和定制的方式。如果您想使用新的燃料体验，请开启。$1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "新燃料体验"
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "无法获取我们的低、中、高估计值。"
   },
   "gasFee": {
     "message": "燃料费"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "始终允许您通过“设置”选择退出"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "始终可通过设置选择退出"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "永不",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "决不收集密钥、地址、交易、余额、哈希或任何个人信息"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 收集您的完整 IP 地址",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 收集密钥、地址、交易记录、余额、哈希或任何个人信息",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "永不收集您的完整 IP 地址"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "决不出售数据牟利。绝对不会！"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 为利益而出售您的数据，永远不会！",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展程序交互。这些数据将被用于持续改进我们产品和以太坊生态系统的可用性和用户体验。"
-  },
-  "metametricsOptInDescription2": {
-    "message": "我们想要收集基本使用数据以提高我们产品的可用性。这些数据将......"
-  },
-  "metametricsTitle": {
-    "message": "和600多万用户一起改进 MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "新账户"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "检测到新地址！点击这里以添加到您的地址簿。"
   },
   "newAccountNumberName": {
     "message": "账户 $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Sepolia测试网络"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "设置高级隐私设置"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "显示私钥"
   },
-  "showRecommendations": {
-    "message": "显示建议"
-  },
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "签名"
-  },
-  "signNotice": {
-    "message": "谨慎行事。此操作有可能用来从您的账户提取资产。确保您信任此站点。"
   },
   "signatureRequest": {
     "message": "签名请求"

@@ -178,6 +178,7 @@ export default {
     size: SIZES.MD,
     type: 'text',
     truncate: false,
+    value: '',
   },
 };
 
@@ -203,13 +204,6 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const ShowClearButton = Template.bind({});
-
-ShowClearButton.args = {
-  placeholder: 'Enter text to show clear',
-  showClearButton: true,
-};
-
-export const ClearButtonOnClick = Template.bind({});
 
 ShowClearButton.args = {
   placeholder: 'Enter text to show clear',

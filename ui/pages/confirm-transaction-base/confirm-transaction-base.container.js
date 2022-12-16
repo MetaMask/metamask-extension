@@ -32,7 +32,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -97,7 +96,7 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allCollectibleContracts,
+    allNftContracts,
     selectedAddress,
     provider: { chainId },
   } = metamask;
@@ -175,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );
@@ -194,7 +193,6 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const insightSnaps = getInsightSnaps(state);
@@ -250,7 +248,6 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
-    eip1559V2Enabled,
     isBuyableChain,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps,

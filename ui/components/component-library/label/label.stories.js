@@ -8,8 +8,8 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
+
+import { Icon, ICON_NAMES, TextField } from '..';
 
 import { Label } from './label';
 
@@ -73,8 +73,7 @@ export const Children = (args) => (
       alignItems={ALIGN_ITEMS.FLEX_START}
     >
       Label that wraps an input
-      {/* TODO: replace with TextField component */}
-      <TextFieldBase placeholder="Click label to focus" />
+      <TextField placeholder="Click label to focus" />
     </Label>
   </Box>
 );
@@ -87,7 +86,7 @@ export const HtmlFor = (args) => {
   return (
     <Box display={DISPLAY.INLINE_FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
       <Label {...args} />
-      <TextFieldBase
+      <TextField
         id="add-network"
         value={value}
         onChange={handleOnChange}

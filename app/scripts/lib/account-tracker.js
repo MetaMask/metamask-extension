@@ -30,6 +30,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
 } from '../constants/contracts';
+import { previousValueComparator } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -62,6 +63,10 @@ export default class AccountTracker {
     };
     this.store = new ObservableStore(initState);
 
+    this.resetState = () => {
+      this.store.updateState(initState);
+    };
+
     this._provider = opts.provider;
     this._query = pify(new EthQuery(this._provider));
     this._blockTracker = opts.blockTracker;
@@ -74,8 +79,20 @@ export default class AccountTracker {
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
+    this.preferencesController = opts.preferencesController;
+    this.onboardingController = opts.onboardingController;
 
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this._updateAccounts();
+        }
+      }, this.onboardingController.store.getState()),
+    );
   }
 
   start() {
@@ -201,8 +218,24 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async _updateAccounts() {
-    const { accounts } = this.store.getState();
-    const addresses = Object.keys(accounts);
+    const { completedOnboarding } = this.onboardingController.store.getState();
+    if (!completedOnboarding) {
+      return;
+    }
+    const { useMultiAccountBalanceChecker } =
+      this.preferencesController.store.getState();
+
+    let addresses = [];
+    if (useMultiAccountBalanceChecker) {
+      const { accounts } = this.store.getState();
+
+      addresses = Object.keys(accounts);
+    } else {
+      const selectedAddress = this.preferencesController.getSelectedAddress();
+
+      addresses = [selectedAddress];
+    }
+
     const chainId = this.getCurrentChainId();
     const networkId = this.getNetworkIdentifier();
     const rpcUrl = 'http://127.0.0.1:8545';

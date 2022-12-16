@@ -74,12 +74,12 @@ function defaultFixture() {
               src: 'images/token-detection.svg',
               width: '100%',
             },
-            isShown: true,
+            isShown: false,
           },
           11: {
             date: '2022-09-15',
             id: 11,
-            isShown: true,
+            isShown: false,
           },
           12: {
             date: '2022-05-18',
@@ -98,11 +98,21 @@ function defaultFixture() {
           14: {
             date: '2022-09-15',
             id: 14,
-            isShown: true,
+            isShown: false,
           },
           15: {
             date: '2022-09-15',
             id: 15,
+            isShown: false,
+          },
+          16: {
+            date: null,
+            id: 16,
+            isShown: true,
+          },
+          17: {
+            date: null,
+            id: 17,
             isShown: true,
           },
         },
@@ -113,7 +123,6 @@ function defaultFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -225,7 +234,7 @@ function defaultFixture() {
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -279,7 +288,6 @@ function onboardingFixture() {
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
-        enableEIP1559V2NoticeDismissed: false,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
@@ -338,7 +346,7 @@ function onboardingFixture() {
         },
         theme: 'light',
         useBlockie: false,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
@@ -407,9 +415,9 @@ class FixtureBuilder {
 
   withCollectiblesController(data) {
     merge(
-      this.fixture.data.CollectiblesController
-        ? this.fixture.data.CollectiblesController
-        : (this.fixture.data.CollectiblesController = {}),
+      this.fixture.data.NftController
+        ? this.fixture.data.NftController
+        : (this.fixture.data.NftController = {}),
       data,
     );
     return this;
@@ -1090,6 +1098,15 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withNetworkSupportEIP1559() {
+    merge(this.fixture.data.NetworkController, {
+      networkDetails: {
+        EIPS: { 1559: true },
+      },
+    });
+    return this;
   }
 
   build() {

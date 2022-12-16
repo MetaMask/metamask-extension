@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 import { safeComponentList } from './safe-component-list';
+import { ValidChildren } from './section-shape';
 
 function getElement(section) {
   const { element } = section;
@@ -79,22 +79,6 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
     </>
   );
 };
-
-export const SectionShape = {
-  props: PropTypes.object,
-  element: PropTypes.oneOf(Object.keys(safeComponentList)).isRequired,
-  key: PropTypes.string,
-};
-
-const ValidChildren = PropTypes.oneOfType([
-  PropTypes.string,
-  PropTypes.shape(SectionShape),
-  PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.shape(SectionShape), PropTypes.string]),
-  ),
-]);
-
-SectionShape.children = ValidChildren;
 
 MetaMaskTemplateRenderer.propTypes = {
   sections: ValidChildren,

@@ -22,8 +22,8 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import {
-  KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
   LEDGER_TRANSPORT_TYPES,
   TRANSPORT_STATES,
@@ -243,7 +243,7 @@ export function getAccountType(state) {
     case KEYRING_TYPES.LEDGER:
     case KEYRING_TYPES.LATTICE:
       return 'hardware';
-    case 'Simple Key Pair':
+    case KEYRING_TYPES.IMPORTED:
       return 'imported';
     default:
       return 'default';
@@ -392,7 +392,17 @@ export function getAddressBook(state) {
 }
 
 export function getEnsResolutionByAddress(state, address) {
-  return state.metamask.ensResolutionsByAddress[address] || '';
+  if (state.metamask.ensResolutionsByAddress[address]) {
+    return state.metamask.ensResolutionsByAddress[address];
+  }
+
+  const entry =
+    getAddressBookEntry(state, address) ||
+    Object.values(state.metamask.identities).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+
+  return entry?.name || '';
 }
 
 export function getAddressBookEntry(state, address) {
@@ -523,7 +533,7 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
-function getUnapprovedTxCount(state) {
+export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
 }
@@ -864,6 +874,14 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
+export const getSnap = createSelector(
+  getSnaps,
+  (_, snapId) => snapId,
+  (snaps, snapId) => {
+    return snaps[snapId];
+  },
+);
+
 export function getInsightSnaps(state) {
   const snaps = Object.values(state.metamask.snaps);
   const subjects = getPermissionSubjects(state);
@@ -956,12 +974,14 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: true,
-    11: true,
+    10: false,
+    11: false,
     12: false,
     13: false,
     14: false,
-    15: true,
+    15: false,
+    16: true,
+    17: true,
   };
 }
 
@@ -1027,13 +1047,13 @@ export function getUseTokenDetection(state) {
 }
 
 /**
- * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * To get the useNftDetection flag which determines whether we autodetect NFTs
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getUseCollectibleDetection(state) {
-  return Boolean(state.metamask.useCollectibleDetection);
+export function getUseNftDetection(state) {
+  return Boolean(state.metamask.useNftDetection);
 }
 
 /**
@@ -1140,10 +1160,6 @@ export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
 
-export function getEIP1559V2Enabled(state) {
-  return state.metamask.eip1559V2Enabled;
-}
-
 /**
  *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
  *
@@ -1202,7 +1218,9 @@ export function getIsDynamicTokenListAvailable(state) {
  * @returns list of token objects
  */
 export function getDetectedTokensInCurrentNetwork(state) {
-  return state.metamask.detectedTokens;
+  const currentChainId = getCurrentChainId(state);
+  const selectedAddress = getSelectedAddress(state);
+  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
 /**
@@ -1257,6 +1275,26 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
+}
+
+/**
+ * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsImprovedTokenAllowanceEnabled(state) {
+  return state.metamask.improvedTokenAllowanceEnabled;
+}
+
+/**
+ * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTransactionSecurityCheckEnabled(state) {
+  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 export function getIsCustomNetwork(state) {
