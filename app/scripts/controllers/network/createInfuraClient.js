@@ -10,8 +10,6 @@ import {
 
 import { createInfuraMiddleware } from '@metamask/eth-json-rpc-infura';
 import { PollingBlockTracker } from 'eth-block-tracker';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 
@@ -25,15 +23,6 @@ export default function createInfuraClient({ network, projectId }) {
   const infuraProvider = providerFromMiddleware(infuraMiddleware);
   const blockTracker = new PollingBlockTracker({ provider: infuraProvider });
 
-  const filterMiddleware = createFilterMiddleware({
-    infuraProvider,
-    blockTracker,
-  });
-  const subscriptionManager = createSubscriptionManager({
-    infuraProvider,
-    blockTracker,
-  });
-
   const networkMiddleware = mergeMiddleware([
     createNetworkAndChainIdMiddleware({ network }),
     createBlockCacheMiddleware({ blockTracker }),
@@ -42,10 +31,8 @@ export default function createInfuraClient({ network, projectId }) {
     createRetryOnEmptyMiddleware({ blockTracker, provider: infuraProvider }),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     infuraMiddleware,
-    filterMiddleware,
-    subscriptionManager.middleware,
   ]);
-  return { networkMiddleware, blockTracker, subscriptionManager };
+  return { networkMiddleware, blockTracker };
 }
 
 function createNetworkAndChainIdMiddleware({ network }) {

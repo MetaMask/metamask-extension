@@ -3732,9 +3732,19 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
+    const { provider } = this;
+
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { provider } = this;
+
+    // forward notifications from network provider
+    provider.on('data', (error, message) => {
+      if (error) {
+        // This should never happen, this error parameter is never set
+        throw error;
+      }
+      engine.emit('notification', message);
+    });
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
