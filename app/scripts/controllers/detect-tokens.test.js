@@ -95,9 +95,6 @@ describe('DetectTokensController', function () {
             return cb(modifiedNetworkState);
           }),
       },
-      // {
-      //   provider: this.provider,
-      // },
     );
 
     sandbox
