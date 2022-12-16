@@ -2796,6 +2796,18 @@ export function setTheme(val) {
   };
 }
 
+export function setPrivacyModeEnabled(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setPrivacyModeEnabled`);
+    try {
+      await submitRequestToBackground('setPrivacyModeEnabled', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

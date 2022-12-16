@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import browser from 'webextension-polyfill';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -9,19 +9,26 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import {
+  getOriginOfCurrentTab,
+  getPrivacyModeEnabled,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import AccountOptionsMenu from './account-options-menu';
 import { Icon } from '../../component-library';
+import { setPrivacyModeEnabled } from '../../../store/actions';
+import { COLORS } from '../../../helpers/constants/design-system';
+import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  const dispatch = useDispatch();
   const [accountOptionsButtonElement, setAccountOptionsButtonElement] =
     useState(null);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const origin = useSelector(getOriginOfCurrentTab);
+  const privacyModeEnabled = useSelector(getPrivacyModeEnabled);
 
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -38,16 +45,22 @@ export default function MenuBar() {
 
       <SelectedAccount />
 
-      <div style={{'place-self': 'center end'}}>
+      <div className="menu-bar__buttons-container">
         <button
-          title="Toggle Privacy Mode"
-          style={{background: 'transparent', padding: '0', marginRight: '10px'}}>
-            { /* Also "eye-slash-filled" */ }
-            <Icon name="eye-filled" /> 
+          title={t('togglePrivacyMode')}
+          className="menu-bar__buttons-container__privacy-mode"
+          onClick={() => dispatch(setPrivacyModeEnabled(!privacyModeEnabled))}
+        >
+          <Icon
+            name={privacyModeEnabled ? 'eye-slash-filled' : 'eye-filled'}
+            color={
+              privacyModeEnabled ? COLORS.PRIMARY_DEFAULT : COLORS.TEXT_DEFAULT
+            }
+          />
         </button>
 
         <button
-          className="fas fa-ellipsis-v menu-bar__account-options"
+          className="fas fa-ellipsis-v menu-bar__buttons-container__account-options"
           data-testid="account-options-menu-button"
           ref={setAccountOptionsButtonElement}
           title={t('accountOptions')}

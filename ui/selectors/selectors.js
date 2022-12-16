@@ -597,6 +597,10 @@ export function getShouldHideZeroBalanceTokens(state) {
   return hideZeroBalanceTokens;
 }
 
+export function getPrivacyModeEnabled(state) {
+  return Boolean(state.metamask.privacyMode);
+}
+
 export function getAdvancedInlineGasShown(state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas);
 }

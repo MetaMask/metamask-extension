@@ -2696,6 +2696,9 @@
   "password": {
     "message": "Password"
   },
+  "togglePrivacyMode": {
+    "message": "Toggle Privacy Mode"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },

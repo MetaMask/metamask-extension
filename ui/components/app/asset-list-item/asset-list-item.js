@@ -117,7 +117,7 @@ const AssetListItem = ({
           title={`${primary} ${tokenSymbol}`}
         >
           <h2>
-            <Privacy as="span" className="asset-list-item__token-value privacy">
+            <Privacy as="span" className="asset-list-item__token-value">
               {primary}
             </Privacy>
             <span className="asset-list-item__token-symbol">{tokenSymbol}</span>

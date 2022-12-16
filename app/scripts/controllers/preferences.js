@@ -72,6 +72,7 @@ export default class PreferencesController {
       theme: 'light',
       improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
+      privacyMode: false,
       ...opts.initState,
     };
 
@@ -171,6 +172,15 @@ export default class PreferencesController {
     this.store.updateState({
       openSeaEnabled,
     });
+  }
+
+  /**
+   * Setter for the `privacyMode` property
+   *
+   * @param {boolean} privacyMode - Whether the wallet should be put in privacy mdoe
+   */
+  setPrivacyModeEnabled(privacyMode) {
+    this.store.updateState({ privacyMode });
   }
 
   /**

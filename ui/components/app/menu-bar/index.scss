@@ -6,12 +6,21 @@
   border-bottom: 1px solid var(--color-border-muted);
   height: 64px;
 
-  .menu-bar__account-options {
-    background: none;
-    font-size: inherit;
-    padding: 0 8px 0 5px;
+  &__buttons-container {
     place-self: center end;
-    color: var(--color-text-default);
+
+    &__privacy-mode {
+      background: transparent;
+      padding: 0;
+      margin-right: 10px;
+    }
+
+    &__account-options {
+      background: none;
+      font-size: inherit;
+      padding: 0 8px 0 5px;
+      color: var(--color-text-default);
+    }
   }
 
   .selected-account {
