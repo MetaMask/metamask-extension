@@ -247,9 +247,6 @@
   "advancedGasPriceTitle": {
     "message": "Цена газа"
   },
-  "advancedOptions": {
-    "message": "Дополнительные параметры"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Плата за приоритет (также известная как «чаевые майнеру») направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
@@ -597,16 +594,6 @@
   },
   "confirm": {
     "message": "Подтвердить"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Вы предоставляете доступ к $1, включая все, что может принадлежать вам в будущем. Сторона на другом конце может перевести NFT с вашего кошелька в любое время, не спрашивая вас, пока вы не отзовете это одобрение. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "все NFT по этому контракту"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Действуйте с осторожностью."
   },
   "confirmPassword": {
     "message": "Подтвердить пароль"
@@ -1011,29 +998,8 @@
   "editContact": {
     "message": "Изменить контакт"
   },
-  "editGasEducationButtonText": {
-    "message": "Как мне выбрать?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Это лучше всего подходит для транзакций, чувствительных ко времени (например, обмен), поскольку увеличивает вероятность успешной транзакции. Если обработка обмена занимает слишком много времени, он может завершиться неудачно и привести к потере части вашей платы за газ."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Более низкую плату за газ следует использовать только тогда, когда время обработки менее важно. При более низких суммах платы сложнее предсказать, когда ваша транзакция будет выполнена (и будет ли она вообще выполнена)."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Средняя плата за газ хорошо подходит для отправки и вывода средств или других транзакций, не зависящих от времени. Этот параметр чаще всего позволяет успешно выполнить транзакцию."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Выбор правильной платы за газ зависит от типа транзакции и ее важности для вас."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Как выбрать?"
-  },
   "editGasFeeModalTitle": {
     "message": "Изменить плату за газ"
-  },
-  "editGasHigh": {
-    "message": "Высокая"
   },
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
@@ -1044,9 +1010,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы использовать. Единицы газа являются множителем «Максимальной платы за приоритет» и «Максимальной комиссии»."
-  },
-  "editGasLow": {
-    "message": "Низкая"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
@@ -1066,9 +1029,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Максимальная комиссия не может быть меньше максимальной платы за приоритет"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "Максимальная комиссия — это наибольшая сумма, которую вы заплатите (базовая комиссия + плата за приоритет)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Максимальная плата за приоритет должна быть больше 0 GWEI."
   },
@@ -1086,12 +1046,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Плата за приоритет низкая для текущих условий сети"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Максимальная плата за приоритет (также известная как «чаевые майнеру») направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции. Чаще всего вы платите максимальную указанную вами сумму."
-  },
-  "editGasMedium": {
-    "message": "Средняя"
   },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
@@ -1112,12 +1066,6 @@
   "editGasTooLow": {
     "message": "Время обработки неизвестно"
   },
-  "editGasTooLowTooltip": {
-    "message": "Ваша максимальная комиссия или максимальная плата за приоритет могут быть низкими для текущих рыночных условий. Мы не знаем, когда ваша транзакция будет выполнена (и будет ли она вообще выполнена). "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Это снижает вашу максимальную комиссию, но, если трафик в сети увеличивается, ваша транзакция может быть отложена или не выполнена."
-  },
   "editNonceField": {
     "message": "Изменить одноразовый номер"
   },
@@ -1132,22 +1080,6 @@
   },
   "enableAutoDetect": {
     "message": " Включить автообнаружение"
-  },
-  "enableEIP1559V2": {
-    "message": "Включить расширенный интерфейс платы за газ"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Мы обновили принцип оценки и настройки платы за газ."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Включите расширенный интерфейс платы за газ в Настройках."
-  },
-  "enableEIP1559V2Description": {
-    "message": "Мы обновили принцип работы оценки и настройки газа. Включите эту опцию, если хотите использовать новый интерфейс газа. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Новый интерфейс газа"
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
@@ -1404,9 +1336,6 @@
   "gasDisplayDappWarning": {
     "message": "Эта плата за газ была предложена $1. Ее переопредление может вызвать проблемы с вашей транзакцией. При наличии вопросов обратитесь к $1.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Наши примерные значения низкой, средней и высокой платы недоступны."
   },
   "gasFee": {
     "message": "Плата за газ"
@@ -1970,18 +1899,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Всегда разрешать вам отказываться в Настройках"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Всегда можно отказаться в настройках"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Никогда",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Никогда не собирает ключи, адреса, транзакции, балансы, хэши или любую личную информацию"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 не сохраняет ваш полный IP-адрес",
@@ -1990,12 +1913,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 не хранит ключи, адреса, транзакции, балансы, хэши или любые личные данные",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Никогда не собирает ваш полный IP-адрес"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Никогда не продает данные ради прибыли. Никогда!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 не продает данные для получения прибыли. Никогда!",
@@ -2009,12 +1926,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask хотел бы собрать основные данные об использовании, чтобы лучше понять, как наши пользователи взаимодействуют с расширением. Эти данные будут использоваться для постоянного повышения удобства и улучшения впечатлений от использования нашего продукта и экосистемы Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Мы хотели бы получить базовые данные об использовании, чтобы повысить удобство использования нашего продукта. Эти показатели будут..."
-  },
-  "metametricsTitle": {
-    "message": "Присоединяйтесь к более чем 6 млн пользователей, чтобы улучшить MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "проверить сведения о сети",
@@ -2155,9 +2066,6 @@
   },
   "newAccount": {
     "message": "Новый счет"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Обнаружен новый адрес! Нажмите здесь, чтобы добавить этот адрес в свою адресную книгу."
   },
   "newAccountNumberName": {
     "message": "Счет $1",
@@ -3065,9 +2973,6 @@
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Задать дополнительные настройки конфиденциальности"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },
@@ -3124,9 +3029,6 @@
   "showPrivateKeys": {
     "message": "Показать закрытые ключи"
   },
-  "showRecommendations": {
-    "message": "Показать рекомендации"
-  },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },
@@ -3138,9 +3040,6 @@
   },
   "sign": {
     "message": "Подписать"
-  },
-  "signNotice": {
-    "message": "Подписание этого сообщения может быть опасным. Эта подпись потенциально позволяет выполнить любую операцию от имени вашего счета, включая предоставление полного контроля над вашим счетом и всеми его активами запрашивающему сайту. Подписывайте это сообщение, только если вы знаете, что делаете, или полностью доверяете запрашивающему сайту."
   },
   "signatureRequest": {
     "message": "Запрос подписи"

@@ -7,7 +7,7 @@ const {
   collectiblesBytecode,
   failingContractAbi,
   failingContractBytecode,
-} = require('../../../node_modules/@metamask/test-dapp/dist/constants.json');
+} = require('@metamask/test-dapp/dist/constants.json');
 
 const hstFactory = {
   initialAmount: 100,

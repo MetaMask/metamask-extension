@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Išplėstiniai"
   },
-  "advancedOptions": {
-    "message": "Išplėstinės parinktys"
-  },
   "amount": {
     "message": "Suma"
   },
@@ -561,9 +558,6 @@
   "newAccount": {
     "message": "Nauja paskyra"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Aptiktas naujas adresas! Spustelėkite čia, kad įtrauktumėte į savo adresų knygelę."
-  },
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
@@ -824,9 +818,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signNotice": {
-    "message": "Pasirašant šį pranešimą gali būti \npavojingų šalutinių efektų. Pasirašykite tik pranešimus iš vietų,\nkuriomis visiškai pasitikite su visomis savo paskyromis.\nŠis pavojingas būdas bus pašalintas ateities versijoje. "
   },
   "signatureRequest": {
     "message": "Parašo užklausa"

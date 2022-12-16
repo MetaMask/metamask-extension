@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Papildu"
   },
-  "advancedOptions": {
-    "message": "Papildu opcijas"
-  },
   "amount": {
     "message": "Apjoms"
   },
@@ -557,9 +554,6 @@
   "newAccount": {
     "message": "Jauns konts"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Konstatēta jauna adrese. Klikšķiniet šeit, lai pievienotu to adrešu grāmatai."
-  },
   "newAccountNumberName": {
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
@@ -820,9 +814,6 @@
   },
   "sign": {
     "message": "Parakstīt"
-  },
-  "signNotice": {
-    "message": "Šī ziņojuma parakstīšana var radīt \nbīstamas blaknes. Parakstiet tikai tādus ziņojumus,\nkuriem pilnībā uzticaties ar savu konta informāciju.\n Turpmākajās versijās šī bīstamā metode tiks noņemta. "
   },
   "signatureRequest": {
     "message": "Paraksta pieprasījums"

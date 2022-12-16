@@ -60,7 +60,6 @@ export default {
     display: {
       options: Object.values(DISPLAY),
       control: 'select',
-      defaultValue: DISPLAY.FLEX,
       table: { category: 'box props' },
     },
     marginTop: {

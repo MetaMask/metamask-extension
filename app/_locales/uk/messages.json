@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Розширені"
   },
-  "advancedOptions": {
-    "message": "Додаткові параметри"
-  },
   "amount": {
     "message": "Кількість"
   },
@@ -561,9 +558,6 @@
   "newAccount": {
     "message": "Новий обліковий запис"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Виявлено нову адресу! Клацніть тут, щоб додати її до вашої адресної книги."
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
@@ -824,9 +818,6 @@
   },
   "sign": {
     "message": "Підписати"
-  },
-  "signNotice": {
-    "message": "Підписування цього повідомлення може мати небезпечний побічний ефект. Підписуйте тільки повідомлення від сайтів, яким ви повністю довіряєте весь ваш обліковий запис. Цей небезпечний метод буде усунуто у майбутній версії."
   },
   "signatureRequest": {
     "message": "Запит підпису"

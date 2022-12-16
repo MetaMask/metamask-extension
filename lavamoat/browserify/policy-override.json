@@ -26,6 +26,12 @@
         "clearTimeout": true
       }
     },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
     "react-dnd-html5-backend": {
       "globals": {
         "clearTimeout": true,
@@ -108,11 +114,6 @@
       }
     },
     "@metamask/rpc-methods>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

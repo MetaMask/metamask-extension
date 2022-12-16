@@ -30,7 +30,7 @@ describe('Test Snap manageState', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page, then fill in the snapId
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
         // find and scroll to the connect button and click it
@@ -41,7 +41,7 @@ describe('Test Snap manageState', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          2,
           1000,
           10000,
         );
@@ -59,7 +59,7 @@ describe('Test Snap manageState', function () {
         await driver.delay(2000);
 
         // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -70,9 +70,14 @@ describe('Test Snap manageState', function () {
         });
 
         // fill and click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.delay(1000);
         await driver.fill('#dataManageState', '23');
+        const snapButton2 = await driver.findElement(
+          '#retrieveManageStateResult',
+        );
+        await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#sendManageState');
 
