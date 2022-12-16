@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-ganache_cli="$(yarn bin)/ganache"
+ganache_cli="$(yarn bin ganache)"
 seed_phrase="${GANACHE_SEED_PHRASE:-phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent}"
 
 _term () {
