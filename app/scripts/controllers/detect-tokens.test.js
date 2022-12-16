@@ -77,25 +77,23 @@ describe('DetectTokensController', function () {
         }),
     });
 
-    assetsContractController = new AssetsContractController(
-      {
-        onPreferencesStateChange: preferences.store.subscribe.bind(
-          preferences.store,
-        ),
-        onNetworkStateChange: (cb) =>
-          network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-            const networkState = network.store.getState();
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
-      },
-    );
+    assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+          const networkState = network.store.getState();
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+    });
 
     sandbox
       .stub(network, '_getLatestBlock')
