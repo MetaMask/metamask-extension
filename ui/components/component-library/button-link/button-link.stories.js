@@ -132,7 +132,7 @@ export const Size = (args) => (
     </Box>
     <Text variant={TEXT.BODY_MD}>
       <ButtonLink {...args} size={SIZES.INHERIT}>
-        Button Inherit
+        Inherit Button
       </ButtonLink>{' '}
       inherits the font-size of the parent element.
     </Text>
