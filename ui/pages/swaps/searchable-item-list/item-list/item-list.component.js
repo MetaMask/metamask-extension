@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 import Button from '../../../../components/ui/button';
+import Privacy from '../../../../components/ui/privacy';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -121,7 +122,7 @@ export default function ItemList({
                   <div className="searchable-item-list__right-labels">
                     {rightPrimaryLabel ? (
                       <span className="searchable-item-list__right-primary-label">
-                        {rightPrimaryLabel}
+                        <Privacy>{rightPrimaryLabel}</Privacy>
                       </span>
                     ) : null}
                     {rightSecondaryLabel ? (

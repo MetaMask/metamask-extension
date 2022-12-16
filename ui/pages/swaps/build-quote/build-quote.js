@@ -22,6 +22,7 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
+import Privacy from '../../../components/ui/privacy';
 import Typography from '../../../components/ui/typography';
 import {
   TYPOGRAPHY,
@@ -517,7 +518,7 @@ export default function BuildQuote({
   }
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
-    fromTokenString || '0',
+    <Privacy>{fromTokenString || '0'}</Privacy>,
     fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
 
