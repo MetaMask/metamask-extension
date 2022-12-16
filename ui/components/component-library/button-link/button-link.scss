@@ -39,4 +39,8 @@
       color: var(--color-error-default);
     }
   }
+
+  &--no-padding {
+    height: min-content;
+  }
 }

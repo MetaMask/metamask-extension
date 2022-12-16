@@ -45,7 +45,7 @@ Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
+- `SIZES.INHERIT` inherits the font-size of the parent element.
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -58,7 +58,7 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { Button } from '../ui/component-library/button/button/button';
 
-<Button size={SIZES.AUTO} />
+<Button size={SIZES.INHERIT} />
 <Button size={SIZES.SM} />
 <Button size={SIZES.MD} />
 <Button size={SIZES.LG} />

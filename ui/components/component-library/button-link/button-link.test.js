@@ -42,15 +42,15 @@ describe('ButtonLink', () => {
         <ButtonLink size={SIZES.SM} data-testid={SIZES.SM} />
         <ButtonLink size={SIZES.MD} data-testid={SIZES.MD} />
         <ButtonLink size={SIZES.LG} data-testid={SIZES.LG} />
-        <ButtonLink size={SIZES.AUTO} data-testid={SIZES.AUTO} />
+        <ButtonLink size={SIZES.INHERIT} data-testid={SIZES.INHERIT} />
       </>,
     );
 
     expect(getByTestId(SIZES.SM)).toHaveClass(`mm-button--size-${SIZES.SM}`);
     expect(getByTestId(SIZES.MD)).toHaveClass(`mm-button--size-${SIZES.MD}`);
     expect(getByTestId(SIZES.LG)).toHaveClass(`mm-button--size-${SIZES.LG}`);
-    expect(getByTestId(SIZES.AUTO)).toHaveClass(
-      `mm-button--size-${SIZES.AUTO}`,
+    expect(getByTestId(SIZES.INHERIT)).toHaveClass(
+      `mm-button--size-${SIZES.INHERIT}`,
     );
   });
 
@@ -81,5 +81,14 @@ describe('ButtonLink', () => {
 
     const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
+  });
+
+  it('should render with no padding', () => {
+    const { getByTestId } = render(
+      <ButtonLink data-testid="noPadding" noPadding>
+        No Padding
+      </ButtonLink>,
+    );
+    expect(getByTestId('noPadding')).toHaveClass('mm-button-link--no-padding');
   });
 });

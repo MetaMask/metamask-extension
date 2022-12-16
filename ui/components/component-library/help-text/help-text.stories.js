@@ -58,7 +58,7 @@ export const Children = (args) => (
         marginLeft={1}
         color={COLORS.INHERIT}
         name={ICON_NAMES.WARNING_FILLED}
-        size={SIZES.AUTO}
+        size={SIZES.INHERIT}
       />
     </HelpText>
   </Box>

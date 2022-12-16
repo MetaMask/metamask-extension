@@ -119,7 +119,10 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <>
-    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START} gap={1}>
+      <ButtonLink {...args} noPadding>
+        No Padding Button
+      </ButtonLink>
       <ButtonLink {...args} size={SIZES.SM}>
         Small Button
       </ButtonLink>
@@ -131,8 +134,8 @@ export const Size = (args) => (
       </ButtonLink>
     </Box>
     <Text variant={TEXT.BODY_MD}>
-      <ButtonLink {...args} size={SIZES.AUTO}>
-        Button Auto
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Button Inherit
       </ButtonLink>{' '}
       inherits the font-size of the parent element.
     </Text>
@@ -154,3 +157,17 @@ export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
 Href.args = {
   href: '/metamask',
 };
+
+export const NoPadding = (args) => (
+  <>
+    <ButtonLink {...args} noPadding>
+      No Padding Button
+    </ButtonLink>
+
+    <Text variant={TEXT.BODY_MD} style={{ maxWidth: 400 }}>
+      No padding prop is used when there is no parent text element wrapping the
+      ButtonLink component. When using noPadding, there is no need to pass a
+      size since it will be overridden.
+    </Text>
+  </>
+);

@@ -29,7 +29,7 @@ Optional: `BUTTON_LINK_SIZES` from `../../ui/components/component-library` objec
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
+- `SIZES.INHERIT` inherits the font-size of the parent element.
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -42,10 +42,27 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonLink } from '../../ui/components/component-library';
 
-<ButtonLink size={SIZES.AUTO} />
+<ButtonLink noPadding>No Padding Button</ButtonLink>
+<ButtonLink size={SIZES.INHERIT} />
 <ButtonLink size={SIZES.SM} />
 <ButtonLink size={SIZES.MD} />
 <ButtonLink size={SIZES.LG} />
+```
+
+### No Padding
+
+Set `noPadding` to true when a `ButtonLink` for zero padding and when there isn't a `Text` parent component
+
+No `size` prop is required since this will override the `ButtonLink` height to button text line height (22px)
+
+<Canvas>
+  <Story id="ui-components-component-library-button-link-button-link-stories-js--no-padding" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../ui/components/component-library';
+
+<ButtonLink noPadding>No Padding Button</ButtonLink>;
 ```
 
 ### Danger

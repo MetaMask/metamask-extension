@@ -117,8 +117,8 @@ export const Size = (args) => (
       </ButtonBase>
     </Box>
     <Text variant={TEXT.BODY_SM}>
-      <ButtonBase {...args} size={SIZES.AUTO}>
-        Button Auto
+      <ButtonBase {...args} size={SIZES.INHERIT}>
+        Button Inherit
       </ButtonBase>{' '}
       inherits the font-size of the parent element.
     </Text>

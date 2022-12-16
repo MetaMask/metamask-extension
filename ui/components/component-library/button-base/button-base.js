@@ -36,8 +36,8 @@ export const ButtonBase = ({
     <Box
       as={Tag}
       href={href}
-      paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
-      paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
+      paddingLeft={size === BUTTON_BASE_SIZES.INHERIT ? 0 : 4}
+      paddingRight={size === BUTTON_BASE_SIZES.INHERIT ? 0 : 4}
       className={classnames(
         'mm-button',
         `mm-button--size-${size}`,
@@ -63,13 +63,15 @@ export const ButtonBase = ({
           iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
         }
         gap={2}
-        variant={size === BUTTON_BASE_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
+        variant={
+          size === BUTTON_BASE_SIZES.INHERIT ? TEXT.INHERIT : TEXT.BODY_MD
+        }
         color={TEXT_COLORS.INHERIT}
       >
         {icon && (
           <Icon
             name={icon}
-            size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
+            size={size === BUTTON_BASE_SIZES.INHERIT ? SIZES.INHERIT : SIZES.SM}
             {...iconProps}
           />
         )}
@@ -79,7 +81,7 @@ export const ButtonBase = ({
         <Icon
           className="mm-button__icon-loading"
           name={ICON_NAMES.LOADING_FILLED}
-          size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
+          size={size === BUTTON_BASE_SIZES.INHERIT ? SIZES.INHERIT : SIZES.MD}
         />
       )}
     </Box>
@@ -131,7 +133,7 @@ ButtonBase.propTypes = {
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'SIZES.INHERIT', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
    */
   size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
   /**
