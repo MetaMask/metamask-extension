@@ -22,7 +22,6 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
 
-  // create subscription polyfill middleware
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,
     provider: blockProvider,

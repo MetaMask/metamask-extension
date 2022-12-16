@@ -3905,7 +3905,6 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    // filter and subscription polyfills
     if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(
