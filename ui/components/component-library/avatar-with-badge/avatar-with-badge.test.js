@@ -8,7 +8,7 @@ import { BADGE_POSITIONS } from './avatar-with-badge.constants';
 
 describe('AvatarWithBadge', () => {
   it('should render correctly', () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <AvatarWithBadge
         badgePosition={BADGE_POSITIONS.BOTTOM}
         data-testid="avatar-with-badge"
@@ -23,6 +23,7 @@ describe('AvatarWithBadge', () => {
     );
     expect(getByTestId('avatar-with-badge')).toBeDefined();
     expect(getByTestId('badge')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render badge network with bottom right position correctly', () => {
@@ -42,7 +43,7 @@ describe('AvatarWithBadge', () => {
 
     expect(
       container.getElementsByClassName(
-        'avatar-with-badge__badge-wrapper--position-bottom',
+        'mm-avatar-with-badge__badge-wrapper--position-bottom',
       ),
     ).toHaveLength(1);
   });
@@ -64,7 +65,7 @@ describe('AvatarWithBadge', () => {
 
     expect(
       container.getElementsByClassName(
-        'avatar-with-badge__badge-wrapper--position-top',
+        'mm-avatar-with-badge__badge-wrapper--position-top',
       ),
     ).toHaveLength(1);
   });
@@ -86,5 +87,16 @@ describe('AvatarWithBadge', () => {
     expect(container.props.badgeWrapperProps.borderColor).toStrictEqual(
       'error-default',
     );
+  });
+
+  // className
+  it('should render with custom className', () => {
+    const { getByTestId } = render(
+      <AvatarWithBadge
+        data-testid="avatar-with-badge"
+        className="test-class"
+      />,
+    );
+    expect(getByTestId('avatar-with-badge')).toHaveClass('test-class');
   });
 });

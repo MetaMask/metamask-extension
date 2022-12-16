@@ -13,14 +13,14 @@ export const AvatarWithBadge = ({
   ...props
 }) => {
   return (
-    <Box className={classnames('avatar-with-badge', className)} {...props}>
+    <Box className={classnames('mm-avatar-with-badge', className)} {...props}>
       {/* Generally the AvatarAccount */}
       {children}
       <Box
         className={
           badgePosition === 'top'
-            ? 'avatar-with-badge__badge-wrapper--position-top'
-            : 'avatar-with-badge__badge-wrapper--position-bottom'
+            ? 'mm-avatar-with-badge__badge-wrapper--position-top'
+            : 'mm-avatar-with-badge__badge-wrapper--position-bottom'
         }
         {...badgeWrapperProps}
       >
@@ -53,4 +53,8 @@ AvatarWithBadge.propTypes = {
    * Add custom css class
    */
   className: PropTypes.string,
+  /**
+   * AvatarWithBadge accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
