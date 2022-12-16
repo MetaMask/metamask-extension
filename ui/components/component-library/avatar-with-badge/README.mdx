@@ -27,39 +27,39 @@ Use the `badgePosition` prop to set the position of the badge, it can have two v
 ```jsx
 import { AvatarWithBadge } from '../ui/component-library';
 
-    <AvatarWithBadge
-      badgePosition={BADGE_POSITIONS.BOTTOM}
-      badge={
-        <AvatarNetwork
-          size={SIZES.XS}
-          name="Arbitrum One"
-          src="./images/arbitrum.svg"
-        />
-      }
-    >
-      <AvatarAccount
-        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-        size={SIZES.MD}
-        type={TYPES.JAZZICON}
-      />
-    </AvatarWithBadge>
+<AvatarWithBadge
+  badgePosition={BADGE_POSITIONS.BOTTOM}
+  badge={
+    <AvatarNetwork
+      size={SIZES.XS}
+      name="Arbitrum One"
+      src="./images/arbitrum.svg"
+    />
+  }
+>
+  <AvatarAccount
+    address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    size={SIZES.MD}
+    type={TYPES.JAZZICON}
+  />
+</AvatarWithBadge>
 
-    <AvatarWithBadge
-      badgePosition={BADGE_POSITIONS.TOP}
-      badge={
-        <AvatarNetwork
-          size={SIZES.XS}
-          name="Arbitrum One"
-          src="./images/arbitrum.svg"
-        />
-      }
-    >
-      <AvatarAccount
-        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-        size={SIZES.MD}
-        type={TYPES.JAZZICON}
-      />
-    </AvatarWithBadge>
+<AvatarWithBadge
+  badgePosition={BADGE_POSITIONS.TOP}
+  badge={
+    <AvatarNetwork
+      size={SIZES.XS}
+      name="Arbitrum One"
+      src="./images/arbitrum.svg"
+    />
+  }
+>
+  <AvatarAccount
+    address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    size={SIZES.MD}
+    type={TYPES.JAZZICON}
+  />
+</AvatarWithBadge>
 ```
 
 ### Badge
