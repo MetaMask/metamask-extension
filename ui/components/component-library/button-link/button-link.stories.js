@@ -120,9 +120,6 @@ DefaultStory.storyName = 'Default';
 export const Size = (args) => (
   <>
     <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START} gap={1}>
-      <ButtonLink {...args} noPadding>
-        No Padding Button
-      </ButtonLink>
       <ButtonLink {...args} size={SIZES.SM}>
         Small Button
       </ButtonLink>
@@ -138,6 +135,13 @@ export const Size = (args) => (
         Button Inherit
       </ButtonLink>{' '}
       inherits the font-size of the parent element.
+    </Text>
+    <ButtonLink {...args} noPadding>
+      No Padding Button
+    </ButtonLink>
+    <Text variant={TEXT.BODY_SM}>
+      No padding does not require a size. Learn more in the noPadding prop docs
+      of ButtonLink.
     </Text>
   </>
 );
