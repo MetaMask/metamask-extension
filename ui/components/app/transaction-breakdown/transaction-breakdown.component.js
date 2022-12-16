@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import CurrencyDisplay from '../../ui/currency-display';
+import Privacy from '../../ui/privacy';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
 import {
@@ -76,9 +77,11 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={isTokenApprove ? t('spendLimitAmount') : t('amount')}
         >
+          <Privacy>
           <span className="transaction-breakdown__value transaction-breakdown__value--amount">
             {primaryCurrency}
           </span>
+          </Privacy>
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
           title={

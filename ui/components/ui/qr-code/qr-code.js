@@ -7,6 +7,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import CopyIcon from '../icon/copy-icon.component';
+import Privacy from '../privacy';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default connect(mapStateToProps)(QrCodeView);
@@ -67,7 +68,9 @@ function QrCodeView(props) {
             handleCopy(toChecksumHexAddress(data));
           }}
         >
-          <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
+          <Privacy className="qr-code__address">
+            {toChecksumHexAddress(data)}
+          </Privacy>
           <div className="qr-code__copy-icon">
             <CopyIcon size={11} className="qr-code__copy-icon__svg" color="" />
           </div>

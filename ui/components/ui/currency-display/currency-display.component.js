@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ETH, GWEI } from '../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import Privacy from '../privacy';
 
 export default function CurrencyDisplay({
   value,
@@ -38,10 +39,10 @@ export default function CurrencyDisplay({
       <span className="currency-display-component__prefix">
         {prefixComponent}
       </span>
-      <span className="currency-display-component__text">
+      <Privacy as="span" className="currency-display-component__text">
         {parts.prefix}
         {parts.value}
-      </span>
+      </Privacy>
       {parts.suffix && (
         <span className="currency-display-component__suffix">
           {parts.suffix}

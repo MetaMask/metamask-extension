@@ -4,6 +4,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
+import Privacy from '../../ui/privacy';
 import CopyIcon from '../../ui/icon/copy-icon.component';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
@@ -61,12 +62,12 @@ class SelectedAccount extends Component {
             <div className="selected-account__name">
               {selectedIdentity.name}
             </div>
-            <div className="selected-account__address">
+            <Privacy className="selected-account__address">
               {shortenAddress(checksummedAddress)}
               <div className="selected-account__copy">
                 <CopyIcon size={11} color="var(--color-icon-alternative)" />
               </div>
-            </div>
+            </Privacy>
           </button>
         </Tooltip>
       </div>

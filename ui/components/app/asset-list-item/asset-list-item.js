@@ -8,6 +8,7 @@ import ListItem from '../../ui/list-item';
 import Tooltip from '../../ui/tooltip';
 import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
+import Privacy from '../../ui/privacy';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
@@ -116,7 +117,9 @@ const AssetListItem = ({
           title={`${primary} ${tokenSymbol}`}
         >
           <h2>
-            <span className="asset-list-item__token-value">{primary}</span>
+            <Privacy as="span" className="asset-list-item__token-value privacy">
+              {primary}
+            </Privacy>
             <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
           </h2>
         </button>

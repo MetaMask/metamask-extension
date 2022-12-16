@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import AccountOptionsMenu from './account-options-menu';
+import { Icon } from '../../component-library';
 
 export default function MenuBar() {
   const t = useI18nContext();
@@ -37,22 +38,31 @@ export default function MenuBar() {
 
       <SelectedAccount />
 
-      <button
-        className="fas fa-ellipsis-v menu-bar__account-options"
-        data-testid="account-options-menu-button"
-        ref={setAccountOptionsButtonElement}
-        title={t('accountOptions')}
-        onClick={() => {
-          trackEvent({
-            event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
-            properties: {
-              location: 'Home',
-            },
-          });
-          setAccountOptionsMenuOpen(true);
-        }}
-      />
+      <div style={{'place-self': 'center end'}}>
+        <button
+          title="Toggle Privacy Mode"
+          style={{background: 'transparent', padding: '0', marginRight: '10px'}}>
+            { /* Also "eye-slash-filled" */ }
+            <Icon name="eye-filled" /> 
+        </button>
+
+        <button
+          className="fas fa-ellipsis-v menu-bar__account-options"
+          data-testid="account-options-menu-button"
+          ref={setAccountOptionsButtonElement}
+          title={t('accountOptions')}
+          onClick={() => {
+            trackEvent({
+              event: EVENT_NAMES.NAV_ACCOUNT_MENU_OPENED,
+              category: EVENT.CATEGORIES.NAVIGATION,
+              properties: {
+                location: 'Home',
+              },
+            });
+            setAccountOptionsMenuOpen(true);
+          }}
+        />
+      </div>
 
       {accountOptionsMenuOpen && (
         <AccountOptionsMenu

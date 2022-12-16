@@ -35,6 +35,7 @@ import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
+import Privacy from '../../ui/privacy';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 
@@ -200,17 +201,19 @@ function TransactionListItemInner({
         rightContent={
           !isSignatureReq &&
           !isApproval && (
-            <>
-              <h2
-                title={primaryCurrency}
-                className="transaction-list-item__primary-currency"
-              >
-                {primaryCurrency}
-              </h2>
-              <h3 className="transaction-list-item__secondary-currency">
-                {secondaryCurrency}
-              </h3>
-            </>
+            <Privacy>
+              <>
+                <h2
+                  title={primaryCurrency}
+                  className="transaction-list-item__primary-currency"
+                >
+                  {primaryCurrency}
+                </h2>
+                <h3 className="transaction-list-item__secondary-currency">
+                  {secondaryCurrency}
+                </h3>
+              </>
+            </Privacy>
           )
         }
       >

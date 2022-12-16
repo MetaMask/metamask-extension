@@ -26,6 +26,7 @@ import {
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
+import Privacy from '../../ui/privacy';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -69,16 +70,18 @@ const EthOverview = ({ className }) => {
             <div className="eth-overview__balance">
               <div className="eth-overview__primary-container">
                 {balance ? (
-                  <UserPreferencedCurrencyDisplay
-                    className={classnames('eth-overview__primary-balance', {
-                      'eth-overview__cached-balance': balanceIsCached,
-                    })}
-                    data-testid="eth-overview__primary-currency"
-                    value={balance}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle
-                  />
+                  <Privacy>
+                    <UserPreferencedCurrencyDisplay
+                      className={classnames('eth-overview__primary-balance', {
+                        'eth-overview__cached-balance': balanceIsCached,
+                      })}
+                      data-testid="eth-overview__primary-currency"
+                      value={balance}
+                      type={PRIMARY}
+                      ethNumberOfDecimals={4}
+                      hideTitle
+                    />
+                  </Privacy>
                 ) : (
                   <Spinner
                     color="var(--color-secondary-default)"
