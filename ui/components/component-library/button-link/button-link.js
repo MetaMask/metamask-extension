@@ -36,6 +36,10 @@ ButtonLink.propTypes = {
    */
   danger: PropTypes.bool,
   /**
+   * Boolean to disable button
+   */
+  disabled: PropTypes.bool,
+  /**
    * Possible size values: 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px).
    * Default value is 'SIZES.MD'.
    */
