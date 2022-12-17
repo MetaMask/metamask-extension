@@ -53,22 +53,29 @@ import { BannerBase } from '../../component-library';
 </BannerBase>;
 ```
 
-### Action
+### Action Button Label, onClick, & Props
 
-Use the `action` prop to pass a call to action component below the description of `BannerBase`
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) for the action
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--action" />
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--action-button" />
 </Canvas>
 
 ```jsx
-import { BannerBase } from '../../component-library';
+import { BannerBase, ICON_NAMES } from '../../component-library';
 
 <BannerBase
   title="Action prop demo"
-  action={<ButtonLink size={SIZES.AUTO}>Action</ButtonLink>}
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconPositionRight: true,
+  }}
+  actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
 >
-  Call to action items will appear below this description
+  Use actionButtonLabel for action text, actionButtonOnClick for the onClick
+  handler, and actionButtonProps to pass any ButtonLink prop types such as
+  iconName
 </BannerBase>;
 ```
 
@@ -93,12 +100,12 @@ import { BannerBase } from '../../component-library';
 </BannerBase>;
 ```
 
-### Left Accessory
+### Start accessory
 
-Use the `leftAccessory` prop to add components such as icons or fox image to the left side of the `BannerBase` content
+Use the `startAccessory` prop to add components such as icons or fox image to the start (default: left) of the `BannerBase` content
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--left-accessory" />
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--start-accessory" />
 </Canvas>
 
 ```jsx
@@ -106,9 +113,9 @@ import { SIZES } from '../../../helpers/constants/design-system';
 import { BannerBase, Icon, ICON_NAMES } from '../../component-library';
 
 <BannerBase
-  title="Left accessory demo"
-  leftAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
+  title="Start accessory demo"
+  startAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
 >
-  The info icon on the left is passed through the leftAccessory prop
+  The info icon on the left is passed through the startAccessory prop
 </BannerBase>;
 ```

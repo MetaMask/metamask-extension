@@ -7,11 +7,11 @@ exports[`BannerBase should render bannerbase element correctly 1`] = `
     data-testid="banner-base"
   >
     <div>
-      <p
+      <h5
         class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
       >
         Bannerbase test
-      </p>
+      </h5>
       <p
         class="box mm-text mm-banner-base__description mm-text--body-md mm-text--color-text-default box--flex-direction-row"
       >

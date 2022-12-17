@@ -47,20 +47,43 @@ describe('BannerBase', () => {
     );
   });
 
-  it('should render bannerbase action', () => {
-    const { getByText } = render(<BannerBase action="Action" />);
-    expect(getByText('Action')).toHaveClass('mm-banner-base__action');
+  it('should render bannerbase action button', () => {
+    const { getByTestId } = render(
+      <BannerBase
+        title="Action prop demo"
+        actionButtonLabel="Action"
+        actionButtonProps={{
+          icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+          iconPositionRight: true,
+          'data-testid': 'action',
+          className: 'mm-banner-base__action',
+        }}
+        actionButtonOnClick={() =>
+          console.log('ButtonLink actionButtonOnClick demo')
+        }
+      >
+        Use actionButtonLabel for action text, actionButtonOnClick for the
+        onClick handler, and actionButtonProps to pass any ButtonLink prop types
+        such as iconName
+      </BannerBase>,
+    );
+    expect(getByTestId('action')).toHaveClass('mm-banner-base__action');
   });
 
-  it('should render bannerbase leftAccessory', () => {
+  it('should render bannerbase startAccessory', () => {
     const { container } = render(
       <BannerBase
-        leftAccessory={<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} />}
+        startAccessory={
+          <Icon
+            className="mm-banner-base__start-accessory"
+            name={ICON_NAMES.ADD_SQUARE_FILLED}
+          />
+        }
       />,
     );
 
     const icon = container.getElementsByClassName(
-      'mm-banner-base__left-accessory',
+      'mm-banner-base__start-accessory',
     ).length;
     expect(icon).toBe(1);
   });

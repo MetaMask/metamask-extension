@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonIcon } from '../button-icon';
+import { ButtonLink } from '../button-link';
 import { ICON_NAMES } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
@@ -19,8 +20,11 @@ export const BannerBase = ({
   title,
   titleProps,
   children,
-  action,
-  leftAccessory,
+
+  actionButtonLabel,
+  actionButtonOnClick,
+  actionButtonProps,
+  startAccessory,
   onClose,
   closeButtonProps,
   ...props
@@ -35,24 +39,37 @@ export const BannerBase = ({
       padding={3}
       {...props}
     >
-      {leftAccessory && (
-        <div className="mm-banner-base__left-accessory">{leftAccessory}</div>
-      )}
+      {startAccessory && <>{startAccessory}</>}
 
       <div>
         {title && (
           <Text
             className="mm-banner-base__title"
             variant={TEXT.BODY_LG_MEDIUM}
+            as="h5"
             {...titleProps}
           >
             {title}
           </Text>
         )}
         {children && (
-          <Text className="mm-banner-base__description">{children}</Text>
+          <Text
+            as={typeof children === 'object' ? 'div' : 'p'}
+            className="mm-banner-base__description"
+          >
+            {children}
+          </Text>
         )}
-        {action && <Text className="mm-banner-base__action">{action}</Text>}
+        {actionButtonLabel && (
+          <ButtonLink
+            // noPadding TODO: Use noPadding option when released
+            size={SIZES.AUTO} // TODO: Remove when noPadding is added
+            onClick={actionButtonOnClick}
+            {...actionButtonProps}
+          >
+            {actionButtonLabel}
+          </ButtonLink>
+        )}
       </div>
       {onClose && (
         <ButtonIcon
@@ -86,9 +103,21 @@ BannerBase.propTypes = {
    */
   action: PropTypes.node,
   /**
-   * The left content area of BannerBase
+   * Label for action button (ButtonLink) of the BannerBase below the children
    */
-  leftAccessory: PropTypes.node,
+  actionButtonLabel: PropTypes.string,
+  /**
+   * Props for action button (ButtonLink) of the BannerBase below the children
+   */
+  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
+  /**
+   * The onClick handler for the action button (ButtonLink)
+   */
+  actionButtonOnClick: PropTypes.func,
+  /**
+   * The start(defualt left) content area of BannerBase
+   */
+  startAccessory: PropTypes.node,
   /**
    * The onClick handler for the close button
    * When passed this will allow for the close button to show

@@ -46,7 +46,16 @@ export default {
     action: {
       control: 'func',
     },
-    leftAccessory: {
+    actionButtonLabel: {
+      control: 'text',
+    },
+    actionButtonOnClick: {
+      control: 'func',
+    },
+    actionButtonProps: {
+      control: 'object',
+    },
+    startAccessory: {
       control: 'text',
     },
     onClose: {
@@ -83,8 +92,8 @@ export const DefaultStory = (args) => {
 DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
-  action: <ButtonLink size={SIZES.AUTO}>Action</ButtonLink>,
-  leftAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+  actionButtonLabel: 'Action',
+  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
 };
 
 DefaultStory.storyName = 'Default';
@@ -109,14 +118,20 @@ export const Children = (args) => {
   );
 };
 
-export const Action = (args) => {
+export const ActionButton = (args) => {
   return <BannerBase {...args} />;
 };
 
-Action.args = {
+ActionButton.args = {
   title: 'Action prop demo',
-  children: 'Call to action items will appear below this description',
-  action: <ButtonLink size={SIZES.AUTO}>Action</ButtonLink>,
+  actionButtonLabel: 'Action',
+  actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
+  actionButtonProps: {
+    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconPositionRight: true,
+  },
+  children:
+    'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',
 };
 
 export const OnClose = (args) => {
@@ -143,13 +158,13 @@ OnClose.args = {
   children: 'Click the close button icon to hide this notifcation',
 };
 
-export const LeftAccessory = (args) => {
+export const StartAccessory = (args) => {
   return <BannerBase {...args} />;
 };
 
-LeftAccessory.args = {
-  title: 'Left accessory demo',
+StartAccessory.args = {
+  title: 'Start accessory demo',
   children:
-    'The info icon on the left is passed through the leftAccessory prop',
-  leftAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+    'The info icon on the left is passed through the startAccessory prop',
+  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
 };
