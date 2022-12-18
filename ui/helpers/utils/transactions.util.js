@@ -40,6 +40,9 @@ async function getMethodFrom4Byte(fourBytePrefix) {
       ? -1
       : 1;
   });
+  if (fourByteResponse.count === 0) {
+    return null;
+  }
   return fourByteResponse.results[0].text_signature;
 }
 

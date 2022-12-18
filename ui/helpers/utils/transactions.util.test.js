@@ -92,5 +92,18 @@ describe('Transactions utils', () => {
         params: [{ type: 'address' }, { type: 'bool' }],
       });
     });
+
+    it('returns no signature for non-existing method at 4byte', async () => {
+      nock('https://www.4byte.directory:443', { encodedQueryParams: true })
+        .get('/api/v1/signatures/')
+        .query({ hex_signature: '0xf27ac106' })
+        .reply(200, {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        });
+      expect(await utils.getMethodDataAsync('0xf27ac106')).toStrictEqual({});
+    });
   });
 });
