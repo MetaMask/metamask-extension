@@ -176,6 +176,7 @@ function wrapAgainstScuttling(content, bag = {}) {
   }
 };
       `;
+}
 
 /**
  * Get the path of a file or folder inside the node_modules folder
