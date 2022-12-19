@@ -1354,6 +1354,21 @@ describe('Transaction Controller', function () {
         txController.txStateManager.getTransactions().length;
       assert.equal(transactionCount1 + 1, transactionCount2);
     });
+
+    it('should call securityProviderRequest and have flagAsDangerous inside txMeta', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        'eth_sendTransaction',
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+      );
+
+      assert.ok(
+        'securityProviderResponse' in txMeta,
+        'should have a securityProviderResponse',
+      );
+    });
   });
 
   describe('#signTransaction', function () {

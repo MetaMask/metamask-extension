@@ -165,12 +165,12 @@ export default class PersonalMessageManager extends EventEmitter {
     };
     this.addMsg(msgData);
 
-    const flagAsDangerous = await this.securityProviderRequest(
+    const securityProviderResponse = await this.securityProviderRequest(
       msgData,
       msgData.type,
     );
 
-    msgData.flagAsDangerous = flagAsDangerous;
+    msgData.securityProviderResponse = securityProviderResponse;
 
     // signal update
     this.emit('update');

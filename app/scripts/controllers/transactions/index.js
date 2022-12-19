@@ -860,12 +860,12 @@ export default class TransactionController extends EventEmitter {
       : '0x0';
 
     if (txMethodType && this.securityProviderRequest) {
-      const flagAsDangerous = await this.securityProviderRequest(
+      const securityProviderResponse = await this.securityProviderRequest(
         txMeta,
         txMethodType,
       );
 
-      txMeta.flagAsDangerous = flagAsDangerous;
+      txMeta.securityProviderResponse = securityProviderResponse;
     }
 
     this.addTransaction(txMeta);
