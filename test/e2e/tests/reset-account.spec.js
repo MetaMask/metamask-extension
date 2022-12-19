@@ -51,7 +51,7 @@ describe('Reset account', function () {
           await driver.clickElement({ css: '.tab-bar__tab__content__title', text: 'Advanced' });
           await driver.clickElement({ text: 'Reset account', tag: 'button' });
           await driver.clickElement({ text: 'Reset', tag: 'button' });
-          await driver.clickElement('.settings-page__header__title-container__close-button');
+          await driver.navigate();
 
           // Check send transaction history should been cleared
           const sendTransaction = await driver.isElementPresent(
