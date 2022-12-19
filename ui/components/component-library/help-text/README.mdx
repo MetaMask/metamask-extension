@@ -1,5 +1,7 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { Text } from '..';
+
 import { HelpText } from './help-text';
 
 # HelpText
@@ -12,13 +14,17 @@ The `HelpText` is intended to be used as the help or error text under a form ele
 
 ## Props
 
-The `HelpText` accepts all props below as well as all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) and [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+The `HelpText` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={HelpText} />
 
+`HelpText` accepts all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) component props
+
+<ArgsTable of={Text} />
+
 ### Children
 
-The `children` of the `HelpText` can be plain text or react nodes.
+The `children` of the `HelpText` can be plain text or react nodes
 
 <Canvas>
   <Story id="ui-components-component-library-help-text-help-text-stories-js--children" />
@@ -26,8 +32,7 @@ The `children` of the `HelpText` can be plain text or react nodes.
 
 ```jsx
 import { SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../ui/components/component-library';
-import { HelpText } from '../../ui/components/component-library';
+import { HelpText, Icon, ICON_NAMES } from '../../component-library';
 
 <HelpText>Plain text</HelpText>
 <HelpText>
@@ -43,14 +48,14 @@ import { HelpText } from '../../ui/components/component-library';
 
 ### Error
 
-Use the `error` prop to show the `HelpText` in error state.
+Use the `error` prop to show the `HelpText` in error state
 
 <Canvas>
   <Story id="ui-components-component-library-help-text-help-text-stories-js--error-story" />
 </Canvas>
 
 ```jsx
-import { HelpText } from '../../ui/components/component-library';
+import { HelpText } from '../../component-library';
 
 <HelpText error>This HelpText in error state</HelpText>;
 ```
@@ -65,7 +70,7 @@ It may be useful to change the color of the `HelpText`. Use the `color` prop and
 
 ```jsx
 import { COLORS } from '../../../helpers/constants/design-system';
-import { HelpText } from '../../ui/components/component-library';
+import { HelpText } from '../../component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
   <HelpText color={COLORS.TEXT_DEFAULT}>

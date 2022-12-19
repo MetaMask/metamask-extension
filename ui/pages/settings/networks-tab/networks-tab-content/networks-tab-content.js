@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import NetworksForm from '../networks-form';
 import NetworksList from '../networks-list';
 import { getProvider } from '../../../../selectors';
+
+import {
+  DEFAULT_ROUTE,
+  NETWORKS_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 const NetworksTabContent = ({
   networkDefaultedToProvider,
@@ -13,6 +19,7 @@ const NetworksTabContent = ({
   shouldRenderNetworkForm,
 }) => {
   const provider = useSelector(getProvider);
+  const history = useHistory();
 
   return (
     <>
@@ -27,6 +34,8 @@ const NetworksTabContent = ({
           isCurrentRpcTarget={provider.rpcUrl === selectedNetwork.rpcUrl}
           networksToRender={networksToRender}
           selectedNetwork={selectedNetwork}
+          submitCallback={() => history.push(DEFAULT_ROUTE)}
+          cancelCallback={() => history.push(NETWORKS_ROUTE)}
         />
       ) : null}
     </>

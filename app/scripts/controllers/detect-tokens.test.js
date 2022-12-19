@@ -3,12 +3,12 @@ import sinon from 'sinon';
 import nock from 'nock';
 import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
+import { ControllerMessenger } from '@metamask/base-controller';
 import {
-  ControllerMessenger,
   TokenListController,
   TokensController,
   AssetsContractController,
-} from '@metamask/controllers';
+} from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
@@ -33,8 +33,7 @@ describe('DetectTokensController', function () {
 
   beforeEach(async function () {
     keyringMemStore = new ObservableStore({ isUnlocked: false });
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
+    network = new NetworkController({ infuraProjectId: 'foo' });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
 
@@ -76,7 +75,7 @@ describe('DetectTokensController', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox
       .stub(tokensController, '_instantiateNewEthersProvider')

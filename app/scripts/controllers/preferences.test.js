@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import {
-  ControllerMessenger,
-  TokenListController,
-} from '@metamask/controllers';
+import { ControllerMessenger } from '@metamask/base-controller';
+import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
@@ -22,8 +20,7 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
+    network = new NetworkController({ infuraProjectId: 'foo' });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -38,7 +35,7 @@ describe('preferences controller', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
     sandbox
@@ -289,6 +286,28 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setUseMultiAccountBalanceChecker', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useMultiAccountBalanceChecker, true);
+    });
+
+    it('should set the setUseMultiAccountBalanceChecker property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        true,
+      );
+
+      preferencesController.setUseMultiAccountBalanceChecker(false);
+
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        false,
+      );
+    });
+  });
+
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();

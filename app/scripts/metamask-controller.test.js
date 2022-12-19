@@ -12,7 +12,7 @@ import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
-import { addHexPrefix } from './lib/util';
+import { addHexPrefix, deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -102,11 +102,14 @@ const CUSTOM_RPC_CHAIN_ID = '0x539';
 
 describe('MetaMaskController', function () {
   let metamaskController;
+
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -114,6 +117,21 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          whitelist: [],
+          blacklist: ['127.0.0.1'],
+        }),
+      )
+      .get('/api/v1/lists/phishfort_hotlist.json')
+      .reply(200, JSON.stringify(['127.0.0.1']));
 
     sandbox.replace(browser, 'runtime', {
       sendMessage: sandbox.stub().rejects(),
@@ -158,6 +176,18 @@ describe('MetaMaskController', function () {
 
   after(async function () {
     await ganacheServer.quit();
+  });
+
+  describe('should reset states on first time profile load', function () {
+    it('should reset state', function () {
+      assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+
+    it('should not reset states if already set', function () {
+      // global.isFirstTime should also remain false
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
   });
 
   describe('#getAccounts', function () {
@@ -694,7 +724,7 @@ describe('MetaMaskController', function () {
       );
       const getNetworkstub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetwork',
+        'getNetworkState',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
@@ -1223,11 +1253,3 @@ describe('MetaMaskController', function () {
     });
   });
 });
-
-function deferredPromise() {
-  let resolve;
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
-  });
-  return { promise, resolve };
-}

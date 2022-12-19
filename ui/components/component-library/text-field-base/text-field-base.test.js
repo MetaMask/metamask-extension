@@ -1,7 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
+
 import { SIZES } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -10,8 +11,9 @@ import { TextFieldBase } from './text-field-base';
 
 describe('TextFieldBase', () => {
   it('should render correctly', () => {
-    const { getByRole } = render(<TextFieldBase />);
+    const { getByRole, container } = render(<TextFieldBase />);
     expect(getByRole('textbox')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
   it('should render and be able to input text', () => {
     const { getByTestId } = render(
@@ -25,54 +27,54 @@ describe('TextFieldBase', () => {
     fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
     expect(textFieldBase.value).toBe(''); // value is empty string after reset
   });
-  it('should render with focused state when clicked', () => {
-    const { getByTestId } = render(
+  it('should render with focused state when clicked', async () => {
+    const { getByTestId, user } = renderWithUserEvent(
       <TextFieldBase
         data-testid="text-field-base"
         inputProps={{ 'data-testid': 'input' }}
       />,
     );
-    const textFieldBase = getByTestId('text-field-base');
+    const textFieldBase = getByTestId('input');
 
-    fireEvent.click(textFieldBase);
+    await user.click(textFieldBase);
     expect(getByTestId('input')).toHaveFocus();
     expect(getByTestId('text-field-base')).toHaveClass(
       'mm-text-field-base--focused ',
     );
   });
-  it('should render and fire onFocus and onBlur events', () => {
+  it('should render and fire onFocus and onBlur events', async () => {
     const onFocus = jest.fn();
     const onBlur = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId, user } = renderWithUserEvent(
       <TextFieldBase
         inputProps={{ 'data-testid': 'text-field-base' }}
         onFocus={onFocus}
         onBlur={onBlur}
       />,
     );
-    const textFieldBase = getByTestId('text-field-base');
 
-    fireEvent.focus(textFieldBase);
+    const textFieldBase = getByTestId('text-field-base');
+    await user.click(textFieldBase);
     expect(onFocus).toHaveBeenCalledTimes(1);
     fireEvent.blur(textFieldBase);
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
-  it('should render and fire onChange event', () => {
+  it('should render and fire onChange event', async () => {
     const onChange = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId, user } = renderWithUserEvent(
       <TextFieldBase
         inputProps={{ 'data-testid': 'text-field-base' }}
         onChange={onChange}
       />,
     );
     const textFieldBase = getByTestId('text-field-base');
-
-    fireEvent.change(textFieldBase, { target: { value: 'text value' } });
-    expect(onChange).toHaveBeenCalledTimes(1);
+    await user.type(textFieldBase, '123');
+    expect(textFieldBase).toHaveValue('123');
+    expect(onChange).toHaveBeenCalledTimes(3);
   });
-  it('should render and fire onClick event', () => {
+  it('should render and fire onClick event', async () => {
     const onClick = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId, user } = renderWithUserEvent(
       <TextFieldBase
         inputProps={{ 'data-testid': 'text-field-base' }}
         onClick={onClick}
@@ -80,7 +82,7 @@ describe('TextFieldBase', () => {
     );
     const textFieldBase = getByTestId('text-field-base');
 
-    fireEvent.click(textFieldBase);
+    await user.click(textFieldBase);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
   it('should render with different size classes', () => {
@@ -175,14 +177,21 @@ describe('TextFieldBase', () => {
     );
     expect(getByRole('textbox').value).toBe('default value');
   });
-  it('should render in disabled state and not focus or be clickable', () => {
+  it('should render in disabled state and not focus or be clickable', async () => {
     const mockOnClick = jest.fn();
     const mockOnFocus = jest.fn();
-    const { getByRole } = render(
-      <TextFieldBase disabled onFocus={mockOnFocus} onClick={mockOnClick} />,
+    const { getByRole, getByTestId, user } = renderWithUserEvent(
+      <TextFieldBase
+        disabled
+        onFocus={mockOnFocus}
+        onClick={mockOnClick}
+        data-testid="text-field-base"
+      />,
     );
 
-    getByRole('textbox').focus();
+    const textFieldBase = getByTestId('text-field-base');
+
+    await user.click(textFieldBase);
     expect(getByRole('textbox')).toBeDisabled();
     expect(mockOnClick).toHaveBeenCalledTimes(0);
     expect(mockOnFocus).toHaveBeenCalledTimes(0);
@@ -196,29 +205,24 @@ describe('TextFieldBase', () => {
     );
   });
   it('should render with maxLength and not allow more than the set characters', async () => {
-    const { getByRole } = render(<TextFieldBase maxLength={5} />);
+    const { getByRole, user } = renderWithUserEvent(
+      <TextFieldBase maxLength={5} />,
+    );
     const textFieldBase = getByRole('textbox');
-    await userEvent.type(textFieldBase, '1234567890');
+    await user.type(textFieldBase, '1234567890');
     expect(getByRole('textbox')).toBeDefined();
     expect(textFieldBase.maxLength).toBe(5);
     expect(textFieldBase.value).toBe('12345');
     expect(textFieldBase.value).toHaveLength(5);
   });
-  it('should render with readOnly attr when readOnly is true', () => {
-    const { getByTestId } = render(
-      <TextFieldBase
-        readOnly
-        data-testid="read-only"
-        inputProps={{ 'data-testid': 'text-field-base-readonly' }}
-      />,
+  it('should render with readOnly attr when readOnly is true', async () => {
+    const { getByTestId, getByRole, user } = renderWithUserEvent(
+      <TextFieldBase readOnly data-testid="read-only" />,
     );
-    expect(getByTestId('read-only')).not.toHaveClass(
-      'mm-text-field-base--focused ',
-    );
-    expect(getByTestId('text-field-base-readonly')).toHaveAttribute(
-      'readonly',
-      '',
-    );
+    const textFieldBase = getByTestId('read-only');
+    await user.type(textFieldBase, '1234567890');
+    expect(getByRole('textbox').value).toBe('');
+    expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });
   it('should render with required attr when required is true', () => {
     const { getByTestId } = render(
@@ -232,12 +236,12 @@ describe('TextFieldBase', () => {
       '',
     );
   });
-  it('should render with a custom input and still work', () => {
+  it('should render with a custom input and still work', async () => {
     const CustomInputComponent = React.forwardRef((props, ref) => (
       <Box ref={ref} as="input" {...props} />
     ));
     CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
-    const { getByTestId } = render(
+    const { getByTestId, user } = renderWithUserEvent(
       <TextFieldBase
         InputComponent={CustomInputComponent}
         inputProps={{ 'data-testid': 'text-field-base', className: 'test' }}
@@ -246,7 +250,7 @@ describe('TextFieldBase', () => {
     const textFieldBase = getByTestId('text-field-base');
 
     expect(textFieldBase.value).toBe(''); // initial value is empty string
-    fireEvent.change(textFieldBase, { target: { value: 'text value' } });
+    await user.type(textFieldBase, 'text value');
     expect(textFieldBase.value).toBe('text value');
     fireEvent.change(textFieldBase, { target: { value: '' } }); // reset value
     expect(textFieldBase.value).toBe(''); // value is empty string after reset

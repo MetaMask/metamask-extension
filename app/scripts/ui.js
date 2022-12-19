@@ -15,10 +15,10 @@ import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
-  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
@@ -117,11 +117,13 @@ async function start() {
   if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-     * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
+     * Code below ensures that UI is rendered only after "CONNECTION_READY" or "startUISync"
+     * messages are received thus the background is ready, and ensures that streams and
+     * phishing warning page load only after the "startUISync" message is received.
      * In case the UI is already rendered, only update the streams.
      */
     const messageListener = async (message) => {
-      if (message?.name === EXTENSION_MESSAGES.CONNECTION_READY) {
+      if (message?.data?.method === 'startUISync') {
         if (isUIInitialised) {
           // Currently when service worker is revived we create new streams
           // in later version we might try to improve it by reviving same streams.
@@ -288,7 +290,12 @@ async function queryCurrentActiveTab(windowType) {
     return {};
   }
 
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  const tabs = await browser.tabs
+    .query({ active: true, currentWindow: true })
+    .catch((e) => {
+      checkForLastErrorAndLog() || log.error(e);
+    });
+
   const [activeTab] = tabs;
   const { id, title, url } = activeTab;
   const { origin, protocol } = url ? new URL(url) : {};
