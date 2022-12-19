@@ -1,3 +1,5 @@
+const insights = require('./insights.json')
+
 const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
@@ -306,6 +308,18 @@ async function setupMocking(server, testSpecificMock) {
         ],
       };
     });
+  
+    // https://tx-insights.metaswap.codefi.network/fetch-project?to=0xcf21e74221443eda1d3313b7b46b4650761aeeda&network-id=5
+  await server
+  .forGet(/^https:\/\/tx-insights\.metaswap\.codefi\.network\/fetch-project(\/(home)?(\?.*)?)?$/)
+  .thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        insights
+      },
+    };
+  });
 
   await server
     .forGet('https://token-api.metaswap.codefi.network/token/0x539')
