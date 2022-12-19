@@ -26,7 +26,6 @@ describe('Reset account', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          // TODO: refacto fill initial password
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
 
