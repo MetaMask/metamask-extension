@@ -17,8 +17,6 @@ module.exports = {
     'node_modules/**/*',
     'jest-coverage/**/*',
   ],
-  // This is necessary to run eslint on Windows and not get a thousand CRLF errors
-  rules: { 'prettier/prettier': ['error', { endOfLine: 'auto' }] },
   overrides: [
     /**
      * == Modules ==

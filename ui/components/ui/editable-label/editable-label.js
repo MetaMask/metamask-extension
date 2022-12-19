@@ -40,7 +40,6 @@ export default class EditableLabel extends Component {
     return (
       <div className={classnames('editable-label', this.props.className)}>
         <input
-          key={1}
           type="text"
           required
           dir="auto"
@@ -59,7 +58,6 @@ export default class EditableLabel extends Component {
         />
         <button
           className="editable-label__icon-button"
-          key={2}
           onClick={() => this.handleSubmit(isValidAccountName)}
         >
           <i className="fa fa-check editable-label__icon" />
@@ -74,11 +72,8 @@ export default class EditableLabel extends Component {
   renderReadonly() {
     return (
       <div className={classnames('editable-label', this.props.className)}>
-        <div key={1} className="editable-label__value">
-          {this.state.value}
-        </div>
+        <div className="editable-label__value">{this.state.value}</div>
         <button
-          key={2}
           className="editable-label__icon-button"
           data-testid="editable-label-button"
           onClick={() => this.setState({ isEditing: true })}
