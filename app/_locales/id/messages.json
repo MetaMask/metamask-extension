@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Masukan tidak valid! Frasa Pemulihan Rahasia peka terhadap huruf besar/kecil."
   },
-  "ipfsGateway": {
-    "message": "Gateway IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Masukkan URL gateway CID IPFS dan gunakan untuk resolusi konten ENS."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons dan Blockies merupakan dua gaya ikon unik yang berbeda untuk membantu Anda mengidentifikasi akun dengan cepat."
   },
@@ -3021,7 +3015,8 @@
     "message": "Tampilkan transaksi masuk"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi"
+    "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Tampilkan Izin"

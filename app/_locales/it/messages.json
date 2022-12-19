@@ -1269,12 +1269,6 @@
   "invalidSeedPhrase": {
     "message": "Frase seed non valida"
   },
-  "ipfsGateway": {
-    "message": "Portale IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Inserisci l'URL del portale IPFS CID da usare per la risoluzione del contenuto ENS."
-  },
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
@@ -1733,7 +1727,8 @@
     "message": "Mostra Transazioni in Ingresso"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Usa Etherscan per visualizzare le transazioni in ingresso nella lista delle transazioni"
+    "message": "Usa Etherscan per visualizzare le transazioni in ingresso nella lista delle transazioni",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostra permessi"

@@ -85,7 +85,7 @@ ButtonIcon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  iconName: PropTypes.oneOf(ICON_NAMES).isRequired,
+  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */

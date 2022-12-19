@@ -238,6 +238,7 @@ function defaultFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -350,6 +351,7 @@ function onboardingFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
