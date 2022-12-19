@@ -300,6 +300,14 @@ export const EVENT_NAMES = {
   KEY_EXPORT_CANCELED: 'Key Export Canceled',
   KEY_EXPORT_REVEALED: 'Key Material Revealed',
   KEY_EXPORT_COPIED: 'Key Material Copied',
+  KEY_TOKEN_DETECTION_SELECTED: 'Key Token Detection Selected',
+  KEY_GLOBAL_SECURITY_TOGGLE_SELECTED: 'Key Global Security/Privacy Settings',
+  KEY_BALANCE_TOKEN_PRICE_CHECKER:
+    'Key Show Balance and Token Price Checker Settings',
+  KEY_GAS_FEE_ESTIMATION_BUY_SWAP_TOKENS:
+    'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
+  KEY_AUTO_DETECT_TOKENS: 'Key Autodetect tokens',
+  KEY_BATCH_ACCOUNT_BALANCE_REQUESTS: 'Key Batch account balance requests',
   METRICS_OPT_IN: 'Metrics Opt In',
   METRICS_OPT_OUT: 'Metrics Opt Out',
   NAV_ACCOUNT_MENU_OPENED: 'Account Menu Opened',
