@@ -90,7 +90,7 @@ export default class TransactionActivityLog extends PureComponent {
   renderActivity(activity, index) {
     const { conversionRate, nativeCurrency } = this.props;
     const { eventKey, value, timestamp } = activity;
-    console.log('alpha', activity);
+
     const ethValue =
       index === 0
         ? `${getValueFromWeiHex({
