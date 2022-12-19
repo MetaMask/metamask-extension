@@ -11,7 +11,6 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -136,14 +135,6 @@ async function addEthereumChainHandler(
     return end(
       ethErrors.rpc.invalidParams({
         message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
-      }),
-    );
-  }
-
-  if (CHAIN_ID_TO_NETWORK_ID_MAP[_chainId]) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `May not specify default MetaMask chain.`,
       }),
     );
   }
@@ -297,7 +288,6 @@ async function addEthereumChainHandler(
       },
       properties: {
         chain_id: _chainId,
-        network_name: _chainName,
         symbol: ticker,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
       },

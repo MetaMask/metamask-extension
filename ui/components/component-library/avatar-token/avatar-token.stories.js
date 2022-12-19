@@ -13,6 +13,7 @@ import Box from '../../ui/box/box';
 
 import README from './README.mdx';
 import { AvatarToken } from './avatar-token';
+import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
@@ -26,7 +27,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_TOKEN_SIZES),
     },
     color: {
       options: Object.values(TEXT_COLORS),
@@ -40,10 +41,10 @@ export default {
       options: Object.values(BORDER_COLORS),
       control: 'select',
     },
-    tokenName: {
+    name: {
       control: 'text',
     },
-    tokenImageUrl: {
+    src: {
       control: 'text',
     },
     showHalo: {
@@ -51,8 +52,8 @@ export default {
     },
   },
   args: {
-    tokenName: 'ast',
-    tokenImageUrl: './AST.png',
+    name: 'eth',
+    src: './images/eth_logo.svg',
     size: SIZES.MD,
     showHalo: false,
   },
@@ -75,12 +76,34 @@ export const Size = (args) => (
   </Box>
 );
 
-export const TokenName = Template.bind({});
-TokenName.args = {
-  tokenImageUrl: '',
+export const Name = Template.bind({});
+Name.args = {
+  src: '',
 };
 
-export const TokenImageUrl = Template.bind({});
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
+    <AvatarToken {...args} src="./images/eth_logo.svg" />
+    <AvatarToken {...args} src="./images/arbitrum.svg" />
+    <AvatarToken {...args} src="./images/bnb.png" />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://static.metaswap.codefi.network/api/v1/tokenIcons/1/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png"
+    />
+    <AvatarToken
+      {...args}
+      src="https://i.seadn.io/gae/lSm8ChaI-3RqC9MTpi0j3KBXdfdPd57PN5UeQLY49JA3twy9wSt2dpaa22sSc6oyiXi2OEUR6GeFX8jwkZHEMADu6_Bd4EwTJ-rg?w=500&auto=format"
+    />
+  </Box>
+);
 
 export const ShowHalo = Template.bind({});
 ShowHalo.args = {
@@ -93,18 +116,18 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
-      tokenName="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
+      name="G"
+      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
     />
     <AvatarToken
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
-      tokenName="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
+      name="S"
+      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
     />
   </Box>
 );
 ColorBackgroundColorAndBorderColor.args = {
-  tokenImageUrl: '',
+  src: '',
 };

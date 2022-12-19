@@ -12,7 +12,7 @@
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
-@import 'confirm-page-container/enableEIP1559V2-notice';
+@import 'confirmation-warning-modal/index';
 @import 'collectibles-items/index';
 @import 'collectibles-tab/index';
 @import 'collectible-details/index';
@@ -27,7 +27,6 @@
 @import 'custom-spending-cap/index';
 @import 'deposit-popover/index';
 @import 'edit-gas-display/index';
-@import 'edit-gas-display-education/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
 @import 'edit-gas-fee-popover/edit-gas-item/index';
@@ -39,6 +38,8 @@
 @import 'flask/snap-content-footer/index';
 @import 'flask/snap-install-warning/index';
 @import 'flask/snap-remove-warning/index';
+@import 'flask/snap-ui-renderer/index';
+@import 'flask/snap-ui-markdown/index';
 @import 'flask/snap-delineator/index';
 @import 'flask/snap-settings-card/index';
 @import 'flask/update-snap-permission-list/index';
@@ -60,6 +61,7 @@
 @import 'permissions-connect-header/index';
 @import 'permissions-connect-permission-list/index';
 @import 'recovery-phrase-reminder/index';
+@import 'set-approval-for-all-warning/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
 @import 'signature-request/index';
@@ -80,7 +82,6 @@
 @import 'transaction-list-item/index';
 @import 'transaction-list/index';
 @import 'transaction-status/index';
-@import 'transaction-total-banner/index';
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';
 @import 'loading-network-screen/index';

@@ -533,7 +533,7 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
-function getUnapprovedTxCount(state) {
+export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
 }
@@ -851,7 +851,7 @@ export const getFullTxData = createDeepEqualSelector(
     return getTransaction(state, transactionId);
   },
   (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, _status, customTxParamsData) => {
+  (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       txData.simulationFails = transaction.simulationFails;
@@ -981,6 +981,7 @@ function getAllowedAnnouncementIds(state) {
     14: false,
     15: false,
     16: true,
+    17: true,
   };
 }
 
@@ -1159,10 +1160,6 @@ export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
 
-export function getEIP1559V2Enabled(state) {
-  return state.metamask.eip1559V2Enabled;
-}
-
 /**
  *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
  *
@@ -1221,7 +1218,9 @@ export function getIsDynamicTokenListAvailable(state) {
  * @returns list of token objects
  */
 export function getDetectedTokensInCurrentNetwork(state) {
-  return state.metamask.detectedTokens;
+  const currentChainId = getCurrentChainId(state);
+  const selectedAddress = getSelectedAddress(state);
+  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
 /**

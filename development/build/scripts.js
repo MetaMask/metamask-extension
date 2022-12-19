@@ -1018,7 +1018,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
+    NFTS_V1: config.NFTS_V1 === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
@@ -1044,6 +1044,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
+    TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
   };
 }
 

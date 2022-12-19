@@ -113,6 +113,7 @@ import {
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
+import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
@@ -146,6 +147,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { previousValueComparator } from './lib/util';
 
 import {
   CaveatMutatorFactories,
@@ -242,8 +244,10 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: opts.showUserConfirmation,
     });
 
-    this.networkController = new NetworkController(initState.NetworkController);
-    this.networkController.setInfuraProjectId(opts.infuraProjectId);
+    this.networkController = new NetworkController({
+      state: initState.NetworkController,
+      infuraProjectId: opts.infuraProjectId,
+    });
 
     // now we can initialize the RPC provider, which other controllers require
     this.initializeProvider();
@@ -374,7 +378,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    process.env.COLLECTIBLES_V1 &&
+    process.env.NFTS_V1 &&
       (this.nftDetectionController = new NftDetectionController({
         onNftsStateChange: (listener) => this.nftController.subscribe(listener),
         onPreferencesStateChange:
@@ -527,6 +531,10 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    this.onboardingController = new OnboardingController({
+      initState: initState.OnboardingController,
+    });
+
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
       onNetworkDidChange: this.networkController.on.bind(
@@ -537,6 +545,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       preferencesController: this.preferencesController,
+      onboardingController: this.onboardingController,
       initState: initState.IncomingTransactionsController,
     });
 
@@ -550,26 +559,30 @@ export default class MetamaskController extends EventEmitter {
       getNetworkIdentifier: this.networkController.getNetworkIdentifier.bind(
         this.networkController,
       ),
+      preferencesController: this.preferencesController,
+      onboardingController: this.onboardingController,
     });
 
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      if (activeControllerConnections > 0) {
-        this.accountTracker.start();
-        this.incomingTransactionsController.start();
-        this.currencyRateController.start();
-        if (this.preferencesController.store.getState().useTokenDetection) {
-          this.tokenListController.start();
-        }
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+      if (activeControllerConnections > 0 && completedOnboarding) {
+        this.triggerNetworkrequests();
       } else {
-        this.accountTracker.stop();
-        this.incomingTransactionsController.stop();
-        this.currencyRateController.stop();
-        if (this.preferencesController.store.getState().useTokenDetection) {
-          this.tokenListController.stop();
-        }
+        this.stopNetworkRequests();
       }
     });
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.triggerNetworkrequests();
+        }
+      }, this.onboardingController.store.getState()),
+    );
 
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
@@ -577,10 +590,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
-    });
-
-    this.onboardingController = new OnboardingController({
-      initState: initState.OnboardingController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -679,7 +688,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.11.0',
+        'https://metamask.github.io/iframe-execution-environment/0.11.1',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -829,7 +838,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      networkStore: this.networkController.networkStore,
+      getNetworkState: () => this.networkController.networkStore.getState(),
+      onNetworkStateChange: (listener) =>
+        this.networkController.networkStore.subscribe(listener),
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
@@ -1188,6 +1199,24 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+  }
+
+  triggerNetworkrequests() {
+    this.accountTracker.start();
+    this.incomingTransactionsController.start();
+    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useTokenDetection) {
+      this.tokenListController.start();
+    }
+  }
+
+  stopNetworkRequests() {
+    this.accountTracker.stop();
+    this.incomingTransactionsController.stop();
+    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useTokenDetection) {
+      this.tokenListController.stop();
+    }
   }
 
   resetStates(resetMethods) {
@@ -1605,6 +1634,10 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
+      setUseMultiAccountBalanceChecker:
+        preferencesController.setUseMultiAccountBalanceChecker.bind(
+          preferencesController,
+        ),
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
@@ -1709,9 +1742,6 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
-      setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
-        preferencesController,
-      ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
       setImprovedTokenAllowanceEnabled:
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
@@ -1777,10 +1807,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setCollectiblesDetectionNoticeDismissed:
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
-          appStateController,
-        ),
-      setEnableEIP1559V2NoticeDismissed:
-        appStateController.setEnableEIP1559V2NoticeDismissed.bind(
           appStateController,
         ),
       updateCollectibleDropDownState:
@@ -2024,7 +2050,7 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // DetectCollectibleController
-      detectNfts: process.env.COLLECTIBLES_V1
+      detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
 
@@ -2137,7 +2163,6 @@ export default class MetamaskController extends EventEmitter {
       },
       properties: {
         chain_id: chainId,
-        network_name: chainName,
         symbol: ticker,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
       },
@@ -3724,6 +3749,10 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
+
+    if (isManifestV3) {
+      engine.push(createDupeReqFilterMiddleware());
+    }
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));

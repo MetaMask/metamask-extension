@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avansate"
   },
-  "advancedOptions": {
-    "message": "Opțiuni avansate"
-  },
   "amount": {
     "message": "Sumă"
   },
@@ -547,9 +544,6 @@
   },
   "newAccount": {
     "message": "Cont nou"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
   },
   "newAccountNumberName": {
     "message": "Cont $1",

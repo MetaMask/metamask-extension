@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Išplėstiniai"
   },
-  "advancedOptions": {
-    "message": "Išplėstinės parinktys"
-  },
   "amount": {
     "message": "Suma"
   },
@@ -560,9 +557,6 @@
   },
   "newAccount": {
     "message": "Nauja paskyra"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Aptiktas naujas adresas! Spustelėkite čia, kad įtrauktumėte į savo adresų knygelę."
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",

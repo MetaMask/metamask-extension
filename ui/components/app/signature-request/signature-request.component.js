@@ -12,6 +12,7 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   COLORS,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
@@ -174,7 +175,7 @@ export default class SignatureRequest extends PureComponent {
       : null;
 
     return (
-      <div className="signature-request page-container">
+      <div className="signature-request">
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
@@ -204,7 +205,16 @@ export default class SignatureRequest extends PureComponent {
           >
             {this.context.t('sigRequest')}
           </Typography>
-
+          <Typography
+            className="request-signature__content__subtitle"
+            variant={TYPOGRAPHY.H7}
+            color={COLORS.TEXT_ALTERNATIVE}
+            align={TEXT_ALIGN.CENTER}
+            margin={12}
+            marginTop={3}
+          >
+            {this.context.t('signatureRequestGuidance')}
+          </Typography>
           <div>
             <Button
               type="link"

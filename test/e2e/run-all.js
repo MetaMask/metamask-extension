@@ -36,6 +36,12 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('debug', {
+            default: process.env.E2E_DEBUG === 'true',
+            description:
+              'Run tests in debug mode, logging each driver interaction',
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
@@ -53,7 +59,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3 } = argv;
 
   let testPaths;
 
@@ -83,6 +89,9 @@ async function main() {
   }
   if (retries) {
     args.push('--retries', retries);
+  }
+  if (debug) {
+    args.push('--debug');
   }
 
   // For running E2Es in parallel in CI
