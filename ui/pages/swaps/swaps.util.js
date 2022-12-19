@@ -376,18 +376,19 @@ export function quotesToRenderableData(
       averageGas,
       fee,
       trade,
+      multiLayerL1TradeFeeTotal,
     } = quote;
     let multiLayerL1FeeTotal = null;
     if (
-      quote.multiLayerL1TradeFeeTotal !== null &&
+      multiLayerL1TradeFeeTotal !== null &&
       multiLayerL1ApprovalFeeTotal !== null
     ) {
       multiLayerL1FeeTotal = sumHexes(
-        quote.multiLayerL1TradeFeeTotal || '0x0',
+        multiLayerL1TradeFeeTotal || '0x0',
         multiLayerL1ApprovalFeeTotal || '0x0',
       );
-    } else if (quote.multiLayerL1TradeFeeTotal !== null) {
-      multiLayerL1FeeTotal = quote.multiLayerL1TradeFeeTotal;
+    } else if (multiLayerL1TradeFeeTotal !== null) {
+      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
     }
     const sourceValue = calcTokenAmount(
       sourceAmount,
