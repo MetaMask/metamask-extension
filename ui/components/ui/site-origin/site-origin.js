@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Chip from '../chip';
 import IconWithFallback from '../icon-with-fallback';
 import { COLORS } from '../../../helpers/constants/design-system';
+import Privacy from '../privacy';
 
 export default function SiteOrigin({
   siteOrigin,
@@ -16,23 +17,25 @@ export default function SiteOrigin({
   rightIcon,
 }) {
   return (
-    <div className={classnames('site-origin', className)} title={title}>
-      {chip ? (
-        <Chip
-          borderColor={COLORS.BORDER_MUTED}
-          label={siteOrigin}
-          maxContent={false}
-          leftIcon={
-            leftIcon || (
-              <IconWithFallback icon={iconSrc} name={iconName} size={24} />
-            )
-          }
-          rightIcon={rightIcon}
-        />
-      ) : (
-        <bdi dir="ltr">{siteOrigin}</bdi>
-      )}
-    </div>
+    <Privacy>
+      <div className={classnames('site-origin', className)} title={title}>
+        {chip ? (
+          <Chip
+            borderColor={COLORS.BORDER_MUTED}
+            label={siteOrigin}
+            maxContent={false}
+            leftIcon={
+              leftIcon || (
+                <IconWithFallback icon={iconSrc} name={iconName} size={24} />
+              )
+            }
+            rightIcon={rightIcon}
+          />
+        ) : (
+          <bdi dir="ltr">{siteOrigin}</bdi>
+        )}
+      </div>
+    </Privacy>
   );
 }
 

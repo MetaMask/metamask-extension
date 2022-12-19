@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import IconBorder from '../icon-border';
 import IconWithFallback from '../icon-with-fallback';
+import Privacy from '../privacy';
 
 export default function SiteIcon({ icon = null, name = '', size, className }) {
   const iconSize = Math.floor(size * 0.75);
   return (
-    <IconBorder size={size} className={className}>
-      <IconWithFallback icon={icon} name={name} size={iconSize} />
-    </IconBorder>
+    <Privacy>
+      <IconBorder size={size} className={className}>
+        <IconWithFallback icon={icon} name={name} size={iconSize} />
+      </IconBorder>
+    </Privacy>
   );
 }
 

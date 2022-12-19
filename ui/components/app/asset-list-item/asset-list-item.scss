@@ -27,6 +27,10 @@
     max-width: 100%;
     display: block;
     overflow: hidden;
+
+    &.privacy {
+      min-width: 100px;
+    }
   }
 
   &__chevron-right {
