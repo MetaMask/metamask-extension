@@ -10,6 +10,7 @@ import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
+import Privacy from '../privacy';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -72,9 +73,9 @@ function SenderAddress({
       >
         <div className="sender-to-recipient__name">
           {addressOnly ? (
-            <span>
+            <Privacy as="span">
               {`${senderName || shortenAddress(checksummedSenderAddress)}`}
-            </span>
+            </Privacy>
           ) : (
             senderName
           )}
@@ -150,7 +151,8 @@ export function RecipientWithAddress({
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => setAddressCopied(false)}
         >
-          <div
+          <Privacy
+            as="div"
             className="sender-to-recipient__name"
             data-testid="sender-to-recipient__name"
           >
@@ -166,7 +168,7 @@ export function RecipientWithAddress({
                 recipientEns ||
                 shortenAddress(checksummedRecipientAddress) ||
                 t('newContract')}
-          </div>
+          </Privacy>
         </Tooltip>
       </div>
       {showNicknamePopovers ? (
@@ -255,7 +257,9 @@ export default function SenderToRecipient({
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
           <i className="fa fa-file-text-o" />
-          <div className="sender-to-recipient__name">{t('newContract')}</div>
+          <Privacy as="div" className="sender-to-recipient__name">
+            {t('newContract')}
+          </Privacy>
         </div>
       )}
     </div>

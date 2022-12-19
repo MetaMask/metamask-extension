@@ -8,6 +8,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import Privacy from '../../../../components/ui/privacy';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -115,9 +116,12 @@ export default class DomainInput extends Component {
                   {selectedName || selectedAddress}
                 </div>
                 {selectedName !== selectedAddress && (
-                  <div className="ens-input__selected-input__subtitle">
+                  <Privacy
+                    as="div"
+                    className="ens-input__selected-input__subtitle"
+                  >
                     {selectedAddress}
-                  </div>
+                  </Privacy>
                 )}
               </div>
               <button

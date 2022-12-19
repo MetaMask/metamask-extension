@@ -9,6 +9,7 @@ import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import IconCaretLeft from '../../../../components/ui/icon/icon-caret-left';
 import Confusable from '../../../../components/ui/confusable';
+import Privacy from '../../../../components/ui/privacy';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -148,9 +149,12 @@ export default class AddRecipient extends Component {
             {name ? <Confusable input={name} /> : ellipsify(address)}
           </div>
           {name && (
-            <div className="send__select-recipient-wrapper__group-item__subtitle">
+            <Privacy
+              as="div"
+              className="send__select-recipient-wrapper__group-item__subtitle"
+            >
               {ellipsify(address)}
-            </div>
+            </Privacy>
           )}
         </div>
       </div>

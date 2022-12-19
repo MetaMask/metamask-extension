@@ -192,9 +192,13 @@ function TransactionListItemInner({
             {subtitleContainsOrigin ? (
               <SiteOrigin siteOrigin={subtitle} />
             ) : (
-              <span className="transaction-list-item__address" title={subtitle}>
+              <Privacy
+                as="span"
+                className="transaction-list-item__address"
+                title={subtitle}
+              >
                 {subtitle}
-              </span>
+              </Privacy>
             )}
           </h3>
         }

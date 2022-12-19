@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { ellipsify } from '../../../../pages/send/send.utils';
+import Privacy from '../../../ui/privacy';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -50,9 +51,12 @@ export default function RecipientGroup({
               {name || ellipsify(address)}
             </div>
             {name && (
-              <div className="send__select-recipient-wrapper__group-item__subtitle">
+              <Privacy
+                as="div"
+                className="send__select-recipient-wrapper__group-item__subtitle"
+              >
                 {ellipsify(address)}
-              </div>
+              </Privacy>
             )}
           </div>
         </div>
