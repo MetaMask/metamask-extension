@@ -340,7 +340,7 @@ export default class TransactionController extends EventEmitter {
       opts.origin,
       undefined,
       undefined,
-      opts.id
+      opts.id,
     );
 
     // listen for tx completion (success, fail)
