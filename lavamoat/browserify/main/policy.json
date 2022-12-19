@@ -5066,10 +5066,12 @@
     "react-responsive-carousel": {
       "globals": {
         "HTMLElement": true,
+        "addEventListener": true,
         "clearTimeout": true,
         "console.warn": true,
         "document": true,
         "getComputedStyle": true,
+        "removeEventListener": true,
         "setTimeout": true
       },
       "packages": {

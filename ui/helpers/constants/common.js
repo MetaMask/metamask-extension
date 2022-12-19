@@ -23,3 +23,4 @@ _supportRequestLink =
 
 export const SUPPORT_REQUEST_LINK = _supportRequestLink;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
+export const PASSWORD_MIN_LENGTH = 8;

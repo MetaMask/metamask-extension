@@ -28,12 +28,13 @@ export function useTransactionInsightSnap({
   const [error, setError] = useState(undefined);
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchInsight() {
       try {
         setError(undefined);
         setLoading(true);
 
-        const d = await handleSnapRequest({
+        const newData = await handleSnapRequest({
           snapId,
           origin: '',
           handler: 'onTransaction',
@@ -43,16 +44,23 @@ export function useTransactionInsightSnap({
             params: { transaction, chainId, transactionOrigin },
           },
         });
-        setData(d);
+        if (!cancelled) {
+          setData(newData);
+        }
       } catch (err) {
-        setError(err);
+        if (!cancelled) {
+          setError(err);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
     if (transaction) {
       fetchInsight();
     }
+    return () => (cancelled = true);
   }, [snapId, transaction, chainId, transactionOrigin]);
 
   return { data, error, loading };
