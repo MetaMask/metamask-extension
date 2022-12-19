@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Entrée invalide ! La phrase secrète de récupération est sensible à la casse."
   },
-  "ipfsGateway": {
-    "message": "Passerelle IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Entrez l’URL de la passerelle CID IPFS à utiliser pour résoudre les contenus ENS."
-  },
   "jazzAndBlockies": {
     "message": "Les Jazzicons et les Blockies sont deux styles différents d’icônes uniques qui vous aident à identifier un compte en un coup d’œil."
   },
@@ -3021,7 +3015,8 @@
     "message": "Afficher les transactions entrantes"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions"
+    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Afficher les autorisations"
