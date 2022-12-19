@@ -2696,9 +2696,6 @@
   "password": {
     "message": "Password"
   },
-  "togglePrivacyMode": {
-    "message": "Toggle Privacy Mode"
-  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -4072,6 +4069,9 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "togglePrivacyMode": {
+    "message": "Toggle Privacy Mode"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",

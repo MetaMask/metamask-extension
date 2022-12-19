@@ -30,6 +30,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CollectibleDefaultImage from '../collectible-default-image';
+import Privacy from '../../ui/privacy';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -209,11 +210,13 @@ export default function CollectiblesItems({
                           backgroundColor,
                         }}
                       >
-                        <img
-                          onClick={handleImageClick}
-                          className="collectibles-items__item-image"
-                          src={collectibleImage}
-                        />
+                        <Privacy>
+                          <img
+                            onClick={handleImageClick}
+                            className="collectibles-items__item-image"
+                            src={collectibleImage}
+                          />
+                        </Privacy>
                       </div>
                     ) : (
                       <CollectibleDefaultImage
