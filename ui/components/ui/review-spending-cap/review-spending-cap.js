@@ -14,6 +14,7 @@ import {
   TEXT_ALIGN,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { conversionGreaterThan } from '../../../../shared/modules/conversion.utils';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -64,7 +65,13 @@ export default function ReviewSpendingCap({
                   color={COLORS.TEXT_ALTERNATIVE}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {Number(tokenValue) > Number(currentTokenBalance) &&
+                  {conversionGreaterThan(
+                    { value: Number(tokenValue), fromNumericBase: 'dec' },
+                    {
+                      value: Number(currentTokenBalance),
+                      fromNumericBase: 'dec',
+                    },
+                  ) &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -81,7 +88,10 @@ export default function ReviewSpendingCap({
                 </Typography>
               }
             >
-              {Number(tokenValue) > Number(currentTokenBalance) && (
+              {conversionGreaterThan(
+                { value: Number(tokenValue), fromNumericBase: 'dec' },
+                { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+              ) && (
                 <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
               )}
               {Number(tokenValue) === 0 && (
@@ -110,7 +120,10 @@ export default function ReviewSpendingCap({
         <Typography
           as={TYPOGRAPHY.H6}
           color={
-            Number(tokenValue) > Number(currentTokenBalance)
+            conversionGreaterThan(
+              { value: Number(tokenValue), fromNumericBase: 'dec' },
+              { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+            )
               ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }

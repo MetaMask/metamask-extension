@@ -20,6 +20,10 @@ import {
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  conversionGreaterThan,
+  conversionLTE,
+} from '../../../../shared/modules/conversion.utils';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
@@ -43,7 +47,12 @@ export default function CustomSpendingCap({
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const getInputTextLogic = (inputNumber) => {
-    if (Number(inputNumber) <= Number(currentTokenBalance)) {
+    if (
+      conversionLTE(
+        { value: Number(inputNumber), fromNumericBase: 'dec' },
+        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      )
+    ) {
       return {
         className: 'custom-spending-cap__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
@@ -57,7 +66,12 @@ export default function CustomSpendingCap({
           </Typography>,
         ]),
       };
-    } else if (Number(inputNumber) > Number(currentTokenBalance)) {
+    } else if (
+      conversionGreaterThan(
+        { value: Number(inputNumber), fromNumericBase: 'dec' },
+        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      )
+    ) {
       return {
         className: 'custom-spending-cap__higherValue',
         description: t('inputLogicHigherNumber'),
@@ -116,19 +130,21 @@ export default function CustomSpendingCap({
     passTheErrorText(error);
   }, [error, passTheErrorText]);
 
-  const chooseTooltipContentText =
-    Number(value) > Number(currentTokenBalance)
-      ? t('warningTooltipText', [
-          <Typography
-            key="tooltip-text"
-            variant={TYPOGRAPHY.H7}
-            fontWeight={FONT_WEIGHT.BOLD}
-            color={COLORS.ERROR_DEFAULT}
-          >
-            <i className="fa fa-exclamation-circle" /> {t('beCareful')}
-          </Typography>,
-        ])
-      : t('inputLogicEmptyState');
+  const chooseTooltipContentText = conversionGreaterThan(
+    { value: Number(value), fromNumericBase: 'dec' },
+    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+  )
+    ? t('warningTooltipText', [
+        <Typography
+          key="tooltip-text"
+          variant={TYPOGRAPHY.H7}
+          fontWeight={FONT_WEIGHT.BOLD}
+          color={COLORS.ERROR_DEFAULT}
+        >
+          <i className="fa fa-exclamation-circle" /> {t('beCareful')}
+        </Typography>,
+      ])
+    : t('inputLogicEmptyState');
 
   return (
     <>
@@ -166,7 +182,10 @@ export default function CustomSpendingCap({
         >
           <label
             htmlFor={
-              Number(value) > (Number(currentTokenBalance) || error)
+              conversionGreaterThan(
+                { value: Number(value), fromNumericBase: 'dec' },
+                { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+              )
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
@@ -176,18 +195,28 @@ export default function CustomSpendingCap({
               autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
-                Number(value) > (Number(currentTokenBalance) || error)
+                conversionGreaterThan(
+                  { value: Number(value), fromNumericBase: 'dec' },
+                  {
+                    value: Number(currentTokenBalance),
+                    fromNumericBase: 'dec',
+                  },
+                )
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
-                  tooltipContentText={
-                    Number(value) ? chooseTooltipContentText : ''
-                  }
+                  tooltipContentText={value ? chooseTooltipContentText : ''}
                   tooltipIcon={
-                    Number(value)
-                      ? Number(value) > Number(currentTokenBalance)
+                    value
+                      ? conversionGreaterThan(
+                          { value: Number(value), fromNumericBase: 'dec' },
+                          {
+                            value: Number(currentTokenBalance),
+                            fromNumericBase: 'dec',
+                          },
+                        )
                       : ''
                   }
                 />
