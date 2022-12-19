@@ -24,46 +24,48 @@ function getValues(pendingApproval, t, actions) {
           },
           // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
           // TODO: Remove ternary once snap_confirm has been removed.
-          children: content ? mapToTemplate(content) : [
-            {
-              element: 'Typography',
-              key: 'title',
-              children: title,
-              props: {
-                variant: TYPOGRAPHY.H3,
-                fontWeight: 'bold',
-                boxProps: {
-                  marginBottom: 4,
-                },
-              },
-            },
-            ...(description
-              ? [
+          children: content
+            ? mapToTemplate(content)
+            : [
                 {
                   element: 'Typography',
-                  key: 'subtitle',
-                  children: description,
+                  key: 'title',
+                  children: title,
                   props: {
-                    variant: TYPOGRAPHY.H6,
+                    variant: TYPOGRAPHY.H3,
+                    fontWeight: 'bold',
                     boxProps: {
                       marginBottom: 4,
                     },
                   },
                 },
-              ]
-              : []),
-            ...(textAreaContent
-              ? [
-                {
-                  element: 'Copyable',
-                  key: 'snap-dialog-content-text',
-                  props: {
-                    text: textAreaContent,
-                  },
-                },
-              ]
-              : []),
-          ],
+                ...(description
+                  ? [
+                      {
+                        element: 'Typography',
+                        key: 'subtitle',
+                        children: description,
+                        props: {
+                          variant: TYPOGRAPHY.H6,
+                          boxProps: {
+                            marginBottom: 4,
+                          },
+                        },
+                      },
+                    ]
+                  : []),
+                ...(textAreaContent
+                  ? [
+                      {
+                        element: 'Copyable',
+                        key: 'snap-dialog-content-text',
+                        props: {
+                          text: textAreaContent,
+                        },
+                      },
+                    ]
+                  : []),
+              ],
         },
       },
     ],
