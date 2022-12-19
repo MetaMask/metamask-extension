@@ -1,9 +1,9 @@
 import React from 'react';
+import ConfirmSendToken from './confirm-send-token.component';
 
-import ConfirmTransactionBase from '.';
-
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  title: 'Pages/ConfirmTransactionBase',
+  title: 'Pages/ConfirmSendToken',
   id: __filename,
 };
 
@@ -14,7 +14,7 @@ const PageSet = ({ children }) => {
 export const DefaultStory = () => {
   return (
     <PageSet>
-      <ConfirmTransactionBase />
+      <ConfirmSendToken />
     </PageSet>
   );
 };
