@@ -4,6 +4,7 @@ import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
+import Privacy from '../../ui/privacy';
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -32,7 +33,7 @@ export default class ConnectedSitesList extends Component {
             key={subject.origin}
             className="connected-sites-list__content-row"
           >
-            <div className="connected-sites-list__subject-info">
+            <Privacy className="connected-sites-list__subject-info">
               <SiteIcon
                 icon={subject.iconUrl}
                 name={subject.name}
@@ -44,7 +45,7 @@ export default class ConnectedSitesList extends Component {
                 title={subject.extensionId || subject.origin}
                 siteOrigin={this.getSubjectDisplayName(subject)}
               />
-            </div>
+            </Privacy>
             <Button
               className="connected-sites-list__content-row-link-button"
               onClick={() => onDisconnect(subject.origin)}
