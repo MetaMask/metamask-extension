@@ -1312,12 +1312,6 @@
   "invalidSeedPhrase": {
     "message": "Frase de Recuperação Secreta inválida"
   },
-  "ipfsGateway": {
-    "message": "Gateway IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Informe o URL do gateway de CID do IPFS para usar com resolução de conteúdo de ENS."
-  },
   "jsDeliver": {
     "message": "jsDeliver"
   },
@@ -2310,7 +2304,8 @@
     "message": "Mostrar transações recebidas"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Selecione essa opção para usar o Etherscan e mostrar as transações recebidas na lista de transações"
+    "message": "Selecione essa opção para usar o Etherscan e mostrar as transações recebidas na lista de transações",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostrar permissões"
