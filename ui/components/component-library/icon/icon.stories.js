@@ -258,8 +258,8 @@ export const Size = (args) => (
       <Icon {...args} size={SIZES.XL} />
     </Box>
     <Text as="p" variant={TEXT.BODY_SM}>
-      <Icon {...args} size={SIZES.INHERIT} /> Auto also exists and inherits the
-      font-size of the parent element.
+      <Icon {...args} size={SIZES.INHERIT} /> inherits the font-size of the
+      parent element.
     </Text>
   </>
 );
