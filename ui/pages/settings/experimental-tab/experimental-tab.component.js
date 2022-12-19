@@ -45,57 +45,6 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  renderCollectibleDetectionToggle() {
-    if (!process.env.NFTS_V1) {
-      return null;
-    }
-
-    const { t } = this.context;
-    const {
-      useNftDetection,
-      setUseNftDetection,
-      openSeaEnabled,
-      setOpenSeaEnabled,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[2]}
-        className="settings-page__content-row--dependent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useNftDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
-                  properties: {
-                    action: 'Collectible Detection',
-                    legacy_event: true,
-                  },
-                });
-                if (!value && !openSeaEnabled) {
-                  setOpenSeaEnabled(!value);
-                }
-                setUseNftDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderOpenSeaEnabledToggle() {
     if (!process.env.NFTS_V1) {
       return null;
@@ -231,7 +180,6 @@ export default class ExperimentalTab extends PureComponent {
           this.renderTransactionSecurityCheckToggle()}
         {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
-        {this.renderCollectibleDetectionToggle()}
       </div>
     );
   }

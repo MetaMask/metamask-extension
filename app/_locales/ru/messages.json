@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Неправильный ввод! Секретная фраза для восстановления чувствительна к регистру."
   },
-  "ipfsGateway": {
-    "message": "Шлюз IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Введите URL-адрес шлюза IPFS CID, который будет использоваться для разрешения содержимого ENS."
-  },
   "jazzAndBlockies": {
     "message": "«Джазиконы» и «Блокиз» — это два разных стиля уникальных значков, которые помогут вам с первого взгляда идентифицировать свой счет."
   },
@@ -3021,7 +3015,8 @@
     "message": "Показать входящие транзакции"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Выберите это, чтобы использовать Etherscan для отображения входящих транзакций в списке транзакций"
+    "message": "Выберите это, чтобы использовать Etherscan для отображения входящих транзакций в списке транзакций",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Показать разрешения"
