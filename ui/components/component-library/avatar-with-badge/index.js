@@ -1,2 +1,2 @@
 export { AvatarWithBadge } from './avatar-with-badge';
-export { BADGE_POSITIONS } from './avatar-with-badge.constants';
+export { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';

@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
-import { BADGE_POSITIONS } from './avatar-with-badge.constants';
+import { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';
 
 export const AvatarWithBadge = ({
   children,
@@ -36,7 +36,7 @@ AvatarWithBadge.propTypes = {
    * The position of the Badge
    * Possible values could be 'top', 'bottom',
    */
-  badgePosition: PropTypes.oneOf(Object.values(BADGE_POSITIONS)),
+  badgePosition: PropTypes.oneOf(Object.values(AVATAR_WITH_BADGE_POSTIONS)),
   /**
    * The Badge Wrapper props of the component. All Box props can be used
    */
