@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { getNetworkDisplayName } from './util';
-import NetworkController, { NETWORK_EVENTS } from './network';
+import NetworkController, { NETWORK_EVENTS } from './network-controller';
 
 describe('NetworkController', () => {
   describe('controller', () => {
