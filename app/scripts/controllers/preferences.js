@@ -130,8 +130,7 @@ export default class PreferencesController {
   /**
    * Setter for the `useMultiAccountBalanceChecker` property
    *
-   * @param {boolean} val - Whether or not the user wants to fetch balances for
-   * all accounts that he has added to the MetaMask wallet state.
+   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });

@@ -12,6 +12,10 @@
   display: flex;
   flex-flow: column nowrap;
 
+  &__content-padded {
+    padding: 16px;
+  }
+
   &__error-text {
     @include H7;
 
@@ -194,6 +198,18 @@
     }
   }
 
+  &__security-tab-sub-header {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--color-icon-alternative);
+
+    &__bold {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-text-default);
+    }
+  }
+
   &__back-button {
     display: none;
 
@@ -275,6 +291,8 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 500;
 
     @include screen-sm-max {
       height: initial;
@@ -327,6 +345,8 @@
       margin-top: 8px;
       margin-bottom: 12px;
       color: var(--color-text-default);
+      font-size: 14px;
+      font-weight: 400;
     }
   }
 
@@ -334,10 +354,16 @@
     text-transform: capitalize;
   }
 
+  &__content-unordered-list {
+    padding-left: 2.5rem;
+    margin-top: 2.5rem;
+    list-style: disc;
+  }
+
   &__content-description {
     @include H6;
 
-    color: var(--color-text-default);
+    color: var(--color-text-alternative);
     padding-top: 5px;
 
     a {

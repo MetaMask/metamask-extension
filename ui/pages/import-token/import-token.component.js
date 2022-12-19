@@ -10,7 +10,7 @@ import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
   ADD_COLLECTIBLE_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  ADVANCED_ROUTE,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
@@ -445,7 +445,7 @@ class ImportToken extends Component {
                 key="import-token-token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('inYourSettings')}
@@ -588,7 +588,7 @@ class ImportToken extends Component {
                 key="token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('enableFromSettings')}
