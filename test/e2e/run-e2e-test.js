@@ -79,7 +79,7 @@ async function main() {
     process.env.E2E_DEBUG = 'true';
   }
 
-  let testTimeoutInMilliseconds = 60 * 1000;
+  let testTimeoutInMilliseconds = 80 * 1000;
   let exit = '--exit';
 
   if (leaveRunning) {
