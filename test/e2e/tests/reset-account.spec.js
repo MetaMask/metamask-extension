@@ -39,12 +39,11 @@ describe('Reset account', function () {
           await driver.clickElement({ text: 'Next', tag: 'button' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          await driver.wait(async () => {
-            const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .transaction-list-item',
-            );
-            return confirmedTxes.length === 1;
-          }, 10000);
+          // Check completed send transaction is displayed
+          await driver.waitForSelector(
+            { css: '.list-item__title', text: 'Send' },
+            { timeout: 10000 },
+          );
 
           // Reset account
           await driver.clickElement('.account-menu__icon');
