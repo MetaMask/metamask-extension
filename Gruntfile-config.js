@@ -11,3 +11,4 @@ module.exports = {
   themes: 'all',
   exclude: '!**/sym/**'
 };
+
