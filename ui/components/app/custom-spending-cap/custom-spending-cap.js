@@ -46,6 +46,13 @@ export default function CustomSpendingCap({
   );
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
+  const decConversionGreaterThan = (tokenValue, tokenBalance) => {
+    return conversionGreaterThan(
+      { value: Number(tokenValue), fromNumericBase: 'dec' },
+      { value: Number(tokenBalance), fromNumericBase: 'dec' },
+    );
+  };
+
   const getInputTextLogic = (inputNumber) => {
     if (
       conversionLTE(
@@ -66,12 +73,7 @@ export default function CustomSpendingCap({
           </Typography>,
         ]),
       };
-    } else if (
-      conversionGreaterThan(
-        { value: Number(inputNumber), fromNumericBase: 'dec' },
-        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-      )
-    ) {
+    } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
       return {
         className: 'custom-spending-cap__higherValue',
         description: t('inputLogicHigherNumber'),
@@ -130,9 +132,9 @@ export default function CustomSpendingCap({
     passTheErrorText(error);
   }, [error, passTheErrorText]);
 
-  const chooseTooltipContentText = conversionGreaterThan(
-    { value: Number(value), fromNumericBase: 'dec' },
-    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+  const chooseTooltipContentText = decConversionGreaterThan(
+    value,
+    currentTokenBalance,
   )
     ? t('warningTooltipText', [
         <Typography
@@ -182,10 +184,7 @@ export default function CustomSpendingCap({
         >
           <label
             htmlFor={
-              conversionGreaterThan(
-                { value: Number(value), fromNumericBase: 'dec' },
-                { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-              )
+              decConversionGreaterThan(value, currentTokenBalance)
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
@@ -195,13 +194,7 @@ export default function CustomSpendingCap({
               autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
-                conversionGreaterThan(
-                  { value: Number(value), fromNumericBase: 'dec' },
-                  {
-                    value: Number(currentTokenBalance),
-                    fromNumericBase: 'dec',
-                  },
-                )
+                decConversionGreaterThan(value, currentTokenBalance)
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
@@ -210,13 +203,7 @@ export default function CustomSpendingCap({
                   tooltipContentText={value ? chooseTooltipContentText : ''}
                   tooltipIcon={
                     value
-                      ? conversionGreaterThan(
-                          { value: Number(value), fromNumericBase: 'dec' },
-                          {
-                            value: Number(currentTokenBalance),
-                            fromNumericBase: 'dec',
-                          },
-                        )
+                      ? decConversionGreaterThan(value, currentTokenBalance)
                       : ''
                   }
                 />

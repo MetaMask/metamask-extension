@@ -23,6 +23,10 @@ export default function ReviewSpendingCap({
   onEdit,
 }) {
   const t = useContext(I18nContext);
+  const valueIsGreaterThanBalance = conversionGreaterThan(
+    { value: Number(tokenValue), fromNumericBase: 'dec' },
+    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+  );
 
   return (
     <Box
@@ -65,13 +69,7 @@ export default function ReviewSpendingCap({
                   color={COLORS.TEXT_ALTERNATIVE}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {conversionGreaterThan(
-                    { value: Number(tokenValue), fromNumericBase: 'dec' },
-                    {
-                      value: Number(currentTokenBalance),
-                      fromNumericBase: 'dec',
-                    },
-                  ) &&
+                  {valueIsGreaterThanBalance &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -88,10 +86,7 @@ export default function ReviewSpendingCap({
                 </Typography>
               }
             >
-              {conversionGreaterThan(
-                { value: Number(tokenValue), fromNumericBase: 'dec' },
-                { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-              ) && (
+              {valueIsGreaterThanBalance && (
                 <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
               )}
               {Number(tokenValue) === 0 && (
@@ -120,10 +115,7 @@ export default function ReviewSpendingCap({
         <Typography
           as={TYPOGRAPHY.H6}
           color={
-            conversionGreaterThan(
-              { value: Number(tokenValue), fromNumericBase: 'dec' },
-              { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-            )
+            valueIsGreaterThanBalance
               ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }
