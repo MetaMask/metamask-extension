@@ -4,6 +4,31 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Truffle Decode', function () {
+  async function mockFunctionSignature(mockServer) {
+    await mockServer
+      .forGet(
+        'https://www.4byte.directory/api/v1/signatures/',
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+              {
+                id: 1,
+                created_at: null,
+                text_signature: 'checkString(string)',
+                hex_signature: '0xa454b07b000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000054c6f72656d000000000000000000000000000000000000000000000000000000',
+                bytes_signature: null,
+              },
+            ],
+          },
+        };
+      });
+  }
   const smartContract = SMART_CONTRACTS.DECODER;
   const ganacheOptions = {
     accounts: [
@@ -46,6 +71,7 @@ describe('Truffle Decode', function () {
         ganacheOptions,
         smartContract,
         title: this.test.title,
+        testSpecificMock: mockFunctionSignature,
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -56,30 +82,15 @@ describe('Truffle Decode', function () {
 
         // Open Dapp and wait for deployed contract
         await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
-        
-        await driver.clickElement({ text: 'Deploy Decoder Contract', tag: 'button' });
         const windowHandles = await driver.getAllWindowHandles();
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        
-       await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
 
-       await driver.delay(5000)
         await driver.clickElement({ text: 'Check String Type', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
-
-        await driver.delay(5000)
-
         await driver.clickElement({ text: 'Data', tag: 'button' });
-        await driver.delay(2000)
         await driver.clickElement({ text: 'Dataasdad', tag: 'button' });
       });
   });

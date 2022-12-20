@@ -309,17 +309,20 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
   
-    // https://tx-insights.metaswap.codefi.network/fetch-project?to=0xcf21e74221443eda1d3313b7b46b4650761aeeda&network-id=5
   await server
-  .forGet(/^https:\/\/tx-insights\.metaswap\.codefi\.network\/fetch-project(\/(home)?(\?.*)?)?$/)
-  .thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        insights
-      },
-    };
-  });
+    .forGet("https://tx-insights.metaswap.codefi.network/fetch-project")
+    .withExactQuery('?to=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947&network-id=5')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          info: insights,
+          fetchedVia: "Etherscan",
+          address: "0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947",
+          networkId: "5"
+        },
+      };
+    });
 
   await server
     .forGet('https://token-api.metaswap.codefi.network/token/0x539')
