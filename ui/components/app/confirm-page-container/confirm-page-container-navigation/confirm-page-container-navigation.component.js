@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   getCurrentChainId,
   getUnapprovedTransactions,
@@ -11,7 +12,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
-const ConfirmPageContainerNavigation = () => {
+const ConfirmPageContainerNavigation = ({ txData }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -106,6 +107,10 @@ const ConfirmPageContainerNavigation = () => {
       </div>
     </div>
   );
+};
+
+ConfirmPageContainerNavigation.propTypes = {
+  txData: PropTypes.object,
 };
 
 export default ConfirmPageContainerNavigation;

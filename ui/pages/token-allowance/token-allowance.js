@@ -245,7 +245,7 @@ export default function TokenAllowance({
   return (
     <Box className="token-allowance-container page-container">
       <Box>
-        <ConfirmPageContainerNavigation />
+        <ConfirmPageContainerNavigation txData={fullTxData} />
       </Box>
       <Box
         paddingLeft={4}
