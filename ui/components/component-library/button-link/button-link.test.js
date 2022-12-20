@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonLink } from './button-link';
+import { BUTTON_LINK_SIZES } from './button-link.constants';
 
 describe('ButtonLink', () => {
   it('should render button element correctly', () => {
@@ -52,6 +53,13 @@ describe('ButtonLink', () => {
     expect(getByTestId(SIZES.INHERIT)).toHaveClass(
       `mm-button--size-${SIZES.INHERIT}`,
     );
+  });
+
+  it('should render ButtonLink inherit size', () => {
+    const { getByTestId } = render(
+      <ButtonLink size={BUTTON_LINK_SIZES.INHERIT} data-testid="inherit" />,
+    );
+    expect(getByTestId('inherit')).toHaveClass(`mm-button-link--size-inherit`);
   });
 
   it('should render as danger', () => {

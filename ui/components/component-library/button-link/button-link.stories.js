@@ -1,7 +1,10 @@
 import React from 'react';
 import {
   ALIGN_ITEMS,
+  BORDER_RADIUS,
+  COLORS,
   DISPLAY,
+  JUSTIFY_CONTENT,
   SIZES,
   TEXT,
 } from '../../../helpers/constants/design-system';
@@ -130,7 +133,7 @@ export const Size = (args) => (
         Large Button
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_MD}>
+    <Text variant={TEXT.BODY_SM}>
       <ButtonLink {...args} size={SIZES.INHERIT}>
         Inherit Button
       </ButtonLink>{' '}
@@ -168,10 +171,33 @@ export const NoPadding = (args) => (
       No Padding Button
     </ButtonLink>
 
-    <Text variant={TEXT.BODY_MD} style={{ maxWidth: 400 }}>
+    <Text variant={TEXT.BODY_MD} style={{ maxWidth: 400 }} marginBottom={4}>
       No padding prop is used when there is no parent text element wrapping the
       ButtonLink component. When using noPadding, there is no need to pass a
       size since it will be overridden.
     </Text>
+    <Box
+      style={{ maxWidth: 400 }}
+      borderColor={COLORS.BORDER_DEFAULT}
+      borderRadius={BORDER_RADIUS.SM}
+      padding={2}
+    >
+      <Box
+        display={DISPLAY.FLEX}
+        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        alignItems={ALIGN_ITEMS.CENTER}
+        marginBottom={2}
+      >
+        <Text variant={TEXT.HEADING_SM} as="h3">
+          No padding example
+        </Text>
+        <ButtonLink noPadding>Action</ButtonLink>
+      </Box>
+      <Text variant={TEXT.BODY_MD}>
+        This is an example of how noPadding prop might be used in a horizontal
+        setting (action button top) and a veritcal setting (action button below)
+      </Text>
+      <ButtonLink noPadding>Action</ButtonLink>
+    </Box>
   </>
 );

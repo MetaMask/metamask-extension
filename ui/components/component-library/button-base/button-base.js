@@ -29,6 +29,8 @@ export const ButtonBase = ({
   loading,
   disabled,
   iconProps,
+  iconLoadingProps,
+  textProps,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
@@ -36,12 +38,12 @@ export const ButtonBase = ({
     <Box
       as={Tag}
       href={href}
-      paddingLeft={size === BUTTON_BASE_SIZES.INHERIT ? 0 : 4}
-      paddingRight={size === BUTTON_BASE_SIZES.INHERIT ? 0 : 4}
+      paddingLeft={4}
+      paddingRight={4}
       className={classnames(
         'mm-button',
-        `mm-button--size-${size}`,
         {
+          [`mm-button--size-${size}`]: size,
           'mm-button--loading': loading,
           'mm-button--disabled': disabled,
           'mm-button--block': block,
@@ -63,25 +65,19 @@ export const ButtonBase = ({
           iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
         }
         gap={2}
-        variant={
-          size === BUTTON_BASE_SIZES.INHERIT ? TEXT.INHERIT : TEXT.BODY_MD
-        }
+        variant={TEXT.BODY_MD}
         color={TEXT_COLORS.INHERIT}
+        {...textProps}
       >
-        {icon && (
-          <Icon
-            name={icon}
-            size={size === BUTTON_BASE_SIZES.INHERIT ? SIZES.INHERIT : SIZES.SM}
-            {...iconProps}
-          />
-        )}
+        {icon && <Icon name={icon} size={SIZES.SM} {...iconProps} />}
         {children}
       </Text>
       {loading && (
         <Icon
           className="mm-button__icon-loading"
           name={ICON_NAMES.LOADING_FILLED}
-          size={size === BUTTON_BASE_SIZES.INHERIT ? SIZES.INHERIT : SIZES.MD}
+          size={SIZES.MD}
+          {...iconLoadingProps}
         />
       )}
     </Box>
@@ -126,16 +122,24 @@ ButtonBase.propTypes = {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: PropTypes.object,
+  iconProps: PropTypes.shape(Icon.PropTypes),
+  /**
+   * iconLoadingProps accepts all the props from Icon
+   */
+  iconLoadingProps: PropTypes.shape(Icon.PropTypes),
   /**
    * Boolean to show loading spinner in button
    */
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.INHERIT', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
    */
   size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
+  /**
+   * textProps accepts all the props from Icon
+   */
+  textProps: PropTypes.shape(Text.PropTypes),
   /**
    * ButtonBase accepts all the props from Box
    */

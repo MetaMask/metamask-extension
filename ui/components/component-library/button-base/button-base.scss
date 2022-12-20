@@ -36,18 +36,6 @@
     height: 48px;
   }
 
-  &--size-inherit {
-    height: auto;
-    background-color: transparent;
-    border-radius: 0;
-    vertical-align: top;
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    letter-spacing: inherit;
-  }
-
   &--loading {
     cursor: not-allowed;
   }
