@@ -16,7 +16,12 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Icon } from '../../component-library';
 import { setPrivacyModeEnabled } from '../../../store/actions';
-import { COLORS } from '../../../helpers/constants/design-system';
+import {
+  COLORS,
+  DISPLAY,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
 import AccountOptionsMenu from './account-options-menu';
 
 export default function MenuBar() {
@@ -45,7 +50,11 @@ export default function MenuBar() {
 
       <SelectedAccount />
 
-      <div className="menu-bar__buttons-container">
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        className="menu-bar__buttons-container"
+      >
         <button
           title={t('togglePrivacyMode')}
           className="menu-bar__buttons-container__privacy-mode"
@@ -75,7 +84,7 @@ export default function MenuBar() {
             setAccountOptionsMenuOpen(true);
           }}
         />
-      </div>
+      </Box>
 
       {accountOptionsMenuOpen && (
         <AccountOptionsMenu

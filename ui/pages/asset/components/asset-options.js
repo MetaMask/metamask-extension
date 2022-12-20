@@ -2,11 +2,22 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
-import { getBlockExplorerLinkText } from '../../../selectors';
+import {
+  getBlockExplorerLinkText,
+  getPrivacyModeEnabled,
+} from '../../../selectors';
+import { Icon } from '../../../components/component-library';
+import {
+  COLORS,
+  DISPLAY,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { setPrivacyModeEnabled } from '../../../store/actions';
+import Box from '../../../components/ui/box';
 
 const AssetOptions = ({
   onRemove,
@@ -22,7 +33,8 @@ const AssetOptions = ({
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-
+  const dispatch = useDispatch();
+  const privacyModeEnabled = useSelector(getPrivacyModeEnabled);
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
@@ -33,7 +45,23 @@ const AssetOptions = ({
   };
 
   return (
-    <>
+    <Box
+      className="asset-options__button"
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.CENTER}
+    >
+      <button
+        title={t('togglePrivacyMode')}
+        className="menu-bar__buttons-container__privacy-mode"
+        onClick={() => dispatch(setPrivacyModeEnabled(!privacyModeEnabled))}
+      >
+        <Icon
+          name={privacyModeEnabled ? 'eye-slash-filled' : 'eye-filled'}
+          color={
+            privacyModeEnabled ? COLORS.PRIMARY_DEFAULT : COLORS.TEXT_DEFAULT
+          }
+        />
+      </button>
       <button
         className="fas fa-ellipsis-v asset-options__button"
         data-testid="asset-options__button"
@@ -98,7 +126,7 @@ const AssetOptions = ({
           )}
         </Menu>
       ) : null}
-    </>
+    </Box>
   );
 };
 
