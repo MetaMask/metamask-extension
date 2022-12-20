@@ -98,7 +98,7 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
+import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -1260,11 +1260,11 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
           }),
-        showDialog: (origin, type, requestData) =>
+        showDialog: (origin, type, content, placeholder) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: SNAP_DIALOG_TYPES[type],
-            requestData,
+            requestData: { content, placeholder },
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
