@@ -874,7 +874,7 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
-export const getSnap = createSelector(
+export const getSnap = createDeepEqualSelector(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -882,16 +882,15 @@ export const getSnap = createSelector(
   },
 );
 
-export function getInsightSnaps(state) {
-  const snaps = Object.values(state.metamask.snaps);
-  const subjects = getPermissionSubjects(state);
-
-  const insightSnaps = snaps.filter(
-    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
-  );
-
-  return insightSnaps;
-}
+export const getInsightSnaps = createDeepEqualSelector(
+  getSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
