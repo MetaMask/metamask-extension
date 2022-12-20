@@ -13,6 +13,7 @@ import {
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
+import Box from '../../../ui/box';
 import { getSnap } from '../../../../selectors';
 
 export const UI_MAPPING = {
@@ -91,7 +92,9 @@ export const SnapUIRenderer = ({ snapId, data }) => {
 
   return (
     <SnapDelineator snapName={snapName}>
-      <MetaMaskTemplateRenderer sections={sections} />
+      <Box className="snap-ui-renderer__content">
+        <MetaMaskTemplateRenderer sections={sections} />
+      </Box>
     </SnapDelineator>
   );
 };
