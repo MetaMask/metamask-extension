@@ -93,7 +93,7 @@ describe('Button', () => {
       </>,
     );
     expect(getByTestId(BUTTON_SIZES.INHERIT)).toHaveClass(
-      `mm-button--size-${BUTTON_SIZES.INHERIT}`,
+      `mm-button-link--size-${BUTTON_SIZES.INHERIT}`,
     );
     expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
       `mm-button--size-${BUTTON_SIZES.SM}`,

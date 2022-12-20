@@ -43,22 +43,19 @@ describe('ButtonLink', () => {
         <ButtonLink size={SIZES.SM} data-testid={SIZES.SM} />
         <ButtonLink size={SIZES.MD} data-testid={SIZES.MD} />
         <ButtonLink size={SIZES.LG} data-testid={SIZES.LG} />
-        <ButtonLink size={SIZES.INHERIT} data-testid={SIZES.INHERIT} />
       </>,
     );
 
     expect(getByTestId(SIZES.SM)).toHaveClass(`mm-button--size-${SIZES.SM}`);
     expect(getByTestId(SIZES.MD)).toHaveClass(`mm-button--size-${SIZES.MD}`);
     expect(getByTestId(SIZES.LG)).toHaveClass(`mm-button--size-${SIZES.LG}`);
-    expect(getByTestId(SIZES.INHERIT)).toHaveClass(
-      `mm-button--size-${SIZES.INHERIT}`,
-    );
   });
 
   it('should render ButtonLink inherit size', () => {
     const { getByTestId } = render(
       <ButtonLink size={BUTTON_LINK_SIZES.INHERIT} data-testid="inherit" />,
     );
+    // Different size classname compared to SIZES.SM, SIZES.MD, SIZES.LG
     expect(getByTestId('inherit')).toHaveClass(`mm-button-link--size-inherit`);
   });
 
