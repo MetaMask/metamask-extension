@@ -186,6 +186,13 @@ export default function reduceMetamask(state = {}, action) {
       };
     }
 
+    case actionConstants.HAS_SET_PASSWORD: {
+      return {
+        ...metamaskState,
+        hasSetPassword: true,
+      };
+    }
+
     case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
       return {
         ...metamaskState,

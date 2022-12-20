@@ -25,6 +25,7 @@ import {
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
   verifySeedPhrase,
+  setHasSetPassword,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
@@ -53,6 +54,7 @@ export default function OnboardingFlow() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
+
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
@@ -76,6 +78,7 @@ export default function OnboardingFlow() {
       createNewVaultAndGetSeedPhrase(password),
     );
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    await dispatch(setHasSetPassword());
   };
 
   const handleUnlock = async (password) => {

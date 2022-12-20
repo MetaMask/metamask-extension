@@ -2586,6 +2586,22 @@ export function setAutoLockTimeLimit(value) {
   return setPreference('autoLockTimeLimit', value);
 }
 
+export function setHasSetPassword() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('setHasSetPassword');
+      dispatch(hasSetPassword());
+    } catch (err) {
+      dispatch(displayWarning(err.message));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setCompletedOnboarding() {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2605,6 +2621,12 @@ export function setCompletedOnboarding() {
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
+  };
+}
+
+export function hasSetPassword() {
+  return {
+    type: actionConstants.HAS_SET_PASSWORD,
   };
 }
 

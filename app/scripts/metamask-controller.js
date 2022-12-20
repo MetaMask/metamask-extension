@@ -1884,6 +1884,8 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      setHasSetPassword:
+        onboardingController.setHasSetPassword.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:

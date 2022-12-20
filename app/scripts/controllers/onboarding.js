@@ -30,6 +30,7 @@ export default class OnboardingController {
       seedPhraseBackedUp: null,
       firstTimeFlowType: null,
       completedOnboarding: false,
+      hasSetPassword: false,
       ...opts.initState,
       ...initialTransientState,
     };
@@ -60,6 +61,13 @@ export default class OnboardingController {
    */
   setFirstTimeFlowType(type) {
     this.store.updateState({ firstTimeFlowType: type });
+  }
+
+  /**
+   * Setter for the `hasSetPassword` property
+   */
+  setHasSetPassword() {
+    this.store.updateState({ hasSetPassword: true });
   }
 
   /**

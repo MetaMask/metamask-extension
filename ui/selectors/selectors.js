@@ -1076,6 +1076,10 @@ export function getTheme(state) {
   return state.metamask.theme;
 }
 
+export function getHasSetPassword(state) {
+  return state.metamask.hasSetPassword;
+}
+
 /**
  * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
  * from the tokens controller if token detection is enabled, or the static list if not.
