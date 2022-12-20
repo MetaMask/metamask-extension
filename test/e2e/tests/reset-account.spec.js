@@ -20,24 +20,26 @@ describe('Reset account', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerMultipleTransactions()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
+        // Login and accept all transactions
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
-        // Send ether
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-        await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
-        await driver.fill('.unit-input__input', '1');
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        let transactionSize = 0;
+        while (transactionSize < 4) {
+          try {
+            await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          } catch (StaleElementReferenceException) {
+            await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          }
+          transactionSize += 1;
+        }
 
         // Check completed send transaction is displayed
         await driver.waitForSelector(
