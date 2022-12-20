@@ -2702,6 +2702,9 @@
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
   },
+  "outdatedBrowserNotification": {
+    "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."
+  },
   "padlock": {
     "message": "Padlock"
   },

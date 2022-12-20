@@ -3283,6 +3283,20 @@ export function setRecoveryPhraseReminderLastShown(lastShown) {
   };
 }
 
+export function setOutdatedBrowserWarningLastShown(lastShown) {
+  return () => {
+    callBackgroundMethod(
+      'setOutdatedBrowserWarningLastShown',
+      [lastShown],
+      (err) => {
+        if (err) {
+          throw new Error(err.message);
+        }
+      },
+    );
+  };
+}
+
 export function loadingMethodDataStarted() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
