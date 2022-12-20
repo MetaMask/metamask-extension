@@ -9,6 +9,7 @@ import {
 } from '../../../helpers/utils/conversions.util';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import Privacy from '../../ui/privacy';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
@@ -92,20 +93,28 @@ export default class TransactionActivityLog extends PureComponent {
     const { eventKey, value, timestamp } = activity;
 
     const ethValue =
-      index === 0
-        ? `${getValueFromWeiHex({
+      index === 0 ? (
+        <Privacy>
+          `$
+          {getValueFromWeiHex({
             value,
             fromCurrency: 'ETH',
             toCurrency: 'ETH',
             conversionRate,
             numberOfDecimals: 6,
-          })} ${nativeCurrency}`
-        : getEthConversionFromWeiHex({
+          })}{' '}
+          ${nativeCurrency}`
+        </Privacy>
+      ) : (
+        <Privacy>
+          {getEthConversionFromWeiHex({
             value,
             fromCurrency: 'ETH',
             conversionRate,
             numberOfDecimals: 3,
-          });
+          })}
+        </Privacy>
+      );
     const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y");
     const activityText = this.context.t(eventKey, [
       ethValue,
