@@ -60,11 +60,10 @@ describe('Custom Token', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
-        const asset = await driver.waitForSelector({
+        await driver.clickElement({
           css: '.list-item',
           text: '10 TST',
         });
-        asset.click();
         // send token from extension
         await driver.waitForSelector('[data-testid="eth-overview-send"]');
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -78,7 +77,6 @@ describe('Custom Token', function () {
         await driver.clickElement('[data-testid="page-container-footer-next"]');
         // added wait for selector since it needs some time to load this page
         // otherwise would have to use delays
-        await driver.waitForSelector({ text: 'Edit', tag: 'button' });
         await driver.waitForSelector({
           text: '1 TST',
           tag: 'h1',
@@ -312,10 +310,7 @@ describe('Custom Token', function () {
           css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
           text: '-1.5 TST',
         });
-        await driver.waitForSelector({
-          css: '.list-item__heading',
-          text: 'Send TST',
-        });
+
         await driver.clickElement({
           text: 'Assets',
           tag: 'button',
@@ -387,12 +382,6 @@ describe('Custom Token', function () {
         // checks transaction finish correctly from extension
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
-        await driver.wait(async () => {
-          const pendingTxes = await driver.findElements(
-            '.transaction-list__pending-transactions .transaction-list-item',
-          );
-          return pendingTxes.length === 1;
-        }, 10000);
 
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
