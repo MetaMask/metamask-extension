@@ -11,6 +11,7 @@ describe('fetchEstimatedL1Fee', () => {
   });
 
   it('returns an expected gasFee', async () => {
+    const expectedGasFeeResult = '377b09ef6660';
     nock('https://optimism-mainnet.public.blastapi.io:443', {
       encodedQueryParams: true,
     })
@@ -29,8 +30,7 @@ describe('fetchEstimatedL1Fee', () => {
       .reply(200, {
         jsonrpc: '2.0',
         id: 1,
-        result:
-          '0x0000000000000000000000000000000000000000000000000000377b09ef6660',
+        result: `0x0000000000000000000000000000000000000000000000000000${expectedGasFeeResult}`,
       });
 
     const gasFee = await fetchEstimatedL1Fee({
@@ -45,6 +45,6 @@ describe('fetchEstimatedL1Fee', () => {
       },
       chainId: '10',
     });
-    expect(gasFee).toStrictEqual('0x377b09ef6660');
+    expect(gasFee).toStrictEqual(`0x${expectedGasFeeResult}`);
   });
 });

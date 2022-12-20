@@ -27,13 +27,11 @@ export default async function fetchEstimatedL1Fee(txMeta) {
       chainId: 10,
     });
   }
-
   const contract = new Contract(
     OPTIMISM_GAS_PRICE_ORACLE_ADDRESS,
     OPTIMISM_GAS_PRICE_ORACLE_ABI,
     provider,
   );
-  // // const contract = eth.contract(ORACLE_ABI).at(ORACLE_ADDRESS);
   const serializedTransaction =
     buildUnserializedTransaction(txMeta).serialize();
 
