@@ -21998,19 +21998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^12.3.0":
-  version: 12.3.0
-  resolution: "lavamoat-core@npm:12.3.0"
-  dependencies:
-    fromentries: ^1.2.0
-    json-stable-stringify: ^1.0.1
-    lavamoat-tofu: ^6.0.2
-    merge-deep: ^3.0.2
-  checksum: 31e69c68b4faf4838428bc518cb93983a2982ba12b1c730e60c77a4074d4b075e08510c6fe16eee8303d98a4c4320c4939859d511bd3fb03b4ce30f03e0ad4e6
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^12.4.0":
+"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
   version: 12.4.0
   resolution: "lavamoat-core@npm:12.4.0"
   dependencies:
