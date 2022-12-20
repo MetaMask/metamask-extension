@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Μη έγκυρη εισαγωγή! Η Μυστική σας Φράση Ανάκτησης κάνει διάκριση πεζών-κεφαλαίων."
   },
-  "ipfsGateway": {
-    "message": "Πύλη IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Εισάγετε τη διεύθυνση URL της πύλης IPFS CID που θα χρησιμοποιηθεί για την ανάλυση περιεχομένου ENS."
-  },
   "jazzAndBlockies": {
     "message": "Τα Jazzicons και τα Blockies είναι δύο διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε έναν λογαριασμό με μια ματιά."
   },
@@ -3021,7 +3015,8 @@
     "message": "Εμφάνιση Εισερχομένων Συναλλαγών"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Επιλέξτε αυτό για να χρησιμοποιήσετε Etherscan για να εμφανίσετε τις εισερχόμενες συναλλαγές στη λίστα συναλλαγών"
+    "message": "Επιλέξτε αυτό για να χρησιμοποιήσετε Etherscan για να εμφανίσετε τις εισερχόμενες συναλλαγές στη λίστα συναλλαγών",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Εμφάνιση δικαιωμάτων"

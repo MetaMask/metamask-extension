@@ -104,6 +104,7 @@ export function RecipientWithAddress({
   recipientEns,
   recipientName,
   recipientMetadataName,
+  recipientIsOwnedAccount,
 }) {
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
@@ -127,7 +128,7 @@ export function RecipientWithAddress({
       <div
         className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
-          if (recipientName) {
+          if (recipientIsOwnedAccount) {
             setAddressCopied(true);
             copyToClipboard(checksummedRecipientAddress);
           } else {
@@ -163,6 +164,7 @@ export function RecipientWithAddress({
                 recipientNickname ||
                 recipientMetadataName ||
                 recipientEns ||
+                shortenAddress(checksummedRecipientAddress) ||
                 t('newContract')}
           </div>
         </Tooltip>
@@ -185,6 +187,7 @@ RecipientWithAddress.propTypes = {
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
+  recipientIsOwnedAccount: PropTypes.bool,
 };
 
 function Arrow({ variant }) {
@@ -218,6 +221,7 @@ export default function SenderToRecipient({
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
+  recipientIsOwnedAccount,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -246,6 +250,7 @@ export default function SenderToRecipient({
           recipientEns={recipientEns}
           recipientName={recipientName}
           recipientMetadataName={recipientMetadataName}
+          recipientIsOwnedAccount={recipientIsOwnedAccount}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -275,4 +280,5 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  recipientIsOwnedAccount: PropTypes.bool,
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import Typography from '../../../components/ui/typography/typography';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -11,12 +11,23 @@ import {
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { setCompletedOnboarding } from '../../../store/actions';
 import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const handleClick = async () => {
+    if (selectedIndex === 0) {
+      setSelectedIndex(1);
+    } else {
+      await dispatch(setCompletedOnboarding());
+      history.push(DEFAULT_ROUTE);
+    }
+  };
 
   return (
     <div
@@ -66,13 +77,7 @@ export default function OnboardingPinExtension() {
             selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
           }
           type="primary"
-          onClick={() => {
-            if (selectedIndex === 0) {
-              setSelectedIndex(1);
-            } else {
-              history.push(DEFAULT_ROUTE);
-            }
-          }}
+          onClick={handleClick}
         >
           {selectedIndex === 0 ? t('next') : t('done')}
         </Button>
