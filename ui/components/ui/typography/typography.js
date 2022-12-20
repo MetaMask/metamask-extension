@@ -125,7 +125,7 @@ Typography.propTypes = {
    * The color of the Typography component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(ValidColors),
+  color: PropTypes.oneOf(Object.values(COLORS)),
   /**
    * The font-weight of the Typography component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
