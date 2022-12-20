@@ -79,12 +79,15 @@ export const SendComponent = (args) => (
 SendComponent.argTypes = {
   secondaryButtonText: {
     control: 'text',
-    defaultValue: 'Speed up',
   },
   cancelButtonText: {
     control: 'text',
-    defaultValue: 'Cancel',
   },
+};
+
+SendComponent.args = {
+  secondaryButtonText: 'Speed up',
+  cancelButtonText: 'Cancel',
 };
 
 export const PendingComponent = (args) => (

@@ -122,11 +122,11 @@ export default class NetworkController extends EventEmitter {
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
-  initializeProvider(providerParams) {
+  async initializeProvider(providerParams) {
     this._baseProviderParams = providerParams;
     const { type, rpcUrl, chainId } = this.getProviderConfig();
     this._configureProvider({ type, rpcUrl, chainId });
-    this.lookupNetwork();
+    await this.lookupNetwork();
   }
 
   // return the proxies so the references will always be good
@@ -162,7 +162,7 @@ export default class NetworkController extends EventEmitter {
     return this.getNetworkState() === 'loading';
   }
 
-  lookupNetwork() {
+  async lookupNetwork() {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       log.warn(
@@ -183,7 +183,6 @@ export default class NetworkController extends EventEmitter {
     }
 
     // Ping the RPC endpoint so we can confirm that it works
-    const ethQuery = new EthQuery(this._provider);
     const initialNetwork = this.getNetworkState();
     const { type } = this.getProviderConfig();
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
@@ -194,21 +193,26 @@ export default class NetworkController extends EventEmitter {
       this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     }
 
-    ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
-      const currentNetwork = this.getNetworkState();
-      if (initialNetwork === currentNetwork) {
-        if (err) {
-          this._setNetworkState('loading');
-          // keep network details in sync with network state
-          this._clearNetworkDetails();
-          return;
-        }
+    let networkVersion;
+    let networkVersionError;
+    try {
+      networkVersion = await this._getNetworkId();
+    } catch (error) {
+      networkVersionError = error;
+    }
+    if (initialNetwork !== this.getNetworkState()) {
+      return;
+    }
 
-        this._setNetworkState(networkVersion);
-        // look up EIP-1559 support
-        this.getEIP1559Compatibility();
-      }
-    });
+    if (networkVersionError) {
+      this._setNetworkState('loading');
+      // keep network details in sync with network state
+      this._clearNetworkDetails();
+    } else {
+      this._setNetworkState(networkVersion);
+      // look up EIP-1559 support
+      await this.getEIP1559Compatibility();
+    }
   }
 
   getCurrentChainId() {
@@ -284,6 +288,24 @@ export default class NetworkController extends EventEmitter {
   //
   // Private
   //
+
+  /**
+   * Get the network ID for the current selected network
+   *
+   * @returns {string} The network ID for the current network.
+   */
+  async _getNetworkId() {
+    const ethQuery = new EthQuery(this._provider);
+    return await new Promise((resolve, reject) => {
+      ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 
   /**
    * Method to return the latest block for the current network

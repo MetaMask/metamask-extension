@@ -109,6 +109,7 @@ export default class ConfirmPageContainer extends Component {
     supportsEIP1559: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
   };
 
   async componentDidMount() {
@@ -186,6 +187,7 @@ export default class ConfirmPageContainer extends Component {
       ///: END:ONLY_INCLUDE_IN
       accountBalance,
       assetStandard,
+      isApprovalOrRejection,
     } = this.props;
 
     const shouldDisplayWarning =
@@ -354,7 +356,11 @@ export default class ConfirmPageContainer extends Component {
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={isSetApproveForAll ? onSetApprovalForAll : onSubmit}
+              onSubmit={
+                isSetApproveForAll && isApprovalOrRejection
+                  ? onSetApprovalForAll
+                  : onSubmit
+              }
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'

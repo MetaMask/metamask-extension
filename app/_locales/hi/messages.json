@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "अमान्य निवेश! गुप्त पुनर्प्राप्ति वाक्यांश केस संवेदी है।"
   },
-  "ipfsGateway": {
-    "message": "IPFS गेटवे"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS सामग्री रिजॉल्यूशन का उपयोग करने के लिए IPFS CID गेटवे का URL दर्ज करें।"
-  },
   "jazzAndBlockies": {
     "message": "जाज़िकॉन्स और ब्लॉकीज़ विशिष्ट आइकनों की दो अलग-अलग शैलियां हैं जो आपको एक नज़र में किसी अकाउंट की पहचान करने में मदद करती हैं।"
   },
@@ -3021,7 +3015,8 @@
     "message": "आने वाले लेन-देन दिखाएं"
   },
   "showIncomingTransactionsDescription": {
-    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें"
+    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
