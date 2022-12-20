@@ -1268,13 +1268,29 @@
       },
       "packages": {
         "@metamask/permission-controller": true,
+        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
@@ -1593,7 +1609,6 @@
         "@metamask/snaps-utils": true,
         "@metamask/subject-metadata-controller": true,
         "eth-block-tracker>@metamask/utils": true,
-        "eth-keyring-controller>@metamask/browser-passworder": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
@@ -1753,6 +1768,12 @@
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "eth-block-tracker>@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2907,10 +2928,10 @@
     },
     "eth-keyring-controller": {
       "packages": {
+        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-keyring-controller>@metamask/bip39": true,
-        "eth-keyring-controller>@metamask/browser-passworder": true,
         "eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "eth-keyring-controller>eth-simple-keyring": true,
         "eth-keyring-controller>obs-store": true,
@@ -2927,11 +2948,7 @@
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
-        "btoa": true,
         "crypto": true
-      },
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "eth-keyring-controller>@metamask/eth-hd-keyring": {

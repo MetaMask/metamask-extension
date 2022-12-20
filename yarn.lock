@@ -4260,20 +4260,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-methods@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/rpc-methods@npm:0.26.1"
+"@metamask/rpc-methods@npm:^0.27.1":
+  version: 0.27.1
+  resolution: "@metamask/rpc-methods@npm:0.27.1"
   dependencies:
+    "@metamask/browser-passworder": ^4.0.2
     "@metamask/key-tree": ^6.0.0
     "@metamask/permission-controller": ^1.0.1
-    "@metamask/snaps-utils": ^0.26.1
+    "@metamask/snaps-ui": ^0.27.1
+    "@metamask/snaps-utils": ^0.27.1
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.3.1
     "@noble/hashes": ^1.1.3
     eth-rpc-errors: ^4.0.2
     nanoid: ^3.1.31
     superstruct: ^0.16.7
-  checksum: b858b20bc7749ffd4f107c92644e666517e49c0804c9ab74d713c67eacc41b99338a0504581580087bf125c9fc1b75cbce3425a419d77d463d9118b4fa065883
+  checksum: 1fa846c7889c5667c0724b62adcee7fbbfaf1e84f319eb1f123caf5c80249fa18ac0748e6087d457e59464013a81a063db7260bb464162004ba961db5a0b1be2
   languageName: node
   linkType: hard
 
@@ -4308,20 +4310,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/snaps-controllers@npm:0.26.1"
+"@metamask/snaps-controllers@npm:^0.27.1":
+  version: 0.27.1
+  resolution: "@metamask/snaps-controllers@npm:0.27.1"
   dependencies:
     "@metamask/approval-controller": ^1.0.1
     "@metamask/base-controller": ^1.1.1
-    "@metamask/browser-passworder": ^4.0.2
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/permission-controller": ^1.0.1
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/rpc-methods": ^0.26.1
-    "@metamask/snaps-execution-environments": ^0.26.1
-    "@metamask/snaps-types": ^0.26.1
-    "@metamask/snaps-utils": ^0.26.1
+    "@metamask/rpc-methods": ^0.27.1
+    "@metamask/snaps-execution-environments": ^0.27.1
+    "@metamask/snaps-utils": ^0.27.1
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/utils": ^3.3.1
     "@xstate/fsm": ^2.0.0
@@ -4336,19 +4336,18 @@ __metadata:
     pump: ^3.0.0
     readable-web-to-node-stream: ^3.0.2
     tar-stream: ^2.2.0
-  checksum: cd3ba92dd219808349e7944026c90194915d9fff5942cafb01e796791a4b0641e47904217f6756198903f7f6998678ebce89c80367d66b816eb57108a50ad1a3
+  checksum: 74b2717e2282670fbf4e15439e56fd10ee12bc5284797bbe6ab5705dafbf094094122e59e46ccbfb054b6db2b7ff0a053b87ebb1f7eea1f8edb79edb18ca1021
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/snaps-execution-environments@npm:0.26.1"
+"@metamask/snaps-execution-environments@npm:^0.27.1":
+  version: 0.27.1
+  resolution: "@metamask/snaps-execution-environments@npm:0.27.1"
   dependencies:
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.0
-    "@metamask/snaps-types": ^0.26.1
-    "@metamask/snaps-utils": ^0.26.1
+    "@metamask/snaps-utils": ^0.27.1
     "@metamask/utils": ^3.3.1
     eth-rpc-errors: ^4.0.3
     json-rpc-engine: ^6.1.0
@@ -4356,38 +4355,28 @@ __metadata:
     ses: ^0.17.0
     stream-browserify: ^3.0.0
     superstruct: ^0.16.7
-  checksum: 4a5328bd8e329a9e55e96a534e28fcc1cd4ec9eb51cb3323820e8692541fe78cb64e63e36341c172df4e59df79c0dcddbfb01df1efccefd26f23870a48f465a8
+  checksum: f2385b3e7e71a43acec77a82961ae2d72d6b6dd8fa56a5b392375c2988e32b1195f995ed682d91d450ef89ea364dd1e0ae28e9f2e7184c58e6dbe590ca6656b5
   languageName: node
   linkType: hard
 
-"@metamask/snaps-types@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/snaps-types@npm:0.26.1"
-  dependencies:
-    "@metamask/providers": ^10.2.0
-    "@metamask/snaps-utils": ^0.26.1
-    "@metamask/types": ^1.1.0
-  checksum: 9597e8dc8acd5f45dd397571a0d10e8106552566b4831fdc7363a5722f3120a4422f45bf37f7a32a927a7804874aad5c7a2a34236668c694f541021711bd0b90
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-ui@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/snaps-ui@npm:0.26.1"
+"@metamask/snaps-ui@npm:^0.27.1":
+  version: 0.27.1
+  resolution: "@metamask/snaps-ui@npm:0.27.1"
   dependencies:
     "@metamask/utils": ^3.3.1
     superstruct: ^0.16.7
-  checksum: 73dc68f02670ae075abf54740c4b3265741699b10cf2f9dc16a56393651d6595361feaa3f80cec4900884bd351e9177b0f1eb27e4511cdc7dc6b05be2e107210
+  checksum: bd068a251f2cecf39bb511c1b5d02e77c7b859f22bfc4b080775e9ecea0d59245c9448bfd17f15d2a801bc349c9b5a9957e4aa6a3b0140e6b27b28ac72f571b4
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "@metamask/snaps-utils@npm:0.26.1"
+"@metamask/snaps-utils@npm:^0.27.1":
+  version: 0.27.1
+  resolution: "@metamask/snaps-utils@npm:0.27.1"
   dependencies:
     "@babel/core": ^7.18.6
     "@babel/types": ^7.18.7
-    "@metamask/snaps-types": ^0.26.1
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-ui": ^0.27.1
     "@metamask/utils": ^3.3.1
     "@noble/hashes": ^1.1.3
     "@scure/base": ^1.1.1
@@ -4399,7 +4388,7 @@ __metadata:
     ses: ^0.17.0
     superstruct: ^0.16.7
     validate-npm-package-name: ^5.0.0
-  checksum: 9e34acb85c6f04a9db2ff18d4ce17a536ad14984b02e1e2a31c21491bec2b807a3ff2e1f51a178c2e3b40821ce5a41364921fa64163c2dfdfcb216b8b40ecd2f
+  checksum: 77b8102449471e834a02a92a8334dff88b186c81a2ecf3a3c46ef9c6ceca8ea588d0ccc24a0c22ef38a111decf7b2f7988d72dbaec088776e42c9153bf62ed13
   languageName: node
   linkType: hard
 
@@ -23396,12 +23385,12 @@ __metadata:
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^1.0.0
-    "@metamask/rpc-methods": ^0.26.1
+    "@metamask/rpc-methods": ^0.27.1
     "@metamask/slip44": ^2.1.0
     "@metamask/smart-transactions-controller": ^3.0.0
-    "@metamask/snaps-controllers": ^0.26.1
-    "@metamask/snaps-ui": ^0.26.1
-    "@metamask/snaps-utils": ^0.26.1
+    "@metamask/snaps-controllers": ^0.27.1
+    "@metamask/snaps-ui": ^0.27.1
+    "@metamask/snaps-utils": ^0.27.1
     "@metamask/subject-metadata-controller": ^1.0.0
     "@metamask/test-dapp": ^5.2.1
     "@ngraveio/bc-ur": ^1.1.6
