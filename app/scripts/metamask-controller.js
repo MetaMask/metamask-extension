@@ -5,8 +5,6 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import {
@@ -3729,21 +3727,19 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
+    const { provider } = this;
+
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
 
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
-
-    // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
+    // forward notifications from network provider
+    provider.on('data', (error, message) => {
+      if (error) {
+        // This should never happen, this error parameter is never set
+        throw error;
+      }
+      engine.emit('notification', message);
     });
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
@@ -3914,9 +3910,6 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    // filter and subscription polyfills
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
     if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(
