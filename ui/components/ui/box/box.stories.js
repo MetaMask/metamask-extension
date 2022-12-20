@@ -68,7 +68,6 @@ export default {
     width: {
       options: Object.values(BLOCK_SIZES),
       control: 'multi-select',
-      defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
     height: {
