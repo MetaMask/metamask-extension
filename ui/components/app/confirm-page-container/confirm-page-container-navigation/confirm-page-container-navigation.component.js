@@ -1,26 +1,29 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getTxData, getUnapprovedTransactions } from '../../../../selectors';
+import PropTypes from 'prop-types';
+import {
+  getCurrentChainId,
+  getUnapprovedTransactions,
+} from '../../../../selectors';
 import { transactionMatchesNetwork } from '../../../../../shared/modules/transaction.utils';
 import { I18nContext } from '../../../../contexts/i18n';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
 
-const ConfirmPageContainerNavigation = () => {
+const ConfirmPageContainerNavigation = ({ txData }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
 
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const txData = useSelector(getTxData);
-
-  const network = hexToDecimal(txData.chainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  const network = hexToDecimal(currentChainId);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], txData.chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], currentChainId, network),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
 
@@ -104,6 +107,10 @@ const ConfirmPageContainerNavigation = () => {
       </div>
     </div>
   );
+};
+
+ConfirmPageContainerNavigation.propTypes = {
+  txData: PropTypes.object,
 };
 
 export default ConfirmPageContainerNavigation;

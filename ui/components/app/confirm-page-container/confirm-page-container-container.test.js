@@ -23,10 +23,52 @@ jest.mock('../../../pages/swaps/swaps.util', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  return {
-    ...jest.requireActual('../../../selectors/'),
-    getTxData: jest.fn(() => ({
+describe('Confirm Page Container Container Test', () => {
+  const props = {
+    title: 'Title',
+    fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    toAddress: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
+    origin: 'testOrigin', // required
+    // Footer
+    onCancelAll: sinon.spy(),
+    onCancel: sinon.spy(),
+    onSubmit: sinon.spy(),
+    handleCloseEditGas: sinon.spy(),
+    // Gas Popover
+    currentTransaction: {
+      id: 8783053010106567,
+      time: 1656448479005,
+      status: 'unapproved',
+      metamaskNetworkId: '5',
+      originalGasEstimate: '0x5208',
+      userEditedGasLimit: false,
+      loadingDefaults: false,
+      dappSuggestedGasFees: null,
+      sendFlowHistory: [],
+      txParams: {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        to: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
+        value: '0x0',
+        gas: '0x5208',
+        maxFeePerGas: '0x59682f0d',
+        maxPriorityFeePerGas: '0x59682f00',
+      },
+      origin: 'testOrigin',
+      type: 'simpleSend',
+      userFeeLevel: 'medium',
+      defaultGasEstimates: {
+        estimateType: 'medium',
+        gas: '0x5208',
+        maxFeePerGas: '59682f0d',
+        maxPriorityFeePerGas: '59682f00',
+      },
+    },
+    isOwnedAccount: false,
+    showAccountInHeader: true,
+    showEdit: true,
+    hideSenderToRecipient: false,
+    toName: '0x7a1...E4E8',
+    txData: {
       id: 1230035278491151,
       time: 1671022500513,
       status: 'unapproved',
@@ -123,55 +165,7 @@ jest.mock('../../../selectors', () => {
         maxFeePerGas: '0',
         maxPriorityFeePerGas: '0',
       },
-    })),
-  };
-});
-
-describe('Confirm Page Container Container Test', () => {
-  const props = {
-    title: 'Title',
-    fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-    toAddress: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-    origin: 'testOrigin', // required
-    // Footer
-    onCancelAll: sinon.spy(),
-    onCancel: sinon.spy(),
-    onSubmit: sinon.spy(),
-    handleCloseEditGas: sinon.spy(),
-    // Gas Popover
-    currentTransaction: {
-      id: 8783053010106567,
-      time: 1656448479005,
-      status: 'unapproved',
-      metamaskNetworkId: '5',
-      originalGasEstimate: '0x5208',
-      userEditedGasLimit: false,
-      loadingDefaults: false,
-      dappSuggestedGasFees: null,
-      sendFlowHistory: [],
-      txParams: {
-        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-        to: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-        value: '0x0',
-        gas: '0x5208',
-        maxFeePerGas: '0x59682f0d',
-        maxPriorityFeePerGas: '0x59682f00',
-      },
-      origin: 'testOrigin',
-      type: 'simpleSend',
-      userFeeLevel: 'medium',
-      defaultGasEstimates: {
-        estimateType: 'medium',
-        gas: '0x5208',
-        maxFeePerGas: '59682f0d',
-        maxPriorityFeePerGas: '59682f00',
-      },
     },
-    isOwnedAccount: false,
-    showAccountInHeader: true,
-    showEdit: true,
-    hideSenderToRecipient: false,
-    toName: '0x7a1...E4E8',
   };
   describe('Render and simulate button clicks', () => {
     const store = configureMockStore()(mockState);

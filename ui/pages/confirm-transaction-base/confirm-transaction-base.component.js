@@ -1203,6 +1203,7 @@ export default class ConfirmTransactionBase extends Component {
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
+          txData={txData}
         />
       </TransactionModalContextProvider>
     );
