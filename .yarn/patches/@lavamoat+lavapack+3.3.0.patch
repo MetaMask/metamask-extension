@@ -1,0 +1,22 @@
+diff --git a/node_modules/@lavamoat/lavapack/src/runtime.js b/node_modules/@lavamoat/lavapack/src/runtime.js
+index 97c9ddb..908dde4 100644
+--- a/node_modules/@lavamoat/lavapack/src/runtime.js
++++ b/node_modules/@lavamoat/lavapack/src/runtime.js
+@@ -87,7 +87,7 @@
+     const {
+       scuttleGlobalThis,
+       scuttleGlobalThisExceptions,
+-    } = __lavamoatSecurityOptions__
++    } = {"scuttleGlobalThis":true,"scuttleGlobalThisExceptions":["toString","getComputedStyle","addEventListener","removeEventListener","ShadowRoot","HTMLElement","Element","pageXOffset","pageYOffset","visualViewport","Reflect","Set","Object","navigator","harden","console","/cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu","performance","parseFloat","innerWidth","innerHeight","Symbol","Math","DOMRect","Number","Array","crypto","Function","Uint8Array","String","Promise","__SENTRY__","appState","extra","stateHooks","sentryHooks","sentry"]}
+ 
+     // identify the globalRef
+     const globalRef = (typeof globalThis !== 'undefined') ? globalThis : (typeof self !== 'undefined') ? self : (typeof global !== 'undefined') ? global : undefined
+@@ -8266,7 +8266,7 @@ function                tameFunctionConstructors() {
+     FERAL_FUNCTION.prototype.constructor('return 1');
+    }catch( ignore) {
+     // Throws, no need to patch.
+-    return harden({});
++    return {};
+    }
+ 
+   const newIntrinsics=  {};
