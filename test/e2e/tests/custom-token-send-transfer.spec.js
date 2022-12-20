@@ -65,7 +65,6 @@ describe('Custom Token', function () {
           text: '10 TST',
         });
         // send token from extension
-        await driver.waitForSelector('[data-testid="eth-overview-send"]');
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
