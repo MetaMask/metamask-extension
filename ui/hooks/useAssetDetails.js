@@ -19,19 +19,15 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
 
   // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
-
-  let tokensWithBalance;
-  if (currentToken) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { tokensWithBalances } = useTokenTracker([currentToken]);
-    tokensWithBalance = tokensWithBalances;
-  }
+  const { tokensWithBalances } = useTokenTracker(
+    currentToken ? [currentToken] : [],
+  );
 
   // previous state checkers
   const prevTokenAddress = usePrevious(tokenAddress);
   const prevUserAddress = usePrevious(userAddress);
   const prevTransactionData = usePrevious(transactionData);
-  const prevTokenBalance = usePrevious(tokensWithBalance);
+  const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
     async function getAndSetAssetDetails() {
@@ -49,7 +45,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       tokenAddress !== prevTokenAddress ||
       userAddress !== prevUserAddress ||
       transactionData !== prevTransactionData ||
-      (prevTokenBalance && prevTokenBalance !== tokensWithBalance)
+      (prevTokenBalance && prevTokenBalance !== tokensWithBalances)
     ) {
       getAndSetAssetDetails();
     }
@@ -62,7 +58,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     userAddress,
     transactionData,
     collectibles,
-    tokensWithBalance,
+    tokensWithBalances,
     prevTokenBalance,
   ]);
 
