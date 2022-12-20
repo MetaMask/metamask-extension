@@ -214,6 +214,16 @@ function getCopyTargets(
     });
   }
 
+  if (process.env.ENABLE_MV3 && activeFeatures.includes('snaps')) {
+    allCopyTargets.push({
+      src: getPathInsideNodeModules(
+        '@metamask/snaps-execution-environments',
+        'dist/webpack/offscreen',
+      ),
+      dest: 'snaps',
+    });
+  }
+
   const copyTargetsDev = [
     ...allCopyTargets,
     {

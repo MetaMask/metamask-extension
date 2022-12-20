@@ -70,6 +70,7 @@
     "alarms",
     "clipboardWrite",
     "notifications",
+    "offscreen",
     "scripting",
     "storage",
     "unlimitedStorage",

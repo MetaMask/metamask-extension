@@ -68,6 +68,7 @@ import {
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
+  OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
@@ -1041,17 +1042,30 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    const shouldUseOffscreenExecutionService =
+      isManifestV3 &&
+      typeof chrome !== 'undefined' &&
+      // eslint-disable-next-line no-undef
+      typeof chrome.offscreen !== 'undefined';
+
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+      [shouldUseOffscreenExecutionService ? 'iframeUrl' : 'frameUrl']: new URL(
+        process.env.IFRAME_EXECUTION_ENVIRONMENT_URL,
+      ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
 
-    this.snapExecutionService = new IframeExecutionService(
-      snapExecutionServiceArgs,
-    );
+    this.snapExecutionService =
+      shouldUseOffscreenExecutionService === false
+        ? new IframeExecutionService(snapExecutionServiceArgs)
+        : new OffscreenExecutionService({
+            // eslint-disable-next-line no-undef
+            documentUrl: browser.runtime.getURL('./snaps/index.html'),
+            ...snapExecutionServiceArgs,
+          });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
