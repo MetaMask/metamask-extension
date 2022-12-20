@@ -1162,8 +1162,21 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
+    // This `isTokenApproval` case is added to handle possible rendering of this component from
+    // confirm-approve.js when `assetStandard` is `undefined`. That will happen if the request to
+    // get the asset standard fails. In that scenario, confirm-approve.js returns the `<ConfirmContractInteraction />`
+    // component, which in turn returns this `<ConfirmTransactionBase />` component. We meed to prevent
+    // the user from editing the transaction in those cases.
+
+    const isTokenApproval =
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+
+    const isContractInteraction =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+
     const isContractInteractionFromDapp =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      (isTokenApproval || isContractInteraction) &&
       txData.origin !== 'metamask';
     let functionType;
     if (isContractInteractionFromDapp) {

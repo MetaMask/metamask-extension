@@ -19,6 +19,7 @@ const renderUseAssetDetails = ({
         chainId: '0x5',
       },
       tokenList: {},
+      tokens: [],
     },
   };
 

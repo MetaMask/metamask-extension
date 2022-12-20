@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "입력 오류: 비밀 복구 구문은 대소문자를 구분해야 합니다."
   },
-  "ipfsGateway": {
-    "message": "IPFS 게이트웨이"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS 콘텐츠 해결에 사용할 IPFS CID 게이트웨이의 URL을 입력하세요."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons와 Blockies는 계정을 한눈에 식별할 수 있게 도와주는 두 가지 고유한 아이콘 스타일입니다."
   },
@@ -3021,7 +3015,8 @@
     "message": "수신 거래 표시"
   },
   "showIncomingTransactionsDescription": {
-    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다."
+    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "권한 표시"

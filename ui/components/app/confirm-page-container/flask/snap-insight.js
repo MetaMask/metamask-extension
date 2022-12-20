@@ -13,9 +13,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
-import SnapContentFooter from '../../flask/snap-content-footer/snap-content-footer';
 import Box from '../../../ui/box/box';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
+import { SnapUIRenderer } from '../../flask/snap-ui-renderer';
 
 export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
   const t = useI18nContext();
@@ -30,7 +30,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
     snapId: selectedSnap.id,
   });
 
-  const data = response?.insights;
+  const data = response?.content;
 
   const hasNoData =
     !error && (loading || !data || (data && Object.keys(data).length === 0));
@@ -52,48 +52,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           className="snap-insight__container"
         >
           {data && Object.keys(data).length > 0 ? (
-            <>
-              <Box
-                flexDirection={FLEX_DIRECTION.COLUMN}
-                paddingTop={0}
-                paddingRight={6}
-                paddingBottom={3}
-                paddingLeft={6}
-                className="snap-insight__container__data"
-              >
-                {Object.keys(data).map((key, i) => (
-                  <div key={i} data-testid={`${key}-${i}`}>
-                    <Typography
-                      fontWeight="bold"
-                      marginTop={3}
-                      variant={TYPOGRAPHY.H6}
-                    >
-                      {key}
-                    </Typography>
-
-                    {typeof data[key] === 'string' ? (
-                      <Typography variant={TYPOGRAPHY.H6}>
-                        {data[key]}
-                      </Typography>
-                    ) : (
-                      <Box
-                        className="snap-insight__container__data__json"
-                        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-                        padding={3}
-                      >
-                        <Typography variant={TYPOGRAPHY.H7}>
-                          <pre>{JSON.stringify(data[key], null, 2)}</pre>
-                        </Typography>
-                      </Box>
-                    )}
-                  </div>
-                ))}
-              </Box>
-              <SnapContentFooter
-                snapName={selectedSnap.manifest.proposedName}
-                snapId={selectedSnap.id}
-              />
-            </>
+            <SnapUIRenderer snapId={selectedSnap.id} data={data} />
           ) : (
             <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
               {t('snapsNoInsight')}

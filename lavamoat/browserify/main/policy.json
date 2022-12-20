@@ -1177,6 +1177,59 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "eth-block-tracker>@metamask/utils": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "eth-block-tracker>@metamask/utils": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
+      "packages": {
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true
+      }
+    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1434,6 +1487,18 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/subject-metadata-controller": {
@@ -2538,10 +2603,10 @@
     },
     "eth-keyring-controller": {
       "packages": {
+        "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-keyring-controller>@metamask/bip39": true,
-        "eth-keyring-controller>@metamask/browser-passworder": true,
         "eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "eth-keyring-controller>eth-simple-keyring": true,
         "eth-keyring-controller>obs-store": true,
@@ -2558,11 +2623,7 @@
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
-        "btoa": true,
         "crypto": true
-      },
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "eth-keyring-controller>@metamask/eth-hd-keyring": {

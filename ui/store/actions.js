@@ -2798,10 +2798,8 @@ export function setTheme(val) {
 
 export function setIpfsGateway(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication());
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
-      dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
       } else {
