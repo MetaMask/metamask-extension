@@ -1,0 +1,37 @@
+diff --git a/dist/providerFromEngine.js b/dist/providerFromEngine.js
+index de755cdeea76e0e1098312cf74025887e095b73c..769301905904005d785f15f54a7a52194a88ebc6 100644
+--- a/dist/providerFromEngine.js
++++ b/dist/providerFromEngine.js
+@@ -7,20 +7,31 @@ exports.providerFromEngine = void 0;
+ const safe_event_emitter_1 = __importDefault(require("@metamask/safe-event-emitter"));
+ function providerFromEngine(engine) {
+     const provider = new safe_event_emitter_1.default();
++    let stopped = false;
+     // handle both rpc send methods
+     provider.sendAsync = (req, cb) => {
++        if (stopped) {
++          return cb(new Error('Provider called after being stopped'))
++        }
+         engine.handle(req, cb);
+     };
+     provider.send = (req, callback) => {
+         if (typeof callback !== 'function') {
+             throw new Error('Must provide callback to "send" method.');
++        } else if (stopped) {
++          return callback(new Error('Provider called after being stopped'))
+         }
+         engine.handle(req, callback);
+     };
++    provider.stop = () => {
++      stopped = true;
++    };
+     // forward notifications
+     if (engine.on) {
+         engine.on('notification', (message) => {
+-            provider.emit('data', null, message);
++            if (!stopped) {
++              provider.emit('data', null, message);
++            }
+         });
+     }
+     return provider;

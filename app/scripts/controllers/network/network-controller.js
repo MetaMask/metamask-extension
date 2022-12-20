@@ -415,10 +415,20 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkState('loading');
     // Reset network details
     this._clearNetworkDetails();
+    // cache a reference to the old provider and block tracker before they get replaced
+    const previousProvider = this._provider;
+    const previousBlockTracker = this._blockTracker;
     // Configure the provider appropriately
     this._configureProvider(opts);
     // Notify subscribers that network has changed
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
+    // Stop stale provider and block tracker
+    if (previousBlockTracker) {
+      previousBlockTracker.destroy();
+    }
+    if (previousProvider) {
+      previousProvider.stop();
+    }
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {

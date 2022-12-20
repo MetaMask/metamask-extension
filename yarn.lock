@@ -14710,6 +14710,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-json-rpc-middleware@npm:9.0.1":
+  version: 9.0.1
+  resolution: "eth-json-rpc-middleware@npm:9.0.1"
+  dependencies:
+    "@metamask/eth-sig-util": ^5.0.0
+    "@metamask/safe-event-emitter": ^2.0.0
+    "@metamask/utils": ^3.0.3
+    btoa: ^1.2.1
+    clone: ^2.1.1
+    eth-block-tracker: ^5.0.1
+    eth-rpc-errors: ^4.0.3
+    json-rpc-engine: ^6.1.0
+    json-stable-stringify: ^1.0.1
+    node-fetch: ^2.6.7
+    pify: ^3.0.0
+  checksum: 9512829a6958df6ef739b891a0c0804b51a140407fd2e3ddaaa6b18d975796646cfcf7f7305a18beb7903db09e0c7a91b06dc5434b6bd2d6cdb85d992d9fd3ab
+  languageName: node
+  linkType: hard
+
 "eth-json-rpc-middleware@npm:^6.0.0":
   version: 6.0.0
   resolution: "eth-json-rpc-middleware@npm:6.0.0"
@@ -14747,9 +14766,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-middleware@npm:^9.0.1":
+"eth-json-rpc-middleware@patch:eth-json-rpc-middleware@npm%3A9.0.1#./.yarn/patches/eth-json-rpc-middleware-npm-9.0.1-2edeac7b44.patch::locator=metamask-crx%40workspace%3A.":
   version: 9.0.1
-  resolution: "eth-json-rpc-middleware@npm:9.0.1"
+  resolution: "eth-json-rpc-middleware@patch:eth-json-rpc-middleware@npm%3A9.0.1#./.yarn/patches/eth-json-rpc-middleware-npm-9.0.1-2edeac7b44.patch::version=9.0.1&hash=e65c41&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/eth-sig-util": ^5.0.0
     "@metamask/safe-event-emitter": ^2.0.0
@@ -14762,7 +14781,7 @@ __metadata:
     json-stable-stringify: ^1.0.1
     node-fetch: ^2.6.7
     pify: ^3.0.0
-  checksum: 9512829a6958df6ef739b891a0c0804b51a140407fd2e3ddaaa6b18d975796646cfcf7f7305a18beb7903db09e0c7a91b06dc5434b6bd2d6cdb85d992d9fd3ab
+  checksum: 746317b91ec33f0cb5d6cb8736c63c63bc66d67f4004335d72b96cf64011b7ef9c1b069e23276357971643505bb8a515d9c064bf7696e0e11186e710711b97a5
   languageName: node
   linkType: hard
 

@@ -192,7 +192,8 @@
     "lavamoat-core@^10.0.1": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
     "lavamoat-core@^12.4.0": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
     "lavamoat-core@^12.3.0": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
-    "@lavamoat/lavapack@^3.3.0": "patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch"
+    "@lavamoat/lavapack@^3.3.0": "patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch",
+    "eth-json-rpc-middleware@^9.0.1": "patch:eth-json-rpc-middleware@npm%3A9.0.1#./.yarn/patches/eth-json-rpc-middleware-npm-9.0.1-2edeac7b44.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
