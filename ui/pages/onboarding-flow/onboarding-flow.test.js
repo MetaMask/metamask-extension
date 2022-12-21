@@ -35,7 +35,7 @@ jest.mock('../../store/actions', () => ({
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
-      identities: {}
+      identities: {},
     },
   };
 
