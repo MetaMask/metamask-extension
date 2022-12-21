@@ -338,6 +338,9 @@ export default class TransactionController extends EventEmitter {
     const initialTxMeta = await this.addUnapprovedTransaction(
       txParams,
       opts.origin,
+      undefined,
+      undefined,
+      opts.id,
     );
 
     // listen for tx completion (success, fail)
