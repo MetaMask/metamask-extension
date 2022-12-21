@@ -551,7 +551,15 @@ export default class Home extends PureComponent {
         )}
         {!openSeaTransactionSecurityProviderPopoverHasBeenShown && (
           <Popover
-            title={t('transactionSecurityProviders')}
+            title={
+              <Typography
+                variant={TYPOGRAPHY.H4}
+                color={COLORS.TEXT_ALTERNATIVE}
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('staySafeWithOpenSea')}
+              </Typography>
+            }
             footer={
               <>
                 <Button
@@ -560,19 +568,19 @@ export default class Home extends PureComponent {
                     setTransactionSecurityCheckEnabled();
                     setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
                   }}
+                  className="home__enable-security-provider-button"
                 >
                   {t('enableOpenSeaSecurityProvider')}
                 </Button>
-                <Box marginTop={1}>
+                <Box marginTop={2}>
                   <Typography variant={TYPOGRAPHY.H6}>
                     <Button
                       type="link"
                       onClick={() =>
                         setOpenSeaTransactionSecurityProviderPopoverHasBeenShown()
                       }
-                      className="smart-transactions-popover__no-thanks-link"
                     >
-                      {t('noThanksVariant2')}
+                      {t('notNow')}
                     </Button>
                   </Typography>
                 </Box>
@@ -593,37 +601,32 @@ export default class Home extends PureComponent {
               className="smart-transactions-popover__content"
             >
               <Box
-                marginTop={0}
-                marginBottom={4}
+                marginTop={1}
+                marginBottom={1}
                 display={DISPLAY.FLEX}
                 flexDirection={FLEX_DIRECTION.COLUMN}
               >
                 <img
-                  src="./images/logo/smart-transactions-header.png"
-                  alt={t('swapSwapSwitch')}
+                  src="./images/open-sea-security-provider.svg"
+                  alt={t('openSeaAltText')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
-                {t('openSeaSecurityProviderDescription1')}
-                <br />
-                {t('openSeaSecurityProviderDescription2')}
+              <Typography variant={TYPOGRAPHY.H6}>
+                {t('getWarningsFromOpenSea')}
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                marginTop={4}
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('openSeaDescription')}
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H7}
-                fontWeight={FONT_WEIGHT.BOLD}
-                marginTop={3}
-              >
-                {t('thingsToKnow')}
-                <ol>1. {t('openSeaSecurityProviderBenefit1')}</ol>
-                <ol>2. {t('openSeaSecurityProviderBenefit2')}</ol>
-                <ol>3. {t('openSeaSecurityProviderBenefit3')}</ol>
-              </Typography>
-              <Typography
-                variant={TYPOGRAPHY.H8}
                 color={COLORS.TEXT_ALTERNATIVE}
-                boxProps={{ marginTop: 3 }}
+                marginTop={4}
               >
-                {t('openSeaSecurityProviderSubDescription')}&nbsp;
+                {t('alwaysBeSureTo')}
               </Typography>
             </Box>
           </Popover>

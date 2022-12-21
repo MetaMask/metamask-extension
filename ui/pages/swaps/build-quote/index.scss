@@ -190,10 +190,6 @@
   transform: translateY(-100%);
   animation: slide-in 0.5s forwards;
 
-  .popover-header__title h2 {
-    white-space: unset;
-  }
-
   &__content {
     flex-direction: column;
 
