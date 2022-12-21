@@ -97,8 +97,14 @@ export default class AccountTracker {
     this.preferencesController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
         const { selectedAddress: prevSelectedAddress } = prevState;
-        const { selectedAddress: currSelectedAddress, useMultiAccountBalanceChecker } = currState;
-        if (prevSelectedAddress !== currSelectedAddress && !useMultiAccountBalanceChecker) {
+        const {
+          selectedAddress: currSelectedAddress,
+          useMultiAccountBalanceChecker,
+        } = currState;
+        if (
+          prevSelectedAddress !== currSelectedAddress &&
+          !useMultiAccountBalanceChecker
+        ) {
           this._updateAccounts();
         }
       }, this.onboardingController.store.getState()),
@@ -353,11 +359,11 @@ export default class AccountTracker {
       return;
     }
     const newAccounts = {};
-    Object.keys(accounts).forEach(accountAddress => {
+    Object.keys(accounts).forEach((accountAddress) => {
       if (address !== accountAddress && !useMultiAccountBalanceChecker) {
         newAccounts[address] = { address, balance: null };
       }
-    })
+    });
     newAccounts[address] = result;
     this.store.updateState({ accounts });
   }
@@ -371,11 +377,11 @@ export default class AccountTracker {
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const { accounts } = this.store.getState();
     const newAccounts = {};
-    Object.keys(accounts).forEach(address => {
+    Object.keys(accounts).forEach((address) => {
       if (!addresses.includes(address)) {
         newAccounts[address] = { address, balance: null };
       }
-    })
+    });
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
 
     const ethContract = await new ethers.Contract(
