@@ -44,9 +44,9 @@ export default function CurrencyDisplay({
         {parts.value}
       </Privacy>
       {parts.suffix && (
-        <span className="currency-display-component__suffix">
+        <Privacy as="span" className="currency-display-component__suffix">
           {parts.suffix}
-        </span>
+        </Privacy>
       )}
     </div>
   );
