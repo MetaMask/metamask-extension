@@ -146,7 +146,7 @@ import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
-import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   CaveatMutatorFactories,
