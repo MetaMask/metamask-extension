@@ -93,6 +93,16 @@ export default class AccountTracker {
         }
       }, this.onboardingController.store.getState()),
     );
+
+    this.preferencesController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { selectedAddress: prevSelectedAddress } = prevState;
+        const { selectedAddress: currSelectedAddress, useMultiAccountBalanceChecker } = currState;
+        if (prevSelectedAddress !== currSelectedAddress && !useMultiAccountBalanceChecker) {
+          this._updateAccounts();
+        }
+      }, this.onboardingController.store.getState()),
+    );
   }
 
   start() {
@@ -321,6 +331,9 @@ export default class AccountTracker {
    * @returns {Promise} after the account balance is updated
    */
   async _updateAccount(address) {
+    const { useMultiAccountBalanceChecker } =
+      this.preferencesController.store.getState();
+
     let balance = '0x0';
 
     // query balance
@@ -339,7 +352,13 @@ export default class AccountTracker {
     if (!accounts[address]) {
       return;
     }
-    accounts[address] = result;
+    const newAccounts = {};
+    Object.keys(accounts).forEach(accountAddress => {
+      if (address !== accountAddress && !useMultiAccountBalanceChecker) {
+        newAccounts[address] = { address, balance: null };
+      }
+    })
+    newAccounts[address] = result;
     this.store.updateState({ accounts });
   }
 
@@ -351,6 +370,12 @@ export default class AccountTracker {
    */
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const { accounts } = this.store.getState();
+    const newAccounts = {};
+    Object.keys(accounts).forEach(address => {
+      if (!addresses.includes(address)) {
+        newAccounts[address] = { address, balance: null };
+      }
+    })
     this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
 
     const ethContract = await new ethers.Contract(
@@ -365,9 +390,9 @@ export default class AccountTracker {
 
       addresses.forEach((address, index) => {
         const balance = balances[index] ? balances[index].toHexString() : '0x0';
-        accounts[address] = { address, balance };
+        newAccounts[address] = { address, balance };
       });
-      this.store.updateState({ accounts });
+      this.store.updateState({ accounts: newAccounts });
     } catch (error) {
       log.warn(
         `MetaMask - Account Tracker single call balance fetch failed`,

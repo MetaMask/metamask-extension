@@ -48,6 +48,7 @@ export default class CachedBalancesController {
     });
   }
 
+
   _generateBalancesToCache(newAccounts, chainId) {
     const { cachedBalances } = this.store.getState();
     const currentChainBalancesToCache = { ...cachedBalances[chainId] };
