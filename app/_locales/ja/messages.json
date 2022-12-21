@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "入力値が無効です！秘密のリカバリーフレーズは大文字・小文字が区別されます。"
   },
-  "ipfsGateway": {
-    "message": "IPFSゲートウェイ"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENSコンテンツの解決に使用するIPFS CIDゲートウェイのURLを入力します。"
-  },
   "jazzAndBlockies": {
     "message": "Jazzicon と Blockie は、アカウントを一目で見分けるためのユニークなアイコンであり、2 つの異なるスタイルが特徴です。"
   },
@@ -3021,7 +3015,8 @@
     "message": "受信トランザクションを表示"
   },
   "showIncomingTransactionsDescription": {
-    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます"
+    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "表示許可"

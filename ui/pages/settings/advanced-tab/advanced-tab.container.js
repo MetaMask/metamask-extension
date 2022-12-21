@@ -9,10 +9,8 @@ import {
   setShowTestNetworks,
   setAutoLockTimeLimit,
   setUseNonceField,
-  setIpfsGateway,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
-  setUseTokenDetection,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -28,10 +26,8 @@ export const mapStateToProps = (state) => {
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    useTokenDetection,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -49,11 +45,9 @@ export const mapStateToProps = (state) => {
     showTestNetworks,
     autoLockTimeLimit,
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
-    useTokenDetection,
   };
 };
 
@@ -78,17 +72,11 @@ export const mapDispatchToProps = (dispatch) => {
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
     setLedgerTransportPreference: (value) => {
       return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
-    },
-    setUseTokenDetection: (value) => {
-      return dispatch(setUseTokenDetection(value));
     },
   };
 };

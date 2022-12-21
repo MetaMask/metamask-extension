@@ -115,9 +115,9 @@ describe('Test Snap TxInsights', function () {
         // check that txinsightstest tab contains the right info
         await driver.delay(1000);
         const txInsightsResult = await driver.findElement(
-          '[data-testid="Test-0"]',
+          '.snap-ui-renderer__content',
         );
-        assert.equal(await txInsightsResult.getText(), 'Test\nSuccessful');
+        assert.equal(await txInsightsResult.getText(), 'Test: Successful');
       },
     );
   });
