@@ -52,8 +52,7 @@ import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-
-const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
+import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
 
 export default function TokenAllowance({
   origin,
@@ -104,7 +103,7 @@ export default function TokenAllowance({
 
   let customPermissionAmount = replaceCommaToDot(customTokenAmount).toString();
 
-  const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
+  const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
   if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
     const customSpendLimitNumber = new BigNumber(customTokenAmount);
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {

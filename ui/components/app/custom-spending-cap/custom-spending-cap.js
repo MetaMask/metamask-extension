@@ -24,9 +24,12 @@ import {
   conversionGreaterThan,
   conversionLTE,
 } from '../../../../shared/modules/conversion.utils';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  regex,
+} from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
-const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 export default function CustomSpendingCap({
   tokenName,
   currentTokenBalance,
@@ -100,7 +103,6 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
-    const regex = /^[0-9]{1,}([,.][0-9]{1,})?$/u;
 
     if (valueInput && !regex.test(valueInput)) {
       spendingCapError = t('spendingCapError');
@@ -111,7 +113,10 @@ export default function CustomSpendingCap({
       setError('');
     }
 
-    const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
+    const maxTokenAmount = calcTokenAmount(
+      MAX_TOKEN_ALLOWANCE_AMOUNT,
+      decimals,
+    );
     if (Number(valueInput.length) > 1 && Number(valueInput)) {
       const customSpendLimitNumber = new BigNumber(valueInput);
       if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
