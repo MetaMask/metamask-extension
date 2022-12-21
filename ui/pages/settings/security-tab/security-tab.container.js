@@ -51,14 +51,15 @@ const mapDispatchToProps = (dispatch) => {
     setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
-    setUseMultiAccountBalanceChecker: (val) =>
-      dispatch(setUseMultiAccountBalanceChecker(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (value) => {
       return dispatch(setUseTokenDetection(value));
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
+    },
+    setUseMultiAccountBalanceChecker: (value) => {
+      return dispatch(setUseMultiAccountBalanceChecker(value));
     },
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
