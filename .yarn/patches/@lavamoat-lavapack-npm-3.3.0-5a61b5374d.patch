@@ -1,5 +1,5 @@
 diff --git a/src/runtime.js b/src/runtime.js
-index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..26f65a2b2a3578638402fa887156fdad18eee368 100644
+index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..975812c159c2e8f3f04a81fb49ad747244795749 100644
 --- a/src/runtime.js
 +++ b/src/runtime.js
 @@ -8266,7 +8266,7 @@ function                tameFunctionConstructors() {
@@ -9,5 +9,29 @@ index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..26f65a2b2a3578638402fa887156fdad
 -    return harden({});
 +    return {};
     }
- 
+
    const newIntrinsics=  {};
+@@ -11100,7 +11100,13 @@ module.exports = {
+       if (!Array.isArray(scuttleGlobalThisExceptions)) {
+         throw new Error(`LavaMoat - scuttleGlobalThisExceptions must be an array, got "${typeof scuttleGlobalThisExceptions}"`)
+       }
+-      performScuttleGlobalThis(globalRef, scuttleGlobalThisExceptions)
++
++      const log = console.log.bind(console)
++      window.top.SNOW((win) => {
++        const msg = 'SNOW INTERCEPTED NEW WINDOW CREATION IN METAMASK APP: '
++        log(msg, win, win?.frameElement)
++        performScuttleGlobalThis(win, scuttleGlobalThisExceptions)
++      }, globalRef);
+     }
+
+     const kernel = {
+@@ -11121,7 +11127,7 @@ module.exports = {
+
+       for (let i = 0; i < extraPropsToAvoid.length; i++) {
+         const prop = extraPropsToAvoid[i]
+-        if (!prop.startsWith('/')) {
++        if (typeof prop !== 'string' || !prop.startsWith('/')) {
+           continue
+         }
+         const parts = prop.split('/')
