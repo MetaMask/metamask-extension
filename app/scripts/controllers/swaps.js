@@ -301,13 +301,10 @@ export default class SwapsController {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
-            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
-              this.eth,
-              {
-                txParams: quote.trade,
-                chainId,
-              },
-            );
+            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee({
+              txParams: quote.trade,
+              chainId,
+            });
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
           }
           return quote;
