@@ -30,42 +30,40 @@ describe('Incremental Security', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.delay(tinyDelayMs);
 
-        // clicks the continue button on the welcome screen
-        await driver.findElement('.welcome-page__header');
-        await driver.clickElement({
-          text: enLocaleMessages.getStarted.message,
-          tag: 'button',
-        });
+        // welcome
+        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
-        // clicks the "No thanks" option on the metametrics opt-in screen
-        await driver.clickElement('.btn-secondary');
+        // metrics
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        // clicks the "Create New Wallet" option
-        await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
-
-        // accepts a secure password
+        // create password
         await driver.fill(
-          '.first-time-flow__form #create-password',
+          '[data-testid="create-password-new"]',
           'correct horse battery staple',
         );
         await driver.fill(
-          '.first-time-flow__form #confirm-password',
+          '[data-testid="create-password-confirm"]',
           'correct horse battery staple',
         );
-        await driver.clickElement('.first-time-flow__checkbox');
-        await driver.clickElement('.first-time-flow__form button');
+        await driver.clickElement('[data-testid="create-password-terms"]');
+        await driver.clickElement('[data-testid="create-password-wallet"]');
 
-        // renders the Secret Recovery Phrase intro screen'
-        await driver.clickElement('.seed-phrase-intro__left button');
+        // secure wallet later
+        await driver.clickElement('[data-testid="secure-wallet-later"]');
+        await driver.clickElement(
+          '[data-testid="skip-srp-backup-popover-checkbox"]',
+        );
+        await driver.clickElement('[data-testid="skip-srp-backup"]');
 
-        // skips the Secret Recovery Phrase challenge
-        await driver.clickElement({
-          text: enLocaleMessages.remindMeLater.message,
-          tag: 'button',
-        });
+        // complete
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
+        // pin extension
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+
+        // open account menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
