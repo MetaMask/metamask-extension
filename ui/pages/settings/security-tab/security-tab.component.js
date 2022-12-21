@@ -577,7 +577,6 @@ export default class SecurityTab extends PureComponent {
           {this.renderCollectibleDetectionToggle()}
         </div>
         {this.renderMetaMetricsOptIn()}
-        {this.renderMultiAccountBalanceCheckerOptIn()}
         {this.renderCurrencyRateCheckToggle()}
       </div>
     );
