@@ -44,4 +44,4 @@ export const MAX_TOKEN_ALLOWANCE_AMOUNT = new BigNumber(2)
   .pow(256)
   .minus(1)
   .toString(10);
-export const regex = /^[0-9]{1,}([,.][0-9]{1,})?$/u;
+export const TOKEN_ALLOWANCE_VALUE_REGEX = /^[0-9]{1,}([,.][0-9]{1,})?$/u;
