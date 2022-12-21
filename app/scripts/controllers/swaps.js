@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import Eth from 'ethjs';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
@@ -136,13 +135,11 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider);
-    this.eth = new Eth(provider);
     this._currentNetwork = networkController.store.getState().network;
     networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
       if (network !== 'loading' && network !== this._currentNetwork) {
         this._currentNetwork = network;
         this.ethersProvider = new ethers.providers.Web3Provider(provider);
-        this.eth = new Eth(provider);
       }
     });
   }
@@ -301,10 +298,13 @@ export default class SwapsController {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
-            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee({
-              txParams: quote.trade,
-              chainId,
-            });
+            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              {
+                txParams: quote.trade,
+                chainId,
+              },
+              this.ethersProvider,
+            );
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
           }
           return quote;
