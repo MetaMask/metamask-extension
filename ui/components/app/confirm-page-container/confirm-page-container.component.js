@@ -66,6 +66,7 @@ export default class ConfirmPageContainer extends Component {
     toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
+    recipientIsOwnedAccount: PropTypes.bool,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -108,6 +109,7 @@ export default class ConfirmPageContainer extends Component {
     supportsEIP1559: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    isApprovalOrRejection: PropTypes.bool,
   };
 
   async componentDidMount() {
@@ -135,6 +137,7 @@ export default class ConfirmPageContainer extends Component {
       toMetadataName,
       toEns,
       toNickname,
+      recipientIsOwnedAccount,
       toAddress,
       disabled,
       errorKey,
@@ -184,6 +187,7 @@ export default class ConfirmPageContainer extends Component {
       ///: END:ONLY_INCLUDE_IN
       accountBalance,
       assetStandard,
+      isApprovalOrRejection,
     } = this.props;
 
     const shouldDisplayWarning =
@@ -247,6 +251,7 @@ export default class ConfirmPageContainer extends Component {
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
+                  recipientIsOwnedAccount={recipientIsOwnedAccount}
                 />
               )}
             </ConfirmPageContainerHeader>
@@ -351,7 +356,11 @@ export default class ConfirmPageContainer extends Component {
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={isSetApproveForAll ? onSetApprovalForAll : onSubmit}
+              onSubmit={
+                isSetApproveForAll && isApprovalOrRejection
+                  ? onSetApprovalForAll
+                  : onSubmit
+              }
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'

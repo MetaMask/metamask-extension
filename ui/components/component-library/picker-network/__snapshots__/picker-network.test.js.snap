@@ -7,7 +7,7 @@ exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
     data-testid="picker-network"
   >
     <div
-      class="box mm-avatar-base mm-avatar-base--size-xs avatar-network mm-picker-network__avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       I
     </div>

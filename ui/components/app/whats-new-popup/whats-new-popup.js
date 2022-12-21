@@ -49,7 +49,7 @@ function getActionFunctionById(id, history) {
     },
     10: () => {
       updateViewedNotifications({ 10: true });
-      history.push(`${ADVANCED_ROUTE}#token-description`);
+      history.push(`${SECURITY_ROUTE}#token-description`);
     },
     12: () => {
       updateViewedNotifications({ 12: true });

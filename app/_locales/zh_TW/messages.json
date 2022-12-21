@@ -883,9 +883,6 @@
   "invalidSeedPhrase": {
     "message": "無效的助憶詞"
   },
-  "ipfsGatewayDescription": {
-    "message": "輸入用於解析 ENS 內容的 IPFS CID gateway URL。"
-  },
   "jsonFile": {
     "message": "JSON 格式檔案",
     "description": "format for importing an account"
@@ -1421,7 +1418,8 @@
     "message": "顯示傳入的交易"
   },
   "showIncomingTransactionsDescription": {
-    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易"
+    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "顯示權限"

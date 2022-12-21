@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Di-wastong input! Ang Secret Recovery Phrase ay case sensitive."
   },
-  "ipfsGateway": {
-    "message": "Gateway na IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Ilagay ang URL ng IPFS CID gateway para magamit para sa resolusyon ng content ng ENS."
-  },
   "jazzAndBlockies": {
     "message": "Ang Jazzicons at Blockies ay dalawang magkaibang istilo ng mga natatanging icon na makakatulong sa iyong matukoy ang account sa isang sulyap."
   },
@@ -3021,7 +3015,8 @@
     "message": "Ipakita ang Mga Papasok na Transaksyon"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon"
+    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
