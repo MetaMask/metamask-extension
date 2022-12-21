@@ -98,7 +98,11 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
-  let customPermissionAmount = customTokenAmount.toString();
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
+
+  let customPermissionAmount = replaceCommaToDot(customTokenAmount).toString();
 
   const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals);
   if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
@@ -108,14 +112,24 @@ export default function TokenAllowance({
     }
   }
 
-  const customTxParamsData = Number(customTokenAmount)
+  const customTxParamsData = Number(replaceCommaToDot(customTokenAmount))
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
       })
     : null;
 
-  const fullTxData = { ...txData };
+  let fullTxData = { ...txData };
+
+  if (customTxParamsData) {
+    fullTxData = {
+      ...fullTxData,
+      txParams: {
+        ...fullTxData.txParams,
+        data: customTxParamsData,
+      },
+    };
+  }
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
   const methodData = useSelector((state) => getKnownMethodData(state, data));
@@ -354,7 +368,7 @@ export default function TokenAllowance({
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
                 ? dappProposedTokenAmount
-                : customTokenAmount
+                : replaceCommaToDot(customTokenAmount)
             }
             onEdit={() => handleBackClick()}
           />

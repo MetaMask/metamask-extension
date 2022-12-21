@@ -46,9 +46,13 @@ export default function CustomSpendingCap({
   );
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
+
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
     return conversionGreaterThan(
-      { value: Number(tokenValue), fromNumericBase: 'dec' },
+      { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
       { value: Number(tokenBalance), fromNumericBase: 'dec' },
     );
   };
@@ -56,7 +60,10 @@ export default function CustomSpendingCap({
   const getInputTextLogic = (inputNumber) => {
     if (
       conversionLTE(
-        { value: Number(inputNumber), fromNumericBase: 'dec' },
+        {
+          value: Number(replaceCommaToDot(inputNumber)),
+          fromNumericBase: 'dec',
+        },
         { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
       )
     ) {
@@ -69,7 +76,7 @@ export default function CustomSpendingCap({
             fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
-            {inputNumber} {tokenName}
+            {replaceCommaToDot(inputNumber)} {tokenName}
           </Typography>,
         ]),
       };
@@ -93,15 +100,9 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
-    const inputError =
-      typeof valueInput === 'string' && valueInput.charAt(0) === '.';
+    const regex = /^[0-9]{1,}([,.][0-9]{1,})?$/u;
 
-    if (
-      Number(valueInput) < 0 ||
-      isNaN(valueInput) ||
-      inputError ||
-      /\s/u.test(valueInput)
-    ) {
+    if (valueInput && !regex.test(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
@@ -200,9 +201,11 @@ export default function CustomSpendingCap({
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
-                  tooltipContentText={value ? chooseTooltipContentText : ''}
+                  tooltipContentText={
+                    replaceCommaToDot(value) ? chooseTooltipContentText : ''
+                  }
                   tooltipIcon={
-                    value
+                    replaceCommaToDot(value)
                       ? decConversionGreaterThan(value, currentTokenBalance)
                       : ''
                   }
@@ -236,7 +239,9 @@ export default function CustomSpendingCap({
               variant={TYPOGRAPHY.H7}
               boxProps={{ paddingTop: 2, paddingBottom: 2 }}
             >
-              {value ? customSpendingCapText : inputLogicEmptyStateText}
+              {replaceCommaToDot(value)
+                ? customSpendingCapText
+                : inputLogicEmptyStateText}
             </Typography>
           </label>
         </Box>
