@@ -21,27 +21,18 @@ describe('Reset account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTransactionControllerMultipleTransactions()
+          .withTransactionControllerApprovedTransaction()
           .build(),
         ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
-        // Login and accept all transactions
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        let transactionSize = 0;
-        while (transactionSize < 4) {
-          try {
-            await driver.clickElement({ text: 'Confirm', tag: 'button' });
-          } catch (StaleElementReferenceException) {
-            await driver.clickElement({ text: 'Confirm', tag: 'button' });
-          }
-          transactionSize += 1;
-        }
 
-        // Check completed send transaction is displayed
+        // Check send transaction is displayed
+        await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           { css: '.list-item__title', text: 'Send' },
           { timeout: 10000 },
