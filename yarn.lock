@@ -1976,13 +1976,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@ethereumjs/util@npm:8.0.0"
+"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2":
+  version: 8.0.3
+  resolution: "@ethereumjs/util@npm:8.0.3"
   dependencies:
     "@ethereumjs/rlp": ^4.0.0-beta.2
+    async: ^3.2.4
     ethereum-cryptography: ^1.1.2
-  checksum: 360e9795e120f15eba4d683260eca64071f9020eaa9d7276c0cdd80d837933757c0c089ba578a10ad0cfef51118d87649e1c6722a10385991590c4cf51eba62b
+  checksum: f41b9b1f491d65393fe33431ad2c723bdbf405358e201af3bd9ed2dbf04b6002f039e425681534084fd9b4b11d8c27d2ba521682fe2f49518f6891833246a698
   languageName: node
   linkType: hard
 
@@ -3355,7 +3356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.0.1, @metamask/browser-passworder@npm:^4.0.2":
+"@metamask/browser-passworder@npm:^4.0.2":
   version: 4.0.2
   resolution: "@metamask/browser-passworder@npm:4.0.2"
   checksum: 997c330b1c72f7135d0fd2a7f4b0dce37b3c2e6b30e92f048fa8d4f8c949f5b669dcc3064790f41df30ee2e53a9e64a812df72e00527736be704cce2cf4f6e49
@@ -3508,6 +3509,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-hd-keyring@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/eth-hd-keyring@npm:5.0.1"
+  dependencies:
+    "@ethereumjs/util": ^8.0.2
+    "@metamask/eth-sig-util": ^5.0.2
+    "@metamask/scure-bip39": ^2.0.3
+    ethereum-cryptography: ^1.1.2
+  checksum: 4a406a8b2f613d33e1c8c0bd3eb4ff6ccf9a4d4556501639636e660fa0fa86a290401fc2e5a1a410672bb0b32a0755a60ed8d596eb56a0088fd45d7031d4ceeb
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-infura@npm:^7.0.0":
   version: 7.0.0
   resolution: "@metamask/eth-json-rpc-infura@npm:7.0.0"
@@ -3533,6 +3546,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-sig-util@npm:5.0.2, @metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@metamask/eth-sig-util@npm:5.0.2"
+  dependencies:
+    "@ethereumjs/util": ^8.0.0
+    bn.js: ^4.11.8
+    ethereum-cryptography: ^1.1.2
+    ethjs-util: ^0.1.6
+    tweetnacl: ^1.0.3
+    tweetnacl-util: ^0.15.1
+  checksum: 1fbf1a0f5e654058f0219c9018dbebadf53036c9c3b47c8faf1cac54816532bb18996821736f526ac4e3d579afcaf502af4ad07e88158a50f015141858b08a90
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-sig-util@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/eth-sig-util@npm:4.0.0"
@@ -3546,17 +3573,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.0":
+"@metamask/eth-simple-keyring@npm:^5.0.0":
   version: 5.0.0
-  resolution: "@metamask/eth-sig-util@npm:5.0.0"
+  resolution: "@metamask/eth-simple-keyring@npm:5.0.0"
   dependencies:
     "@ethereumjs/util": ^8.0.0
-    bn.js: 4.11.8
+    "@metamask/eth-sig-util": ^5.0.1
     ethereum-cryptography: ^1.1.2
-    ethjs-util: ^0.1.6
-    tweetnacl: ^1.0.3
-    tweetnacl-util: ^0.15.1
-  checksum: a2353e92c403d448f34a6e84e360046cce2babea12b38f662689e15c364333afeb3c3677d95c24716f09c1a6d0998002117fb12c595ef08bed2d421956aa592e
+    randombytes: ^2.1.0
+  checksum: 6fd05173531b84f6fb816b90ab8cfb176ac3300f07daa51c4adac673fa17dbcc6ce1ebdf064b9f66549f37476bbc54eb2dd9d28935d57654ef62b935a1e31e1d
   languageName: node
   linkType: hard
 
@@ -3840,6 +3865,16 @@ __metadata:
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
   checksum: 8b717ac5d53df0027c05509f03d0534700b5898dd1c3a53fb2dc4c0499ca5971b14aae67f522d09eb9f509e77f50afa95fdb3eda1afbff8b071c18a3d2905e93
+  languageName: node
+  linkType: hard
+
+"@metamask/scure-bip39@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@metamask/scure-bip39@npm:2.0.3"
+  dependencies:
+    "@noble/hashes": ~1.1.1
+    "@scure/base": ~1.1.0
+  checksum: a1655adbab6165c833db7e1a2f46a9617503b79016b06e025e15babd5ba8bce682598fe939851ce88fff451c9833e0362003c9ba7c68b3bf1e7cc09bdfe9fa4c
   languageName: node
   linkType: hard
 
@@ -8964,6 +8999,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "async@npm:3.2.4"
+  checksum: 43d07459a4e1d09b84a20772414aa684ff4de085cbcaec6eea3c7a8f8150e8c62aa6cd4e699fe8ee93c3a5b324e777d34642531875a0817a35697522c1b02e89
+  languageName: node
+  linkType: hard
+
 "asynckit@npm:^0.4.0":
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
@@ -9651,13 +9693,6 @@ __metadata:
   version: 4.11.6
   resolution: "bn.js@npm:4.11.6"
   checksum: db23047bf06fdf9cf74401c8e76bca9f55313c81df382247d2c753868b368562e69171716b81b7038ada8860af18346fd4bcd1cf9d4963f923fe8e54e61cb58a
-  languageName: node
-  linkType: hard
-
-"bn.js@npm:4.11.8":
-  version: 4.11.8
-  resolution: "bn.js@npm:4.11.8"
-  checksum: 80d4709cd58a21f0be8201e9e5859fea5ef133318e9800c8454cd334625c6e1caea593ca21f9b9a085fb560fbc12fb2fb3514363f8604258db924237fd039139
   languageName: node
   linkType: hard
 
@@ -14768,17 +14803,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-keyring-controller@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "eth-keyring-controller@npm:8.1.0"
+"eth-keyring-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "eth-keyring-controller@npm:9.0.0"
   dependencies:
-    "@metamask/bip39": ^4.0.0
-    "@metamask/browser-passworder": ^4.0.1
-    "@metamask/eth-hd-keyring": ^4.0.2
-    eth-sig-util: ^3.0.1
-    eth-simple-keyring: ^4.2.0
+    "@metamask/browser-passworder": ^4.0.2
+    "@metamask/eth-hd-keyring": ^5.0.1
+    "@metamask/eth-sig-util": 5.0.2
+    "@metamask/eth-simple-keyring": ^5.0.0
     obs-store: ^4.0.3
-  checksum: 71872cac6e0583dbebbc29e3eec337164f823ccc4f78ecd63c6d770f8f84a08390f240c33128bdc6139ddadf8ca2a2e850d2285e3bc1621a7743d6a7ffcb6f4c
+  checksum: 553ae159d46eed66a0498bd2b9964d87bd390a304e1f4eae1a9ff13990f5ffae86575f52156e4b1b43efc5b938d9f7ce85ad2607e901e07abcd7f3e1772bbde1
   languageName: node
   linkType: hard
 
@@ -22886,6 +22920,7 @@ __metadata:
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^1.0.0
     "@metamask/rpc-methods": ^0.27.1
+    "@metamask/scure-bip39": ^2.0.3
     "@metamask/slip44": ^2.1.0
     "@metamask/smart-transactions-controller": ^3.0.0
     "@metamask/snaps-controllers": ^0.27.1
@@ -22994,7 +23029,7 @@ __metadata:
     eth-ens-namehash: ^2.0.8
     eth-json-rpc-filters: ^4.2.1
     eth-json-rpc-middleware: ^9.0.1
-    eth-keyring-controller: ^8.1.0
+    eth-keyring-controller: ^9.0.0
     eth-lattice-keyring: ^0.12.3
     eth-method-registry: ^2.0.0
     eth-query: ^2.1.2
