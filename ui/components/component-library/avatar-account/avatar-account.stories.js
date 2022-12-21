@@ -6,7 +6,10 @@ import {
   SIZES,
 } from '../../../helpers/constants/design-system';
 import { AvatarAccount } from './avatar-account';
-import { TYPES, AVATAR_ACCOUNT_SIZES } from './avatar-account.constants';
+import {
+  AVATAR_ACCOUNT_TYPES,
+  AVATAR_ACCOUNT_SIZES,
+} from './avatar-account.constants';
 
 import README from './README.mdx';
 
@@ -27,13 +30,13 @@ export default {
     address: { control: 'text' },
     type: {
       control: 'select',
-      options: Object.values(TYPES),
+      options: Object.values(AVATAR_ACCOUNT_TYPES),
     },
   },
   args: {
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
     size: SIZES.MD,
-    type: TYPES.JAZZICON,
+    type: AVATAR_ACCOUNT_TYPES.JAZZICON,
   },
 };
 
@@ -53,8 +56,8 @@ export const Size = (args) => (
 
 export const Type = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarAccount {...args} type={TYPES.JAZZICON} />
-    <AvatarAccount {...args} type={TYPES.BLOCKIES} />
+    <AvatarAccount {...args} type={AVATAR_ACCOUNT_TYPES.JAZZICON} />
+    <AvatarAccount {...args} type={AVATAR_ACCOUNT_TYPES.BLOCKIES} />
   </Box>
 );
 
@@ -62,9 +65,13 @@ export const Address = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarAccount
       {...args}
-      type={TYPES.JAZZICON}
+      type={AVATAR_ACCOUNT_TYPES.JAZZICON}
       address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
     />
-    <AvatarAccount {...args} type={TYPES.BLOCKIES} address="0x0" />
+    <AvatarAccount
+      {...args}
+      type={AVATAR_ACCOUNT_TYPES.BLOCKIES}
+      address="0x0"
+    />
   </Box>
 );

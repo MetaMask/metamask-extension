@@ -1,6 +1,6 @@
 import React from 'react';
 import { AvatarAccount } from '../avatar-account';
-import { TYPES } from '../avatar-account/avatar-account.constants';
+import { AVATAR_ACCOUNT_TYPES } from '../avatar-account/avatar-account.constants';
 import { AvatarNetwork } from '../avatar-network';
 import Box from '../../ui/box/box';
 import {
@@ -46,7 +46,7 @@ export const DefaultStory = (args) => (
     <AvatarAccount
       address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
       size={SIZES.MD}
-      type={TYPES.JAZZICON}
+      type={AVATAR_ACCOUNT_TYPES.JAZZICON}
     />
   </AvatarWithBadge>
 );
@@ -67,7 +67,7 @@ export const BadgePosition = () => (
       <AvatarAccount
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
         size={SIZES.MD}
-        type={TYPES.JAZZICON}
+        type={AVATAR_ACCOUNT_TYPES.JAZZICON}
       />
     </AvatarWithBadge>
 
@@ -84,7 +84,7 @@ export const BadgePosition = () => (
       <AvatarAccount
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
         size={SIZES.MD}
-        type={TYPES.JAZZICON}
+        type={AVATAR_ACCOUNT_TYPES.JAZZICON}
       />
     </AvatarWithBadge>
   </Box>
