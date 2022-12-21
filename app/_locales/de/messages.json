@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Ungültige Eingabe! Die geheime Wiederherstellungsphrase berücksichtigt Groß- und Kleinschreibung."
   },
-  "ipfsGateway": {
-    "message": "IPFS-Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Geben Sie die URL des IPFS CID Gateways ein, das für die Auflösung der ENS Inhalte verwendet werden soll."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons und Blockies sind zwei verschiedene Arten von einzigartigen Symbolen, mit denen Sie ein Konto auf einen Blick erkennen können."
   },
@@ -3021,7 +3015,8 @@
     "message": "Eingehende Transaktionen anzeigen"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Aktivieren Sie dies, um Etherscan zu aktivieren und eingehende Transaktionen in der Transaktionsliste anzuzeigen"
+    "message": "Aktivieren Sie dies, um Etherscan zu aktivieren und eingehende Transaktionen in der Transaktionsliste anzuzeigen",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Berechtigungen anzeigen"

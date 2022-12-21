@@ -5,8 +5,6 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import {
@@ -98,7 +96,7 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
+import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -760,11 +758,6 @@ export default class MetamaskController extends EventEmitter {
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      // Prefix subject with appKeyType to generate separate keys for separate uses
-      getAppKey: async (subject, appKeyType) => {
-        await this.appStateController.getUnlockPromise(true);
-        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
-      },
       checkBlockList: async (snapsToCheck) => {
         return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
@@ -1303,11 +1296,11 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
           }),
-        showDialog: (origin, type, requestData) =>
+        showDialog: (origin, type, content, placeholder) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: SNAP_DIALOG_TYPES[type],
-            requestData,
+            requestData: { content, placeholder },
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
@@ -3776,21 +3769,19 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
+    const { provider } = this;
+
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
 
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
-
-    // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
+    // forward notifications from network provider
+    provider.on('data', (error, message) => {
+      if (error) {
+        // This should never happen, this error parameter is never set
+        throw error;
+      }
+      engine.emit('notification', message);
     });
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
@@ -3961,9 +3952,6 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    // filter and subscription polyfills
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
     if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(

@@ -896,13 +896,13 @@ export default function ViewQuote() {
     }
     const getEstimatedL1Fee = async () => {
       try {
-        const l1TradeFeeTotal = await fetchEstimatedL1Fee(global.eth, {
+        const l1TradeFeeTotal = await fetchEstimatedL1Fee({
           txParams: unsignedTransaction,
           chainId,
         });
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(global.eth, {
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),

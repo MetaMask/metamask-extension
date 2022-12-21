@@ -239,6 +239,7 @@ function defaultFixture() {
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -352,6 +353,7 @@ function onboardingFixture() {
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {

@@ -68,6 +68,7 @@ export default function GasDisplay({ gasError }) {
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
+  const currentNetworkName = networkName || currentProvider.nickname;
 
   const transactionData = {
     txParams: {
@@ -310,7 +311,7 @@ export default function GasDisplay({ gasError }) {
           ]}
         />
       </Box>
-      {(gasError || isInsufficientTokenError) && (
+      {(gasError || isInsufficientTokenError) && currentNetworkName && (
         <Box
           className="gas-display__warning-message"
           data-testid="gas-warning-message"
@@ -328,7 +329,7 @@ export default function GasDisplay({ gasError }) {
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,
-                      networkName ?? currentProvider.nickname,
+                      currentNetworkName,
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -355,7 +356,7 @@ export default function GasDisplay({ gasError }) {
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       draftTransaction.asset.details?.symbol ?? nativeCurrency,
-                      networkName ?? currentProvider.nickname,
+                      currentNetworkName,
                       `${t('buyAsset', [
                         draftTransaction.asset.details?.symbol ??
                           nativeCurrency,

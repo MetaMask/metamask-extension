@@ -100,7 +100,7 @@ describe('Confirm Page Container Container Test', () => {
       expect(senderRecipient).toBeInTheDocument();
     });
     it('should render recipient as address', () => {
-      const recipientName = screen.queryByText('New contract');
+      const recipientName = screen.queryByText(shortenAddress(props.toAddress));
       expect(recipientName).toBeInTheDocument();
     });
 
@@ -119,7 +119,7 @@ describe('Confirm Page Container Container Test', () => {
 
   describe('Contact/AddressBook name should appear in recipient header', () => {
     it('should not show add to address dialog if recipient is in contact list and should display contact name', () => {
-      const addressBookName = 'New contract';
+      const addressBookName = 'test save name';
 
       const addressBook = {
         '0x5': {

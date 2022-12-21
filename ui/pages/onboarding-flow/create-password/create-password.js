@@ -26,6 +26,7 @@ import {
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
@@ -55,66 +56,66 @@ export default function CreatePassword({
       return false;
     }
 
-    if (password.length < 8) {
+    if (password.length < PASSWORD_MIN_LENGTH) {
       return false;
     }
 
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const getPasswordStrengthLabel = (score, translation) => {
+  const getPasswordStrengthLabel = (isTooShort, score) => {
+    if (isTooShort) {
+      return {
+        className: 'create-password__weak',
+        text: t('passwordNotLongEnough'),
+        description: '',
+      };
+    }
     if (score >= 4) {
       return {
         className: 'create-password__strong',
-        text: translation('strong'),
+        text: t('strong'),
         description: '',
       };
-    } else if (score === 3) {
+    }
+    if (score === 3) {
       return {
         className: 'create-password__average',
-        text: translation('average'),
+        text: t('average'),
         description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
-      text: translation('weak'),
+      text: t('weak'),
       description: t('passwordStrengthDescription'),
     };
   };
 
   const handlePasswordChange = (passwordInput) => {
-    let confirmError = '';
-    const passwordEvaluation = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(
-      passwordEvaluation.score,
-      t,
-    );
-    const passwordStrengthDescription = passwordStrengthLabel.description;
-    const passwordStrengthInput = t('passwordStrength', [
-      <span
-        key={passwordEvaluation.score}
-        className={passwordStrengthLabel.className}
-      >
+    const isTooShort =
+      passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordInput);
+    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
+    const passwordStrengthComponent = t('passwordStrength', [
+      <span key={score} className={passwordStrengthLabel.className}>
         {passwordStrengthLabel.text}
       </span>,
     ]);
-
-    if (confirmPassword && passwordInput !== confirmPassword) {
-      confirmError = t('passwordsDontMatch');
-    }
+    const confirmError =
+      !confirmPassword || passwordInput === confirmPassword
+        ? ''
+        : t('passwordsDontMatch');
 
     setPassword(passwordInput);
-    setPasswordStrength(passwordStrengthInput);
-    setPasswordStrengthText(passwordStrengthDescription);
+    setPasswordStrength(passwordStrengthComponent);
+    setPasswordStrengthText(passwordStrengthLabel.description);
     setConfirmPasswordError(confirmError);
   };
 
   const handleConfirmPasswordChange = (confirmPasswordInput) => {
-    let error = '';
-    if (password !== confirmPasswordInput) {
-      error = t('passwordsDontMatch');
-    }
+    const error =
+      password === confirmPasswordInput ? '' : t('passwordsDontMatch');
 
     setConfirmPassword(confirmPasswordInput);
     setConfirmPasswordError(error);

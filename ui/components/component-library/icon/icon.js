@@ -10,7 +10,7 @@ import {
   ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 
-import { ICON_SIZES } from './icon.constants';
+import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 
 export const Icon = ({
   name,
@@ -43,7 +43,7 @@ Icon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  name: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  name: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * The size of the Icon.
    * Possible values could be SIZES.XXS (10px), SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
