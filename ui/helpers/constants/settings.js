@@ -213,18 +213,18 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('currencyRateCheckToggle'),
-    descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
-    route: `${SECURITY_ROUTE}#price-checker`,
-    icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useCollectibleDetection'),
     descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'COLLECTIBLES_V1',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('currencyRateCheckToggle'),
+    descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
+    route: `${SECURITY_ROUTE}#price-checker`,
+    icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('alerts'),

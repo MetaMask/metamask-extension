@@ -60,9 +60,6 @@ const mapDispatchToProps = (dispatch) => {
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
     },
-    setUseMultiAccountBalanceChecker: (value) => {
-      return dispatch(setUseMultiAccountBalanceChecker(value));
-    },
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
   };
