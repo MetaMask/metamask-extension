@@ -63,7 +63,7 @@ $circle-stroke-width: 2px;
     transition: 0.5s transform !important;
 
     &:active {
-      background-color: var(--primary-1) !important;
+      background-color: var(--color-primary-default) !important;
       transform: scale(1.05) !important;
 
       .hold-to-reveal-button__circle-foreground {
@@ -103,13 +103,13 @@ $circle-stroke-width: 2px;
   &__circle-background {
     @extend .hold-to-reveal-button__circle-shared;
 
-    stroke: var(--primary-3);
+    stroke: var(--color-primary-alternative);
   }
 
   &__circle-foreground {
     @extend .hold-to-reveal-button__circle-shared;
 
-    stroke: var(--ui-white);
+    stroke: var(--color-primary-inverse);
     stroke-dasharray: $circle-circumference;
     stroke-dashoffset: $circle-circumference;
     transition: 1s stroke-dashoffset;
@@ -136,7 +136,7 @@ $circle-stroke-width: 2px;
   }
 
   &__circle-static-outer {
-    fill: var(--ui-white);
+    fill: var(--color-primary-inverse);
   }
 
   &__circle-static-inner-container {
@@ -144,7 +144,7 @@ $circle-stroke-width: 2px;
   }
 
   &__circle-static-inner {
-    fill: var(--primary-1);
+    fill: var(--color-primary-default);
   }
 
   &__unlock-icon-container {
