@@ -1654,7 +1654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.11.5, @babel/types@npm:^7.12.0, @babel/types@npm:^7.12.11, @babel/types@npm:^7.12.7, @babel/types@npm:^7.13.0, @babel/types@npm:^7.18.10, @babel/types@npm:^7.18.6, @babel/types@npm:^7.18.7, @babel/types@npm:^7.18.9, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.0, @babel/types@npm:^7.12.11, @babel/types@npm:^7.12.7, @babel/types@npm:^7.13.0, @babel/types@npm:^7.18.10, @babel/types@npm:^7.18.6, @babel/types@npm:^7.18.7, @babel/types@npm:^7.18.9, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.20.5
   resolution: "@babel/types@npm:7.20.5"
   dependencies:
@@ -6774,10 +6774,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^2.1.0, @types/prettier@npm:^2.1.5":
-  version: 2.7.0
-  resolution: "@types/prettier@npm:2.7.0"
-  checksum: bf5d0c7c1270909b39399539ac106d20ddaa85fe92eb1d59922dc99159604b4f8d5e41b0045fb29c8011585cf5bca2350b7441ef3d9816c08bd0e10ebd4b31d4
+"@types/prettier@npm:^2.1.5, @types/prettier@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "@types/prettier@npm:2.7.2"
+  checksum: b47d76a5252265f8d25dd2fe2a5a61dc43ba0e6a96ffdd00c594cb4fd74c1982c2e346497e3472805d97915407a09423804cc2110a0b8e1b22cffcab246479b7
   languageName: node
   linkType: hard
 
@@ -23069,7 +23069,7 @@ __metadata:
     pify: ^5.0.0
     polyfill-crypto.getrandomvalues: ^1.0.0
     prettier: ^2.7.1
-    prettier-plugin-sort-json: ^0.0.1
+    prettier-plugin-sort-json: ^1.0.0
     promise-to-callback: ^1.0.0
     prop-types: ^15.6.1
     proxyquire: ^2.1.3
@@ -26383,14 +26383,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-sort-json@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "prettier-plugin-sort-json@npm:0.0.1"
+"prettier-plugin-sort-json@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "prettier-plugin-sort-json@npm:1.0.0"
   dependencies:
-    "@babel/types": ^7.11.5
-    "@types/prettier": ^2.1.0
-    prettier: ^2.1.1
-  checksum: 0d49a1d1f6721685ec1ea8b7954327cff3113ded6c7a3f422d5bdb10ba2a21e818a7c4942c47557bc2c2477d867e7509c2a19ea3da0b050edf6818446823e157
+    "@types/prettier": ^2.7.2
+  peerDependencies:
+    prettier: ^2.3.2
+  checksum: 4a490e1eec43d0f2602318ecf68088864e09ad1b43c353c5f2feed48d154f11227c32af8981cf8207d23741067dae7f10b8b1671588334459290f2e297504b15
   languageName: node
   linkType: hard
 
@@ -26403,7 +26403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.1.1, prettier@npm:^2.7.1":
+"prettier@npm:^2.7.1":
   version: 2.7.1
   resolution: "prettier@npm:2.7.1"
   bin:
