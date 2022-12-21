@@ -96,39 +96,51 @@ export default function ItemList({
               key={`searchable-item-list-item-${i}`}
             >
               {iconUrl || primaryLabel ? (
-                <UrlIcon url={iconUrl} name={primaryLabel} />
+                <Privacy as="span"><UrlIcon url={iconUrl} name={primaryLabel} /></Privacy>
               ) : null}
               {!(iconUrl || primaryLabel) && identiconAddress ? (
                 <div className="searchable-item-list__identicon">
                   <Identicon address={identiconAddress} diameter={24} />
                 </div>
               ) : null}
-              {IconComponent ? <IconComponent /> : null}
+              {IconComponent ? <Privacy as="span"><IconComponent /></Privacy> : null}
               <div className="searchable-item-list__labels">
                 <div className="searchable-item-list__item-labels">
                   {primaryLabel ? (
-                    <span className="searchable-item-list__primary-label">
+                    <Privacy
+                      as="span"
+                      className="searchable-item-list__primary-label"
+                    >
                       {primaryLabel}
-                    </span>
+                    </Privacy>
                   ) : null}
                   {secondaryLabel ? (
-                    <span className="searchable-item-list__secondary-label">
+                    <Privacy
+                      as="span"
+                      className="searchable-item-list__secondary-label"
+                    >
                       {secondaryLabel}
-                    </span>
+                    </Privacy>
                   ) : null}
                 </div>
                 {!hideRightLabels &&
                 (rightPrimaryLabel || rightSecondaryLabel) ? (
                   <div className="searchable-item-list__right-labels">
                     {rightPrimaryLabel ? (
-                      <span className="searchable-item-list__right-primary-label">
-                        <Privacy>{rightPrimaryLabel}</Privacy>
-                      </span>
+                      <Privacy
+                        as="span"
+                        className="searchable-item-list__right-primary-label"
+                      >
+                        {rightPrimaryLabel}
+                      </Privacy>
                     ) : null}
                     {rightSecondaryLabel ? (
-                      <span className="searchable-item-list__right-secondary-label">
+                      <Privacy
+                        as="span"
+                        className="searchable-item-list__right-secondary-label"
+                      >
                         {rightSecondaryLabel}
-                      </span>
+                      </Privacy>
                     ) : null}
                   </div>
                 ) : null}

@@ -15,6 +15,7 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
+import Privacy from '../../../components/ui/privacy';
 import {
   isHardwareWallet,
   getHardwareWalletType,
@@ -185,18 +186,21 @@ export default function DropdownSearchList({
         >
           <div className="dropdown-search-list__selector-closed">
             {selectedItem?.iconUrl && (
-              <UrlIcon
-                url={selectedItem.iconUrl}
-                className="dropdown-search-list__selector-closed-icon"
-                name={selectedItem?.symbol}
-              />
+              <Privacy>
+                <UrlIcon
+                  url={selectedItem.iconUrl}
+                  className="dropdown-search-list__selector-closed-icon"
+                  name={selectedItem?.symbol}
+                />
+              </Privacy>
             )}
             {!selectedItem?.iconUrl && (
               <div className="dropdown-search-list__default-dropdown-icon" />
             )}
             <div className="dropdown-search-list__labels">
               <div className="dropdown-search-list__item-labels">
-                <span
+                <Privacy
+                  as="span"
                   className={classnames(
                     'dropdown-search-list__closed-primary-label',
                     {
@@ -206,7 +210,7 @@ export default function DropdownSearchList({
                   )}
                 >
                   {selectedItem?.symbol || selectPlaceHolderText}
-                </span>
+                </Privacy>
               </div>
             </div>
           </div>

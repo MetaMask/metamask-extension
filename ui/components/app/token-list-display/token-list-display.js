@@ -10,6 +10,8 @@ import TokenBalance from '../../ui/token-balance';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getTokens } from '../../../ducks/metamask/metamask';
 
+import Privacy from '../../ui/privacy';
+
 export default function TokenListDisplay({ clickHandler }) {
   const t = useI18nContext();
   const shouldHideZeroBalanceTokens = useSelector(
@@ -34,7 +36,7 @@ export default function TokenListDisplay({ clickHandler }) {
         const { address, symbol, image } = tokenData;
 
         return (
-          <div
+          <Privacy
             key={address}
             className="token-list-item"
             onClick={() => clickHandler(tokenData)}
@@ -49,7 +51,7 @@ export default function TokenListDisplay({ clickHandler }) {
                 <TokenBalance token={tokenData} />
               </div>
             </div>
-          </div>
+          </Privacy>
         );
       })}
     </>

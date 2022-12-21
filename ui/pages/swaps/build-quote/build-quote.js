@@ -518,8 +518,14 @@ export default function BuildQuote({
   }
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
-    <Privacy key="value">{fromTokenString || '0'}</Privacy>,
-    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
+    <Privacy as="span" key="value">
+      {fromTokenString || '0'}
+    </Privacy>,
+    <Privacy as="span" key="symbol">
+      {fromTokenSymbol ||
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol ||
+        ''}
+    </Privacy>,
   ]);
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(

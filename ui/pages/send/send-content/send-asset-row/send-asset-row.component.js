@@ -5,6 +5,7 @@ import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
 import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
+import Privacy from '../../../../components/ui/privacy';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { EVENT } from '../../../../../shared/constants/metametrics';
@@ -212,7 +213,7 @@ export default class SendAssetRow extends Component {
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">
-            {nativeCurrency}
+            <Privacy>{nativeCurrency}</Privacy>
           </div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">

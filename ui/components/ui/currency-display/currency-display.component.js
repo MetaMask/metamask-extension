@@ -30,7 +30,7 @@ export default function CurrencyDisplay({
     suffix,
   });
   return (
-    <div
+    <Privacy
       className={classnames('currency-display-component', className)}
       data-testid={dataTestId}
       style={style}
@@ -39,16 +39,16 @@ export default function CurrencyDisplay({
       <span className="currency-display-component__prefix">
         {prefixComponent}
       </span>
-      <Privacy as="span" className="currency-display-component__text">
+      <span className="currency-display-component__text">
         {parts.prefix}
         {parts.value}
-      </Privacy>
+      </span>
       {parts.suffix && (
         <span className="currency-display-component__suffix">
           {parts.suffix}
         </span>
       )}
-    </div>
+    </Privacy>
   );
 }
 

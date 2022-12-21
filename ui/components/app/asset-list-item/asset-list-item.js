@@ -92,7 +92,11 @@ const AssetListItem = ({
           }
         }}
       >
-        {t('sendSpecifiedTokens', [tokenSymbol])}
+        <Privacy>
+        {t('sendSpecifiedTokens', [
+          {tokenSymbol},
+        ])}
+        </Privacy>
       </Button>
     );
   }, [
@@ -114,14 +118,11 @@ const AssetListItem = ({
           className="asset-list-item__token-button"
           data-testid="token-button"
           onClick={onClick}
-          title={`${primary} ${tokenSymbol}`}
         >
-          <h2>
-            <Privacy>
-              <span className="asset-list-item__token-value">{primary}</span>
-              <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
-            </Privacy>
-          </h2>
+          <Privacy as="h2">
+            <span className="asset-list-item__token-value">{primary}</span>
+            <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
+          </Privacy>
         </button>
       }
       titleIcon={titleIcon}

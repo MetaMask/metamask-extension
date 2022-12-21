@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import Privacy from '../privacy';
+
 function removeLeadingZeroes(str) {
   return str.replace(/^0*(?=\d)/u, '');
 }
@@ -114,7 +116,9 @@ export default class UnitInput extends PureComponent {
               }}
               autoFocus
             />
-            {suffix ? <div className="unit-input__suffix">{suffix}</div> : null}
+            {suffix ? (
+              <Privacy className="unit-input__suffix">{suffix}</Privacy>
+            ) : null}
           </div>
           {children}
         </div>
