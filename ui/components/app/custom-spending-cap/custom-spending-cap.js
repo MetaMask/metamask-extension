@@ -5,6 +5,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
+import { ButtonLink } from '../../component-library';
 import {
   ALIGN_ITEMS,
   COLORS,
@@ -160,9 +161,8 @@ export default function CustomSpendingCap({
               value={value}
               titleDetail={
                 showUseDefaultButton && (
-                  <button
-                    className="custom-spending-cap__input--button"
-                    type="link"
+                  <ButtonLink
+                    size={SIZES.AUTO}
                     onClick={(e) => {
                       e.preventDefault();
                       setShowUseDefaultButton(false);
@@ -170,7 +170,7 @@ export default function CustomSpendingCap({
                     }}
                   >
                     {t('useDefault')}
-                  </button>
+                  </ButtonLink>
                 )
               }
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
@@ -179,21 +179,20 @@ export default function CustomSpendingCap({
             <Box
               width={BLOCK_SIZES.MAX}
               marginLeft="auto"
-              paddingRight={2}
+              paddingRight={4}
               paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
               className="custom-spending-cap__max"
             >
-              <button
-                className="custom-spending-cap__max--button"
-                type="link"
+              <ButtonLink
+                size={SIZES.AUTO}
                 onClick={(e) => {
                   e.preventDefault();
                   handleChange(currentTokenBalance);
                 }}
               >
                 {t('max')}
-              </button>
+              </ButtonLink>
             </Box>
             <Typography
               color={COLORS.TEXT_DEFAULT}
