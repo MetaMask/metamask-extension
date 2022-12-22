@@ -683,7 +683,7 @@ export const As = (args) => {
   );
 };
 
-export const Width = (args) => {
+export const Width = () => {
   const getColumns = () => {
     const content = [];
     for (let i = 0; i < 12; i++) {
