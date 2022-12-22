@@ -54,6 +54,7 @@ import {
   CronjobController,
   SnapController,
   IframeExecutionService,
+  JsonSnapRegistry,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
@@ -163,10 +164,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { checkSnapsBlockList } from './flask/snaps-utilities';
-import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
-///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -723,10 +720,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      registry: new JsonSnapRegistry(),
       closeAllConnections: this.removeAllConnections.bind(this),
-      checkBlockList: async (snapsToCheck) => {
-        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
-      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
       featureFlags: { dappsCanUpdateSnaps: true },
