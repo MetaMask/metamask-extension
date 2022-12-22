@@ -12,7 +12,7 @@ export function getAccountNameErrorMessage(
     .t('newAccountNumberName')
     .replace(' $1', '');
 
-  const reservedRegEx = new RegExp(`^${localizedWordForAccount} \\d+$`, 'iu'); // Match strings starting with ${localizedWordForAccount} and then any numeral, case insensitive
+  const reservedRegEx = new RegExp(`^\\s*${localizedWordForAccount} \\d+\\s*$`, 'iu'); // Match strings starting with ${localizedWordForAccount} and then any numeral, case insensitive
   const isReservedAccountName = reservedRegEx.test(newAccountName);
 
   const isValidAccountName =
