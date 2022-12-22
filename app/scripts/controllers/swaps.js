@@ -17,6 +17,7 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
@@ -24,6 +25,7 @@ import {
 } from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
+import { sumHexes } from '../../../ui/helpers/utils/transactions.util';
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
@@ -36,6 +38,7 @@ import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
+import fetchEstimatedL1Fee from '../../../ui/helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import { NETWORK_EVENTS } from './network';
 
@@ -290,6 +293,24 @@ export default class SwapsController {
       sourceTokenInfo: fetchParamsMetaData.sourceTokenInfo,
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }));
+
+    if (chainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+      await Promise.all(
+        Object.values(newQuotes).map(async (quote) => {
+          if (quote.trade) {
+            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              {
+                txParams: quote.trade,
+                chainId,
+              },
+              this.ethersProvider,
+            );
+            quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
+          }
+          return quote;
+        }),
+      );
+    }
 
     const quotesLastFetched = Date.now();
 
@@ -700,6 +721,7 @@ export default class SwapsController {
         sourceToken,
         trade,
         fee: metaMaskFee,
+        multiLayerL1TradeFeeTotal,
       } = quote;
 
       const tradeGasLimitForCalculation = gasEstimateWithRefund
@@ -710,10 +732,16 @@ export default class SwapsController {
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16);
 
-      const gasTotalInWeiHex = calcGasTotal(
+      let gasTotalInWeiHex = calcGasTotal(
         totalGasLimitForCalculation,
         usedGasPrice,
       );
+      if (multiLayerL1TradeFeeTotal !== null) {
+        gasTotalInWeiHex = sumHexes(
+          gasTotalInWeiHex || '0x0',
+          multiLayerL1TradeFeeTotal || '0x0',
+        );
+      }
 
       // trade.value is a sum of different values depending on the transaction.
       // It always includes any external fees charged by the quote source. In
