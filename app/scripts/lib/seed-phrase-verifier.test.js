@@ -3,7 +3,7 @@
  * https://github.com/facebook/jest/issues/7780
  */
 import { cloneDeep } from 'lodash';
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from 'eth-keyring-controller';
 import firstTimeState from '../first-time-state';
 import mockEncryptor from '../../../test/lib/mock-encryptor';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
@@ -26,7 +26,9 @@ describe('SeedPhraseVerifier', () => {
       expect.any(keyringController);
 
       await keyringController.createNewVaultAndKeychain(password);
-      primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0];
+      const keyringBuilder = keyringController.getKeyringBuilderForType(hdKeyTree);
+      primaryKeyring = keyringBuilder();
+      keyringController.addNewAccount(primaryKeyring)
     });
 
     it('should be able to verify created account with seed words', async () => {

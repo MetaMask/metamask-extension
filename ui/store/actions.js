@@ -145,7 +145,7 @@ export function createNewVaultAndGetSeedPhrase(password) {
 
     try {
       await createNewVault(password);
-      const seedPhrase = await verifyAndRetrieveSeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -162,7 +162,7 @@ export function unlockAndGetSeedPhrase(password) {
 
     try {
       await submitPassword(password);
-      const seedPhrase = await verifyAndRetrieveSeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -225,7 +225,7 @@ export function requestRevealSeedWords(password) {
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await verifyAndRetrieveSeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));

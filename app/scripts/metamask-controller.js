@@ -6,7 +6,7 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from 'eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -56,6 +56,8 @@ import {
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
+
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import browser from 'webextension-polyfill';
 import {
@@ -146,7 +148,6 @@ import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   CaveatMutatorFactories,
