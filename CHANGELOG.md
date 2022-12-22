@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update `@metamask/controllers` to `v33` ([#16493](https://github.com/MetaMask/metamask-extension/pull/16493))
 - Migrate from deprecated `@metamask/controllers`to the new controller packages ([#16547](https://github.com/MetaMask/metamask-extension/pull/16547))
 - Sanitize data ensuring we don't send any privacy sensitive information to Sentry errors ([#16780](https://github.com/MetaMask/metamask-extension/pull/16780))
+- Track when token balance is changed to update the balance value on the Approval screen ([#16964](https://github.com/MetaMask/metamask-extension/pull/16964))
 - Swaps: ensure 0% slippage on Arbitrum for wrapping/unwrapping ETH (ETH -> WETH or WETH -> ETH) ([#16778](https://github.com/MetaMask/metamask-extension/pull/16778))
 - [Beta] Update `BETA` to sentence case ([#16590](https://github.com/MetaMask/metamask-extension/pull/16590))
 - [Beta] Update text on the Welcome screen ([#16489](https://github.com/MetaMask/metamask-extension/pull/16489))
