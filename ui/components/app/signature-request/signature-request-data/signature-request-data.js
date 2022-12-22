@@ -28,7 +28,7 @@ function SignatureRequestData({ data }) {
       {Object.entries(data).map(([label, value], i) => (
         <Box
           className="signature-request-data__node"
-          key={i}
+          key={`${label}-${i}`}
           paddingLeft={2}
           display={
             typeof value !== 'object' || value === null ? DISPLAY.FLEX : null
