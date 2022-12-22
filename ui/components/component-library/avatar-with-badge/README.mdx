@@ -12,7 +12,7 @@ The `AvatarWithBadge` is a wrapper component that adds badge display options to 
 
 ## Props
 
-The `AvatarWithBadge` accepts all props below 
+The `AvatarWithBadge` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story) component props.
 
 <ArgsTable of={AvatarWithBadge} />
 
@@ -24,9 +24,47 @@ Use the `badgePosition` prop to set the position of the badge, it can have two v
   <Story id="ui-components-component-library-avatar-with-badge-avatar-with-badge-stories-js--badge-position" />
 </Canvas>
 
+```jsx
+import { AvatarWithBadge } from '../ui/component-library';
+
+<AvatarWithBadge
+  badgePosition={AVATAR_WITH_BADGE_POSTIONS.BOTTOM}
+  badge={
+    <AvatarNetwork
+      size={SIZES.XS}
+      name="Arbitrum One"
+      src="./images/arbitrum.svg"
+    />
+  }
+>
+  <AvatarAccount
+    address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    size={SIZES.MD}
+    type={TYPES.JAZZICON}
+  />
+</AvatarWithBadge>
+
+<AvatarWithBadge
+  badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
+  badge={
+    <AvatarNetwork
+      size={SIZES.XS}
+      name="Arbitrum One"
+      src="./images/arbitrum.svg"
+    />
+  }
+>
+  <AvatarAccount
+    address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    size={SIZES.MD}
+    type={TYPES.JAZZICON}
+  />
+</AvatarWithBadge>
+```
+
 ### Badge
 
-Used to define the badge component to be rendered inside the `AvatarWithBadge`
+Used to define the badge component to be rendered inside the `AvatarWithBadge`.
 
 ### Badge Props
 
