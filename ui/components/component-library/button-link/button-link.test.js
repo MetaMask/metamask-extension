@@ -87,13 +87,4 @@ describe('ButtonLink', () => {
     const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
-
-  it('should render with no padding', () => {
-    const { getByTestId } = render(
-      <ButtonLink data-testid="noPadding" noPadding>
-        No Padding
-      </ButtonLink>,
-    );
-    expect(getByTestId('noPadding')).toHaveClass('mm-button-link--no-padding');
-  });
 });

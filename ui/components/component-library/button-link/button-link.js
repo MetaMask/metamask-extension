@@ -9,21 +9,21 @@ import { BUTTON_LINK_SIZES } from './button-link.constants';
 export const ButtonLink = ({
   className,
   danger,
-  size = BUTTON_LINK_SIZES.MD,
-  noPadding,
+  size = SIZES.AUTO,
   ...props
 }) => {
   return (
     <ButtonBase
       className={classnames(className, 'mm-button-link', {
         'mm-button-link--type-danger': danger,
-        'mm-button-link--no-padding': noPadding,
         'mm-button-link--size-inherit': size === BUTTON_LINK_SIZES.INHERIT,
+        'mm-button-link--size-auto': size === BUTTON_LINK_SIZES.AUTO,
       })}
-      paddingLeft={noPadding || size === BUTTON_LINK_SIZES.INHERIT ? 0 : 4}
-      paddingRight={noPadding || size === BUTTON_LINK_SIZES.INHERIT ? 0 : 4}
+      paddingLeft={0}
+      paddingRight={0}
       size={size === BUTTON_LINK_SIZES.INHERIT ? null : size}
       backgroundColor={COLORS.TRANSPARENT}
+      borderRadius={null}
       {...props}
       textProps={{
         variant:
@@ -49,12 +49,8 @@ ButtonLink.propTypes = {
    */
   danger: PropTypes.bool,
   /**
-   * Boolean to remove padding
-   */
-  noPadding: PropTypes.bool,
-  /**
-   * Possible size values: 'SIZES.INHERIT', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px).
-   * Default value is 'SIZES.MD'.
+   * Possible size values: 'SIZES.AUTO'(auto), 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px), 'SIZES.INHERIT'(inherits parents font-size)
+   * Default value is 'SIZES.AUTO'.
    */
   size: PropTypes.oneOf(Object.values(BUTTON_LINK_SIZES)),
   /**

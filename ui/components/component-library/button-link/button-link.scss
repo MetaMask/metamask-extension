@@ -40,19 +40,18 @@
     }
   }
 
+  &--size-auto {
+    height: auto;
+  }
+
   &--size-inherit {
     height: auto;
     background-color: transparent;
-    border-radius: 0;
     vertical-align: top;
     font-family: inherit;
     font-weight: inherit;
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
-  }
-
-  &--no-padding {
-    height: min-content;
   }
 }
