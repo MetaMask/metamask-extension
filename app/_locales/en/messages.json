@@ -144,6 +144,10 @@
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
+  "accountNameReserved": {
+    "message": "This account name is reserved",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
   "accountOptions": {
     "message": "Account options"
   },
