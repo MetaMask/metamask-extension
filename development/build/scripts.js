@@ -913,9 +913,6 @@ function setupBundlerDefaults(
       setupMinification(buildConfiguration);
     }
 
-    // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
-
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
   }
