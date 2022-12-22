@@ -1,1 +1,1 @@
-export { default } from './signature-request-message';
+export { default } from './signature-request-message.component';

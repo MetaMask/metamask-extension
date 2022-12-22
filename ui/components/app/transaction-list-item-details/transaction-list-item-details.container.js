@@ -10,7 +10,6 @@ import {
   getEnsResolutionByAddress,
   getAccountName,
   getMetadataContractName,
-  getMetaMaskIdentities,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -23,12 +22,8 @@ const mapStateToProps = (state, ownProps) => {
     recipientEns = getEnsResolutionByAddress(state, address);
   }
   const addressBook = getAddressBook(state);
-  const identities = getMetaMaskIdentities(state);
-  const recipientName = getAccountName(identities, recipientAddress);
-  const recipientMetadataName = getMetadataContractName(
-    state,
-    recipientAddress,
-  );
+  const recipientName = getAccountName(state, recipientAddress);
+  const recipientMetadataName = getMetadataContractName(recipientAddress);
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
