@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -49,9 +50,9 @@ const DetectedTokenValues = ({
           {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-          {!useCurrencyRateCheck
-            ? formattedFiatBalance
-            : formattedFiatBalance || '$0'}
+          {useCurrencyRateCheck
+            ? formattedFiatBalance || '$0'
+            : formattedFiatBalance}
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">
