@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import EventEmitter from 'events';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -29,6 +36,8 @@ import {
   FLEX_DIRECTION,
   FONT_WEIGHT,
   COLORS,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 
 import {
@@ -54,6 +63,7 @@ import {
   getMaxSlippage,
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
+  getFetchingQuotes,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -99,6 +109,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
+import Mascot from '../../../components/ui/mascot';
 import ReviewQuote from './review-quote';
 
 const fuseSearchKeys = [
@@ -124,6 +135,7 @@ export default function PrepareSwap({
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
+  const [receiveToAmount, setReceiveToAmount] = useState();
   const [isSwapToOpen, setIsSwapToOpen] = useState(false);
   const onSwapToOpen = () => setIsSwapToOpen(true);
   const onSwapToClose = () => setIsSwapToOpen(false);
@@ -164,6 +176,8 @@ export default function PrepareSwap({
     getCurrentSmartTransactionsError,
   );
   const currentCurrency = useSelector(getCurrentCurrency);
+  const fetchingQuotes = useSelector(getFetchingQuotes);
+  const animationEventEmitter = useRef(new EventEmitter());
 
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
@@ -755,86 +769,43 @@ export default function PrepareSwap({
               shouldSearchForImports
             />
           </div>
+          {/* <Box>
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              {receiveToAmount}
+            </Typography>
+          </Box> */}
         </div>
-        {toTokenIsNotDefault &&
-          (occurrences < 2 ? (
-            <ActionableMessage
-              type={occurrences === 1 ? 'warning' : 'danger'}
-              message={
-                <div className="prepare-swap__token-verification-warning-message">
-                  <div className="prepare-swap__bold">
-                    {occurrences === 1
-                      ? t('swapTokenVerificationOnlyOneSource')
-                      : t('swapTokenVerificationAddedManually')}
-                  </div>
-                  <div>{tokenVerificationDescription}</div>
+        {toTokenIsNotDefault && occurrences < 2 && (
+          <ActionableMessage
+            type={occurrences === 1 ? 'warning' : 'danger'}
+            message={
+              <div className="prepare-swap__token-verification-warning-message">
+                <div className="prepare-swap__bold">
+                  {occurrences === 1
+                    ? t('swapTokenVerificationOnlyOneSource')
+                    : t('swapTokenVerificationAddedManually')}
                 </div>
-              }
-              primaryAction={
-                /* istanbul ignore next */
-                verificationClicked
-                  ? null
-                  : {
-                      label: t('continue'),
-                      onClick: () => setVerificationClicked(true),
-                    }
-              }
-              withRightButton
-              infoTooltipText={
-                blockExplorerTokenLink &&
-                t('swapVerifyTokenExplanation', [blockExplorerLabel])
-              }
-            />
-          ) : (
-            <div className="prepare-swap__token-message">
-              <span
-                className="prepare-swap__bold"
-                key="token-verification-bold-text"
-              >
-                {t('swapTokenVerificationSources', [occurrences])}
-              </span>
-              {blockExplorerTokenLink && (
-                <>
-                  {t('swapTokenVerificationMessage', [
-                    <a
-                      className="prepare-swap__token-etherscan-link"
-                      key="prepare-swap-etherscan-link"
-                      onClick={() => {
-                        /* istanbul ignore next */
-                        trackEvent({
-                          event: 'Clicked Block Explorer Link',
-                          category: EVENT.CATEGORIES.SWAPS,
-                          properties: {
-                            link_type: 'Token Tracker',
-                            action: 'Swaps Confirmation',
-                            block_explorer_domain: getURLHostName(
-                              blockExplorerTokenLink,
-                            ),
-                          },
-                        });
-                        global.platform.openTab({
-                          url: blockExplorerTokenLink,
-                        });
-                      }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {blockExplorerLabel}
-                    </a>,
-                  ])}
-                  <InfoTooltip
-                    position="top"
-                    contentText={t('swapVerifyTokenExplanation', [
-                      blockExplorerLabel,
-                    ])}
-                    containerClassName="prepare-swap__token-tooltip-container"
-                    key="token-verification-info-tooltip"
-                  />
-                </>
-              )}
-            </div>
-          ))}
+                <div>{tokenVerificationDescription}</div>
+              </div>
+            }
+            primaryAction={
+              /* istanbul ignore next */
+              verificationClicked
+                ? null
+                : {
+                    label: t('continue'),
+                    onClick: () => setVerificationClicked(true),
+                  }
+            }
+            withRightButton
+            infoTooltipText={
+              blockExplorerTokenLink &&
+              t('swapVerifyTokenExplanation', [blockExplorerLabel])
+            }
+          />
+        )}
         {!areQuotesPresent &&
+          !fetchingQuotes &&
           (smartTransactionsEnabled ||
             (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
             <div className="prepare-swap__slippage-buttons-container">
@@ -854,8 +825,33 @@ export default function PrepareSwap({
               />
             </div>
           )}
+        {fetchingQuotes && (
+          <Box
+            marginTop={4}
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={ALIGN_ITEMS.CENTER}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+          >
+            <Typography
+              color={COLORS.TEXT_ALTERNATIVE}
+              variant={TYPOGRAPHY.H6}
+              boxProps={{ marginLeft: 1 }}
+            >
+              {`${t('swapFetchingQuotes')}... `}
+            </Typography>
+            <Mascot
+              animationEventEmitter={animationEventEmitter.current}
+              width="42"
+              height="42"
+            />
+          </Box>
+        )}
         {areQuotesPresent && (
-          <ReviewQuote numberOfQuotes={Object.values(quotes).length} />
+          <ReviewQuote
+            numberOfQuotes={Object.values(quotes).length}
+            setReceiveToAmount={setReceiveToAmount}
+          />
         )}
       </div>
     </div>

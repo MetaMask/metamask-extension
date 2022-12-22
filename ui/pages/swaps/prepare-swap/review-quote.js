@@ -94,6 +94,7 @@ import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
   getFeeForSmartTransaction,
+  formatSwapsValueForDisplay,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
@@ -102,6 +103,16 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
+import {
+  COLORS,
+  TYPOGRAPHY,
+  JUSTIFY_CONTENT,
+  DISPLAY,
+  FONT_WEIGHT,
+  ALIGN_ITEMS,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
@@ -117,11 +128,12 @@ import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
+import ExchangeRateDisplay from '../exchange-rate-display';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 
-export default function ViewQuote() {
+export default function ViewQuote({ setReceiveToAmount }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -940,8 +952,46 @@ export default function ViewQuote() {
     }
   }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
 
+  const destinationValue = calcTokenValue(
+    destinationTokenValue,
+    destinationTokenDecimals,
+  );
+  const destinationAmount = calcTokenAmount(
+    destinationValue,
+    destinationTokenDecimals,
+  );
+  const amountToDisplay = formatSwapsValueForDisplay(destinationAmount);
+  const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length;
+  let ellipsedAmountToDisplay = amountToDisplay;
+
+  if (amountDigitLength > 20) {
+    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`;
+  }
+  useEffect(() => {
+    setReceiveToAmount(ellipsedAmountToDisplay);
+  }, [ellipsedAmountToDisplay, setReceiveToAmount]);
+
+  // const ExchangeRate = () => {
+  //   return (
+  //     <ExchangeRateDisplay
+  //       primaryTokenValue={calcTokenValue(
+  //         sourceTokenValue,
+  //         sourceTokenDecimals,
+  //       )}
+  //       primaryTokenDecimals={sourceTokenDecimals}
+  //       primaryTokenSymbol={sourceTokenSymbol}
+  //       secondaryTokenValue={destinationValue}
+  //       secondaryTokenDecimals={destinationTokenDecimals}
+  //       secondaryTokenSymbol={destinationTokenSymbol}
+  //       arrowColor="var(--color-primary-default)"
+  //       boldSymbols={false}
+  //       className="main-quote-summary__exchange-rate-display"
+  //     />
+  //   );
+  // };
+
   return (
-    <div className="view-quote">
+    <div className="view-quote review-quote">
       <div
         className={classnames('view-quote__content', {
           'view-quote__content_modal': disableSubmissionDueToPriceWarning,
@@ -963,23 +1013,25 @@ export default function ViewQuote() {
             />
           )
         }
+        {isShowingWarning && (
+          <div
+            className={classnames('view-quote__warning-wrapper', {
+              'view-quote__warning-wrapper--thin': !isShowingWarning,
+            })}
+          >
+            {viewQuotePriceDifferenceComponent}
+            {(showInsufficientWarning || tokenBalanceUnavailable) && (
+              <ActionableMessage
+                message={actionableBalanceErrorMessage}
+                onClose={
+                  /* istanbul ignore next */
+                  () => setWarningHidden(true)
+                }
+              />
+            )}
+          </div>
+        )}
 
-        <div
-          className={classnames('view-quote__warning-wrapper', {
-            'view-quote__warning-wrapper--thin': !isShowingWarning,
-          })}
-        >
-          {viewQuotePriceDifferenceComponent}
-          {(showInsufficientWarning || tokenBalanceUnavailable) && (
-            <ActionableMessage
-              message={actionableBalanceErrorMessage}
-              onClose={
-                /* istanbul ignore next */
-                () => setWarningHidden(true)
-              }
-            />
-          )}
-        </div>
         <div className="view-quote__countdown-timer-container">
           <CountdownTimer
             timeStarted={quotesLastFetched}
@@ -987,7 +1039,90 @@ export default function ViewQuote() {
             labelKey="swapNewQuoteIn"
           />
         </div>
-        <MainQuoteSummary
+
+        <Box
+          marginTop={2}
+          marginBottom={0}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          className="review-quote__overview"
+        >
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              Quote rate
+            </Typography>
+            <ExchangeRateDisplay
+              primaryTokenValue={calcTokenValue(
+                sourceTokenValue,
+                sourceTokenDecimals,
+              )}
+              primaryTokenDecimals={sourceTokenDecimals}
+              primaryTokenSymbol={sourceTokenSymbol}
+              secondaryTokenValue={destinationValue}
+              secondaryTokenDecimals={destinationTokenDecimals}
+              secondaryTokenSymbol={destinationTokenSymbol}
+              arrowColor="var(--color-primary-default)"
+              boldSymbols={false}
+              className="main-quote-summary__exchange-rate-display"
+              onQuotesClick={
+                /* istanbul ignore next */
+                () => {
+                  trackAllAvailableQuotesOpened();
+                  setSelectQuotePopoverShown(true);
+                }
+              }
+            />
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={ALIGN_ITEMS.STRETCH}
+          >
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              Gas fee
+            </Typography>
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              {feeInFiat}
+            </Typography>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={ALIGN_ITEMS.STRETCH}
+          >
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              MetaMask fee
+            </Typography>
+            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+              0.875%
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* <div
+          className="main-quote-summary__exchange-rate-container"
+          data-testid="main-quote-summary__exchange-rate-container"
+        >
+          <ExchangeRateDisplay
+            primaryTokenValue={calcTokenValue(
+              sourceTokenValue,
+              sourceTokenDecimals,
+            )}
+            primaryTokenDecimals={sourceTokenDecimals}
+            primaryTokenSymbol={sourceTokenSymbol}
+            secondaryTokenValue={destinationValue}
+            secondaryTokenDecimals={destinationTokenDecimals}
+            secondaryTokenSymbol={destinationTokenSymbol}
+            arrowColor="var(--color-primary-default)"
+            boldSymbols={false}
+            className="main-quote-summary__exchange-rate-display"
+          />
+        </div> */}
+        {/* <MainQuoteSummary
           sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
           sourceDecimals={sourceTokenDecimals}
           sourceSymbol={sourceTokenSymbol}
@@ -999,8 +1134,9 @@ export default function ViewQuote() {
           destinationSymbol={destinationTokenSymbol}
           sourceIconUrl={sourceTokenIconUrl}
           destinationIconUrl={destinationIconUrl}
-        />
-        {currentSmartTransactionsEnabled &&
+        /> */}
+        {false &&
+          currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
           !smartTransactionFees?.tradeTxFees &&
           !showInsufficientWarning && (
@@ -1008,47 +1144,48 @@ export default function ViewQuote() {
               <PulseLoader />
             </Box>
           )}
-        {(!currentSmartTransactionsEnabled ||
-          !smartTransactionsOptInStatus ||
-          smartTransactionFees?.tradeTxFees) && (
-          <div
-            className={classnames('view-quote__fee-card-container', {
-              'view-quote__fee-card-container--three-rows':
-                approveTxParams && (!balanceError || warningHidden),
-            })}
-          >
-            <FeeCard
-              primaryFee={{
-                fee: feeInEth,
-                maxFee: maxFeeInEth,
-              }}
-              secondaryFee={{
-                fee: feeInFiat,
-                maxFee: maxFeeInFiat,
-              }}
-              hideTokenApprovalRow={
-                !approveTxParams || (balanceError && !warningHidden)
-              }
-              tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
-              onTokenApprovalClick={onFeeCardTokenApprovalClick}
-              metaMaskFee={String(metaMaskFee)}
-              numberOfQuotes={Object.values(quotes).length}
-              onQuotesClick={
-                /* istanbul ignore next */
-                () => {
-                  trackAllAvailableQuotesOpened();
-                  setSelectQuotePopoverShown(true);
+        {false &&
+          (!currentSmartTransactionsEnabled ||
+            !smartTransactionsOptInStatus ||
+            smartTransactionFees?.tradeTxFees) && (
+            <div
+              className={classnames('view-quote__fee-card-container', {
+                'view-quote__fee-card-container--three-rows':
+                  approveTxParams && (!balanceError || warningHidden),
+              })}
+            >
+              <FeeCard
+                primaryFee={{
+                  fee: feeInEth,
+                  maxFee: maxFeeInEth,
+                }}
+                secondaryFee={{
+                  fee: feeInFiat,
+                  maxFee: maxFeeInFiat,
+                }}
+                hideTokenApprovalRow={
+                  !approveTxParams || (balanceError && !warningHidden)
                 }
-              }
-              chainId={chainId}
-              isBestQuote={isBestQuote}
-              maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
-                maxPriorityFeePerGas,
-              )}
-              maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
-            />
-          </div>
-        )}
+                tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
+                onTokenApprovalClick={onFeeCardTokenApprovalClick}
+                metaMaskFee={String(metaMaskFee)}
+                numberOfQuotes={Object.values(quotes).length}
+                onQuotesClick={
+                  /* istanbul ignore next */
+                  () => {
+                    trackAllAvailableQuotesOpened();
+                    setSelectQuotePopoverShown(true);
+                  }
+                }
+                chainId={chainId}
+                isBestQuote={isBestQuote}
+                maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
+                  maxPriorityFeePerGas,
+                )}
+                maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+              />
+            </div>
+          )}
       </div>
       <SwapsFooter
         onSubmit={
@@ -1095,6 +1232,7 @@ export default function ViewQuote() {
         disabled={isSwapButtonDisabled}
         className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
         showTopBorder
+        showTermsOfService
       />
     </div>
   );

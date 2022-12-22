@@ -1,3 +1,13 @@
+.review-quote {
+  &__overview {
+    width: 100%;
+  }
+
+  .main-quote-summary__exchange-rate-display {
+    width: auto;
+  }
+}
+
 .prepare-swap {
   display: flex;
   flex-flow: column;
