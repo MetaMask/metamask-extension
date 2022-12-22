@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.23.2]
+### Fixed
+- Improve performance on signature request screens ([#17052](https://github.com/MetaMask/metamask-extension/pull/17052))
 
 ## [10.23.1]
 ### Fixed
