@@ -30,10 +30,6 @@ import {
   FONT_WEIGHT,
   COLORS,
 } from '../../../helpers/constants/design-system';
-import {
-  VIEW_QUOTE_ROUTE,
-  LOADING_QUOTES_ROUTE,
-} from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -58,7 +54,6 @@ import {
   getMaxSlippage,
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
-  getSmartTransactionFees,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -85,29 +80,26 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   TOKEN_BUCKET_PRIORITY,
 } from '../../../../shared/constants/swaps';
 
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
-  setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
-  clearSmartTransactionFees,
 } from '../../../store/actions';
 import {
   countDecimals,
   fetchTokenPrice,
   fetchTokenBalance,
 } from '../swaps.util';
-import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
+import ReviewQuote from './review-quote';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -166,7 +158,6 @@ export default function PrepareSwap({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
-  const smartTransactionFees = useSelector(getSmartTransactionFees);
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentSmartTransactionsError = useSelector(
@@ -470,13 +461,6 @@ export default function PrepareSwap({
     dispatch(setReviewSwapClickedTimestamp());
     trackBuildQuotePageLoadedEvent();
   }, [dispatch, trackBuildQuotePageLoadedEvent]);
-
-  useEffect(() => {
-    if (smartTransactionsEnabled && smartTransactionFees?.tradeTxFees) {
-      // We want to clear STX fees, because we only want to use fresh ones on the View Quote page.
-      clearSmartTransactionFees();
-    }
-  }, [smartTransactionsEnabled, smartTransactionFees]);
 
   const BlockExplorerLink = () => {
     return (
@@ -850,57 +834,30 @@ export default function PrepareSwap({
               )}
             </div>
           ))}
-        {(smartTransactionsEnabled ||
-          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-          <div className="prepare-swap__slippage-buttons-container">
-            <SlippageButtons
-              onSelect={(newSlippage) => {
-                dispatch(setMaxSlippage(newSlippage));
-              }}
-              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-              currentSlippage={maxSlippage}
-              smartTransactionsEnabled={smartTransactionsEnabled}
-              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
-              currentSmartTransactionsError={currentSmartTransactionsError}
-              isDirectWrappingEnabled={isDirectWrappingEnabled}
-            />
-          </div>
+        {!areQuotesPresent &&
+          (smartTransactionsEnabled ||
+            (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
+            <div className="prepare-swap__slippage-buttons-container">
+              <SlippageButtons
+                onSelect={(newSlippage) => {
+                  dispatch(setMaxSlippage(newSlippage));
+                }}
+                maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+                currentSlippage={maxSlippage}
+                smartTransactionsEnabled={smartTransactionsEnabled}
+                smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+                setSmartTransactionsOptInStatus={
+                  setSmartTransactionsOptInStatus
+                }
+                currentSmartTransactionsError={currentSmartTransactionsError}
+                isDirectWrappingEnabled={isDirectWrappingEnabled}
+              />
+            </div>
+          )}
+        {areQuotesPresent && (
+          <ReviewQuote numberOfQuotes={Object.values(quotes).length} />
         )}
       </div>
-      <SwapsFooter
-        onSubmit={
-          /* istanbul ignore next */
-          async () => {
-            // We need this to know how long it took to go from clicking on the Review swap button to rendered View Quote page.
-            dispatch(setReviewSwapClickedTimestamp(Date.now()));
-            // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
-            // we want to cancel it and fetch quotes from here.
-            if (timeoutIdForQuotesPrefetching) {
-              clearTimeout(timeoutIdForQuotesPrefetching);
-              dispatch(
-                fetchQuotesAndSetQuoteState(
-                  history,
-                  fromTokenInputValue,
-                  maxSlippage,
-                  trackEvent,
-                ),
-              );
-            } else if (areQuotesPresent) {
-              // If there are prefetched quotes already, go directly to the View Quote page.
-              history.push(VIEW_QUOTE_ROUTE);
-            } else {
-              // If the "Review swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
-              await dispatch(setBackgroundSwapRouteState('loading'));
-              history.push(LOADING_QUOTES_ROUTE);
-            }
-          }
-        }
-        submitText={t('swapReviewSwap')}
-        disabled={isReviewSwapButtonDisabled}
-        hideCancel
-        showTermsOfService
-      />
     </div>
   );
 }
