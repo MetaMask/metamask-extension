@@ -28,6 +28,10 @@ export const ValidColors = [
   COLORS.WARNING_INVERSE,
   COLORS.INFO_DEFAULT,
   COLORS.INFO_INVERSE,
+  COLORS.GOERLI,
+  COLORS.SEPOLIA,
+  COLORS.GOERLI_INVERSE,
+  COLORS.SEPOLIA_INVERSE,
 ];
 
 export const ValidTags = [
@@ -125,7 +129,7 @@ Typography.propTypes = {
    * The color of the Typography component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(Object.values(COLORS)),
+  color: PropTypes.oneOf(ValidColors),
   /**
    * The font-weight of the Typography component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
