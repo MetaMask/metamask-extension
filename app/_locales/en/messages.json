@@ -679,7 +679,7 @@
     "message": "Close"
   },
   "coingecko": {
-    "message": "Coingecko"
+    "message": "CoinGecko"
   },
   "collectibleAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
