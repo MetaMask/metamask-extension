@@ -21,7 +21,8 @@ describe('Reset account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTransactionControllerApprovedTransaction()
+          .withTransactionControllerCompletedTransaction()
+          .withIncomingTransactionsControllerOneTransaction()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -31,10 +32,14 @@ describe('Reset account', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Check send transaction is displayed
+        // Check send transaction and receive transaction history are all displayed
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           { css: '.list-item__title', text: 'Send' },
+          { timeout: 10000 },
+        );
+        await driver.waitForSelector(
+          { css: '.list-item__title', text: 'Receive' },
           { timeout: 10000 },
         );
 
@@ -49,12 +54,17 @@ describe('Reset account', function () {
         await driver.clickElement({ text: 'Reset', tag: 'button' });
         await driver.navigate();
 
-        // Check send transaction history should been cleared
+        // Check send transaction history is cleared and receive transaction history is kept
         const sendTransaction = await driver.isElementPresent({
           css: '.list-item__title',
           text: 'Send',
         });
+        const receiveTransaction = await driver.isElementPresent({
+          css: '.list-item__title',
+          text: 'Receive',
+        });
         assert.equal(sendTransaction, false);
+        assert.equal(receiveTransaction, true);
       },
     );
   });
