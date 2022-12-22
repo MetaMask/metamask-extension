@@ -357,6 +357,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -380,6 +381,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -407,6 +409,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
       createNormalBundle({
         buildTarget,
@@ -419,6 +422,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
     );
   }
@@ -493,6 +497,7 @@ async function createManifestV3AppInitializationBundle({
     policyOnly,
     shouldLintFenceFiles,
     version,
+    applyLavaMoat,
   })();
 
   // Code below is used to set statsMode to true when testing in MV3
@@ -571,6 +576,7 @@ function createFactoredBuild({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      applyLavaMoat,
     });
 
     // set bundle entries
@@ -773,6 +779,7 @@ function createNormalBundle({
   policyOnly,
   shouldLintFenceFiles,
   version,
+  applyLavaMoat,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -801,6 +808,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      applyLavaMoat,
     });
 
     // set bundle entries
@@ -850,6 +858,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    applyLavaMoat,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -904,7 +913,7 @@ function setupBundlerDefaults(
     }
 
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
 
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
@@ -961,14 +970,14 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration) {
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
       through.obj(
         callbackify(async (file, _enc) => {
           const bag = scuttlingBagConfig[file.relative];
-          if (bag) {
+          if (applyLavaMoat && bag) {
             const wrapped = wrapAgainstScuttling(file.contents.toString(), bag);
             file.contents = Buffer.from(wrapped, 'utf8');
           }
