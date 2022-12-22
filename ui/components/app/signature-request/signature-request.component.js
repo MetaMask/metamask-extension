@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
@@ -61,6 +62,12 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
+  memoizedParseMessage = memoize((data) => {
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const sanitizedMessage = sanitizeMessage(message, primaryType, types);
+    return { sanitizedMessage, domain };
+  });
+
   render() {
     const {
       fromAccount,
@@ -74,8 +81,8 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { trackEvent } = this.context;
+    const { sanitizedMessage, domain } = this.memoizedParseMessage(data);
 
     const onSign = (event) => {
       sign(event);
@@ -139,7 +146,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message
-          data={sanitizeMessage(message, primaryType, types)}
+          data={sanitizedMessage}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}

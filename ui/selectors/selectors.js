@@ -804,6 +804,27 @@ export function getShowWhatsNewPopup(state) {
 
 const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
+export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
+  getMetaMaskIdentities,
+  (identities) => identities,
+);
+
+export const getMemoizedAddressBook = createDeepEqualSelector(
+  getAddressBook,
+  (addressBook) => addressBook,
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, address) => address,
+  (tokenList, address) => {
+    const entry = Object.values(tokenList).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+    return entry && entry.name !== '' ? entry.name : '';
+  },
+);
+
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
