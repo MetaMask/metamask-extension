@@ -765,6 +765,7 @@ function createFactoredBuild({
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param {boolean} options.applyLavaMoat - Whether to apply LavaMoat or not
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
