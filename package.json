@@ -200,7 +200,9 @@
     "async-done@~1.3.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.0": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
-    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch"
+    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
+    "@metamask/snaps-controllers@^0.27.1": "patch:@metamask/snaps-controllers@npm%3A0.27.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.27.1-b1d2d8a801.patch",
+    "@metamask/snaps-utils@^0.27.1": "patch:@metamask/snaps-utils@npm%3A0.27.1#./.yarn/patches/@metamask-snaps-utils-npm-0.27.1-3d81ad8c07.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

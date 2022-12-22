@@ -60,6 +60,7 @@ import {
   CronjobController,
   SnapController,
   IframeExecutionService,
+  JsonSnapRegistry,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
@@ -780,6 +781,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      registry: new JsonSnapRegistry(),
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
