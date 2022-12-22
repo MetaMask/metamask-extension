@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
-import { getMetaMaskIdentities, getAccountName } from '../../../../selectors';
+import {
+  getMemoizedMetaMaskIdentities,
+  getAccountName,
+} from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -16,8 +20,8 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
-export default function SignatureRequestData({ data }) {
-  const identities = useSelector(getMetaMaskIdentities);
+function SignatureRequestData({ data }) {
+  const identities = useSelector(getMemoizedMetaMaskIdentities);
 
   return (
     <Box className="signature-request-data__node">
@@ -77,3 +81,7 @@ export default function SignatureRequestData({ data }) {
 SignatureRequestData.propTypes = {
   data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 };
+
+export default memo(SignatureRequestData, (prevProps, nextProps) => {
+  return isEqual(prevProps.data, nextProps.data);
+});

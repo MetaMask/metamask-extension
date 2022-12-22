@@ -814,6 +814,11 @@ export function getShowWhatsNewPopup(state) {
 
 const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
+export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
+  getMetaMaskIdentities,
+  (identities) => identities,
+);
+
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
