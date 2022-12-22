@@ -1008,6 +1008,15 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/scure-bip39": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true
+      }
+    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -2195,8 +2204,8 @@
       "packages": {
         "browserify>browser-resolve": true,
         "eth-block-tracker>@metamask/utils": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "eth-json-rpc-middleware>pify": true,
+        "eth-keyring-controller>@metamask/eth-sig-util": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -2204,62 +2213,14 @@
         "vinyl>clone": true
       }
     },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
-        "eth-lattice-keyring>@ethereumjs/util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
     "eth-keyring-controller": {
       "packages": {
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "browserify>buffer": true,
         "browserify>events": true,
-        "eth-keyring-controller>@metamask/bip39": true,
         "eth-keyring-controller>@metamask/eth-hd-keyring": true,
-        "eth-keyring-controller>eth-simple-keyring": true,
-        "eth-keyring-controller>obs-store": true,
-        "eth-sig-util": true
-      }
-    },
-    "eth-keyring-controller>@metamask/bip39": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>pbkdf2": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>randombytes": true
+        "eth-keyring-controller>@metamask/eth-sig-util": true,
+        "eth-keyring-controller>@metamask/eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -2269,60 +2230,85 @@
     },
     "eth-keyring-controller>@metamask/eth-hd-keyring": {
       "packages": {
+        "@metamask/scure-bip39": true,
         "browserify>buffer": true,
-        "eth-keyring-controller>@metamask/bip39": true,
-        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet": true,
-        "eth-keyring-controller>eth-simple-keyring": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util": true
+        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": true,
+        "eth-keyring-controller>@metamask/eth-sig-util": true,
+        "eth-lattice-keyring>@ethereumjs/util": true
       }
     },
-    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet": {
-      "packages": {
-        "@truffle/codec>utf8": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": true,
-        "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
-      }
-    },
-    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": {
+    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@scure/bip32": true
       }
     },
-    "eth-keyring-controller>eth-simple-keyring": {
+    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-sig-util": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "eth-keyring-controller>@metamask/eth-sig-util>ethjs-util": true,
+        "eth-lattice-keyring>@ethereumjs/util": true,
+        "eth-sig-util>tweetnacl": true,
+        "eth-sig-util>tweetnacl-util": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-sig-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-simple-keyring": {
       "packages": {
         "browserify>buffer": true,
         "browserify>events": true,
-        "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet": true,
-        "eth-sig-util": true,
-        "ethereumjs-util": true
+        "eth-keyring-controller>@metamask/eth-sig-util": true,
+        "eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
+        "eth-lattice-keyring>@ethereumjs/util": true,
+        "ethereumjs-wallet>randombytes": true
       }
     },
-    "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet": {
-      "packages": {
-        "@truffle/codec>utf8": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet>uuid": true,
-        "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
-      }
-    },
-    "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet>uuid": {
+    "eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "eth-keyring-controller>obs-store": {
@@ -2360,16 +2346,34 @@
       }
     },
     "eth-lattice-keyring>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "browserify>buffer": true,
+        "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
+        "eth-lattice-keyring>@ethereumjs/util>async": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>async": {
+      "globals": {
+        "clearTimeout": true,
+        "console": true,
+        "define": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "browserify>timers-browserify": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": {
@@ -2394,6 +2398,13 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@scure/bip32": {
+      "packages": {
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": true
       }
     },
     "eth-lattice-keyring>bn.js": {
@@ -2635,35 +2646,6 @@
         "ethereumjs-util": true
       }
     },
-    "eth-trezor-keyring>@metamask/eth-sig-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util>ethereumjs-util": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": true,
-        "ethereumjs-abi": true
-      }
-    },
-    "eth-trezor-keyring>@metamask/eth-sig-util>ethereumjs-util": {
-      "packages": {
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
-      }
-    },
-    "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
     "eth-trezor-keyring>hdkey": {
       "packages": {
         "browserify>assert": true,
@@ -2719,7 +2701,7 @@
       "packages": {
         "@babel/runtime": true,
         "browserify>events": true,
-        "eth-trezor-keyring>@metamask/eth-sig-util": true,
+        "eth-keyring-controller>@metamask/eth-sig-util": true,
         "eth-trezor-keyring>trezor-connect>cross-fetch": true
       }
     },
