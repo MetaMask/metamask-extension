@@ -71,7 +71,9 @@ describe('DetectedTokenValues', () => {
 
   it('should render the detected token address', async () => {
     const store = configureStore(testData);
+
     renderWithProvider(<DetectedTokenValues {...args} />, store);
     expect(screen.getByText('0 SNX')).toBeInTheDocument();
+    expect(screen.getByText('$0')).toBeInTheDocument();
   });
 });

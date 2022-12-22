@@ -17,6 +17,7 @@ describe('DetectedToken', () => {
     expect(screen.getByText('0 LINK')).toBeInTheDocument();
     expect(screen.getByText('0 COMP')).toBeInTheDocument();
     expect(screen.getByText('0 FSW')).toBeInTheDocument();
+    expect(screen.getAllByText('$0')).toHaveLength(3);
     expect(screen.getAllByText('Token address:')).toHaveLength(3);
     expect(screen.getByText('0x514...86CA')).toBeInTheDocument();
     expect(screen.getByText('0xc00...6888')).toBeInTheDocument();

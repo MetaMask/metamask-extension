@@ -12,6 +12,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getUseCurrencyRateCheck } from '../../../../selectors';
 
 const DetectedTokenValues = ({
   token,
@@ -30,6 +31,8 @@ const DetectedTokenValues = ({
     token.symbol,
   );
 
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
   useEffect(() => {
     setTokenSelection(tokensListDetected[token.address]?.selected);
   }, [tokensListDetected, token.address, tokenSelection, setTokenSelection]);
@@ -46,7 +49,9 @@ const DetectedTokenValues = ({
           {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-          {formattedFiatBalance}
+          {!useCurrencyRateCheck
+            ? formattedFiatBalance
+            : formattedFiatBalance || '$0'}
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">
