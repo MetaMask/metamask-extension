@@ -6,7 +6,10 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import { KeyringController } from 'eth-keyring-controller';
+import {
+  KeyringController,
+  keyringBuilderFactory,
+} from 'eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -643,15 +646,19 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [];
     if (!isManifestV3) {
-      additionalKeyrings = [
+      const additionalKeyringTypes = [
         TrezorKeyring,
         LedgerBridgeKeyring,
         LatticeKeyring,
         QRHardwareKeyring,
       ];
+      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
+        keyringBuilderFactory(keyringType),
+      );
     }
+
     this.keyringController = new KeyringController({
-      keyringTypes: additionalKeyrings,
+      keyringBuilders: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
