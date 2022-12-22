@@ -36,14 +36,13 @@ export const AvatarFavicon = ({
         <img
           className="mm-avatar-favicon__image"
           src={src}
-          alt={`${name} logo` || 'dapp logo'}
+          alt={`${name} logo`}
         />
       ) : (
         <Icon
           name={ICON_NAMES.GLOBAL_FILLED}
           color={COLORS.ICON_DEFAULT}
           size={size}
-          aria-label={name}
           {...fallbackIconProps}
         />
       )}
@@ -59,7 +58,7 @@ AvatarFavicon.propTypes = {
   /**
    * The alt text for the favicon avatar to be rendered
    */
-  name: PropTypes.string,
+  name: PropTypes.string.isRequired,
   /**
    * Props for the fallback icon. All Icon props can be used
    */
