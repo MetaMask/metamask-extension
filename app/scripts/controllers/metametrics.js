@@ -91,8 +91,6 @@ export default class MetaMetricsController {
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {Function} options.getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
    * @param {string} options.extension - webextension-polyfill
@@ -104,7 +102,6 @@ export default class MetaMetricsController {
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
-    getNetworkIdentifier,
     version,
     environment,
     initState,
@@ -120,7 +117,6 @@ export default class MetaMetricsController {
     };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -150,7 +146,6 @@ export default class MetaMetricsController {
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
-      this.network = getNetworkIdentifier();
     });
     this.segment = segment;
 
@@ -166,11 +161,9 @@ export default class MetaMetricsController {
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(segmentApiCalls).forEach(
-        ({ eventType, payload, callback }) => {
-          this._submitSegmentAPICall(eventType, payload, callback);
-        },
-      );
+      Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
+        this._submitSegmentAPICall(eventType, payload);
+      });
     }
 
     // Close out event fragments that were created but not progressed. An
@@ -472,7 +465,6 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          network: this.network,
           chain_id: this.chainId,
           environment_type: environmentType,
         },
@@ -670,7 +662,6 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: properties?.network ?? this.network,
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
@@ -961,6 +952,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId) {
+      return;
+    }
+
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {
@@ -979,7 +975,6 @@ export default class MetaMetricsController {
             ...modifiedPayload,
             timestamp: modifiedPayload.timestamp.toString(),
           },
-          callback,
         },
       },
     });

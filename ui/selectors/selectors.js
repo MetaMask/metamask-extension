@@ -392,7 +392,17 @@ export function getAddressBook(state) {
 }
 
 export function getEnsResolutionByAddress(state, address) {
-  return state.metamask.ensResolutionsByAddress[address] || '';
+  if (state.metamask.ensResolutionsByAddress[address]) {
+    return state.metamask.ensResolutionsByAddress[address];
+  }
+
+  const entry =
+    getAddressBookEntry(state, address) ||
+    Object.values(state.metamask.identities).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+
+  return entry?.name || '';
 }
 
 export function getAddressBookEntry(state, address) {
@@ -523,7 +533,7 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
-function getUnapprovedTxCount(state) {
+export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
 }
@@ -841,7 +851,7 @@ export const getFullTxData = createDeepEqualSelector(
     return getTransaction(state, transactionId);
   },
   (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, _status, customTxParamsData) => {
+  (txData, transaction, customTxParamsData) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       txData.simulationFails = transaction.simulationFails;
@@ -864,16 +874,23 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
-export function getInsightSnaps(state) {
-  const snaps = Object.values(state.metamask.snaps);
-  const subjects = getPermissionSubjects(state);
+export const getSnap = createDeepEqualSelector(
+  getSnaps,
+  (_, snapId) => snapId,
+  (snaps, snapId) => {
+    return snaps[snapId];
+  },
+);
 
-  const insightSnaps = snaps.filter(
-    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
-  );
-
-  return insightSnaps;
-}
+export const getInsightSnaps = createDeepEqualSelector(
+  getSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
@@ -963,6 +980,7 @@ function getAllowedAnnouncementIds(state) {
     14: false,
     15: false,
     16: true,
+    17: true,
   };
 }
 
@@ -1141,10 +1159,6 @@ export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
 
-export function getEIP1559V2Enabled(state) {
-  return state.metamask.eip1559V2Enabled;
-}
-
 /**
  *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
  *
@@ -1203,7 +1217,9 @@ export function getIsDynamicTokenListAvailable(state) {
  * @returns list of token objects
  */
 export function getDetectedTokensInCurrentNetwork(state) {
-  return state.metamask.detectedTokens;
+  const currentChainId = getCurrentChainId(state);
+  const selectedAddress = getSelectedAddress(state);
+  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
 /**

@@ -145,6 +145,13 @@ async function getAlerts(pendingApproval) {
   return alerts;
 }
 
+function getState(pendingApproval) {
+  if (parseInt(pendingApproval.requestData.chainId, 16) === 1) {
+    return { useWarningModal: true };
+  }
+  return {};
+}
+
 function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
 
@@ -322,9 +329,9 @@ function getValues(pendingApproval, t, actions, history) {
         },
       },
     ],
-    approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
-    onApprove: async () => {
+    submitText: t('approveButtonText'),
+    onSubmit: async () => {
       await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
@@ -346,6 +353,7 @@ function getValues(pendingApproval, t, actions, history) {
 const addEthereumChain = {
   getAlerts,
   getValues,
+  getState,
 };
 
 export default addEthereumChain;

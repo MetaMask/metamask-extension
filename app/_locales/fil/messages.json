@@ -41,9 +41,6 @@
   "addToken": {
     "message": "Magdagdag ng Token"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "amount": {
     "message": "Halaga"
   },
@@ -502,9 +499,6 @@
   "newAccount": {
     "message": "Bagong Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Naka-detect ng bagong address! Mag-click dito para idagdag ang iyong address book."
-  },
   "newContact": {
     "message": "Bagong Contact"
   },
@@ -748,9 +742,6 @@
   },
   "sign": {
     "message": "I-sign"
-  },
-  "signNotice": {
-    "message": "Kapag na-sign ang mensaheng ito, maaaring magkaroon \nng mapapanganib na side effect. Mag-sign lang ng mga mensaheng mula \nsa mga site na ganap mong pinagkakatiwalaang gumamit sa iyong account.\n Isa itong mapanganib na method na aalisin sa isang bersyon sa hinaharap. "
   },
   "signed": {
     "message": "Na-sign"

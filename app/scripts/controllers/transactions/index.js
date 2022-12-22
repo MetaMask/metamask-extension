@@ -113,7 +113,8 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  *
  * @param {object} opts
  * @param {object} opts.initState - initial transaction list default is an empty array
- * @param {object} opts.networkStore - an observable store for network number
+ * @param {Function} opts.getNetworkState - Get the current network state.
+ * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
  * @param {Function} opts.signTransaction - function the signs an @ethereumjs/tx
@@ -126,7 +127,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
-    this.networkStore = opts.networkStore || new ObservableStore({});
+    this.getNetworkState = opts.getNetworkState;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -151,6 +152,11 @@ export default class TransactionController extends EventEmitter {
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
 
     this.memStore = new ObservableStore({});
+
+    this.resetState = () => {
+      this._updateMemstore();
+    };
+
     this.query = new EthQuery(this.provider);
 
     this.txGasUtil = new TxGasUtil(this.provider);
@@ -158,7 +164,7 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
-      getNetwork: this.getNetwork.bind(this),
+      getNetworkState: this.getNetworkState,
       getCurrentChainId: opts.getCurrentChainId,
     });
 
@@ -200,7 +206,7 @@ export default class TransactionController extends EventEmitter {
     // memstore is computed from a few different stores
     this._updateMemstore();
     this.txStateManager.store.subscribe(() => this._updateMemstore());
-    this.networkStore.subscribe(() => {
+    opts.onNetworkStateChange(() => {
       this._onBootCleanUp();
       this._updateMemstore();
     });
@@ -217,7 +223,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkState = this.networkStore.getState();
+    const networkState = this.getNetworkState();
     const chainId = this._getCurrentChainId();
     const integerChainId = parseInt(chainId, 16);
     if (networkState === 'loading' || Number.isNaN(integerChainId)) {
@@ -268,7 +274,7 @@ export default class TransactionController extends EventEmitter {
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const networkId = this.networkStore.getState();
+    const networkId = this.getNetworkState();
 
     const customChainParams = {
       name,
@@ -332,6 +338,9 @@ export default class TransactionController extends EventEmitter {
     const initialTxMeta = await this.addUnapprovedTransaction(
       txParams,
       opts.origin,
+      undefined,
+      undefined,
+      opts.id,
     );
 
     // listen for tx completion (success, fail)
@@ -877,10 +886,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
-      const { eip1559V2Enabled } = this.preferencesStore.getState();
       const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
       if (
-        eip1559V2Enabled &&
         Boolean(advancedGasFeeDefaultValues) &&
         !SWAP_TRANSACTION_TYPES.includes(txMeta.type)
       ) {
@@ -900,10 +907,10 @@ export default class TransactionController extends EventEmitter {
         //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        if (eip1559V2Enabled && txMeta.origin !== ORIGIN_METAMASK) {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
-        } else {
+        if (txMeta.origin === ORIGIN_METAMASK) {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+        } else {
+          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         }
       } else {
         if (
@@ -914,10 +921,8 @@ export default class TransactionController extends EventEmitter {
           txMeta.origin === ORIGIN_METAMASK
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
-        } else if (eip1559V2Enabled) {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
-          txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         }
 
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
@@ -1763,9 +1768,6 @@ export default class TransactionController extends EventEmitter {
     /** @returns {object} the state in transaction controller */
     this.getState = () => this.memStore.getState();
 
-    /** @returns {string|number} the network number stored in networkStore */
-    this.getNetwork = () => this.networkStore.getState();
-
     /** @returns {string} the user selected address */
     this.getSelectedAddress = () =>
       this.preferencesStore.getState().selectedAddress;
@@ -2213,8 +2215,7 @@ export default class TransactionController extends EventEmitter {
 
     let eip1559Version = '0';
     if (txMeta.txParams.maxFeePerGas) {
-      const { eip1559V2Enabled } = this.preferencesStore.getState();
-      eip1559Version = eip1559V2Enabled ? '2' : '1';
+      eip1559Version = '2';
     }
 
     const contractInteractionTypes = [

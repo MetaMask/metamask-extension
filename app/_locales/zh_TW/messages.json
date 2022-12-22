@@ -81,9 +81,6 @@
   "advanced": {
     "message": "進階"
   },
-  "advancedOptions": {
-    "message": "進階選項"
-  },
   "affirmAgree": {
     "message": "我同意"
   },
@@ -886,9 +883,6 @@
   "invalidSeedPhrase": {
     "message": "無效的助憶詞"
   },
-  "ipfsGatewayDescription": {
-    "message": "輸入用於解析 ENS 內容的 IPFS CID gateway URL。"
-  },
   "jsonFile": {
     "message": "JSON 格式檔案",
     "description": "format for importing an account"
@@ -1034,9 +1028,6 @@
   },
   "newAccount": {
     "message": "新帳戶"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "偵測到新位址！點擊此處將其新增到你的位址簿。"
   },
   "newAccountNumberName": {
     "message": "帳戶 $1",
@@ -1427,7 +1418,8 @@
     "message": "顯示傳入的交易"
   },
   "showIncomingTransactionsDescription": {
-    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易"
+    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "顯示權限"
@@ -1440,9 +1432,6 @@
   },
   "sign": {
     "message": "簽署"
-  },
-  "signNotice": {
-    "message": "簽署此訊息可能會產生危險的副作用。\n請只從您完全信任的網站上簽署。\n這種危險的方法將在未來的版本中被移除。"
   },
   "signatureRequest": {
     "message": "請求簽署"

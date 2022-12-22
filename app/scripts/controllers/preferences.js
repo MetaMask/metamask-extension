@@ -35,6 +35,7 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
@@ -127,6 +128,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useMultiAccountBalanceChecker` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
+   */
+  setUseMultiAccountBalanceChecker(val) {
+    this.store.updateState({ useMultiAccountBalanceChecker: val });
+  }
+
+  /**
    * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -169,15 +179,6 @@ export default class PreferencesController {
    */
   setAdvancedGasFee(val) {
     this.store.updateState({ advancedGasFee: val });
-  }
-
-  /**
-   * Setter for the `eip1559V2Enabled` property
-   *
-   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
-   */
-  setEIP1559V2Enabled(val) {
-    this.store.updateState({ eip1559V2Enabled: val });
   }
 
   /**

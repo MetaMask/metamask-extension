@@ -16,6 +16,7 @@ import {
   BUILD_QUOTE_ROUTE,
   ADVANCED_ROUTE,
   EXPERIMENTAL_ROUTE,
+  SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -48,7 +49,7 @@ function getActionFunctionById(id, history) {
     },
     10: () => {
       updateViewedNotifications({ 10: true });
-      history.push(`${ADVANCED_ROUTE}#token-description`);
+      history.push(`${SECURITY_ROUTE}#token-description`);
     },
     12: () => {
       updateViewedNotifications({ 12: true });
@@ -61,6 +62,10 @@ function getActionFunctionById(id, history) {
     16: () => {
       updateViewedNotifications({ 16: true });
       history.push(EXPERIMENTAL_ROUTE);
+    },
+    17: () => {
+      updateViewedNotifications({ 17: true });
+      history.push(SECURITY_ROUTE);
     },
   };
 

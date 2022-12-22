@@ -30,10 +30,14 @@ import {
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
   getCustomTokenAmount,
+  getUnapprovedTxCount,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   cancelTx,
+  cancelTxs,
+  showModal,
   updateAndApproveTx,
   updateCustomNonce,
 } from '../../store/actions';
@@ -44,6 +48,8 @@ import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-s
 import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
+import { setCustomTokenAmount } from '../../ducks/app/app';
+import { valuesFor } from '../../helpers/utils/util';
 
 export default function TokenAllowance({
   origin,
@@ -57,7 +63,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -85,6 +91,8 @@ export default function TokenAllowance({
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const customTokenAmount = useSelector(getCustomTokenAmount);
+  const unapprovedTxCount = useSelector(getUnapprovedTxCount);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
   const customPermissionAmount = customTokenAmount.toString();
 
@@ -131,6 +139,7 @@ export default function TokenAllowance({
 
   const handleReject = () => {
     dispatch(updateCustomNonce(''));
+    dispatch(setCustomTokenAmount(''));
 
     dispatch(cancelTx(fullTxData)).then(() => {
       dispatch(clearConfirmTransaction());
@@ -183,7 +192,32 @@ export default function TokenAllowance({
     setIsFirstPage(true);
   };
 
+  const handleCancelAll = () => {
+    dispatch(
+      showModal({
+        name: 'REJECT_TRANSACTIONS',
+        unapprovedTxCount,
+        onSubmit: async () => {
+          await dispatch(cancelTxs(valuesFor(unapprovedTxs)));
+          dispatch(clearConfirmTransaction());
+          history.push(mostRecentOverviewPage);
+        },
+      }),
+    );
+  };
+
   const isEmpty = customTokenAmount === '';
+
+  const renderContractTokenValues = (
+    <Box marginTop={4} key={tokenAddress}>
+      <ContractTokenValues
+        tokenName={tokenSymbol}
+        address={tokenAddress}
+        chainId={fullTxData.chainId}
+        rpcPrefs={rpcPrefs}
+      />
+    </Box>
+  );
 
   return (
     <Box className="token-allowance-container page-container">
@@ -263,26 +297,27 @@ export default function TokenAllowance({
           </Typography>
         </Box>
       </Box>
-      <Box marginBottom={5} marginLeft={4} marginRight={4}>
+      <Box marginLeft={4} marginRight={4}>
         <Typography
           variant={TYPOGRAPHY.H3}
           fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
-          {isFirstPage && t('setSpendingCap')}
-          {!isFirstPage &&
-            (customTokenAmount === '0' || isEmpty
-              ? t('revokeSpendingCap')
-              : t('reviewSpendingCap'))}
+          {isFirstPage ? (
+            t('setSpendingCap', [renderContractTokenValues])
+          ) : (
+            <Box>
+              {customTokenAmount === '0' || isEmpty ? (
+                t('revokeSpendingCap', [renderContractTokenValues])
+              ) : (
+                <Box>
+                  {t('reviewSpendingCap')}
+                  {renderContractTokenValues}
+                </Box>
+              )}
+            </Box>
+          )}
         </Typography>
-      </Box>
-      <Box>
-        <ContractTokenValues
-          tokenName={tokenSymbol}
-          address={tokenAddress}
-          chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
-        />
       </Box>
       <Box
         marginTop={1}
@@ -337,7 +372,7 @@ export default function TokenAllowance({
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
@@ -385,7 +420,7 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
@@ -399,7 +434,19 @@ export default function TokenAllowance({
         onCancel={() => handleReject()}
         onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
         disabled={disableNextButton || disableApproveButton}
-      />
+      >
+        {unapprovedTxCount > 1 && (
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleCancelAll();
+            }}
+          >
+            {t('rejectTxsN', [unapprovedTxCount])}
+          </Button>
+        )}
+      </PageContainerFooter>
       {showContractDetails && (
         <ContractDetailsModal
           tokenName={tokenSymbol}
@@ -464,7 +511,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */

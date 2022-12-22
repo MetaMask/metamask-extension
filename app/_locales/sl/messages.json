@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Napredno"
   },
-  "advancedOptions": {
-    "message": "Napredne možnosti"
-  },
   "amount": {
     "message": "Znesek"
   },
@@ -549,9 +546,6 @@
   "newAccount": {
     "message": "Nov račun"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Zaznan je nov naslov! Kliknite tukaj, da ga dodate v svoj imenik."
-  },
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
@@ -812,9 +806,6 @@
   },
   "sign": {
     "message": "Podpiši"
-  },
-  "signNotice": {
-    "message": "To podpisovanje lahko povzroči \nnevarne stranske učinke. Podpisujte samo sporočila \nstrani, ki jim zaupate s svojim celotnim računom.\n Ta nevarna funkcija bo odstranjena v prihodnji različici. "
   },
   "signatureRequest": {
     "message": "Zahteva za podpis"

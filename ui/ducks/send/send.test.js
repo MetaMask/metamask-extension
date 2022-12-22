@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -856,7 +857,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
+          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
         );
       });
 
@@ -1710,7 +1711,7 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        process.env.COLLECTIBLES_V1 = true;
+        process.env.NFTS_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155', balance: '0x1' }),
         );
@@ -1739,7 +1740,7 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        process.env.COLLECTIBLES_V1 = false;
+        process.env.NFTS_V1 = false;
       });
     });
 
@@ -3113,7 +3114,14 @@ describe('Send Slice', () => {
         expect(
           getSendTo({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('');
         expect(
@@ -3121,7 +3129,14 @@ describe('Send Slice', () => {
             send: getInitialSendStateWithExistingTxState({
               recipient: { address: '0xb' },
             }),
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              addressBook: {},
+              identities: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('0xb');
       });
@@ -3162,7 +3177,14 @@ describe('Send Slice', () => {
         expect(
           getRecipient({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toMatchObject(
           getTestUUIDTx(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT).recipient,

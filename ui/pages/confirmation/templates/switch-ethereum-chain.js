@@ -72,9 +72,9 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    approvalText: t('switchNetwork'),
     cancelText: t('cancel'),
-    onApprove: () =>
+    submitText: t('switchNetwork'),
+    onSubmit: () =>
       actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
