@@ -72,6 +72,9 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
+  // build lavamoat runtime file
+  await lavapack.buildRuntime();
+
   const browserPlatforms = ['firefox', 'chrome'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
