@@ -31,6 +31,7 @@ const { BUILD_TARGETS } = require('./constants');
 // Required for LavaMoat policy generation
 require('loose-envify');
 require('globalthis');
+const lavapack = require('@lavamoat/lavapack');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/preset-typescript');
