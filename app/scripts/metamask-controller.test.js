@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
@@ -14,7 +13,7 @@ import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
 } from '../../shared/constants/hardware-wallets';
-import { addHexPrefix, deferredPromise } from './lib/util';
+import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -209,13 +208,15 @@ describe('MetaMaskController', function () {
         metamaskController.keyringController.getKeyringsByType(
           HardwareKeyringTypes.imported,
         );
-      const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
-      const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
-      const addressBuffer = pubToAddress(pubKeyBuffer);
-      const privKey = bufferToHex(privKeyBuffer);
-      const pubKey = bufferToHex(addressBuffer);
-      assert.equal(privKey, addHexPrefix(importPrivkey));
-      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc');
+      const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
+      const privKeyHex = await simpleKeyrings[0].exportAccount(
+        pubAddressHexArr[0],
+      );
+      assert.equal(privKeyHex, importPrivkey);
+      assert.equal(
+        pubAddressHexArr[0],
+        '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+      );
     });
 
     it('adds 1 account', async function () {
