@@ -363,8 +363,7 @@
   &__content-description {
     @include H6;
 
-    color: var(--color-text-alternative);
-    padding-top: 5px;
+    color: var(--color-text-default);
 
     a {
       color: var(--color-primary-default);

@@ -2690,7 +2690,7 @@
     "message": "Open in block explorer"
   },
   "openSea": {
-    "message": "Opensea"
+    "message": "OpenSea (Beta)"
   },
   "optional": {
     "message": "Optional"
@@ -3244,7 +3244,7 @@
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
   "selectProvider": {
-    "message": "Select provider:"
+    "message": "Select providers:"
   },
   "selectType": {
     "message": "Select Type"
@@ -4094,6 +4094,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisServiceIsExperimental": {
+    "message": "This service is experimental"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -4266,8 +4269,7 @@
     "message": "Enable transaction security providers"
   },
   "transactionSecurityCheckDescription": {
-    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests. Be sure you understand the potential benefits, risks, and privacy concerns before enabling any provider. $1",
-    "description": "$1 is Learn more link"
+    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
