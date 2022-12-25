@@ -74,7 +74,7 @@ async function defineAndRunBuildTasks() {
   } = await parseArgv();
 
   // build lavamoat runtime file
-  await lavapack.buildRuntime({scuttleGlobalThis: false});
+  await lavapack.buildRuntime({ scuttleGlobalThis: false });
 
   const browserPlatforms = ['firefox', 'chrome'];
 
