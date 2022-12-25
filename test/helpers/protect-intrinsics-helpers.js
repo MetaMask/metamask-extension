@@ -28,7 +28,10 @@ function getGlobalProperties() {
       // TODO: Also include the named platform globals
       // This grabs every enumerable property on globalThis.
       // ...Object.keys(globalThis),
-    ].filter((propertyName) => !ignoreList.has(propertyName)),
+    ].filter(
+      (propertyName) =>
+        typeof propertyName === 'string' && !ignoreList.has(propertyName),
+    ),
   );
 }
 
