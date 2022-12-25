@@ -21,7 +21,7 @@ index 56e777700ad0a4ea554b487b18158c34b134ab0c..df65d54b3d2955eb479bf95a2bc70196
      const moduleObject = { exports: {} }
 +    const evalKit = {
 +      scopeTerminator: strictScopeTerminator,
-+      globalThis: packageCompartment.globalThis,
++      globalThis,
 +    }
      moduleCache.set(moduleId, moduleObject)
      const moduleData = moduleRegistry.get(moduleId)
