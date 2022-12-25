@@ -178,6 +178,15 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `lockdown-install.js`,
     },
     {
+      src: shouldIncludeLockdown
+        ? getPathInsideNodeModules(
+            'lavamoat-core',
+            'lib/strict-scope-terminator.js',
+          )
+        : EMPTY_JS_FILE,
+      dest: `strict-scope-terminator.js`,
+    },
+    {
       src: './app/scripts/init-globals.js',
       dest: 'init-globals.js',
     },

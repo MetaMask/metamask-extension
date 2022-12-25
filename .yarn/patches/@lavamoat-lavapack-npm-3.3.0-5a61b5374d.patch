@@ -11,3 +11,25 @@ index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..26f65a2b2a3578638402fa887156fdad
     }
 
    const newIntrinsics=  {};
+diff --git a/src/runtime-cjs.js b/src/runtime-cjs.js
+index 56e777700ad0a4ea554b487b18158c34b134ab0c..df65d54b3d2955eb479bf95a2bc70196ffbf2de5 100644
+--- a/src/runtime-cjs.js
++++ b/src/runtime-cjs.js
+@@ -48,12 +48,16 @@
+       return moduleObject.exports
+     }
+     const moduleObject = { exports: {} }
++    const evalKit = {
++      scopeTerminator: strictScopeTerminator,
++      globalThis: packageCompartment.globalThis,
++    }
+     moduleCache.set(moduleId, moduleObject)
+     const moduleData = moduleRegistry.get(moduleId)
+     const localRequire = requireRelative.bind(null, moduleId, moduleData)
+     const { precompiledInitializer } = moduleData
+     // this invokes the with-proxy wrapper (proxy replace by start compartment global)
+-    const moduleInitializerFactory = precompiledInitializer.call(globalThis)
++    const moduleInitializerFactory = precompiledInitializer.call(evalKit)
+     // this ensures strict mode
+     const moduleInitializer = moduleInitializerFactory()
+     moduleInitializer.call(moduleObject.exports, localRequire, moduleObject, moduleObject.exports)
