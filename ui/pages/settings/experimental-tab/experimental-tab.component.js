@@ -148,7 +148,7 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <>
+      <div>
         <Typography
           variant={TYPOGRAPHY.H4}
           color={COLORS.TEXT_ALTERNATIVE}
@@ -157,6 +157,7 @@ export default class ExperimentalTab extends PureComponent {
         >
           {t('privacy')}
         </Typography>
+
         <div
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
@@ -220,7 +221,7 @@ export default class ExperimentalTab extends PureComponent {
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
