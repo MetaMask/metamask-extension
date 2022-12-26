@@ -157,7 +157,6 @@ export default class ExperimentalTab extends PureComponent {
         >
           {t('privacy')}
         </Typography>
-
         <div
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
