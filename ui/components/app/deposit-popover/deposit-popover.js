@@ -13,6 +13,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import LogoMoonPay from '../../ui/logo/logo-moonpay';
 import LogoWyre from '../../ui/logo/logo-wyre';
 import LogoTransak from '../../ui/logo/logo-transak';
+import LogoTransFi from '../../ui/logo/logo-transfi';
 import LogoCoinbasePay from '../../ui/logo/logo-coinbasepay';
 import LogoDepositEth from '../../ui/logo/logo-deposit-eth';
 import Popover from '../../ui/popover';
@@ -25,11 +26,13 @@ import {
   getIsBuyableTransakChain,
   getIsBuyableMoonPayChain,
   getIsBuyableWyreChain,
+  getIsBuyableTransfiChain,
   getIsBuyableCoinbasePayChain,
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
   getIsBuyableMoonpayToken,
   getIsBuyableWyreToken,
+  getIsBuyableTransfiToken,
 } from '../../../selectors/selectors';
 
 import OnRampItem from './on-ramp-item';
@@ -45,12 +48,16 @@ const DepositPopover = ({ onClose, token }) => {
   const isTestnet = useSelector(getIsTestnet);
   const address = useSelector(getSelectedAddress);
   const isBuyableTransakChain = useSelector(getIsBuyableTransakChain);
+  const isBuyableTransfiChain = useSelector(getIsBuyableTransfiChain);
   const isBuyableMoonPayChain = useSelector(getIsBuyableMoonPayChain);
   const isBuyableWyreChain = useSelector(getIsBuyableWyreChain);
   const isBuyableCoinbasePayChain = useSelector(getIsBuyableCoinbasePayChain);
 
   const isTokenBuyableCoinbasePay = useSelector((state) =>
     getIsBuyableCoinbasePayToken(state, token?.symbol),
+  );
+  const isTokenBuyabletransfi = useSelector((state) =>
+    getIsBuyableTransfiToken(state, token?.symbol),
   );
   const isTokenBuyableTransak = useSelector((state) =>
     getIsBuyableTransakToken(state, token?.symbol),
@@ -84,6 +91,11 @@ const DepositPopover = ({ onClose, token }) => {
       buy({ service: 'transak', address, chainId, symbol: token?.symbol }),
     );
   };
+  const toTransfi = () => {
+    dispatch(
+      buy({ service: 'transfi', address, chainId, symbol: token?.symbol }),
+    );
+  };
   const toMoonPay = () => {
     dispatch(
       buy({ service: 'moonpay', address, chainId, symbol: token?.symbol }),
@@ -108,6 +120,27 @@ const DepositPopover = ({ onClose, token }) => {
       className="deposit-popover"
     >
       <ul>
+        <OnRampItem
+          logo={<LogoTransFi />}
+          title={t('buyCryptoWithTransFi', [symbol])}
+          text={t('buyCryptoWithTransFiDescription', [symbol])}
+          buttonLabel={t('continueToTransFi')}
+          onButtonClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ACCOUNTS,
+              event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+              properties: {
+                onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.TRANSFI,
+              },
+            });
+            toTransfi();
+          }}
+          hide={
+            isTokenDeposit
+              ? !isBuyableTransakChain || !isTokenBuyableTransak
+              : !isBuyableTransakChain
+          }
+        />
         <OnRampItem
           logo={<LogoCoinbasePay />}
           title={t('buyCryptoWithCoinbasePay', [symbol])}

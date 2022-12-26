@@ -945,6 +945,7 @@
   "ui/components/ui/logo/logo-moonpay.test.js",
   "ui/components/ui/logo/logo-qr-based.js",
   "ui/components/ui/logo/logo-transak.js",
+  "ui/components/ui/logo/logo-transfi.js",
   "ui/components/ui/logo/logo-trezor.js",
   "ui/components/ui/logo/logo-wyre.js",
   "ui/components/ui/logo/logo.stories.js",

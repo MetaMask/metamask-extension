@@ -511,6 +511,13 @@
     "message": "Transak hỗ trợ thẻ tín dụng và ghi nợ, Apple Pay, MobiKwik và chuyển khoản ngân hàng (tùy thuộc vào vị trí) tại hơn 100 quốc gia. Nạp trực tiếp $1 vào tài khoản MetaMask của bạn.",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyCryptoWithTransfi": {
+    "message": "Mua $1 bằng TransFi",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithTransfiDescription": {
+    "message": "TransFi cung cấp giao dịch mua tiền điện tử đơn giản hóa bằng Visa, Mastercard, SEPA và Thanh toán địa phương ở hơn 140 quốc gia và mã thông báo sẽ được gửi trực tiếp vào Metamask"
+  },
   "buyWithWyre": {
     "message": "Mua $1 qua Wyre"
   },
@@ -711,6 +718,9 @@
   },
   "continueToTransak": {
     "message": "Tiếp tục đến Transak"
+  },
+  "continueToTransfi": {
+    "message": "Tiếp tục đến TransFi"
   },
   "continueToWyre": {
     "message": "Tiếp tục chuyển đến Wyre"

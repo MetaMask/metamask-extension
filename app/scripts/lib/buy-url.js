@@ -10,6 +10,7 @@ import {
   TRANSAK_API_KEY,
   MOONPAY_API_KEY,
   COINBASEPAY_API_KEY,
+  TRANSFI_API_KEY,
 } from '../constants/on-ramp';
 import { formatMoonpaySymbol } from '../../../ui/helpers/utils/moonpay';
 
@@ -75,6 +76,25 @@ const createTransakUrl = (walletAddress, chainId, symbol) => {
 
   return `https://global.transak.com/?${queryParams}`;
 };
+
+/**
+ * @param {string} walletAddress - Ethereum destination address
+ * @param {string} chainId - Current chain ID
+ * @param {string|undefined} symbol - Token symbol to buy
+ * @returns String
+ */
+
+const createTransFiUrl = (walletAddress, chainId, symbol) => {
+  const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
+
+  const queryParams = new URLSearchParams({
+    apiKey: TRANSFI_API_KEY,
+    cryptoTicker: symbol || nativeCurrency,
+    walletAddress,
+  });
+
+  return `https://buy.transfi.com/?${queryParams}`;
+}
 
 /**
  * Create a MoonPay Checkout URL.
@@ -166,6 +186,8 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
       return await createWyrePurchaseUrl(address, chainId, symbol);
     case 'transak':
       return createTransakUrl(address, chainId, symbol);
+    case 'transfi':
+      return createTransFiUrl(address, chainId, symbol);
     case 'moonpay':
       return createMoonPayUrl(address, chainId, symbol);
     case 'coinbase':

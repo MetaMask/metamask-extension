@@ -138,6 +138,10 @@ type BuyableChainSettings = {
    */
   transakCurrencies?: SupportedCurrencySymbol[];
   /**
+   * The list of supported currencies for the TransFi onramp provider
+   */
+  transfiCurrencies?: SupportedCurrencySymbol[];
+  /**
    * A configuration object for the MoonPay onramp provider
    */
   moonPay?: MoonPayChainSettings;
@@ -398,6 +402,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   WBTC: 'WBTC',
   WCFG: 'WCFG',
   XYO: 'XYO',
+  UFARM: 'UFARM',
   YFII: 'YFII',
   YFI: 'YFI',
   YLD: 'YLD',
@@ -630,6 +635,19 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.WBTC,
       SUPPORTED_CURRENCY_SYMBOLS.YLD,
     ],
+    transfiCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDT,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+      SUPPORTED_CURRENCY_SYMBOLS.ANKR,
+      SUPPORTED_CURRENCY_SYMBOLS.UNI,
+      SUPPORTED_CURRENCY_SYMBOLS.SHIB,
+      SUPPORTED_CURRENCY_SYMBOLS.MANA,
+      SUPPORTED_CURRENCY_SYMBOLS.LINK,
+      SUPPORTED_CURRENCY_SYMBOLS.UFARM,
+    ],
     moonPay: {
       defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.ETH,
       showOnlyCurrencies: [
@@ -641,6 +659,7 @@ export const BUYABLE_CHAINS_MAP: {
         SUPPORTED_CURRENCY_SYMBOLS.ORN,
         SUPPORTED_CURRENCY_SYMBOLS.WETH,
         SUPPORTED_CURRENCY_SYMBOLS.IMX,
+        SUPPORTED_CURRENCY_SYMBOLS.UFARM,
       ],
     },
     wyre: {
@@ -788,6 +807,9 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.BNB,
       SUPPORTED_CURRENCY_SYMBOLS.BUSD,
     ],
+    transfiCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.BNB,
+    ],
     moonPay: {
       defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
       showOnlyCurrencies: [
@@ -804,6 +826,11 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.USDT,
       SUPPORTED_CURRENCY_SYMBOLS.USDC,
       SUPPORTED_CURRENCY_SYMBOLS.DAI,
+    ],
+    transfiCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+      SUPPORTED_CURRENCY_SYMBOLS.UFARM,
     ],
     moonPay: {
       defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_POLYGON`,
@@ -825,6 +852,7 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
     network: 'avaxcchain',
     transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
+    transfiCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
     moonPay: {
       defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`,
       showOnlyCurrencies: [`${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`],

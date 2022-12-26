@@ -394,6 +394,7 @@ export const EVENT = {
     MOONPAY: 'moonpay',
     WYRE: 'wyre',
     TRANSAK: 'transak',
+    TRANSFI: 'transfi',
     SELF_DEPOSIT: 'direct_deposit',
   },
   SOURCE: {

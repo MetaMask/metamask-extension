@@ -11,6 +11,7 @@ import LogoCoinbasePay from './logo-coinbasepay';
 import LogoMoonPay from './logo-moonpay';
 import LogoWyre from './logo-wyre';
 import LogoTransak from './logo-transak';
+import LogoTransFi from './logo-transfi';
 import LogoDepositEth from './logo-deposit-eth';
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
@@ -74,6 +75,7 @@ export const DefaultStory = (args) => (
     <LogoItem Component={<LogoTransak {...args} />} />
     <LogoItem Component={<LogoDepositEth {...args} />} />
     <LogoItem Component={<LogoMoonPay {...args} />} />
+    <LogoItem Component={<LogoTransFi {...args}/>} />
     <LogoItem Component={<LogoLedger {...args} />} />
     <LogoItem Component={<LogoQRBased {...args} />} />
     <LogoItem Component={<LogoTrezor {...args} />} />

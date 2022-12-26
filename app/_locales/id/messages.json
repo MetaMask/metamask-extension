@@ -511,6 +511,13 @@
     "message": "Transak mendukung kartu kredit & debit, Apple Pay, MobiKwik, dan transfer bank (tergantung lokasi) di 100+ negara. $1 akan langsung didepositokan ke akun MetaMask Anda.",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyCryptoWithTransfi": {
+    "message": "Beli $1 melalui TransFi",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithTransfiDescription": {
+    "message": "TransFi menawarkan pembelian kripto yang disederhanakan dengan Visa, Mastercard, SEPA, dan Pembayaran Lokal di 140+ negara, dan token akan disetorkan ke Metamask secara langsung"
+  },
   "buyWithWyre": {
     "message": "Beli $1 dengan Wyre"
   },
@@ -711,6 +718,9 @@
   },
   "continueToTransak": {
     "message": "Lanjutkan ke Transak"
+  },
+  "continueToTransfi": {
+    "message": "Lanjutkan ke TransFi"
   },
   "continueToWyre": {
     "message": "Lanjutkan ke Wyre"

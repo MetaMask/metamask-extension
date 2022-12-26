@@ -761,6 +761,18 @@ export function getIsBuyableTransakToken(state, symbol) {
   );
 }
 
+export function getIsBuyableTransfiToken(state, symbol) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(
+    BUYABLE_CHAINS_MAP?.[chainId]?.transfiCurrencies?.includes(symbol),
+  );
+}
+
+export function getIsBuyableTransfiChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transfi);
+}
+
 export function getIsBuyableMoonpayToken(state, symbol) {
   const chainId = getCurrentChainId(state);
   const _symbol = formatMoonpaySymbol(symbol, chainId);
