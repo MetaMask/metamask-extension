@@ -350,6 +350,11 @@
     }
   }
 
+  &__content-row-experimental {
+    padding-left: 12px;
+    padding-bottom: 0px;
+  }
+
   &__content-label {
     text-transform: capitalize;
   }
@@ -363,7 +368,7 @@
   &__content-description {
     @include H6;
 
-    color: var(--color-text-default);
+    color: var(--color-text-alternative);
 
     a {
       color: var(--color-primary-default);

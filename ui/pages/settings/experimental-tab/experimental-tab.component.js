@@ -7,7 +7,11 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -145,10 +149,18 @@ export default class ExperimentalTab extends PureComponent {
 
     return (
       <>
-        <div>
-          <span>{t('privacy')}</span>
-        </div>
-        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+        <Typography
+          variant={TYPOGRAPHY.H4}
+          color={COLORS.TEXT_ALTERNATIVE}
+          marginBottom={2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('privacy')}
+        </Typography>
+        <div
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+        >
           <div className="settings-page__content-item">
             <span>{t('transactionSecurityCheck')}</span>
             <div className="settings-page__content-description">
@@ -170,7 +182,7 @@ export default class ExperimentalTab extends PureComponent {
                 <Typography
                   variant={TYPOGRAPHY.H5}
                   color={COLORS.TEXT_DEFAULT}
-                  fontWeight="500"
+                  fontWeight={FONT_WEIGHT.MEDIUM}
                   marginBottom={0}
                 >
                   {t('openSea')}
@@ -200,7 +212,8 @@ export default class ExperimentalTab extends PureComponent {
               <Typography
                 variant={TYPOGRAPHY.H5}
                 color={COLORS.TEXT_MUTED}
-                fontWeight="500"
+                fontWeight={FONT_WEIGHT.MEDIUM}
+                marginTop={2}
               >
                 {t('moreComingSoon')}
               </Typography>
