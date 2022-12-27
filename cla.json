@@ -2039,6 +2039,14 @@
       "comment_id": 1363277906,
       "created_at": "2022-12-22T19:41:10Z",
       "repoId": 42009758
+    },
+    {
+      "id": 115153023,
+      "name": "Jithendra-transfi",
+      "pullRequestNo": 17069,
+      "comment_id": 1365652314,
+      "created_at": "2022-12-27T06:41:40Z",
+      "repoId": 42009758
     }
   ]
 }
