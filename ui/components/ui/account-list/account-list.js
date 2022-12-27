@@ -1,6 +1,7 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { memo, useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
@@ -178,4 +179,6 @@ AccountList.propTypes = {
   handleAccountClick: PropTypes.func.isRequired,
 };
 
-export default AccountList;
+export default memo(AccountList, (prevProps, nextProps) => {
+  return isEqual(prevProps.selectedAccounts, nextProps.selectedAccounts);
+});
