@@ -594,6 +594,13 @@
     "message": "Buy $1 with TransFi",
     "description": "$1 represents the cypto symbol to be purchased"
   },
+  "buyCryptoWithTransFi": {
+    "message": "Buy $1 with TransFi",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithTransFiDescription": {
+    "message": "TransFi offers a simplified crypto purchase with Visa, Mastercard, SEPA, and Local Payments in 140+ countries, and tokens will be deposited to Metamask directly"
+  },
   "buyCryptoWithTransFiDescription": {
     "message": "TransFi offers a simplified crypto purchase with Visa, Mastercard, SEPA, and Local Payments in 140+ countries, and tokens will be deposited to Metamask directly"
   },
@@ -604,13 +611,6 @@
   "buyCryptoWithTransakDescription": {
     "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
     "description": "$1 represents the crypto symbol to be purchased"
-  },
-    "buyCryptoWithTransFi":{
-    "message": "Buy $1 with TransFi",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransFiDescription":{
-    "message": "TransFi offers a simplified crypto purchase with Visa, Mastercard, SEPA, and Local Payments in 140+ countries, and tokens will be deposited to Metamask directly"
   },
   "buyNow": {
     "message": "Buy Now"
@@ -827,11 +827,11 @@
   "continueToTransFi": {
     "message": "Continue to TransFi"
   },
+  "continueToTransFi": {
+    "message": "Continue to TransFi"
+  },
   "continueToTransak": {
     "message": "Continue to Transak"
-  },
-   "continueToTransFi":{
-    "message": "Continue to TransFi"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
