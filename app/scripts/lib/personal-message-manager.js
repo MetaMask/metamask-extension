@@ -154,7 +154,7 @@ export default class PersonalMessageManager extends EventEmitter {
       const { host } = new URL(req.origin);
       if (siwe.parsedMessage.domain !== host) {
         throw new Error(
-          `SIWE domain is not valid: "${req.origin}" !== "${siwe.parsedMessage.domain}"`,
+          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
         );
       }
     }
