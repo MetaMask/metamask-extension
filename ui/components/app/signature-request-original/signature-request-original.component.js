@@ -50,7 +50,6 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   state = {
-    fromAccount: this.props.fromAccount,
     showSignatureRequestWarning: false,
   };
 
@@ -274,11 +273,13 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   render = () => {
-    const { messagesCount, conversionRate, nativeCurrency } = this.props;
     const {
+      messagesCount,
+      conversionRate,
+      nativeCurrency,
       fromAccount: { address, balance, name },
-      showSignatureRequestWarning,
-    } = this.state;
+    } = this.props;
+    const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);

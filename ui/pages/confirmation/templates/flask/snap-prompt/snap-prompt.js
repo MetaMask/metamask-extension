@@ -1,9 +1,11 @@
-import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
+import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
-  const { snapName, requestData } = pendingApproval;
-  const { title, description, placeholder } = requestData;
+  const {
+    snapName,
+    requestData: { content, placeholder },
+  } = pendingApproval;
 
   return {
     content: [
@@ -21,33 +23,8 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
             snapName,
           },
           children: [
-            {
-              element: 'Typography',
-              key: 'title',
-              children: title,
-              props: {
-                variant: TYPOGRAPHY.H3,
-                fontWeight: 'bold',
-                boxProps: {
-                  marginBottom: 4,
-                },
-              },
-            },
-            ...(description
-              ? [
-                  {
-                    element: 'Typography',
-                    key: 'subtitle',
-                    children: description,
-                    props: {
-                      variant: TYPOGRAPHY.H6,
-                      boxProps: {
-                        marginBottom: 4,
-                      },
-                    },
-                  },
-                ]
-              : []),
+            // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
+            mapToTemplate(content),
             {
               element: 'div',
               key: 'snap-prompt-container',

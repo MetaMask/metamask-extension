@@ -2,6 +2,7 @@ import React from 'react';
 import { store } from '../../../.storybook/preview';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Pages/ConfirmTokenTransactionBase',
   id: __filename,

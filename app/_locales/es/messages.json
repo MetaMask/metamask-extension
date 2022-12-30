@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "¡Entrada inválida! La frase secreta de recuperación distingue entre mayúsculas y minúsculas."
   },
-  "ipfsGateway": {
-    "message": "Puerta de enlace de IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Escriba la dirección URL de la puerta de enlace de IPFS CID para usar la resolución de contenido de ENS."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons y Blockies son dos estilos distintos de íconos únicos que pueden ayudarlo a identificar rápidamente una cuenta."
   },
@@ -2413,11 +2407,11 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
-    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver 2$.",
+    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver $2.",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver 2$.",
+    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {
@@ -3021,7 +3015,8 @@
     "message": "Mostrar transacciones entrantes"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones"
+    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostrar permisos"
