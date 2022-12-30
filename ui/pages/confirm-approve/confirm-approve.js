@@ -16,6 +16,7 @@ import {
   getNativeCurrency,
   isAddressLedger,
 } from '../../ducks/metamask/metamask';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
   getCurrentCurrency,
   getSubjectMetadata,
@@ -163,6 +164,9 @@ export default function ConfirmApprove({
 
   if (tokenSymbol === undefined && assetName === undefined) {
     return <Loading />;
+  }
+  if (assetStandard === undefined) {
+    return <ConfirmContractInteraction />;
   }
   if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
     return (

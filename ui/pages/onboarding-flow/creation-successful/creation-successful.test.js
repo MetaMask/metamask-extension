@@ -33,13 +33,6 @@ describe('Creation Successful Onboarding View', () => {
       .mockReturnValue({ push: pushMock });
   });
 
-  it('should call completeOnboarding in the background when "Got it!" button is clicked', () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const gotItButton = getByText('Got it!');
-    fireEvent.click(gotItButton);
-    expect(completeOnboardingStub).toHaveBeenCalledTimes(1);
-  });
-
   it('should redirect to privacy-settings view when "Advanced configuration" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
     const privacySettingsButton = getByText('Advanced configuration');

@@ -208,7 +208,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          keys:
+            # First try to get the specific cache for the checksum of the yarn.lock file.
+            # This cache key lookup will fail if the lock file is modified and a cache
+            # has not yet been persisted for the new checksum.
+            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            # To prevent having to do a full install of every node_module when
+            # dependencies change, restore from the last known cache of any
+            # branch/checksum, the install step will remove cached items that are no longer
+            # required and add the new dependencies, and the cache will be persisted.
+            - dependency-cache-v1-
       - gh/install
       - run:
           name: Set IS_DRAFT environment variable
@@ -237,7 +246,7 @@ jobs:
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules/
+            - .yarn/cache
       - persist_to_workspace:
           root: .
           paths:

@@ -1676,12 +1676,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "输入无效！助记词须区分大小写。"
   },
-  "ipfsGateway": {
-    "message": "IPFS 网关"
-  },
-  "ipfsGatewayDescription": {
-    "message": "输入用于 ENS 内容解析的 IPFS CID 网关的 URL。"
-  },
   "jazzAndBlockies": {
     "message": "哈希头像是帮助您一眼识别账户的独特图标，有 Jazzicons 和 Blockies 两种不同风格。"
   },
@@ -3021,7 +3015,8 @@
     "message": "显示传入的交易"
   },
   "showIncomingTransactionsDescription": {
-    "message": "选择此项以使用 Etherscan 在交易列表中显示传入的交易"
+    "message": "选择此项以使用 Etherscan 在交易列表中显示传入的交易",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "显示权限"

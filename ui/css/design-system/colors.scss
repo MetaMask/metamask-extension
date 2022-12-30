@@ -39,6 +39,8 @@ $color-map: (
   'mainnet': --mainnet,
   'goerli': --color-network-goerli-default,
   'sepolia': --color-network-sepolia-default,
+  'goerli-inverse':--color-network-goerli-inverse,
+  'sepolia-inverse': --color-network-sepolia-inverse,
   'localhost': --color-network-localhost-default,
   'transparent': --transparent,
   'flask-purple': --color-flask-default,

@@ -533,7 +533,7 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
-function getUnapprovedTxCount(state) {
+export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
 }
@@ -814,6 +814,27 @@ export function getShowWhatsNewPopup(state) {
 
 const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
+export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
+  getMetaMaskIdentities,
+  (identities) => identities,
+);
+
+export const getMemoizedAddressBook = createDeepEqualSelector(
+  getAddressBook,
+  (addressBook) => addressBook,
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, address) => address,
+  (tokenList, address) => {
+    const entry = Object.values(tokenList).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+    return entry && entry.name !== '' ? entry.name : '';
+  },
+);
+
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
@@ -874,7 +895,7 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
-export const getSnap = createSelector(
+export const getSnap = createDeepEqualSelector(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -882,16 +903,15 @@ export const getSnap = createSelector(
   },
 );
 
-export function getInsightSnaps(state) {
-  const snaps = Object.values(state.metamask.snaps);
-  const subjects = getPermissionSubjects(state);
-
-  const insightSnaps = snaps.filter(
-    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
-  );
-
-  return insightSnaps;
-}
+export const getInsightSnaps = createDeepEqualSelector(
+  getSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
@@ -1218,7 +1238,9 @@ export function getIsDynamicTokenListAvailable(state) {
  * @returns list of token objects
  */
 export function getDetectedTokensInCurrentNetwork(state) {
-  return state.metamask.detectedTokens;
+  const currentChainId = getCurrentChainId(state);
+  const selectedAddress = getSelectedAddress(state);
+  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
 /**
