@@ -1,0 +1,24 @@
+2022-12-16T19:45:28.4206499Z Current runner version: '2.300.0'
+2022-12-16T19:45:28.4247444Z ##[group]Operating System
+2022-12-16T19:45:28.4248207Z Ubuntu
+2022-12-16T19:45:28.4248610Z 22.04.1
+2022-12-16T19:45:28.4248975Z LTS
+2022-12-16T19:45:28.4249443Z ##[endgroup]
+2022-12-16T19:45:28.4249872Z ##[group]Runner Image
+2022-12-16T19:45:28.4250521Z Image: ubuntu-22.04
+2022-12-16T19:45:28.4250985Z Version: 20221212.1
+2022-12-16T19:45:28.4251887Z Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20221212.1/images/linux/Ubuntu2204-Readme.md
+2022-12-16T19:45:28.4252847Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20221212.1
+2022-12-16T19:45:28.4253554Z ##[endgroup]
+2022-12-16T19:45:28.4254069Z ##[group]Runner Image Provisioner
+2022-12-16T19:45:28.4254463Z 2.0.91.1
+2022-12-16T19:45:28.4254906Z ##[endgroup]
+2022-12-16T19:45:28.4255760Z ##[group]GITHUB_TOKEN Permissions
+2022-12-16T19:45:28.4256539Z Metadata: read
+2022-12-16T19:45:28.4256989Z ##[endgroup]
+2022-12-16T19:45:28.4261620Z Secret source: Actions
+2022-12-16T19:45:28.4262763Z Prepare workflow directory
+2022-12-16T19:45:28.5410577Z Prepare all required actions
+2022-12-16T19:45:28.5698243Z Getting action download info
+2022-12-16T19:45:28.9148097Z Download action repository 'actions/github-script@2b34a689ec86a68d8ab9478298f91d5401337b7d' (SHA:2b34a689ec86a68d8ab9478298f91d5401337b7d)
+2022-12-16T19:45:29.5677786Z Download action repository 'someimportantcompany/github-actions-slack-message@f8d28715e7b8a4717047d23f48c39827cacad340' (SHA:f8d28715e7b8a4717047d23f48c39827cacad340)
