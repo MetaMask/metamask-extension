@@ -111,7 +111,7 @@ export default class SignatureRequest extends PureComponent {
   memoizedParseMessage = memoize((data) => {
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-    return { sanitizedMessage, domain };
+    return { sanitizedMessage, domain, primaryType };
   });
 
   render() {
@@ -134,7 +134,8 @@ export default class SignatureRequest extends PureComponent {
       nativeCurrency,
     } = this.props;
     const { trackEvent } = this.context;
-    const { sanitizedMessage, domain } = this.memoizedParseMessage(data);
+    const { sanitizedMessage, domain, primaryType } =
+      this.memoizedParseMessage(data);
 
     const currentNetwork = this.getNetworkName();
 
@@ -248,6 +249,7 @@ export default class SignatureRequest extends PureComponent {
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
           messageIsScrollable={messageIsScrollable}
+          primaryType={primaryType}
         />
         <Footer
           cancelAction={onCancel}
