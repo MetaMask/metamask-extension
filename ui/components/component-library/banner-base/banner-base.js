@@ -89,7 +89,7 @@ BannerBase.propTypes = {
    */
   title: PropTypes.string,
   /**
-   * The title of the BannerBase
+   * Additional props to pass to the `Text` component used for the `title` text
    */
   titleProps: PropTypes.shape(Text.PropTypes),
   /**
