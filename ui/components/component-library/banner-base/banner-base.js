@@ -50,13 +50,10 @@ export const BannerBase = ({
             {title}
           </Text>
         )}
-        {children && (
-          <Text
-            as={typeof children === 'object' ? 'div' : 'p'}
-            className="mm-banner-base__description"
-          >
-            {children}
-          </Text>
+        {children && typeof children === 'object' ? (
+          children
+        ) : (
+          <Text>{children}</Text>
         )}
         {actionButtonLabel && (
           <ButtonLink
