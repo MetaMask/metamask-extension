@@ -1266,8 +1266,8 @@
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/smart-transactions-controller>fast-json-patch": true,
         "ethers>@ethersproject/bytes": true,
+        "fast-json-patch": true,
         "lodash": true
       }
     },
@@ -1490,14 +1490,6 @@
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "@metamask/smart-transactions-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers": {
@@ -4044,9 +4036,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      },
-      "packages": {
-        "fast-json-patch>fast-deep-equal": true
       }
     },
     "fuse.js": {
