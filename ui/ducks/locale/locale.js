@@ -6,11 +6,14 @@ export default function reduceLocaleMessages(state = {}, { type, value }) {
       return {
         ...state,
         current: value.messages,
+        currentLocale: value.locale,
       };
     default:
       return state;
   }
 }
+
+export const getCurrentLocale = (state) => state.localeMessages.currentLocale;
 
 export const getCurrentLocaleMessages = (state) => state.localeMessages.current;
 

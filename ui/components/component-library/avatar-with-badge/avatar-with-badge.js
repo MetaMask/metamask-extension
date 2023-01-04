@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
-import { BADGE_POSITIONS } from './avatar-with-badge.constants';
+import { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';
 
 export const AvatarWithBadge = ({
   children,
@@ -13,14 +13,14 @@ export const AvatarWithBadge = ({
   ...props
 }) => {
   return (
-    <Box className={classnames('avatar-with-badge', className)} {...props}>
+    <Box className={classnames('mm-avatar-with-badge', className)} {...props}>
       {/* Generally the AvatarAccount */}
       {children}
       <Box
         className={
           badgePosition === 'top'
-            ? 'avatar-with-badge__badge-wrapper--position-top'
-            : 'avatar-with-badge__badge-wrapper--position-bottom'
+            ? 'mm-avatar-with-badge__badge-wrapper--position-top'
+            : 'mm-avatar-with-badge__badge-wrapper--position-bottom'
         }
         {...badgeWrapperProps}
       >
@@ -36,7 +36,7 @@ AvatarWithBadge.propTypes = {
    * The position of the Badge
    * Possible values could be 'top', 'bottom',
    */
-  badgePosition: PropTypes.oneOf(Object.values(BADGE_POSITIONS)),
+  badgePosition: PropTypes.oneOf(Object.values(AVATAR_WITH_BADGE_POSTIONS)),
   /**
    * The Badge Wrapper props of the component. All Box props can be used
    */
@@ -53,4 +53,8 @@ AvatarWithBadge.propTypes = {
    * Add custom css class
    */
   className: PropTypes.string,
+  /**
+   * AvatarWithBadge accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
