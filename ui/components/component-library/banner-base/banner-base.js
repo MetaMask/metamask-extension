@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon } from '../button-icon';
-import { ButtonLink } from '../button-link';
-import { ICON_NAMES } from '../icon';
-import { Text } from '../text';
+import { ButtonIcon, ButtonLink,  ICON_NAMES,  Text} from '..';
+
 import Box from '../../ui/box';
 
 import {
