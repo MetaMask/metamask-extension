@@ -683,7 +683,7 @@ export const As = (args) => {
   );
 };
 
-export const Width = () => {
+export const Width = (args) => {
   const getColumns = () => {
     const content = [];
     for (let i = 0; i < 12; i++) {
@@ -702,6 +702,24 @@ export const Width = () => {
 
   return (
     <>
+      <p>
+        <b>Working demo</b>
+      </p>
+
+      <Box
+        borderColor={COLORS.BORDER_MUTED}
+        borderWidth={6}
+        marginBottom={6}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        {...args}
+      >
+        {args.width.map((item, i) => {
+          return `${item} ${args.width.length === i + 1 ? '' : ', '}`;
+        })}
+      </Box>
+
       <p>
         <b>Static widths</b>
       </p>
@@ -931,8 +949,8 @@ export const Width = () => {
 Width.args = {
   width: [
     BLOCK_SIZES.HALF,
-    BLOCK_SIZES.THREE_FOURTHS,
     BLOCK_SIZES.ONE_FIFTH,
-    BLOCK_SIZES.THREE_SIXTHS,
+    BLOCK_SIZES.THREE_FOURTHS,
+    BLOCK_SIZES.ONE_FOURTH,
   ],
 };

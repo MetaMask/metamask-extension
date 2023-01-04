@@ -308,13 +308,76 @@ Example: [BLOCK_SIZES.HALF, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.ONE_FIFTH, BL
 </Canvas>
 
 ```jsx
-import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
+import {
+  BLOCK_SIZES,
+  DISPLAY,
+  FLEX_WRAP,
+} from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
-<Box width={BLOCK_SIZES.HALF}>
-  Non-responsive box at width size: {BLOCK_SIZES.HALF}
-</Box>
-<Box width={[BLOCK_SIZES.HALF, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.ONE_FIFTH, BLOCK_SIZES.THREE_SIXTHS]}>
-  Responsive box at width sizes: [{BLOCK_SIZES.HALF}, {BLOCK_SIZES.THREE_FOURTHS}, {BLOCK_SIZES.ONE_FIFTH}]
-</Box>
+<>
+  <p>Static widths</p>
+
+  <Box display={DISPLAY.FLEX}>
+    <Box width={BLOCK_SIZES.FULL}>BLOCK_SIZES.FULL</Box>
+    <Box width={BLOCK_SIZES.HALF}>BLOCK_SIZES.HALF</Box>
+    <Box width={BLOCK_SIZES.HALF}>BLOCK_SIZES.HALF</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+  </Box>
+
+  <p>Responsive widths</p>
+
+  <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+  </Box>
+</>;
 ```
