@@ -167,7 +167,7 @@
     "@fortawesome/fontawesome-free@^5.13.0": "patch:@fortawesome/fontawesome-free@npm%3A5.13.0#./.yarn/patches/@fortawesome-fontawesome-free-npm-5.13.0-f20fc0388d.patch",
     "@keystonehq/bc-ur-registry@^0.5.0-alpha.5": "patch:@keystonehq/bc-ur-registry@npm%3A0.5.0-alpha.5#./.yarn/patches/@keystonehq-bc-ur-registry-npm-0.5.0-alpha.5-b95c7992a6.patch",
     "@lavamoat/lavapack@^3.1.0": "patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch",
-    "fast-json-patch@^3.1.0": "patch:fast-json-patch@npm%3A3.1.0#./.yarn/patches/fast-json-patch-npm-3.1.0-f4bd467b5f.patch",
+    "fast-json-patch@^3.1.0": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "@reduxjs/toolkit@^1.6.2": "patch:@reduxjs/toolkit@npm%3A1.6.2#./.yarn/patches/@reduxjs-toolkit-npm-1.6.2-67af09515f.patch",
     "parse5@^7.0.0": "patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch",
     "@types/madge@^5.0.0": "patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch",
@@ -185,7 +185,8 @@
     "luxon@^3.0.1": "patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch",
     "improved-yarn-audit@^3.0.0": "patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch",
     "lockfile-lint-api@^5.4.6": "patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch",
-    "symbol-observable": "^2.0.3"
+    "symbol-observable": "^2.0.3",
+    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
@@ -275,7 +276,7 @@
     "ethjs-contract": "^0.2.3",
     "ethjs-query": "^0.3.4",
     "extension-port-stream": "^2.0.0",
-    "fast-json-patch": "^2.2.1",
+    "fast-json-patch": "^3.1.1",
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
