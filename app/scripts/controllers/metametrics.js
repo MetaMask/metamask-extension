@@ -34,13 +34,16 @@ const defaultCaptureException = (err) => {
 
 // The function is used to build a unique messageId for segment messages
 // It uses actionId and uniqueIdentifier from event if present
-const buildUniqueMessageId = (args) => {
+const buildUniqueMessageId = (args, isDuplicateAnonymizedEvent = false) => {
   let messageId = '';
   if (args.uniqueIdentifier) {
     messageId += `${args.uniqueIdentifier}-`;
   }
   if (args.actionId) {
     messageId += args.actionId;
+  }
+  if (isDuplicateAnonymizedEvent) {
+    messageId += '-0x000';
   }
   if (messageId.length) {
     return messageId;
@@ -530,6 +533,7 @@ export default class MetaMetricsController {
           this._buildEventPayload({
             ...payload,
             properties: combinedProperties,
+            isDuplicateAnonymizedEvent: true,
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
@@ -646,10 +650,14 @@ export default class MetaMetricsController {
       page,
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      isDuplicateAnonymizedEvent,
     } = rawPayload;
     return {
       event,
-      messageId: buildUniqueMessageId(rawPayload),
+      messageId: buildUniqueMessageId(
+        rawPayload,
+        isDuplicateAnonymizedEvent ?? false,
+      ),
       properties: {
         // These values are omitted from properties because they have special meaning
         // in segment. https://segment.com/docs/connections/spec/track/#properties.
