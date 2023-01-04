@@ -14,6 +14,7 @@ import {
   TEXT,
   SIZES,
   FLEX_DIRECTION,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -38,6 +39,7 @@ export const ButtonBase = ({
       href={href}
       paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
+      borderRadius={BORDER_RADIUS.PILL}
       className={classnames(
         'mm-button-base',
         `mm-button-base--size-${size}`,

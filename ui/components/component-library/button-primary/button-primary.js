@@ -16,7 +16,7 @@ export const ButtonPrimary = ({
     <ButtonBase
       className={classnames(className, 'mm-button-primary', {
         'mm-button-primary--type-danger': danger,
-        'mm-button-primary--disabed': disabled,
+        'mm-button-primary--disabled': disabled,
       })}
       size={size}
       {...{ disabled, ...props }}
