@@ -1,0 +1,35 @@
+diff --git a/lib/index.js b/lib/index.js
+index 9aba48771dfe2407e22cc4e0cb0387ce6ea45dea..b685d460ed9c3ce92bc4cff4c38b7a63da9e7dbc 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -60,6 +60,30 @@ EthRPC.prototype.sendAsync = function sendAsync(payload, callback) {
+         return;
+       }
+ 
++      let result = responseObject.result;
++      if (typeof result === 'string' && result.slice(0, 3) === 'xdc') {
++        result = `0x${result.slice(3)}`;
++      } else if (typeof result === 'object' && result !== null) {
++        if (result?.to && typeof result.to === 'string' && result.to.slice(0, 3) === 'xdc') {
++          result.to = `0x${result.to.slice(3)}`;
++        }
++        if (result?.from && typeof result.from === 'string' && result.from.slice(0, 3) === 'xdc') {
++          result.from = `0x${result.from.slice(3)}`;
++        }
++        if (result?.miner && typeof result.miner === 'string' && result.miner.slice(0, 3) === 'xdc') {
++          result.miner = `0x${result.miner.slice(3)}`;
++        }
++        if (result?.author && typeof result.author === 'string' && result.author.slice(0, 3) === 'xdc') {
++          result.author = `0x${result.author.slice(3)}`;
++        }
++        if (result?.address && typeof result.address === 'string' && result.address.slice(0, 3) === 'xdc') {
++          result.address = `0x${result.address.slice(3)}`;
++        }
++        if (result?.contractAddress && typeof result.contractAddress === 'string' && result.contractAddress.slice(0, 3) === 'xdc') {
++          result.contractAddress = `0x${result.contractAddress.slice(3)}`;
++        }
++      }      
++
+       resolve(responseObject.result);
+       return;
+     });

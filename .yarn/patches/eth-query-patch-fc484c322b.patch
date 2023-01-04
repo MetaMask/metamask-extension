@@ -1,0 +1,36 @@
+diff --git a/index.js b/index.js
+index 18b050ded27baf3603708fd6d595a554ea3c19c8..d5c83330570ba90d0759ac24f3412d53fe4b2956 100644
+--- a/index.js
++++ b/index.js
+@@ -69,6 +69,31 @@ EthQuery.prototype.sendAsync = function(opts, cb){
+     debug('got err = %o, response = %o', err, response)
+     if (!err && response.error) err = new Error('EthQuery - RPC Error - '+response.error.message)
+     if (err) return cb(err)
++
++    let result = response.result;
++    if (typeof result === 'string' && result.slice(0, 3) === 'xdc') {
++      result = `0x${result.slice(3)}`;
++    } else if (typeof result === 'object' && result !== null) {
++      if (result?.to && typeof result.to === 'string' && result.to.slice(0, 3) === 'xdc') {
++        result.to = `0x${result.to.slice(3)}`;
++      }
++      if (result?.from && typeof result.from === 'string' && result.from.slice(0, 3) === 'xdc') {
++        result.from = `0x${result.from.slice(3)}`;
++      }
++      if (result?.miner && typeof result.miner === 'string' && result.miner.slice(0, 3) === 'xdc') {
++        result.miner = `0x${result.miner.slice(3)}`;
++      }
++      if (result?.author && typeof result.author === 'string' && result.author.slice(0, 3) === 'xdc') {
++        result.author = `0x${result.author.slice(3)}`;
++      }
++      if (result?.address && typeof result.address === 'string' && result.address.slice(0, 3) === 'xdc') {
++        result.address = `0x${result.address.slice(3)}`;
++      }
++      if (result?.contractAddress && typeof result.contractAddress === 'string' && result.contractAddress.slice(0, 3) === 'xdc') {
++        result.contractAddress = `0x${result.contractAddress.slice(3)}`;
++      }
++    }
++
+     cb(null, response.result)
+   })
+ }

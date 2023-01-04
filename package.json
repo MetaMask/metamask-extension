@@ -128,8 +128,8 @@
     "await-semaphore@^0.1.3": "patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch",
     "eslint@^8.20.0": "patch:eslint@npm%3A8.20.0#./.yarn/patches/eslint-npm-8.20.0-6bbc377ff7.patch",
     "eslint@8.14.0": "patch:eslint@npm%3A8.20.0#./.yarn/patches/eslint-npm-8.20.0-6bbc377ff7.patch",
-    "eth-query@^2.1.2": "patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch",
-    "eth-query@^2.1.0": "patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch",
+    "eth-query@^2.1.2": "patch:eth-query@patch%3Aeth-query@npm%253A2.1.2%23./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch%3A%3Aversion=2.1.2&hash=181db5&locator=metamask-crx%2540workspace%253A.#./.yarn/patches/eth-query-patch-fc484c322b.patch",
+    "eth-query@^2.1.0": "patch:eth-query@patch%3Aeth-query@npm%253A2.1.2%23./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch%3A%3Aversion=2.1.2&hash=181db5&locator=metamask-crx%2540workspace%253A.#./.yarn/patches/eth-query-patch-fc484c322b.patch",
     "ethereumjs-util@^5.1.1": "patch:ethereumjs-util@npm%3A5.2.1#./.yarn/patches/ethereumjs-util-npm-5.2.1-72b39f4e7e.patch",
     "ethereumjs-util@^5.1.2": "patch:ethereumjs-util@npm%3A5.2.1#./.yarn/patches/ethereumjs-util-npm-5.2.1-72b39f4e7e.patch",
     "ethereumjs-util@^5.1.5": "patch:ethereumjs-util@npm%3A5.2.1#./.yarn/patches/ethereumjs-util-npm-5.2.1-72b39f4e7e.patch",
@@ -199,7 +199,10 @@
     "async-done@~1.3.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.0": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
-    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch"
+    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
+    "ethjs-rpc@0.2.0": "patch:ethjs-rpc@npm%3A0.2.0#./.yarn/patches/ethjs-rpc-npm-0.2.0-1452024e81.patch",
+    "json-rpc-middleware-stream@^4.2.1": "patch:json-rpc-middleware-stream@npm%3A4.2.1#./.yarn/patches/json-rpc-middleware-stream-npm-4.2.1-4f3d6a594e.patch",
+    "json-rpc-middleware-stream@^4.2.0": "patch:json-rpc-middleware-stream@npm%3A4.2.1#./.yarn/patches/json-rpc-middleware-stream-npm-4.2.1-4f3d6a594e.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

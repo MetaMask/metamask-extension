@@ -1,0 +1,36 @@
+diff --git a/dist/createStreamMiddleware.js b/dist/createStreamMiddleware.js
+index 33a8c36803e2e4163ede4cc2610bdc571b07f01c..9c3dd47cb583410d19487014d64e4d133bb62bd2 100644
+--- a/dist/createStreamMiddleware.js
++++ b/dist/createStreamMiddleware.js
+@@ -49,6 +49,31 @@ function createStreamMiddleware(options = {}) {
+         let err = null;
+         try {
+             const isNotification = !res.id;
++
++            let result = isNotification ? res?.params?.result : res?.result;
++            if (typeof result === 'string' && result.slice(0, 3) === 'xdc') {
++                result = `0x${result.slice(3)}`;
++            } else if (typeof result === 'object' && result !== null) {
++                if (result?.to && typeof result.to === 'string' && result.to.slice(0, 3) === 'xdc') {
++                  result.to = `0x${result.to.slice(3)}`;
++                }
++                if (result?.from && typeof result.from === 'string' && result.from.slice(0, 3) === 'xdc') {
++                  result.from = `0x${result.from.slice(3)}`;
++                }
++                if (result?.miner && typeof result.miner === 'string' && result.miner.slice(0, 3) === 'xdc') {
++                  result.miner = `0x${result.miner.slice(3)}`;
++                }
++                if (result?.author && typeof result.author === 'string' && result.author.slice(0, 3) === 'xdc') {
++                  result.author = `0x${result.author.slice(3)}`;
++                }
++                if (result?.address && typeof result.address === 'string' && result.address.slice(0, 3) === 'xdc') {
++                  result.address = `0x${result.address.slice(3)}`;
++                }
++                if (result?.contractAddress && typeof result.contractAddress === 'string' && result.contractAddress.slice(0, 3) === 'xdc') {
++                  result.contractAddress = `0x${result.contractAddress.slice(3)}`;
++                }
++            }
++
+             if (isNotification) {
+                 processNotification(res);
+             }

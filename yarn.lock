@@ -15552,13 +15552,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-query@patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch::locator=metamask-crx%40workspace%3A.":
+"eth-query@patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch::version=2.1.2&hash=181db5&locator=metamask-crx%40workspace%3A.":
   version: 2.1.2
   resolution: "eth-query@patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch::version=2.1.2&hash=181db5&locator=metamask-crx%40workspace%3A."
   dependencies:
     json-rpc-random-id: ^1.0.0
     xtend: ^4.0.1
   checksum: fe9828453595822ab41a63bb6397ba0ec0a47c931c926a49adf4378c233002fe325e0376e66e05abd45758e08239d4a9ba94744fb8c1782eafcd2b9e7334302e
+  languageName: node
+  linkType: hard
+
+"eth-query@patch:eth-query@patch%3Aeth-query@npm%253A2.1.2%23./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch%3A%3Aversion=2.1.2&hash=181db5&locator=metamask-crx%2540workspace%253A.#./.yarn/patches/eth-query-patch-fc484c322b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 2.1.2
+  resolution: "eth-query@patch:eth-query@patch%3Aeth-query@npm%253A2.1.2%23./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch%3A%3Aversion=2.1.2&hash=181db5&locator=metamask-crx%2540workspace%253A.#./.yarn/patches/eth-query-patch-fc484c322b.patch::version=2.1.2&hash=7b214e&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    json-rpc-random-id: ^1.0.0
+    xtend: ^4.0.1
+  checksum: eef33234b747e2f00851b0c9a4643de8a46f1f5ed9fa8bb4a2bdd47c1c3663a935d2483021f763334f2905d071c939fc26869cef1e042d8de1bbb9fc8864096a
   languageName: node
   linkType: hard
 
@@ -16017,6 +16027,15 @@ __metadata:
   dependencies:
     promise-to-callback: ^1.0.0
   checksum: b6f4f021ba2b613d453fc02a7d33ec198d64d29af3da137bf728175360281323ab1525b22079d9b0689db0683d76cf265b68774412bff7281d0d26898f4875da
+  languageName: node
+  linkType: hard
+
+"ethjs-rpc@patch:ethjs-rpc@npm%3A0.2.0#./.yarn/patches/ethjs-rpc-npm-0.2.0-1452024e81.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.2.0
+  resolution: "ethjs-rpc@patch:ethjs-rpc@npm%3A0.2.0#./.yarn/patches/ethjs-rpc-npm-0.2.0-1452024e81.patch::version=0.2.0&hash=358e53&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    promise-to-callback: ^1.0.0
+  checksum: 209b88818b35c460fddd5f6f3c97f53f24ceeec75d3b1b24aa64a366ed952c4247090dc745439642c9285e7f312ba757bc572f31654c4badca24c9952061d0c8
   languageName: node
   linkType: hard
 
@@ -22204,6 +22223,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-rpc-middleware-stream@npm:4.2.1":
+  version: 4.2.1
+  resolution: "json-rpc-middleware-stream@npm:4.2.1"
+  dependencies:
+    "@metamask/safe-event-emitter": ^2.0.0
+    readable-stream: ^2.3.3
+  checksum: 207c34ba2c55ff072864422ba48b03f49dd1bc488f0d9c017c7474d3f2514bd4b1cc14daf5324f96887cdaf8e5c1018701960f55fb45e9c3224e3d7db9f70765
+  languageName: node
+  linkType: hard
+
 "json-rpc-middleware-stream@npm:^2.1.1":
   version: 2.1.1
   resolution: "json-rpc-middleware-stream@npm:2.1.1"
@@ -22214,13 +22243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1":
+"json-rpc-middleware-stream@patch:json-rpc-middleware-stream@npm%3A4.2.1#./.yarn/patches/json-rpc-middleware-stream-npm-4.2.1-4f3d6a594e.patch::locator=metamask-crx%40workspace%3A.":
   version: 4.2.1
-  resolution: "json-rpc-middleware-stream@npm:4.2.1"
+  resolution: "json-rpc-middleware-stream@patch:json-rpc-middleware-stream@npm%3A4.2.1#./.yarn/patches/json-rpc-middleware-stream-npm-4.2.1-4f3d6a594e.patch::version=4.2.1&hash=f72afd&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     readable-stream: ^2.3.3
-  checksum: 207c34ba2c55ff072864422ba48b03f49dd1bc488f0d9c017c7474d3f2514bd4b1cc14daf5324f96887cdaf8e5c1018701960f55fb45e9c3224e3d7db9f70765
+  checksum: 9568554799ab89bfc5d30fe593a59e226486b1a1da77f3c294c117dbaf11b9d4a69fb37cbc11078a375f2c6af1103ae9c5c335a9fb53e45bbf9ab18e187fca90
   languageName: node
   linkType: hard
 
