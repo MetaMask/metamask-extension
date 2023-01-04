@@ -187,6 +187,7 @@ export const SIZES = {
   LG: 'lg',
   XL: 'xl',
   INHERIT: 'inherit', // Used for Text, Icon, and Button components to inherit the parent elements font-size
+  AUTO: 'auto',
   NONE,
 };
 

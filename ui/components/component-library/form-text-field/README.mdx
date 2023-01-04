@@ -300,12 +300,12 @@ import {
       color={COLORS.ICON_ALTERNATIVE}
     />
   </Box>
-  <ButtonLink size={SIZES.INHERIT}>Use default</ButtonLink>
+  <ButtonLink>Use default</ButtonLink>
 </Box>
 <FormTextField
   id="custom-spending-cap"
   placeholder="Enter a number"
-  rightAccessory={<ButtonLink size={SIZES.INHERIT}>Max</ButtonLink>}
+  rightAccessory={<ButtonLink>Max</ButtonLink>}
   marginBottom={4}
   type={TEXT_FIELD_TYPES.NUMBER}
 />
@@ -318,6 +318,7 @@ import {
   display={DISPLAY.FLEX}
   alignItems={ALIGN_ITEMS.FLEX_START}
   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+  marginTop={1}
 >
   {/**
     * If you need a custom help text
@@ -325,11 +326,11 @@ import {
     * import the HelpText component separately and handle the error
     * logic yourself
     */}
-  <HelpText htmlFor="chainId" required paddingRight={2} marginTop={1}>
+  <HelpText htmlFor="chainId" required marginRight={2}>
     Only enter a number that you're comfortable with the contract accessing
     now or in the future. You can always increase the token limit later.
   </HelpText>
-  <ButtonLink size={SIZES.INHERIT} marginLeft="auto" marginTop={1}>
+  <ButtonLink marginLeft="auto">
     Max
   </ButtonLink>
 </Box>

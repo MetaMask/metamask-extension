@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ALIGN_ITEMS,
   BORDER_RADIUS,
+  BORDER_STYLE,
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
@@ -122,35 +123,49 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <>
-    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START} gap={1}>
+    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START} gap={4}>
+      <ButtonLink {...args} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
       <ButtonLink {...args} size={SIZES.SM}>
-        Small Button
+        Small
       </ButtonLink>
       <ButtonLink {...args} size={SIZES.MD}>
-        Medium (Default) Button
+        Medium
       </ButtonLink>
       <ButtonLink {...args} size={SIZES.LG}>
-        Large Button
+        Large
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
+    <Text variant={TEXT.BODY_LG_MEDIUM}>
+      Inherits the font-size of the parent element.{' '}
       <ButtonLink {...args} size={SIZES.INHERIT}>
-        Inherit Button
-      </ButtonLink>{' '}
-      inherits the font-size of the parent element.
+        Learn more
+      </ButtonLink>
     </Text>
-    <ButtonLink {...args} noPadding>
-      No Padding Button
-    </ButtonLink>
+    <Text variant={TEXT.BODY_MD}>
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
+    </Text>
     <Text variant={TEXT.BODY_SM}>
-      No padding does not require a size. Learn more in the noPadding prop docs
-      of ButtonLink.
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
+    </Text>
+    <Text variant={TEXT.BODY_XS}>
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
     </Text>
   </>
 );
 
 export const Danger = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={DISPLAY.FLEX} gap={4}>
     <ButtonLink {...args}>Normal</ButtonLink>
     {/* Test Anchor tag to match exactly as button */}
     <ButtonLink as="a" {...args} href="#" danger>
@@ -159,45 +174,62 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+export const Href = (args) => <ButtonLink {...args}>Href example</ButtonLink>;
 
 Href.args = {
   href: '/metamask',
 };
 
-export const NoPadding = (args) => (
+export const HitArea = (args) => (
   <>
-    <ButtonLink {...args} noPadding>
-      No Padding Button
-    </ButtonLink>
-
-    <Text variant={TEXT.BODY_MD} style={{ maxWidth: 400 }} marginBottom={4}>
-      No padding prop is used when there is no parent text element wrapping the
-      ButtonLink component. When using noPadding, there is no need to pass a
-      size since it will be overridden.
-    </Text>
+    <Text marginBottom={4}>Default</Text>
     <Box
-      style={{ maxWidth: 400 }}
-      borderColor={COLORS.BORDER_DEFAULT}
-      borderRadius={BORDER_RADIUS.SM}
-      padding={2}
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.FLEX_START}
+      gap={4}
+      marginBottom={4}
     >
-      <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-        alignItems={ALIGN_ITEMS.CENTER}
-        marginBottom={2}
-      >
-        <Text variant={TEXT.HEADING_SM} as="h3">
-          No padding example
-        </Text>
-        <ButtonLink noPadding>Action</ButtonLink>
-      </Box>
-      <Text variant={TEXT.BODY_MD}>
-        This is an example of how noPadding prop might be used in a horizontal
-        setting (action button top) and a veritcal setting (action button below)
-      </Text>
-      <ButtonLink noPadding>Action</ButtonLink>
+      <ButtonLink {...args} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.SM}>
+        Small
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.MD}>
+        Medium
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.LG}>
+        Large
+      </ButtonLink>
     </Box>
+    <Text marginBottom={4}>Add paddingLeft and paddingRight props</Text>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.FLEX_START}
+      gap={4}
+      marginBottom={4}
+    >
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.SM}>
+        Small
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.MD}>
+        Medium
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.LG}>
+        Large
+      </ButtonLink>
+    </Box>
+    <Text marginBottom={4}>Add block prop</Text>
+    <ButtonLink {...args} size={SIZES.LG} block>
+      Large block
+    </ButtonLink>
   </>
 );
+
+HitArea.args = {
+  borderColor: COLORS.ERROR_DEFAULT,
+  borderStyle: BORDER_STYLE.DASHED,
+};

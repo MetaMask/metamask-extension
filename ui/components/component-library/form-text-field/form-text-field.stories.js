@@ -445,12 +445,12 @@ export const CustomLabelOrHelpText = () => (
           color={COLORS.ICON_ALTERNATIVE}
         />
       </Box>
-      <ButtonLink size={SIZES.INHERIT}>Use default</ButtonLink>
+      <ButtonLink>Use default</ButtonLink>
     </Box>
     <FormTextField
       id="custom-spending-cap"
       placeholder="Enter a number"
-      rightAccessory={<ButtonLink size={SIZES.INHERIT}>Max</ButtonLink>}
+      rightAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
       type={TEXT_FIELD_TYPES.NUMBER}
     />
@@ -473,7 +473,7 @@ export const CustomLabelOrHelpText = () => (
         accessing now or in the future. You can always increase the token limit
         later.
       </HelpText>
-      <ButtonLink size={SIZES.INHERIT} marginLeft="auto" marginTop={1}>
+      <ButtonLink marginLeft="auto" marginTop={1}>
         Max
       </ButtonLink>
     </Box>

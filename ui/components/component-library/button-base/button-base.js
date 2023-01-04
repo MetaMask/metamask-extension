@@ -14,6 +14,7 @@ import {
   TEXT,
   SIZES,
   FLEX_DIRECTION,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -54,6 +55,7 @@ export const ButtonBase = ({
       display={DISPLAY.INLINE_FLEX}
       justifyContent={JUSTIFY_CONTENT.CENTER}
       alignItems={ALIGN_ITEMS.CENTER}
+      borderRadius={BORDER_RADIUS.PILL}
       {...props}
     >
       <Text
