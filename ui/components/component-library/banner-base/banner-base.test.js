@@ -71,21 +71,18 @@ describe('BannerBase', () => {
   });
 
   it('should render bannerbase startAccessory', () => {
-    const { container } = render(
+    const { container, getByTestId } = render(
       <BannerBase
         startAccessory={
           <Icon
-            className="mm-banner-base__start-accessory"
+            data-testid="start-accessory"
             name={ICON_NAMES.ADD_SQUARE_FILLED}
           />
         }
       />,
     );
 
-    const icon = container.getElementsByClassName(
-      'mm-banner-base__start-accessory',
-    ).length;
-    expect(icon).toBe(1);
+    expect(getByTestId('start-accessory').toBeDefined();
   });
 
   it('should render and fire onClose event', async () => {
