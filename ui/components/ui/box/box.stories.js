@@ -702,6 +702,9 @@ export const Width = () => {
 
   return (
     <>
+      <p>
+        <b>Static widths</b>
+      </p>
       <Box
         display={DISPLAY.FLEX}
         borderColor={COLORS.BACKGROUND_ALTERNATIVE}
@@ -833,6 +836,9 @@ export const Width = () => {
           </Box>
         </Box>
       </Box>
+      <p>
+        <b>Responsive widths</b>
+      </p>
       <Box
         display={DISPLAY.FLEX}
         borderColor={COLORS.BACKGROUND_ALTERNATIVE}
