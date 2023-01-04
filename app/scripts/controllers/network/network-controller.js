@@ -127,6 +127,15 @@ export default class NetworkController extends EventEmitter {
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
+  /**
+   * Destroy the network controller, stopping any ongoing polling.
+   *
+   * In-progress requests will not be aborted.
+   */
+  async destroy() {
+    await this._blockTracker.destroy();
+  }
+
   async initializeProvider(providerParams) {
     this._baseProviderParams = providerParams;
     const { type, rpcUrl, chainId } = this.getProviderConfig();
