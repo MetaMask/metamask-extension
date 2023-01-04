@@ -111,7 +111,7 @@ export default function TokenAllowance({
     }
   }
 
-  const customTxParamsData = Number(replaceCommaToDot(customTokenAmount))
+  const customTxParamsData = customPermissionAmount
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
