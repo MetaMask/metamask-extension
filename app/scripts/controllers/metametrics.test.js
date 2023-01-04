@@ -159,9 +159,7 @@ describe('MetaMetricsController', function () {
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
-  afterEach(function () {
-    sinon.restore();
-  });
+
   describe('constructor', function () {
     it('should properly initialize', function () {
       const mock = sinon.mock(segment);
