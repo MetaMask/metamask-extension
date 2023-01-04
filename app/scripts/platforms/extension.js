@@ -1,9 +1,11 @@
 import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { startCase, toLower } from 'lodash';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { getURLHostName } from '../../../ui/helpers/utils/util';
 
 export default class ExtensionPlatform {
   //
@@ -160,10 +162,13 @@ export default class ExtensionPlatform {
 
     const url = getBlockExplorerLink(txMeta, rpcPrefs);
     const nonce = parseInt(txMeta.txParams.nonce, 16);
+    const view = startCase(
+      toLower(getURLHostName(url).replace(/([.]\w+)$/u, '')),
+    );
 
     const title = 'Confirmed transaction';
     const message = `Transaction ${nonce} confirmed! ${
-      url.length ? 'View on Etherscan' : ''
+      url.length ? `View on ${view}` : ''
     }`;
     this._showNotification(title, message, url);
   }
