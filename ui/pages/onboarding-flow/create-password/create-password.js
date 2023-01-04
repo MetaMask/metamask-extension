@@ -54,9 +54,13 @@ export default function CreatePassword({
 
   useEffect(() => {
     if (currentKeyring) {
-      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
