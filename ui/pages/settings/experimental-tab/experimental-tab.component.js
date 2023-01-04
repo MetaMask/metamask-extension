@@ -6,6 +6,12 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import Typography from '../../../components/ui/typography/typography';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -142,34 +148,79 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('transactionSecurityCheck')}</span>
-          <div className="settings-page__content-description">
-            {t('transactionSecurityCheckDescription')}
+      <>
+        <Typography
+          variant={TYPOGRAPHY.H4}
+          color={COLORS.TEXT_ALTERNATIVE}
+          marginBottom={2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('privacy')}
+        </Typography>
+        <div
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+        >
+          <div className="settings-page__content-item">
+            <span>{t('transactionSecurityCheck')}</span>
+            <div className="settings-page__content-description">
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('transactionSecurityCheckDescription')}
+              </Typography>
+              <Typography
+                marginTop={3}
+                marginBottom={1}
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('selectProvider')}
+              </Typography>
+              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+                <Typography
+                  variant={TYPOGRAPHY.H5}
+                  color={COLORS.TEXT_DEFAULT}
+                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  marginBottom={0}
+                >
+                  {t('openSea')}
+                </Typography>
+                <ToggleButton
+                  value={transactionSecurityCheckEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.SETTINGS,
+                      event: 'Enabled/Disable TransactionSecurityCheck',
+                      properties: {
+                        action: 'Enabled/Disable TransactionSecurityCheck',
+                        legacy_event: true,
+                      },
+                    });
+                    setTransactionSecurityCheckEnabled(!value);
+                  }}
+                />
+              </div>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+              >
+                {t('thisServiceIsExperimental')}
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H5}
+                color={COLORS.TEXT_MUTED}
+                fontWeight={FONT_WEIGHT.MEDIUM}
+                marginTop={2}
+              >
+                {t('moreComingSoon')}
+              </Typography>
+            </div>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={transactionSecurityCheckEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable TransactionSecurityCheck',
-                  properties: {
-                    action: 'Enabled/Disable TransactionSecurityCheck',
-                    legacy_event: true,
-                  },
-                });
-                setTransactionSecurityCheckEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
+      </>
     );
   }
 
