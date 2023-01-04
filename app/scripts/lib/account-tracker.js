@@ -358,14 +358,19 @@ export default class AccountTracker {
     if (!accounts[address]) {
       return;
     }
-    const newAccounts = {};
-    Object.keys(accounts).forEach((accountAddress) => {
-      if (address !== accountAddress && !useMultiAccountBalanceChecker) {
-        newAccounts[address] = { address, balance: null };
-      }
-    });
+
+    let newAccounts = accounts;
+    if (!useMultiAccountBalanceChecker) {
+      newAccounts = {};
+      Object.keys(accounts).forEach((accountAddress) => {
+        if (address !== accountAddress) {
+          newAccounts[address] = { address, balance: null };
+        }
+      });
+    }
+
     newAccounts[address] = result;
-    this.store.updateState({ accounts });
+    this.store.updateState({ accounts: newAccounts });
   }
 
   /**
