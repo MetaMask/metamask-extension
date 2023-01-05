@@ -8,7 +8,7 @@ import {
   DISPLAY,
   SIZES,
 } from '../../../helpers/constants/design-system';
-import { BADGE_POSITIONS } from './avatar-with-badge.constants';
+import { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';
 import README from './README.mdx';
 import { AvatarWithBadge } from './avatar-with-badge';
 
@@ -23,12 +23,12 @@ export default {
   },
   argTypes: {
     badgePosition: {
-      options: Object.values(BADGE_POSITIONS),
+      options: Object.values(AVATAR_WITH_BADGE_POSTIONS),
       control: 'select',
     },
   },
   args: {
-    badgePosition: BADGE_POSITIONS.top,
+    badgePosition: AVATAR_WITH_BADGE_POSTIONS.top,
   },
 };
 
@@ -55,7 +55,7 @@ DefaultStory.storyName = 'Default';
 export const BadgePosition = () => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
     <AvatarWithBadge
-      badgePosition={BADGE_POSITIONS.BOTTOM}
+      badgePosition={AVATAR_WITH_BADGE_POSTIONS.BOTTOM}
       badge={
         <AvatarNetwork
           size={SIZES.XS}
@@ -72,7 +72,7 @@ export const BadgePosition = () => (
     </AvatarWithBadge>
 
     <AvatarWithBadge
-      badgePosition={BADGE_POSITIONS.TOP}
+      badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
       badge={
         <AvatarNetwork
           size={SIZES.XS}
