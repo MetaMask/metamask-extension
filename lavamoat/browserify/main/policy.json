@@ -509,11 +509,11 @@
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/contract-metadata": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
