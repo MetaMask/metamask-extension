@@ -13,7 +13,6 @@ import ConfirmApprove from '.';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Pages/ConfirmApprove',
-  id: __filename,
 };
 
 // transaction ID, maps to entry in state.metamask.currentNetworkTxList

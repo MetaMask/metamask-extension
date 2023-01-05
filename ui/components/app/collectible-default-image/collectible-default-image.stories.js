@@ -3,7 +3,7 @@ import CollectibleDefaultImage from '.';
 
 export default {
   title: 'Components/App/CollectibleDefaultImage',
-  id: __filename,
+
   argTypes: {
     name: {
       control: 'text',

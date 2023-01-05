@@ -26,7 +26,7 @@ const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
 
 export default {
   title: 'Components/ComponentLibrary/Text',
-  id: __filename,
+
   parameters: {
     docs: {
       page: README,

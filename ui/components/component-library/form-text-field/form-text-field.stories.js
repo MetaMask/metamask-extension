@@ -49,7 +49,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
-  id: __filename,
+
   component: FormTextField,
   parameters: {
     docs: {

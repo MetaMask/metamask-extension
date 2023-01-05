@@ -3,7 +3,7 @@ import EditableLabel from '.';
 
 export default {
   title: 'Components/UI/EditableLabel',
-  id: __filename,
+
   argTypes: {
     onSubmit: {
       action: 'onSubmit',

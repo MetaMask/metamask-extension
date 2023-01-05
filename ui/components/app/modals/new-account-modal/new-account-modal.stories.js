@@ -3,7 +3,6 @@ import NewAccountModal from './new-account-modal.component';
 
 export default {
   title: 'Components/App/Modals/NewAccountModal',
-  id: __filename,
 };
 
 export const DefaultStory = () => <NewAccountModal />;

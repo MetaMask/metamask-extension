@@ -4,7 +4,7 @@ import Slider from '.';
 
 export default {
   title: 'Components/UI/Slider',
-  id: __filename,
+
   component: Slider,
   parameters: {
     docs: {

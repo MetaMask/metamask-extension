@@ -4,7 +4,7 @@ import Jazzicon from './jazzicon.component';
 
 export default {
   title: 'Components/UI/Jazzicon',
-  id: __filename,
+
   component: Jazzicon,
   parameters: {
     docs: {

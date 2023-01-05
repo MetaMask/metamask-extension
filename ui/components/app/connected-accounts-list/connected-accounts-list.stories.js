@@ -3,7 +3,7 @@ import ConnectedAccountsList from '.';
 
 export default {
   title: 'Components/App/ConnectedAccountsList',
-  id: __filename,
+
   argTypes: {
     connectedAccounts: {
       control: 'array',

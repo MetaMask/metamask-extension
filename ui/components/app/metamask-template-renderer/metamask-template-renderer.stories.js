@@ -5,7 +5,6 @@ import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'Components/App/MetamaskTemplateRenderer',
-  id: __filename,
 };
 
 const SECTIONS = {

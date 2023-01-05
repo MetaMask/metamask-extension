@@ -4,7 +4,7 @@ import SetApproveForAllWarning from '.';
 
 export default {
   title: 'Components/App/SetApproveForAllWarning',
-  id: __filename,
+
   argTypes: {
     collectionName: {
       control: 'text',

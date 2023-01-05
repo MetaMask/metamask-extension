@@ -3,7 +3,7 @@ import AccountList from '.';
 
 export default {
   title: 'Components/UI/AccountList', // title should follow the folder structure location of the component. Don't use spaces.
-  id: __filename,
+
   argTypes: {
     accounts: {
       control: 'object',

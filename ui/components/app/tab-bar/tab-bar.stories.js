@@ -3,7 +3,7 @@ import TabBar from '.';
 
 export default {
   title: 'Components/App/TabBar',
-  id: __filename,
+
   argTypes: {
     isActive: {
       action: 'isActive',

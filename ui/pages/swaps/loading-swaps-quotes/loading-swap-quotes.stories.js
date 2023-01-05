@@ -5,7 +5,6 @@ import { storiesMetadata } from './loading-swaps-quotes-stories-metadata';
 
 export default {
   title: 'Pages/Swaps/LoadingSwapQuotes',
-  id: __filename,
 };
 
 export const DefaultStory = () => (

@@ -4,7 +4,7 @@ import ColorIndicator from './color-indicator';
 
 export default {
   title: 'Components/UI/ColorIndicator',
-  id: __filename,
+
   argTypes: {
     size: {
       control: {

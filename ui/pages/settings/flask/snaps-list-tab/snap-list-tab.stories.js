@@ -9,7 +9,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'Pages/Settings/SnapListTab',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {
     onToggle: {

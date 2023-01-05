@@ -10,7 +10,7 @@ import NetworkDisplay from '.';
 
 export default {
   title: 'Components/App/NetworkDisplay',
-  id: __filename,
+
   argTypes: {
     indicatorSize: {
       control: 'select',

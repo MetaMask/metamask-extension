@@ -29,7 +29,7 @@ const tooltips = {
 
 export default {
   title: 'Components/UI/DefinitionList',
-  id: __filename,
+
   argTypes: {
     dictionary: { control: 'object', name: 'Dictionary' },
     gapSize: {

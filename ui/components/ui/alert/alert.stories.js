@@ -4,7 +4,7 @@ import Alert from '.';
 
 export default {
   title: 'Components/UI/Alert',
-  id: __filename,
+
   component: Alert,
   parameters: {
     docs: {

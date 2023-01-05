@@ -3,7 +3,6 @@ import NumericInput from '.';
 
 export default {
   title: 'Components/UI/NumericInput',
-  id: __filename,
 };
 
 export const DefaultStory = () => {

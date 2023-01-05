@@ -48,7 +48,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Icon',
-  id: __filename,
+
   component: Icon,
   parameters: {
     docs: {

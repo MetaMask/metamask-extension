@@ -5,7 +5,7 @@ import UserPreferencedCurrencyDisplay from '.';
 
 export default {
   title: 'Components/App/UserPreferencedCurrencyDisplay',
-  id: __filename,
+
   argTypes: {
     className: {
       control: 'text',

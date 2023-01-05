@@ -3,7 +3,7 @@ import CustomSpendingCap from './custom-spending-cap';
 
 export default {
   title: 'Components/App/CustomSpendingCap',
-  id: __filename,
+
   argTypes: {
     tokenName: {
       control: { type: 'text' },

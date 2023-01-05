@@ -21,7 +21,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/UI/Logo',
-  id: __filename,
+
   parameters: {
     docs: {
       page: README,

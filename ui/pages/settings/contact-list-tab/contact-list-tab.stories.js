@@ -10,7 +10,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'Pages/Settings/ContactListTab',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argsTypes: {
     addressBook: { control: 'object' },

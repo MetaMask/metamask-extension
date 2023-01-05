@@ -4,7 +4,7 @@ import SendContent from './send-content.component';
 
 export default {
   title: 'Pages/Send/SendContent',
-  id: __filename,
+
   argsTypes: {
     showHexData: {
       control: 'boolean',

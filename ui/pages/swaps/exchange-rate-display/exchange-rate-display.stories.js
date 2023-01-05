@@ -3,7 +3,7 @@ import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
   title: 'Pages/Swaps/ExchangeRateDisplay',
-  id: __filename,
+
   argTypes: {
     primaryTokenValue: {
       control: {

@@ -3,7 +3,7 @@ import ContractTokenValues from './contract-token-values';
 
 export default {
   title: 'Components/UI/ContractTokenValues',
-  id: __filename,
+
   argTypes: {
     tokenName: {
       control: {

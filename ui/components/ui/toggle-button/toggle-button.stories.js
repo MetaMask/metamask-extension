@@ -6,7 +6,7 @@ import ToggleButton from './toggle-button.component';
 export default {
   title: 'Components/UI/ToggleButton',
   component: ToggleButton,
-  id: __filename,
+
   parameters: {
     docs: {
       page: README,

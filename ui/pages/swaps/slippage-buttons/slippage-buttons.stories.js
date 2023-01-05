@@ -4,7 +4,6 @@ import SlippageButtons from '.';
 
 export default {
   title: 'Pages/Swaps/SlippageButtons',
-  id: __filename,
 };
 
 export const DefaultStory = () => (

@@ -10,7 +10,7 @@ const { confirmTransaction, history, metamask } = store.getState();
 
 export default {
   title: 'Pages/ConfirmEncryptionPublicKey',
-  id: __filename,
+
   component: ConfirmEncryptionPublicKey,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {

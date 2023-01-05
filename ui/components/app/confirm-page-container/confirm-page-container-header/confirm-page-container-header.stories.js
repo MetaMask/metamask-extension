@@ -3,7 +3,7 @@ import ConfirmPageContainerHeader from '.';
 
 export default {
   title: 'Components/App/ConfirmPageContainer/ConfirmPageContainerHeader',
-  id: __filename,
+
   argTypes: {
     accountAddress: {
       control: 'text',

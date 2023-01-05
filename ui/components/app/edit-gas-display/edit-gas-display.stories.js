@@ -3,7 +3,7 @@ import EditGasDisplay from '.';
 
 export default {
   title: 'Components/App/EditGasDisplay',
-  id: __filename,
+
   args: {
     transaction: {},
   },

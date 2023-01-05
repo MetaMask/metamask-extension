@@ -3,7 +3,7 @@ import CreateNewVault from '.';
 
 export default {
   title: 'Components/App/CreateNewVault',
-  id: __filename,
+
   argTypes: {
     disabled: { control: 'boolean' },
     submitText: { control: 'text' },

@@ -3,7 +3,6 @@ import { SnapDelineator } from '.';
 
 export default {
   title: 'Components/App/SnapDelineator',
-  id: __filename,
 };
 
 export const DefaultStory = () => (
