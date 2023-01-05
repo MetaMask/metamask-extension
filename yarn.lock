@@ -21485,7 +21485,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:12.4.0":
+"lavamoat-core@npm:^10.0.1":
+  version: 10.1.2
+  resolution: "lavamoat-core@npm:10.1.2"
+  dependencies:
+    fromentries: ^1.2.0
+    json-stable-stringify: ^1.0.1
+    lavamoat-tofu: ^6.0.0
+    merge-deep: ^3.0.2
+    resolve: ^1.15.1
+  checksum: 848621677537df346536f049996940516ad24d723ffd0ba84c291b5d75975b77b344d4300a575cba4b821a52d3c8cb30cf8b7d14ca5ab46811ec382d62cf503c
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
   version: 12.4.0
   resolution: "lavamoat-core@npm:12.4.0"
   dependencies:
@@ -21497,19 +21510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch::locator=metamask-crx%40workspace%3A.":
-  version: 12.4.0
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch::version=12.4.0&hash=4d4cee&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    fromentries: ^1.2.0
-    json-stable-stringify: ^1.0.1
-    lavamoat-tofu: ^6.0.2
-    merge-deep: ^3.0.2
-  checksum: 2636c565bb26e06bec9f3bebb3664bd6878520fd880b51140f956480ff1a389c2ee3cfc19d7c2c4340f29d3d275bb407b6de10c76806a147381efcc3bbf403b7
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^6.0.2":
+"lavamoat-tofu@npm:^6.0.0, lavamoat-tofu@npm:^6.0.2":
   version: 6.0.2
   resolution: "lavamoat-tofu@npm:6.0.2"
   dependencies:
@@ -28571,7 +28572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.12.0, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.3.2, resolve@npm:^1.4.0":
+"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.12.0, resolve@npm:^1.14.2, resolve@npm:^1.15.1, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.3.2, resolve@npm:^1.4.0":
   version: 1.22.1
   resolution: "resolve@npm:1.22.1"
   dependencies:
@@ -28604,7 +28605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.11.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.21.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.11.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.15.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.21.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>":
   version: 1.22.1
   resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
