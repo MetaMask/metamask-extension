@@ -1322,7 +1322,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
 
   it('does not hit the RPC endpoint more than once for identical requests and it has a valid blockHash', async () => {
     const requests = [{ method }, { method }];
-    const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
+    const mockResult = { blockHash: '0x100' };
 
     await withMockedCommunications({ providerType }, async (comms) => {
       // The first time a block-cacheable request is made, the latest block
@@ -1331,7 +1331,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
       comms.mockNextBlockTrackerRequest();
       comms.mockRpcCall({
         request: requests[0],
-        response: { result: mockResults[0] },
+        response: { result: mockResult },
       });
 
       const results = await withNetworkClient(
@@ -1339,7 +1339,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(
         ({ makeRpcCallsInSeries }) => makeRpcCallsInSeries(requests),
       );
 
-      expect(results).toStrictEqual([mockResults[0], mockResults[0]]);
+      expect(results).toStrictEqual([mockResult, mockResult]);
     });
   });
 
