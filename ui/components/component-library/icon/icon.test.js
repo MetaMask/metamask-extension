@@ -80,11 +80,6 @@ describe('Icon', () => {
       <>
         <Icon
           name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.XXS}
-          data-testid="icon-xxs"
-        />
-        <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
           size={SIZES.XS}
           data-testid="icon-xs"
         />
@@ -115,7 +110,6 @@ describe('Icon', () => {
         />
       </>,
     );
-    expect(getByTestId('icon-xxs')).toHaveClass('mm-icon--size-xxs');
     expect(getByTestId('icon-xs')).toHaveClass('mm-icon--size-xs');
     expect(getByTestId('icon-sm')).toHaveClass('mm-icon--size-sm');
     expect(getByTestId('icon-md')).toHaveClass('mm-icon--size-md');

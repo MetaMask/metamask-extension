@@ -15,7 +15,6 @@ import { SIZES } from '../../../helpers/constants/design-system';
 /* eslint-disable prefer-destructuring*/ // process.env is not a standard JavaScript object, so we are not able to use object destructuring
 export const ICON_NAMES = JSON.parse(process.env.ICON_NAMES);
 export const ICON_SIZES = {
-  XXS: SIZES.XXS,
   XS: SIZES.XS,
   SM: SIZES.SM,
   MD: SIZES.MD,

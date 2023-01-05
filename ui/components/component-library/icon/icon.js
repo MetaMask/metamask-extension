@@ -46,7 +46,7 @@ Icon.propTypes = {
   name: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * The size of the Icon.
-   * Possible values could be SIZES.XXS (10px), SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
+   * Possible values could be SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
    * Default value is SIZES.MD (20px).
    */
   size: PropTypes.oneOf(Object.values(ICON_SIZES)),
