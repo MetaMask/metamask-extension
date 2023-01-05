@@ -29,12 +29,12 @@ function render({
 }
 
 describe('TransactionAlerts', () => {
-  describe('when supportsEIP1559V2 from useGasFeeContext is truthy', () => {
+  describe('when supportsEIP1559 from useGasFeeContext is truthy', () => {
     describe('if hasSimulationError from useGasFeeContext is true', () => {
       it('informs the user that a simulation of the transaction failed', () => {
         const { getByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             hasSimulationError: true,
           },
         });
@@ -50,7 +50,7 @@ describe('TransactionAlerts', () => {
         it('offers the user an option to bypass the warning', () => {
           const { getByText } = render({
             useGasFeeContextValue: {
-              supportsEIP1559V2: true,
+              supportsEIP1559: true,
               hasSimulationError: true,
             },
           });
@@ -61,7 +61,7 @@ describe('TransactionAlerts', () => {
           const setUserAcknowledgedGasMissing = jest.fn();
           const { getByText } = render({
             useGasFeeContextValue: {
-              supportsEIP1559V2: true,
+              supportsEIP1559: true,
               hasSimulationError: true,
             },
             componentProps: { setUserAcknowledgedGasMissing },
@@ -75,7 +75,7 @@ describe('TransactionAlerts', () => {
         it('does not offer the user an option to bypass the warning', () => {
           const { queryByText } = render({
             useGasFeeContextValue: {
-              supportsEIP1559V2: true,
+              supportsEIP1559: true,
               hasSimulationError: true,
             },
             componentProps: { userAcknowledgedGasMissing: true },
@@ -91,7 +91,7 @@ describe('TransactionAlerts', () => {
       it('does not inform the user that a simulation of the transaction failed', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
           },
         });
         expect(
@@ -105,7 +105,7 @@ describe('TransactionAlerts', () => {
     describe('if the length of pendingTransactions is 1', () => {
       it('informs the user that they have a pending transaction', () => {
         const { getByText } = render({
-          useGasFeeContextValue: { supportsEIP1559V2: true },
+          useGasFeeContextValue: { supportsEIP1559: true },
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
         });
         expect(
@@ -117,7 +117,7 @@ describe('TransactionAlerts', () => {
     describe('if the length of pendingTransactions is more than 1', () => {
       it('informs the user that they have pending transactions', () => {
         const { getByText } = render({
-          useGasFeeContextValue: { supportsEIP1559V2: true },
+          useGasFeeContextValue: { supportsEIP1559: true },
           submittedPendingTransactionsSelectorValue: [
             { some: 'transaction' },
             { some: 'transaction' },
@@ -132,7 +132,7 @@ describe('TransactionAlerts', () => {
     describe('if the length of pendingTransactions is 0', () => {
       it('does not inform the user that they have pending transactions', () => {
         const { queryByText } = render({
-          useGasFeeContextValue: { supportsEIP1559V2: true },
+          useGasFeeContextValue: { supportsEIP1559: true },
           submittedPendingTransactionsSelectorValue: [],
         });
         expect(
@@ -145,7 +145,7 @@ describe('TransactionAlerts', () => {
       it('does not inform the user that they have insufficient funds', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             balanceError: false,
           },
         });
@@ -157,7 +157,7 @@ describe('TransactionAlerts', () => {
       it('informs the user that the current transaction is queued', () => {
         const { getByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             estimateUsed: 'low',
           },
         });
@@ -171,7 +171,7 @@ describe('TransactionAlerts', () => {
       it('does not inform the user that the current transaction is queued', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             estimateUsed: 'something_else',
           },
         });
@@ -185,7 +185,7 @@ describe('TransactionAlerts', () => {
       it('informs the user that the network is busy', () => {
         const { getByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             isNetworkBusy: true,
           },
         });
@@ -201,7 +201,7 @@ describe('TransactionAlerts', () => {
       it('does not inform the user that the network is busy', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: true,
+            supportsEIP1559: true,
             isNetworkBusy: false,
           },
         });
@@ -214,12 +214,12 @@ describe('TransactionAlerts', () => {
     });
   });
 
-  describe('when supportsEIP1559V2 from useGasFeeContext is falsy', () => {
+  describe('when supportsEIP1559 from useGasFeeContext is falsy', () => {
     describe('if hasSimulationError from useGasFeeContext is true', () => {
       it('does not inform the user that a simulation of the transaction failed', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: false,
+            supportsEIP1559: false,
             hasSimulationError: true,
           },
         });
@@ -233,9 +233,9 @@ describe('TransactionAlerts', () => {
     });
 
     describe('if the length of pendingTransactions is at least 1', () => {
-      it('informs the user that they have a pending transaction', () => {
+      it('does not informs the user that they have a pending transaction', () => {
         const { queryByText } = render({
-          useGasFeeContextValue: { supportsEIP1559V2: false },
+          useGasFeeContextValue: { supportsEIP1559: false },
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
         });
         expect(
@@ -248,7 +248,7 @@ describe('TransactionAlerts', () => {
       it('informs the user that they have insufficient funds', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: false,
+            supportsEIP1559: false,
             balanceError: true,
           },
         });
@@ -260,7 +260,7 @@ describe('TransactionAlerts', () => {
       it('informs the user that the current transaction is queued', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: false,
+            supportsEIP1559: false,
             estimateUsed: 'low',
           },
         });
@@ -276,7 +276,7 @@ describe('TransactionAlerts', () => {
       it('does not inform the user that the network is busy', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
-            supportsEIP1559V2: false,
+            supportsEIP1559: false,
             isNetworkBusy: true,
           },
         });

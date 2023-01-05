@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avansert"
   },
-  "advancedOptions": {
-    "message": "Avanserte valg"
-  },
   "amount": {
     "message": "Sum"
   },
@@ -548,11 +545,8 @@
   "newAccount": {
     "message": "Ny konto "
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adresse oppdaget! Klikk her for å legge til adresseboken din."
-  },
   "newAccountNumberName": {
-    "message": "Konto $1 ",
+    "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
@@ -808,9 +802,6 @@
   },
   "sign": {
     "message": "Undertegn"
-  },
-  "signNotice": {
-    "message": "Signering av denne meldingen kan ha\nfarlige konsekvenser. Signér kun meldinger fra\nnettsteder du stoler fullt og helt på med hele kontoen din. Denne farlige metoden vil bli fjernet i en fremtidig versjon."
   },
   "signatureRequest": {
     "message": "Signaturforespørsel"

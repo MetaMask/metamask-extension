@@ -74,6 +74,7 @@ describe('Signature Request Component', () => {
             msgParams,
           }}
           fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
         />,
       );
 
@@ -113,6 +114,7 @@ describe('Signature Request Component', () => {
             msgParams,
           }}
           fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
         />,
       );
 

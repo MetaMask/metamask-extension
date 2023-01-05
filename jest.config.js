@@ -10,7 +10,7 @@ module.exports = {
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 44,
+      branches: 48,
       functions: 46,
       lines: 52,
       statements: 52,
@@ -41,7 +41,11 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFiles: [
+    '<rootDir>/test/setup.js',
+    '<rootDir>/test/env.js',
+    '<rootDir>/test/jest/env.js', // jest specific env vars that break mocha tests
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/ui/**/*.test.js',

@@ -35,11 +35,12 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
-      useCollectibleDetection: false,
+      useNftDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
 
@@ -69,6 +70,8 @@ export default class PreferencesController {
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
+      improvedTokenAllowanceEnabled: false,
+      transactionSecurityCheckEnabled: false,
       ...opts.initState,
     };
 
@@ -125,6 +128,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useMultiAccountBalanceChecker` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
+   */
+  setUseMultiAccountBalanceChecker(val) {
+    this.store.updateState({ useMultiAccountBalanceChecker: val });
+  }
+
+  /**
    * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -141,12 +153,12 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useCollectibleDetection` property
+   * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useCollectibleDetection - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
    */
-  setUseCollectibleDetection(useCollectibleDetection) {
-    this.store.updateState({ useCollectibleDetection });
+  setUseNftDetection(useNftDetection) {
+    this.store.updateState({ useNftDetection });
   }
 
   /**
@@ -170,21 +182,34 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `eip1559V2Enabled` property
-   *
-   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
-   */
-  setEIP1559V2Enabled(val) {
-    this.store.updateState({ eip1559V2Enabled: val });
-  }
-
-  /**
    * Setter for the `theme` property
    *
    * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
+  }
+
+  /**
+   * Setter for the `improvedTokenAllowanceEnabled` property
+   *
+   * @param improvedTokenAllowanceEnabled
+   */
+  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
+    this.store.updateState({
+      improvedTokenAllowanceEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `transactionSecurityCheckEnabled` property
+   *
+   * @param transactionSecurityCheckEnabled
+   */
+  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
+    this.store.updateState({
+      transactionSecurityCheckEnabled,
+    });
   }
 
   /**

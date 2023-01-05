@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
@@ -30,10 +31,14 @@ import {
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
   getCustomTokenAmount,
+  getUnapprovedTxCount,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   cancelTx,
+  cancelTxs,
+  showModal,
   updateAndApproveTx,
   updateCustomNonce,
 } from '../../store/actions';
@@ -45,6 +50,9 @@ import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
+import { valuesFor } from '../../helpers/utils/util';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
 
 export default function TokenAllowance({
   origin,
@@ -58,7 +66,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -86,10 +94,24 @@ export default function TokenAllowance({
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const customTokenAmount = useSelector(getCustomTokenAmount);
+  const unapprovedTxCount = useSelector(getUnapprovedTxCount);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
-  const customPermissionAmount = customTokenAmount.toString();
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
 
-  const customTxParamsData = customTokenAmount
+  let customPermissionAmount = replaceCommaToDot(customTokenAmount).toString();
+
+  const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
+  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
+    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+    if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+      customPermissionAmount = 0;
+    }
+  }
+
+  const customTxParamsData = customPermissionAmount
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
@@ -183,6 +205,20 @@ export default function TokenAllowance({
   const handleBackClick = () => {
     setShowFullTxDetails(false);
     setIsFirstPage(true);
+  };
+
+  const handleCancelAll = () => {
+    dispatch(
+      showModal({
+        name: 'REJECT_TRANSACTIONS',
+        unapprovedTxCount,
+        onSubmit: async () => {
+          await dispatch(cancelTxs(valuesFor(unapprovedTxs)));
+          dispatch(clearConfirmTransaction());
+          history.push(mostRecentOverviewPage);
+        },
+      }),
+    );
   };
 
   const isEmpty = customTokenAmount === '';
@@ -318,19 +354,20 @@ export default function TokenAllowance({
         {isFirstPage ? (
           <CustomSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
-            dappProposedValue={parseFloat(dappProposedTokenAmount)}
+            currentTokenBalance={currentTokenBalance}
+            dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
+            decimals={decimals}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
+            currentTokenBalance={currentTokenBalance}
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
-                ? parseFloat(dappProposedTokenAmount)
-                : parseFloat(customTokenAmount)
+                ? dappProposedTokenAmount
+                : replaceCommaToDot(customTokenAmount)
             }
             onEdit={() => handleBackClick()}
           />
@@ -351,7 +388,7 @@ export default function TokenAllowance({
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
@@ -399,7 +436,7 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
@@ -413,7 +450,19 @@ export default function TokenAllowance({
         onCancel={() => handleReject()}
         onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
         disabled={disableNextButton || disableApproveButton}
-      />
+      >
+        {unapprovedTxCount > 1 && (
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleCancelAll();
+            }}
+          >
+            {t('rejectTxsN', [unapprovedTxCount])}
+          </Button>
+        )}
+      </PageContainerFooter>
       {showContractDetails && (
         <ContractDetailsModal
           tokenName={tokenSymbol}
@@ -478,7 +527,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */

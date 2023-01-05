@@ -1,11 +1,25 @@
+import { SIZES } from '../../../helpers/constants/design-system';
+
 /**
  * The ICON_NAMES object contains all the possible icon names.
- * It is generated using the generateIconNames script in development/generate-icon-names.js
- * and stored in the environment variable ICON_NAMES
- * To add a new icon, add the icon svg file to app/images/icons
- * Ensure the svg has been optimized, is kebab case and starts with "icon-"
- * See "Adding a new icon" in ./README.md for more details
+ *
+ * Search for an icon: https://metamask.github.io/metamask-storybook/?path=/story/ui-components-component-library-icon-icon-stories-js--default-story
+ *
+ * Add an icon: https://metamask.github.io/metamask-storybook/?path=/docs/ui-components-component-library-icon-icon-stories-js--default-story#adding-a-new-icon
+ *
+ * ICON_NAMES is generated using svgs in app/images/icons and
+ * the generateIconNames script in development/generate-icon-names.js
+ * then stored as an environment variable
  */
 
 /* eslint-disable prefer-destructuring*/ // process.env is not a standard JavaScript object, so we are not able to use object destructuring
-export const ICON_NAMES = process.env.ICON_NAMES;
+export const ICON_NAMES = JSON.parse(process.env.ICON_NAMES);
+export const ICON_SIZES = {
+  XXS: SIZES.XXS,
+  XS: SIZES.XS,
+  SM: SIZES.SM,
+  MD: SIZES.MD,
+  LG: SIZES.LG,
+  XL: SIZES.XL,
+  AUTO: SIZES.AUTO,
+};

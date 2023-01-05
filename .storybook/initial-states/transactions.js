@@ -1454,7 +1454,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     dappSuggestedGasFees: null,
     sendFlowHistory: [
       {
-        entry: 'sendFlow - user set asset type to COLLECTIBLE',
+        entry: 'sendFlow - user set asset type to NFT',
         timestamp: 1653457317999,
       },
       {
@@ -1504,7 +1504,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         dappSuggestedGasFees: null,
         sendFlowHistory: [
           {
-            entry: 'sendFlow - user set asset type to COLLECTIBLE',
+            entry: 'sendFlow - user set asset type to NFT',
             timestamp: 1653457317999,
           },
           {

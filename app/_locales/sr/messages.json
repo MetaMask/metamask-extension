@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Напредне опције"
   },
-  "advancedOptions": {
-    "message": "Dodatne opcije"
-  },
   "amount": {
     "message": "Iznos"
   },
@@ -552,9 +549,6 @@
   "newAccount": {
     "message": "Nov nalog"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Otkrivena je nova adresa! Kliknite ovde da biste je dodali u Vaš adresar."
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
@@ -815,9 +809,6 @@
   },
   "sign": {
     "message": "Potpišite"
-  },
-  "signNotice": {
-    "message": "Potpisivanje ove poruke može imati \nopasne neželjene efekte. Potpisujte samo poruke sa \nsajtova u koje imate potpuno poverenje u pogledu svog naloga.\n Ovaj opasan metod će biti uklonjen u budućoj verziji."
   },
   "signatureRequest": {
     "message": "Zahtev za potpis"

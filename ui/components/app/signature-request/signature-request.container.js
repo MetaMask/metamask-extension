@@ -2,8 +2,15 @@ import { connect } from 'react-redux';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
+  conversionRateSelector,
+  getSubjectMetadata,
 } from '../../../selectors';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
+import {
+  isAddressLedger,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
@@ -13,21 +20,46 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = txData;
+  const { provider } = state.metamask;
+
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const chainId = getCurrentChainId(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+  const subjectMetadata = getSubjectMetadata(state);
+
+  const { iconUrl: siteImage = '' } =
+    subjectMetadata[txData.msgParams.origin] || {};
 
   return {
+    provider,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
+    conversionRate: conversionRateSelector(state),
+    nativeCurrency: getNativeCurrency(state),
+    subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { allAccounts, isLedgerWallet, hardwareWalletRequiresConnection } =
-    stateProps;
+  const {
+    allAccounts,
+    isLedgerWallet,
+    hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
+    conversionRate,
+    nativeCurrency,
+    provider,
+    subjectMetadata,
+  } = stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -68,6 +100,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     sign,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    chainId,
+    rpcPrefs,
+    siteImage,
+    conversionRate,
+    nativeCurrency,
+    provider,
+    subjectMetadata,
   };
 }
 

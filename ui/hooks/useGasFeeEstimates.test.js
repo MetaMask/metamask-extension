@@ -107,7 +107,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates: DEFAULT_OPTS.gasFeeEstimates,
       gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: false,
     });
   });
@@ -128,7 +127,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: false,
     });
   });
@@ -170,7 +168,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: false,
     });
   });
@@ -189,7 +186,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates: {},
       gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: true,
     });
   });
@@ -211,7 +207,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates: { gasPrice: '10' },
       gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: true,
     });
   });
@@ -252,7 +247,6 @@ describe('useGasFeeEstimates', () => {
     expect(current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: true,
     });
   });
