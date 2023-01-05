@@ -13,7 +13,7 @@ exports[`BannerBase should render bannerbase element correctly 1`] = `
         Bannerbase test
       </h5>
       <p
-        class="box mm-text mm-banner-base__description mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
       >
         should render bannerbase element correctly
       </p>

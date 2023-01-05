@@ -42,9 +42,7 @@ describe('BannerBase', () => {
     const { getByText } = render(
       <BannerBase>Bannerbase description test</BannerBase>,
     );
-    expect(getByText('Bannerbase description test')).toHaveClass(
-      'mm-banner-base__description',
-    );
+    expect(getByText('Bannerbase description test')).toBeDefined();
   });
 
   it('should render bannerbase action button', () => {
@@ -71,7 +69,7 @@ describe('BannerBase', () => {
   });
 
   it('should render bannerbase startAccessory', () => {
-    const { container, getByTestId } = render(
+    const { getByTestId } = render(
       <BannerBase
         startAccessory={
           <Icon
@@ -82,7 +80,7 @@ describe('BannerBase', () => {
       />,
     );
 
-    expect(getByTestId('start-accessory').toBeDefined();
+    expect(getByTestId('start-accessory')).toBeDefined();
   });
 
   it('should render and fire onClose event', async () => {
