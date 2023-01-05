@@ -165,17 +165,17 @@ export default {
     marginInline: {
       options: sizeControlOptions,
       control: 'select',
-      table: { category: 'padding' },
+      table: { category: 'margin' },
     },
     marginInlineStart: {
       options: sizeControlOptions,
       control: 'select',
-      table: { category: 'padding' },
+      table: { category: 'margin' },
     },
     marginInlineEnd: {
       options: sizeControlOptions,
       control: 'select',
-      table: { category: 'padding' },
+      table: { category: 'margin' },
     },
     padding: {
       options: sizeControlOptions,
