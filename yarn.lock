@@ -3280,16 +3280,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/assets-controllers@npm:3.0.0"
+"@metamask/assets-controllers@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/assets-controllers@npm:3.0.1"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/base-controller": ^1.1.1
-    "@metamask/contract-metadata": ^1.35.0
+    "@metamask/contract-metadata": ^2.1.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/metamask-eth-abis": 3.0.0
     "@metamask/network-controller": ^2.0.0
@@ -3307,7 +3307,7 @@ __metadata:
     uuid: ^8.3.2
   peerDependencies:
     "@metamask/network-controller": ^2.0.0
-  checksum: 692957de7588e0eaf9495a7b860e11f1a10b3855d26367b48b7b9c27824f0c7aa7df230b188dcb2921a904169c9425fd976e2f2921420cab3717b2fdf791d91f
+  checksum: c356a820929738e3ad83a5cfe20993a1e7c4dac6835b308d8cb32efe8542c339664ae3046a1dedce6ee2a4c45cec5528015309366fa96674837dca7ea001998f
   languageName: node
   linkType: hard
 
@@ -3368,6 +3368,13 @@ __metadata:
   version: 1.36.0
   resolution: "@metamask/contract-metadata@npm:1.36.0"
   checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
+  languageName: node
+  linkType: hard
+
+"@metamask/contract-metadata@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/contract-metadata@npm:2.1.0"
+  checksum: eebe2fb7c16c0f585f08e0de446efe5c7866316e3f663b409691aaf69333deead53fcc9f3f0a67db7d0d84309dc52a620512c441b5d020ad08baf2fed7ed773f
   languageName: node
   linkType: hard
 
@@ -22875,7 +22882,7 @@ __metadata:
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
     "@metamask/approval-controller": ^1.0.0
-    "@metamask/assets-controllers": ^3.0.0
+    "@metamask/assets-controllers": ^3.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
     "@metamask/contract-metadata": ^1.31.0
