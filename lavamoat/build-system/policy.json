@@ -1033,6 +1033,7 @@
       },
       "globals": {
         "__dirname": true,
+        "__filename.slice": true,
         "process.cwd": true,
         "setTimeout": true
       },
