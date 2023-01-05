@@ -35,15 +35,18 @@ const defaultCaptureException = (err) => {
 // The function is used to build a unique messageId for segment messages
 // It uses actionId and uniqueIdentifier from event if present
 const buildUniqueMessageId = (args) => {
-  let messageId = '';
+  const messageIdParts = [];
   if (args.uniqueIdentifier) {
-    messageId += `${args.uniqueIdentifier}-`;
+    messageIdParts.push(args.uniqueIdentifier);
   }
   if (args.actionId) {
-    messageId += args.actionId;
+    messageIdParts.push(args.actionId);
   }
-  if (messageId.length) {
-    return messageId;
+  if (messageIdParts.length && args.isDuplicateAnonymizedEvent) {
+    messageIdParts.push('0x000');
+  }
+  if (messageIdParts.length) {
+    return messageIdParts.join('-');
   }
   return generateRandomId();
 };
@@ -536,6 +539,7 @@ export default class MetaMetricsController {
           this._buildEventPayload({
             ...payload,
             properties: combinedProperties,
+            isDuplicateAnonymizedEvent: true,
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
