@@ -1306,14 +1306,6 @@
         "define": true
       }
     },
-    "@metamask/smart-transactions-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      }
-    },
     "@metamask/snap-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
