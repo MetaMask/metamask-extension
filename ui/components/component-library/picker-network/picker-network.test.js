@@ -54,4 +54,11 @@ describe('PickerNetwork', () => {
       'down-arrow-picker-icon',
     );
   });
+  // className
+  it('should render with custom className', () => {
+    const { getByTestId } = render(
+      <PickerNetwork data-testid="picker-network" className="test-class" />,
+    );
+    expect(getByTestId('picker-network')).toHaveClass('test-class');
+  });
 });
