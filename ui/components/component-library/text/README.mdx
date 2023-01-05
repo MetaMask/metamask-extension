@@ -66,34 +66,34 @@ import { COLORS } from '../../../helpers/constants/design-system';
 <Text color={COLORS.TEXT_MUTED}>
   text-muted
 </Text>
-<Text color={COLORS.OVERLAY_INVERSE} backgroundColor:{COLORS.OVERLAY_DEFAULT}>
+<Text color={COLORS.OVERLAY_INVERSE} backgroundColor={COLORS.OVERLAY_DEFAULT}>
   overlay-inverse
 </Text>
 <Text color={COLORS.PRIMARY_DEFAULT}>
   primary-default
 </Text>
-<Text color={COLORS.PRIMARY_INVERSE} backgroundColor:{COLORS.PRIMARY_DEFAULT}>
+<Text color={COLORS.PRIMARY_INVERSE} backgroundColor={COLORS.PRIMARY_DEFAULT}>
   primary-inverse
 </Text>
 <Text color={COLORS.ERROR_DEFAULT}>
   error-default
 </Text>
-<Text color={COLORS.ERROR_INVERSE} backgroundColor:{COLORS.ERROR_DEFAULT}>
+<Text color={COLORS.ERROR_INVERSE} backgroundColor={COLORS.ERROR_DEFAULT}>
   error-inverse
 </Text>
 <Text color={COLORS.SUCCESS_DEFAULT}>
   success-default
 </Text>
-<Text color={COLORS.SUCCESS_INVERSE} backgroundColor:{COLORS.SUCCESS_DEFAULT}>
+<Text color={COLORS.SUCCESS_INVERSE} backgroundColor={COLORS.SUCCESS_DEFAULT}>
   success-inverse
 </Text>
-<Text color={COLORS.WARNING_INVERSE} backgroundColor:{COLORS.WARNING_DEFAULT}>
+<Text color={COLORS.WARNING_INVERSE} backgroundColor={COLORS.WARNING_DEFAULT}>
   warning-inverse
 </Text>
 <Text color={COLORS.INFO_DEFAULT}>
   info-default
 </Text>
-<Text color={COLORS.INFO_INVERSE} backgroundColor:{COLORS.INFO_DEFAULT}>
+<Text color={COLORS.INFO_INVERSE} backgroundColor={COLORS.INFO_DEFAULT}>
   info-inverse
 </Text>
 ```
@@ -297,6 +297,28 @@ Renders the html:
 <span>span</span>
 <strong>strong</strong>
 <input placeholder="input" />
+```
+
+### Text Direction
+
+Use the `textDirection` prop and the `TEXT_DIRECTIONS` object from `./text.constants.js` to change the text direction of `Text`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--text-direction" />
+</Canvas>
+
+```jsx
+import { Text, TEXT_DIRECTIONS } from '../../ui/components/component-library';
+
+<Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+  This is left to right (ltr) for English and most languages
+</Text>
+<Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+  This is right to left (rtl) for use with other laguanges such as Arabic. This Enlgish example is incorrect usage.
+</Text>
+<Text textDirection={TEXT_DIRECTIONS.AUTO}>
+  Let the user agent decide with the auto option
+</Text>
 ```
 
 ### Box Props

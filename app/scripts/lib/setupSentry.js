@@ -16,6 +16,14 @@ const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
 
+export const ERROR_URL_ALLOWLIST = {
+  CRYPTOCOMPARE: 'cryptocompare.com',
+  COINGECKO: 'coingecko.com',
+  ETHERSCAN: 'etherscan.io',
+  CODEFI: 'codefi.network',
+  SEGMENT: 'segment.io',
+};
+
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.
@@ -131,7 +139,7 @@ export default function setupSentry({ release, getState }) {
       new ExtraErrorData(),
     ],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb(breadcrumb) {
       if (getState) {
         const appState = getState();
@@ -146,31 +154,132 @@ export default function setupSentry({ release, getState }) {
       } else {
         return null;
       }
-      return breadcrumb;
+      const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
+      return newBreadcrumb;
     },
   });
 
-  function rewriteReport(report) {
-    try {
-      // simplify certain complex error messages (e.g. Ethjs)
-      simplifyErrorMessages(report);
-      // modify report urls
-      rewriteReportUrls(report);
-      // append app state
-      if (getState) {
-        const appState = getState();
-        if (!report.extra) {
-          report.extra = {};
-        }
-        report.extra.appState = appState;
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-    return report;
-  }
-
   return Sentry;
+}
+
+/**
+ * Receives a string and returns that string if it is a
+ * regex match for a url with a `chrome-extension` or `moz-extension`
+ * protocol, and an empty string otherwise.
+ *
+ * @param {string} url - The URL to check.
+ * @returns {string} An empty string if the URL was internal, or the unmodified URL otherwise.
+ */
+function hideUrlIfNotInternal(url) {
+  const re = /^(chrome-extension|moz-extension):\/\//u;
+  if (!url.match(re)) {
+    return '';
+  }
+  return url;
+}
+
+/**
+ * Receives a Sentry breadcrumb object and potentially removes urls
+ * from its `data` property, it particular those possibly found at
+ * data.from, data.to and data.url
+ *
+ * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
+ * @returns {object} A modified Sentry breadcrumb object.
+ */
+export function removeUrlsFromBreadCrumb(breadcrumb) {
+  if (breadcrumb?.data?.url) {
+    breadcrumb.data.url = hideUrlIfNotInternal(breadcrumb.data.url);
+  }
+  if (breadcrumb?.data?.to) {
+    breadcrumb.data.to = hideUrlIfNotInternal(breadcrumb.data.to);
+  }
+  if (breadcrumb?.data?.from) {
+    breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
+  }
+  return breadcrumb;
+}
+
+/**
+ * Receives a Sentry event object and modifies it before the
+ * error is sent to Sentry. Modifications include both sanitization
+ * of data via helper methods and addition of state data from the
+ * return value of the second parameter passed to the function.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @param {Function} getState - A function that should return an object representing some amount
+ * of app state that we wish to submit with our error reports
+ * @returns {object} A modified Sentry event object.
+ */
+export function rewriteReport(report, getState) {
+  try {
+    // simplify certain complex error messages (e.g. Ethjs)
+    simplifyErrorMessages(report);
+    // remove urls from error message
+    sanitizeUrlsFromErrorMessages(report);
+    // Remove evm addresses from error message.
+    // Note that this is redundent with data scrubbing we do within our sentry dashboard,
+    // but putting the code here as well gives public visibility to how we are handling
+    // privacy with respect to sentry.
+    sanitizeAddressesFromErrorMessages(report);
+    // modify report urls
+    rewriteReportUrls(report);
+    // append app state
+    if (getState) {
+      const appState = getState();
+      if (!report.extra) {
+        report.extra = {};
+      }
+      report.extra.appState = appState;
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+  return report;
+}
+
+/**
+ * Receives a Sentry event object and modifies it so that urls are removed from any of its
+ * error messages.
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeUrlsFromErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    let newErrorMessage = errorMessage;
+    const re = /(([-.+a-zA-Z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
+    const urlsInMessage = newErrorMessage.match(re) || [];
+    urlsInMessage.forEach((url) => {
+      try {
+        const urlObj = new URL(url);
+        const { hostname } = urlObj;
+        if (
+          !Object.values(ERROR_URL_ALLOWLIST).some(
+            (allowedHostname) =>
+              hostname === allowedHostname ||
+              hostname.endsWith(`.${allowedHostname}`),
+          )
+        ) {
+          newErrorMessage = newErrorMessage.replace(url, '**');
+        }
+      } catch (e) {
+        newErrorMessage = newErrorMessage.replace(url, '**');
+      }
+    });
+    return newErrorMessage;
+  });
+}
+
+/**
+ * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
+ * any of its error messages.
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeAddressesFromErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '0x**');
+    return newErrorMessage;
+  });
 }
 
 function simplifyErrorMessages(report) {
@@ -221,7 +330,7 @@ function rewriteReportUrls(report) {
 }
 
 function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(globalThis.location.origin)[1];
+  const filePath = origUrl?.split(globalThis.location.origin)[1];
   if (!filePath) {
     return origUrl;
   }
