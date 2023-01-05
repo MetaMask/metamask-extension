@@ -350,6 +350,10 @@
     }
   }
 
+  &__content-row-experimental {
+    padding: 10px 0 0 12px;
+  }
+
   &__content-label {
     text-transform: capitalize;
   }
@@ -364,7 +368,6 @@
     @include H6;
 
     color: var(--color-text-alternative);
-    padding-top: 5px;
 
     a {
       color: var(--color-primary-default);
@@ -380,6 +383,12 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+
+  &__content-item-col-open-sea {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
   }
 
   &__button {

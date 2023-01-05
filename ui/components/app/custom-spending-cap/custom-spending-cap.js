@@ -6,6 +6,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
+import { ButtonLink } from '../../component-library';
 import {
   ALIGN_ITEMS,
   COLORS,
@@ -16,6 +17,7 @@ import {
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   SIZES,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
@@ -157,21 +159,6 @@ export default function CustomSpendingCap({
   return (
     <>
       <Box
-        textAlign={TEXT_ALIGN.END}
-        className="custom-spending-cap__max-button"
-      >
-        <button
-          className="custom-spending-cap__input--max-button"
-          type="link"
-          onClick={(e) => {
-            e.preventDefault();
-            handleChange(currentTokenBalance);
-          }}
-        >
-          {t('max')}
-        </button>
-      </Box>
-      <Box
         className="custom-spending-cap"
         borderRadius={SIZES.SM}
         paddingTop={2}
@@ -223,9 +210,8 @@ export default function CustomSpendingCap({
               value={value}
               titleDetail={
                 showUseDefaultButton && (
-                  <button
-                    className="custom-spending-cap__input--button"
-                    type="link"
+                  <ButtonLink
+                    size={SIZES.AUTO}
                     onClick={(e) => {
                       e.preventDefault();
                       setShowUseDefaultButton(false);
@@ -233,11 +219,29 @@ export default function CustomSpendingCap({
                     }}
                   >
                     {t('useDefault')}
-                  </button>
+                  </ButtonLink>
                 )
               }
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
             />
+            <Box
+              width={BLOCK_SIZES.MAX}
+              marginLeft="auto"
+              paddingRight={4}
+              paddingBottom={2}
+              textAlign={TEXT_ALIGN.END}
+              className="custom-spending-cap__max"
+            >
+              <ButtonLink
+                size={SIZES.AUTO}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleChange(currentTokenBalance);
+                }}
+              >
+                {t('max')}
+              </ButtonLink>
+            </Box>
             <Typography
               className="custom-spending-cap__description"
               color={COLORS.TEXT_DEFAULT}
