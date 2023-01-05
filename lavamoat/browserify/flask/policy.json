@@ -1536,7 +1536,7 @@
         "@metamask/controllers>@ethersproject/providers": true,
         "@metamask/controllers>isomorphic-fetch": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/smart-transactions-controller>fast-json-patch": true,
+        "fast-json-patch": true,
         "lodash": true
       }
     },
@@ -4992,9 +4992,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      },
-      "packages": {
-        "fast-json-patch>fast-deep-equal": true
       }
     },
     "fuse.js": {
