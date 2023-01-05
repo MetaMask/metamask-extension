@@ -1083,32 +1083,27 @@ export function testsForRpcMethodAssumingNoBlockParam(
     });
 
     it('does not retry the request to the RPC endpoint, but throws immediately, if a "failed to parse response body" error is thrown while making the request', async () => {
-      const infuraNetwork = 'goerli';
+      await withMockedCommunications({ providerType }, async (comms) => {
+        const request = { method };
+        const errorMessage = 'failed to parse response body: some message';
 
-      await withMockedCommunications(
-        { providerType, infuraNetwork },
-        async (comms) => {
-          const request = { method };
-          const errorMessage = 'failed to parse response body: some message';
+        // The first time a block-cacheable request is made, the latest block
+        // number is retrieved through the block tracker first. It doesn't
+        // matter what this is — it's just used as a cache key.
+        comms.mockNextBlockTrackerRequest();
+        comms.mockRpcCall({
+          request,
+          error: errorMessage,
+        });
+        const promiseForResult = withNetworkClient(
+          { providerType, infuraNetwork: comms.infuraNetwork },
+          async ({ makeRpcCall }) => makeRpcCall(request),
+        );
 
-          // The first time a block-cacheable request is made, the latest block
-          // number is retrieved through the block tracker first. It doesn't
-          // matter what this is — it's just used as a cache key.
-          comms.mockNextBlockTrackerRequest();
-          comms.mockRpcCall({
-            request,
-            error: errorMessage,
-          });
-          const promiseForResult = withNetworkClient(
-            { providerType, infuraNetwork },
-            async ({ makeRpcCall }) => makeRpcCall(request),
-          );
-
-          await expect(promiseForResult).rejects.toThrow(
-            buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
-          );
-        },
-      );
+        await expect(promiseForResult).rejects.toThrow(
+          buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
+        );
+      });
     });
   } else {
     it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
@@ -1213,32 +1208,27 @@ export function testsForRpcMethodAssumingNoBlockParam(
   // does not.
   if (providerType === 'infura') {
     it('does not retry the request to the RPC endpoint, but throws immediately, if a "Failed to fetch" error is thrown while making the request', async () => {
-      const infuraNetwork = 'goerli';
+      await withMockedCommunications({ providerType }, async (comms) => {
+        const request = { method };
+        const errorMessage = 'Failed to fetch: some message';
 
-      await withMockedCommunications(
-        { providerType, infuraNetwork },
-        async (comms) => {
-          const request = { method };
-          const errorMessage = 'Failed to fetch: some message';
+        // The first time a block-cacheable request is made, the latest block
+        // number is retrieved through the block tracker first. It doesn't
+        // matter what this is — it's just used as a cache key.
+        comms.mockNextBlockTrackerRequest();
+        comms.mockRpcCall({
+          request,
+          error: errorMessage,
+        });
+        const promiseForResult = withNetworkClient(
+          { providerType, infuraNetwork: comms.infuraNetwork },
+          async ({ makeRpcCall }) => makeRpcCall(request),
+        );
 
-          // The first time a block-cacheable request is made, the latest block
-          // number is retrieved through the block tracker first. It doesn't
-          // matter what this is — it's just used as a cache key.
-          comms.mockNextBlockTrackerRequest();
-          comms.mockRpcCall({
-            request,
-            error: errorMessage,
-          });
-          const promiseForResult = withNetworkClient(
-            { providerType, infuraNetwork },
-            async ({ makeRpcCall }) => makeRpcCall(request),
-          );
-
-          await expect(promiseForResult).rejects.toThrow(
-            buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
-          );
-        },
-      );
+        await expect(promiseForResult).rejects.toThrow(
+          buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
+        );
+      });
     });
   } else {
     it('retries the request to the RPC endpoint up to 5 times if a "Failed to fetch" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {
@@ -2486,43 +2476,38 @@ export function testsForRpcMethodSupportingBlockParam(
       });
 
       it('does not retry the request to the RPC endpoint, but throws immediately, if a "failed to parse response body" error is thrown while making the request', async () => {
-        const infuraNetwork = 'goerli';
+        await withMockedCommunications({ providerType }, async (comms) => {
+          const request = { method };
+          const errorMessage = 'failed to parse response body: Some message';
 
-        await withMockedCommunications(
-          { providerType, infuraNetwork },
-          async (comms) => {
-            const request = { method };
-            const errorMessage = 'failed to parse response body: Some message';
+          // The first time a block-cacheable request is made, the
+          // block-cache middleware will request the latest block number
+          // through the block tracker to determine the cache key. Later,
+          // the block-ref middleware will request the latest block number
+          // again to resolve the value of "latest", but the block number is
+          // cached once made, so we only need to mock the request once.
+          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+          // The block-ref middleware will make the request as specified
+          // except that the block param is replaced with the latest block
+          // number.
+          comms.mockRpcCall({
+            request: buildRequestWithReplacedBlockParam(
+              request,
+              blockParamIndex,
+              '0x100',
+            ),
+            error: errorMessage,
+          });
 
-            // The first time a block-cacheable request is made, the
-            // block-cache middleware will request the latest block number
-            // through the block tracker to determine the cache key. Later,
-            // the block-ref middleware will request the latest block number
-            // again to resolve the value of "latest", but the block number is
-            // cached once made, so we only need to mock the request once.
-            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-            // The block-ref middleware will make the request as specified
-            // except that the block param is replaced with the latest block
-            // number.
-            comms.mockRpcCall({
-              request: buildRequestWithReplacedBlockParam(
-                request,
-                blockParamIndex,
-                '0x100',
-              ),
-              error: errorMessage,
-            });
+          const promiseForResult = withNetworkClient(
+            { providerType, infuraNetwork: comms.infuraNetwork },
+            async ({ makeRpcCall }) => makeRpcCall(request),
+          );
 
-            const promiseForResult = withNetworkClient(
-              { providerType, infuraNetwork },
-              async ({ makeRpcCall }) => makeRpcCall(request),
-            );
-
-            await expect(promiseForResult).rejects.toThrow(
-              buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
-            );
-          },
-        );
+          await expect(promiseForResult).rejects.toThrow(
+            buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
+          );
+        });
       });
     } else {
       it('does not retry the request to the RPC endpoint, but throws immediately, if a "SyntaxError" error is thrown while making the request', async () => {
@@ -2663,43 +2648,38 @@ export function testsForRpcMethodSupportingBlockParam(
     // does not.
     if (providerType === 'infura') {
       it('does not retry the request to the RPC endpoint, but throws immediately, if a "Failed to fetch" error is thrown while making the request', async () => {
-        const infuraNetwork = 'goerli';
+        await withMockedCommunications({ providerType }, async (comms) => {
+          const request = { method };
+          const errorMessage = 'Failed to fetch: Some message';
 
-        await withMockedCommunications(
-          { providerType, infuraNetwork },
-          async (comms) => {
-            const request = { method };
-            const errorMessage = 'Failed to fetch: Some message';
+          // The first time a block-cacheable request is made, the
+          // block-cache middleware will request the latest block number
+          // through the block tracker to determine the cache key. Later,
+          // the block-ref middleware will request the latest block number
+          // again to resolve the value of "latest", but the block number is
+          // cached once made, so we only need to mock the request once.
+          comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
+          // The block-ref middleware will make the request as specified
+          // except that the block param is replaced with the latest block
+          // number.
+          comms.mockRpcCall({
+            request: buildRequestWithReplacedBlockParam(
+              request,
+              blockParamIndex,
+              '0x100',
+            ),
+            error: errorMessage,
+          });
 
-            // The first time a block-cacheable request is made, the
-            // block-cache middleware will request the latest block number
-            // through the block tracker to determine the cache key. Later,
-            // the block-ref middleware will request the latest block number
-            // again to resolve the value of "latest", but the block number is
-            // cached once made, so we only need to mock the request once.
-            comms.mockNextBlockTrackerRequest({ blockNumber: '0x100' });
-            // The block-ref middleware will make the request as specified
-            // except that the block param is replaced with the latest block
-            // number.
-            comms.mockRpcCall({
-              request: buildRequestWithReplacedBlockParam(
-                request,
-                blockParamIndex,
-                '0x100',
-              ),
-              error: errorMessage,
-            });
+          const promiseForResult = withNetworkClient(
+            { providerType, infuraNetwork: comms.infuraNetwork },
+            async ({ makeRpcCall }) => makeRpcCall(request),
+          );
 
-            const promiseForResult = withNetworkClient(
-              { providerType, infuraNetwork },
-              async ({ makeRpcCall }) => makeRpcCall(request),
-            );
-
-            await expect(promiseForResult).rejects.toThrow(
-              buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
-            );
-          },
-        );
+          await expect(promiseForResult).rejects.toThrow(
+            buildFetchFailedErrorMessage(comms.rpcUrl, errorMessage),
+          );
+        });
       });
     } else {
       it('retries the request to the RPC endpoint up to 5 times if a "Failed to fetch" error is thrown while making the request, returning the successful result if there is one on the 5th try', async () => {

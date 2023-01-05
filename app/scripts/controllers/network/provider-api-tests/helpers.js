@@ -45,7 +45,7 @@ import createJsonRpcClient from '../createJsonRpcClient';
  */
 
 /**
- * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string}} Communications
+ * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string, infuraNetwork: string}} Communications
  *
  * Provides methods to mock different kinds of requests to the provider.
  */
@@ -280,6 +280,7 @@ export async function withMockedCommunications(
     mockAllBlockTrackerRequests: curriedMockAllBlockTrackerRequests,
     mockRpcCall: curriedMockRpcCall,
     rpcUrl,
+    infuraNetwork,
   };
 
   try {
