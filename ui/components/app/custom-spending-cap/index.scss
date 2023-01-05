@@ -3,26 +3,13 @@
     display: contents;
   }
 
-  &__max-button {
+  &__max {
     position: relative;
+    margin-top: -30px;
   }
 
   &__input {
     width: 100%;
-
-    &--button {
-      background: none;
-      color: var(--color-primary-default);
-    }
-
-    &--max-button {
-      color: var(--color-text-alternative);
-      background: none;
-      position: absolute;
-      margin-top: 55px;
-      margin-inline-start: -75px;
-      z-index: 1;
-    }
   }
 
   #custom-spending-cap-input-value {

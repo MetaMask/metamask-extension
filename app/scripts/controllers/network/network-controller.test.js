@@ -1,6 +1,55 @@
 import sinon from 'sinon';
+import nock from 'nock';
 import { getNetworkDisplayName } from './util';
 import NetworkController, { NETWORK_EVENTS } from './network-controller';
+
+/**
+ * Construct a successful RPC response.
+ *
+ * @param {any} result - The RPC result to return.
+ * @returns A successful RPC response with the specified result.
+ */
+function constructSuccessfulRpcResponse(result) {
+  return {
+    id: 1,
+    jsonrpc: '2.0',
+    result,
+  };
+}
+
+// Example block taken from Ethereum Mainnet
+const BLOCK = {
+  baseFeePerGas: '0x63c498a46',
+  difficulty: '0x0',
+  extraData: '0x',
+  gasLimit: '0x1c9c380',
+  gasUsed: '0x598c9b',
+  hash: '0xfb2086eb924ffce4061f94c3b65f303e0351f8e7deff185fe1f5e9001ff96f63',
+  logsBloom:
+    '0x7034820113921800018e8070900006316040002225c04a0624110010841018a2109040401004112a4c120f00220a2119020000714b143a04004106120130a8450080433129401068ed22000a54a48221a1020202524204045421b883882530009a1800b08a1309408008828403010d530440001a40003c0006240291008c0404c211610c690b00f1985e000009c02503240040010989c01cf2806840043815498e90012103e06084051542c0094002494008044c24a0a13281e0009601481073010800130402464202212202a8088210442a8ec81b080430075629e60a00a082005a3988400940a4009012a204011a0018a00903222a60420428888144210802',
+  miner: '0xffee087852cb4898e6c3532e776e68bc68b1143b',
+  mixHash: '0xb17ba50cd7261e77a213fb75704dcfd8a28fbcd78d100691a112b7cc2893efa2',
+  nonce: '0x0000000000000000',
+  number: '0x2', // number set to "2" to simplify tests
+  parentHash:
+    '0x31406d1bf1a2ca12371ce5b3ecb20568d6a8b9bf05b49b71b93ba33f317d5a82',
+  receiptsRoot:
+    '0x5ba97ece1afbac2a8fe0344f9022fe808342179b26ea3ecc2e0b8c4b46b7f8cd',
+  sha3Uncles:
+    '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+  size: '0x70f4',
+  stateRoot:
+    '0x36bfb7ca106d41c4458292669126e091011031c5af612dee1c2e6424ef92b080',
+  timestamp: '0x639b6d9b',
+  totalDifficulty: '0xc70d815d562d3cfa955',
+  transactions: [
+    // reduced to a single transaction to make fixture less verbose
+    '0x2761e939dc822f64141bd00bc7ef8cee16201af10e862469212396664cee81ce',
+  ],
+  transactionsRoot:
+    '0x98bbdfbe1074bc3aa72a77a281f16d6ba7e723d68f15937d80954fb34d323369',
+  uncles: [],
+};
 
 describe('NetworkController', () => {
   describe('controller', () => {
@@ -28,6 +77,8 @@ describe('NetworkController', () => {
 
     afterEach(() => {
       getLatestBlockStub.reset();
+      networkController.destroy();
+      nock.cleanAll();
     });
 
     describe('#provider', () => {
@@ -38,6 +89,30 @@ describe('NetworkController', () => {
         expect(providerProxy.test).toBeUndefined();
         providerProxy.setTarget({ test: true });
         expect(providerProxy.test).toStrictEqual(true);
+      });
+    });
+
+    describe('destroy', () => {
+      it('should stop the block tracker for the current selected network', async () => {
+        nock('http://localhost:8545')
+          .persist()
+          .post(/.*/u)
+          .reply(200, () =>
+            JSON.stringify(constructSuccessfulRpcResponse(BLOCK)),
+          );
+        await networkController.initializeProvider(
+          networkControllerProviderConfig,
+        );
+        const { blockTracker } = networkController.getProviderAndBlockTracker();
+        // The block tracker starts running after a listener is attached
+        blockTracker.addListener('latest', () => {
+          // do nothing
+        });
+        expect(blockTracker.isRunning()).toBe(true);
+
+        networkController.destroy();
+
+        expect(blockTracker.isRunning()).toBe(false);
       });
     });
 
