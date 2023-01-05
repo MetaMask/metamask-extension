@@ -24203,6 +24203,7 @@ __metadata:
     bify-module-groups: ^2.0.0
     bignumber.js: ^4.1.0
     bn.js: ^4.11.7
+    bowser: ^2.11.0
     brfs: ^2.0.2
     browser-util-inspect: ^0.2.0
     browserify: ^16.5.1
