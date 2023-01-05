@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   ALIGN_ITEMS,
-  BORDER_RADIUS,
   BORDER_STYLE,
   COLORS,
   DISPLAY,
-  JUSTIFY_CONTENT,
   SIZES,
   TEXT,
 } from '../../../helpers/constants/design-system';

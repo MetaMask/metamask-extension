@@ -269,7 +269,7 @@ export const Padding = (args) => {
       </Box>
       <Box
         {...args}
-        padding={[4, 8, 12]}
+        padding={[4, 0, 8, 12]}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_MUTED}
       >
