@@ -1,9 +1,13 @@
 const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
+const fs = require('fs');
 const dependencyTree = require('dependency-tree');
 
-const stories = require('../../storybook-static/stories.json');
+const stories = fs.readFileSync(
+  path.join(__dirname, '..', 'stories.json'),
+  'utf8',
+);
 
 const cwd = process.cwd();
 const resolutionCache = {};

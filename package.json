@@ -84,7 +84,8 @@
     "ts-migration:dashboard:watch": "ts-node development/ts-migration-dashboard/scripts/build.ts --watch",
     "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build.ts",
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard",
-    "test-storybook": "test-storybook -c .storybook"
+    "test-storybook": "test-storybook -c .storybook",
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn build-storybook --quiet && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && yarn test-storybook\""
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
@@ -287,6 +288,7 @@
     "fast-json-patch": "^3.1.1",
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
+    "http-server": "^14.1.1",
     "human-standard-token-abi": "^2.0.0",
     "immer": "^9.0.6",
     "is-retry-allowed": "^2.2.0",
@@ -337,6 +339,7 @@
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
+    "wait-on": "^7.0.1",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
   },
