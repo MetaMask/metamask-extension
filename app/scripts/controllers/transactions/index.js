@@ -844,7 +844,10 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type } = await determineTransactionType(txParams, this.query);
+    const { type } = await determineTransactionType(
+      normalizedTxParams,
+      this.query,
+    );
     txMeta.type = transactionType || type;
 
     // ensure value
