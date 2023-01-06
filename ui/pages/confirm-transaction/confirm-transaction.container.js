@@ -11,7 +11,10 @@ import {
   getContractMethodData,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { unconfirmedTransactionsListSelector } from '../../selectors';
+import {
+  unconfirmedTransactionsListSelector,
+  unconfirmedTransactionsHashSelector,
+} from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getSendTo } from '../../ducks/send';
 import ConfirmTransaction from './confirm-transaction.component';
@@ -27,9 +30,10 @@ const mapStateToProps = (state, ownProps) => {
   const sendTo = getSendTo(state);
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
+  const unconfirmedMessages = unconfirmedTransactionsHashSelector(state);
   const totalUnconfirmed = unconfirmedTransactions.length;
   const transaction = totalUnconfirmed
-    ? unapprovedTxs[id] || unconfirmedTransactions[0]
+    ? unapprovedTxs[id] || unconfirmedMessages[id] || unconfirmedTransactions[0]
     : {};
   const { id: transactionId, type } = transaction;
 

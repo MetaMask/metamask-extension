@@ -1,26 +1,31 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {
   getCurrentChainId,
   getUnapprovedTransactions,
+  unconfirmedMessagesHashSelector,
 } from '../../../../selectors';
 import { transactionMatchesNetwork } from '../../../../../shared/modules/transaction.utils';
 import { I18nContext } from '../../../../contexts/i18n';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  SIGNATURE_REQUEST_PATH,
+} from '../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
-const ConfirmPageContainerNavigation = ({ txData }) => {
+const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
 
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const unconfirmedMessages = useSelector(unconfirmedMessagesHashSelector);
   const currentChainId = useSelector(getCurrentChainId);
   const network = hexToDecimal(currentChainId);
+  const isUnapprovedTxsEmpty = Object.keys(unapprovedTxs).length === 0;
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
@@ -28,7 +33,9 @@ const ConfirmPageContainerNavigation = ({ txData }) => {
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
 
-  const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
+  const enumUnapprovedTxs = Object.keys(
+    isUnapprovedTxsEmpty ? unconfirmedMessages : currentNetworkUnapprovedTxs,
+  );
 
   const currentPosition = enumUnapprovedTxs.indexOf(id);
 
@@ -43,7 +50,11 @@ const ConfirmPageContainerNavigation = ({ txData }) => {
   const onNextTx = (txId) => {
     if (txId) {
       dispatch(clearConfirmTransaction());
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
+      history.push(
+        isUnapprovedTxsEmpty
+          ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
+          : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
+      );
     }
   };
 
@@ -107,10 +118,6 @@ const ConfirmPageContainerNavigation = ({ txData }) => {
       </div>
     </div>
   );
-};
-
-ConfirmPageContainerNavigation.propTypes = {
-  txData: PropTypes.object,
 };
 
 export default ConfirmPageContainerNavigation;
