@@ -524,7 +524,7 @@ jobs:
           at: .
       - run:
           name: Test Storybook
-          command: yarn test-storybook:ci
+          command: yarn test-storybook
 
   test-lint-shellcheck:
     executor: shellcheck
