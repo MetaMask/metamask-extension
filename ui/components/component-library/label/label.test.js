@@ -21,7 +21,7 @@ describe('label', () => {
     const { getByText, getByTestId } = render(
       <Label>
         label
-        <Icon name={ICON_NAMES.INFO_FILLED} data-testid="icon" />
+        <Icon name={ICON_NAMES.INFO} data-testid="icon" />
       </Label>,
     );
     expect(getByText('label')).toBeDefined();

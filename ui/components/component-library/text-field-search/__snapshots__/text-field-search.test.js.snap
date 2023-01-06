@@ -7,7 +7,7 @@ exports[`TextFieldSearch should render correctly 1`] = `
   >
     <div
       class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-inherit"
-      style="mask-image: url('./images/icons/icon-search-filled.svg');"
+      style="mask-image: url('./images/icons/search.svg');"
     />
     <input
       autocomplete="off"

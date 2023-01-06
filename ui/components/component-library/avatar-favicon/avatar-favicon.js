@@ -35,7 +35,7 @@ export const AvatarFavicon = ({
         <img className="avatar-favicon__image" src={imageSource} alt={imgAlt} />
       ) : (
         <Icon
-          name={ICON_NAMES.GLOBAL_FILLED}
+          name={ICON_NAMES.GLOBAL}
           color={COLORS.ICON_DEFAULT}
           size={size}
           aria-label={imgAlt}

@@ -206,7 +206,7 @@ Loading.args = {
 };
 
 export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
     Button
   </Button>
 );

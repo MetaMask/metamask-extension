@@ -57,7 +57,7 @@ export const Children = (args) => (
       <Icon
         marginLeft={1}
         color={COLORS.INHERIT}
-        name={ICON_NAMES.WARNING_FILLED}
+        name={ICON_NAMES.WARNING}
         size={SIZES.AUTO}
       />
     </HelpText>

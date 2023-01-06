@@ -22,7 +22,7 @@ export const TextFieldSearch = ({
     value={value}
     onChange={onChange}
     type={TEXT_FIELD_BASE_TYPES.SEARCH}
-    leftAccessory={<Icon name={ICON_NAMES.SEARCH_FILLED} size={SIZES.SM} />}
+    leftAccessory={<Icon name={ICON_NAMES.SEARCH} size={SIZES.SM} />}
     showClearButton
     clearButtonOnClick={clearButtonOnClick}
     clearButtonProps={clearButtonProps}

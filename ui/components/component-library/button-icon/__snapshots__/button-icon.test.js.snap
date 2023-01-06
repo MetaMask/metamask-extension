@@ -9,7 +9,7 @@ exports[`ButtonIcon should render button element correctly 1`] = `
   >
     <div
       class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
-      style="mask-image: url('./images/icons/icon-add-square-filled.svg');"
+      style="mask-image: url('./images/icons/add-square.svg');"
     />
   </button>
 </div>

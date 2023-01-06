@@ -93,7 +93,7 @@ export default {
     },
   },
   args: {
-    name: ICON_NAMES.ADD_SQUARE_FILLED,
+    name: ICON_NAMES.ADD_SQUARE,
     color: COLORS.INHERIT,
     size: SIZES.MD,
   },
@@ -179,7 +179,7 @@ export const DefaultStory = (args) => {
                   backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
                   rightAccessory={
                     <ButtonIcon
-                      iconName={ICON_NAMES.COPY_FILLED}
+                      iconName={ICON_NAMES.COPY}
                       size={SIZES.SM}
                       color={COLORS.ICON_ALTERNATIVE}
                       ariaLabel="Copy to clipboard"
