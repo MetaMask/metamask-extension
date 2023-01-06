@@ -2114,6 +2114,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "moreComingSoon": {
+    "message": "More coming soon..."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -2699,6 +2702,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openSea": {
+    "message": "OpenSea (Beta)"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -3249,6 +3255,9 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
+  },
+  "selectProvider": {
+    "message": "Select providers:"
   },
   "selectType": {
     "message": "Select Type"
@@ -4098,6 +4107,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisServiceIsExperimental": {
+    "message": "This service is experimental"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -4267,10 +4279,10 @@
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Transaction security check"
+    "message": "Enable transaction security providers"
   },
   "transactionSecurityCheckDescription": {
-    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
@@ -23,9 +23,14 @@ import RecoveryPhraseChips from './recovery-phrase-chips';
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
+  const { search } = useLocation();
   const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [hiddenPhrase, setHiddenPhrase] = useState(false);
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   return (
     <div className="recovery-phrase" data-testid="recovery-phrase">
@@ -122,7 +127,9 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
-                history.push(ONBOARDING_CONFIRM_SRP_ROUTE);
+                history.push(
+                  `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
+                );
               }}
             >
               {t('next')}
