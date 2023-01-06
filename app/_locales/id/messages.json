@@ -1702,12 +1702,6 @@
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Peningkatan pengalaman tunjangan token"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Aktifkan ini untuk memperoleh peningkatan pengalaman tunjangan token setiap kali aplikasi terdesentralisasi (dapp) meminta persetujuan ERC20"
-  },
   "inYourSettings": {
     "message": "di Pengaturan Anda"
   },
@@ -2390,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Penggabungan Ethereum telah tiba!"
-  },
-  "notifications16ActionText": {
-    "message": "Cobalah di sini"
-  },
-  "notifications16Description": {
-    "message": "Kami mendesain ulang konfirmasi tunjangan token kami untuk membantu Anda membuat keputusan yang lebih tepat."
-  },
-  "notifications16Title": {
-    "message": "Peningkatan pengalaman tunjangan token"
   },
   "notifications17ActionText": {
     "message": "Tampilkan pengaturan Keamanan & Privasi"

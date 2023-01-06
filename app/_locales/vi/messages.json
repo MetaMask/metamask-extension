@@ -1702,12 +1702,6 @@
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Bật tính năng này để có trải nghiệm cho phép token được cải thiện mỗi khi có một dapp yêu cầu phê duyệt ERC20"
-  },
   "inYourSettings": {
     "message": "trong phần Cài đặt"
   },
@@ -2390,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Hợp nhất Ethereum đã được triển khai!"
-  },
-  "notifications16ActionText": {
-    "message": "Dùng thử tại đây"
-  },
-  "notifications16Description": {
-    "message": "Chúng tôi đã thiết kế lại xác nhận cho phép token để giúp bạn đưa ra quyết định sáng suốt hơn."
-  },
-  "notifications16Title": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
   },
   "notifications17ActionText": {
     "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"

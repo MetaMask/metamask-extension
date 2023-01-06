@@ -136,7 +136,7 @@ describe('Create token, approve token and approve token without gas', function (
         });
         await driver.clickElement({
           text: 'Use default',
-          tag: 'button',
+          css: '.mm-button-link',
         });
         await driver.clickElement({
           text: 'View details',
@@ -391,7 +391,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // set max spending cap
         await driver.clickElement({
-          css: '.custom-spending-cap__input--max-button',
+          css: '.custom-spending-cap__max',
           text: 'Max',
         });
 
@@ -477,7 +477,7 @@ describe('Create token, approve token and approve token without gas', function (
         // set spending cap
         await driver.clickElement({
           text: 'Use default',
-          tag: 'button',
+          css: '.mm-button-link',
         });
         await driver.clickElement({
           text: 'Next',

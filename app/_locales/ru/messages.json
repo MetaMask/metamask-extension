@@ -1702,12 +1702,6 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Улучшенный опыт предоставления токенов"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Включите этот параметр, чтобы воспользоваться улучшенным доступом к токенам всякий раз, когда децентрализованное приложение запрашивает одобрение ERC20."
-  },
   "inYourSettings": {
     "message": "в ваших Настройках"
   },
@@ -2390,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
-  },
-  "notifications16ActionText": {
-    "message": "Попробуйте это здесь"
-  },
-  "notifications16Description": {
-    "message": "Мы переработали наше подтверждение допустимых токенов, чтобы помочь вам принимать более обоснованные решения."
-  },
-  "notifications16Title": {
-    "message": "Улучшенный опыт предоставления токенов"
   },
   "notifications17ActionText": {
     "message": "Показать настройки безопасности и конфиденциальности"

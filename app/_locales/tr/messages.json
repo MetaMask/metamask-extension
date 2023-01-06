@@ -1702,12 +1702,6 @@
     "message": "İçe Aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Gelişmiş token hakediş deneyimi"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Merkeziyetsiz bir uygulama ERC20 onayı istediğinde gelişmiş token hakediş deneyimini kullanmak için bunu açın"
-  },
   "inYourSettings": {
     "message": "Ayarlar kısmında"
   },
@@ -2390,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Birleşmesi başladı!"
-  },
-  "notifications16ActionText": {
-    "message": "Burada dene"
-  },
-  "notifications16Description": {
-    "message": "Token hakediş onayımızı daha bilgiye dayalı kararlar almanıza yardımcı olacak şekilde yeniden tasarladık."
-  },
-  "notifications16Title": {
-    "message": "Gelişmiş token hakedişi deneyimi"
   },
   "notifications17ActionText": {
     "message": "Güvenlik ve Gizlilik ayarlarını göster"
