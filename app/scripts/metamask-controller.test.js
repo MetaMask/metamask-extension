@@ -7,6 +7,7 @@ import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
 import { TransactionStatus } from '../../shared/constants/transaction';
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import {
@@ -509,6 +510,31 @@ describe('MetaMaskController', function () {
         [HardwareKeyringTypes.ledger],
       );
       assert.equal(keyrings.length, 1);
+    });
+  });
+
+  describe('getPrimaryKeyringMnemonic', function () {
+    it('should return a mnemonic as a string', function () {
+      const mockMnemonic =
+        'above mercy benefit hospital call oval domain student sphere interest argue shock';
+      const mnemonicIndices = mockMnemonic
+        .split(' ')
+        .map((word) => englishWordlist.indexOf(word));
+      const uint8ArrayMnemonic = new Uint8Array(
+        new Uint16Array(mnemonicIndices).buffer,
+      );
+
+      const mockHDKeyring = {
+        type: 'HD Key Tree',
+        mnemonic: uint8ArrayMnemonic,
+      };
+      sinon
+        .stub(metamaskController.keyringController, 'getKeyringsByType')
+        .returns([mockHDKeyring]);
+
+      const recoveredMnemonic = metamaskController.getPrimaryKeyringMnemonic();
+
+      assert.equal(recoveredMnemonic, mockMnemonic);
     });
   });
 

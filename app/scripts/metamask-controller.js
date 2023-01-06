@@ -2577,7 +2577,11 @@ export default class MetamaskController extends EventEmitter {
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
-    return keyring.mnemonic;
+
+    const recoveredIndices = Array.from(
+      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
+    );
+    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
   }
 
   //
