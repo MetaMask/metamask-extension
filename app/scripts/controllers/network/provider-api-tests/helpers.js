@@ -4,37 +4,32 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { providerFromEngine } from 'eth-json-rpc-middleware';
 import EthQuery from 'eth-query';
 import createInfuraClient from '../createInfuraClient';
+import createJsonRpcClient from '../createJsonRpcClient';
 
 /**
  * @typedef {import('nock').Scope} NockScope
  *
- * A object returned by `nock(...)` for mocking requests to a particular base
- * URL.
+ * A object returned by the `nock` function for mocking requests to a particular
+ * base URL.
  */
 
 /**
- * @typedef {{makeRpcCall: (request: Partial<JsonRpcRequest>) => Promise<any>, makeRpcCallsInSeries: (requests: Partial<JsonRpcRequest>[]) => Promise<any>}} InfuraClient
+ * @typedef {{blockTracker: import('eth-block-tracker').PollingBlockTracker, clock: sinon.SinonFakeTimers, makeRpcCall: (request: Partial<JsonRpcRequest>) => Promise<any>, makeRpcCallsInSeries: (requests: Partial<JsonRpcRequest>[]) => Promise<any>}} Client
  *
  * Provides methods to interact with the suite of middleware that
- * `createInfuraClient` exposes.
+ * `createInfuraClient` or `createJsonRpcClient` exposes.
  */
 
 /**
- * @typedef {{network: string}} WithInfuraClientOptions
+ * @typedef {{providerType: "infura" | "custom", infuraNetwork?: string, customRpcUrl?: string, customChainId?: string}} WithClientOptions
  *
- * The options bag that `withInfuraClient` takes.
+ * The options bag that `withNetworkClient` takes.
  */
 
 /**
- * @typedef {(client: InfuraClient) => Promise<any>} WithInfuraClientCallback
+ * @typedef {(client: Client) => Promise<any>} WithClientCallback
  *
- * The callback that `withInfuraClient` takes.
- */
-
-/**
- * @typedef {[WithInfuraClientOptions, WithInfuraClientCallback] | [WithInfuraClientCallback]} WithInfuraClientArgs
- *
- * The arguments to `withInfuraClient`.
+ * The callback that `withNetworkClient` takes.
  */
 
 /**
@@ -44,36 +39,47 @@ import createInfuraClient from '../createInfuraClient';
  */
 
 /**
- * @typedef {{ nockScope: NockScope, request: object, response: object, delay?: number }} MockInfuraRpcCallOptions
+ * @typedef {{ nockScope: NockScope, request: object, response: object, delay?: number }} MockRpcCallOptions
  *
- * The options to `mockInfuraRpcCall`.
+ * The options to `mockRpcCall`.
  */
 
 /**
- * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockInfuraRpcCall: (options: Omit<MockInfuraRpcCallOptions, 'nockScope'>) => NockScope}} InfuraCommunications
+ * @typedef {{mockNextBlockTrackerRequest: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockAllBlockTrackerRequests: (options: Omit<MockBlockTrackerRequestOptions, 'nockScope'>) => void, mockRpcCall: (options: Omit<MockRpcCallOptions, 'nockScope'>) => NockScope, rpcUrl: string, infuraNetwork: string}} Communications
  *
- * Provides methods to mock different kinds of requests to Infura.
+ * Provides methods to mock different kinds of requests to the provider.
  */
 
 /**
- * @typedef {{network: string}} WithMockedInfuraCommunicationsOptions
+ * @typedef {{providerType: 'infura' | 'custom', infuraNetwork?: string}} WithMockedCommunicationsOptions
  *
- * The options bag that `mockingInfuraCommunications` takes.
+ * The options bag that `Communications` takes.
  */
 
 /**
- * @typedef {(comms: InfuraCommunications) => Promise<any>} WithMockedInfuraCommunicationsCallback
+ * @typedef {(comms: Communications) => Promise<any>} WithMockedCommunicationsCallback
  *
- * The callback that `mockingInfuraCommunications` takes.
+ * The callback that `mockingCommunications` takes.
  */
 
 /**
- * @typedef {[WithMockedInfuraCommunicationsOptions, WithMockedInfuraCommunicationsCallback] | [WithMockedInfuraCommunicationsCallback]} WithMockedInfuraCommunicationsArgs
- *
- * The arguments to `mockingInfuraCommunications`.
+ * A dummy value for the `infuraProjectId` option that `createInfuraClient`
+ * needs. (Infura should not be hit during tests, but just in case, this should
+ * not refer to a real project ID.)
  */
+const MOCK_INFURA_PROJECT_ID = 'abc123';
 
-const INFURA_PROJECT_ID = 'abc123';
+/**
+ * A dummy value for the `rpcUrl` option that `createJsonRpcClient` needs. (This
+ * should not be hit during tests, but just in case, this should also not refer
+ * to a real Infura URL.)
+ */
+const MOCK_RPC_URL = 'http://foo.com';
+
+/**
+ * A default value for the `eth_blockNumber` request that the block tracker
+ * makes.
+ */
 const DEFAULT_LATEST_BLOCK_NUMBER = '0x42';
 
 /**
@@ -90,19 +96,16 @@ function debug(...args) {
 }
 
 /**
- * Builds a Nock scope object for mocking requests to a particular network that
- * Infura supports.
+ * Builds a Nock scope object for mocking provider requests.
  *
- * @param {object} options - The options.
- * @param {string} options.network - The Infura network you're testing with
- * (default: "mainnet").
+ * @param {string} rpcUrl - The URL of the RPC endpoint.
  * @returns {NockScope} The nock scope.
  */
-function buildScopeForMockingInfuraRequests({ network = 'mainnet' } = {}) {
-  return nock(`https://${network}.infura.io`).filteringRequestBody((body) => {
+function buildScopeForMockingRequests(rpcUrl) {
+  return nock(rpcUrl).filteringRequestBody((body) => {
     const copyOfBody = JSON.parse(body);
-    // some ids are random, so remove them entirely from the request to
-    // make it possible to mock these requests
+    // Some IDs are random, so remove them entirely from the request to make it
+    // possible to mock these requests
     delete copyOfBody.id;
     return JSON.stringify(copyOfBody);
   });
@@ -121,7 +124,7 @@ async function mockNextBlockTrackerRequest({
   nockScope,
   blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
 }) {
-  await mockInfuraRpcCall({
+  await mockRpcCall({
     nockScope,
     request: { method: 'eth_blockNumber', params: [] },
     response: { result: blockNumber },
@@ -141,7 +144,7 @@ async function mockAllBlockTrackerRequests({
   nockScope,
   blockNumber = DEFAULT_LATEST_BLOCK_NUMBER,
 }) {
-  await mockInfuraRpcCall({
+  await mockRpcCall({
     nockScope,
     request: { method: 'eth_blockNumber', params: [] },
     response: { result: blockNumber },
@@ -149,9 +152,10 @@ async function mockAllBlockTrackerRequests({
 }
 
 /**
- * Mocks a JSON-RPC request sent to Infura with the given response.
+ * Mocks a JSON-RPC request sent to the provider with the given response.
+ * Provider type is inferred from the base url set on the nockScope.
  *
- * @param {MockInfuraRpcCallOptions} args - The arguments.
+ * @param {MockRpcCallOptions} args - The arguments.
  * @param {NockScope} args.nockScope - A nock scope (a set of mocked requests
  * scoped to a certain base URL).
  * @param {object} args.request - The request data.
@@ -169,14 +173,7 @@ async function mockAllBlockTrackerRequests({
  * expected to be made.
  * @returns {NockScope} The nock scope.
  */
-function mockInfuraRpcCall({
-  nockScope,
-  request,
-  response,
-  error,
-  delay,
-  times,
-}) {
+function mockRpcCall({ nockScope, request, response, error, delay, times }) {
   // eth-query always passes `params`, so even if we don't supply this property,
   // for consistency with makeRpcCall, assume that the `body` contains it
   const { method, params = [], ...rest } = request;
@@ -194,7 +191,10 @@ function mockInfuraRpcCall({
       completeResponse = response.body;
     }
   }
-  let nockRequest = nockScope.post(`/v3/${INFURA_PROJECT_ID}`, {
+  const url = nockScope.basePath.includes('infura.io')
+    ? `/v3/${MOCK_INFURA_PROJECT_ID}`
+    : '/';
+  let nockRequest = nockScope.post(url, {
     jsonrpc: '2.0',
     method,
     params,
@@ -241,29 +241,46 @@ function makeRpcCall(ethQuery, request) {
 }
 
 /**
- * Sets up request mocks for requests to Infura.
+ * Sets up request mocks for requests to the provider.
  *
- * @param {WithMockedInfuraCommunicationsArgs} args - Either an options bag + a
- * function, or just a function. The options bag, at the moment, may contain
- * `network` (that is, the Infura network; defaults to "mainnet"). The function
- * is called with an object that allows you to mock different kinds of requests.
+ * @param {WithMockedCommunicationsOptions} options - An options bag.
+ * @param {"infura" | "custom"} options.providerType - The type of network
+ * client being tested.
+ * @param {string} [options.infuraNetwork] - The name of the Infura network being
+ * tested, assuming that `providerType` is "infura" (default: "mainnet").
+ * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
+ * assuming that `providerType` is "custom".
+ * @param {WithMockedCommunicationsCallback} fn - A function which will be
+ * called with an object that allows interaction with the network client.
  * @returns {Promise<any>} The return value of the given function.
  */
-export async function withMockedInfuraCommunications(...args) {
-  const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { network = 'mainnet' } = options;
+export async function withMockedCommunications(
+  { providerType, infuraNetwork = 'mainnet', customRpcUrl = MOCK_RPC_URL },
+  fn,
+) {
+  if (providerType !== 'infura' && providerType !== 'custom') {
+    throw new Error(
+      `providerType must be either "infura" or "custom", was "${providerType}" instead`,
+    );
+  }
 
-  const nockScope = buildScopeForMockingInfuraRequests({ network });
+  const rpcUrl =
+    providerType === 'infura'
+      ? `https://${infuraNetwork}.infura.io`
+      : customRpcUrl;
+  const nockScope = buildScopeForMockingRequests(rpcUrl);
   const curriedMockNextBlockTrackerRequest = (localOptions) =>
     mockNextBlockTrackerRequest({ nockScope, ...localOptions });
   const curriedMockAllBlockTrackerRequests = (localOptions) =>
     mockAllBlockTrackerRequests({ nockScope, ...localOptions });
-  const curriedMockInfuraRpcCall = (localOptions) =>
-    mockInfuraRpcCall({ nockScope, ...localOptions });
+  const curriedMockRpcCall = (localOptions) =>
+    mockRpcCall({ nockScope, ...localOptions });
   const comms = {
     mockNextBlockTrackerRequest: curriedMockNextBlockTrackerRequest,
     mockAllBlockTrackerRequests: curriedMockAllBlockTrackerRequests,
-    mockInfuraRpcCall: curriedMockInfuraRpcCall,
+    mockRpcCall: curriedMockRpcCall,
+    rpcUrl,
+    infuraNetwork,
   };
 
   try {
@@ -275,25 +292,55 @@ export async function withMockedInfuraCommunications(...args) {
 }
 
 /**
- * Builds a provider from the Infura middleware along with a block tracker, runs
- * the given function with those two things, and then ensures the block tracker
- * is stopped at the end.
+ * Builds a provider from the middleware (for the provider type) along with a
+ * block tracker, runs the given function with those two things, and then
+ * ensures the block tracker is stopped at the end.
  *
- * @param {WithInfuraClientArgs} args - Either an options bag + a function, or
- * just a function. The options bag, at the moment, may contain `network` (that
- * is, the Infura network; defaults to "mainnet"). The function is called with
- * an object that allows you to interact with the client via a couple of methods
- * on that object.
+ * @param {WithClientOptions} options - An options bag.
+ * @param {"infura" | "custom"} options.providerType - The type of network
+ * client being tested.
+ * @param {string} [options.infuraNetwork] - The name of the Infura network being
+ * tested, assuming that `providerType` is "infura" (default: "mainnet").
+ * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
+ * assuming that `providerType` is "custom".
+ * @param {string} [options.customChainId] - The chain id belonging to the
+ * custom RPC endpoint, assuming that `providerType` is "custom" (default:
+ * "0x1").
+ * @param {WithClientCallback} fn - A function which will be called with an
+ * object that allows interaction with the network client.
  * @returns {Promise<any>} The return value of the given function.
  */
-export async function withInfuraClient(...args) {
-  const [options, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { network = 'mainnet' } = options;
+export async function withNetworkClient(
+  {
+    providerType,
+    infuraNetwork = 'mainnet',
+    customRpcUrl = MOCK_RPC_URL,
+    customChainId = '0x1',
+  },
+  fn,
+) {
+  if (providerType !== 'infura' && providerType !== 'custom') {
+    throw new Error(
+      `providerType must be either "infura" or "custom", was "${providerType}" instead`,
+    );
+  }
 
-  const { networkMiddleware, blockTracker } = createInfuraClient({
-    network,
-    projectId: INFURA_PROJECT_ID,
-  });
+  // The JSON-RPC client wraps `eth_estimateGas` so that it takes 2 seconds longer
+  // than it usually would to complete. Or at least it should — this doesn't
+  // appear to be working correctly. Unset `IN_TEST` on `process.env` to prevent
+  // this behavior.
+  const inTest = process.env.IN_TEST;
+  delete process.env.IN_TEST;
+  const clientUnderTest =
+    providerType === 'infura'
+      ? createInfuraClient({
+          network: infuraNetwork,
+          projectId: MOCK_INFURA_PROJECT_ID,
+        })
+      : createJsonRpcClient({ rpcUrl: customRpcUrl, chainId: customChainId });
+  process.env.IN_TEST = inTest;
+
+  const { networkMiddleware, blockTracker } = clientUnderTest;
 
   const engine = new JsonRpcEngine();
   engine.push(networkMiddleware);
