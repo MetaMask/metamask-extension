@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
@@ -23,12 +23,17 @@ import SkipSRPBackup from './skip-srp-backup-popover';
 export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
+  const { search } = useLocation();
   const currentLocale = useSelector(getCurrentLocale);
   const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
     useState(false);
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   const handleClickRecommended = () => {
-    history.push(ONBOARDING_REVIEW_SRP_ROUTE);
+    history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {

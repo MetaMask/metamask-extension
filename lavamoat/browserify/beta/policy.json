@@ -508,11 +508,11 @@
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/contract-metadata": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
@@ -1171,8 +1171,8 @@
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/smart-transactions-controller>@metamask/controllers": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/smart-transactions-controller>fast-json-patch": true,
         "ethers>@ethersproject/bytes": true,
+        "fast-json-patch": true,
         "lodash": true
       }
     },
@@ -1196,12 +1196,12 @@
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/gas-fee-controller>@metamask/network-controller>eth-json-rpc-infura": true,
         "@metamask/gas-fee-controller>@metamask/network-controller>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>@metamask/contract-metadata": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": true,
@@ -1395,14 +1395,6 @@
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "@metamask/smart-transactions-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -3719,9 +3711,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      },
-      "packages": {
-        "fast-json-patch>fast-deep-equal": true
       }
     },
     "fuse.js": {
