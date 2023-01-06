@@ -16,21 +16,6 @@ The `PickerNetwork` accepts all props below as well as all [Box](/docs/ui-compon
 
 <ArgsTable of={PickerNetwork} />
 
-### Src
-
-Use the `src` prop with an image url to render the `AvatarNetwork`.
-
-<Canvas>
-  <Story id="ui-components-component-library-picker-network-picker-network-stories-js--src" />
-</Canvas>
-
-```jsx
-import { PickerNetwork } from '../../ui/component-library/picker-network';
-  <PickerNetwork src="./images/arbitrum.svg" />
-  <PickerNetwork src="./images/matic-token.png" />
-  <PickerNetwork src="./images/optimism.svg" />
-```
-
 ### Label
 
 Use the `label` prop for the text content of the `PickerNetwork` component
@@ -40,8 +25,23 @@ Use the `label` prop for the text content of the `PickerNetwork` component
 </Canvas>
 
 ```jsx
-import { PickerNetwork } from '../../ui/component-library/picker-network';
-  <PickerNetwork label="Arbitrum One" />
-  <PickerNetwork label="Polygon Mainnet" />
-  <PickerNetwork label="Optimism" />
+import { PickerNetwork } from '../../ui/component-library';
+<PickerNetwork label="Arbitrum One" />
+<PickerNetwork label="Polygon Mainnet" />
+<PickerNetwork label="Optimism" />
+```
+
+### Src
+
+Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `avatarNetworkProps` to pass additional props to the `AvatarNetwork` component.
+
+<Canvas>
+  <Story id="ui-components-component-library-picker-network-picker-network-stories-js--src" />
+</Canvas>
+
+```jsx
+import { PickerNetwork } from '../../ui/component-library';
+<PickerNetwork src="./images/arbitrum.svg" />
+<PickerNetwork src="./images/matic-token.png" />
+<PickerNetwork src="./images/optimism.svg" />
 ```
