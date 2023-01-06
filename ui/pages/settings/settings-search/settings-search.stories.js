@@ -3,7 +3,6 @@ import SettingsSearch from './settings-search';
 
 export default {
   title: 'Pages/Settings/SettingsSearch',
-  id: __filename,
 };
 
 export const SettingsSearchComponent = () => {

@@ -32,7 +32,7 @@ import MyComponent from '.';
 
 export default {
   title: 'Components/UI/MyComponent', // title should follow the folder structure location of the component. Don't use spaces.
-  id: __filename,
+
 };
 
 export const DefaultStory = () => <MyComponent />;
@@ -59,7 +59,7 @@ export default {
   // The `title` effects the components tile and location in storybook
   // It should follow the folder structure location of the component. Don't use spaces.
   title: 'Components/UI/Button',
-  id: __filename, // The file name id is used to track what storybook files have changed in CI
+ // The file name id is used to track what storybook files have changed in CI
   component: Button, // The component you are documenting
   parameters: {
     docs: {

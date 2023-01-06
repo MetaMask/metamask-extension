@@ -3,9 +3,10 @@ const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const dependencyTree = require('dependency-tree');
 
+const stories = require('../../storybook-static/stories.json');
+
 const cwd = process.cwd();
 const resolutionCache = {};
-
 // 1. load stories
 // 2. load list per story
 // 3. filter against files
@@ -65,27 +66,22 @@ async function getLocalDependencyList(filename) {
 }
 
 function urlForStoryFile(filename, artifactBase) {
-  const storyId = sanitize(filename);
+  const storyId = getStoryId(filename);
   return `${artifactBase}/storybook/index.html?path=/story/${storyId}`;
 }
 
 /**
- * Remove punctuation and illegal characters from a story ID.
- * See:
- * https://gist.github.com/davidjrice/9d2af51100e41c6c4b4a
- * https://github.com/ComponentDriven/csf/blame/7ac941eee85816a4c567ca85460731acb5360f50/src/index.ts
- *
- * @param {string} string - The string to sanitize.
- * @returns The sanitized string.
+ * @param {fileName} string - The fileName to get the story id.
+ * @returns The id of the story.
  */
-function sanitize(string) {
-  return (
-    string
-      .toLowerCase()
-      // eslint-disable-next-line no-useless-escape
-      .replace(/[ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/giu, '-')
-      .replace(/-+/gu, '-')
-      .replace(/^-+/u, '')
-      .replace(/-+$/u, '')
-  );
+
+function getStoryId(fileName) {
+  const storiesArray = Object.values(stories.stories);
+  const foundStory = storiesArray.find((story) => {
+    return story.importPath.includes(fileName);
+  });
+  if (!foundStory) {
+    throw new Error(`story for ${fileName} not found`);
+  }
+  return foundStory.id;
 }
