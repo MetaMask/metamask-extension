@@ -571,7 +571,8 @@
       "web3>web3-shh": false,
       "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": false,
       "@metamask/base-controller>simple-git-hooks": false,
-      "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false
+      "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
+      "@storybook/test-runner>playwright": false
     }
   },
   "packageManager": "yarn@3.2.4"
