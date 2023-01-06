@@ -4,7 +4,7 @@ import TransactionActivityLogIcon from '.';
 
 export default {
   title: 'Components/App/TransactionActivityLog/TransactionActivityLogIcon',
-  id: __filename,
+
   argTypes: {
     className: {
       control: 'text',
