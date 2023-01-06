@@ -19,6 +19,7 @@ export { HelpText } from './help-text';
 export { Icon, ICON_NAMES, ICON_SIZES } from './icon';
 export { Label } from './label';
 export { PickerNetwork } from './picker-network';
+export { Popover } from './popover';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text, TEXT_VARIANTS, TEXT_DIRECTIONS } from './text';
