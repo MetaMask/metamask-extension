@@ -247,8 +247,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.NetworkController,
       infuraProjectId: opts.infuraProjectId,
     });
-
-    // now we can initialize the RPC provider, which other controllers require
     this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
