@@ -68,6 +68,7 @@ import {
         'eth_blockNumber',
         'eth_estimateGas',
         'eth_getBlockByHash',
+        'eth_gasPrice',
 
         // NOTE: eth_getBlockTransactionCountByNumber and
         // eth_getTransactionByBlockNumberAndIndex does take a block param at
@@ -80,8 +81,12 @@ import {
         'eth_getFilterLogs',
         'eth_getTransactionByBlockHashAndIndex',
         'eth_getUncleByBlockHashAndIndex',
+        // NOTE: eth_getUncleByBlockNumberAndIndex does take a block param at the
+        // 0th index, but this is not handled by our cache middleware currently
         'eth_getUncleByBlockNumberAndIndex',
         'eth_getUncleCountByBlockHash',
+        // NOTE: eth_getUncleCountByBlockNumber does take a block param at the 0th
+        // index, but this is not handled by our cache middleware currently
         'eth_getUncleCountByBlockNumber',
       ];
       assumingNoBlockParam.forEach((name) =>

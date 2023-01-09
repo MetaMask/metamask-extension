@@ -1200,7 +1200,7 @@ export function testsForRpcMethodSupportingBlockParam(
       ['ETIMEDOUT', 'ECONNRESET', 'SyntaxError'].forEach(
         (errorMessagePrefix) => {
           if (providerType === 'infura' || errorMessagePrefix === 'ETIMEDOUT') {
-            it(`retries the request to Infura up to 5 times if an "${errorMessagePrefix}" error is thrown while making the request, returning the successful result if there is one on the 5th try`, async () => {
+            it(`retries the request to ${providerType} up to 5 times if an "${errorMessagePrefix}" error is thrown while making the request, returning the successful result if there is one on the 5th try`, async () => {
               await withMockedCommunications(
                 { type: providerType },
                 async (comms) => {
@@ -1255,7 +1255,7 @@ export function testsForRpcMethodSupportingBlockParam(
             });
           }
 
-          it(`causes a request to fail with a custom error if an "${errorMessagePrefix}" error is thrown while making the request to Infura 5 times in a row`, async () => {
+          it(`causes a request to fail with a custom error if an "${errorMessagePrefix}" error is thrown while making the request to ${providerType} provider 5 times in a row`, async () => {
             await withMockedCommunications(
               { type: providerType },
               async (comms) => {
@@ -1504,7 +1504,7 @@ export function testsForRpcMethodSupportingBlockParam(
         );
       });
 
-      it('makes an additional request to Infura if the given block number matches the latest block number', async () => {
+      it(`makes an additional request to ${providerType} if the given block number matches the latest block number`, async () => {
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
@@ -1533,7 +1533,7 @@ export function testsForRpcMethodSupportingBlockParam(
         );
       });
 
-      it('makes an additional request to Infura if the given block number is less than the latest block number', async () => {
+      it(`makes an additional request to ${providerType} if the given block number is less than the latest block number`, async () => {
         await withMockedCommunications(
           { type: providerType },
           async (comms) => {
