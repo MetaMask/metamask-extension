@@ -304,6 +304,7 @@
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
+    "playwright": "^1.29.2",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
     "pubnub": "4.27.3",
@@ -577,7 +578,8 @@
       "@metamask/base-controller>simple-git-hooks": false,
       "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
       "resolve-url-loader>es6-iterator>es5-ext": false,
-      "@storybook/test-runner>playwright": false
+      "@storybook/test-runner>playwright": true,
+      "playwright": false
     }
   },
   "packageManager": "yarn@3.2.4"
