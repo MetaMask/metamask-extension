@@ -345,7 +345,7 @@ export const EVENT_NAMES = {
   TOKEN_HIDDEN: 'Token Hidden',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
-  ONBOARDING_WELCOME: 'Welcome Message Viewed',
+  ONBOARDING_WELCOME: 'App Installed',
   ONBOARDING_WALLET_CREATION_STARTED: 'Wallet Creation Started',
   ONBOARDING_WALLET_IMPORT_STARTED: 'Wallet Import Started',
   ONBOARDING_WALLET_CREATION_ATTEMPTED: 'Wallet Creation Attempted',

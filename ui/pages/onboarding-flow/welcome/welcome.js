@@ -73,6 +73,7 @@ export default function OnboardingWelcome() {
     event: EVENT_NAMES.ONBOARDING_WELCOME,
     properties: {
       message_title: t('welcomeToMetaMask'),
+      app_version: global.platform.getVersion(),
     },
   });
 
