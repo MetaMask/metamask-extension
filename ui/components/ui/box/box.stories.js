@@ -162,6 +162,21 @@ export default {
       control: 'select',
       table: { category: 'margin' },
     },
+    marginInline: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'margin' },
+    },
+    marginInlineStart: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'margin' },
+    },
+    marginInlineEnd: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'margin' },
+    },
     padding: {
       options: sizeControlOptions,
       control: 'select',
@@ -183,6 +198,21 @@ export default {
       table: { category: 'padding' },
     },
     paddingLeft: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'padding' },
+    },
+    paddingInline: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'padding' },
+    },
+    paddingInlineStart: {
+      options: sizeControlOptions,
+      control: 'select',
+      table: { category: 'padding' },
+    },
+    paddingInlineEnd: {
       options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
