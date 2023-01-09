@@ -1050,10 +1050,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
       version,
       // account mgmt
       getAccounts: async (
