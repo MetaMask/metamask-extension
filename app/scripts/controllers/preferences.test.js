@@ -388,14 +388,14 @@ describe('preferences controller', function () {
   });
 
   describe('setTheme', function () {
-    it('should default to value "light"', function () {
+    it('should default to value "OS"', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
     });
 
     it('should set the setTheme property in state', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
       preferencesController.setTheme('dark');
       assert.equal(preferencesController.store.getState().theme, 'dark');
     });
