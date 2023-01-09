@@ -49,7 +49,7 @@ export default class SecurityTab extends PureComponent {
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
-    setUseCurrencyRateCheck: PropTypes.bool.isRequired,
+    setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
