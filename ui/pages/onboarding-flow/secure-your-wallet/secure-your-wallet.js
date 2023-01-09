@@ -98,7 +98,16 @@ export default function SecureYourWallet() {
         </Typography>
       </Box>
       <Box>
-        <video className="secure-your-wallet__video" controls>
+        <video
+          className="secure-your-wallet__video"
+          onPlay={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event: EVENT_NAMES.ONBOARDING_WALLET_VIDEO_PLAY,
+            });
+          }}
+          controls
+        >
           <source
             type="video/webm"
             src="./images/videos/recovery-onboarding/video.webm"

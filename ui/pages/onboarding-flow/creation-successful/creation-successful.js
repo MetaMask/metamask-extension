@@ -107,6 +107,9 @@ export default function CreationSuccessful() {
                 firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
                   ? EVENT_NAMES.ONBOARDING_WALLET_IMPORT_COMPLETE
                   : EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+              properties: {
+                method: firstTimeFlowType,
+              },
             });
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}

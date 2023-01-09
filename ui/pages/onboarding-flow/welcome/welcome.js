@@ -50,7 +50,7 @@ export default function OnboardingWelcome() {
       category: EVENT.CATEGORIES.ONBOARDING,
       event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_STARTED,
       properties: {
-        new_wallet: true,
+        account_type: 'metamask',
       },
     });
     history.push(ONBOARDING_METAMETRICS);
@@ -62,7 +62,7 @@ export default function OnboardingWelcome() {
       category: EVENT.CATEGORIES.ONBOARDING,
       event: EVENT_NAMES.ONBOARDING_WALLET_IMPORT_STARTED,
       properties: {
-        import_wallet: true,
+        account_type: 'imported',
       },
     });
     history.push(ONBOARDING_METAMETRICS);

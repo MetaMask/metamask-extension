@@ -36,7 +36,17 @@ export default function SkipSRPBackup({ handleClose }) {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Button onClick={handleClose} type="secondary" rounded>
+          <Button
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.ONBOARDING,
+                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CANCELED,
+              });
+              handleClose();
+            }}
+            type="secondary"
+            rounded
+          >
             {t('goBack')}
           </Button>
           <Button
