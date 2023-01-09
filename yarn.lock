@@ -25085,6 +25085,7 @@ __metadata:
     nyc: ^15.0.0
     obj-multiplex: ^1.0.0
     pify: ^5.0.0
+    playwright: ^1.29.2
     polyfill-crypto.getrandomvalues: ^1.0.0
     prettier: ^2.7.1
     prettier-plugin-sort-json: ^1.0.0
@@ -28000,6 +28001,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.29.2":
+  version: 1.29.2
+  resolution: "playwright-core@npm:1.29.2"
+  bin:
+    playwright: cli.js
+  checksum: 19e00e162a24eb99878408518930346c1d2c8ce83bb02993e3dd890c99df4530240cfebe4ec4e5aca01656462695b6328fb8f913cf2e229c2c73941623ac524e
+  languageName: node
+  linkType: hard
+
 "playwright@npm:^1.14.0":
   version: 1.29.1
   resolution: "playwright@npm:1.29.1"
@@ -28008,6 +28018,17 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: ef20f71b20420d9e0eaf45ac5f936422dc6961a863eb71192abe911d3f951722b3c464a36ea04cac8484368c876b5513db04171375f970831fb2bccb9fbb1b7b
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.29.2":
+  version: 1.29.2
+  resolution: "playwright@npm:1.29.2"
+  dependencies:
+    playwright-core: 1.29.2
+  bin:
+    playwright: cli.js
+  checksum: 6909483b440ad936cf413efeb30f4541e801f93f9a87797dda263264e29170a38e0741d65274bc26ffcbbfaa12f044938d65ccdfc04ca960c16b9383ed4cbb0e
   languageName: node
   linkType: hard
 
