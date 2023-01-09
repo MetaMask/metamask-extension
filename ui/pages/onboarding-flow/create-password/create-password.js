@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
@@ -27,7 +27,7 @@ import {
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -49,6 +49,17 @@ export default function CreatePassword({
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const currentKeyring = useSelector(getCurrentKeyring);
+
+  useEffect(() => {
+    if (currentKeyring) {
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
+    }
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
