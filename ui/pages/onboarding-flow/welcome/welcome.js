@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
@@ -13,13 +13,33 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setFirstTimeFlowType } from '../../../store/actions';
-import { ONBOARDING_METAMETRICS } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+} from '../../../helpers/constants/routes';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
   const [eventEmitter] = useState(new EventEmitter());
+  const currentKeyring = useSelector(getCurrentKeyring);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
+  // Don't allow users to come back to this screen after they
+  // have already imported or created a wallet
+  useEffect(() => {
+    if (currentKeyring) {
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
+    }
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
