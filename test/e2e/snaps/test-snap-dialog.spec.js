@@ -170,7 +170,7 @@ describe('Test Snap Dialog', function () {
 
         // click prompt button
         const promptButton = await driver.findElement('#sendPromptButton');
-        await driver.scrollToElement(confButton);
+        await driver.scrollToElement(promptButton);
         await driver.clickElement('#sendPromptButton');
         await driver.delay(1000);
 
