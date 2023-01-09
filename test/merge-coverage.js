@@ -7,7 +7,7 @@ const glob = require('fast-glob');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const yaml = require('js-yaml');
-const codecovTargets = require('../.codecov');
+const codecovTargets = require('../coverage-targets');
 
 const codecovConfig = yaml.load(fs.readFileSync('codecov.yml', 'utf8'));
 
