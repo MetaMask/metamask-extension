@@ -188,7 +188,7 @@
     "localforage": "^1.9.0",
     "lodash": "^4.17.21",
     "loglevel": "^1.4.1",
-    "luxon": "^3.1.0",
+    "luxon": "^3.2.1",
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
