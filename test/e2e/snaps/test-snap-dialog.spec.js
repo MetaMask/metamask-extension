@@ -30,9 +30,9 @@ describe('Test Snap Dialog', function () {
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(dialogButton);
+        await driver.delay(1000);
         await driver.clickElement('#connectDialogSnap');
 
         // switch to metamask extension and click connect
@@ -70,9 +70,7 @@ describe('Test Snap Dialog', function () {
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        // scroll to and click on alert dialog
-        const alertButton = await driver.findElement('#sendAlertButton');
-        await driver.scrollToElement(alertButton);
+        // click on alert dialog
         await driver.clickElement('#sendAlertButton');
         await driver.delay(1000);
 
@@ -103,13 +101,10 @@ describe('Test Snap Dialog', function () {
 
         // check result is null
         result = await driver.findElement('#dialogResult');
-        await driver.scrollToElement(result);
         await driver.delay(1000);
         assert.equal(await result.getText(), 'null');
 
         // click conf button
-        const confButton = await driver.findElement('#sendConfButton');
-        await driver.scrollToElement(confButton);
         await driver.clickElement('#sendConfButton');
         await driver.delay(1000);
 
@@ -134,12 +129,10 @@ describe('Test Snap Dialog', function () {
 
         // check for false result
         result = await driver.findElement('#dialogResult');
-        await driver.scrollToElement(result);
         await driver.delay(1000);
         assert.equal(await result.getText(), 'false');
 
         // click conf button again
-        await driver.scrollToElement(confButton);
         await driver.clickElement('#sendConfButton');
         await driver.delay(1000);
 
@@ -164,13 +157,10 @@ describe('Test Snap Dialog', function () {
 
         // check for true result
         result = await driver.findElement('#dialogResult');
-        await driver.scrollToElement(result);
         await driver.delay(1000);
         assert.equal(await result.getText(), 'true');
 
         // click prompt button
-        const promptButton = await driver.findElement('#sendPromptButton');
-        await driver.scrollToElement(promptButton);
         await driver.clickElement('#sendPromptButton');
         await driver.delay(1000);
 
@@ -198,7 +188,6 @@ describe('Test Snap Dialog', function () {
 
         // check result is equal to '2323'
         result = await driver.findElement('#dialogResult');
-        await driver.scrollToElement(result);
         await driver.delay(1000);
         assert.equal(await result.getText(), '"2323"');
       },
