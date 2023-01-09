@@ -22278,8 +22278,8 @@ __metadata:
 
 "luxon@patch:luxon@npm%3A3.2.1#./.yarn/patches/luxon-npm-3.2.1-56f8d97395.patch::locator=metamask-crx%40workspace%3A.":
   version: 3.2.1
-  resolution: "luxon@patch:luxon@npm%3A3.2.1#./.yarn/patches/luxon-npm-3.2.1-56f8d97395.patch::version=3.2.1&hash=6b3955&locator=metamask-crx%40workspace%3A."
-  checksum: 1162e67e35a0b69b858141b09a7c3673b1d0ec7e1e6e0d6e186a103607398dc48c010893084645bb31793120f796f4554a9bf2fefdc2e8698a11f4508badb526
+  resolution: "luxon@patch:luxon@npm%3A3.2.1#./.yarn/patches/luxon-npm-3.2.1-56f8d97395.patch::version=3.2.1&hash=aef1f3&locator=metamask-crx%40workspace%3A."
+  checksum: a1758bc8aa02c6faadef4f012d7f35af2ab7722ed79bfcbeb828bc960faf3c8001d6d659d8cc13ebbd96ccd957381bc848ad6d10e2fe88cd2996a65816efcc84
   languageName: node
   linkType: hard
 
