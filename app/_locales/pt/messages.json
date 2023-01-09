@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "Isso permite que o contrato gaste todo o seu saldo de tokens até atingir o limite ou até você revogar o limite de gastos. Se a intenção não é essa, considere definir um limite de gastos menor."
+    "message": "Isso permite que o contrato gaste todo o seu saldo de tokens até atingir o limite ou até você revogar o limite de gastos. Se a intenção não é essa, considere definir um limite de gastos menor.",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "Instalar"

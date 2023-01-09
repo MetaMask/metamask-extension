@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "토큰 잔액이 한도에 도달하거나 지출 한도를 철회할 때까지 계약이 모든 토큰 잔액을 지출할 수 있게 됩니다. 이를 원하지 않는다면 지출 한도를 하향하세요."
+    "message": "토큰 잔액이 한도에 도달하거나 지출 한도를 철회할 때까지 계약이 모든 토큰 잔액을 지출할 수 있게 됩니다. 이를 원하지 않는다면 지출 한도를 하향하세요.",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "설치"

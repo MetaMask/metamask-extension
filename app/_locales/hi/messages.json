@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "यह अनुबंध को आपके सभी टोकन शेष को तब तक खर्च करने की अनुमति देता है जब तक कि यह सीमा तक नहीं पहुंच जाता या आप खर्च की सीमा को रद्द नहीं कर देते। यदि इसका इरादा नहीं है, तो कम खर्च करने की सीमा निर्धारित करने पर विचार करें।"
+    "message": "यह अनुबंध को आपके सभी टोकन शेष को तब तक खर्च करने की अनुमति देता है जब तक कि यह सीमा तक नहीं पहुंच जाता या आप खर्च की सीमा को रद्द नहीं कर देते। यदि इसका इरादा नहीं है, तो कम खर्च करने की सीमा निर्धारित करने पर विचार करें।",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "इंस्टॉल करें"

@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "Αυτό επιτρέπει στον συμβαλλόμενο να δαπανήσει όλο το υπόλοιπό σας μέχρι να φτάσει το ανώτατο όριο ή να ανακαλέσει το ανώτατο όριο δαπανών. Εάν δεν το θέλετε αυτό, εξετάστε το ενδεχόμενο να ορίσετε χαμηλότερο όριο δαπανών."
+    "message": "Αυτό επιτρέπει στον συμβαλλόμενο να δαπανήσει όλο το υπόλοιπό σας μέχρι να φτάσει το ανώτατο όριο ή να ανακαλέσει το ανώτατο όριο δαπανών. Εάν δεν το θέλετε αυτό, εξετάστε το ενδεχόμενο να ορίσετε χαμηλότερο όριο δαπανών.",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "Εγκατάσταση"

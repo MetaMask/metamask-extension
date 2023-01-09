@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "Cela permet de dépenser tout votre solde de jetons jusqu’au plafond prévu dans le contrat ou à annuler ce même plafond. Sinon, prévoyez de fixer un plafond de dépenses inférieur."
+    "message": "Cela permet de dépenser tout votre solde de jetons jusqu’au plafond prévu dans le contrat ou à annuler ce même plafond. Sinon, prévoyez de fixer un plafond de dépenses inférieur.",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "Installez"

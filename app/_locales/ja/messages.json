@@ -1733,7 +1733,8 @@
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "これにより、上限に達するか使用上限が取り消されるまで、コントラクトがトークン残高全額を使用できるようになります。これを制限したい場合は、使用上限を低めに設定することをお勧めします。"
+    "message": "これにより、上限に達するか使用上限が取り消されるまで、コントラクトがトークン残高全額を使用できるようになります。これを制限したい場合は、使用上限を低めに設定することをお勧めします。",
+    "description": "$1 is the current token balance, $2 is balance that will be taken from account in future"
   },
   "install": {
     "message": "インストール"
