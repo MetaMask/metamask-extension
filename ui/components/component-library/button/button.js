@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { merge } from 'lodash';
 
+import { ButtonBase } from '../button-base';
 import { ButtonPrimary } from '../button-primary';
 import { ButtonSecondary } from '../button-secondary';
 import { ButtonLink } from '../button-link';
@@ -20,6 +22,13 @@ export const Button = ({ type, ...props }) => {
   }
 };
 
+const buttonPropTypes = merge(
+  ButtonBase.propTypes,
+  ButtonSecondary.propTypes,
+  ButtonPrimary.propTypes,
+  ButtonLink.propTypes,
+);
+
 Button.propTypes = {
   /**
    * Select the type of Button.
@@ -28,7 +37,7 @@ Button.propTypes = {
    */
   type: PropTypes.oneOf(Object.values(BUTTON_TYPES)),
   /**
-   * Button accepts all the props from ButtonPrimary (same props as ButtonSecondary & ButtonLink)
+   * Button accepts all button base and variant props ButtonBase, ButtonPrimary, ButtonSecondary, ButtonLink
    */
-  ...ButtonPrimary.propTypes,
+  ...buttonPropTypes,
 };

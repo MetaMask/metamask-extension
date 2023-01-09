@@ -35,7 +35,7 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
 <ButtonLink size={SIZES.AUTO} />
 <ButtonLink size={SIZES.SM} />
@@ -52,22 +52,47 @@ Use the `danger` boolean prop to change the `ButtonLink` to danger color.
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
 <ButtonLink>Normal</ButtonLink>
 <ButtonLink danger>Danger</ButtonLink>
 ```
 
-### Href
+### As
 
-When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
+Use the `as` box prop to change the element of `ButtonLink`. Defaults to `button`.
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+Button `as` options:
+
+- `button`
+- `a`
 
 <Canvas>
-  <Story id="ui-components-component-library-button-link-button-link-stories-js--href" />
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--as" />
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
-<ButtonLink href="/">Href Example</ButtonLink>;
+
+<ButtonLink as="button">Button Element</ButtonLink>
+<ButtonLink as="a" href="#">
+  Anchor Element
+</ButtonLink>
+```
+
+### Href
+
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
+
+<Canvas>
+  <Story id="ui-components-component-library-button-base-button-base-stories-js--href" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="/metamask">Anchor Element</ButtonLink>;
 ```

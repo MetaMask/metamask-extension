@@ -16,25 +16,21 @@ describe('Button', () => {
   });
 
   it('should render anchor element correctly', () => {
-    const { getByTestId, container } = render(
-      <Button as="a" data-testid="button">
+    const { getByRole } = render(
+      <Button as="a" href="https://www.test.com">
         Button
       </Button>,
     );
-    expect(getByTestId('button')).toHaveClass('mm-button-base');
-    const anchor = container.getElementsByTagName('a').length;
-    expect(anchor).toBe(1);
+    expect(getByRole('link')).toHaveAttribute('href', 'https://www.test.com');
   });
 
-  it('should render anchor element correctly by href only being passed', () => {
-    const { getByTestId, container } = render(
-      <Button href="/metamask" data-testid="button">
-        Visit Site
+  it('should render anchor element correctly by href only being passed and href exists if type link', () => {
+    const { getByRole } = render(
+      <Button type="link" href="https://www.test.com">
+        Button
       </Button>,
     );
-    expect(getByTestId('button')).toHaveClass('mm-button-base');
-    const anchor = container.getElementsByTagName('a').length;
-    expect(anchor).toBe(1);
+    expect(getByRole('link')).toHaveAttribute('href', 'https://www.test.com');
   });
 
   it('should render button as block', () => {
@@ -93,7 +89,7 @@ describe('Button', () => {
       </>,
     );
     expect(getByTestId(BUTTON_SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SIZES.AUTO}`,
+      `mm-button-link--size-${BUTTON_SIZES.AUTO}`,
     );
     expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
       `mm-button-base--size-${BUTTON_SIZES.SM}`,

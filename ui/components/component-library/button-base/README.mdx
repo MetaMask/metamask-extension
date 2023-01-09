@@ -26,7 +26,6 @@ Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -39,7 +38,6 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonBase } from '../../ui/components/component-library';
 
-<ButtonBase size={SIZES.AUTO} />
 <ButtonBase size={SIZES.SM} />
 <ButtonBase size={SIZES.MD} />
 <ButtonBase size={SIZES.LG} />
@@ -59,45 +57,6 @@ import { ButtonBase } from '../../ui/components/component-library';
 
 <ButtonBase>Default Button</ButtonBase>
 <ButtonBase block>Block Button</ButtonBase>
-```
-
-### As
-
-Use the `as` box prop to change the element of `ButtonBase`. Defaults to `button`.
-
-When an `href` prop is passed it will change the element to an anchor(`a`) tag.
-
-Button `as` options:
-
-- `button`
-- `a`
-
-<Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--as" />
-</Canvas>
-
-```jsx
-import { ButtonBase } from '../../ui/components/component-library';
-
-
-<ButtonBase as="button">Button Element</ButtonBase>
-<ButtonBase as="a" href="#">
-  Anchor Element
-</ButtonBase>
-```
-
-### Href
-
-When an `href` prop is passed it will change the element to an anchor(`a`) tag.
-
-<Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--href" />
-</Canvas>
-
-```jsx
-import { ButtonBase } from '../../ui/components/component-library';
-
-<ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
 
 ### Disabled

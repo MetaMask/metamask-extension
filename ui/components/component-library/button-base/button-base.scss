@@ -1,17 +1,9 @@
 .mm-button-base {
   position: relative;
   height: 40px;
-  padding: 0;
   cursor: pointer;
-  color: var(--color-text-default);
-  background-color: var(--brand-colors-grey-grey100);
   vertical-align: middle;
   user-select: none;
-
-  &:active,
-  &:hover {
-    color: var(--color-text-default);
-  }
 
   &--block {
     display: block;
@@ -21,7 +13,6 @@
   &__content {
     height: 100%;
   }
-
 
   &--size-sm {
     height: 32px;
@@ -33,18 +24,6 @@
 
   &--size-lg {
     height: 48px;
-  }
-
-  &--size-auto {
-    height: auto;
-    background-color: transparent;
-    border-radius: 0;
-    vertical-align: top;
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    letter-spacing: inherit;
   }
 
   &--loading {

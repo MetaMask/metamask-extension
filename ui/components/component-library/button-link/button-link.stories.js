@@ -4,6 +4,7 @@ import {
   DISPLAY,
   SIZES,
   TEXT,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
@@ -130,7 +131,7 @@ export const Size = (args) => (
         Large Button
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_MD}>
+    <Text variant={TEXT.BODY_SM}>
       <ButtonLink {...args} size={SIZES.AUTO}>
         Button Auto
       </ButtonLink>{' '}
@@ -149,7 +150,16 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+export const As = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
+    <ButtonLink {...args}>Button Element</ButtonLink>
+    <ButtonLink as="a" href="#" {...args}>
+      Anchor Element
+    </ButtonLink>
+  </Box>
+);
+
+export const Href = (args) => <ButtonLink {...args}>Anchor Element</ButtonLink>;
 
 Href.args = {
   href: '/metamask',

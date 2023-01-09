@@ -15,15 +15,6 @@ describe('ButtonLink', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render anchor element correctly', () => {
-    const { getByTestId, container } = render(
-      <ButtonLink as="a" data-testid="button-link" />,
-    );
-    expect(getByTestId('button-link')).toHaveClass('mm-button-base');
-    const anchor = container.getElementsByTagName('a').length;
-    expect(anchor).toBe(1);
-  });
-
   it('should render button as block', () => {
     const { getByTestId } = render(<ButtonLink block data-testid="block" />);
     expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
@@ -56,7 +47,7 @@ describe('ButtonLink', () => {
       `mm-button-base--size-${SIZES.LG}`,
     );
     expect(getByTestId(SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${SIZES.AUTO}`,
+      `mm-button-link--size-${SIZES.AUTO}`,
     );
   });
 
@@ -80,6 +71,7 @@ describe('ButtonLink', () => {
     expect(getByTestId('loading')).toHaveClass(`mm-button-base--loading`);
     expect(getByTestId('disabled')).toHaveClass(`mm-button-base--disabled`);
   });
+
   it('should render with icon', () => {
     const { container } = render(
       <ButtonLink data-testid="icon" iconName="add-square-filled" />,
@@ -87,5 +79,19 @@ describe('ButtonLink', () => {
 
     const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
+  });
+
+  it('should render anchor element correctly', () => {
+    const { getByRole } = render(
+      <ButtonLink as="a" href="https://www.test.com" />,
+    );
+    expect(getByRole('link')).toHaveAttribute('href', 'https://www.test.com');
+  });
+
+  it('should render anchor element correctly by href only being passed and href exists', () => {
+    const { getByRole } = render(
+      <ButtonLink href="https://www.test.com">Button Base</ButtonLink>,
+    );
+    expect(getByRole('link')).toHaveAttribute('href', 'https://www.test.com');
   });
 });

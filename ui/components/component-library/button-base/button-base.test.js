@@ -15,30 +15,6 @@ describe('ButtonBase', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render anchor element correctly', () => {
-    const { getByTestId, container } = render(
-      <ButtonBase as="a" data-testid="button-base" />,
-    );
-    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
-    const anchor = container.getElementsByTagName('a').length;
-    expect(anchor).toBe(1);
-  });
-
-  it('should render anchor element correctly by href only being passed and href exists', () => {
-    const { getByTestId, container } = render(
-      <ButtonBase href="https://www.test.com/" data-testid="button-base">
-        Button Base
-      </ButtonBase>,
-    );
-    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
-    expect(getByTestId('button-base')).toHaveAttribute(
-      'href',
-      'https://www.test.com/',
-    );
-    const anchor = container.getElementsByTagName('a').length;
-    expect(anchor).toBe(1);
-  });
-
   it('should render button as block', () => {
     const { getByTestId } = render(<ButtonBase block data-testid="block" />);
     expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
@@ -47,10 +23,6 @@ describe('ButtonBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonBase
-          size={BUTTON_BASE_SIZES.AUTO}
-          data-testid={BUTTON_BASE_SIZES.AUTO}
-        />
         <ButtonBase
           size={BUTTON_BASE_SIZES.SM}
           data-testid={BUTTON_BASE_SIZES.SM}
@@ -64,9 +36,6 @@ describe('ButtonBase', () => {
           data-testid={BUTTON_BASE_SIZES.LG}
         />
       </>,
-    );
-    expect(getByTestId(BUTTON_BASE_SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${BUTTON_BASE_SIZES.AUTO}`,
     );
     expect(getByTestId(BUTTON_BASE_SIZES.SM)).toHaveClass(
       `mm-button-base--size-${BUTTON_BASE_SIZES.SM}`,

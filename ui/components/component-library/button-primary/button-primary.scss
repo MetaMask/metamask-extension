@@ -1,45 +1,24 @@
 .mm-button-primary {
-  color: var(--color-primary-inverse);
-  background-color: var(--color-primary-default);
-
-  &:hover {
+  &:hover:not(&--disabled) {
     color: var(--color-primary-inverse);
     box-shadow: var(--component-button-primary-shadow);
   }
 
-  &:active {
+  &:active:not(&--disabled) {
     color: var(--color-primary-inverse);
     background-color: var(--color-primary-alternative);
   }
 
   // Danger type
   &--type-danger {
-    color: var(--color-error-inverse);
-    background-color: var(--color-error-default);
-
-    &:hover {
+    &:hover:not(.mm-button-primary--disabled) {
       color: var(--color-error-inverse);
       box-shadow: var(--component-button-danger-shadow);
     }
 
-    &:active {
+    &:active:not(.mm-button-primary--disabled) {
       color: var(--color-error-inverse);
       background-color: var(--color-error-alternative);
     }
-  }
-
-  // Disabled
-  &--disabled {
-    &:hover {
-      box-shadow: none;
-    }
-
-    &:active {
-      background-color: var(--color-primary-default);
-    }
-  }
-  // Disabled danger
-  &--type-danger#{&}--disabled:active {
-    background-color: var(--color-error-default);
   }
 }

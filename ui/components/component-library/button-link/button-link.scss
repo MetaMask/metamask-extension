@@ -1,42 +1,40 @@
 .mm-button-link {
-  color: var(--color-primary-default);
-
-  &:hover {
+  &:hover:not(&--disabled) {
     color: var(--color-primary-default);
     opacity: 0.5;
   }
 
-  &:active {
-    color: var(--color-primary-default);
+  &:active:not(&--disabled) {
+    color: var(--color-primary-alternative);
     opacity: 0.5;
-  }
-
-  &--disabled {
-    &:hover {
-      color: var(--color-primary-default);
-      opacity: 0.3;
-    }
-
-    &:active {
-      opacity: 0.3;
-    }
   }
 
   &--type-danger {
+    &:hover:not(.mm-button-link--disabled) {
+      color: var(--color-error-default);
+      opacity: 0.5;
+    }
+
+    &:active:not(.mm-button-link--disabled) {
+      color: var(--color-error-alternative);
+      opacity: 0.5;
+    }
+  }
+
+  // Needed for danger in disabled <a> tags
+  &--type-danger#{&}--disabled:hover,
+  &--type-danger#{&}--disabled:active {
     color: var(--color-error-default);
+  }
 
-    &:hover {
-      color: var(--color-error-default);
-      opacity: 0.5;
-    }
-
-    &:active {
-      color: var(--color-error-default);
-      opacity: 0.5;
-    }
-
-    &--disabled:hover {
-      color: var(--color-error-default);
-    }
+  &--size-auto {
+    padding: 0 !important; // TODO: remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
+    height: auto;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 }

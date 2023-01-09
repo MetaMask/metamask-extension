@@ -129,33 +129,36 @@ export const Type = (args) => (
   </Box>
 );
 
-export const Size = (args) => (
-  <>
-    <Box
-      display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.BASELINE}
-      gap={1}
-      marginBottom={3}
-    >
-      <Button {...args} size={SIZES.SM}>
-        Small Button
-      </Button>
-      <Button {...args} size={SIZES.MD}>
-        Medium (Default) Button
-      </Button>
-      <Button {...args} size={SIZES.LG}>
-        Large Button
-      </Button>
-    </Box>
-    <Text variant={TEXT.BODY_SM}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
-        Button Auto
-      </Button>{' '}
-      inherits the font-size of the parent element. Auto size only used for
-      ButtonLink.
-    </Text>
-  </>
-);
+export const Size = (args) => {
+  const { size, ...rest } = args;
+  return (
+    <>
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.BASELINE}
+        gap={1}
+        marginBottom={3}
+      >
+        <Button {...rest} size={size === SIZES.AUTO ? SIZES.SM : size}>
+          Small Button
+        </Button>
+        <Button {...rest} size={size === SIZES.AUTO ? SIZES.MD : size}>
+          Medium (Default) Button
+        </Button>
+        <Button {...rest} size={size === SIZES.AUTO ? SIZES.LG : size}>
+          Large Button
+        </Button>
+      </Box>
+      <Text variant={TEXT.BODY_SM}>
+        <Button {...rest} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
+          Button Auto
+        </Button>{' '}
+        inherits the font-size of the parent element. Auto size only used for
+        ButtonLink.
+      </Text>
+    </>
+  );
+};
 
 export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
