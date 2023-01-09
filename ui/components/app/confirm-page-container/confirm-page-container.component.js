@@ -84,7 +84,6 @@ export default class ConfirmPageContainer extends Component {
     origin: PropTypes.string.isRequired,
     ethGasPriceWarning: PropTypes.string,
     networkIdentifier: PropTypes.string,
-    txData: PropTypes.object,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -168,7 +167,6 @@ export default class ConfirmPageContainer extends Component {
       accountBalance,
       assetStandard,
       isApprovalOrRejection,
-      txData,
     } = this.props;
 
     const shouldDisplayWarning =
@@ -193,7 +191,7 @@ export default class ConfirmPageContainer extends Component {
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container" data-testid="page-container">
-          <ConfirmPageContainerNavigation txData={txData} />
+          <ConfirmPageContainerNavigation />
           {assetStandard === ERC20 ||
           assetStandard === ERC721 ||
           assetStandard === ERC1155 ? (

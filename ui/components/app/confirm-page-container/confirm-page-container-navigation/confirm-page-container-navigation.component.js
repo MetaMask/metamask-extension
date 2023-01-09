@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   getCurrentChainId,
   getUnapprovedTransactions,
@@ -12,10 +11,11 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
 
-const ConfirmPageContainerNavigation = ({ txData }) => {
+const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { id } = useParams();
 
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const currentChainId = useSelector(getCurrentChainId);
@@ -28,9 +28,8 @@ const ConfirmPageContainerNavigation = ({ txData }) => {
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
 
   const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
-  const currentPosition = enumUnapprovedTxs.indexOf(
-    txData.id ? txData.id.toString() : '',
-  );
+
+  const currentPosition = enumUnapprovedTxs.indexOf(id);
 
   const totalTx = enumUnapprovedTxs.length;
   const positionOfCurrentTx = currentPosition + 1;
@@ -107,10 +106,6 @@ const ConfirmPageContainerNavigation = ({ txData }) => {
       </div>
     </div>
   );
-};
-
-ConfirmPageContainerNavigation.propTypes = {
-  txData: PropTypes.object,
 };
 
 export default ConfirmPageContainerNavigation;
