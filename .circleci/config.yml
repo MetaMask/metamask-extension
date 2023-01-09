@@ -523,6 +523,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Install Playwright browsers
+          command: yarn dlx playwright install
+      - run:
           name: Test Storybook
           command: yarn test-storybook:ci
 
