@@ -4,13 +4,13 @@ import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
 import { COLORS } from '../../../helpers/constants/design-system';
 import { AvatarWithBadge } from './avatar-with-badge';
-import { BADGE_POSITIONS } from './avatar-with-badge.constants';
+import { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';
 
 describe('AvatarWithBadge', () => {
   it('should render correctly', () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <AvatarWithBadge
-        badgePosition={BADGE_POSITIONS.BOTTOM}
+        badgePosition={AVATAR_WITH_BADGE_POSTIONS.BOTTOM}
         data-testid="avatar-with-badge"
         badge={
           <AvatarNetwork
@@ -23,13 +23,14 @@ describe('AvatarWithBadge', () => {
     );
     expect(getByTestId('avatar-with-badge')).toBeDefined();
     expect(getByTestId('badge')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render badge network with bottom right position correctly', () => {
     const { container } = render(
       <AvatarWithBadge
         data-testid="avatar-with-badge"
-        badgePosition={BADGE_POSITIONS.BOTTOM}
+        badgePosition={AVATAR_WITH_BADGE_POSTIONS.BOTTOM}
         badge={
           <AvatarNetwork
             name="Arbitrum One"
@@ -42,7 +43,7 @@ describe('AvatarWithBadge', () => {
 
     expect(
       container.getElementsByClassName(
-        'avatar-with-badge__badge-wrapper--position-bottom',
+        'mm-avatar-with-badge__badge-wrapper--position-bottom',
       ),
     ).toHaveLength(1);
   });
@@ -51,7 +52,7 @@ describe('AvatarWithBadge', () => {
     const { container } = render(
       <AvatarWithBadge
         data-testid="avatar-with-badge"
-        badgePosition={BADGE_POSITIONS.TOP}
+        badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
         badge={
           <AvatarNetwork
             name="Arbitrum One"
@@ -64,7 +65,7 @@ describe('AvatarWithBadge', () => {
 
     expect(
       container.getElementsByClassName(
-        'avatar-with-badge__badge-wrapper--position-top',
+        'mm-avatar-with-badge__badge-wrapper--position-top',
       ),
     ).toHaveLength(1);
   });
@@ -72,7 +73,7 @@ describe('AvatarWithBadge', () => {
     const container = (
       <AvatarWithBadge
         data-testid="avatar-with-badge"
-        badgePosition={BADGE_POSITIONS.TOP}
+        badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
         badgeWrapperProps={{ borderColor: COLORS.ERROR_DEFAULT }}
         badge={
           <AvatarNetwork
@@ -86,5 +87,16 @@ describe('AvatarWithBadge', () => {
     expect(container.props.badgeWrapperProps.borderColor).toStrictEqual(
       'error-default',
     );
+  });
+
+  // className
+  it('should render with custom className', () => {
+    const { getByTestId } = render(
+      <AvatarWithBadge
+        data-testid="avatar-with-badge"
+        className="test-class"
+      />,
+    );
+    expect(getByTestId('avatar-with-badge')).toHaveClass('test-class');
   });
 });

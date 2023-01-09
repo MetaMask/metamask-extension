@@ -191,11 +191,17 @@ const Box = React.forwardRef(function Box(
     paddingRight,
     paddingBottom,
     paddingLeft,
+    paddingInline,
+    paddingInlineStart,
+    paddingInlineEnd,
     margin,
     marginTop,
     marginRight,
     marginBottom,
     marginLeft,
+    marginInline,
+    marginInlineStart,
+    marginInlineEnd,
     borderColor,
     borderWidth,
     borderRadius,
@@ -228,6 +234,12 @@ const Box = React.forwardRef(function Box(
     marginBottom &&
       generateClassNames('margin-bottom', marginBottom, isValidSize),
     marginLeft && generateClassNames('margin-left', marginLeft, isValidSize),
+    marginInline &&
+      generateClassNames('margin-inline', marginInline, isValidSize),
+    marginInlineStart &&
+      generateClassNames('margin-inline-start', marginInlineStart, isValidSize),
+    marginInlineEnd &&
+      generateClassNames('margin-inline-end', marginInlineEnd, isValidSize),
     // Padding
     padding && generateClassNames('padding', padding, isValidSize),
     paddingTop && generateClassNames('padding-top', paddingTop, isValidSize),
@@ -236,6 +248,16 @@ const Box = React.forwardRef(function Box(
     paddingBottom &&
       generateClassNames('padding-bottom', paddingBottom, isValidSize),
     paddingLeft && generateClassNames('padding-left', paddingLeft, isValidSize),
+    paddingInline &&
+      generateClassNames('padding-inline', paddingInline, isValidSize),
+    paddingInlineStart &&
+      generateClassNames(
+        'padding-inline-start',
+        paddingInlineStart,
+        isValidSize,
+      ),
+    paddingInlineEnd &&
+      generateClassNames('padding-inline-end', paddingInlineEnd, isValidSize),
     display && generateClassNames('display', display, isValidString),
     gap && generateClassNames('gap', gap, isValidSize),
     flexDirection &&
@@ -298,11 +320,17 @@ Box.propTypes = {
   marginBottom: MultipleSizesAndAuto,
   marginRight: MultipleSizesAndAuto,
   marginLeft: MultipleSizesAndAuto,
+  marginInline: MultipleSizes,
+  marginInlineStart: MultipleSizes,
+  marginInlineEnd: MultipleSizes,
   padding: MultipleSizes,
   paddingTop: MultipleSizes,
   paddingBottom: MultipleSizes,
   paddingRight: MultipleSizes,
   paddingLeft: MultipleSizes,
+  paddingInline: MultipleSizes,
+  paddingInlineStart: MultipleSizes,
+  paddingInlineEnd: MultipleSizes,
   borderColor: MultipleBorderColors,
   borderWidth: PropTypes.oneOfType([
     PropTypes.number,

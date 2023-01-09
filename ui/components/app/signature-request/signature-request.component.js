@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
@@ -107,6 +108,12 @@ export default class SignatureRequest extends PureComponent {
     }
   }
 
+  memoizedParseMessage = memoize((data) => {
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const sanitizedMessage = sanitizeMessage(message, primaryType, types);
+    return { sanitizedMessage, domain };
+  });
+
   render() {
     const {
       txData: {
@@ -126,8 +133,8 @@ export default class SignatureRequest extends PureComponent {
       conversionRate,
       nativeCurrency,
     } = this.props;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { trackEvent } = this.context;
+    const { sanitizedMessage, domain } = this.memoizedParseMessage(data);
 
     const currentNetwork = this.getNetworkName();
 
@@ -236,7 +243,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message
-          data={sanitizeMessage(message, primaryType, types)}
+          data={sanitizedMessage}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
