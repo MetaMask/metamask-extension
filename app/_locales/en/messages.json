@@ -594,13 +594,6 @@
     "message": "Buy $1 with TransFi",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyCryptoWithTransFi": {
-    "message": "Buy $1 with TransFi",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransFiDescription": {
-    "message": "TransFi offers a simplified crypto purchase with Visa, Mastercard, SEPA, and Local Payments in 140+ countries, and tokens will be deposited to Metamask directly"
-  },
   "buyCryptoWithTransFiDescription": {
     "message": "TransFi offers a simplified crypto purchase with Visa, Mastercard, SEPA, and Local Payments in 140+ countries, and tokens will be deposited to Metamask directly"
   },
@@ -823,9 +816,6 @@
   },
   "continueToMoonPay": {
     "message": "Continue to MoonPay"
-  },
-  "continueToTransFi": {
-    "message": "Continue to TransFi"
   },
   "continueToTransFi": {
     "message": "Continue to TransFi"
