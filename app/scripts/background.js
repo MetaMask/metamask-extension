@@ -15,7 +15,11 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
@@ -25,6 +29,7 @@ import {
   EVENT_NAMES,
   TRAITS,
 } from '../../shared/constants/metametrics';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import migrations from './migrations';
@@ -45,7 +50,7 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform } from './lib/util';
+import { deferredPromise, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -92,22 +97,87 @@ const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 /**
- * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
- * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ * This deferred Promise is used to track whether initialization has finished.
+ *
+ * It is very important to ensure that `resolveInitialization` is *always*
+ * called once initialization has completed, and that `rejectInitialization` is
+ * called if initialization fails in an unrecoverable way.
  */
+const {
+  promise: isInitialized,
+  resolve: resolveInitialization,
+  reject: rejectInitialization,
+} = deferredPromise();
 
-const initApp = async (remotePort) => {
-  browser.runtime.onConnect.removeListener(initApp);
-  await initialize(remotePort);
-  log.info('MetaMask initialization complete.');
+/**
+ * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
+ * the backend is not active. It is required to re-connect dapps after service worker re-activates.
+ * For non-dapp pages, the message will be sent and ignored.
+ */
+const sendReadyMessageToTabs = async () => {
+  const tabs = await browser.tabs
+    .query({
+      /**
+       * Only query tabs that our extension can run in. To do this, we query for all URLs that our
+       * extension can inject scripts in, which is by using the "<all_urls>" value and __without__
+       * the "tabs" manifest permission. If we included the "tabs" permission, this would also fetch
+       * URLs that we'd not be able to inject in, e.g. chrome://pages, chrome://extension, which
+       * is not what we'd want.
+       *
+       * You might be wondering, how does the "url" param work without the "tabs" permission?
+       *
+       * @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1}
+       *  "If the extension has access to inject scripts into Tab, then we can return the url
+       *   of Tab (because the extension could just inject a script to message the location.href)."
+       */
+      url: '<all_urls>',
+      windowType: 'normal',
+    })
+    .then((result) => {
+      checkForLastErrorAndLog();
+      return result;
+    })
+    .catch(() => {
+      checkForLastErrorAndLog();
+    });
+
+  /** @todo we should only sendMessage to dapp tabs, not all tabs. */
+  for (const tab of tabs) {
+    browser.tabs
+      .sendMessage(tab.id, {
+        name: EXTENSION_MESSAGES.READY,
+      })
+      .then(() => {
+        checkForLastErrorAndLog();
+      })
+      .catch(() => {
+        // An error may happen if the contentscript is blocked from loading,
+        // and thus there is no runtime.onMessage handler to listen to the message.
+        checkForLastErrorAndLog();
+      });
+  }
 };
 
-if (isManifestV3) {
-  browser.runtime.onConnect.addListener(initApp);
-} else {
-  // initialization flow
-  initialize().catch(log.error);
-}
+// These are set after initialization
+let connectRemote;
+let connectExternal;
+
+browser.runtime.onConnect.addListener(async (...args) => {
+  // Queue up connection attempts here, waiting until after initialization
+  await isInitialized;
+
+  // This is set in `setupController`, which is called as part of initialization
+  connectRemote(...args);
+});
+browser.runtime.onConnectExternal.addListener(async (...args) => {
+  // Queue up connection attempts here, waiting until after initialization
+  await isInitialized;
+
+  // This is set in `setupController`, which is called as part of initialization
+  connectExternal(...args);
+});
+
+initialize().catch(log.error);
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -167,17 +237,22 @@ if (isManifestV3) {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
- * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize(remotePort) {
-  const initState = await loadStateFromPersistence();
-  const initLangCode = await getFirstPreferredLangCode();
-  setupController(initState, initLangCode, remotePort);
-  if (!isManifestV3) {
-    await loadPhishingWarningPage();
+async function initialize() {
+  try {
+    const initState = await loadStateFromPersistence();
+    const initLangCode = await getFirstPreferredLangCode();
+    setupController(initState, initLangCode);
+    if (!isManifestV3) {
+      await loadPhishingWarningPage();
+    }
+    await sendReadyMessageToTabs();
+    log.info('MetaMask initialization complete.');
+    resolveInitialization();
+  } catch (error) {
+    rejectInitialization(error);
   }
-  log.info('MetaMask initialization complete.');
 }
 
 /**
@@ -309,9 +384,8 @@ async function loadStateFromPersistence() {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {string} remoteSourcePort - remote application port connecting to extension.
  */
-function setupController(initState, initLangCode, remoteSourcePort) {
+function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
@@ -360,16 +434,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
   setupSentryGetStateGlobal(controller);
 
-  //
-  // connect to other contexts
-  //
-  if (isManifestV3 && remoteSourcePort) {
-    connectRemote(remoteSourcePort);
-  }
-
-  browser.runtime.onConnect.addListener(connectRemote);
-  browser.runtime.onConnectExternal.addListener(connectExternal);
-
   const isClientOpenStatus = () => {
     return (
       popupIsOpen ||
@@ -410,7 +474,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  function connectRemote(remotePort) {
+  connectRemote = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -438,11 +502,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (isManifestV3) {
-        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-        // This ensures that UI is initialised only after background is ready
-        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
-
         // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
         remotePort.onMessage.addListener((message) => {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
@@ -513,16 +572,16 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       }
       connectExternal(remotePort);
     }
-  }
+  };
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  connectExternal = (remotePort) => {
     const portStream = new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
-  }
+  };
 
   //
   // User Interface setup
@@ -665,9 +724,27 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         ),
       );
 
-    // Finally, reject all approvals managed by the ApprovalController
-    controller.approvalController.clear(
-      ethErrors.provider.userRejectedRequest(),
+    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
+    Object.values(controller.approvalController.state.pendingApprovals).forEach(
+      ({ id, type }) => {
+        switch (type) {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
+          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+            controller.approvalController.accept(id, null);
+            break;
+          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          default:
+            controller.approvalController.reject(
+              id,
+              ethErrors.provider.userRejectedRequest(),
+            );
+            break;
+        }
+      },
     );
 
     updateBadge();

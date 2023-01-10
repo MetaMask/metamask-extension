@@ -16,6 +16,7 @@ import {
   getNativeCurrency,
   isAddressLedger,
 } from '../../ducks/metamask/metamask';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
   getCurrentCurrency,
   getSubjectMetadata,
@@ -26,7 +27,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
-  getEIP1559V2Enabled,
+  getIsImprovedTokenAllowanceEnabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
@@ -84,8 +85,11 @@ export default function ConfirmApprove({
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
 
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
-  const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
+  const supportsEIP1559 = networkAndAccountSupports1559;
+
+  const improvedTokenAllowanceEnabled = useSelector(
+    getIsImprovedTokenAllowanceEnabled,
+  );
 
   const previousTokenAmount = useRef(tokenAmount);
   const {
@@ -161,7 +165,10 @@ export default function ConfirmApprove({
   if (tokenSymbol === undefined && assetName === undefined) {
     return <Loading />;
   }
-  if (process.env.TOKEN_ALLOWANCE_IMPROVEMENTS && assetStandard === ERC20) {
+  if (assetStandard === undefined) {
+    return <ConfirmContractInteraction />;
+  }
+  if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -177,7 +184,7 @@ export default function ConfirmApprove({
             hexTransactionTotal={hexTransactionTotal}
             txData={transaction}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             userAddress={userAddress}
             tokenAddress={tokenAddress}
             data={transactionData}
@@ -189,14 +196,14 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
           />
-          {showCustomizeGasPopover && !supportsEIP1559V2 && (
+          {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               transaction={transaction}
             />
           )}
-          {supportsEIP1559V2 && (
+          {supportsEIP1559 && (
             <>
               <EditGasFeePopover />
               <AdvancedGasFeePopover />
@@ -213,6 +220,7 @@ export default function ConfirmApprove({
         identiconAddress={toAddress}
         showAccountInHeader
         title={tokensText}
+        tokenAddress={tokenAddress}
         customTokenAmount={String(customPermissionAmount)}
         dappProposedTokenAmount={tokenAmount}
         currentTokenBalance={tokenBalance}
@@ -304,16 +312,16 @@ export default function ConfirmApprove({
               rpcPrefs={rpcPrefs}
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
             />
-            {showCustomizeGasPopover && !supportsEIP1559V2 && (
+            {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
                 mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
                 transaction={transaction}
               />
             )}
-            {supportsEIP1559V2 && (
+            {supportsEIP1559 && (
               <>
                 <EditGasFeePopover />
                 <AdvancedGasFeePopover />

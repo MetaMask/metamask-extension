@@ -47,9 +47,6 @@
   "advanced": {
     "message": "מתקדם"
   },
-  "advancedOptions": {
-    "message": "אפשרויות מתקדמות"
-  },
   "amount": {
     "message": "כמות"
   },
@@ -558,9 +555,6 @@
   "newAccount": {
     "message": "חשבון חדש"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "זוהתה כתובת חדש! נא להקיש כאן כדי להוסיף לפנקס הכתובות שלך."
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
@@ -821,9 +815,6 @@
   },
   "sign": {
     "message": "חתימה"
-  },
-  "signNotice": {
-    "message": "לחתימה על הודעה זו יכולות להיות תוצאות לוואי מסוכנות. מומלץ לחתום רק הודעות מאתרים שיש לך אמון מלא בהם והפקדת את כל החשבון שלך בידיהם. השיטה המסוכנת תוסר בגרסה עתידית."
   },
   "signatureRequest": {
     "message": "בקשת חתימה"

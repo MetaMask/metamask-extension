@@ -1,12 +1,22 @@
 import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage } from '../../../helpers/utils/util';
+import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import SiteOrigin from '../../ui/site-origin';
-import Header from './signature-request-header';
+import Button from '../../ui/button';
+import Typography from '../../ui/typography/typography';
+import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  COLORS,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
+import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -40,6 +50,22 @@ export default class SignatureRequest extends PureComponent {
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
+    /**
+     * Current network chainId
+     */
+    chainId: PropTypes.string,
+    /**
+     * RPC prefs of the current network
+     */
+    rpcPrefs: PropTypes.object,
+    /**
+     * Dapp image
+     */
+    siteImage: PropTypes.string,
+    conversionRate: PropTypes.number,
+    nativeCurrency: PropTypes.string,
+    provider: PropTypes.object,
+    subjectMetadata: PropTypes.object,
   };
 
   static contextTypes = {
@@ -49,6 +75,7 @@ export default class SignatureRequest extends PureComponent {
 
   state = {
     hasScrolledMessage: false,
+    showContractDetails: false,
   };
 
   setMessageRootRef(ref) {
@@ -62,6 +89,25 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
+  getNetworkName() {
+    const { provider } = this.props;
+    const providerName = provider.type;
+    const { t } = this.context;
+
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
+    }
+  }
+
   memoizedParseMessage = memoize((data) => {
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
@@ -70,19 +116,35 @@ export default class SignatureRequest extends PureComponent {
 
   render() {
     const {
-      fromAccount,
       txData: {
         msgParams: { data, origin, version },
         type,
       },
+      fromAccount: { address, balance, name },
       cancel,
       sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
+      chainId,
+      rpcPrefs,
+      siteImage,
+      txData,
+      subjectMetadata,
+      conversionRate,
+      nativeCurrency,
     } = this.props;
-    const { address: fromAddress } = fromAccount;
     const { trackEvent } = this.context;
     const { sanitizedMessage, domain } = this.memoizedParseMessage(data);
+
+    const currentNetwork = this.getNetworkName();
+
+    const balanceInBaseAsset = conversionUtil(balance, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    });
 
     const onSign = (event) => {
       sign(event);
@@ -115,29 +177,64 @@ export default class SignatureRequest extends PureComponent {
     const messageIsScrollable =
       this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
 
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
+      : null;
+
     return (
-      <div className="signature-request page-container">
-        <Header fromAccount={fromAccount} />
-        <div className="signature-request-content">
-          <div className="signature-request-content__title">
-            {this.context.t('sigRequest')}
-          </div>
-          <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial">
-              {domain.name && domain.name[0]}
-            </div>
-            <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
-          </div>
-          <div className="signature-request-content__info--bolded">
-            {domain.name}
-          </div>
-          <SiteOrigin
-            className="signature-request-content__info"
-            siteOrigin={origin}
+      <div className="signature-request">
+        <div className="request-signature__account">
+          <NetworkAccountBalanceHeader
+            networkName={currentNetwork}
+            accountName={name}
+            accountBalance={balanceInBaseAsset}
+            tokenName={nativeCurrency}
+            accountAddress={address}
           />
-          <div className="signature-request-content__info">
-            {this.formatWallet(fromAddress)}
+        </div>
+        <div className="signature-request-content">
+          <div className="signature-request__origin">
+            <SiteOrigin
+              siteOrigin={origin}
+              iconSrc={targetSubjectMetadata?.iconUrl}
+              iconName={getURLHostName(origin) || origin}
+              chip
+            />
+          </div>
+
+          <Typography
+            className="signature-request__content__title"
+            variant={TYPOGRAPHY.H3}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{
+              marginTop: 4,
+            }}
+          >
+            {this.context.t('sigRequest')}
+          </Typography>
+          <Typography
+            className="request-signature__content__subtitle"
+            variant={TYPOGRAPHY.H7}
+            color={COLORS.TEXT_ALTERNATIVE}
+            align={TEXT_ALIGN.CENTER}
+            margin={12}
+            marginTop={3}
+          >
+            {this.context.t('signatureRequestGuidance')}
+          </Typography>
+          <div>
+            <Button
+              type="link"
+              onClick={() => this.setState({ showContractDetails: true })}
+              className="signature-request-content__verify-contract-details"
+            >
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.PRIMARY_DEFAULT}
+              >
+                {this.context.t('verifyContractDetails')}
+              </Typography>
+            </Button>
           </div>
         </div>
         {isLedgerWallet ? (
@@ -160,6 +257,17 @@ export default class SignatureRequest extends PureComponent {
             (messageIsScrollable && !this.state.hasScrolledMessage)
           }
         />
+        {this.state.showContractDetails && (
+          <ContractDetailsModal
+            toAddress={domain.verifyingContract}
+            chainId={chainId}
+            rpcPrefs={rpcPrefs}
+            origin={origin}
+            siteImage={siteImage}
+            onClose={() => this.setState({ showContractDetails: false })}
+            isContractRequestingSignature
+          />
+        )}
       </div>
     );
   }

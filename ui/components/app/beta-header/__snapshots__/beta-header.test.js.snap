@@ -10,7 +10,7 @@ exports[`Beta Header should match snapshot 1`] = `
     >
       <span>
          
-        This is a BETA version. Please report bugs 
+        This is a beta version. Please report bugs 
         <a
           href="https://metamask.zendesk.com/hc/en-us"
           rel="noreferrer noopener"

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Täpsemad"
   },
-  "advancedOptions": {
-    "message": "Täpsemad suvandid"
-  },
   "amount": {
     "message": "Summa"
   },
@@ -551,9 +548,6 @@
   "newAccount": {
     "message": "Uus konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Leiti uus aadress! Klõpsake siia, et see oma aadressiraamatusse lisada."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -814,9 +808,6 @@
   },
   "sign": {
     "message": "Allkirjasta"
-  },
-  "signNotice": {
-    "message": "Selle sõnumi allkirjastamisel \nvõib olla ohtlikke kõrvaltoimeid. Allkirjastage sõnumeid vaid \nsaitidelt, mida te kogu kontoga usaldate.\n See ohtlik meetod eemaldatakse uues versioonis."
   },
   "signatureRequest": {
     "message": "Allkirja taotlus"

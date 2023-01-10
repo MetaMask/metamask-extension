@@ -130,7 +130,7 @@ export const Size = (args) => (
         Large Button
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
+    <Text variant={TEXT.BODY_MD}>
       <ButtonLink {...args} size={SIZES.AUTO}>
         Button Auto
       </ButtonLink>{' '}

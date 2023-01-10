@@ -47,9 +47,6 @@
   "advanced": {
     "message": "ಸುಧಾರಿತ"
   },
-  "advancedOptions": {
-    "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
-  },
   "amount": {
     "message": "ಮೊತ್ತ"
   },
@@ -561,9 +558,6 @@
   "newAccount": {
     "message": "ಹೊಸ ಖಾತೆ"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "ಹೊಸ ವಿಳಾಸ ಪತ್ತೆಯಾಗಿದೆ! ನಿಮ್ಮ ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
-  },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
@@ -824,9 +818,6 @@
   },
   "sign": {
     "message": "ಸಹಿ"
-  },
-  "signNotice": {
-    "message": "ಈ ಸಂದೇಶಕ್ಕೆ ಸಹಿ ಮಾಡುವಿಕೆಯು \nಅಪಾಯಕಾರಿ ಅಡ್ಡಪರಿಣಾಮಗಳನ್ನು ಹೊಂದಿರಬಹುದು. ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಖಾತೆಯೊಂದಿಗೆ ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ನಂಬುವ ಸೈಟ್‌ಗಳಿಂದ\nಮಾತ್ರ ಸಂದೇಶಗಳಿಗೆ ಸಹಿ ಮಾಡಿ.\nಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ ಈ ಅಪಾಯಕಾರಿ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
   },
   "signatureRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"

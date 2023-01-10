@@ -94,8 +94,6 @@ export default class MetaMetricsController {
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {Function} options.getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
    * @param {string} options.extension - webextension-polyfill
@@ -107,7 +105,6 @@ export default class MetaMetricsController {
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
-    getNetworkIdentifier,
     version,
     environment,
     initState,
@@ -123,7 +120,6 @@ export default class MetaMetricsController {
     };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -153,7 +149,6 @@ export default class MetaMetricsController {
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
-      this.network = getNetworkIdentifier();
     });
     this.segment = segment;
 
@@ -473,7 +468,6 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          network: this.network,
           chain_id: this.chainId,
           environment_type: environmentType,
         },
@@ -672,7 +666,6 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: properties?.network ?? this.network,
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
@@ -710,15 +703,14 @@ export default class MetaMetricsController {
           },
           [],
         ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
-        metamaskState.allCollectibles,
+        metamaskState.allNfts,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
-        metamaskState.allCollectibles,
-      ).length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
+        .length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
@@ -769,11 +761,11 @@ export default class MetaMetricsController {
    * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {[]}
    */
-  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
-    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+  _getAllNFTsFlattened = memoize((allNfts = {}) => {
+    return Object.values(allNfts).reduce((result, chainNFTs) => {
       return result.concat(...Object.values(chainNFTs));
     }, []);
   });
@@ -782,11 +774,11 @@ export default class MetaMetricsController {
    * Returns the number of unique collectible/NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allCollectibles
+   * @param {object} allNfts
    * @returns {number}
    */
-  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+  _getAllUniqueNFTAddressesLength(allNfts = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);

@@ -8,7 +8,11 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
@@ -16,7 +20,6 @@ import { NETWORK_EVENTS } from './network';
 const segment = createSegmentMock(2, 10000);
 
 const VERSION = '0.0.1-test';
-const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
@@ -46,7 +49,6 @@ const DEFAULT_TEST_CONTEXT = {
 const DEFAULT_SHARED_PROPERTIES = {
   chain_id: FAKE_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
-  network: NETWORK,
   environment_type: 'background',
 };
 
@@ -64,7 +66,7 @@ const DEFAULT_PAGE_PROPERTIES = {
 
 function getMockNetworkController(
   chainId = FAKE_CHAIN_ID,
-  provider = { type: NETWORK },
+  provider = { type: NETWORK_TYPES.MAINNET },
 ) {
   let networkStore = { chainId, provider };
   const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
@@ -130,8 +132,6 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getNetworkIdentifier:
-      networkController.getNetworkIdentifier.bind(networkController),
     getCurrentChainId:
       networkController.getCurrentChainId.bind(networkController),
     onNetworkDidChange: networkController.on.bind(
@@ -179,7 +179,6 @@ describe('MetaMetricsController', function () {
         });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID);
       assert.strictEqual(
         metaMetricsController.state.participateInMetaMetrics,
@@ -204,14 +203,12 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         networkController,
       });
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       networkController.store.updateState({
         provider: {
           type: 'NEW_NETWORK',
         },
         chainId: '0xaab',
       });
-      assert.strictEqual(metaMetricsController.network, 'NEW_NETWORK');
       assert.strictEqual(metaMetricsController.chainId, '0xaab');
     });
 
@@ -220,7 +217,6 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         preferencesStore,
       });
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       preferencesStore.updateState({
         currentLocale: 'en_UK',
       });
@@ -909,7 +905,7 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
-        allCollectibles: {
+        allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
             56: [
               {
@@ -944,7 +940,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -982,7 +978,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -1002,7 +998,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         identities: [{}, {}, {}],
-        useCollectibleDetection: false,
+        useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -1030,7 +1026,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });
@@ -1048,7 +1044,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        useCollectibleDetection: true,
+        useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
       });

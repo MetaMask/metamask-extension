@@ -23,7 +23,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    supportsEIP1559V2,
+    supportsEIP1559,
     transaction,
   } = useGasFeeContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -31,7 +31,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const editEnabled =
     !hasSimulationError || userAcknowledgedGasMissing === true;
 
-  if (!supportsEIP1559V2 || !estimateUsed || !editEnabled) {
+  if (!supportsEIP1559 || !estimateUsed || !editEnabled) {
     return null;
   }
 

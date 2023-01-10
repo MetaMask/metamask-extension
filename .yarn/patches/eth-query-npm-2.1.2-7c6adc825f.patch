@@ -1,0 +1,27 @@
+diff --git a/index.js b/index.js
+index 13e9f3c25e7d3bee6a4ec3c2c5e1eea31e86a377..18b050ded27baf3603708fd6d595a554ea3c19c8 100644
+--- a/index.js
++++ b/index.js
+@@ -1,9 +1,9 @@
+ const extend = require('xtend')
+ const createRandomId = require('json-rpc-random-id')()
++const debug = require('debug')('eth-query')
+ 
+ module.exports = EthQuery
+ 
+-
+ function EthQuery(provider){
+   const self = this
+   self.currentProvider = provider
+@@ -63,7 +63,10 @@ EthQuery.prototype.submitHashrate =                      generateFnFor('eth_subm
+ 
+ EthQuery.prototype.sendAsync = function(opts, cb){
+   const self = this
+-  self.currentProvider.sendAsync(createPayload(opts), function(err, response){
++  const payload = createPayload(opts)
++  debug('making request %o', payload)
++  self.currentProvider.sendAsync(payload, function(err, response){
++    debug('got err = %o, response = %o', err, response)
+     if (!err && response.error) err = new Error('EthQuery - RPC Error - '+response.error.message)
+     if (err) return cb(err)
+     cb(null, response.result)

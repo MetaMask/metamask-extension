@@ -12,6 +12,7 @@ describe('ButtonLink', () => {
     expect(getByText('Button Link')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-link')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {
@@ -78,7 +79,7 @@ describe('ButtonLink', () => {
       <ButtonLink data-testid="icon" icon="add-square-filled" />,
     );
 
-    const icons = container.getElementsByClassName('icon').length;
+    const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
 });

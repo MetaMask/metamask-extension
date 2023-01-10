@@ -1,10 +1,14 @@
 const path = require('path');
 
+const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const { generateIconNames } = require('../development/generate-icon-names');
 
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.mdx',
@@ -26,7 +30,7 @@ module.exports = {
     return {
       ...config,
       // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: await generateIconNames(),
+      ICON_NAMES: generateIconNames(),
     };
   },
   webpackFinal: async (config) => {
@@ -37,10 +41,22 @@ module.exports = {
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       './__mocks__/webextension-polyfill.js',
     );
+    config.resolve.fallback = {
+      child_process: false,
+      constants: false,
+      crypto: false,
+      fs: false,
+      http: false,
+      https: false,
+      os: false,
+      path: false,
+      stream: require.resolve('stream-browserify'),
+      _stream_transform: false,
+    };
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,
-      loaders: [
+      use: [
         'style-loader',
         {
           loader: 'css-loader',
@@ -74,6 +90,11 @@ module.exports = {
             to: path.join('fonts', 'fontawesome'),
           },
         ],
+      }),
+    );
+    config.plugins.push(
+      new ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
       }),
     );
     return config;

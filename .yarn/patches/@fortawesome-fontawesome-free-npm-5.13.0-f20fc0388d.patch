@@ -1,0 +1,55 @@
+diff --git a/scss/_larger.scss b/scss/_larger.scss
+index 27c2ad5fc45272972e7e894e2b1dc4ae7e10367b..5b8298418eeeeb86eab39706093455a0809e9423 100644
+--- a/scss/_larger.scss
++++ b/scss/_larger.scss
+@@ -1,10 +1,12 @@
++@use "sass:math";
++
+ // Icon Sizes
+ // -------------------------
+ 
+ // makes the font 33% larger relative to the icon container
+ .#{$fa-css-prefix}-lg {
+-  font-size: (4em / 3);
+-  line-height: (3em / 4);
++  font-size: math.div(4em, 3);
++  line-height: math.div(3em, 4);
+   vertical-align: -.0667em;
+ }
+ 
+diff --git a/scss/_list.scss b/scss/_list.scss
+index 8ebf33333cfd9cc589c44b39e9881d781986fccb..233923aba7f6a9821c3fb5b471e4d10dc619037f 100644
+--- a/scss/_list.scss
++++ b/scss/_list.scss
+@@ -1,9 +1,11 @@
++@use "sass:math";
++
+ // List Icons
+ // -------------------------
+ 
+ .#{$fa-css-prefix}-ul {
+   list-style-type: none;
+-  margin-left: $fa-li-width * 5/4;
++  margin-left: $fa-li-width * math.div(5, 4);
+   padding-left: 0;
+ 
+   > li { position: relative; }
+diff --git a/scss/_variables.scss b/scss/_variables.scss
+index fad7705d887c25e5c47b1ecaead68f27f4d709af..d0da3aebe52c2b6e0d783b8b7658d7c72c803343 100644
+--- a/scss/_variables.scss
++++ b/scss/_variables.scss
+@@ -1,3 +1,5 @@
++@use "sass:math";
++
+ // Variables
+ // --------------------------
+ 
+@@ -9,7 +11,7 @@ $fa-version:           "5.13.0" !default;
+ $fa-border-color:      #eee !default;
+ $fa-inverse:           #fff !default;
+ $fa-li-width:          2em !default;
+-$fa-fw-width:          (20em / 16);
++$fa-fw-width:          math.div(20em, 16);
+ $fa-primary-opacity:   1 !default;
+ $fa-secondary-opacity: .4 !default;
+ 

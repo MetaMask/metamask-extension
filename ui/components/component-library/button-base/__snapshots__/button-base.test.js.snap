@@ -7,7 +7,7 @@ exports[`ButtonBase should render button element correctly and match snapshot 1`
     data-testid="button-base"
   >
     <span
-      class="box text mm-button__content text--body-md text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button base
     </span>

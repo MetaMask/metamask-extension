@@ -79,7 +79,7 @@ export default class SendAssetRow extends Component {
         return this.props.nativeCurrency;
       case ASSET_TYPES.TOKEN:
         return ERC20;
-      case ASSET_TYPES.COLLECTIBLE:
+      case ASSET_TYPES.NFT:
         return token?.standard;
       default:
         return null;
@@ -144,7 +144,7 @@ export default class SendAssetRow extends Component {
       if (token) {
         return this.renderToken(token);
       }
-    } else if (type === ASSET_TYPES.COLLECTIBLE) {
+    } else if (type === ASSET_TYPES.NFT) {
       const collectible = collectibles.find(
         ({ address, tokenId }) =>
           isEqualCaseInsensitive(address, details.address) &&
@@ -268,7 +268,7 @@ export default class SendAssetRow extends Component {
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(ASSET_TYPES.COLLECTIBLE, collectible)}
+        onClick={() => this.selectToken(ASSET_TYPES.NFT, collectible)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} image={image} />

@@ -25,6 +25,8 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
+import { ERC1155, ERC721 } from '../../../../../shared/constants/transaction';
+import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 
 export default function ContractDetailsModal({
   onClose,
@@ -35,6 +37,10 @@ export default function ContractDetailsModal({
   rpcPrefs,
   origin,
   siteImage,
+  tokenId,
+  assetName,
+  assetStandard,
+  isContractRequestingSignature,
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
@@ -43,6 +49,12 @@ export default function ContractDetailsModal({
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
   }));
+  const nft =
+    assetStandard === ERC721 ||
+    assetStandard === ERC1155 ||
+    // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenName and tokenId we assume its an NFT
+    (assetName && tokenId) ||
+    (tokenName && tokenId);
 
   return (
     <Popover className="contract-details-modal">
@@ -69,104 +81,123 @@ export default function ContractDetailsModal({
         >
           {t('contractDescription')}
         </Typography>
-        <Typography
-          variant={TYPOGRAPHY.H6}
-          display={DISPLAY.FLEX}
-          marginTop={4}
-          marginBottom={2}
-        >
-          {t('contractToken')}
-        </Typography>
-        <Box
-          display={DISPLAY.FLEX}
-          borderRadius={SIZES.SM}
-          borderStyle={BORDER_STYLE.SOLID}
-          borderColor={COLORS.BORDER_DEFAULT}
-          className="contract-details-modal__content__contract"
-        >
-          <Identicon
-            className="contract-details-modal__content__contract__identicon"
-            address={tokenAddress}
-            diameter={24}
-          />
-          <Box data-testid="recipient">
+        {!isContractRequestingSignature && (
+          <>
             <Typography
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TYPOGRAPHY.H5}
+              variant={TYPOGRAPHY.H6}
+              display={DISPLAY.FLEX}
               marginTop={4}
+              marginBottom={2}
             >
-              {tokenName || ellipsify(tokenAddress)}
+              {nft ? t('contractNFT') : t('contractToken')}
             </Typography>
-            {tokenName && (
-              <Typography
-                variant={TYPOGRAPHY.H6}
-                display={DISPLAY.FLEX}
-                color={COLORS.TEXT_ALTERNATIVE}
-              >
-                {ellipsify(tokenAddress)}
-              </Typography>
-            )}
-          </Box>
-          <Box
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            className="contract-details-modal__content__contract__buttons"
-          >
-            <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedTokenAddress
-                    ? t('copiedExclamation')
-                    : t('copyToClipboard')
-                }
-              >
-                <Button
-                  className="contract-details-modal__content__contract__buttons__copy"
-                  type="link"
-                  onClick={() => {
-                    handleCopyTokenAddress(tokenAddress);
-                  }}
-                >
-                  <IconCopy color="var(--color-icon-muted)" />
-                </Button>
-              </Tooltip>
-            </Box>
-            <Box marginTop={5} marginRight={5}>
-              <Tooltip position="top" title={t('openInBlockExplorer')}>
-                <Button
-                  className="contract-details-modal__content__contract__buttons__block-explorer"
-                  type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      tokenAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
-                >
-                  <IconBlockExplorer
-                    size={16}
-                    color="var(--color-icon-muted)"
+            <Box
+              display={DISPLAY.FLEX}
+              borderRadius={SIZES.SM}
+              borderStyle={BORDER_STYLE.SOLID}
+              borderColor={COLORS.BORDER_DEFAULT}
+              className="contract-details-modal__content__contract"
+            >
+              {nft ? (
+                <Box margin={4}>
+                  <NftCollectionImage
+                    assetName={assetName}
+                    tokenAddress={tokenAddress}
                   />
-                </Button>
-              </Tooltip>
+                </Box>
+              ) : (
+                <Identicon
+                  className="contract-details-modal__content__contract__identicon"
+                  address={tokenAddress}
+                  diameter={24}
+                />
+              )}
+              <Box data-testid="recipient">
+                <Typography
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H5}
+                  marginTop={4}
+                >
+                  {tokenName || ellipsify(tokenAddress)}
+                </Typography>
+                {tokenName && (
+                  <Typography
+                    variant={TYPOGRAPHY.H6}
+                    display={DISPLAY.FLEX}
+                    color={COLORS.TEXT_ALTERNATIVE}
+                    marginTop={0}
+                    marginBottom={4}
+                  >
+                    {ellipsify(tokenAddress)}
+                  </Typography>
+                )}
+              </Box>
+              <Box
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+                className="contract-details-modal__content__contract__buttons"
+              >
+                <Box marginTop={4} marginRight={5}>
+                  <Tooltip
+                    position="top"
+                    title={
+                      copiedTokenAddress
+                        ? t('copiedExclamation')
+                        : t('copyToClipboard')
+                    }
+                  >
+                    <Button
+                      className="contract-details-modal__content__contract__buttons__copy"
+                      type="link"
+                      onClick={() => {
+                        handleCopyTokenAddress(tokenAddress);
+                      }}
+                    >
+                      <IconCopy color="var(--color-icon-muted)" />
+                    </Button>
+                  </Tooltip>
+                </Box>
+                <Box marginTop={5} marginRight={5}>
+                  <Tooltip position="top" title={t('openInBlockExplorer')}>
+                    <Button
+                      className="contract-details-modal__content__contract__buttons__block-explorer"
+                      type="link"
+                      onClick={() => {
+                        const blockExplorerTokenLink = getAccountLink(
+                          tokenAddress,
+                          chainId,
+                          {
+                            blockExplorerUrl:
+                              rpcPrefs?.blockExplorerUrl ?? null,
+                          },
+                          null,
+                        );
+                        global.platform.openTab({
+                          url: blockExplorerTokenLink,
+                        });
+                      }}
+                    >
+                      <IconBlockExplorer
+                        size={16}
+                        color="var(--color-icon-muted)"
+                      />
+                    </Button>
+                  </Tooltip>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-
+          </>
+        )}
         <Typography
           variant={TYPOGRAPHY.H6}
           display={DISPLAY.FLEX}
           marginTop={4}
           marginBottom={2}
         >
-          {t('contractRequestingSpendingCap')}
+          {nft && t('contractRequestingAccess')}
+          {isContractRequestingSignature && t('contractRequestingSignature')}
+          {!nft &&
+            !isContractRequestingSignature &&
+            t('contractRequestingSpendingCap')}
         </Typography>
         <Box
           display={DISPLAY.FLEX}
@@ -175,22 +206,30 @@ export default function ContractDetailsModal({
           borderColor={COLORS.BORDER_DEFAULT}
           className="contract-details-modal__content__contract"
         >
-          <UrlIcon
-            className={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            fallbackClassName={classnames({
-              'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                addressBookEntry?.data?.name === undefined,
-              'contract-details-modal__content__contract__identicon':
-                addressBookEntry?.data?.name !== undefined,
-            })}
-            name={origin}
-            url={siteImage}
-          />
+          {nft ? (
+            <Identicon
+              className="contract-details-modal__content__contract__identicon"
+              diameter={24}
+              address={toAddress}
+            />
+          ) : (
+            <UrlIcon
+              className={classnames({
+                'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                  addressBookEntry?.data?.name === undefined,
+                'contract-details-modal__content__contract__identicon':
+                  addressBookEntry?.data?.name !== undefined,
+              })}
+              fallbackClassName={classnames({
+                'contract-details-modal__content__contract__identicon-for-unknown-contact':
+                  addressBookEntry?.data?.name === undefined,
+                'contract-details-modal__content__contract__identicon':
+                  addressBookEntry?.data?.name !== undefined,
+              })}
+              name={origin}
+              url={siteImage}
+            />
+          )}
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
@@ -204,6 +243,8 @@ export default function ContractDetailsModal({
                 variant={TYPOGRAPHY.H6}
                 display={DISPLAY.FLEX}
                 color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+                marginBottom={4}
               >
                 {ellipsify(toAddress)}
               </Typography>
@@ -310,4 +351,20 @@ ContractDetailsModal.propTypes = {
    * Dapp image
    */
   siteImage: PropTypes.string,
+  /**
+   * The token id of the collectible
+   */
+  tokenId: PropTypes.string,
+  /**
+   * Token Standard
+   */
+  assetStandard: PropTypes.string,
+  /**
+   * The name of the collection
+   */
+  assetName: PropTypes.string,
+  /**
+   * Whether contract requesting signature flow has started
+   */
+  isContractRequestingSignature: PropTypes.bool,
 };

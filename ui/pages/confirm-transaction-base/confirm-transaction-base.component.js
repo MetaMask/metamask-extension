@@ -158,7 +158,6 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -174,6 +173,7 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    showWarningModal: false,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     selectedInsightSnapId: this.props.insightSnaps[0]?.id,
     ///: END:ONLY_INCLUDE_IN
@@ -465,7 +465,7 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return this.supportsEIP1559V2 ? (
+      return this.supportsEIP1559 ? (
         <GasDetailsItem
           key="gas_details"
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -625,7 +625,7 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning &&
-              !this.supportsEIP1559V2 &&
+              !this.supportsEIP1559 &&
               simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
@@ -755,7 +755,7 @@ export default class ConfirmTransactionBase extends Component {
   renderInsight() {
     const { txData, insightSnaps } = this.props;
     const { selectedInsightSnapId } = this.state;
-    const { txParams, chainId } = txData;
+    const { txParams, chainId, origin } = txData;
 
     const selectedSnap = insightSnaps.find(
       ({ id }) => id === selectedInsightSnapId,
@@ -791,6 +791,7 @@ export default class ConfirmTransactionBase extends Component {
       >
         <SnapInsight
           transaction={txParams}
+          origin={origin}
           chainId={caip2ChainId}
           selectedSnap={selectedSnap}
         />
@@ -802,6 +803,7 @@ export default class ConfirmTransactionBase extends Component {
       >
         <SnapInsight
           transaction={txParams}
+          origin={origin}
           chainId={caip2ChainId}
           selectedSnap={selectedSnap}
         />
@@ -971,6 +973,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  handleSetApprovalForAll() {
+    this.setState({ showWarningModal: true });
+  }
+
   renderTitleComponent() {
     const { title, hexTransactionAmount, txData } = this.props;
 
@@ -1096,10 +1102,8 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
-  supportsEIP1559V2 =
-    this.props.eip1559V2Enabled &&
-    this.props.supportsEIP1559 &&
-    !isLegacyTransaction(this.props.txData);
+  supportsEIP1559 =
+    this.props.supportsEIP1559 && !isLegacyTransaction(this.props.txData);
 
   render() {
     const { t } = this.context;
@@ -1138,6 +1142,7 @@ export default class ConfirmTransactionBase extends Component {
       ethGasPriceWarning,
       editingGas,
       userAcknowledgedGasMissing,
+      showWarningModal,
     } = this.state;
 
     const { name } = methodData;
@@ -1157,8 +1162,21 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
+    // This `isTokenApproval` case is added to handle possible rendering of this component from
+    // confirm-approve.js when `assetStandard` is `undefined`. That will happen if the request to
+    // get the asset standard fails. In that scenario, confirm-approve.js returns the `<ConfirmContractInteraction />`
+    // component, which in turn returns this `<ConfirmTransactionBase />` component. We meed to prevent
+    // the user from editing the transaction in those cases.
+
+    const isTokenApproval =
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+
+    const isContractInteraction =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+
     const isContractInteractionFromDapp =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      (isTokenApproval || isContractInteraction) &&
       txData.origin !== 'metamask';
     let functionType;
     if (isContractInteractionFromDapp) {
@@ -1225,13 +1243,15 @@ export default class ConfirmTransactionBase extends Component {
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
           onSubmit={() => this.handleSubmit()}
+          onSetApprovalForAll={() => this.handleSetApprovalForAll()}
+          showWarningModal={showWarningModal}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={this.supportsEIP1559V2}
+          supportsEIP1559={this.supportsEIP1559}
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}

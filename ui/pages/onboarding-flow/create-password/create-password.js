@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
@@ -26,8 +26,9 @@ import {
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -49,72 +50,83 @@ export default function CreatePassword({
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const currentKeyring = useSelector(getCurrentKeyring);
+
+  useEffect(() => {
+    if (currentKeyring) {
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
+    }
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;
     }
 
-    if (password.length < 8) {
+    if (password.length < PASSWORD_MIN_LENGTH) {
       return false;
     }
 
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const getPasswordStrengthLabel = (score, translation) => {
+  const getPasswordStrengthLabel = (isTooShort, score) => {
+    if (isTooShort) {
+      return {
+        className: 'create-password__weak',
+        text: t('passwordNotLongEnough'),
+        description: '',
+      };
+    }
     if (score >= 4) {
       return {
         className: 'create-password__strong',
-        text: translation('strong'),
+        text: t('strong'),
         description: '',
       };
-    } else if (score === 3) {
+    }
+    if (score === 3) {
       return {
         className: 'create-password__average',
-        text: translation('average'),
+        text: t('average'),
         description: t('passwordStrengthDescription'),
       };
     }
     return {
       className: 'create-password__weak',
-      text: translation('weak'),
+      text: t('weak'),
       description: t('passwordStrengthDescription'),
     };
   };
 
   const handlePasswordChange = (passwordInput) => {
-    let confirmError = '';
-    const passwordEvaluation = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(
-      passwordEvaluation.score,
-      t,
-    );
-    const passwordStrengthDescription = passwordStrengthLabel.description;
-    const passwordStrengthInput = t('passwordStrength', [
-      <span
-        key={passwordEvaluation.score}
-        className={passwordStrengthLabel.className}
-      >
+    const isTooShort =
+      passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordInput);
+    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
+    const passwordStrengthComponent = t('passwordStrength', [
+      <span key={score} className={passwordStrengthLabel.className}>
         {passwordStrengthLabel.text}
       </span>,
     ]);
-
-    if (confirmPassword && passwordInput !== confirmPassword) {
-      confirmError = t('passwordsDontMatch');
-    }
+    const confirmError =
+      !confirmPassword || passwordInput === confirmPassword
+        ? ''
+        : t('passwordsDontMatch');
 
     setPassword(passwordInput);
-    setPasswordStrength(passwordStrengthInput);
-    setPasswordStrengthText(passwordStrengthDescription);
+    setPasswordStrength(passwordStrengthComponent);
+    setPasswordStrengthText(passwordStrengthLabel.description);
     setConfirmPasswordError(confirmError);
   };
 
   const handleConfirmPasswordChange = (confirmPasswordInput) => {
-    let error = '';
-    if (password !== confirmPasswordInput) {
-      error = t('passwordsDontMatch');
-    }
+    const error =
+      password === confirmPasswordInput ? '' : t('passwordsDontMatch');
 
     setConfirmPassword(confirmPasswordInput);
     setConfirmPasswordError(error);
@@ -182,16 +194,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <button
-                className="create-password__form--password-button"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? t('hide') : t('show')}
-              </button>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <a
+                  href=""
+                  className="create-password__form--password-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? t('hide') : t('show')}
+                </a>
+              </Typography>
             }
           />
           <FormField

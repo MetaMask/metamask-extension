@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { util } from '@metamask/controllers';
+import { normalizeEnsName } from '@metamask/controller-utils';
 
 const version = 37;
 
@@ -38,7 +38,7 @@ function transformState(state) {
       for (const address in ab) {
         if (ab[address].chainId === id) {
           ab[address].isEns = false;
-          if (util.normalizeEnsName(ab[address].name)) {
+          if (normalizeEnsName(ab[address].name)) {
             ab[address].isEns = true;
           }
           newAddressBook[id][address] = ab[address];
