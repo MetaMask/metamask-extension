@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
-const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Incremental Security', function () {
