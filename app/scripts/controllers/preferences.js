@@ -413,50 +413,52 @@ export default class PreferencesController {
     if (index > -1) {
       const rpcDetail = rpcList[index];
       const updatedRpc = { ...rpcDetail, ...newRpcDetails };
-      if (rpcDetail.chainId !== updatedRpc.chainId) {
-        // When the chainId is changed, associated address book entries should
-        // also be migrated. The address book entries are keyed by the `network` state,
-        // which for custom networks is the chainId with a fallback to the networkId
-        // if the chainId is not set.
 
-        let addressBookKey = rpcDetail.chainId;
-        if (!addressBookKey) {
-          // We need to find the networkId to determine what these addresses were keyed by
-          try {
-            addressBookKey = await this.ethersProvider.send('net_version');
-            assert(typeof addressBookKey === 'string');
-          } catch (error) {
-            log.debug(error);
-            log.warn(
-              `Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`,
-            );
-          }
-        }
 
-        // There is an edge case where two separate RPC endpoints are keyed by the same
-        // value. In this case, the contact book entries are duplicated so that they remain
-        // on both networks, since we don't know which network each contact is intended for.
+      // if (rpcDetail.chainId !== updatedRpc.chainId) {
+      //   // When the chainId is changed, associated address book entries should
+      //   // also be migrated. The address book entries are keyed by the `network` state,
+      //   // which for custom networks is the chainId with a fallback to the networkId
+      //   // if the chainId is not set.
 
-        let duplicate = false;
-        const builtInProviderNetworkIds = Object.values(BUILT_IN_NETWORKS).map(
-          (ids) => ids.networkId,
-        );
-        const otherRpcEntries = rpcList.filter(
-          (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
-        );
-        if (
-          builtInProviderNetworkIds.includes(addressBookKey) ||
-          otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
-        ) {
-          duplicate = true;
-        }
+      //   let addressBookKey = rpcDetail.chainId;
+      //   if (!addressBookKey) {
+      //     // We need to find the networkId to determine what these addresses were keyed by
+      //     try {
+      //       addressBookKey = await this.ethersProvider.send('net_version');
+      //       assert(typeof addressBookKey === 'string');
+      //     } catch (error) {
+      //       log.debug(error);
+      //       log.warn(
+      //         `Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`,
+      //       );
+      //     }
+      //   }
 
-        this.migrateAddressBookState(
-          addressBookKey,
-          updatedRpc.chainId,
-          duplicate,
-        );
-      }
+      //   // There is an edge case where two separate RPC endpoints are keyed by the same
+      //   // value. In this case, the contact book entries are duplicated so that they remain
+      //   // on both networks, since we don't know which network each contact is intended for.
+
+      //   let duplicate = false;
+      //   const builtInProviderNetworkIds = Object.values(BUILT_IN_NETWORKS).map(
+      //     (ids) => ids.networkId,
+      //   );
+      //   const otherRpcEntries = rpcList.filter(
+      //     (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
+      //   );
+      //   if (
+      //     builtInProviderNetworkIds.includes(addressBookKey) ||
+      //     otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
+      //   ) {
+      //     duplicate = true;
+      //   }
+
+      //   this.migrateAddressBookState(
+      //     addressBookKey,
+      //     updatedRpc.chainId,
+      //     duplicate,
+      //   );
+      // }
       rpcList[index] = updatedRpc;
       this.store.updateState({ frequentRpcListDetail: rpcList });
     } else {
