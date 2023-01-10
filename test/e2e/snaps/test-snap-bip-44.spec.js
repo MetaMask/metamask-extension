@@ -30,6 +30,7 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const snapButton1 = await driver.findElement('#connectBip44Snap');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
