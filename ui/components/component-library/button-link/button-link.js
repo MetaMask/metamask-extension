@@ -20,6 +20,7 @@ export const ButtonLink = ({
         'mm-button-link--disabled': disabled,
       })}
       size={size}
+      color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
       backgroundColor={COLORS.TRANSPARENT}
       {...{ disabled, ...props }}
     />

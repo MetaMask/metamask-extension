@@ -1,8 +1,4 @@
 .mm-button-secondary {
-  color: var(--color-primary-default);
-  border: 1px solid var(--color-primary-default);
-  background-color: transparent;
-
   &:hover {
     color: var(--color-primary-inverse);
     background-color: var(--color-primary-default);
