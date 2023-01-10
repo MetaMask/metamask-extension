@@ -1,7 +1,4 @@
 .mm-button-primary {
-  color: var(--color-primary-inverse);
-  background-color: var(--color-primary-default);
-
   &:hover {
     color: var(--color-primary-inverse);
     box-shadow: var(--component-button-primary-shadow);
@@ -14,9 +11,6 @@
 
   // Danger type
   &--type-danger {
-    color: var(--color-error-inverse);
-    background-color: var(--color-error-default);
-
     &:hover {
       color: var(--color-error-inverse);
       box-shadow: var(--component-button-danger-shadow);

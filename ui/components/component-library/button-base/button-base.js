@@ -15,6 +15,7 @@ import {
   SIZES,
   FLEX_DIRECTION,
   BORDER_RADIUS,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -37,6 +38,8 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
+      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+      color={COLORS.TEXT_DEFAULT}
       href={href}
       paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
