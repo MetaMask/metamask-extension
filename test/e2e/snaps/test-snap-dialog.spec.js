@@ -30,10 +30,12 @@ describe('Test Snap Dialog', function () {
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
         await driver.clickElement('#connectDialogSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
