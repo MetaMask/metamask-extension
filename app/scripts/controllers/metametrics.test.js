@@ -159,6 +159,7 @@ describe('MetaMetricsController', function () {
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
+
   describe('constructor', function () {
     it('should properly initialize', function () {
       const mock = sinon.mock(segment);
@@ -678,6 +679,197 @@ describe('MetaMetricsController', function () {
         { isOptInPath: true },
       );
       mock.verify();
+    });
+  });
+
+  describe('deterministic messageId', function () {
+    it('should use the actionId as messageId when provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        actionId: '0x001',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the actionId of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        actionId: '0x001',
+      });
+      assert.ok(spy.calledTwice);
+
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should use the uniqueIdentifier as messageId when provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the uniqueIdentifier of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should combine the uniqueIdentifier and actionId as messageId when both provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        actionId: '0x001',
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the combined uniqueIdentifier and actionId of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        actionId: '0x001',
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001',
+          timestamp: new Date(),
+        }),
+      );
     });
   });
 
