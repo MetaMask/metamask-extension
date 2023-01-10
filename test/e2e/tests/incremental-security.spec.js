@@ -122,41 +122,24 @@ describe('Incremental Security', function () {
         await driver.clickElement('.home-notification__accept-button');
 
         // reveals the Secret Recovery Phrase
-        await driver.clickElement(
-          '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
-        );
-
-        const revealedSeedPhrase = await driver.findElement(
-          '.reveal-seed-phrase__secret-words',
-        );
-        await driver.waitForNonEmptyElement(revealedSeedPhrase);
-        const seedPhrase = await revealedSeedPhrase.getText();
-        assert.equal(seedPhrase.split(' ').length, 12);
-
-        await driver.clickElement({
-          text: enLocaleMessages.next.message,
-          tag: 'button',
-        });
-
-        // selecting the words from seedphrase
-        async function clickWordAndWait(word) {
-          await driver.clickElement(
-            `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`,
-          );
-          await driver.delay(tinyDelayMs);
-        }
+        await driver.clickElement('[data-testid="secure-wallet-recommended"]');
+        await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+        const chipTwo = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
+        ).getText();
+        const chipThree = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
+        ).getText();
+        const chipSeven = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
+        ).getText();
+        await driver.clickElement('[data-testid="recovery-phrase-next"]');
 
         // can retype the Secret Recovery Phrase
-        const words = seedPhrase.split(' ');
-
-        for (const word of words) {
-          await clickWordAndWait(word);
-        }
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        // can click through the success screen
-        await driver.clickElement({ text: 'All done', tag: 'button' });
+        await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
+        await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
+        await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+        await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
 
         // should have the correct amount of eth
         currencyDisplay = await driver.waitForSelector({
