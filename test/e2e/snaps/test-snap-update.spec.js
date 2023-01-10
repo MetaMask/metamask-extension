@@ -33,7 +33,7 @@ describe('Test Snap update', function () {
         await driver.delay(1000);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#connectUpdateNew');
+        const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
