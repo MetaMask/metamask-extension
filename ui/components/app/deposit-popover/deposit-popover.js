@@ -24,7 +24,6 @@ import {
   getSelectedAddress,
   getIsBuyableTransakChain,
   getIsBuyableMoonPayChain,
-  getIsBuyableWyreChain,
   getIsBuyableCoinbasePayChain,
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
@@ -46,7 +45,7 @@ const DepositPopover = ({ onClose, token }) => {
   const address = useSelector(getSelectedAddress);
   const isBuyableTransakChain = useSelector(getIsBuyableTransakChain);
   const isBuyableMoonPayChain = useSelector(getIsBuyableMoonPayChain);
-  const isBuyableWyreChain = useSelector(getIsBuyableWyreChain);
+  const isBuyableWyreChain = false;
   const isBuyableCoinbasePayChain = useSelector(getIsBuyableCoinbasePayChain);
 
   const isTokenBuyableCoinbasePay = useSelector((state) =>
