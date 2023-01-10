@@ -146,6 +146,7 @@ import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
+import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 
 import {
   CaveatMutatorFactories,
@@ -246,9 +247,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.NetworkController,
       infuraProjectId: opts.infuraProjectId,
     });
-
-    // now we can initialize the RPC provider, which other controllers require
-    this.initializeProvider();
+    this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -1050,6 +1049,48 @@ export default class MetamaskController extends EventEmitter {
       this.messageManager.clearUnapproved();
     });
 
+    this.metamaskMiddleware = createMetamaskMiddleware({
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      version,
+      // account mgmt
+      getAccounts: async (
+        { origin: innerOrigin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
+        if (innerOrigin === ORIGIN_METAMASK) {
+          const selectedAddress =
+            this.preferencesController.getSelectedAddress();
+          return selectedAddress ? [selectedAddress] : [];
+        } else if (this.isUnlocked()) {
+          return await this.getPermittedAccounts(innerOrigin, {
+            suppressUnauthorizedError,
+          });
+        }
+        return []; // changing this is a breaking change
+      },
+      // tx signing
+      processTransaction: this.newUnapprovedTransaction.bind(this),
+      // msg signing
+      processEthSignMessage: this.newUnsignedMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
+      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingTransactionByHash: (hash) =>
+        this.txController.getTransactions({
+          searchCriteria: {
+            hash,
+            status: TRANSACTION_STATUSES.SUBMITTED,
+          },
+        })[0],
+    });
+
     // ensure isClientOpenAndUnlocked is updated when memState updates
     this.on('update', (memState) => this._onStateUpdate(memState));
 
@@ -1440,57 +1481,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: END:ONLY_INCLUDE_IN
-  }
-
-  /**
-   * Constructor helper: initialize a provider.
-   */
-  initializeProvider() {
-    const version = this.platform.getVersion();
-    const providerOpts = {
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      version,
-      // account mgmt
-      getAccounts: async (
-        { origin },
-        { suppressUnauthorizedError = true } = {},
-      ) => {
-        if (origin === ORIGIN_METAMASK) {
-          const selectedAddress =
-            this.preferencesController.getSelectedAddress();
-          return selectedAddress ? [selectedAddress] : [];
-        } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin, {
-            suppressUnauthorizedError,
-          });
-        }
-        return []; // changing this is a breaking change
-      },
-      // tx signing
-      processTransaction: this.newUnapprovedTransaction.bind(this),
-      // msg signing
-      processEthSignMessage: this.newUnsignedMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
-      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
-      getPendingNonce: this.getPendingNonce.bind(this),
-      getPendingTransactionByHash: (hash) =>
-        this.txController.getTransactions({
-          searchCriteria: {
-            hash,
-            status: TRANSACTION_STATUSES.SUBMITTED,
-          },
-        })[0],
-    };
-    const providerProxy =
-      this.networkController.initializeProvider(providerOpts);
-    return providerProxy;
   }
 
   /**
@@ -3918,6 +3908,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    engine.push(this.metamaskMiddleware);
 
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));

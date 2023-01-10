@@ -22269,17 +22269,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:3.1.0":
-  version: 3.1.0
-  resolution: "luxon@npm:3.1.0"
-  checksum: f8a850b759ba7a2e009d904c522ed7bc264bf4add57578f8948e52a0ed96b627b025b5aad8032295b570ae19fac41f0ffab91bdb128715fb0cc020798a7ba886
+"luxon@npm:3.2.1":
+  version: 3.2.1
+  resolution: "luxon@npm:3.2.1"
+  checksum: 3fa3def2c5f5d3032b4c46220c4da8aeb467ac979888fc9d2557adcd22195f93516b4ad5909a75862bec8dc6ddc0953b0f38e6d2f4a8ab8450ddc531a83cf20d
   languageName: node
   linkType: hard
 
-"luxon@patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.1.0
-  resolution: "luxon@patch:luxon@npm%3A3.1.0#./.yarn/patches/luxon-npm-3.1.0-16e2508500.patch::version=3.1.0&hash=cbeda1&locator=metamask-crx%40workspace%3A."
-  checksum: 4ab1d73a2ef272d953048b6a59c10d3787a8690449c5c2784e99e9f8b3c2869dc1ea54e69f2e6f31b44acc5b9ef0e9d198af9a6680f45675eb015a60f727ebb8
+"luxon@patch:luxon@npm%3A3.2.1#./.yarn/patches/luxon-npm-3.2.1-56f8d97395.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.2.1
+  resolution: "luxon@patch:luxon@npm%3A3.2.1#./.yarn/patches/luxon-npm-3.2.1-56f8d97395.patch::version=3.2.1&hash=aef1f3&locator=metamask-crx%40workspace%3A."
+  checksum: a1758bc8aa02c6faadef4f012d7f35af2ab7722ed79bfcbeb828bc960faf3c8001d6d659d8cc13ebbd96ccd957381bc848ad6d10e2fe88cd2996a65816efcc84
   languageName: node
   linkType: hard
 
@@ -23063,7 +23063,7 @@ __metadata:
     lodash: ^4.17.21
     loglevel: ^1.4.1
     loose-envify: ^1.4.0
-    luxon: ^3.1.0
+    luxon: ^3.2.1
     madge: ^5.0.1
     mocha: ^7.2.0
     mockttp: ^2.6.0
