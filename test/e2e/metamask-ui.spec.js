@@ -458,10 +458,10 @@ describe('MetaMask', function () {
       await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Edit', tag: 'button' });
       await driver.delay(veryLargeDelayMs);
-      await driver.clickElement(
-        { text: 'Edit suggested gas fee', tag: 'button' },
-        10000,
-      );
+      await driver.clickElement({
+        text: 'Edit suggested gas fee',
+        tag: 'button',
+      });
       await driver.delay(veryLargeDelayMs);
       const inputs = await driver.findElements('input[type="number"]');
       const gasLimitInput = inputs[0];
@@ -576,10 +576,10 @@ describe('MetaMask', function () {
     it('customizes gas', async function () {
       await driver.clickElement('.confirm-approve-content__small-blue-text');
       await driver.delay(regularDelayMs);
-      await driver.clickElement(
-        { text: 'Edit suggested gas fee', tag: 'button' },
-        10000,
-      );
+      await driver.clickElement({
+        text: 'Edit suggested gas fee',
+        tag: 'button',
+      });
       await driver.delay(regularDelayMs);
 
       const [gasLimitInput, gasPriceInput] = await driver.findElements(

@@ -34,23 +34,23 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonSecondary } from '../ui/component-library/button/button-secondary/button-secondary';
+import { ButtonSecondary } from '../../ui/components/component-library';
 
 <ButtonSecondary size={SIZES.SM} />
 <ButtonSecondary size={SIZES.MD} />
 <ButtonSecondary size={SIZES.LG} />
 ```
 
-### Type
+### Danger
 
-Use the `type` prop and the `BUTTON_TYPES` object from `./ui/helpers/constants/design-system.js` to change the context of `ButtonSecondary`.
+Use the `danger` boolean prop to change the `ButtonSecondary` to danger color.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-secondary-button-secondary-stories-js--type" />
+  <Story id="ui-components-component-library-button-secondary-button-secondary-stories-js--danger" />
 </Canvas>
 
 ```jsx
-import { ButtonSecondary } from '../ui/component-library/button/button-secondary/button-secondary';
+import { ButtonSecondary } from '../../ui/components/component-library';
 
 <ButtonSecondary>Normal</ButtonSecondary>
 <ButtonSecondary danger>Danger</ButtonSecondary>

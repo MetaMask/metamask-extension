@@ -1522,6 +1522,84 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setUsePhishDetect', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUsePhishDetect in background', () => {
+      const store = mockStore();
+      const setUsePhishDetectStub = sinon.stub().callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUsePhishDetect: setUsePhishDetectStub,
+      });
+
+      store.dispatch(actions.setUsePhishDetect());
+      expect(setUsePhishDetectStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUsePhishDetect in background throws', () => {
+      const store = mockStore();
+      const setUsePhishDetectStub = sinon.stub().callsFake((_, cb) => {
+        cb(new Error('error'));
+      });
+
+      _setBackgroundConnection({
+        setUsePhishDetect: setUsePhishDetectStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ];
+
+      store.dispatch(actions.setUsePhishDetect());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setUseMultiAccountBalanceChecker', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUseMultiAccountBalanceChecker in background', () => {
+      const store = mockStore();
+      const setUseMultiAccountBalanceCheckerStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
+      });
+
+      store.dispatch(actions.setUseMultiAccountBalanceChecker());
+      expect(setUseMultiAccountBalanceCheckerStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUseMultiAccountBalanceChecker in background throws', () => {
+      const store = mockStore();
+      const setUseMultiAccountBalanceCheckerStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      _setBackgroundConnection({
+        setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ];
+
+      store.dispatch(actions.setUseMultiAccountBalanceChecker());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#updateCurrentLocale', () => {
     beforeEach(() => {
       sinon.stub(window, 'fetch').resolves({

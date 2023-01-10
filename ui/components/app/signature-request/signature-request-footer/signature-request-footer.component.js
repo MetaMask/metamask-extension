@@ -22,7 +22,7 @@ export default class SignatureRequestFooter extends PureComponent {
           type="secondary"
           data-testid="signature-cancel-button"
         >
-          {this.context.t('cancel')}
+          {this.context.t('reject')}
         </Button>
         <Button
           onClick={signAction}

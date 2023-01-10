@@ -6,6 +6,12 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import Typography from '../../../components/ui/typography/typography';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -14,12 +20,14 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useCollectibleDetection: PropTypes.bool,
-    setUseCollectibleDetection: PropTypes.func,
+    useNftDetection: PropTypes.bool,
+    setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
     openSeaEnabled: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
-    setEIP1559V2Enabled: PropTypes.func,
+    improvedTokenAllowanceEnabled: PropTypes.bool,
+    setImprovedTokenAllowanceEnabled: PropTypes.func,
+    transactionSecurityCheckEnabled: PropTypes.bool,
+    setTransactionSecurityCheckEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -43,67 +51,16 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  renderCollectibleDetectionToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
-      return null;
-    }
-
-    const { t } = this.context;
-    const {
-      useCollectibleDetection,
-      setUseCollectibleDetection,
-      openSeaEnabled,
-      setOpenSeaEnabled,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[2]}
-        className="settings-page__content-row--dependent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useCollectibleDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
-                  properties: {
-                    action: 'Collectible Detection',
-                    legacy_event: true,
-                  },
-                });
-                if (!value && !openSeaEnabled) {
-                  setOpenSeaEnabled(!value);
-                }
-                setUseCollectibleDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderOpenSeaEnabledToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
+    if (!process.env.NFTS_V1) {
       return null;
     }
     const { t } = this.context;
     const {
       openSeaEnabled,
       setOpenSeaEnabled,
-      useCollectibleDetection,
-      setUseCollectibleDetection,
+      useNftDetection,
+      setUseNftDetection,
     } = this.props;
 
     return (
@@ -131,8 +88,8 @@ export default class ExperimentalTab extends PureComponent {
                   },
                 });
                 // value is positive when being toggled off
-                if (value && useCollectibleDetection) {
-                  setUseCollectibleDetection(false);
+                if (value && useNftDetection) {
+                  setUseNftDetection(false);
                 }
                 setOpenSeaEnabled(!value);
               }}
@@ -145,41 +102,33 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  renderEIP1559V2EnabledToggle() {
+  renderImprovedTokenAllowanceToggle() {
     const { t } = this.context;
-    const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
+    const { improvedTokenAllowanceEnabled, setImprovedTokenAllowanceEnabled } =
+      this.props;
 
     return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('enableEIP1559V2')}</span>
+          <span>{t('improvedTokenAllowance')}</span>
           <div className="settings-page__content-description">
-            {t('enableEIP1559V2Description', [
-              <a
-                key="eip_page_link"
-                href="https://metamask.io/1559.html"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t('learnMoreUpperCase')}
-              </a>,
-            ])}
+            {t('improvedTokenAllowanceDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={eip1559V2Enabled}
+              value={improvedTokenAllowanceEnabled}
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enable/Disable Advanced Gas UI',
+                  event: 'Enabled/Disable ImprovedTokenAllowance',
                   properties: {
-                    action: 'Enable/Disable Advanced Gas UI',
+                    action: 'Enabled/Disable ImprovedTokenAllowance',
                     legacy_event: true,
                   },
                 });
-                setEIP1559V2Enabled(!value);
+                setImprovedTokenAllowanceEnabled(!value);
               }}
               offLabel={t('off')}
               onLabel={t('on')}
@@ -190,12 +139,98 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderTransactionSecurityCheckToggle() {
+    const { t } = this.context;
+
+    const {
+      transactionSecurityCheckEnabled,
+      setTransactionSecurityCheckEnabled,
+    } = this.props;
+
+    return (
+      <>
+        <Typography
+          variant={TYPOGRAPHY.H4}
+          color={COLORS.TEXT_ALTERNATIVE}
+          marginBottom={2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('privacy')}
+        </Typography>
+        <div
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+        >
+          <div className="settings-page__content-item">
+            <span>{t('transactionSecurityCheck')}</span>
+            <div className="settings-page__content-description">
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('transactionSecurityCheckDescription')}
+              </Typography>
+              <Typography
+                marginTop={3}
+                marginBottom={1}
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('selectProvider')}
+              </Typography>
+              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+                <Typography
+                  variant={TYPOGRAPHY.H5}
+                  color={COLORS.TEXT_DEFAULT}
+                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  marginBottom={0}
+                >
+                  {t('openSea')}
+                </Typography>
+                <ToggleButton
+                  value={transactionSecurityCheckEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.SETTINGS,
+                      event: 'Enabled/Disable TransactionSecurityCheck',
+                      properties: {
+                        action: 'Enabled/Disable TransactionSecurityCheck',
+                        legacy_event: true,
+                      },
+                    });
+                    setTransactionSecurityCheckEnabled(!value);
+                  }}
+                />
+              </div>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+                marginTop={0}
+              >
+                {t('thisServiceIsExperimental')}
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H5}
+                color={COLORS.TEXT_MUTED}
+                fontWeight={FONT_WEIGHT.MEDIUM}
+                marginTop={2}
+              >
+                {t('moreComingSoon')}
+              </Typography>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
+        {process.env.TRANSACTION_SECURITY_PROVIDER &&
+          this.renderTransactionSecurityCheckToggle()}
+        {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
-        {this.renderCollectibleDetectionToggle()}
-        {this.renderEIP1559V2EnabledToggle()}
       </div>
     );
   }

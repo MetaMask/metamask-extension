@@ -1,0 +1,1860 @@
+diff --git a/src/Bytes.ts b/src/Bytes.ts
+deleted file mode 100644
+index a5f9f7d4facaf06bd2dc9deedb85cd331c9e75a0..0000000000000000000000000000000000000000
+--- a/src/Bytes.ts
++++ /dev/null
+@@ -1,34 +0,0 @@
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-
+-export class Bytes extends RegistryItem {
+-  getRegistryType = () => {
+-    return RegistryTypes.BYTES;
+-  };
+-
+-  constructor(private bytes: Buffer) {
+-    super();
+-  }
+-
+-  getData = () => this.bytes;
+-
+-  toDataItem = () => {
+-    return new DataItem(this.bytes);
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const bytes = dataItem.getData();
+-    if (!bytes) {
+-      throw new Error(
+-        `#[ur-registry][Bytes][fn.fromDataItem]: decoded [dataItem][#data] is undefined: ${dataItem}`,
+-      );
+-    }
+-    return new Bytes(bytes);
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return Bytes.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoAccount.ts b/src/CryptoAccount.ts
+deleted file mode 100644
+index e6efeeb44a0b23428d172bd5aee99621d7469d19..0000000000000000000000000000000000000000
+--- a/src/CryptoAccount.ts
++++ /dev/null
+@@ -1,58 +0,0 @@
+-import { CryptoOutput } from '.';
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
+-
+-enum Keys {
+-  masterFingerprint = 1,
+-  outputDescriptors,
+-}
+-
+-export class CryptoAccount extends RegistryItem {
+-  getRegistryType = () => {
+-    return RegistryTypes.CRYPTO_ACCOUNT;
+-  };
+-
+-  constructor(
+-    private masterFingerprint: Buffer,
+-    private outputDescriptors: CryptoOutput[],
+-  ) {
+-    super();
+-  }
+-
+-  public getMasterFingerprint = () => this.masterFingerprint;
+-  public getOutputDescriptors = () => this.outputDescriptors;
+-
+-  public toDataItem = () => {
+-    const map: DataItemMap = {};
+-    if (this.masterFingerprint) {
+-      map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE(0);
+-    }
+-    if (this.outputDescriptors) {
+-      map[Keys.outputDescriptors] = this.outputDescriptors.map((item) =>
+-        item.toDataItem(),
+-      );
+-    }
+-    return new DataItem(map);
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const map = dataItem.getData();
+-    const masterFingerprint = Buffer.alloc(4);
+-    const _masterFingerprint = map[Keys.masterFingerprint];
+-    if (_masterFingerprint) {
+-      masterFingerprint.writeUInt32BE(_masterFingerprint, 0);
+-    }
+-    const outputDescriptors = map[Keys.outputDescriptors] as DataItem[];
+-    const cryptoOutputs = outputDescriptors.map((item) =>
+-      CryptoOutput.fromDataItem(item),
+-    );
+-    return new CryptoAccount(masterFingerprint, cryptoOutputs);
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoAccount.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoCoinInfo.ts b/src/CryptoCoinInfo.ts
+deleted file mode 100644
+index 843b50cb0551def4be3ba8293f34ab94063c85a7..0000000000000000000000000000000000000000
+--- a/src/CryptoCoinInfo.ts
++++ /dev/null
+@@ -1,59 +0,0 @@
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
+-
+-enum Keys {
+-  type = '1',
+-  network = '2',
+-}
+-
+-export enum Type {
+-  bitcoin = 0,
+-}
+-
+-export enum Network {
+-  mainnet,
+-  testnet,
+-}
+-
+-export class CryptoCoinInfo extends RegistryItem {
+-  getRegistryType = () => {
+-    return RegistryTypes.CRYPTO_COIN_INFO;
+-  };
+-
+-  constructor(private type?: Type, private network?: Network) {
+-    super();
+-  }
+-
+-  public getType = () => {
+-    return this.type || Type.bitcoin;
+-  };
+-
+-  public getNetwork = () => {
+-    return this.network || Network.mainnet;
+-  };
+-
+-  public toDataItem = () => {
+-    const map: DataItemMap = {};
+-    if (this.type) {
+-      map[Keys.type] = this.type;
+-    }
+-    if (this.network) {
+-      map[Keys.network] = this.network;
+-    }
+-    return new DataItem(map);
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const map = dataItem.getData();
+-    const type = map[Keys.type];
+-    const network = map[Keys.network];
+-    return new CryptoCoinInfo(type, network);
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoCoinInfo.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoECKey.ts b/src/CryptoECKey.ts
+deleted file mode 100644
+index 54c3c4b0aabe13bdaff7821dd8524a6a789ed008..0000000000000000000000000000000000000000
+--- a/src/CryptoECKey.ts
++++ /dev/null
+@@ -1,68 +0,0 @@
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-import { DataItemMap, ICryptoKey } from './types';
+-
+-enum Keys {
+-  curve = 1,
+-  private,
+-  data,
+-}
+-
+-export class CryptoECKey extends RegistryItem implements ICryptoKey {
+-  private data: Buffer;
+-  private curve: number | undefined;
+-  private privateKey: boolean | undefined;
+-  constructor(args: { data: Buffer; curve?: number; privateKey?: boolean }) {
+-    super();
+-    this.data = args.data;
+-    this.curve = args.curve;
+-    this.privateKey = args.privateKey || undefined;
+-  }
+-
+-  isECKey = () => {
+-    return true;
+-  };
+-
+-  public getCurve = () => this.curve || 0;
+-  public isPrivateKey = () => this.privateKey || false;
+-  public getData = () => this.data;
+-
+-  getRegistryType = () => {
+-    return RegistryTypes.CRYPTO_ECKEY;
+-  };
+-
+-  toDataItem = () => {
+-    const map: DataItemMap = {};
+-    if (this.curve) {
+-      map[Keys.curve] = this.curve;
+-    }
+-    if (this.privateKey !== undefined) {
+-      map[Keys.private] = this.privateKey;
+-    }
+-    map[Keys.data] = this.data;
+-    return new DataItem(map);
+-  };
+-
+-  getOutputDescriptorContent = () => {
+-    return this.data.toString('hex');
+-  }
+-
+-  static fromDataItem = (dataItem: DataItem) => {
+-    const map = dataItem.getData();
+-    const curve = map[Keys.curve];
+-    const privateKey = map[Keys.private];
+-    const data = map[Keys.data];
+-    if (!data) {
+-      throw new Error(
+-        `#[ur-registry][CryptoECKey][fn.fromDataItem]: decoded [dataItem][#data.data] is undefined: ${dataItem}`,
+-      );
+-    }
+-    return new CryptoECKey({ data, curve, privateKey });
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoECKey.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoHDKey.ts b/src/CryptoHDKey.ts
+deleted file mode 100644
+index 8fc2a82970fd2f639cb3912940c328308ec4ea2c..0000000000000000000000000000000000000000
+--- a/src/CryptoHDKey.ts
++++ /dev/null
+@@ -1,237 +0,0 @@
+-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-// @ts-ignore
+-import { encode } from 'bs58check';
+-import { CryptoCoinInfo } from './CryptoCoinInfo';
+-import { CryptoKeypath } from './CryptoKeypath';
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-import { DataItemMap, ICryptoKey } from './types';
+-import { PathComponent } from './PathComponent';
+-
+-enum Keys {
+-  is_master = 1,
+-  is_private,
+-  key_data,
+-  chain_code,
+-  use_info,
+-  origin,
+-  children,
+-  parent_fingerprint,
+-  name,
+-  note,
+-}
+-
+-type MasterKeyProps = {
+-  isMaster: true;
+-  key: Buffer;
+-  chainCode: Buffer;
+-};
+-
+-type DeriveKeyProps = {
+-  isMaster: false;
+-  isPrivateKey?: boolean;
+-  key: Buffer;
+-  chainCode?: Buffer;
+-  useInfo?: CryptoCoinInfo;
+-  origin?: CryptoKeypath;
+-  children?: CryptoKeypath;
+-  parentFingerprint?: Buffer;
+-  name?: string;
+-  note?: string;
+-};
+-
+-export class CryptoHDKey extends RegistryItem implements ICryptoKey {
+-  private master?: boolean;
+-  private privateKey?: boolean;
+-  private key?: Buffer;
+-  private chainCode?: Buffer;
+-  private useInfo?: CryptoCoinInfo;
+-  private origin?: CryptoKeypath;
+-  private children?: CryptoKeypath;
+-  private parentFingerprint?: Buffer;
+-  private name?: string;
+-  private note?: string;
+-
+-  isECKey = () => {
+-    return false;
+-  };
+-
+-  public getKey = () => this.key;
+-  public getChainCode = () => this.chainCode;
+-  public isMaster = () => this.master;
+-  public isPrivateKey = () => !!this.privateKey;
+-  public getUseInfo = () => this.useInfo;
+-  public getOrigin = () => this.origin;
+-  public getChildren = () => this.children;
+-  public getParentFingerprint = () => this.parentFingerprint;
+-  public getName = () => this.name;
+-  public getNote = () => this.note;
+-  public getBip32Key = () => {
+-    let version: Buffer;
+-    let depth: number;
+-    let index = 0;
+-    let parentFingerprint: Buffer = Buffer.alloc(4).fill(0);
+-    if (this.isMaster()) {
+-      // version bytes defined on https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#serialization-format
+-      version = Buffer.from('0488ADE4', 'hex');
+-      depth = 0;
+-      index = 0;
+-    } else {
+-      depth = this.getOrigin()?.getComponents().length || this.getOrigin()?.getDepth() as number;
+-      const paths = this.getOrigin()?.getComponents() as PathComponent[];
+-      const lastPath = paths[paths.length - 1];
+-      if (lastPath) {
+-        index = lastPath.isHardened() ? lastPath.getIndex()! + 0x80000000 : lastPath.getIndex()!;
+-        if (this.getParentFingerprint()) {
+-          parentFingerprint = this.getParentFingerprint() as Buffer;
+-        }
+-      }
+-      if (this.isPrivateKey()) {
+-        version = Buffer.from('0488ADE4', 'hex');
+-      } else {
+-        version = Buffer.from('0488B21E', 'hex');
+-      }
+-    }
+-    const depthBuffer = Buffer.alloc(1);
+-    depthBuffer.writeUInt8(depth, 0);
+-    const indexBuffer = Buffer.alloc(4);
+-    indexBuffer.writeUInt32BE(index, 0);
+-    const chainCode = this.getChainCode();
+-    const key = this.getKey();
+-    return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode as Buffer, key as Buffer]));
+-  };
+-
+-  public getRegistryType = () => {
+-    return RegistryTypes.CRYPTO_HDKEY;
+-  };
+-
+-  public getOutputDescriptorContent = () => {
+-    let result = '';
+-    if (this.getOrigin()) {
+-      if (this.getOrigin()?.getSourceFingerprint() && this.getOrigin()?.getPath()) {
+-        result += `${this.getOrigin()?.getSourceFingerprint()?.toString('hex')}/${this.getOrigin()?.getPath()}`;
+-      }
+-    }
+-    result += this.getBip32Key();
+-    if (this.getChildren()) {
+-      if (this.getChildren()?.getPath()) {
+-        result += `/${this.getChildren()?.getPath()}`;
+-      }
+-    }
+-    return result;
+-  };
+-
+-  constructor(args: DeriveKeyProps | MasterKeyProps) {
+-    super();
+-    if (args.isMaster) {
+-      this.setupMasterKey(args);
+-    } else {
+-      this.setupDeriveKey(args as DeriveKeyProps);
+-    }
+-  }
+-
+-  private setupMasterKey = (args: MasterKeyProps) => {
+-    this.master = true;
+-    this.key = args.key;
+-    this.chainCode = args.chainCode;
+-  };
+-
+-  private setupDeriveKey = (args: DeriveKeyProps) => {
+-    this.master = false;
+-    this.privateKey = args.isPrivateKey;
+-    this.key = args.key;
+-    this.chainCode = args.chainCode;
+-    this.useInfo = args.useInfo;
+-    this.origin = args.origin;
+-    this.children = args.children;
+-    this.parentFingerprint = args.parentFingerprint;
+-    this.name = args.name;
+-    this.note = args.note;
+-  };
+-
+-  public toDataItem = () => {
+-    const map: DataItemMap = {};
+-    if (this.master) {
+-      map[Keys.is_master] = true;
+-      map[Keys.key_data] = this.key;
+-      map[Keys.chain_code] = this.chainCode;
+-    } else {
+-      if (this.privateKey !== undefined) {
+-        map[Keys.is_private] = this.privateKey;
+-      }
+-      map[Keys.key_data] = this.key;
+-      if (this.chainCode) {
+-        map[Keys.chain_code] = this.chainCode;
+-      }
+-      if (this.useInfo) {
+-        const useInfo = this.useInfo.toDataItem();
+-        useInfo.setTag(this.useInfo.getRegistryType().getTag());
+-        map[Keys.use_info] = useInfo;
+-      }
+-      if (this.origin) {
+-        const origin = this.origin.toDataItem();
+-        origin.setTag(this.origin.getRegistryType().getTag());
+-        map[Keys.origin] = origin;
+-      }
+-      if (this.children) {
+-        const children = this.children.toDataItem();
+-        children.setTag(this.children.getRegistryType().getTag());
+-        map[Keys.children] = children;
+-      }
+-      if (this.parentFingerprint) {
+-        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE(0);
+-      }
+-      if (this.name !== undefined) {
+-        map[Keys.name] = this.name;
+-      }
+-      if (this.note !== undefined) {
+-        map[Keys.note] = this.note;
+-      }
+-    }
+-    return new DataItem(map);
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const map = dataItem.getData();
+-    const isMaster = !!map[Keys.is_master];
+-    const isPrivateKey = map[Keys.is_private];
+-    const key = map[Keys.key_data];
+-    const chainCode = map[Keys.chain_code];
+-    const useInfo = map[Keys.use_info]
+-      ? CryptoCoinInfo.fromDataItem(map[Keys.use_info])
+-      : undefined;
+-    const origin = map[Keys.origin]
+-      ? CryptoKeypath.fromDataItem(map[Keys.origin])
+-      : undefined;
+-    const children = map[Keys.children]
+-      ? CryptoKeypath.fromDataItem(map[Keys.children])
+-      : undefined;
+-    const _parentFingerprint = map[Keys.parent_fingerprint];
+-    let parentFingerprint: Buffer | undefined = undefined;
+-    if (_parentFingerprint) {
+-      parentFingerprint = Buffer.alloc(4);
+-      parentFingerprint.writeUInt32BE(_parentFingerprint, 0);
+-    }
+-    const name = map[Keys.name];
+-    const note = map[Keys.note];
+-
+-    return new CryptoHDKey({
+-      isMaster,
+-      isPrivateKey,
+-      key,
+-      chainCode,
+-      useInfo,
+-      origin,
+-      children,
+-      parentFingerprint,
+-      name,
+-      note,
+-    });
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoHDKey.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoOutput.ts b/src/CryptoOutput.ts
+deleted file mode 100644
+index 90abf6f108c05315ee2b255465dd39c90ee0f459..0000000000000000000000000000000000000000
+--- a/src/CryptoOutput.ts
++++ /dev/null
+@@ -1,127 +0,0 @@
+-import { CryptoECKey } from './CryptoECKey';
+-import { CryptoHDKey } from './CryptoHDKey';
+-import { decodeToDataItem, DataItem } from './lib';
+-import { MultiKey } from './MultiKey';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-import { ScriptExpression, ScriptExpressions } from './ScriptExpression';
+-
+-export class CryptoOutput extends RegistryItem {
+-  public getRegistryType = () => {
+-    return RegistryTypes.CRYPTO_OUTPUT;
+-  };
+-
+-  constructor(
+-    private scriptExpressions: ScriptExpression[],
+-    private cryptoKey: CryptoHDKey | CryptoECKey | MultiKey,
+-  ) {
+-    super();
+-  }
+-
+-  public getCryptoKey = () => this.cryptoKey;
+-  public getHDKey = () => {
+-    if (this.cryptoKey instanceof CryptoHDKey) {
+-      return this.cryptoKey as CryptoHDKey;
+-    } else {
+-      return undefined;
+-    }
+-  };
+-  public getECKey = () => {
+-    if (this.cryptoKey instanceof CryptoECKey) {
+-      return this.cryptoKey as CryptoECKey;
+-    } else {
+-      return undefined;
+-    }
+-  };
+-
+-  public getMultiKey = () => {
+-    if (this.cryptoKey instanceof MultiKey) {
+-      return this.cryptoKey as MultiKey;
+-    } else {
+-      return undefined;
+-    }
+-  };
+-
+-  public getScriptExpressions = () => this.scriptExpressions;
+-
+-  private _toOutputDescriptor = (seIndex: number): string => {
+-    if (seIndex >= this.scriptExpressions.length) {
+-      return this.cryptoKey.getOutputDescriptorContent();
+-    } else {
+-      return `${this.scriptExpressions[seIndex].getExpression()}(${this._toOutputDescriptor(seIndex + 1)})`;
+-    }
+-  };
+-
+-  public toString = () => {
+-    return this._toOutputDescriptor(0);
+-  };
+-
+-  toDataItem = () => {
+-    let dataItem = this.cryptoKey.toDataItem();
+-    if (
+-      this.cryptoKey instanceof CryptoECKey ||
+-      this.cryptoKey instanceof CryptoHDKey
+-    ) {
+-      dataItem.setTag(this.cryptoKey.getRegistryType().getTag());
+-    }
+-
+-    const clonedSe = [...this.scriptExpressions];
+-
+-    clonedSe.reverse().forEach((se) => {
+-      const tagValue = se.getTag();
+-      if (dataItem.getTag() === undefined) {
+-        dataItem.setTag(tagValue);
+-      } else {
+-        dataItem = new DataItem(dataItem, tagValue);
+-      }
+-    });
+-
+-    return dataItem;
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const scriptExpressions: ScriptExpression[] = [];
+-    let _dataItem = dataItem;
+-    // eslint-disable-next-line no-constant-condition
+-    while (true) {
+-      let _tag = _dataItem.getTag();
+-      const se = ScriptExpression.fromTag(_tag as number);
+-      if (se) {
+-        scriptExpressions.push(se);
+-        if (_dataItem.getData() instanceof DataItem) {
+-          _dataItem = _dataItem.getData();
+-          _tag = _dataItem.getTag();
+-        } else {
+-          break;
+-        }
+-      } else {
+-        break;
+-      }
+-    }
+-    const seLength = scriptExpressions.length;
+-    const isMultiKey =
+-      seLength > 0 &&
+-      (scriptExpressions[seLength - 1].getExpression() ===
+-        ScriptExpressions.MULTISIG.getExpression() ||
+-        scriptExpressions[seLength - 1].getExpression() ===
+-        ScriptExpressions.SORTED_MULTISIG.getExpression());
+-    //TODO: judge is multi key by scriptExpressions
+-    if (isMultiKey) {
+-      const multiKey = MultiKey.fromDataItem(_dataItem);
+-      return new CryptoOutput(scriptExpressions, multiKey);
+-    }
+-
+-    if (_dataItem.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
+-      const cryptoHDKey = CryptoHDKey.fromDataItem(_dataItem);
+-      return new CryptoOutput(scriptExpressions, cryptoHDKey);
+-    } else {
+-      const cryptoECKey = CryptoECKey.fromDataItem(_dataItem);
+-      return new CryptoOutput(scriptExpressions, cryptoECKey);
+-    }
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoOutput.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/CryptoPSBT.ts b/src/CryptoPSBT.ts
+deleted file mode 100644
+index 626b647098f04039755a1396511076ce2a0112a4..0000000000000000000000000000000000000000
+--- a/src/CryptoPSBT.ts
++++ /dev/null
+@@ -1,32 +0,0 @@
+-import { decodeToDataItem, DataItem } from './lib';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes } from './RegistryType';
+-
+-export class CryptoPSBT extends RegistryItem {
+-  getRegistryType = () => RegistryTypes.CRYPTO_PSBT;
+-
+-  constructor(private psbt: Buffer) {
+-    super();
+-  }
+-
+-  public getPSBT = () => this.psbt;
+-
+-  public toDataItem = () => {
+-    return new DataItem(this.psbt);
+-  };
+-
+-  public static fromDataItem = (dataItem: DataItem) => {
+-    const psbt = dataItem.getData();
+-    if (!psbt) {
+-      throw new Error(
+-        `#[ur-registry][CryptoPSBT][fn.fromDataItem]: decoded [dataItem][#data] is undefined: ${dataItem}`,
+-      );
+-    }
+-    return new CryptoPSBT(psbt);
+-  };
+-
+-  public static fromCBOR = (_cborPayload: Buffer) => {
+-    const dataItem = decodeToDataItem(_cborPayload);
+-    return CryptoPSBT.fromDataItem(dataItem);
+-  };
+-}
+diff --git a/src/Decoder/index.ts b/src/Decoder/index.ts
+deleted file mode 100644
+index 5d7e3fe5aaef44fae3c39ac002bd2add9278a201..0000000000000000000000000000000000000000
+--- a/src/Decoder/index.ts
++++ /dev/null
+@@ -1,41 +0,0 @@
+-import { URDecoder } from '@ngraveio/bc-ur';
+-import {
+-  Bytes,
+-  CryptoAccount,
+-  CryptoCoinInfo,
+-  CryptoECKey,
+-  CryptoHDKey,
+-  CryptoKeypath,
+-  CryptoOutput,
+-  CryptoPSBT,
+-} from '..';
+-import { RegistryTypes } from '../RegistryType';
+-import { UnknownURTypeError } from '../errors';
+-
+-export class URRegistryDecoder extends URDecoder {
+-  public resultRegistryType = () => {
+-    const ur = this.resultUR();
+-    switch (ur.type) {
+-      case RegistryTypes.BYTES.getType():
+-        return Bytes.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_HDKEY.getType():
+-        return CryptoHDKey.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_KEYPATH.getType():
+-        return CryptoKeypath.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_COIN_INFO.getType():
+-        return CryptoCoinInfo.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_ECKEY.getType():
+-        return CryptoECKey.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_OUTPUT.getType():
+-        return CryptoOutput.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_PSBT.getType():
+-        return CryptoPSBT.fromCBOR(ur.cbor);
+-      case RegistryTypes.CRYPTO_ACCOUNT.getType():
+-        return CryptoAccount.fromCBOR(ur.cbor);
+-      default:
+-        throw new UnknownURTypeError(
+-          `#[ur-registry][Decoder][fn.resultRegistryType]: registry type ${ur.type} is not supported now`,
+-        );
+-    }
+-  };
+-}
+diff --git a/src/MultiKey.ts b/src/MultiKey.ts
+deleted file mode 100644
+index ced19dc364fae1ad5b9147710cdb2195e17b4582..0000000000000000000000000000000000000000
+--- a/src/MultiKey.ts
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import { CryptoECKey } from './CryptoECKey';
+-import { CryptoHDKey } from './CryptoHDKey';
+-import { DataItem } from './lib/DataItem';
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryType, RegistryTypes } from './RegistryType';
+-import { DataItemMap } from './types';
+-
+-enum Keys {
+-  threshold = 1,
+-  keys,
+-}
+-
+-export class MultiKey extends RegistryItem {
+-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-  // @ts-ignore
+-  getRegistryType: () => RegistryType;
+-
+-  constructor(
+-    private threshold: number,
+-    private keys: (CryptoECKey | CryptoHDKey)[],
+-  ) {
+-    super();
+-  }
+-
+-  getThreshold = () => this.threshold;
+-  getKeys = () => this.keys;
+-
+-  toDataItem = () => {
+-    const map: DataItemMap = {};
+-    map[Keys.threshold] = this.threshold;
+-    const keys: DataItem[] = this.keys.map((k) => {
+-      const dataItem = k.toDataItem();
+-      dataItem.setTag(k.getRegistryType().getTag());
+-      return dataItem;
+-    });
+-    map[Keys.keys] = keys;
+-    return new DataItem(map);
+-  };
+-
+-  getOutputDescriptorContent = () => {
+-    return [this.getThreshold(),
+-      this.keys.map(k => k.getOutputDescriptorContent()).join(','),
+-    ].join(',');
+-  };
+-
+-  static fromDataItem = (dataItem: DataItem) => {
+-    const map = dataItem.getData();
+-    const threshold = map[Keys.threshold];
+-    const _keys = map[Keys.keys] as DataItem[];
+-    const keys: (CryptoECKey | CryptoHDKey)[] = [];
+-    _keys.forEach((k) => {
+-      if (k.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
+-        keys.push(CryptoHDKey.fromDataItem(k));
+-      } else if (k.getTag() === RegistryTypes.CRYPTO_ECKEY.getTag()) {
+-        keys.push(CryptoECKey.fromDataItem(k));
+-      }
+-    });
+-    return new MultiKey(threshold, keys);
+-  };
+-}
+diff --git a/src/PathComponent.ts b/src/PathComponent.ts
+deleted file mode 100644
+index d41cb067e383f29986a7d84bc88b0e4b7b71fb0b..0000000000000000000000000000000000000000
+--- a/src/PathComponent.ts
++++ /dev/null
+@@ -1,28 +0,0 @@
+-export class PathComponent {
+-  public static readonly HARDENED_BIT = 0x80000000;
+-
+-  private index?: number;
+-  private wildcard: boolean;
+-  private hardened: boolean;
+-
+-  constructor(args: { index?: number; hardened: boolean }) {
+-    this.index = args.index;
+-    this.hardened = args.hardened;
+-
+-    if (this.index !== undefined) {
+-      this.wildcard = false;
+-    } else {
+-      this.wildcard = true;
+-    }
+-
+-    if (this.index && (this.index & PathComponent.HARDENED_BIT) !== 0) {
+-      throw new Error(
+-        `#[ur-registry][PathComponent][fn.constructor]: Invalid index ${this.index} - most significant bit cannot be set`,
+-      );
+-    }
+-  }
+-
+-  public getIndex = () => this.index;
+-  public isWildcard = () => this.wildcard;
+-  public isHardened = () => this.hardened;
+-}
+diff --git a/src/RegistryItem.ts b/src/RegistryItem.ts
+deleted file mode 100644
+index 99139f7001b596add08be3332526264c39693279..0000000000000000000000000000000000000000
+--- a/src/RegistryItem.ts
++++ /dev/null
+@@ -1,35 +0,0 @@
+-import { UR, UREncoder } from '@ngraveio/bc-ur';
+-import { encodeDataItem, DataItem } from './lib';
+-import { RegistryType } from './RegistryType';
+-
+-export abstract class RegistryItem {
+-  abstract getRegistryType: () => RegistryType;
+-  abstract toDataItem: () => DataItem;
+-  public toCBOR = () => {
+-    if (this.toDataItem() === undefined) {
+-      throw new Error(
+-        `#[ur-registry][RegistryItem][fn.toCBOR]: registry ${this.getRegistryType()}'s method toDataItem returns undefined`,
+-      );
+-    }
+-    return encodeDataItem(this.toDataItem());
+-  };
+-
+-  public toUR = () => {
+-    return new UR(this.toCBOR(), this.getRegistryType().getType());
+-  };
+-
+-  public toUREncoder = (
+-    maxFragmentLength?: number,
+-    firstSeqNum?: number,
+-    minFragmentLength?: number,
+-  ) => {
+-    const ur = this.toUR();
+-    const urEncoder = new UREncoder(
+-      ur,
+-      maxFragmentLength,
+-      firstSeqNum,
+-      minFragmentLength,
+-    );
+-    return urEncoder;
+-  };
+-}
+diff --git a/src/RegistryType.ts b/src/RegistryType.ts
+deleted file mode 100644
+index 64637bca3626b0db586563d5dcffd44f61e39520..0000000000000000000000000000000000000000
+--- a/src/RegistryType.ts
++++ /dev/null
+@@ -1,20 +0,0 @@
+-// cbor registry types: https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-006-urtypes.md
+-// Map<name, tag>
+-
+-export class RegistryType {
+-  constructor(private type: string, private tag?: number) {}
+-  getTag = () => this.tag;
+-  getType = () => this.type;
+-}
+-
+-export const RegistryTypes = {
+-  UUID: new RegistryType('uuid', 37),
+-  BYTES: new RegistryType('bytes', undefined),
+-  CRYPTO_HDKEY: new RegistryType('crypto-hdkey', 303),
+-  CRYPTO_KEYPATH: new RegistryType('crypto-keypath', 304),
+-  CRYPTO_COIN_INFO: new RegistryType('crypto-coin-info', 305),
+-  CRYPTO_ECKEY: new RegistryType('crypto-eckey', 306),
+-  CRYPTO_OUTPUT: new RegistryType('crypto-output', 308),
+-  CRYPTO_PSBT: new RegistryType('crypto-psbt', 310),
+-  CRYPTO_ACCOUNT: new RegistryType('crypto-account', 311),
+-};
+diff --git a/src/ScriptExpression.ts b/src/ScriptExpression.ts
+deleted file mode 100644
+index 8fbf0db679040337a5d9e6af8c8ecf734faa00d5..0000000000000000000000000000000000000000
+--- a/src/ScriptExpression.ts
++++ /dev/null
+@@ -1,26 +0,0 @@
+-export class ScriptExpression {
+-  constructor(private tag: number, private expression: string) {}
+-
+-  public getTag = () => this.tag;
+-  public getExpression = () => this.expression;
+-
+-  public static fromTag = (tag: number) => {
+-    const se = Object.values(ScriptExpressions).find(
+-      (se) => se.getTag() === tag,
+-    );
+-    return se;
+-  };
+-}
+-
+-export const ScriptExpressions = {
+-  SCRIPT_HASH: new ScriptExpression(400, 'sh'),
+-  WITNESS_SCRIPT_HASH: new ScriptExpression(401, 'wsh'),
+-  PUBLIC_KEY: new ScriptExpression(402, 'pk'),
+-  PUBLIC_KEY_HASH: new ScriptExpression(403, 'pkh'),
+-  WITNESS_PUBLIC_KEY_HASH: new ScriptExpression(404, 'wpkh'),
+-  COMBO: new ScriptExpression(405, 'combo'),
+-  MULTISIG: new ScriptExpression(406, 'multi'),
+-  SORTED_MULTISIG: new ScriptExpression(407, 'sortedmulti'),
+-  ADDRESS: new ScriptExpression(307, 'addr'),
+-  RAW_SCRIPT: new ScriptExpression(408, 'raw'),
+-};
+diff --git a/src/index.ts b/src/index.ts
+deleted file mode 100644
+index bb07bc8c2a62c2c0afc28bce0f8c4d968b7c93ee..0000000000000000000000000000000000000000
+--- a/src/index.ts
++++ /dev/null
+@@ -1,110 +0,0 @@
+-import './patchCBOR';
+-
+-import { CryptoHDKey } from './CryptoHDKey';
+-import { CryptoKeypath } from './CryptoKeypath';
+-import {
+-  CryptoCoinInfo,
+-  Type as CryptoCoinInfoType,
+-  Network as CryptoCoinInfoNetwork,
+-} from './CryptoCoinInfo';
+-import { CryptoECKey } from './CryptoECKey';
+-import { Bytes } from './Bytes';
+-import { CryptoOutput } from './CryptoOutput';
+-import { CryptoPSBT } from './CryptoPSBT';
+-import { CryptoAccount } from './CryptoAccount';
+-import { URRegistryDecoder } from './Decoder';
+-
+-import { MultiKey } from './MultiKey';
+-
+-import { ScriptExpressions } from './ScriptExpression';
+-import { PathComponent } from './PathComponent';
+-
+-import { RegistryItem } from './RegistryItem';
+-import { RegistryTypes, RegistryType } from './RegistryType';
+-
+-import {
+-  addReader,
+-  addSemanticDecode,
+-  addSemanticEncode,
+-  addWriter,
+-  decodeToDataItem,
+-  encodeDataItem,
+-} from './lib';
+-
+-export { DataItem } from './lib';
+-
+-import { patchTags } from './utils';
+-
+-const URlib = {
+-  URRegistryDecoder,
+-  Bytes,
+-  CryptoAccount,
+-  CryptoHDKey,
+-  CryptoKeypath,
+-  CryptoCoinInfo,
+-  CryptoCoinInfoType,
+-  CryptoCoinInfoNetwork,
+-  CryptoECKey,
+-  CryptoOutput,
+-  CryptoPSBT,
+-  MultiKey,
+-  ScriptExpressions,
+-  PathComponent,
+-};
+-
+-const cbor = {
+-  addReader,
+-  addSemanticDecode,
+-  addSemanticEncode,
+-  addWriter,
+-  patchTags,
+-};
+-
+-const extend = {
+-  RegistryTypes,
+-  RegistryItem,
+-  RegistryType,
+-
+-  decodeToDataItem,
+-  encodeDataItem,
+-
+-  cbor,
+-};
+-
+-export {
+-  URRegistryDecoder,
+-  Bytes,
+-  CryptoAccount,
+-  CryptoHDKey,
+-  CryptoKeypath,
+-  CryptoCoinInfo,
+-  CryptoCoinInfoType,
+-  CryptoCoinInfoNetwork,
+-  CryptoECKey,
+-  CryptoOutput,
+-  CryptoPSBT,
+-  MultiKey,
+-  ScriptExpressions,
+-  PathComponent,
+-  extend,
+-};
+-
+-export * from './errors';
+-export * from './Decoder';
+-export * from './lib';
+-export * from './CryptoAccount'
+-export * from './CryptoPSBT'
+-export * from './CryptoHDKey'
+-export * from './CryptoOutput'
+-export * from './CryptoCoinInfo'
+-export * from './CryptoECKey'
+-export * from './MultiKey'
+-export * from './CryptoKeypath'
+-export * from './patchCBOR'
+-export * from './PathComponent'
+-export * from './RegistryItem'
+-export * from './RegistryType'
+-export * from './types'
+-export * from './utils'
+-
+-export default URlib;
+diff --git a/src/lib/DataItem.ts b/src/lib/DataItem.ts
+deleted file mode 100644
+index 9727f7eb100756076732b137402e22efad73727c..0000000000000000000000000000000000000000
+--- a/src/lib/DataItem.ts
++++ /dev/null
+@@ -1,25 +0,0 @@
+-export class DataItem {
+-  private tag?: number;
+-  private data: any;
+-
+-  constructor(data: any, tag?: number) {
+-    this.data = data;
+-    this.tag = tag;
+-  }
+-
+-  public setTag = (tag?: number) => {
+-    this.tag = tag;
+-  };
+-
+-  public clearTag = () => {
+-    this.tag = undefined;
+-  };
+-
+-  public getTag = () => {
+-    return this.tag;
+-  };
+-
+-  public getData = () => {
+-    return this.data;
+-  };
+-}
+diff --git a/src/lib/cbor-sync.d.ts b/src/lib/cbor-sync.d.ts
+deleted file mode 100644
+index 6374ba78fb23af2b8773820250e1183ed36c978e..0000000000000000000000000000000000000000
+--- a/src/lib/cbor-sync.d.ts
++++ /dev/null
+@@ -1,36 +0,0 @@
+-export namespace config {
+-    const useToJSON: boolean;
+-}
+-export function addWriter(format: any, writerFunction: any): void;
+-export function addReader(format: any, readerFunction: any): void;
+-export function encode(data: any, format: any): any;
+-export function encodeDataItem(data: any, format?: any): any;
+-export function decode(data: any, format: any): any;
+-export function decodeToDataItem(data: any, format?: any): import("./DataItem").DataItem;
+-export function addSemanticEncode(tag: any, fn: any): {
+-    config: {
+-        useToJSON: boolean;
+-    };
+-    addWriter: (format: any, writerFunction: any) => void;
+-    addReader: (format: any, readerFunction: any) => void;
+-    encode: (data: any, format: any) => any;
+-    encodeDataItem: (data: any, format: any) => any;
+-    decode: (data: any, format: any) => any;
+-    decodeToDataItem: (data: any, format: any) => import("./DataItem").DataItem;
+-    addSemanticEncode: (tag: any, fn: any) => any;
+-    addSemanticDecode: (tag: any, fn: any) => any;
+-};
+-export function addSemanticDecode(tag: any, fn: any): {
+-    config: {
+-        useToJSON: boolean;
+-    };
+-    addWriter: (format: any, writerFunction: any) => void;
+-    addReader: (format: any, readerFunction: any) => void;
+-    encode: (data: any, format: any) => any;
+-    encodeDataItem: (data: any, format: any) => any;
+-    decode: (data: any, format: any) => any;
+-    decodeToDataItem: (data: any, format: any) => import("./DataItem").DataItem;
+-    addSemanticEncode: (tag: any, fn: any) => any;
+-    addSemanticDecode: (tag: any, fn: any) => any;
+-};
+-//# sourceMappingURL=cbor-sync.d.ts.map
+diff --git a/src/lib/cbor-sync.js b/src/lib/cbor-sync.js
+deleted file mode 100644
+index df8db9040ddb2fffed53bc980181097b97cab8d6..0000000000000000000000000000000000000000
+--- a/src/lib/cbor-sync.js
++++ /dev/null
+@@ -1,693 +0,0 @@
+-(function (global, factory) {
+-  if (typeof define === 'function' && define.amd) {
+-    define([], factory);
+-  } else if (typeof module !== 'undefined' && module.exports) {
+-    module.exports = factory();
+-  } else {
+-    global.CBOR = factory();
+-  }
+-})(this, function () {
+-  const { DataItem } = require('./DataItem');
+-  var CBOR = (function () {
+-    function BinaryHex(hex) {
+-      this.$hex = hex;
+-    }
+-    BinaryHex.prototype = {
+-      length: function () {
+-        return this.$hex.length / 2;
+-      },
+-      toString: function (format) {
+-        if (!format || format === 'hex' || format === 16) return this.$hex;
+-        if (format === 'utf-8') {
+-          var encoded = '';
+-          for (var i = 0; i < this.$hex.length; i += 2) {
+-            encoded += '%' + this.$hex.substring(i, i + 2);
+-          }
+-          return decodeURIComponent(encoded);
+-        }
+-        if (format === 'latin') {
+-          var encoded = [];
+-          for (var i = 0; i < this.$hex.length; i += 2) {
+-            encoded.push(parseInt(this.$hex.substring(i, i + 2), 16));
+-          }
+-          return String.fromCharCode.apply(String, encoded);
+-        }
+-        throw new Error('Unrecognised format: ' + format);
+-      },
+-    };
+-    BinaryHex.fromLatinString = function (latinString) {
+-      var hex = '';
+-      for (var i = 0; i < latinString.length; i++) {
+-        var pair = latinString.charCodeAt(i).toString(16);
+-        if (pair.length === 1) pair = '0' + pair;
+-        hex += pair;
+-      }
+-      return new BinaryHex(hex);
+-    };
+-    BinaryHex.fromUtf8String = function (utf8String) {
+-      var encoded = encodeURIComponent(utf8String);
+-      var hex = '';
+-      for (var i = 0; i < encoded.length; i++) {
+-        if (encoded.charAt(i) === '%') {
+-          hex += encoded.substring(i + 1, i + 3);
+-          i += 2;
+-        } else {
+-          var hexPair = encoded.charCodeAt(i).toString(16);
+-          if (hexPair.length < 2) hexPair = '0' + hexPair;
+-          hex += hexPair;
+-        }
+-      }
+-      return new BinaryHex(hex);
+-    };
+-
+-    var semanticEncoders = [];
+-    var semanticDecoders = {};
+-
+-    var notImplemented = function (label) {
+-      return function () {
+-        throw new Error(label + ' not implemented');
+-      };
+-    };
+-
+-    function Reader() {}
+-    Reader.prototype = {
+-      peekByte: notImplemented('peekByte'),
+-      readByte: notImplemented('readByte'),
+-      readChunk: notImplemented('readChunk'),
+-      readFloat16: function () {
+-        var half = this.readUint16();
+-        var exponent = (half & 0x7fff) >> 10;
+-        var mantissa = half & 0x3ff;
+-        var negative = half & 0x8000;
+-        if (exponent === 0x1f) {
+-          if (mantissa === 0) {
+-            return negative ? -Infinity : Infinity;
+-          }
+-          return NaN;
+-        }
+-        var magnitude = exponent
+-          ? Math.pow(2, exponent - 25) * (1024 + mantissa)
+-          : Math.pow(2, -24) * mantissa;
+-        return negative ? -magnitude : magnitude;
+-      },
+-      readFloat32: function () {
+-        var intValue = this.readUint32();
+-        var exponent = (intValue & 0x7fffffff) >> 23;
+-        var mantissa = intValue & 0x7fffff;
+-        var negative = intValue & 0x80000000;
+-        if (exponent === 0xff) {
+-          if (mantissa === 0) {
+-            return negative ? -Infinity : Infinity;
+-          }
+-          return NaN;
+-        }
+-        var magnitude = exponent
+-          ? Math.pow(2, exponent - 23 - 127) * (8388608 + mantissa)
+-          : Math.pow(2, -23 - 126) * mantissa;
+-        return negative ? -magnitude : magnitude;
+-      },
+-      readFloat64: function () {
+-        var int1 = this.readUint32(),
+-          int2 = this.readUint32();
+-        var exponent = (int1 >> 20) & 0x7ff;
+-        var mantissa = (int1 & 0xfffff) * 4294967296 + int2;
+-        var negative = int1 & 0x80000000;
+-        if (exponent === 0x7ff) {
+-          if (mantissa === 0) {
+-            return negative ? -Infinity : Infinity;
+-          }
+-          return NaN;
+-        }
+-        var magnitude = exponent
+-          ? Math.pow(2, exponent - 52 - 1023) * (4503599627370496 + mantissa)
+-          : Math.pow(2, -52 - 1022) * mantissa;
+-        return negative ? -magnitude : magnitude;
+-      },
+-      readUint16: function () {
+-        return this.readByte() * 256 + this.readByte();
+-      },
+-      readUint32: function () {
+-        return this.readUint16() * 65536 + this.readUint16();
+-      },
+-      readUint64: function () {
+-        return this.readUint32() * 4294967296 + this.readUint32();
+-      },
+-    };
+-    function Writer() {}
+-    Writer.prototype = {
+-      writeByte: notImplemented('writeByte'),
+-      result: notImplemented('result'),
+-      writeFloat16: notImplemented('writeFloat16'),
+-      writeFloat32: notImplemented('writeFloat32'),
+-      writeFloat64: notImplemented('writeFloat64'),
+-      writeUint16: function (value) {
+-        this.writeByte((value >> 8) & 0xff);
+-        this.writeByte(value & 0xff);
+-      },
+-      writeUint32: function (value) {
+-        this.writeUint16((value >> 16) & 0xffff);
+-        this.writeUint16(value & 0xffff);
+-      },
+-      writeUint64: function (value) {
+-        if (value >= 9007199254740992 || value <= -9007199254740992) {
+-          throw new Error(
+-            'Cannot encode Uint64 of: ' +
+-              value +
+-              ' magnitude to big (floating point errors)',
+-          );
+-        }
+-        this.writeUint32(Math.floor(value / 4294967296));
+-        this.writeUint32(value % 4294967296);
+-      },
+-      writeString: notImplemented('writeString'),
+-      canWriteBinary: function (chunk) {
+-        return false;
+-      },
+-      writeBinary: notImplemented('writeChunk'),
+-    };
+-
+-    function readHeaderRaw(reader) {
+-      var firstByte = reader.readByte();
+-      var majorType = firstByte >> 5,
+-        value = firstByte & 0x1f;
+-      return { type: majorType, value: value };
+-    }
+-
+-    function valueFromHeader(header, reader) {
+-      var value = header.value;
+-      if (value < 24) {
+-        return value;
+-      } else if (value == 24) {
+-        return reader.readByte();
+-      } else if (value == 25) {
+-        return reader.readUint16();
+-      } else if (value == 26) {
+-        return reader.readUint32();
+-      } else if (value == 27) {
+-        return reader.readUint64();
+-      } else if (value == 31) {
+-        // special value for non-terminating arrays/objects
+-        return null;
+-      }
+-      notImplemented('Additional info: ' + value)();
+-    }
+-
+-    function writeHeaderRaw(type, value, writer) {
+-      writer.writeByte((type << 5) | value);
+-    }
+-
+-    function writeHeader(type, value, writer) {
+-      var firstByte = type << 5;
+-      if (value < 24) {
+-        writer.writeByte(firstByte | value);
+-      } else if (value < 256) {
+-        writer.writeByte(firstByte | 24);
+-        writer.writeByte(value);
+-      } else if (value < 65536) {
+-        writer.writeByte(firstByte | 25);
+-        writer.writeUint16(value);
+-      } else if (value < 4294967296) {
+-        writer.writeByte(firstByte | 26);
+-        writer.writeUint32(value);
+-      } else {
+-        writer.writeByte(firstByte | 27);
+-        writer.writeUint64(value);
+-      }
+-    }
+-
+-    var stopCode = new Error(); // Just a unique object, that won't compare strictly equal to anything else
+-
+-    function decodeReader(reader) {
+-      var header = readHeaderRaw(reader);
+-      switch (header.type) {
+-        case 0:
+-          return valueFromHeader(header, reader);
+-        case 1:
+-          return -1 - valueFromHeader(header, reader);
+-        case 2:
+-          return reader.readChunk(valueFromHeader(header, reader));
+-        case 3:
+-          var buffer = reader.readChunk(valueFromHeader(header, reader));
+-          return buffer.toString('utf-8');
+-        case 4:
+-        case 5:
+-          var arrayLength = valueFromHeader(header, reader);
+-          var result = [];
+-          if (arrayLength !== null) {
+-            if (header.type === 5) {
+-              arrayLength *= 2;
+-            }
+-            for (var i = 0; i < arrayLength; i++) {
+-              result[i] = decodeReader(reader);
+-            }
+-          } else {
+-            var item;
+-            while ((item = decodeReader(reader)) !== stopCode) {
+-              result.push(item);
+-            }
+-          }
+-          if (header.type === 5) {
+-            var objResult = {};
+-            for (var i = 0; i < result.length; i += 2) {
+-              objResult[result[i]] = result[i + 1];
+-            }
+-            return objResult;
+-          } else {
+-            return result;
+-          }
+-        case 6:
+-          var tag = valueFromHeader(header, reader);
+-          var decoder = semanticDecoders[tag];
+-          var result = decodeReader(reader);
+-          return decoder ? decoder(result) : result;
+-        case 7:
+-          if (header.value === 25) {
+-            return reader.readFloat16();
+-          } else if (header.value === 26) {
+-            return reader.readFloat32();
+-          } else if (header.value === 27) {
+-            return reader.readFloat64();
+-          }
+-          switch (valueFromHeader(header, reader)) {
+-            case 20:
+-              return false;
+-            case 21:
+-              return true;
+-            case 22:
+-              return null;
+-            case 23:
+-              return undefined;
+-            case null:
+-              return stopCode;
+-            default:
+-              throw new Error('Unknown fixed value: ' + header.value);
+-          }
+-        default:
+-          throw new Error('Unsupported header: ' + JSON.stringify(header));
+-      }
+-      throw new Error('not implemented yet');
+-    }
+-
+-    function encodeWriter(data, writer) {
+-      for (var i = 0; i < semanticEncoders.length; i++) {
+-        var replacement = semanticEncoders[i].fn(data);
+-        if (replacement !== undefined) {
+-          writeHeader(6, semanticEncoders[i].tag, writer);
+-          return encodeWriter(replacement, writer);
+-        }
+-      }
+-
+-      if (data && typeof data.toCBOR === 'function') {
+-        data = data.toCBOR();
+-      }
+-
+-      if (data === false) {
+-        writeHeader(7, 20, writer);
+-      } else if (data === true) {
+-        writeHeader(7, 21, writer);
+-      } else if (data === null) {
+-        writeHeader(7, 22, writer);
+-      } else if (data === undefined) {
+-        writeHeader(7, 23, writer);
+-      } else if (typeof data === 'number') {
+-        if (
+-          Math.floor(data) === data &&
+-          data < 9007199254740992 &&
+-          data > -9007199254740992
+-        ) {
+-          // Integer
+-          if (data < 0) {
+-            writeHeader(1, -1 - data, writer);
+-          } else {
+-            writeHeader(0, data, writer);
+-          }
+-        } else {
+-          writeHeaderRaw(7, 27, writer);
+-          writer.writeFloat64(data);
+-        }
+-      } else if (typeof data === 'string') {
+-        writer.writeString(data, function (length) {
+-          writeHeader(3, length, writer);
+-        });
+-      } else if (writer.canWriteBinary(data)) {
+-        writer.writeBinary(data, function (length) {
+-          writeHeader(2, length, writer);
+-        });
+-      } else if (typeof data === 'object') {
+-        if (api.config.useToJSON && typeof data.toJSON === 'function') {
+-          data = data.toJSON();
+-        }
+-        if (Array.isArray(data)) {
+-          writeHeader(4, data.length, writer);
+-          for (var i = 0; i < data.length; i++) {
+-            encodeWriter(data[i], writer);
+-          }
+-        } else {
+-          var keys = Object.keys(data);
+-          writeHeader(5, keys.length, writer);
+-          for (var i = 0; i < keys.length; i++) {
+-            const number = parseInt(keys[i]);
+-            if (isNaN(number)) {
+-              encodeWriter(keys[i], writer);
+-              encodeWriter(data[keys[i]], writer);
+-            } else {
+-              encodeWriter(number, writer);
+-              encodeWriter(data[keys[i]], writer);
+-            }
+-          }
+-        }
+-      } else {
+-        throw new Error('CBOR encoding not supported: ' + data);
+-      }
+-    }
+-
+-    var readerFunctions = [];
+-    var writerFunctions = [];
+-
+-    var api = {
+-      config: {
+-        useToJSON: true,
+-      },
+-      addWriter: function (format, writerFunction) {
+-        if (typeof format === 'string') {
+-          writerFunctions.push(function (f) {
+-            if (format === f) return writerFunction(f);
+-          });
+-        } else {
+-          writerFunctions.push(format);
+-        }
+-      },
+-      addReader: function (format, readerFunction) {
+-        if (typeof format === 'string') {
+-          readerFunctions.push(function (data, f) {
+-            if (format === f) return readerFunction(data, f);
+-          });
+-        } else {
+-          readerFunctions.push(format);
+-        }
+-      },
+-      encode: function (data, format) {
+-        for (var i = 0; i < writerFunctions.length; i++) {
+-          var func = writerFunctions[i];
+-          var writer = func(format);
+-          if (writer) {
+-            encodeWriter(data, writer);
+-            return writer.result();
+-          }
+-        }
+-        throw new Error('Unsupported output format: ' + format);
+-      },
+-      // DataItem: {getData: () => any}
+-      encodeDataItem: function (data, format) {
+-        for (var i = 0; i < writerFunctions.length; i++) {
+-          var func = writerFunctions[i];
+-          var writer = func(format);
+-          if (writer) {
+-            if (data.getTag() !== undefined) {
+-              encodeWriter(data, writer);
+-              return writer.result();
+-            } else {
+-              encodeWriter(data.getData(), writer);
+-              return writer.result();
+-            }
+-          }
+-        }
+-        throw new Error('Unsupported output format: ' + format);
+-      },
+-      decode: function (data, format) {
+-        for (var i = 0; i < readerFunctions.length; i++) {
+-          var func = readerFunctions[i];
+-          var reader = func(data, format);
+-          if (reader) {
+-            return decodeReader(reader);
+-          }
+-        }
+-        throw new Error('Unsupported input format: ' + format);
+-      },
+-      decodeToDataItem: function (data, format) {
+-        for (var i = 0; i < readerFunctions.length; i++) {
+-          var func = readerFunctions[i];
+-          var reader = func(data, format);
+-          if (reader) {
+-            const result = decodeReader(reader);
+-            if (result instanceof DataItem) {
+-              return result;
+-            } else {
+-              return new DataItem(result);
+-            }
+-          }
+-        }
+-        throw new Error('Unsupported input format: ' + format);
+-      },
+-      addSemanticEncode: function (tag, fn) {
+-        if (typeof tag !== 'number' || tag % 1 !== 0 || tag < 0) {
+-          throw new Error('Tag must be a positive integer');
+-        }
+-        semanticEncoders.push({ tag: tag, fn: fn });
+-        return this;
+-      },
+-      addSemanticDecode: function (tag, fn) {
+-        if (typeof tag !== 'number' || tag % 1 !== 0 || tag < 0) {
+-          throw new Error('Tag must be a positive integer');
+-        }
+-        semanticDecoders[tag] = fn;
+-        return this;
+-      },
+-    };
+-
+-    /** Node.js Buffers **/
+-    function BufferReader(buffer) {
+-      this.buffer = buffer;
+-      this.pos = 0;
+-    }
+-    BufferReader.prototype = Object.create(Reader.prototype);
+-    BufferReader.prototype.peekByte = function () {
+-      return this.buffer[this.pos];
+-    };
+-    BufferReader.prototype.readByte = function () {
+-      return this.buffer[this.pos++];
+-    };
+-    BufferReader.prototype.readUint16 = function () {
+-      var result = this.buffer.readUInt16BE(this.pos);
+-      this.pos += 2;
+-      return result;
+-    };
+-    BufferReader.prototype.readUint32 = function () {
+-      var result = this.buffer.readUInt32BE(this.pos);
+-      this.pos += 4;
+-      return result;
+-    };
+-    BufferReader.prototype.readFloat32 = function () {
+-      var result = this.buffer.readFloatBE(this.pos);
+-      this.pos += 4;
+-      return result;
+-    };
+-    BufferReader.prototype.readFloat64 = function () {
+-      var result = this.buffer.readDoubleBE(this.pos);
+-      this.pos += 8;
+-      return result;
+-    };
+-    BufferReader.prototype.readChunk = function (length) {
+-      var result = Buffer.alloc(length);
+-      this.buffer.copy(result, 0, this.pos, (this.pos += length));
+-      return result;
+-    };
+-
+-    function BufferWriter(stringFormat) {
+-      this.byteLength = 0;
+-      this.defaultBufferLength = 16384; // 16k
+-      this.latestBuffer = Buffer.alloc(this.defaultBufferLength);
+-      this.latestBufferOffset = 0;
+-      this.completeBuffers = [];
+-      this.stringFormat = stringFormat;
+-    }
+-    BufferWriter.prototype = Object.create(Writer.prototype);
+-    BufferWriter.prototype.writeByte = function (value) {
+-      this.latestBuffer[this.latestBufferOffset++] = value;
+-      if (this.latestBufferOffset >= this.latestBuffer.length) {
+-        this.completeBuffers.push(this.latestBuffer);
+-        this.latestBuffer = Buffer.alloc(this.defaultBufferLength);
+-        this.latestBufferOffset = 0;
+-      }
+-      this.byteLength++;
+-    };
+-    BufferWriter.prototype.writeFloat32 = function (value) {
+-      var buffer = Buffer.alloc(4);
+-      buffer.writeFloatBE(value, 0);
+-      this.writeBuffer(buffer);
+-    };
+-    BufferWriter.prototype.writeFloat64 = function (value) {
+-      var buffer = Buffer.alloc(8);
+-      buffer.writeDoubleBE(value, 0);
+-      this.writeBuffer(buffer);
+-    };
+-    BufferWriter.prototype.writeString = function (string, lengthFunc) {
+-      var buffer = Buffer.from(string, 'utf-8');
+-      lengthFunc(buffer.length);
+-      this.writeBuffer(buffer);
+-    };
+-    BufferWriter.prototype.canWriteBinary = function (data) {
+-      return data instanceof Buffer;
+-    };
+-    BufferWriter.prototype.writeBinary = function (buffer, lengthFunc) {
+-      lengthFunc(buffer.length);
+-      this.writeBuffer(buffer);
+-    };
+-    BufferWriter.prototype.writeBuffer = function (chunk) {
+-      if (!(chunk instanceof Buffer))
+-        throw new TypeError('BufferWriter only accepts Buffers');
+-      if (!this.latestBufferOffset) {
+-        this.completeBuffers.push(chunk);
+-      } else if (
+-        this.latestBuffer.length - this.latestBufferOffset >=
+-        chunk.length
+-      ) {
+-        chunk.copy(this.latestBuffer, this.latestBufferOffset);
+-        this.latestBufferOffset += chunk.length;
+-        if (this.latestBufferOffset >= this.latestBuffer.length) {
+-          this.completeBuffers.push(this.latestBuffer);
+-          this.latestBuffer = Buffer.alloc(this.defaultBufferLength);
+-          this.latestBufferOffset = 0;
+-        }
+-      } else {
+-        this.completeBuffers.push(
+-          this.latestBuffer.slice(0, this.latestBufferOffset),
+-        );
+-        this.completeBuffers.push(chunk);
+-        this.latestBuffer = Buffer.alloc(this.defaultBufferLength);
+-        this.latestBufferOffset = 0;
+-      }
+-      this.byteLength += chunk.length;
+-    };
+-    BufferWriter.prototype.result = function () {
+-      // Copies them all into a single Buffer
+-      var result = Buffer.alloc(this.byteLength);
+-      var offset = 0;
+-      for (var i = 0; i < this.completeBuffers.length; i++) {
+-        var buffer = this.completeBuffers[i];
+-        buffer.copy(result, offset, 0, buffer.length);
+-        offset += buffer.length;
+-      }
+-      if (this.latestBufferOffset) {
+-        this.latestBuffer.copy(result, offset, 0, this.latestBufferOffset);
+-      }
+-
+-      if (this.stringFormat) return result.toString(this.stringFormat);
+-      return result;
+-    };
+-
+-    if (typeof Buffer === 'function') {
+-      api.addReader(function (data, format) {
+-        if (data instanceof Buffer) {
+-          return new BufferReader(data);
+-        }
+-        if (format === 'hex' || format === 'base64') {
+-          var buffer = Buffer.from(data, format);
+-          return new BufferReader(buffer);
+-        }
+-      });
+-      api.addWriter(function (format) {
+-        if (!format || format === 'buffer') {
+-          return new BufferWriter();
+-        } else if (format === 'hex' || format === 'base64') {
+-          return new BufferWriter(format);
+-        }
+-      });
+-    }
+-
+-    /** Hex-encoding (and Latin1) for browser **/
+-    function HexReader(hex) {
+-      this.hex = hex;
+-      this.pos = 0;
+-    }
+-    HexReader.prototype = Object.create(Reader.prototype);
+-    HexReader.prototype.peekByte = function () {
+-      var pair = this.hex.substring(this.pos, 2);
+-      return parseInt(pair, 16);
+-    };
+-    HexReader.prototype.readByte = function () {
+-      var pair = this.hex.substring(this.pos, this.pos + 2);
+-      this.pos += 2;
+-      return parseInt(pair, 16);
+-    };
+-    HexReader.prototype.readChunk = function (length) {
+-      var hex = this.hex.substring(this.pos, this.pos + length * 2);
+-      this.pos += length * 2;
+-      if (typeof Buffer === 'function') return Buffer.from(hex, 'hex');
+-      return new BinaryHex(hex);
+-    };
+-
+-    function HexWriter(finalFormat) {
+-      this.$hex = '';
+-      this.finalFormat = finalFormat || 'hex';
+-    }
+-    HexWriter.prototype = Object.create(Writer.prototype);
+-    HexWriter.prototype.writeByte = function (value) {
+-      if (value < 0 || value > 255)
+-        throw new Error('Byte value out of range: ' + value);
+-      var hex = value.toString(16);
+-      if (hex.length == 1) {
+-        hex = '0' + hex;
+-      }
+-      this.$hex += hex;
+-    };
+-    HexWriter.prototype.canWriteBinary = function (chunk) {
+-      return (
+-        chunk instanceof BinaryHex ||
+-        (typeof Buffer === 'function' && chunk instanceof Buffer)
+-      );
+-    };
+-    HexWriter.prototype.writeBinary = function (chunk, lengthFunction) {
+-      if (chunk instanceof BinaryHex) {
+-        lengthFunction(chunk.length());
+-        this.$hex += chunk.$hex;
+-      } else if (typeof Buffer === 'function' && chunk instanceof Buffer) {
+-        lengthFunction(chunk.length);
+-        this.$hex += chunk.toString('hex');
+-      } else {
+-        throw new TypeError('HexWriter only accepts BinaryHex or Buffers');
+-      }
+-    };
+-    HexWriter.prototype.result = function () {
+-      if (this.finalFormat === 'buffer' && typeof Buffer === 'function') {
+-        return Buffer.from(this.$hex, 'hex');
+-      }
+-      return new BinaryHex(this.$hex).toString(this.finalFormat);
+-    };
+-    HexWriter.prototype.writeString = function (string, lengthFunction) {
+-      var buffer = BinaryHex.fromUtf8String(string);
+-      lengthFunction(buffer.length());
+-      this.$hex += buffer.$hex;
+-    };
+-
+-    api.addReader(function (data, format) {
+-      if (data instanceof BinaryHex || data.$hex) {
+-        return new HexReader(data.$hex);
+-      }
+-      if (format === 'hex') {
+-        return new HexReader(data);
+-      }
+-    });
+-    api.addWriter(function (format) {
+-      if (format === 'hex') {
+-        return new HexWriter();
+-      }
+-    });
+-
+-    return api;
+-  })();
+-
+-  CBOR.addSemanticEncode(0, function (data) {
+-    if (data instanceof Date) {
+-      return data.toISOString();
+-    }
+-  })
+-    .addSemanticDecode(0, function (isoString) {
+-      return new Date(isoString);
+-    })
+-    .addSemanticDecode(1, function (isoString) {
+-      return new Date(isoString);
+-    });
+-
+-  return CBOR;
+-});
+diff --git a/src/lib/index.ts b/src/lib/index.ts
+deleted file mode 100644
+index deb01562dbf2ce9ea2da105c3271ad6ae573b6f6..0000000000000000000000000000000000000000
+--- a/src/lib/index.ts
++++ /dev/null
+@@ -1,9 +0,0 @@
+-export {
+-  encodeDataItem,
+-  decodeToDataItem,
+-  addSemanticDecode,
+-  addSemanticEncode,
+-  addReader,
+-  addWriter,
+-} from './cbor-sync';
+-export { DataItem } from './DataItem';
+diff --git a/src/patchCBOR.ts b/src/patchCBOR.ts
+deleted file mode 100644
+index 218e912870e98872677bb1b167c9ab67a18fbb00..0000000000000000000000000000000000000000
+--- a/src/patchCBOR.ts
++++ /dev/null
+@@ -1,11 +0,0 @@
+-import { patchTags } from './utils';
+-import { RegistryTypes } from './RegistryType';
+-import { ScriptExpressions } from './ScriptExpression';
+-
+-const registryTags = Object.values(RegistryTypes)
+-  .filter((r) => !!r.getTag())
+-  .map((r) => r.getTag());
+-const scriptExpressionTags = Object.values(ScriptExpressions).map((se) =>
+-  se.getTag(),
+-);
+-patchTags(registryTags.concat(scriptExpressionTags) as number[]);
+diff --git a/src/types.ts b/src/types.ts
+deleted file mode 100644
+index 29aa370267a20a0b50f01604c014d52145194b00..0000000000000000000000000000000000000000
+--- a/src/types.ts
++++ /dev/null
+@@ -1,6 +0,0 @@
+-export interface ICryptoKey {
+-  isECKey: () => boolean;
+-  getOutputDescriptorContent: () => string;
+-}
+-
+-export type DataItemMap = Record<string, any>;
+diff --git a/src/utils.ts b/src/utils.ts
+deleted file mode 100644
+index e38112bfad6326399f71526ac1de00384c47fd49..0000000000000000000000000000000000000000
+--- a/src/utils.ts
++++ /dev/null
+@@ -1,19 +0,0 @@
+-import { addSemanticDecode, addSemanticEncode, DataItem } from './lib';
+-
+-const alreadyPatchedTag: number[] = [];
+-export const patchTags = (tags: number[]): void => {
+-  tags.forEach((tag) => {
+-    if (alreadyPatchedTag.find((i) => i === tag)) return;
+-    addSemanticEncode(tag, (data: any) => {
+-      if (data instanceof DataItem) {
+-        if (data.getTag() === tag) {
+-          return data.getData();
+-        }
+-      }
+-    });
+-    addSemanticDecode(tag, (data: any) => {
+-      return new DataItem(data, tag);
+-    });
+-    alreadyPatchedTag.push(tag);
+-  });
+-};

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avansate"
   },
-  "advancedOptions": {
-    "message": "Opțiuni avansate"
-  },
   "amount": {
     "message": "Sumă"
   },
@@ -548,9 +545,6 @@
   "newAccount": {
     "message": "Cont nou"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
-  },
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -811,9 +805,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signNotice": {
-    "message": "Semnarea acestui mesaj poate avea efecte secundare periculoase. Semnați mesajele numai de pe site-urile în care aveți încredere deplină să vă acceseze întregul cont. Această metodă periculoasă va fi eliminată într-o versiune viitoare."
   },
   "signatureRequest": {
     "message": "Cerere semnătură"

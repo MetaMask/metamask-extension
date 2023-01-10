@@ -364,7 +364,7 @@ export const TRANSACTION_EVENTS = {
  * @property {'NATIVE'} NATIVE - The native asset for the current network, such
  *  as ETH
  * @property {'TOKEN'} TOKEN - An ERC20 token.
- * @property {'COLLECTIBLE'} COLLECTIBLE - An ERC721 or ERC1155 token.
+ * @property {'NFT'} NFT - An ERC721 or ERC1155 token.
  * @property {'UNKNOWN'} UNKNOWN - A transaction interacting with a contract
  *  that isn't a token method interaction will be marked as dealing with an
  *  unknown asset type.
@@ -385,7 +385,7 @@ export const TRANSACTION_EVENTS = {
 export const ASSET_TYPES = {
   NATIVE: 'NATIVE',
   TOKEN: 'TOKEN',
-  COLLECTIBLE: 'COLLECTIBLE',
+  NFT: 'NFT',
   UNKNOWN: 'UNKNOWN',
 };
 

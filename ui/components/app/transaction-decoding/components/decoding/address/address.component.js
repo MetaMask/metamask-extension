@@ -5,7 +5,10 @@ import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Identicon from '../../../../../ui/identicon';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getAddressBook } from '../../../../../../selectors';
+import {
+  getMemoizedMetadataContractName,
+  getMemoizedAddressBook,
+} from '../../../../../../selectors';
 import NicknamePopovers from '../../../../modals/nickname-popovers';
 
 const Address = ({
@@ -18,17 +21,27 @@ const Address = ({
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
-  const addressBook = useSelector(getAddressBook);
+  const addressBook = useSelector(getMemoizedAddressBook);
   const addressBookEntryObject = addressBook.find(
-    (entry) => entry.address === checksummedRecipientAddress,
+    (entry) =>
+      entry.address.toLowerCase() === checksummedRecipientAddress.toLowerCase(),
   );
   const recipientNickname = addressBookEntryObject?.name;
+  const recipientMetadataName = useSelector((state) =>
+    getMemoizedMetadataContractName(state, checksummedRecipientAddress),
+  );
 
   const recipientToRender = addressOnly
-    ? recipientNickname ||
+    ? recipientName ||
+      recipientNickname ||
+      recipientMetadataName ||
       recipientEns ||
       shortenAddress(checksummedRecipientAddress)
-    : recipientNickname || recipientEns || recipientName || t('newContract');
+    : recipientName ||
+      recipientNickname ||
+      recipientMetadataName ||
+      recipientEns ||
+      t('newContract');
 
   return (
     <div

@@ -1,10 +1,12 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { Text } from '..';
+
 import { Label } from './label';
 
 # Label
 
-The `Label` is a component used to label form inputs.
+The `Label` is a component used to label form inputs
 
 <Canvas>
   <Story id="ui-components-component-library-label-label-stories-js--default-story" />
@@ -12,13 +14,17 @@ The `Label` is a component used to label form inputs.
 
 ## Props
 
-The `Label` accepts all props below as well as all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) and [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props.
+The `Label` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={Label} />
 
+`Label` accepts all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) component props
+
+<ArgsTable of={Text} />
+
 ### Children
 
-The `children` of the label can be text or a react node.
+The `children` of the label can be text or a react node
 
 <Canvas>
   <Story id="ui-components-component-library-label-label-stories-js--children" />
@@ -26,9 +32,7 @@ The `children` of the label can be text or a react node.
 
 ```jsx
 import { DISPLAY, ALIGN_ITEMS, FLEX_DIRECTION, SIZES, COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../ui/component-library/icon';
-import { Label } from '../../ui/component-library/label';
-import { TextFieldBase } from '../../ui/component-library/text-field-base'
+import { Label, TextField, Icon, ICON_NAMES } from '../../component-library';
 
 <Label>Plain text</Label>
 <Label display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
@@ -45,25 +49,23 @@ import { TextFieldBase } from '../../ui/component-library/text-field-base'
   alignItems={ALIGN_ITEMS.FLEX_START}
 >
   Label that wraps an input
-  {/* TODO: replace with TextField component */}
-  <TextFieldBase placeholder="Click label to focus" />
+  <TextField placeholder="Click label to focus" />
 </Label>
 ```
 
 ### Html For
 
-Use the `htmlFor` prop to allow the `Label` to focus on an input with the same id when clicked. The cursor will also change to a `pointer` when the `htmlFor` has a value
+Use the `htmlFor` prop to allow the `Label` to focus on an input with the same id when clicked. The cursor will also change to a `pointer` when the `htmlFor` has a value.
 
 <Canvas>
   <Story id="ui-components-component-library-label-label-stories-js--html-for" />
 </Canvas>
 
 ```jsx
-import { TextFieldBase } from '../../ui/component-library/text-field-base';
-import { Label } from '../../ui/component-library/label';
+import { Label, TextFieldBase } from '../../component-library';
 
 <Label htmlFor="add-network">Add network</Label>
-<TextFieldBase  id="add-network" placeholder="Enter network name" />
+<TextField id="add-network" placeholder="Enter network name" />
 ```
 
 ### Required
@@ -75,7 +77,7 @@ Use the `required` prop to add a required red asterisk next to the `children` of
 </Canvas>
 
 ```jsx
-import { Label } from '../../ui/component-library/label';
+import { Label } from '../../component-library';
 
 <Label required>Label</Label>;
 ```
@@ -89,7 +91,7 @@ Use the `disabled` prop to set the `Label` in disabled state
 </Canvas>
 
 ```jsx
-import { Label } from '../../ui/component-library/label';
+import { Label } from '../../component-library';
 
 <Label disabled>Label</Label>;
 ```

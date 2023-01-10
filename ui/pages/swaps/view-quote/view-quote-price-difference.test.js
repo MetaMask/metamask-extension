@@ -1,15 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 describe('View Price Quote Difference', () => {
-  const t = (key) => `translate ${key}`;
-
-  const state = {
+  const mockState = {
     metamask: {
       tokens: [],
       provider: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
@@ -19,7 +16,7 @@ describe('View Price Quote Difference', () => {
     },
   };
 
-  const store = configureMockStore()(state);
+  const mockStore = configureMockStore()(mockState);
 
   // Sample transaction is 1 $ETH to ~42.880915 $LINK
   const DEFAULT_PROPS = {
@@ -85,57 +82,37 @@ describe('View Price Quote Difference', () => {
     destinationTokenValue: '42.947749',
   };
 
-  let component;
-  function renderComponent(props) {
-    component = shallow(
-      <Provider store={store}>
-        <ViewQuotePriceDifference {...props} />
-      </Provider>,
-      {
-        context: { t },
-      },
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <ViewQuotePriceDifference {...DEFAULT_PROPS} />,
+      mockStore,
     );
-  }
 
-  afterEach(() => {
-    component.unmount();
-  });
-
-  it('does not render when there is no quote', () => {
-    const props = { ...DEFAULT_PROPS, usedQuote: null };
-    renderComponent(props);
-
-    const wrappingDiv = component.find(
-      '.view-quote__price-difference-warning-wrapper',
-    );
-    expect(wrappingDiv).toHaveLength(0);
-  });
-
-  it('does not render when the item is in the low bucket', () => {
-    const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.LOW;
-
-    renderComponent(props);
-    const wrappingDiv = component.find(
-      '.view-quote__price-difference-warning-wrapper',
-    );
-    expect(wrappingDiv).toHaveLength(0);
+    expect(container).toMatchSnapshot();
   });
 
   it('displays an error when in medium bucket', () => {
     const props = { ...DEFAULT_PROPS };
     props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.MEDIUM;
 
-    renderComponent(props);
-    expect(component.html()).toContain(GAS_RECOMMENDATIONS.MEDIUM);
+    const { container } = renderWithProvider(
+      <ViewQuotePriceDifference {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 
   it('displays an error when in high bucket', () => {
     const props = { ...DEFAULT_PROPS };
     props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.HIGH;
 
-    renderComponent(props);
-    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
+    const { container } = renderWithProvider(
+      <ViewQuotePriceDifference {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 
   it('displays a fiat error when calculationError is present', () => {
@@ -143,7 +120,11 @@ describe('View Price Quote Difference', () => {
     props.usedQuote.priceSlippage.calculationError =
       'Could not determine price.';
 
-    renderComponent(props);
-    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
+    const { container } = renderWithProvider(
+      <ViewQuotePriceDifference {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

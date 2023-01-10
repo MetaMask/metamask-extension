@@ -6,6 +6,7 @@ import Button from '../../ui/button';
 import CheckBox from '../../ui/check-box';
 import Typography from '../../ui/typography';
 import SrpInput from '../srp-input';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
 export default function CreateNewVault({
   disabled = false,
@@ -27,7 +28,7 @@ export default function CreateNewVault({
       let newConfirmPasswordError = '';
       let newPasswordError = '';
 
-      if (newPassword && newPassword.length < 8) {
+      if (newPassword && newPassword.length < PASSWORD_MIN_LENGTH) {
         newPasswordError = t('passwordNotLongEnough');
       }
 

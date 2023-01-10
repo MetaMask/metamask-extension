@@ -3,7 +3,7 @@ import {
   BaseController,
   BaseControllerV2,
   ControllerMessenger,
-} from '@metamask/controllers';
+} from '@metamask/base-controller';
 import ComposableObservableStore from './ComposableObservableStore';
 
 class OldExampleController extends BaseController {

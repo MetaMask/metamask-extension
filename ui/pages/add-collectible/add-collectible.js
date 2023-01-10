@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { util } from '@metamask/controllers';
+import { isValidHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -15,13 +15,13 @@ import Typography from '../../components/ui/typography';
 import ActionableMessage from '../../components/ui/actionable-message';
 import PageContainer from '../../components/ui/page-container';
 import {
-  addCollectibleVerifyOwnership,
+  addNftVerifyOwnership,
   getTokenStandardAndDetails,
   ignoreTokens,
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
-import { getIsMainnet, getUseCollectibleDetection } from '../../selectors';
+import { getIsMainnet, getUseNftDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -32,7 +32,7 @@ export default function AddCollectible() {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const useCollectibleDetection = useSelector(getUseCollectibleDetection);
+  const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const collectibleDetectionNoticeDismissed = useSelector(
     getCollectiblesDetectionNoticeDismissed,
@@ -54,7 +54,7 @@ export default function AddCollectible() {
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
+      await dispatch(addNftVerifyOwnership(address, tokenId));
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));
@@ -84,7 +84,7 @@ export default function AddCollectible() {
         token_contract_address: address,
         token_symbol: tokenDetails?.symbol,
         tokenId: tokenId.toString(),
-        asset_type: ASSET_TYPES.COLLECTIBLE,
+        asset_type: ASSET_TYPES.NFT,
         token_standard: tokenDetails?.standard,
         source: EVENT.SOURCE.TOKEN.CUSTOM,
       },
@@ -94,12 +94,12 @@ export default function AddCollectible() {
   };
 
   const validateAndSetAddress = (val) => {
-    setDisabled(!util.isValidHexAddress(val) || !tokenId);
+    setDisabled(!isValidHexAddress(val) || !tokenId);
     setAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!util.isValidHexAddress(address) || !val || isNaN(Number(val)));
+    setDisabled(!isValidHexAddress(address) || !val || isNaN(Number(val)));
     setTokenId(val);
   };
 
@@ -120,7 +120,7 @@ export default function AddCollectible() {
       contentComponent={
         <Box>
           {isMainnet &&
-          !useCollectibleDetection &&
+          !useNftDetection &&
           !collectibleDetectionNoticeDismissed ? (
             <CollectiblesDetectionNotice />
           ) : null}

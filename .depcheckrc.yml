@@ -4,6 +4,8 @@ ignores:
   # webapp deps
   #
 
+  - '@lavamoat/snow'
+  - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
@@ -33,12 +35,13 @@ ignores:
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   # development tool
-  - 'yarn-deduplicate'
   - 'improved-yarn-audit'
   # storybook
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/builder-webpack5'
+  - '@storybook/manager-webpack5'
   - 'storybook-dark-mode'
   - 'style-loader'
   - 'css-loader'

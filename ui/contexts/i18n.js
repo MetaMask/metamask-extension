@@ -2,8 +2,8 @@ import React, { Component, createContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getMessage } from '../helpers/utils/i18n-helper';
-import { getCurrentLocale } from '../ducks/metamask/metamask';
 import {
+  getCurrentLocale,
   getCurrentLocaleMessages,
   getEnLocaleMessages,
 } from '../ducks/locale/locale';

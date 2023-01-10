@@ -15,7 +15,7 @@ import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -271,32 +271,28 @@ export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
 }
 
-export function getEnableEIP1559V2NoticeDismissed(state) {
-  return state.metamask.enableEIP1559V2NoticeDismissed;
-}
-
 export const getCollectibles = (state) => {
   const {
     metamask: {
-      allCollectibles,
+      allNfts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
   const {
     metamask: {
-      allCollectibleContracts,
+      allNftContracts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {

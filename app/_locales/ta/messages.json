@@ -282,7 +282,7 @@
     "message": "புதிய கணக்கு"
   },
   "newAccountNumberName": {
-    "message": "கணக்கு $ 1",
+    "message": "கணக்கு $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
@@ -409,9 +409,6 @@
   },
   "sign": {
     "message": "உள்நுழை"
-  },
-  "signNotice": {
-    "message": "இந்த செய்தியில் கையொப்பமிடலாம் \nஆபத்தான பக்க விளைவுகள் இருக்கலாம். \n உங்கள் மொத்த கணக்கில் முழுமையாக நம்பக்கூடிய தளங்களில் செய்திகளை மட்டுமே கையொப்பமிடுங்கள். \n இந்த ஆபத்தான முறை எதிர்கால பதிப்பில் அகற்றப்படும்."
   },
   "signed": {
     "message": "கையொப்பமிடப்பட்ட"

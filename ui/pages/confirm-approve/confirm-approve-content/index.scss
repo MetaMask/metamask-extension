@@ -102,7 +102,6 @@
     @include H6;
 
     margin-top: 16px;
-    margin-bottom: 16px;
     color: var(--color-text-alternative);
     text-align: center;
     padding-left: 24px;
@@ -335,6 +334,13 @@
 
   &__small-blue-text {
     color: var(--color-primary-default);
+  }
+
+  &__verify-contract-details {
+    @include H6;
+
+    color: var(--color-primary-default);
+    padding: 0;
   }
 
   &__info-row {

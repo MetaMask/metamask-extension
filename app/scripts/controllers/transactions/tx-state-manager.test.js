@@ -54,7 +54,7 @@ describe('TransactionStateManager', function () {
         transactions: {},
       },
       txHistoryLimit: 10,
-      getNetwork: () => currentNetworkId,
+      getNetworkState: () => currentNetworkId,
       getCurrentChainId: () => currentChainId,
     });
   });
@@ -181,7 +181,7 @@ describe('TransactionStateManager', function () {
             [confirmedTx.id]: confirmedTx,
           },
         },
-        getNetwork: () => currentNetworkId,
+        getNetworkState: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 
@@ -246,7 +246,7 @@ describe('TransactionStateManager', function () {
             [confirmedTx3.id]: confirmedTx3,
           },
         },
-        getNetwork: () => currentNetworkId,
+        getNetworkState: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 
@@ -355,7 +355,7 @@ describe('TransactionStateManager', function () {
             [failedTx3Dupe.id]: failedTx3Dupe,
           },
         },
-        getNetwork: () => currentNetworkId,
+        getNetworkState: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 

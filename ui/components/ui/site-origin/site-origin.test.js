@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SiteOrigin from './site-origin';
 
 describe('SiteOrigin', () => {
@@ -14,11 +14,10 @@ describe('SiteOrigin', () => {
 
   it('renders number and hyphen prefixed domains correctly', () => {
     const numberHyphenPrefixOrigin = '0-example.com';
-    const wrapper = shallow(
+    const { container } = renderWithProvider(
       <SiteOrigin {...defaultProps} siteOrigin={numberHyphenPrefixOrigin} />,
     );
-    const bdiElement = wrapper.find('bdi');
 
-    expect(bdiElement.text()).toBe('0-example.com');
+    expect(container).toMatchSnapshot();
   });
 });

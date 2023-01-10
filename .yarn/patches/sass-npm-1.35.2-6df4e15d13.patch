@@ -1,0 +1,29 @@
+diff --git a/sass.dart.js b/sass.dart.js
+index 512d612fa415209d754f226802ce944aba1bf787..1374f5e19dd303fb57b5fd208d933c421c046628 100644
+--- a/sass.dart.js
++++ b/sass.dart.js
+@@ -16,6 +16,10 @@ self.scheduleImmediate = typeof setImmediate !== "undefined"
+ // CommonJS globals.
+ self.exports = exports;
+ 
++// realm bridge utility functions
++exports.bridgeJson = (target) => JSON.parse(JSON.stringify(target))
++exports.bridgeFn = (target) => ((...args) => target(...args))
++
+ // Node.js specific exports, check to see if they exist & or polyfilled
+ 
+ if (typeof process !== "undefined") {
+@@ -3700,13 +3704,6 @@ self.fs = require("fs");
+         return C.PlainJavaScriptObject_methods;
+       if (proto === Object.prototype)
+         return C.PlainJavaScriptObject_methods;
+-      if (typeof $constructor == "function") {
+-        t1 = $._JS_INTEROP_INTERCEPTOR_TAG;
+-        if (t1 == null)
+-          t1 = $._JS_INTEROP_INTERCEPTOR_TAG = init.getIsolateTag("_$dart_js");
+-        Object.defineProperty($constructor, t1, {value: C.UnknownJavaScriptObject_methods, enumerable: false, writable: true, configurable: true});
+-        return C.UnknownJavaScriptObject_methods;
+-      }
+       return C.UnknownJavaScriptObject_methods;
+     },
+     JSArray_JSArray$fixed: function($length, $E) {

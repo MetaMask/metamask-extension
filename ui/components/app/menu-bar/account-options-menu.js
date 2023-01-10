@@ -21,6 +21,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { KEYRING_TYPES } from '../../../../shared/constants/keyrings';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -40,7 +41,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const trackEvent = useContext(MetaMetricsContext);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
-  const isRemovable = keyring.type !== 'HD Key Tree';
+  const isRemovable = keyring.type !== KEYRING_TYPES.HD_KEY_TREE;
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
