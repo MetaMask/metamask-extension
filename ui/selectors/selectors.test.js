@@ -268,4 +268,24 @@ describe('Selectors', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
   });
+
+  it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
+    mockState.metamask.showOutdatedBrowserWarning = true;
+    const timestamp = new Date();
+    timestamp.setDate(timestamp.getDate() - 1);
+    mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
+    const showOutdatedBrowserWarning =
+      selectors.getShowOutdatedBrowserWarning(mockState);
+    expect(showOutdatedBrowserWarning).toStrictEqual(false);
+  });
+  
+  it('#getShowOutdatedBrowserWarning returns true if outdatedBrowserWarningLastShown is more than 2 days ago', () => {
+    mockState.metamask.showOutdatedBrowserWarning = true;
+    const timestamp = new Date();
+    timestamp.setDate(timestamp.getDate() - 3);
+    mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
+    const showOutdatedBrowserWarning =
+      selectors.getShowOutdatedBrowserWarning(mockState);
+    expect(showOutdatedBrowserWarning).toStrictEqual(true);
+  });
 });

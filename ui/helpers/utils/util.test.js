@@ -196,27 +196,35 @@ describe('util', () => {
   });
 
   describe('#getOutdatedBrowserStatus', () => {
-    it('should return false when given a modern browser', () => {
-      //change browser versions to be modern Chrome 81
-      const browser = Bowser.getParser('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36');
+    it('should return false when given a modern chrome browser', () => {
+      // change browser versions to be modern Chrome 81
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36',
+      );
       const result = util.getOutdatedBrowserStatus(browser);
       expect(result).toStrictEqual(false);
     });
-    it('should return true when given an outdated browser', () => {
-      //change browser versions to be outdated Chrome 78
-      const browser = Bowser.getParser('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.2623.112 Safari/537.36');
+    it('should return true when given an outdated chrome browser', () => {
+      // change browser versions to be outdated Chrome 78
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.2623.112 Safari/537.36',
+      );
       const result = util.getOutdatedBrowserStatus(browser);
       expect(result).toStrictEqual(true);
     });
-    //change browser versions to be modern Firefox 78
-    it('should return false when given a modern browser', () => {
-      const browser = Bowser.getParser('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0');
+    // change browser versions to be modern Firefox 78
+    it('should return false when given a modern firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
+      );
       const result = util.getOutdatedBrowserStatus(browser);
       expect(result).toStrictEqual(false);
     });
-    //change browser versions to be outdated Firefox 75
-    it('should return true when given an outdated browser', () => {
-      const browser = Bowser.getParser('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0');
+    // change browser versions to be outdated Firefox 75
+    it('should return true when given an outdated firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+      );
       const result = util.getOutdatedBrowserStatus(browser);
       expect(result).toStrictEqual(true);
     });
