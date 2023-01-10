@@ -90,7 +90,7 @@ const createSardineUrl = (walletAddress, chainId, symbol) => {
   const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
 
   const queryParams = new URLSearchParams({
-    client_id: '1b15facb-b4e0-4dd9-bd6c-c128ac66de0f', // TODO finalize this
+    client_id: '431aee7e-5a30-4d6d-a340-9ff4b7224d77',
     address: walletAddress,
     fixed_asset_type: symbol || nativeCurrency,
     network: toSardineNetworkName(network),
