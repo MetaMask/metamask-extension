@@ -1,4 +1,9 @@
-export { AvatarAccount } from './avatar-account';
+export {
+  AvatarAccount,
+  AVATAR_ACCOUNT_SIZES,
+  AVATAR_ACCOUNT_TYPES,
+  AVATAR_ACCOUNT_DIAMETERS,
+} from './avatar-account';
 export { AvatarFavicon } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
