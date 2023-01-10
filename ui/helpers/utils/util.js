@@ -331,9 +331,7 @@ export function getURL(url) {
   }
 }
 
-// get browser version using bowser
-export function getOutdatedBrowserStatus() {
-  const browser = bowser.getParser(window.navigator.userAgent);
+export function getOutdatedBrowserStatus(browser = bowser.getParser(window.navigator.userAgent)) {
   return browser.satisfies(OUTDATED_BROWSER_VERSIONS);
 }
 
