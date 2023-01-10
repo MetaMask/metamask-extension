@@ -4270,13 +4270,13 @@ export default class MetamaskController extends EventEmitter {
       nickname,
       rpcPrefs,
     );
-    await this.preferencesController.updateRpc({
+    await this.preferencesController.addToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
       nickname,
       rpcPrefs,
-    });
+    );
     return rpcUrl;
   }
 

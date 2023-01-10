@@ -12,7 +12,6 @@ describe('preferences controller', function () {
   let currentChainId;
   let provider;
   let tokenListController;
-  const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
@@ -44,7 +43,6 @@ describe('preferences controller', function () {
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      migrateAddressBookState,
       network,
       provider,
       tokenListController,
@@ -177,37 +175,6 @@ describe('preferences controller', function () {
         preferencesController.store.getState().forgottenPassword,
         true,
       );
-    });
-  });
-
-  describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '0x1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/1',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/2',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/3',
-        chainId: '0x1',
-      });
-      const list = preferencesController.getFrequentRpcListDetail();
-      assert.deepEqual(list[1], { rpcUrl: 'test', chainId: '0x1' });
-    });
-
-    it('should migrate address book entries if chainId changes', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      assert(migrateAddressBookState.calledWith('1', '0x1'));
     });
   });
 
