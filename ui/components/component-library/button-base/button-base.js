@@ -30,6 +30,7 @@ export const ButtonBase = ({
   loading,
   disabled,
   iconProps,
+  buttonTextProps,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
@@ -67,6 +68,7 @@ export const ButtonBase = ({
         gap={2}
         variant={size === BUTTON_BASE_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
         color={TEXT_COLORS.INHERIT}
+        {...buttonTextProps}
       >
         {iconName && (
           <Icon
@@ -97,6 +99,10 @@ ButtonBase.propTypes = {
    * Boolean prop to quickly activate box prop display block
    */
   block: PropTypes.bool,
+  /**
+   * Additional props to pass to the Text component that wraps the button children
+   */
+  buttonTextProps: PropTypes.shape(Text.PropTypes),
   /**
    * The children to be rendered inside the ButtonBase
    */
