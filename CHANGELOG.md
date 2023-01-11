@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.23.3]
+### Removed
+- Remove onramp provider Wyre ([#17102](https://github.com/MetaMask/metamask-extension/pull/17102))
 
 ## [10.23.2]
 ### Fixed
