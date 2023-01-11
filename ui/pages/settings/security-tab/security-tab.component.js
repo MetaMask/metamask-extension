@@ -353,7 +353,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
       >
@@ -400,7 +400,7 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
@@ -442,7 +442,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[7]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -487,7 +487,7 @@ export default class SecurityTab extends PureComponent {
     const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
 
     return (
-      <div ref={this.settingsRefs[5]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyRateCheckToggle')}</span>
           <div className="settings-page__content-description">
@@ -559,6 +559,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('transactions')}
         </span>
         <div className="settings-page__content-padded">
+          {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
         <span className="settings-page__security-tab-sub-header">
@@ -577,7 +578,6 @@ export default class SecurityTab extends PureComponent {
           {this.renderCollectibleDetectionToggle()}
         </div>
         {this.renderMetaMetricsOptIn()}
-        {this.renderCurrencyRateCheckToggle()}
       </div>
     );
   }
