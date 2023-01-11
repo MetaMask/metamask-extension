@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BannerBase should render bannerbase element correctly 1`] = `
+<div>
+  <div
+    class="box mm-banner-base box--padding-3 box--display-inline-flex box--gap-2 box--flex-direction-row box--background-color-background-default box--rounded-sm"
+    data-testid="banner-base"
+  >
+    <div>
+      <h5
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+      >
+        Bannerbase test
+      </h5>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        should render bannerbase element correctly
+      </p>
+    </div>
+  </div>
+</div>
+`;
