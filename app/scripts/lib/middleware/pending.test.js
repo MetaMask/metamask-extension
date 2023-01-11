@@ -4,7 +4,7 @@ import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
-} from './middleware/pending';
+} from './pending';
 
 describe('PendingNonceMiddleware', () => {
   describe('#createPendingNonceMiddleware', () => {
