@@ -1,5 +1,3 @@
-require('@babel/register');
-require('ts-node/register');
 const { promises: fs } = require('fs');
 const path = require('path');
 const yargs = require('yargs/yargs');
