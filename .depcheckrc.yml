@@ -36,6 +36,7 @@ ignores:
   - 'source-map-explorer'
   # development tool
   - 'improved-yarn-audit'
+  - 'nyc'
   # storybook
   - '@storybook/core'
   - '@storybook/addon-essentials'
