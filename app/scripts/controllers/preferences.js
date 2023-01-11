@@ -398,7 +398,7 @@ export default class PreferencesController {
    * @param {string} [nickname] - Nickname of the selected network.
    * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    */
-  addToFrequentRpcList(
+  upsertToFrequentRpcList(
     rpcUrl,
     chainId,
     ticker = 'ETH',

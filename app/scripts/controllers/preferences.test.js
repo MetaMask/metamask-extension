@@ -180,7 +180,7 @@ describe('preferences controller', function () {
 
   describe('adding and removing from frequentRpcListDetail', function () {
     it('should add custom RPC url to state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
@@ -193,7 +193,7 @@ describe('preferences controller', function () {
           },
         ],
       );
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
@@ -210,12 +210,12 @@ describe('preferences controller', function () {
 
     it('should throw if chainId is invalid', function () {
       assert.throws(() => {
-        preferencesController.addToFrequentRpcList('rpc_url', '1');
+        preferencesController.upsertToFrequentRpcList('rpc_url', '1');
       }, 'should throw on invalid chainId');
     });
 
     it('should remove custom RPC url from state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
