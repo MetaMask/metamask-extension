@@ -70,7 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Clear notification state on restore ([#16503](https://github.com/MetaMask/metamask-extension/pull/16503))
 - [FLASK] Fix a crash that happens after snap install ([#16526](https://github.com/MetaMask/metamask-extension/pull/16526))
 - [FLASK] Fix usage of wrong `ethereum` global for `ethereum` endowment ([#16932](https://github.com/MetaMask/metamask-extension/pull/16932))
+
 ## [10.23.3]
+### Changed
+- Remove onramp provider Wyre ([#17102](https://github.com/MetaMask/metamask-extension/pull/17102))
 
 ## [10.23.2]
 ### Fixed
@@ -3411,8 +3414,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...HEAD
-[10.24.0]: https://github.com/MetaMask/metamask-extension/compare/v10.23.2...v10.24.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.23.3...HEAD
+[10.24.0]: https://github.com/MetaMask/metamask-extension/compare/v10.23.3...v10.24.0
 [10.23.3]: https://github.com/MetaMask/metamask-extension/compare/v10.23.2...v10.23.3
 [10.23.2]: https://github.com/MetaMask/metamask-extension/compare/v10.23.1...v10.23.2
 [10.23.1]: https://github.com/MetaMask/metamask-extension/compare/v10.23.0...v10.23.1
