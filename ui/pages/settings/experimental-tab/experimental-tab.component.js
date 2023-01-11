@@ -227,6 +227,7 @@ export default class ExperimentalTab extends PureComponent {
           this.renderTransactionSecurityCheckToggle()}
         {this.renderImprovedTokenAllowanceToggle()}
         {this.renderOpenSeaEnabledToggle()}
+        {this.renderEIP1559V2EnabledToggle()}
       </div>
     );
   }
