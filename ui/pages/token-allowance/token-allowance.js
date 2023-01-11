@@ -53,6 +53,7 @@ import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
+import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 
 export default function TokenAllowance({
   origin,
@@ -236,6 +237,9 @@ export default function TokenAllowance({
 
   return (
     <Box className="token-allowance-container page-container">
+      <Box>
+        <ConfirmPageContainerNavigation />
+      </Box>
       <Box
         paddingLeft={4}
         paddingRight={4}
