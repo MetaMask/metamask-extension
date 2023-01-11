@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
@@ -16,18 +15,12 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setCompletedOnboarding } from '../../../store/actions';
 import { isBeta } from '../../../helpers/utils/build-types';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
-  const onComplete = async () => {
-    await dispatch(setCompletedOnboarding());
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-  };
   return (
     <div className="creation-successful" data-testid="creation-successful">
       <Box textAlign={TEXT_ALIGN.CENTER}>
@@ -93,14 +86,14 @@ export default function CreationSuccessful() {
           type="link"
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
         >
-          {t('setAdvancedPrivacySettings')}
+          {t('advancedConfiguration')}
         </Button>
         <Button
           data-testid="onboarding-complete-done"
           type="primary"
           large
           rounded
-          onClick={onComplete}
+          onClick={() => history.push(ONBOARDING_PIN_EXTENSION_ROUTE)}
         >
           {t('gotIt')}
         </Button>

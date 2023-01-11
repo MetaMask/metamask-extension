@@ -54,10 +54,15 @@ export const ERROR_SUBMITTING =
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
- * @param {Function} opts.getNetwork - return network number
+ * @param {Function} opts.getNetworkState - Get the current network state.
  */
 export default class TransactionStateManager extends EventEmitter {
-  constructor({ initState, txHistoryLimit, getNetwork, getCurrentChainId }) {
+  constructor({
+    initState,
+    txHistoryLimit,
+    getNetworkState,
+    getCurrentChainId,
+  }) {
     super();
 
     this.store = new ObservableStore({
@@ -65,7 +70,7 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetwork = getNetwork;
+    this.getNetworkState = getNetworkState;
     this.getCurrentChainId = getCurrentChainId;
   }
 
@@ -81,7 +86,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta} the default txMeta object
    */
   generateTxMeta(opts = {}) {
-    const netId = this.getNetwork();
+    const netId = this.getNetworkState();
     const chainId = this.getCurrentChainId();
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network');
@@ -144,7 +149,7 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getUnapprovedTxList() {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetwork();
+    const network = this.getNetworkState();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
@@ -408,7 +413,7 @@ export default class TransactionStateManager extends EventEmitter {
     limit,
   } = {}) {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetwork();
+    const network = this.getNetworkState();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
     // consider this shorthand for "check the value at key for strict equality
@@ -600,7 +605,7 @@ export default class TransactionStateManager extends EventEmitter {
   wipeTransactions(address) {
     // network only tx
     const { transactions } = this.store.getState();
-    const network = this.getNetwork();
+    const network = this.getNetworkState();
     const chainId = this.getCurrentChainId();
 
     // Update state

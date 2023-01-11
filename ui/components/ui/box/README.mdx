@@ -209,6 +209,7 @@ import Box from '../ui/box';
 <Box borderRadius={BORDER_RADIUS.LG}>BORDER_RADIUS.LG 8px</Box>
 <Box borderRadius={BORDER_RADIUS.XL}>BORDER_RADIUS.XL 12px</Box>
 <Box borderRadius={BORDER_RADIUS.PILL}>BORDER_RADIUS.PILL 9999px</Box>
+<Box borderRadius={BORDER_RADIUS.FULL}>BORDER_RADIUS.FULL 50%</Box>
 ```
 
 ### Responsive Props
@@ -287,4 +288,96 @@ import Box from '../../ui/box';
 <Box as="li">li</Box>
 <Box as="button">button</Box>
 <Box as="header">header</Box>
+```
+
+### Width
+
+Use the `width` prop to pass a singular `BLOCK_SIZES` or for a responsive width pass an array up to 4 `BLOCK_SIZES`
+
+Responsive widths go from smallest to largest screen sizes
+
+Example: [BLOCK_SIZES.HALF, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.ONE_FIFTH, BLOCK_SIZES.THREE_SIXTHS]
+
+- BLOCK_SIZES.HALF is the default width for `base screen size (0px)` and up
+- BLOCK_SIZES.THREE_FOURTHS is the width for `small screen size (576px) ` and up
+- BLOCK_SIZES.ONE_FIFTH is the width for `medium screen size (768px)` and up
+- BLOCK_SIZES.THREE_SIXTHS is the width for `large screen size (1280px)` and up
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--width" />
+</Canvas>
+
+```jsx
+import {
+  BLOCK_SIZES,
+  DISPLAY,
+  FLEX_WRAP,
+} from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+
+<>
+  <p>Static widths</p>
+
+  <Box display={DISPLAY.FLEX}>
+    <Box width={BLOCK_SIZES.FULL}>BLOCK_SIZES.FULL</Box>
+    <Box width={BLOCK_SIZES.HALF}>BLOCK_SIZES.HALF</Box>
+    <Box width={BLOCK_SIZES.HALF}>BLOCK_SIZES.HALF</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_THIRD}>BLOCK_SIZES.ONE_THIRD</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+    <Box width={BLOCK_SIZES.ONE_FOURTH}>BLOCK_SIZES.ONE_FOURTH</Box>
+  </Box>
+
+  <p>Responsive widths</p>
+
+  <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+    <Box
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+        BLOCK_SIZES.ONE_FOURTH,
+      ]}
+    >
+      BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+      BLOCK_SIZES.ONE_FOURTH,
+    </Box>
+  </Box>
+</>;
 ```

@@ -30,8 +30,8 @@ import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateSingleCollectibleOwnershipStatus,
-  removeAndIgnoreCollectible,
+  checkAndUpdateSingleNftOwnershipStatus,
+  removeAndIgnoreNft,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -79,14 +79,14 @@ export default function CollectibleDetails({ collectible }) {
   );
 
   const onRemove = () => {
-    dispatch(removeAndIgnoreCollectible(address, tokenId));
+    dispatch(removeAndIgnoreNft(address, tokenId));
     history.push(DEFAULT_ROUTE);
   };
 
   const prevCollectible = usePrevious(collectible);
   useEffect(() => {
     if (!isEqual(prevCollectible, collectible)) {
-      checkAndUpdateSingleCollectibleOwnershipStatus(collectible);
+      checkAndUpdateSingleNftOwnershipStatus(collectible);
     }
   }, [collectible, prevCollectible]);
 
@@ -111,7 +111,7 @@ export default function CollectibleDetails({ collectible }) {
   const onSend = async () => {
     await dispatch(
       startNewDraftTransaction({
-        type: ASSET_TYPES.COLLECTIBLE,
+        type: ASSET_TYPES.NFT,
         details: collectible,
       }),
     );

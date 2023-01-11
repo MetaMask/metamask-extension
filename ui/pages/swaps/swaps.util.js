@@ -13,7 +13,6 @@ import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
-  SWAPS_WRAPPED_TOKENS_ADDRESSES,
 } from '../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -32,14 +31,10 @@ import {
   toPrecisionWithoutTrailingZeros,
 } from '../../../shared/lib/transactions-controller-utils';
 import {
-  calcTokenValue,
-  constructTxParams,
   getBaseApi,
-  QUOTE_VALIDATORS,
   truthyString,
   validateData,
 } from '../../../shared/lib/swaps-utils';
-import { SECOND } from '../../../shared/constants/time';
 import { sumHexes } from '../../helpers/utils/transactions.util';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
@@ -105,99 +100,6 @@ const SWAP_GAS_PRICE_VALIDATOR = [
     validator: isValidDecimalNumber,
   },
 ];
-
-export const shouldEnableDirectWrapping = (
-  chainId,
-  sourceToken,
-  destinationToken,
-) => {
-  if (!sourceToken || !destinationToken) {
-    return false;
-  }
-  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
-  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
-  const sourceTokenLowerCase = sourceToken.toLowerCase();
-  const destinationTokenLowerCase = destinationToken.toLowerCase();
-  return (
-    (sourceTokenLowerCase === wrappedToken &&
-      destinationTokenLowerCase === nativeToken) ||
-    (sourceTokenLowerCase === nativeToken &&
-      destinationTokenLowerCase === wrappedToken)
-  );
-};
-
-export async function fetchTradesInfo(
-  {
-    slippage,
-    sourceToken,
-    sourceDecimals,
-    destinationToken,
-    value,
-    fromAddress,
-    exchangeList,
-  },
-  { chainId },
-) {
-  const urlParams = {
-    destinationToken,
-    sourceToken,
-    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
-    slippage,
-    timeout: SECOND * 10,
-    walletAddress: fromAddress,
-  };
-
-  if (exchangeList) {
-    urlParams.exchangeList = exchangeList;
-  }
-  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
-    urlParams.enableDirectWrapping = true;
-  }
-
-  const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
-  const tradesResponse = await fetchWithCache(
-    tradeURL,
-    { method: 'GET', headers: clientIdHeader },
-    { cacheRefreshTime: 0, timeout: SECOND * 15 },
-  );
-  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
-    if (
-      quote.trade &&
-      !quote.error &&
-      validateData(QUOTE_VALIDATORS, quote, tradeURL)
-    ) {
-      const constructedTrade = constructTxParams({
-        to: quote.trade.to,
-        from: quote.trade.from,
-        data: quote.trade.data,
-        amount: decimalToHex(quote.trade.value),
-        gas: decimalToHex(quote.maxGas),
-      });
-
-      let { approvalNeeded } = quote;
-
-      if (approvalNeeded) {
-        approvalNeeded = constructTxParams({
-          ...approvalNeeded,
-        });
-      }
-
-      return {
-        ...aggIdTradeMap,
-        [quote.aggregator]: {
-          ...quote,
-          slippage,
-          trade: constructedTrade,
-          approvalNeeded,
-        },
-      };
-    }
-    return aggIdTradeMap;
-  }, {});
-
-  return newQuotes;
-}
 
 export async function fetchToken(contractAddress, chainId) {
   const tokenUrl = getBaseApi('token', chainId);
@@ -459,7 +361,7 @@ export function quotesToRenderableData(
   chainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
-  multiLayerL1FeeTotal,
+  multiLayerL1ApprovalFeeTotal,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -474,7 +376,20 @@ export function quotesToRenderableData(
       averageGas,
       fee,
       trade,
+      multiLayerL1TradeFeeTotal,
     } = quote;
+    let multiLayerL1FeeTotal = null;
+    if (
+      multiLayerL1TradeFeeTotal !== null &&
+      multiLayerL1ApprovalFeeTotal !== null
+    ) {
+      multiLayerL1FeeTotal = sumHexes(
+        multiLayerL1TradeFeeTotal || '0x0',
+        multiLayerL1ApprovalFeeTotal || '0x0',
+      );
+    } else if (multiLayerL1TradeFeeTotal !== null) {
+      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
+    }
     const sourceValue = calcTokenAmount(
       sourceAmount,
       sourceTokenInfo.decimals,

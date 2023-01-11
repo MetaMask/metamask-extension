@@ -93,12 +93,13 @@
         "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
-        "@babel/eslint-parser>eslint-scope": true,
-        "eslint>eslint-utils": true
+        "eslint>eslint-utils": true,
+        "webpack>eslint-scope": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": {
@@ -118,8 +119,8 @@
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
-        "@babel/eslint-parser>eslint-scope": true,
-        "@typescript-eslint/utils": true
+        "@typescript-eslint/utils": true,
+        "webpack>eslint-scope": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
@@ -142,7 +143,8 @@
         "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
-        "eslint>eslint-utils": true
+        "eslint>eslint-utils": true,
+        "webpack>eslint-scope": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": {

@@ -24,11 +24,17 @@ describe('ButtonBase', () => {
     expect(anchor).toBe(1);
   });
 
-  it('should render anchor element correctly by href only being passed', () => {
+  it('should render anchor element correctly by href only being passed and href exists', () => {
     const { getByTestId, container } = render(
-      <ButtonBase href="#" data-testid="button-base" />,
+      <ButtonBase href="https://www.test.com/" data-testid="button-base">
+        Button Base
+      </ButtonBase>,
     );
     expect(getByTestId('button-base')).toHaveClass('mm-button');
+    expect(getByTestId('button-base')).toHaveAttribute(
+      'href',
+      'https://www.test.com/',
+    );
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });

@@ -8,10 +8,11 @@ import {
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
+  SIZES,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon } from '../icon';
+import { Icon, ICON_NAMES } from '../icon';
 
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 
@@ -21,8 +22,8 @@ export const ButtonIcon = ({
   className,
   color = COLORS.ICON_DEFAULT,
   href,
-  size = BUTTON_ICON_SIZES.LG,
-  icon,
+  size = SIZES.LG,
+  iconName,
   disabled,
   iconProps,
   ...props
@@ -50,7 +51,7 @@ export const ButtonIcon = ({
       href={href}
       {...props}
     >
-      <Icon name={icon} size={size} {...iconProps} />
+      <Icon name={iconName} size={size} {...iconProps} />
     </Box>
   );
 };
@@ -84,14 +85,14 @@ ButtonIcon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  icon: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */
   iconProps: PropTypes.object,
   /**
    * The size of the ButtonIcon.
-   * Possible values could be 'SIZES.SM', 'SIZES.LG',
+   * Possible values could be 'SIZES.SM' 24px, 'SIZES.LG' 32px,
    */
   size: PropTypes.oneOf(Object.values(BUTTON_ICON_SIZES)),
   /**

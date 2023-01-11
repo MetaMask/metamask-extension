@@ -41,9 +41,6 @@
   "advanced": {
     "message": "የላቀ"
   },
-  "advancedOptions": {
-    "message": "የላቁ አማራጮች"
-  },
   "amount": {
     "message": "ሰርዝ "
   },
@@ -546,11 +543,8 @@
   "newAccount": {
     "message": "አዲስ መለያ"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "አዲስ አድራሻ ተገኝቷል! ወደ አድራሻ ደብተርዎ ለማከለ እዚህ ላይ ጠቅ ያድርጉ።"
-  },
   "newAccountNumberName": {
-    "message": "መለያ$1",
+    "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
@@ -809,9 +803,6 @@
   },
   "sign": {
     "message": "ፈርም"
-  },
-  "signNotice": {
-    "message": "ይህን መልዕክት መፈረም አደገኛ ውጤቶች \nሊኖሩት ይችላሉ። በሙሉ መለያዎ ሙሉ በሙሉ ከሚያምኗቸው\nድረ ገጾች የሚመጡ መልዕክቶችን ብቻ ይፈርሙ።\nይህ አደገኛ ዘዴ ከወደፊት ስሪት ይወገዳል።"
   },
   "signatureRequest": {
     "message": "የፊርማ ጥያቄ"

@@ -11,6 +11,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { KEYRING_TYPES } from '../../../../../shared/constants/keyrings';
+
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
@@ -47,7 +49,7 @@ describe('Unconnected Account Alert', () => {
 
   const keyrings = [
     {
-      type: 'HD Key Tree',
+      type: KEYRING_TYPES.HD_KEY_TREE,
       accounts: [
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',

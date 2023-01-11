@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Разширени"
   },
-  "advancedOptions": {
-    "message": "Разширени опции"
-  },
   "amount": {
     "message": "Сума"
   },
@@ -557,9 +554,6 @@
   "newAccount": {
     "message": "Нов акаунт"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Открит е нов адрес! Кликнете тук, за да го добавите към вашата адресна книга."
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
@@ -820,9 +814,6 @@
   },
   "sign": {
     "message": "Подпис"
-  },
-  "signNotice": {
-    "message": "Подписването на това съобщение може да има\nопасни странични ефекти. Подписвайте само съобщения от\nсайтове, на които имате пълно доверие с целия си акаунт.\nТози опасен метод ще бъде премахнат в бъдеща версия."
   },
   "signatureRequest": {
     "message": "Заявка за подпис"

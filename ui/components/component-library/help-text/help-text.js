@@ -18,8 +18,8 @@ export const HelpText = ({
   ...props
 }) => (
   <Text
-    as="span"
     className={classnames('mm-help-text', className)}
+    as="span"
     variant={TEXT.BODY_XS}
     color={error ? COLORS.ERROR_DEFAULT : color}
     {...props}

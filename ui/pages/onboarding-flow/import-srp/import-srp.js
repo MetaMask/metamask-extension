@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   TwoStepProgressBar,
@@ -17,11 +18,19 @@ import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/rou
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SrpInput from '../../../components/app/srp-input';
+import { getCurrentKeyring } from '../../../selectors';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const history = useHistory();
   const t = useI18nContext();
+  const currentKeyring = useSelector(getCurrentKeyring);
+
+  useEffect(() => {
+    if (currentKeyring) {
+      history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    }
+  }, [currentKeyring, history]);
 
   return (
     <div className="import-srp" data-testid="import-srp">

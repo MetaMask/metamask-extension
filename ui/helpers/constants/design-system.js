@@ -51,6 +51,8 @@ export const COLORS = {
   LOCALHOST: 'localhost',
   TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
+  GOERLI_INVERSE: 'goerli-inverse',
+  SEPOLIA_INVERSE: 'sepolia-inverse',
 };
 export const BACKGROUND_COLORS = pick(COLORS, [
   'BACKGROUND_DEFAULT',
@@ -119,6 +121,10 @@ export const TEXT_COLORS = pick(COLORS, [
   'INFO_DEFAULT',
   'INFO_INVERSE',
   'INHERIT',
+  'GOERLI',
+  'SEPOLIA',
+  'GOERLI_INVERSE',
+  'SEPOLIA_INVERSE',
 ]);
 
 export const ICON_COLORS = pick(COLORS, [
@@ -137,6 +143,10 @@ export const ICON_COLORS = pick(COLORS, [
   'INFO_DEFAULT',
   'INFO_INVERSE',
   'INHERIT',
+  'GOERLI',
+  'SEPOLIA',
+  'GOERLI_INVERSE',
+  'SEPOLIA_INVERSE',
 ]);
 
 export const TYPOGRAPHY = {
@@ -150,6 +160,7 @@ export const TYPOGRAPHY = {
   H8: 'h8',
   H9: 'h9',
   Paragraph: 'p',
+  Span: 'span',
 };
 
 export const TEXT = {
@@ -157,9 +168,11 @@ export const TEXT = {
   HEADING_LG: 'heading-lg',
   HEADING_MD: 'heading-md',
   HEADING_SM: 'heading-sm',
-  BODY_LG: 'body-lg-medium',
+  BODY_LG_MEDIUM: 'body-lg-medium',
   BODY_MD: 'body-md',
+  BODY_MD_BOLD: 'body-md-bold',
   BODY_SM: 'body-sm',
+  BODY_SM_BOLD: 'body-sm-bold',
   BODY_XS: 'body-xs',
   INHERIT: 'inherit',
 };
@@ -193,6 +206,7 @@ export const BORDER_RADIUS = {
   XL: SIZES.XL,
   NONE,
   PILL: 'pill',
+  FULL: 'full',
 };
 
 const FLEX_END = 'flex-end';
@@ -300,6 +314,7 @@ export const FONT_WEIGHT = {
 
 export const OVERFLOW_WRAP = {
   BREAK_WORD: 'break-word',
+  ANYWHERE: 'anywhere',
   NORMAL: 'normal',
 };
 

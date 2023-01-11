@@ -365,6 +365,10 @@ describe('util', () => {
             ],
           },
         ],
+        nestArray: [
+          [12, 34, 56],
+          [56, 78, 89],
+        ],
       };
       primaryType = 'Mail';
       types = {
@@ -378,6 +382,8 @@ describe('util', () => {
           { name: 'from', type: 'Person' },
           { name: 'to', type: 'Person[]' },
           { name: 'contents', type: 'string' },
+          { name: 'nestArray', type: 'uint256[2][2]' },
+          { name: 'nestedPeople', type: 'Person[][]' },
         ],
         Person: [
           { name: 'name', type: 'string' },
@@ -406,6 +412,67 @@ describe('util', () => {
       expect(result.to).toHaveLength(1);
       expect(result.to[0].name).toStrictEqual('Bob');
       expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return parsed nested array if defined', () => {
+      const result = util.sanitizeMessage(
+        {
+          nestArray: [
+            [12, 34, 56],
+            [56, 78, 89],
+          ],
+        },
+        primaryType,
+        types,
+      );
+      expect(result.nestArray).toHaveLength(2);
+      expect(result.nestArray[0]).toHaveLength(3);
+      expect(result.nestArray[0][0]).toStrictEqual(12);
+      expect(result.nestArray[0][2]).toStrictEqual(56);
+    });
+
+    it('should return parsed nested array with struct if defined', () => {
+      const msg = {
+        nestedPeople: [
+          [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+          [
+            {
+              name: 'Ben',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+            {
+              name: 'Brandon',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+        ],
+      };
+      const result = util.sanitizeMessage(msg, primaryType, types);
+      expect(result.nestedPeople).toHaveLength(2);
+      expect(result.nestedPeople[0]).toHaveLength(1);
+      expect(result.nestedPeople[0][0].name).toStrictEqual('Bob');
+      expect(result.nestedPeople[0][0].wallets).toHaveLength(3);
+      expect(result.nestedPeople[0][0].wallets[0]).toStrictEqual(
+        '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+      );
+      expect(result.nestedPeople[1][1].name).toStrictEqual('Brandon');
     });
 
     it('should return ignore message data with unknown types', () => {

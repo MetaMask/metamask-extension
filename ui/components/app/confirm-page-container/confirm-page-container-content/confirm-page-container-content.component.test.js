@@ -13,7 +13,6 @@ describe('Confirm Page Container Content', () => {
         type: 'test',
         chainId: '0x5',
       },
-      eip1559V2Enabled: false,
       addressBook: {
         '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Lisäasetukset"
   },
-  "advancedOptions": {
-    "message": "Tarkemmat vaihtoehdot"
-  },
   "amount": {
     "message": "Summa"
   },
@@ -561,9 +558,6 @@
   "newAccount": {
     "message": "Uusi tili"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Uusi osoitettu tunnistettu! Lisää se osoitekirjaasi napsauttamalla tästä."
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
@@ -821,9 +815,6 @@
   },
   "sign": {
     "message": "Allekirjoita"
-  },
-  "signNotice": {
-    "message": "Tämän viestin allekirjoittamisella voi olla\nvaarallisia sivuvaikutuksia. Allekirjoita viestejä ainoastaan\nsivustoilta, joihin luotat täysin koko tililläsi.\n Tällainen vaarallinen menetelmä poistetaan tulevista versioista."
   },
   "signatureRequest": {
     "message": "Allekirjoitus pyydetään"

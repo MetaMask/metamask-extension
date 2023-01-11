@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avanceret"
   },
-  "advancedOptions": {
-    "message": "Avancerede Valgmuligheder"
-  },
   "amount": {
     "message": "Beløb"
   },
@@ -545,9 +542,6 @@
   "newAccount": {
     "message": "Ny konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adresse fundet! Klik her for at tilføje til din adressebog."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -802,9 +796,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signNotice": {
-    "message": "Underskrivning af denne besked kan have farlige sideeffekter. Skriv kun under på beskeder fra sider, du har fuld tillid til med hele din konto.\nDenne farlige metode bliver fjernet i en fremtidig version."
   },
   "signatureRequest": {
     "message": "Signaturforespørgsel"

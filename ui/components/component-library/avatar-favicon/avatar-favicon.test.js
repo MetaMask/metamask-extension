@@ -27,7 +27,7 @@ describe('AvatarFavicon', () => {
     const { container } = render(
       <AvatarFavicon data-testid="avatar-favicon" />,
     );
-    expect(container.getElementsByClassName('icon')).toHaveLength(1);
+    expect(container.getElementsByClassName('mm-icon')).toHaveLength(1);
   });
 
   it('should render fallback image with custom fallbackIconProps if no ImageSource is provided', () => {

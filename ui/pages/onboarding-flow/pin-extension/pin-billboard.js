@@ -6,7 +6,7 @@ export default function OnboardingPinBillboard() {
 
   return (
     <svg
-      width="799"
+      width="100%"
       height="320"
       viewBox="0 0 799 320"
       fill="none"

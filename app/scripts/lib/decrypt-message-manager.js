@@ -41,6 +41,14 @@ export default class DecryptMessageManager extends EventEmitter {
       unapprovedDecryptMsgs: {},
       unapprovedDecryptMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedDecryptMsgs: {},
+        unapprovedDecryptMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = opts.metricsEvent;
   }

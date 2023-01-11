@@ -1,8 +1,8 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { getPersistentState } from '@metamask/controllers';
+import { getPersistentState } from '@metamask/base-controller';
 
 /**
- * @typedef {import('@metamask/controllers').ControllerMessenger} ControllerMessenger
+ * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
  */
 
 /**
@@ -13,7 +13,7 @@ export default class ComposableObservableStore extends ObservableStore {
   /**
    * Describes which stores are being composed. The key is the name of the
    * store, and the value is either an ObserableStore, or a controller that
-   * extends one of the two base controllers in the `@metamask/controllers`
+   * extends one of the two base controllers in the `@metamask/base-controller`
    * package.
    *
    * @type {Record<string, object>}
@@ -46,7 +46,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * @param {Record<string, object>} config - Describes which stores are being
    *   composed. The key is the name of the store, and the value is either an
    *   ObserableStore, or a controller that extends one of the two base
-   *   controllers in the `@metamask/controllers` package.
+   *   controllers in the `@metamask/base-controller` package.
    */
   updateStructure(config) {
     this.config = config;

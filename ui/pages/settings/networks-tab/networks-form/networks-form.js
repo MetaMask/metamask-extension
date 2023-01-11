@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
@@ -29,10 +28,6 @@ import {
   showModal,
   setNewNetworkAdded,
 } from '../../../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  NETWORKS_ROUTE,
-} from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -42,6 +37,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
+import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -85,10 +81,11 @@ const NetworksForm = ({
   isCurrentRpcTarget,
   networksToRender,
   selectedNetwork,
+  cancelCallback,
+  submitCallback,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName = label || (labelKey && t(labelKey));
@@ -530,32 +527,21 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
-        let rpcUrlOrigin;
-        try {
-          rpcUrlOrigin = new URL(rpcUrl).origin;
-        } catch {
-          // error
-        }
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
           referrer: {
-            url: rpcUrlOrigin,
+            url: ORIGIN_METAMASK,
           },
           properties: {
-            chain_id: addHexPrefix(chainId.toString(16)),
-            network_name: networkName,
-            network: rpcUrlOrigin,
+            chain_id: addHexPrefix(Number(chainId).toString(16)),
             symbol: ticker,
-            block_explorer_url: blockExplorerUrl,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
-          },
-          sensitiveProperties: {
-            rpc_url: rpcUrlOrigin,
           },
         });
         dispatch(setNewNetworkAdded(networkName));
-        history.push(DEFAULT_ROUTE);
+
+        submitCallback?.();
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -566,7 +552,7 @@ const NetworksForm = ({
   const onCancel = () => {
     if (addNewNetwork) {
       dispatch(setSelectedSettingsRpcUrl(''));
-      history.push(NETWORKS_ROUTE);
+      cancelCallback?.();
     } else {
       resetForm();
     }
@@ -720,6 +706,8 @@ NetworksForm.propTypes = {
   isCurrentRpcTarget: PropTypes.bool,
   networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
+  cancelCallback: PropTypes.func,
+  submitCallback: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {

@@ -1,5 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -18,7 +18,7 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
@@ -35,7 +35,7 @@ describe('Selectors', () => {
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 

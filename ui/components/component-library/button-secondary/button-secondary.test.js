@@ -14,6 +14,7 @@ describe('ButtonSecondary', () => {
     expect(getByText('Button Secondary')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
     expect(getByTestId('button-secondary')).toHaveClass('mm-button');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {
@@ -95,7 +96,7 @@ describe('ButtonSecondary', () => {
       <ButtonSecondary data-testid="icon" icon="add-square-filled" />,
     );
 
-    const icons = container.getElementsByClassName('icon').length;
+    const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
 });

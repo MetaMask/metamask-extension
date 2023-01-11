@@ -36,6 +36,14 @@ export default class MessageManager extends EventEmitter {
       unapprovedMsgs: {},
       unapprovedMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedMsgs: {},
+        unapprovedMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = metricsEvent;
   }
