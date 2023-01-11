@@ -72,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix usage of wrong `ethereum` global for `ethereum` endowment ([#16932](https://github.com/MetaMask/metamask-extension/pull/16932))
 
 ## [10.23.3]
-### Changed
+### Removed
 - Remove onramp provider Wyre ([#17102](https://github.com/MetaMask/metamask-extension/pull/17102))
 
 ## [10.23.2]
