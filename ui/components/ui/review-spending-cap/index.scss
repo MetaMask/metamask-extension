@@ -20,14 +20,13 @@
   &__heading-detail {
     flex-grow: 1;
     align-self: center;
-
-    &__button {
-      background: none;
-      color: var(--color-primary-default);
-    }
   }
 
   i {
     font-size: $font-size-h7;
+  }
+
+  &__value {
+    word-break: break-word;
   }
 }
