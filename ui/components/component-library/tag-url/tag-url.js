@@ -41,7 +41,7 @@ export const TagUrl = ({
       display={DISPLAY.FLEX}
       {...props}
     >
-      <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
+      <AvatarFavicon src={src} {...avatarFaviconProps} />
       {showLockIcon && (
         <Icon
           className="mm-tag-url__lock-icon"
