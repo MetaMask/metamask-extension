@@ -80,7 +80,7 @@ module.exports = function createStaticAssetTasks({
   return { dev, prod };
 
   async function setupLiveCopy(target, browser) {
-    const pattern = target.pattern || '/**/*';
+    const pattern = 'pattern' in target ? target.pattern : '/**/*';
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
       performCopy(target, browser);
@@ -89,7 +89,7 @@ module.exports = function createStaticAssetTasks({
   }
 
   async function performCopy(target, browser) {
-    if (target.pattern) {
+    if ('pattern' in target) {
       await copyGlob(
         target.src,
         `${target.src}${target.pattern}`,
@@ -196,10 +196,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
+      pattern: '',
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `runtime-lavamoat.js`,
+      pattern: '',
     },
   ];
 
