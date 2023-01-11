@@ -4,6 +4,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isBeta } from '../../../ui/helpers/utils/build-types';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -33,9 +34,9 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       collectiblesDetectionNoticeDismissed: false,
-      enableEIP1559V2NoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showPortfolioTooltip: true,
+      showBetaHeader: isBeta(),
       trezorModel: null,
       ...initState,
       qrHardware: {},
@@ -285,6 +286,15 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the beta notification heading on the home page
+   *
+   * @param showBetaHeader
+   */
+  setShowBetaHeader(showBetaHeader) {
+    this.store.updateState({ showBetaHeader });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -303,17 +313,6 @@ export default class AppStateController extends EventEmitter {
   ) {
     this.store.updateState({
       collectiblesDetectionNoticeDismissed,
-    });
-  }
-
-  /**
-   * A setter for the `enableEIP1559V2NoticeDismissed` property
-   *
-   * @param enableEIP1559V2NoticeDismissed
-   */
-  setEnableEIP1559V2NoticeDismissed(enableEIP1559V2NoticeDismissed) {
-    this.store.updateState({
-      enableEIP1559V2NoticeDismissed,
     });
   }
 

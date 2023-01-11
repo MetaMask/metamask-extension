@@ -71,6 +71,7 @@ export default {
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
+    provider: { name: 'Goerli ETH' },
   },
 };
 

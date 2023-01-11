@@ -1,6 +1,8 @@
 import KeyringController from 'eth-keyring-controller';
 import log from 'loglevel';
 
+import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+
 const seedPhraseVerifier = {
   /**
    * Verifies if the seed words can restore the accounts.
@@ -20,7 +22,9 @@ const seedPhraseVerifier = {
     }
 
     const keyringController = new KeyringController({});
-    const Keyring = keyringController.getKeyringClassForType('HD Key Tree');
+    const Keyring = keyringController.getKeyringClassForType(
+      KEYRING_TYPES.HD_KEY_TREE,
+    );
     const opts = {
       mnemonic: seedPhrase,
       numberOfAccounts: createdAccounts.length,

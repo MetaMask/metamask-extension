@@ -42,7 +42,7 @@ Tag.propTypes = {
   /**
    * The label props of the component. Most Text component props can be used
    */
-  labelProps: Text.propTypes,
+  labelProps: PropTypes.shape(Text.PropTypes),
   /**
    * Additional classNames to be added to the Tag component
    */

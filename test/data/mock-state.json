@@ -1,4 +1,7 @@
 {
+  "ENS": {
+    "resolution": ""
+  },
   "appState": {
     "networkDropdownOpen": false,
     "gasIsLoading": false,
@@ -19,9 +22,12 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "ipfsGateway": "",
+    "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
+    "showBetaHeader": false,
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,

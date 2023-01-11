@@ -47,7 +47,7 @@ export default function MultilayerFeeMessage({
   useEffect(() => {
     const getEstimatedL1Fee = async () => {
       try {
-        const result = await fetchEstimatedL1Fee(global.eth, transaction);
+        const result = await fetchEstimatedL1Fee(transaction);
         setLayer1Total(result);
       } catch (e) {
         captureException(e);

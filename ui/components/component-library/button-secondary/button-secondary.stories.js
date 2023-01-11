@@ -1,5 +1,9 @@
 import React from 'react';
-import { ALIGN_ITEMS, DISPLAY } from '../../../helpers/constants/design-system';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  SIZES,
+} from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
 import { ButtonSecondary } from './button-secondary';
@@ -110,13 +114,13 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.SM}>
+    <ButtonSecondary {...args} size={SIZES.SM}>
       Small Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.MD}>
+    <ButtonSecondary {...args} size={SIZES.MD}>
       Medium (Default) Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.LG}>
+    <ButtonSecondary {...args} size={SIZES.LG}>
       Large Button
     </ButtonSecondary>
   </Box>

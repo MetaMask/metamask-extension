@@ -1,0 +1,16 @@
+.beta-header {
+  &__message {
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  &__button {
+    background: transparent;
+    padding: 0 6px;
+    margin: 0;
+
+    i {
+      color: var(--color-warning-inverse);
+    }
+  }
+}

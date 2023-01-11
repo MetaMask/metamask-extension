@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avancerat"
   },
-  "advancedOptions": {
-    "message": "Avancerade alternativ"
-  },
   "amount": {
     "message": "Belopp"
   },
@@ -545,9 +542,6 @@
   "newAccount": {
     "message": "Nytt konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adress upptäckt! Klicka här för att lägga till i din adressbok."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -808,9 +802,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signNotice": {
-    "message": "Att signera det här meddelandet kan få farliga följder. Signera endast meddelanden från sidor du vågar anförtro hela ditt konto åt. Den här farliga metoden kommer att avlägsnas i kommande versioner."
   },
   "signatureRequest": {
     "message": "Signaturbegäran"

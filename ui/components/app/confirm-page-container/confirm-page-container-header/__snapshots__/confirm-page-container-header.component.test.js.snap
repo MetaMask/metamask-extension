@@ -26,6 +26,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         </svg>
         <span
           class="confirm-page-container-header__back-button"
+          data-testid="confirm-page-back-edit-button"
         >
           Edit
         </span>

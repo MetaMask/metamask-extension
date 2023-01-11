@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Speciális"
   },
-  "advancedOptions": {
-    "message": "Haladó beállítások"
-  },
   "amount": {
     "message": "Összeg"
   },
@@ -554,9 +551,6 @@
   "newAccount": {
     "message": "Új fiók"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Új címet észleltünk! Kattints ide, ha szeretnéd feljegyezni címtáradba."
-  },
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
@@ -817,9 +811,6 @@
   },
   "sign": {
     "message": "Aláír"
-  },
-  "signNotice": {
-    "message": "Az üzenet aláírása veszélyes következményekkel járhat. Csak olyan webhely üzenetét írja alá, amelyben teljes mértékben és a teljes fiókjával megbízik. Ezt a veszélyes módszert egy későbbi verzióból eltávolítjuk."
   },
   "signatureRequest": {
     "message": "Aláírási kérelem"

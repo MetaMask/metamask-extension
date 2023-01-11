@@ -128,64 +128,19 @@ $attributesToApplyExtraProperties: margin;
       }
     }
   }
-
-  &--rounded-none {
-    border-radius: 0;
+  // border-radius
+  @each $radius, $value in design-system.$border-radius {
+    &--rounded-#{$radius} {
+      border-radius: $value;
+    }
   }
-
-  &--rounded-xs {
-    border-radius: 2px;
-  }
-
-  &--rounded-sm {
-    border-radius: 4px;
-  }
-
-  &--rounded-md {
-    border-radius: 6px;
-  }
-
-  &--rounded-lg {
-    border-radius: 8px;
-  }
-
-  &--rounded-xl {
-    border-radius: 12px;
-  }
-
-  &--rounded-pill {
-    border-radius: 9999px;
-  }
-
-  &--rounded-full {
-    border-radius: 50%;
-  }
-
   // breakpoint classes
   @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:rounded-none {
-        border-radius: 0;
-      }
-
-      &--#{$breakpoint}\:rounded-xs {
-        border-radius: 0.125rem;
-      }
-
-      &--#{$breakpoint}\:rounded-sm {
-        border-radius: 0.25rem;
-      }
-
-      &--#{$breakpoint}\:rounded-md {
-        border-radius: 0.375rem;
-      }
-
-      &--#{$breakpoint}\:rounded-lg {
-        border-radius: 0.5rem;
-      }
-
-      &--#{$breakpoint}\:rounded-xl {
-        border-radius: 0.75rem;
+    @each $radius, $value in design-system.$border-radius {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:rounded-#{$radius} {
+          border-radius: $value;
+        }
       }
     }
   }
@@ -275,25 +230,10 @@ $attributesToApplyExtraProperties: margin;
   &--width-full {
     width: 100%;
   }
-  // breakpoint classes
-  @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:width-full {
-        width: 100%;
-      }
-    }
-  }
+
 
   &--height-full {
     height: 100%;
-  }
-  // breakpoint classes
-  @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:height-full {
-        height: 100%;
-      }
-    }
   }
 
   @each $fraction, $value in design-system.$fractions {
@@ -315,6 +255,24 @@ $attributesToApplyExtraProperties: margin;
         &--#{$breakpoint}\:height-#{$fraction} {
           height: $value;
         }
+      }
+    }
+  }
+
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:width-full {
+        width: 100%;
+      }
+    }
+  }
+
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-full {
+        height: 100%;
       }
     }
   }

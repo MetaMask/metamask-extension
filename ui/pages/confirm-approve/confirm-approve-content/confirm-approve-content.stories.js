@@ -97,7 +97,7 @@ export default {
     isMultiLayerFeeNetwork: {
       control: 'boolean',
     },
-    supportsEIP1559V2: {
+    supportsEIP1559: {
       control: 'boolean',
     },
     assetName: {

@@ -1,5 +1,7 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { TextFieldBase } from '../text-field-base';
+
 import { TextField } from './text-field';
 
 # TextField
@@ -12,15 +14,20 @@ The `TextField` component lets users enter and edit text as well as adding a sho
 
 ## Props
 
-The `TextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) and [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props) component props
+The `TextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={TextField} />
 
+`TextField` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+component props
+
+<ArgsTable of={TextFieldBase} />
+
 ### Show Clear Button
 
-Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input.
+Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. Otherwise the clear button will not do anything.
 
-The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all props from that component.
+The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all `ButtonIcon` props.
 
 **NOTE: The `showClearButton` only works with a controlled input.**
 
@@ -29,7 +36,7 @@ The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-
 </Canvas>
 
 ```jsx
-import { TextField } from '../../ui/component-library/text-field';
+import { TextField } from '../../component-library';
 
 const [value, setValue] = useState('show clear');
 
@@ -66,7 +73,7 @@ import {
   BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
-import { TextField } from '../../ui/component-library/text-field';
+import { TextField } from '../../component-library';
 
 const [value, setValue] = useState('show clear');
 

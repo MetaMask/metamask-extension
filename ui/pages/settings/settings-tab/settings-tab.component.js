@@ -100,6 +100,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Dropdown
+              data-testid="currency-select"
               id="select-currency"
               options={currencyOptions}
               selectedOption={currentCurrency}
@@ -132,6 +133,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Dropdown
+              data-testid="locale-select"
               id="select-locale"
               options={localeOptions}
               selectedOption={currentLocale}
@@ -150,6 +152,7 @@ export default class SettingsTab extends PureComponent {
     return (
       <div
         ref={this.settingsRefs[5]}
+        data-testid="hide-zero-balance-tokens"
         className="settings-page__content-row"
         id="toggle-zero-balance"
       >
@@ -197,7 +200,7 @@ export default class SettingsTab extends PureComponent {
           </span>
           <div className="settings-page__content-item__identicon">
             <button
-              data-test-id="jazz_icon"
+              data-testid="jazz_icon"
               onClick={() => setUseBlockie(false)}
               className="settings-page__content-item__identicon__item"
             >
@@ -230,7 +233,7 @@ export default class SettingsTab extends PureComponent {
               </Typography>
             </button>
             <button
-              data-test-id="blockie_icon"
+              data-testid="blockie_icon"
               onClick={() => setUseBlockie(true)}
               className="settings-page__content-item__identicon__item"
             >
@@ -274,7 +277,6 @@ export default class SettingsTab extends PureComponent {
       setUseNativeCurrencyAsPrimaryCurrencyPreference,
       useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
-
     return (
       <div ref={this.settingsRefs[1]} className="settings-page__content-row">
         <div className="settings-page__content-item">
@@ -289,6 +291,7 @@ export default class SettingsTab extends PureComponent {
               <div className="settings-tab__radio-button">
                 <input
                   type="radio"
+                  data-testid="toggle-native-currency"
                   id="native-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(true)
@@ -305,6 +308,7 @@ export default class SettingsTab extends PureComponent {
               <div className="settings-tab__radio-button">
                 <input
                   type="radio"
+                  data-testid="toggle-fiat-currency"
                   id="fiat-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(false)

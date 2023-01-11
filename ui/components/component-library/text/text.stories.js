@@ -12,10 +12,12 @@ import {
   OVERFLOW_WRAP,
   TEXT_TRANSFORM,
   FRACTIONS,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 import { ValidTags, Text } from './text';
+import { TEXT_DIRECTIONS } from './text.constants';
 
 import README from './README.mdx';
 
@@ -65,6 +67,10 @@ export default {
     as: {
       control: { type: 'select' },
       options: ValidTags,
+    },
+    textDirection: {
+      control: { type: 'select' },
+      options: Object.values(TEXT_DIRECTIONS),
     },
     className: {
       control: { type: 'text' },
@@ -272,4 +278,24 @@ export const As = (args) => (
       );
     })}
   </>
+);
+
+export const TextDirection = (args) => (
+  <Box
+    style={{ maxWidth: 300 }}
+    display={DISPLAY.FLEX}
+    flexDirection={FLEX_DIRECTION.COLUMN}
+    gap={4}
+  >
+    <Text {...args} textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+      This is left to right (ltr) for English and most languages
+    </Text>
+    <Text {...args} textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+      This is right to left (rtl) for use with other laguanges such as Arabic.
+      This Enlgish example is incorrect usage.
+    </Text>
+    <Text {...args} textDirection={TEXT_DIRECTIONS.AUTO}>
+      Let the user agent decide with the auto option
+    </Text>
+  </Box>
 );

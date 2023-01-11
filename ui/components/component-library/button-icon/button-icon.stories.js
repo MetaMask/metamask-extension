@@ -58,9 +58,9 @@ export default {
       control: 'boolean',
     },
     href: {
-      control: 'string',
+      control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -94,15 +94,18 @@ export default {
 export const DefaultStory = (args) => <ButtonIcon {...args} />;
 
 DefaultStory.args = {
-  icon: ICON_NAMES.CLOSE_OUTLINE,
+  iconName: ICON_NAMES.CLOSE_OUTLINE,
   ariaLabel: 'Close',
 };
 
 DefaultStory.storyName = 'Default';
 
-export const Icon = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />
-);
+export const IconName = (args) => <ButtonIcon {...args} />;
+
+IconName.args = {
+  iconName: ICON_NAMES.CLOSE_OUTLINE,
+  ariaLabel: 'Close',
+};
 
 export const Size = (args) => (
   <Box
@@ -114,14 +117,14 @@ export const Size = (args) => (
     <ButtonIcon
       {...args}
       size={SIZES.SM}
-      icon={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE_OUTLINE}
       ariaLabel="Close"
     />
     <ButtonIcon
       {...args}
       size={SIZES.LG}
       color={COLORS.PRIMARY}
-      icon={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE_OUTLINE}
       ariaLabel="Close"
     />
   </Box>
@@ -131,7 +134,7 @@ export const AriaLabel = (args) => (
   <>
     <ButtonIcon
       as="button"
-      icon={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE_OUTLINE}
       ariaLabel="Close"
       {...args}
     />
@@ -140,7 +143,7 @@ export const AriaLabel = (args) => (
       href="https://metamask.io/"
       target="_blank"
       color={COLORS.PRIMARY_DEFAULT}
-      icon={ICON_NAMES.EXPORT}
+      iconName={ICON_NAMES.EXPORT}
       ariaLabel="Visit MetaMask.io"
       {...args}
     />
@@ -149,28 +152,34 @@ export const AriaLabel = (args) => (
 
 export const As = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
-    <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+    <ButtonIcon
+      {...args}
+      iconName={ICON_NAMES.CLOSE_OUTLINE}
+      ariaLabel="close"
+    />
     <ButtonIcon
       as="a"
       href="#"
       {...args}
       color={COLORS.PRIMARY_DEFAULT}
-      icon={ICON_NAMES.EXPORT}
+      iconName={ICON_NAMES.EXPORT}
+      ariaLabel="demo"
     />
   </Box>
 );
 
 export const Href = (args) => (
-  <ButtonIcon icon={ICON_NAMES.EXPORT} {...args} target="_blank" />
+  <ButtonIcon iconName={ICON_NAMES.EXPORT} {...args} target="_blank" />
 );
 
 Href.args = {
+  ariaLabel: 'Visit Metamask.io',
   href: 'https://metamask.io/',
   color: COLORS.PRIMARY_DEFAULT,
 };
 
 export const Color = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
 );
 
 Color.args = {
@@ -178,7 +187,7 @@ Color.args = {
 };
 
 export const Disabled = (args) => (
-  <ButtonIcon {...args} icon={ICON_NAMES.CLOSE_OUTLINE} />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
 );
 
 Disabled.args = {

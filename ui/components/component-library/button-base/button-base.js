@@ -35,6 +35,7 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
+      href={href}
       paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
       className={classnames(
@@ -133,10 +134,6 @@ ButtonBase.propTypes = {
    * Possible values could be 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
    */
   size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
-  /**
-   * Addition style properties to apply to the button.
-   */
-  style: PropTypes.object,
   /**
    * ButtonBase accepts all the props from Box
    */
