@@ -13,7 +13,7 @@ import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -274,15 +274,15 @@ export default class TransactionListItemDetails extends PureComponent {
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE ||
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+                  type === TransactionType.tokenMethodApprove ||
+                  type === TransactionType.tokenMethodSetApprovalForAll
                 }
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
               {transactionGroup.initialTransaction.type !==
-                TRANSACTION_TYPES.INCOMING && (
+                TransactionType.incoming && (
                 <Disclosure title={t('activityLog')} size="small">
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}

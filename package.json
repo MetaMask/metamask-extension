@@ -27,7 +27,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "node ./test/run-unit-tests.js --mocha --jestGlobal --jestDev",
-    "test:unit:jest": "./test/test-unit-jest.sh",
+    "test:unit:jest": "node ./test/run-unit-tests.js --jestGlobal --jestDev",
     "test:unit:global": "mocha test/unit-global/*.test.js",
     "test:unit:mocha": "node ./test/run-unit-tests.js --mocha",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",

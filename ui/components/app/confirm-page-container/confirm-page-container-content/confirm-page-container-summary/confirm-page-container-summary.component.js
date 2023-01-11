@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { TRANSACTION_TYPES } from '../../../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../../../shared/constants/transaction';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAddressDetails from '../../../../../hooks/useAddressDetails';
@@ -37,10 +37,10 @@ const ConfirmPageContainerSummary = (props) => {
   const t = useI18nContext();
 
   const contractInitiatedTransactionType = [
-    TRANSACTION_TYPES.CONTRACT_INTERACTION,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+    TransactionType.contractInteraction,
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodSafeTransferFrom,
   ];
   const isContractTypeTransaction =
     contractInitiatedTransactionType.includes(transactionType);
@@ -50,10 +50,10 @@ const ConfirmPageContainerSummary = (props) => {
     // the contract address is passed down as tokenAddress, if it is anyother
     // type of contract interaction it is passed as toAddress
     contractAddress =
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+      transactionType === TransactionType.tokenMethodTransfer ||
+      transactionType === TransactionType.tokenMethodTransferFrom ||
+      transactionType === TransactionType.tokenMethodSafeTransferFrom ||
+      transactionType === TransactionType.tokenMethodSetApprovalForAll
         ? tokenAddress
         : toAddress;
   }

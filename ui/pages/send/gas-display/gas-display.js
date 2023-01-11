@@ -21,11 +21,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -96,11 +92,13 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === ERC721 ||
-    draftTransaction?.asset.details?.standard === ERC1155
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
   ) {
     title = draftTransaction?.asset.details?.name;
-  } else if (draftTransaction?.asset.details?.standard === ERC20) {
+  } else if (
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+  ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
       draftTransaction?.asset.details?.symbol
     }`;

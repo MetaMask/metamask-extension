@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { ERC20 } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
@@ -19,7 +19,7 @@ const props = {
   tokenAmount: '10',
   origin: 'https://metamask.github.io/test-dapp/',
   tokenSymbol: 'TST',
-  assetStandard: ERC20,
+  assetStandard: TokenStandard.ERC20,
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   tokenBalance: '15',
   showCustomizeGasModal: jest.fn(),

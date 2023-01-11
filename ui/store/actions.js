@@ -884,7 +884,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
  *  history of the send flow at time of creation.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
@@ -923,7 +923,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export async function addUnapprovedTransaction(txParams, type) {

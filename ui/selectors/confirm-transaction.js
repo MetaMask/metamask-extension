@@ -14,7 +14,7 @@ import {
   getGasFeeEstimates,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import {
   GAS_ESTIMATE_TYPES,
@@ -273,7 +273,7 @@ export const transactionFeeSelector = function (state, txData) {
   if (networkAndAccountSupportsEIP1559) {
     const { gasPrice = '0' } = gasFeeEstimates;
     const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
-    if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
+    if (txData.txParams?.type === TransactionEnvelopeType.legacy) {
       gasEstimationObject.gasPrice =
         txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
     } else {
