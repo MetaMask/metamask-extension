@@ -1142,7 +1142,6 @@
     "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
-        "assert": true,
         "clearTimeout": true,
         "console.error": true,
         "console.info": true,
