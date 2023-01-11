@@ -91,6 +91,12 @@ describe('NetworkController', () => {
     });
 
     describe('destroy', () => {
+      it('should not throw if called before initialization', async () => {
+        await expect(
+          async () => await networkController.destroy(),
+        ).not.toThrow();
+      });
+
       it('should stop the block tracker for the current selected network', async () => {
         nock('http://localhost:8545')
           .persist()
