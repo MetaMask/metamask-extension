@@ -266,7 +266,6 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       nativeCurrency,
       fromAccount: { address, balance, name },
-      txData,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -283,7 +282,7 @@ export default class SignatureRequestOriginal extends Component {
     return (
       <div className="request-signature__container">
         <div className="request-signature__navigation">
-          <ConfirmPageContainerNavigation txData={txData} />
+          <ConfirmPageContainerNavigation />
         </div>
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader

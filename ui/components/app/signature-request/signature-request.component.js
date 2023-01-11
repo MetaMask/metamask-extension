@@ -214,7 +214,7 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request">
-        <ConfirmPageContainerNavigation txData={txData} />
+        <ConfirmPageContainerNavigation />
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
