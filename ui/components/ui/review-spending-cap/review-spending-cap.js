@@ -4,6 +4,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
+import { ButtonLink } from '../../component-library';
 import {
   ALIGN_ITEMS,
   COLORS,
@@ -93,16 +94,15 @@ export default function ReviewSpendingCap({
           className="review-spending-cap__heading-detail"
           textAlign={TEXT_ALIGN.END}
         >
-          <button
-            className="review-spending-cap__heading-detail__button"
-            type="link"
+          <ButtonLink
+            size={SIZES.AUTO}
             onClick={(e) => {
               e.preventDefault();
               onEdit();
             }}
           >
             {t('edit')}
-          </button>
+          </ButtonLink>
         </Box>
       </Box>
       <Box>
