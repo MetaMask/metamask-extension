@@ -34,3 +34,6 @@ export {
   TEXT_FIELD_BASE_TYPES,
 } from './text-field-base';
 export { TextFieldSearch } from './text-field-search';
+
+// Molecules
+export { BannerBase } from './banner-base';
