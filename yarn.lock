@@ -9536,6 +9536,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"big.js@npm:^6.0.3":
+  version: 6.2.1
+  resolution: "big.js@npm:6.2.1"
+  checksum: 0b234a2fd56c52bed2798ed2020bcab6fef5e9523b99a05406ad071d1aed6ee97ada9fb8de9576092da74c68825c276e19015743b8d1baea269b60a5c666b0cd
+  languageName: node
+  linkType: hard
+
 "bignumber.js@npm:^4.1.0":
   version: 4.1.0
   resolution: "bignumber.js@npm:4.1.0"
@@ -14777,17 +14784,6 @@ __metadata:
     gridplus-sdk: ^2.2.9
     rlp: ^3.0.0
   checksum: a477240eea9927c85cc5d485b9f640a00a172f395b00591843120fb0f4bc7d62221d0dc27f237c7e0c2c741e8198d3f49428dbc2be5b4afcf112e1038192e733
-  languageName: node
-  linkType: hard
-
-"eth-lib@npm:0.2.8":
-  version: 0.2.8
-  resolution: "eth-lib@npm:0.2.8"
-  dependencies:
-    bn.js: ^4.11.6
-    elliptic: ^6.4.0
-    xhr-request-promise: ^0.1.2
-  checksum: be7efb0b08a78e20d12d2892363ecbbc557a367573ac82fc26a549a77a1b13c7747e6eadbb88026634828fcf9278884b555035787b575b1cab5e6958faad0fad
   languageName: node
   linkType: hard
 
@@ -33887,30 +33883,6 @@ __metadata:
   version: 3.0.0
   resolution: "xdg-basedir@npm:3.0.0"
   checksum: 60d613dcb09b1198c70cb442979825531c605ac7861a8a6131304207d2962020dbb23660ac7e1be324fb9e4111a51a6206d875148d3e98df47a7d1869fa1515f
-  languageName: node
-  linkType: hard
-
-"xhr-request-promise@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "xhr-request-promise@npm:0.1.2"
-  dependencies:
-    xhr-request: ^1.0.1
-  checksum: f631d334b9d934f889d9299ae8146d874c327729f6c2a5b728a97ef5dc1f5932b9f70db0d3a60b2c99f8e6192daced943d2a3fcafa791b6db02cc74614cef988
-  languageName: node
-  linkType: hard
-
-"xhr-request@npm:^1.0.1":
-  version: 1.1.0
-  resolution: "xhr-request@npm:1.1.0"
-  dependencies:
-    buffer-to-arraybuffer: ^0.0.5
-    object-assign: ^4.1.1
-    query-string: ^5.0.1
-    simple-get: ^2.7.0
-    timed-out: ^4.0.1
-    url-set-query: ^1.0.0
-    xhr: ^2.0.4
-  checksum: fd8186f33e8696dabcd1ad2983f8125366f4cd799c6bf30aa8d942ac481a7e685a5ee8c38eeee6fca715a7084b432a3a326991375557dc4505c928d3f7b0f0a8
   languageName: node
   linkType: hard
 
