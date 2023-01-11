@@ -51,7 +51,7 @@ const DetectedTokenValues = ({
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
           {useCurrencyRateCheck
-            ? formattedFiatBalance || '$0'
+            ? formattedFiatBalance || '$0' // since formattedFiatBalance will be when teh conversion rate is not obtained, should be replace the `$0` with `N/A`
             : formattedFiatBalance}
         </Typography>
       </Box>
