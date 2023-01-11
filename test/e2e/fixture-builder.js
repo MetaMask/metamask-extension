@@ -136,7 +136,7 @@ function defaultFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
-          '0x5': true,
+          [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
       },
@@ -161,8 +161,8 @@ function defaultFixture() {
         incomingTransactions: {},
         incomingTxLastFetchedBlockByChainId: {
           [CHAIN_IDS.MAINNET]: null,
-          '0x5': null,
-          '0xaa36a7': null,
+          [CHAIN_IDS.GOERLI]: null,
+          [CHAIN_IDS.SEPOLIA]: null,
         },
       },
       KeyringController: {
@@ -302,7 +302,7 @@ function onboardingFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
-          '0x5': true,
+          [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
       },
