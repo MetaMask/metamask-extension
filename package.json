@@ -85,8 +85,7 @@
     "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build.ts",
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard",
     "test-storybook": "test-storybook -c .storybook",
-    "start-storybook-server": "http-server storybook-static --port 6006",
-    "test-storybook:ci": "start-server-and-test start-storybook-server 6006 test-storybook"
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook\""
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
@@ -336,7 +335,6 @@
     "safe-event-emitter": "^1.0.1",
     "ses": "^0.12.4",
     "single-call-balance-checker-abi": "^1.0.0",
-    "start-server-and-test": "^1.15.2",
     "swappable-obj-proxy": "^1.1.0",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
