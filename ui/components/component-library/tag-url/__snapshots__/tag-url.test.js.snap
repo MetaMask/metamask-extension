@@ -7,10 +7,9 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
     data-testid="tag-url"
   >
     <div
-      class="box mm-avatar-base mm-avatar-base--size-md avatar-favicon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
-        aria-label="avatar-favicon"
         class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-icon-default"
         style="mask-image: url('./images/icons/icon-global-filled.svg');"
       />
