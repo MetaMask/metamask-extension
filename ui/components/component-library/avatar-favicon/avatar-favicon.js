@@ -12,11 +12,12 @@ import {
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+import { AVATAR_FAVICON_SIZES } from './avatar-favicon.constants';
 
 export const AvatarFavicon = ({
   size = SIZES.MD,
-  imageSource,
-  imgAlt = 'avatar-favicon',
+  src,
+  name = 'avatar-favicon',
   className,
   fallbackIconProps,
   borderColor = BORDER_COLORS.TRANSPARENT,
@@ -28,17 +29,20 @@ export const AvatarFavicon = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
-      className={classnames('avatar-favicon', className)}
+      className={classnames('mm-avatar-favicon', className)}
       {...{ borderColor, ...props }}
     >
-      {imageSource ? (
-        <img className="avatar-favicon__image" src={imageSource} alt={imgAlt} />
+      {src ? (
+        <img
+          className="mm-avatar-favicon__image"
+          src={src}
+          alt={`${name} logo`}
+        />
       ) : (
         <Icon
           name={ICON_NAMES.GLOBAL_FILLED}
           color={COLORS.ICON_DEFAULT}
           size={size}
-          aria-label={imgAlt}
           {...fallbackIconProps}
         />
       )}
@@ -48,23 +52,23 @@ export const AvatarFavicon = ({
 
 AvatarFavicon.propTypes = {
   /**
-   * The imageSource accepts the string of the image to be rendered
+   * The src accepts the string of the image to be rendered
    */
-  imageSource: PropTypes.string,
+  src: PropTypes.string,
   /**
    * The alt text for the favicon avatar to be rendered
    */
-  imgAlt: PropTypes.string,
+  name: PropTypes.string.isRequired,
   /**
    * Props for the fallback icon. All Icon props can be used
    */
   fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The size of the AvatarFavicon
-   * Possible values could be 'SIZES.XS', 'SIZES.SM', 'SIZES.MD', 'SIZES.LG', 'SIZES.XL'
+   * Possible values could be 'SIZES.XS' 16px, 'SIZES.SM' 24px, 'SIZES.MD' 32px, 'SIZES.LG' 40px, 'SIZES.XL' 48px
    * Defaults to SIZES.MD
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  size: PropTypes.oneOf(Object.values(AVATAR_FAVICON_SIZES)),
   /**
    * The border color of the AvatarFavicon
    * Defaults to COLORS.TRANSPARENT
