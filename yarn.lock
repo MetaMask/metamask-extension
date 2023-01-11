@@ -3070,6 +3070,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/lavapack@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@lavamoat/lavapack@npm:4.0.0"
+  dependencies:
+    JSONStream: ^1.3.5
+    combine-source-map: ^0.8.0
+    convert-source-map: ^1.7.0
+    json-stable-stringify: ^1.0.1
+    lavamoat-core: ^13.0.0
+    readable-stream: ^3.6.0
+    through2: ^4.0.2
+    umd: ^3.0.3
+  checksum: 869718c26912216f158001cf2b9ae02611d47218123f2dec86b7e9ae08c5a288129994ec5f3e219737c4ad604f9d5e75e8c9204631474e4ea04d341613949b91
+  languageName: node
+  linkType: hard
+
 "@lavamoat/snow@npm:^1.3.0":
   version: 1.3.0
   resolution: "@lavamoat/snow@npm:1.3.0"
@@ -21510,6 +21526,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lavamoat-core@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "lavamoat-core@npm:13.0.0"
+  dependencies:
+    fromentries: ^1.2.0
+    json-stable-stringify: ^1.0.1
+    lavamoat-tofu: ^6.0.2
+    merge-deep: ^3.0.2
+  checksum: afeb8014f8c21613e65eaff5676cc3cf893ff351de3930845c6141126f896a063456794806d6c9b9a97be92f444dc23aaa3f28bb4d35b8af20691dfd0296e59c
+  languageName: node
+  linkType: hard
+
 "lavamoat-tofu@npm:^6.0.0, lavamoat-tofu@npm:^6.0.2":
   version: 6.0.2
   resolution: "lavamoat-tofu@npm:6.0.2"
@@ -22838,7 +22866,7 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": ^0.12.1
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
-    "@lavamoat/lavapack": ^3.3.0
+    "@lavamoat/lavapack": ^4.0.0
     "@lavamoat/snow": ^1.3.0
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
