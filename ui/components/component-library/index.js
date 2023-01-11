@@ -4,7 +4,7 @@ export {
   AVATAR_ACCOUNT_TYPES,
   AVATAR_ACCOUNT_DIAMETERS,
 } from './avatar-account';
-export { AvatarFavicon } from './avatar-favicon';
+export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
 export { AvatarToken } from './avatar-token';
