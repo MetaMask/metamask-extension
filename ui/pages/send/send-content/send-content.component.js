@@ -109,7 +109,7 @@ export default class SendContent extends Component {
         <ActionableMessage
           type="danger"
           useIcon
-          iconFillColor="#d73a49"
+          iconFillColor="var(--color-error-default)"
           primaryActionV2={{
             label: t('tooltipApproveButton'),
             onClick: acknowledgeRecipientWarning,

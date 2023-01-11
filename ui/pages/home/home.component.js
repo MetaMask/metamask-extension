@@ -622,6 +622,7 @@ export default class Home extends PureComponent {
                   open={
                     !process.env.IN_TEST &&
                     !shouldShowSeedPhraseReminder &&
+                    !showRecoveryPhraseReminder &&
                     showPortfolioTooltip
                   }
                   interactive

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
@@ -20,6 +21,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  conversionGreaterThan,
+  conversionLTE,
+} from '../../../../shared/modules/conversion.utils';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  TOKEN_ALLOWANCE_VALUE_REGEX,
+} from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -28,6 +38,7 @@ export default function CustomSpendingCap({
   dappProposedValue,
   siteOrigin,
   passTheErrorText,
+  decimals,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -40,8 +51,27 @@ export default function CustomSpendingCap({
   );
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
+
+  const decConversionGreaterThan = (tokenValue, tokenBalance) => {
+    return conversionGreaterThan(
+      { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
+      { value: Number(tokenBalance), fromNumericBase: 'dec' },
+    );
+  };
+
   const getInputTextLogic = (inputNumber) => {
-    if (inputNumber <= currentTokenBalance) {
+    if (
+      conversionLTE(
+        {
+          value: Number(replaceCommaToDot(inputNumber)),
+          fromNumericBase: 'dec',
+        },
+        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      )
+    ) {
       return {
         className: 'custom-spending-cap__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
@@ -51,11 +81,11 @@ export default function CustomSpendingCap({
             fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
-            {inputNumber} {tokenName}
+            {replaceCommaToDot(inputNumber)} {tokenName}
           </Typography>,
         ]),
       };
-    } else if (inputNumber > currentTokenBalance) {
+    } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
       return {
         className: 'custom-spending-cap__higherValue',
         description: t('inputLogicHigherNumber'),
@@ -76,13 +106,25 @@ export default function CustomSpendingCap({
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
 
-    if (valueInput < 0 || isNaN(valueInput)) {
+    if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
     } else {
       setCustomSpendingCapText(inputTextLogicDescription);
       setError('');
+    }
+
+    const maxTokenAmount = calcTokenAmount(
+      MAX_TOKEN_ALLOWANCE_AMOUNT,
+      decimals,
+    );
+    if (Number(valueInput.length) > 1 && Number(valueInput)) {
+      const customSpendLimitNumber = new BigNumber(valueInput);
+      if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+        spendingCapError = t('spendLimitTooLarge');
+        setError(spendingCapError);
+      }
     }
 
     dispatch(setCustomTokenAmount(String(valueInput)));
@@ -98,19 +140,21 @@ export default function CustomSpendingCap({
     passTheErrorText(error);
   }, [error, passTheErrorText]);
 
-  const chooseTooltipContentText =
-    value > currentTokenBalance
-      ? t('warningTooltipText', [
-          <Typography
-            key="tooltip-text"
-            variant={TYPOGRAPHY.H7}
-            fontWeight={FONT_WEIGHT.BOLD}
-            color={COLORS.ERROR_DEFAULT}
-          >
-            <i className="fa fa-exclamation-circle" /> {t('beCareful')}
-          </Typography>,
-        ])
-      : t('inputLogicEmptyState');
+  const chooseTooltipContentText = decConversionGreaterThan(
+    value,
+    currentTokenBalance,
+  )
+    ? t('warningTooltipText', [
+        <Typography
+          key="tooltip-text"
+          variant={TYPOGRAPHY.H7}
+          fontWeight={FONT_WEIGHT.BOLD}
+          color={COLORS.ERROR_DEFAULT}
+        >
+          <i className="fa fa-exclamation-circle" /> {t('beCareful')}
+        </Typography>,
+      ])
+    : t('inputLogicEmptyState');
 
   return (
     <>
@@ -133,25 +177,30 @@ export default function CustomSpendingCap({
         >
           <label
             htmlFor={
-              value > (currentTokenBalance || error)
+              decConversionGreaterThan(value, currentTokenBalance)
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
           >
             <FormField
-              numeric
               dataTestId="custom-spending-cap-input"
               autoFocus
               wrappingLabelProps={{ as: 'div' }}
               id={
-                value > (currentTokenBalance || error)
+                decConversionGreaterThan(value, currentTokenBalance)
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
-                  tooltipContentText={value ? chooseTooltipContentText : ''}
-                  tooltipIcon={value ? value > currentTokenBalance : ''}
+                  tooltipContentText={
+                    replaceCommaToDot(value) ? chooseTooltipContentText : ''
+                  }
+                  tooltipIcon={
+                    replaceCommaToDot(value)
+                      ? decConversionGreaterThan(value, currentTokenBalance)
+                      : ''
+                  }
                 />
               }
               onChange={handleChange}
@@ -174,7 +223,6 @@ export default function CustomSpendingCap({
                 )
               }
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
-              allowDecimals
             />
             <Box
               width={BLOCK_SIZES.MAX}
@@ -195,11 +243,14 @@ export default function CustomSpendingCap({
               </ButtonLink>
             </Box>
             <Typography
+              className="custom-spending-cap__description"
               color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H7}
               boxProps={{ paddingTop: 2, paddingBottom: 2 }}
             >
-              {value ? customSpendingCapText : inputLogicEmptyStateText}
+              {replaceCommaToDot(value)
+                ? customSpendingCapText
+                : inputLogicEmptyStateText}
             </Typography>
           </label>
         </Box>
@@ -216,11 +267,11 @@ CustomSpendingCap.propTypes = {
   /**
    * The current token balance of the token
    */
-  currentTokenBalance: PropTypes.number,
+  currentTokenBalance: PropTypes.string,
   /**
    * The dapp suggested amount
    */
-  dappProposedValue: PropTypes.number,
+  dappProposedValue: PropTypes.string,
   /**
    * The origin of the site generally the URL
    */
@@ -229,4 +280,8 @@ CustomSpendingCap.propTypes = {
    * Parent component's callback function passed in order to get the error text
    */
   passTheErrorText: PropTypes.func,
+  /**
+   * Number of decimals
+   */
+  decimals: PropTypes.string,
 };

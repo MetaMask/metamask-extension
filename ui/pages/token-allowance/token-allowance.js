@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
@@ -50,6 +51,9 @@ import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
+import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 
 export default function TokenAllowance({
   origin,
@@ -94,9 +98,21 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
-  const customPermissionAmount = customTokenAmount.toString();
+  const replaceCommaToDot = (inputValue) => {
+    return inputValue.replace(/,/gu, '.');
+  };
 
-  const customTxParamsData = customTokenAmount
+  let customPermissionAmount = replaceCommaToDot(customTokenAmount).toString();
+
+  const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
+  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
+    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+    if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+      customPermissionAmount = 0;
+    }
+  }
+
+  const customTxParamsData = customPermissionAmount
     ? getCustomTxParamsData(data, {
         customPermissionAmount,
         decimals,
@@ -221,6 +237,9 @@ export default function TokenAllowance({
 
   return (
     <Box className="token-allowance-container page-container">
+      <Box>
+        <ConfirmPageContainerNavigation />
+      </Box>
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -339,19 +358,20 @@ export default function TokenAllowance({
         {isFirstPage ? (
           <CustomSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
-            dappProposedValue={parseFloat(dappProposedTokenAmount)}
+            currentTokenBalance={currentTokenBalance}
+            dappProposedValue={dappProposedTokenAmount}
             siteOrigin={origin}
             passTheErrorText={(value) => setErrorText(value)}
+            decimals={decimals}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
-            currentTokenBalance={parseFloat(currentTokenBalance)}
+            currentTokenBalance={currentTokenBalance}
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
-                ? parseFloat(dappProposedTokenAmount)
-                : parseFloat(customTokenAmount)
+                ? dappProposedTokenAmount
+                : replaceCommaToDot(customTokenAmount)
             }
             onEdit={() => handleBackClick()}
           />

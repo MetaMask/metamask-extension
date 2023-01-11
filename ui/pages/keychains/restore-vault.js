@@ -61,7 +61,7 @@ class RestoreVaultPage extends Component {
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();
-                this.props.history.goBack();
+                this.props.history.push(DEFAULT_ROUTE);
               }}
               href="#"
             >
