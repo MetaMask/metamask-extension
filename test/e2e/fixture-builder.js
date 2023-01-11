@@ -1134,7 +1134,7 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
-              chainId: 0x539,
+              chainId: CHAIN_IDS.LOCALHOST,
               id: 5748272735958801,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
