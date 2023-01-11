@@ -81,7 +81,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        // windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -115,7 +115,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        // windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -143,7 +143,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        // windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -171,7 +171,35 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        // windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.delay(1000);
+
+        // click cancel button
+        await driver.clickElement({
+          text: 'Cancel',
+          tag: 'button',
+        });
+
+        // switch back to test snaps tab
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // check result is equal to 'null'
+        result = await driver.findElement('#dialogResult');
+        await driver.delay(1000);
+        assert.equal(await result.getText(), 'null');
+
+        // click prompt button
+        await driver.clickElement('#sendPromptButton');
+        await driver.delay(1000);
+
+        // switch to dialog popup
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        // windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
