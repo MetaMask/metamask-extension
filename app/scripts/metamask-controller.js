@@ -1012,9 +1012,17 @@ export default class MetamaskController extends EventEmitter {
     });
     this.smartTransactionsController = new SmartTransactionsController(
       {
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) => {
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          });
+        },
         getNetwork: this.networkController.getNetworkState.bind(
           this.networkController,
         ),
