@@ -11,14 +11,17 @@ module.exports = {
  * @returns {Set<string>} All global intrinsic property names.
  */
 function getGlobalProperties() {
+  const comp = new Compartment().globalThis;
+
   // These are Agoric inventions, and we don't care about them.
   const ignoreList = new Set([
     'Compartment',
     'HandledPromise',
     'StaticModuleRecord',
+    ...Object.getOwnPropertySymbols(comp),
   ]);
 
-  const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
+  const namedIntrinsics = Reflect.ownKeys(comp);
 
   return new Set(
     [
@@ -28,11 +31,7 @@ function getGlobalProperties() {
       // TODO: Also include the named platform globals
       // This grabs every enumerable property on globalThis.
       // ...Object.keys(globalThis),
-    ].filter(
-      (propertyName) =>
-        // don't test symbols because they're unique properties of the compartment's globalThis and not of the real globalThis
-        typeof propertyName === 'string' && !ignoreList.has(propertyName),
-    ),
+    ].filter((propertyName) => !ignoreList.has(propertyName)),
   );
 }
 
