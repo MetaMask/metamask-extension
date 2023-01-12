@@ -80,7 +80,7 @@ module.exports = function createStaticAssetTasks({
   return { dev, prod };
 
   async function setupLiveCopy(target, browser) {
-    const pattern = 'pattern' in target ? target.pattern : '/**/*';
+    const pattern = target.pattern !== undefined ? target.pattern : '/**/*';
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
       performCopy(target, browser);
