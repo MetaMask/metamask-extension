@@ -64,7 +64,8 @@ export default function CollectibleDetails({ collectible }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [sourceCopied, handleSourceCopy] = useCopyToClipboard();
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -236,23 +237,28 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.PRIMARY_DEFAULT}
+              color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
-              className="collectible-details__image-link"
+              className="collectible-details__image-source"
             >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={collectibleImageURL}
-                title={collectibleImageURL}
-              >
-                {collectibleImageURL}
-              </a>
+              {collectibleImageURL}
             </Typography>
+            <button
+              className="collectible-details__contract-copy-button"
+              onClick={() => {
+                handleSourceCopy(collectibleImageURL);
+              }}
+            >
+              {sourceCopied ? (
+                t('copiedExclamation')
+              ) : (
+                <Copy size={15} color="var(--color-icon-alternative)" />
+              )}
+            </button>
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
@@ -301,10 +307,10 @@ export default function CollectibleDetails({ collectible }) {
               <button
                 className="collectible-details__contract-copy-button"
                 onClick={() => {
-                  handleCopy(address);
+                  handleAddressCopy(address);
                 }}
               >
-                {copied ? (
+                {addressCopied ? (
                   t('copiedExclamation')
                 ) : (
                   <Copy size={15} color="var(--color-icon-alternative)" />

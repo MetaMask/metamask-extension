@@ -68,6 +68,7 @@ $spacer-break-small: 16px;
     cursor: pointer;
     color: var(--color-text-alternative);
     border: 0;
+    margin-top: 5px;
 
     &:active {
       transform: scale(0.97);
@@ -78,13 +79,14 @@ $spacer-break-small: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 332px;
   }
 
-  &__image-link {
+  &__image-source {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 332px;
+    width: 332px;
   }
 
   &__link-title {

@@ -9,14 +9,17 @@ export default function CollectibleDefaultImage({
   name,
   tokenId,
   handleImageClick,
+  handleImageKeyPress,
 }) {
   const t = useI18nContext();
   return (
     <div
+      tabIndex={0}
       className={classnames('collectible-default', {
         'collectible-default--clickable': handleImageClick,
       })}
       onClick={handleImageClick}
+      onKeyPress={handleImageKeyPress}
     >
       <Typography variant={TYPOGRAPHY.H6} className="collectible-default__text">
         {name ?? t('unknownCollection')} <br /> #{tokenId}
@@ -38,4 +41,8 @@ CollectibleDefaultImage.propTypes = {
    * The click handler for the collectible default image
    */
   handleImageClick: PropTypes.func,
+  /**
+   * The key press handler for the collectible default image
+   */
+  handleImageKeyPress: PropTypes.func,
 };

@@ -164,8 +164,7 @@ export default function CollectiblesItems({
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
-                marginTop={0}
-                marginBottom={2}
+                margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
@@ -190,6 +189,11 @@ export default function CollectiblesItems({
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
+              const handleImageKeyPress = (event) => {
+                if (event.key === 'Enter') {
+                  handleImageClick();
+                }
+              };
 
               return (
                 <Box
@@ -210,9 +214,11 @@ export default function CollectiblesItems({
                         }}
                       >
                         <img
+                          tabIndex={0}
                           onClick={handleImageClick}
                           className="collectibles-items__item-image"
                           src={collectibleImage}
+                          onKeyPress={handleImageKeyPress}
                         />
                       </div>
                     ) : (
@@ -220,6 +226,7 @@ export default function CollectiblesItems({
                         name={name}
                         tokenId={tokenId}
                         handleImageClick={handleImageClick}
+                        handleImageKeyPress={handleImageKeyPress}
                       />
                     )}
                   </Card>
