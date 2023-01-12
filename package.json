@@ -85,7 +85,7 @@
     "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build.ts",
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard",
     "test-storybook": "test-storybook -c .storybook",
-    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook\""
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\""
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
