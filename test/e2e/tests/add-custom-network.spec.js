@@ -147,4 +147,59 @@ describe('Custom network', function () {
       },
     );
   });
+  it('add a custom network and then delete that same network', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.clickElement('.network__add-network-button');
+
+        let networks = await driver.findElements({ tag: 'button', text: 'Add' });
+        let addNetwork = networks[0];
+        addNetwork.click();
+
+        await driver.clickElement({ tag: 'button', text: 'Approve' });
+
+        await driver.clickElement({
+            tag: 'h6',
+            text: 'Dismiss',
+  
+          });
+
+          // goes to the settings screen
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+        await driver.clickElement({ text: 'Networks', tag: 'div' });
+
+        const arbitrumNetwork = await driver.clickElement({
+          text: `Arbitrum One`,
+          tag: 'div',
+        });
+        
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Delete',
+
+        });
+
+
+        assert.equal(arbitrumNetwork, undefined);
+        
+        //await driver.clickElement('.button btn--rounded btn-danger-primary modal-container__footer-button');
+        console.log('which network', arbitrumNetwork);
+
+        
+      },
+    );
+  });
 });
