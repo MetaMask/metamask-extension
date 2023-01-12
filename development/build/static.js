@@ -89,7 +89,7 @@ module.exports = function createStaticAssetTasks({
   }
 
   async function performCopy(target, browser) {
-    if ('pattern' in target) {
+    if (target.pattern !== undefined) {
       await copyGlob(
         target.src,
         `${target.src}${target.pattern}`,
