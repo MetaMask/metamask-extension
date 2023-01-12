@@ -42,7 +42,7 @@ export default class PreferencesController {
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       useNftDetection: false,
-      useCurrencyRateCheck: false,
+      useCurrencyRateCheck: true,
       openSeaEnabled: false,
       advancedGasFee: null,
 

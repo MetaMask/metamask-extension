@@ -404,18 +404,18 @@ describe('preferences controller', function () {
   describe('setUseCurrencyRateCheck', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useCurrencyRateCheck, false);
+      assert.equal(state.useCurrencyRateCheck, true);
     });
 
     it('should set the useCurrencyRateCheck property in state', function () {
       assert.equal(
         preferencesController.store.getState().useCurrencyRateCheck,
-        false,
+        true,
       );
-      preferencesController.setUseCurrencyRateCheck(true);
+      preferencesController.setUseCurrencyRateCheck(false);
       assert.equal(
         preferencesController.store.getState().useCurrencyRateCheck,
-        true,
+        false,
       );
     });
   });
