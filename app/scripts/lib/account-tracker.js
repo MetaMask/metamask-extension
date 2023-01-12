@@ -364,12 +364,13 @@ export default class AccountTracker {
       newAccounts = {};
       Object.keys(accounts).forEach((accountAddress) => {
         if (address !== accountAddress) {
-          newAccounts[address] = { address, balance: null };
+          newAccounts[accountAddress] = { address: accountAddress, balance: null };
         }
       });
     }
 
     newAccounts[address] = result;
+
     this.store.updateState({ accounts: newAccounts });
   }
 
