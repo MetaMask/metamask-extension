@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "서명 요청"
   },
-  "signatureRequest1": {
-    "message": "메시지"
-  },
   "signatureRequestGuidance": {
     "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지에 서명하세요."
   },
