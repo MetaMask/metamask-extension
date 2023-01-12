@@ -29,8 +29,7 @@ function getGlobalProperties() {
       // This grabs every enumerable property on globalThis.
       // ...Object.keys(globalThis),
     ].filter(
-      (propertyName) =>
-        typeof propertyName === 'string' && !ignoreList.has(propertyName),
+      (propertyName) => !ignoreList.has(propertyName),
     ),
   );
 }
