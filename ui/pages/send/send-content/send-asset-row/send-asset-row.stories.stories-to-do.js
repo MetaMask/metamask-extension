@@ -9,6 +9,7 @@ import SendAssetRow from './send-asset-row.component';
 // Using Test Data For Redux
 const store = configureStore(testData);
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Pages/Send/SendContent/SendAssetRow',
 

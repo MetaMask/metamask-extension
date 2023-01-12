@@ -7,6 +7,7 @@ import DetectedTokenSelectionPopover from './detected-token-selection-popover';
 
 const store = configureStore(testData);
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
