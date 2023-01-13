@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "Solicitud de firma"
   },
-  "signatureRequest1": {
-    "message": "Mensaje"
-  },
   "signatureRequestGuidance": {
     "message": "Solo firme este mensaje si comprende completamente el contenido y confía en el sitio solicitante."
   },
