@@ -14677,17 +14677,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "eth-json-rpc-filters@npm:4.2.1"
+"eth-json-rpc-filters@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "eth-json-rpc-filters@npm:5.0.0"
   dependencies:
-    await-semaphore: ^0.1.3
+    "@metamask/safe-event-emitter": ^2.0.0
+    async-mutex: ^0.2.6
     eth-json-rpc-middleware: ^6.0.0
     eth-query: ^2.1.2
-    json-rpc-engine: ^5.3.0
-    lodash.flatmap: ^4.5.0
-    safe-event-emitter: ^1.0.1
-  checksum: 3eef7867c3f1ce4f8a27767586f736ce8031fae49da6ba0454e3a5c9231174aadc1380716d901ccede1f0c2b278a7c7cb0b2bf93869783f0fc417389051a6b2e
+    json-rpc-engine: ^6.1.0
+    pify: ^5.0.0
+  checksum: 5ae22c40aaa477e5784e1dd274612e4abd8d649f5c6030704c54899435d56c31fe6d911f60abe2867878141a6f20cdf0024b1c2a0ddc0173b8b40b53e92060e2
   languageName: node
   linkType: hard
 
@@ -21955,13 +21955,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.flatmap@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.flatmap@npm:4.5.0"
-  checksum: c01a47d32e99f8fce75409f0a4a9bd12fbb2d3a46519a0dde14deedb1e527b5ddccc2bf997705c67bdecb915f47749e8a9ffefa7a91c41f0c448e06348ec81c7
-  languageName: node
-  linkType: hard
-
 "lodash.flattendeep@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.flattendeep@npm:4.4.0"
@@ -22929,7 +22922,7 @@ __metadata:
     eslint-plugin-storybook: ^0.6.4
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
-    eth-json-rpc-filters: ^4.2.1
+    eth-json-rpc-filters: ^5.0.0
     eth-json-rpc-middleware: ^9.0.1
     eth-keyring-controller: ^8.1.0
     eth-lattice-keyring: ^0.12.3
