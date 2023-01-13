@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
@@ -16,10 +17,16 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
+import { getFirstTimeFlowType } from '../../../selectors';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
@@ -93,7 +100,19 @@ export default function CreationSuccessful() {
           type="primary"
           large
           rounded
-          onClick={() => history.push(ONBOARDING_PIN_EXTENSION_ROUTE)}
+          onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event:
+                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                  ? EVENT_NAMES.ONBOARDING_WALLET_IMPORT_COMPLETE
+                  : EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+              properties: {
+                method: firstTimeFlowType,
+              },
+            });
+            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+          }}
         >
           {t('gotIt')}
         </Button>

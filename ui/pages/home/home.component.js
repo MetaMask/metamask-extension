@@ -36,7 +36,6 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
@@ -415,9 +414,7 @@ export default class Home extends PureComponent {
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}
             onAccept={() => {
-              const backUpSRPRoute = process.env.ONBOARDING_V2
-                ? `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`
-                : INITIALIZE_BACKUP_SEED_PHRASE_ROUTE;
+              const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
               if (isPopup) {
                 global.platform.openExtensionInBrowser(backUpSRPRoute);
               } else {
