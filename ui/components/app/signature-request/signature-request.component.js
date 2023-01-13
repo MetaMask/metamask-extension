@@ -231,6 +231,7 @@ export default class SignatureRequest extends PureComponent {
                 type="link"
                 onClick={() => this.setState({ showContractDetails: true })}
                 className="signature-request-content__verify-contract-details"
+                data-testid="verify-contract-details"
               >
                 <Typography
                   variant={TYPOGRAPHY.H7}
