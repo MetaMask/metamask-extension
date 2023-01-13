@@ -1,6 +1,4 @@
 .mm-button-link {
-  color: var(--color-primary-default);
-
   &:hover {
     color: var(--color-primary-default);
     opacity: 0.5;
@@ -11,7 +9,7 @@
     opacity: 0.5;
   }
 
-  &.mm-button--disabled {
+  &--disabled {
     &:hover {
       color: var(--color-primary-default);
       opacity: 0.3;
@@ -23,8 +21,6 @@
   }
 
   &--type-danger {
-    color: var(--color-error-default);
-
     &:hover {
       color: var(--color-error-default);
       opacity: 0.5;
@@ -34,9 +30,9 @@
       color: var(--color-error-default);
       opacity: 0.5;
     }
+  }
 
-    &.mm-button--disabled:hover {
-      color: var(--color-error-default);
-    }
+  &--type-danger#{&}--disabled:hover {
+    opacity: 0.3;
   }
 }

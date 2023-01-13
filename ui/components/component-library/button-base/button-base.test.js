@@ -11,7 +11,7 @@ describe('ButtonBase', () => {
     );
     expect(getByText('Button base')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
-    expect(getByTestId('button-base')).toHaveClass('mm-button');
+    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
     expect(container).toMatchSnapshot();
   });
 
@@ -19,7 +19,7 @@ describe('ButtonBase', () => {
     const { getByTestId, container } = render(
       <ButtonBase as="a" data-testid="button-base" />,
     );
-    expect(getByTestId('button-base')).toHaveClass('mm-button');
+    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });
@@ -30,7 +30,7 @@ describe('ButtonBase', () => {
         Button Base
       </ButtonBase>,
     );
-    expect(getByTestId('button-base')).toHaveClass('mm-button');
+    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
     expect(getByTestId('button-base')).toHaveAttribute(
       'href',
       'https://www.test.com/',
@@ -41,7 +41,7 @@ describe('ButtonBase', () => {
 
   it('should render button as block', () => {
     const { getByTestId } = render(<ButtonBase block data-testid="block" />);
-    expect(getByTestId('block')).toHaveClass(`mm-button--block`);
+    expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
   });
 
   it('should render with different size classes', () => {
@@ -66,24 +66,24 @@ describe('ButtonBase', () => {
       </>,
     );
     expect(getByTestId(BUTTON_BASE_SIZES.AUTO)).toHaveClass(
-      `mm-button--size-${BUTTON_BASE_SIZES.AUTO}`,
+      `mm-button-base--size-${BUTTON_BASE_SIZES.AUTO}`,
     );
     expect(getByTestId(BUTTON_BASE_SIZES.SM)).toHaveClass(
-      `mm-button--size-${BUTTON_BASE_SIZES.SM}`,
+      `mm-button-base--size-${BUTTON_BASE_SIZES.SM}`,
     );
     expect(getByTestId(BUTTON_BASE_SIZES.MD)).toHaveClass(
-      `mm-button--size-${BUTTON_BASE_SIZES.MD}`,
+      `mm-button-base--size-${BUTTON_BASE_SIZES.MD}`,
     );
     expect(getByTestId(BUTTON_BASE_SIZES.LG)).toHaveClass(
-      `mm-button--size-${BUTTON_BASE_SIZES.LG}`,
+      `mm-button-base--size-${BUTTON_BASE_SIZES.LG}`,
     );
   });
 
   it('should render with added classname', () => {
     const { getByTestId } = render(
-      <ButtonBase data-testid="classname" className="mm-button--test" />,
+      <ButtonBase data-testid="classname" className="mm-button-base--test" />,
     );
-    expect(getByTestId('classname')).toHaveClass('mm-button--test');
+    expect(getByTestId('classname')).toHaveClass('mm-button-base--test');
   });
 
   it('should render with different button states', () => {
@@ -93,14 +93,14 @@ describe('ButtonBase', () => {
         <ButtonBase disabled data-testid="disabled" />
       </>,
     );
-    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
-    expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
+    expect(getByTestId('loading')).toHaveClass(`mm-button-base--loading`);
+    expect(getByTestId('disabled')).toHaveClass(`mm-button-base--disabled`);
   });
   it('should render with icon', () => {
     const { getByTestId } = render(
       <ButtonBase
         data-testid="icon"
-        icon="add-square-filled"
+        iconName="add-square-filled"
         iconProps={{ 'data-testid': 'base-button-icon' }}
       />,
     );
