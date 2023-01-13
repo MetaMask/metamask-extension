@@ -15,6 +15,7 @@ import {
   SIZES,
   FLEX_DIRECTION,
   BORDER_RADIUS,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -25,7 +26,7 @@ export const ButtonBase = ({
   className,
   href,
   size = BUTTON_BASE_SIZES.MD,
-  icon,
+  iconName,
   iconPositionRight,
   loading,
   disabled,
@@ -38,6 +39,8 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
+      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+      color={COLORS.TEXT_DEFAULT}
       href={href}
       paddingLeft={4}
       paddingRight={4}
@@ -60,7 +63,7 @@ export const ButtonBase = ({
     >
       <Text
         as="span"
-        className="mm-button__content"
+        className="mm-button-base__content"
         alignItems={ALIGN_ITEMS.CENTER}
         justifyContent={JUSTIFY_CONTENT.CENTER}
         flexDirection={
@@ -76,7 +79,7 @@ export const ButtonBase = ({
       </Text>
       {loading && (
         <Icon
-          className="mm-button__icon-loading"
+          className="mm-button-base__icon-loading"
           name={ICON_NAMES.LOADING_FILLED}
           size={SIZES.MD}
           {...iconLoadingProps}
@@ -95,6 +98,10 @@ ButtonBase.propTypes = {
    * Boolean prop to quickly activate box prop display block
    */
   block: PropTypes.bool,
+  /**
+   * Additional props to pass to the Text component that wraps the button children
+   */
+  buttonTextProps: PropTypes.shape(Text.PropTypes),
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -115,7 +122,7 @@ ButtonBase.propTypes = {
    * Add icon to left side of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  iconName: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
   /**
    * Boolean that when true will position the icon on right of children
    * Icon default position left

@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "İmza talebi"
   },
-  "signatureRequest1": {
-    "message": "Mesaj"
-  },
   "signatureRequestGuidance": {
     "message": "Bumesajı sadece içeriği tam olarak anlıyorsanız ve talepte bulunan siteye güveniyorsanız imzalayın."
   },

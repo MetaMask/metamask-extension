@@ -1436,9 +1436,6 @@
   "signatureRequest": {
     "message": "請求簽署"
   },
-  "signatureRequest1": {
-    "message": "訊息"
-  },
   "signed": {
     "message": "已簽署"
   },

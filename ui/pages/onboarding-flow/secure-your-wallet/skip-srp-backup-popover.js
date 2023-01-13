@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -17,12 +17,15 @@ import {
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <Popover
@@ -33,7 +36,17 @@ export default function SkipSRPBackup({ handleClose }) {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Button onClick={handleClose} type="secondary" rounded>
+          <Button
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.ONBOARDING,
+                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CANCELED,
+              });
+              handleClose();
+            }}
+            type="secondary"
+            rounded
+          >
             {t('goBack')}
           </Button>
           <Button
@@ -43,6 +56,10 @@ export default function SkipSRPBackup({ handleClose }) {
             rounded
             onClick={async () => {
               await dispatch(setSeedPhraseBackedUp(false));
+              trackEvent({
+                category: EVENT.CATEGORIES.ONBOARDING,
+                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_CONFIRMED,
+              });
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}
           >
