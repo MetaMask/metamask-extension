@@ -65,6 +65,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
+  getUseCurrencyRateCheck,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -207,6 +208,7 @@ export default function ViewQuote() {
     );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -1022,10 +1024,12 @@ export default function ViewQuote() {
                 fee: feeInEth,
                 maxFee: maxFeeInEth,
               }}
-              secondaryFee={{
-                fee: feeInFiat,
-                maxFee: maxFeeInFiat,
-              }}
+              secondaryFee={
+                useCurrencyRateCheck && {
+                  fee: feeInFiat,
+                  maxFee: maxFeeInFiat,
+                }
+              }
               hideTokenApprovalRow={
                 !approveTxParams || (balanceError && !warningHidden)
               }
