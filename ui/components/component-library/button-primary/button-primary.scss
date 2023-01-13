@@ -1,7 +1,4 @@
 .mm-button-primary {
-  color: var(--color-primary-inverse);
-  background-color: var(--color-primary-default);
-
   &:hover {
     color: var(--color-primary-inverse);
     box-shadow: var(--component-button-primary-shadow);
@@ -12,20 +9,8 @@
     background-color: var(--color-primary-alternative);
   }
 
-  &.mm-button--disabled {
-    &:hover {
-      box-shadow: none;
-    }
-
-    &:active {
-      background-color: var(--color-primary-default);
-    }
-  }
-
+  // Danger type
   &--type-danger {
-    color: var(--color-error-inverse);
-    background-color: var(--color-error-default);
-
     &:hover {
       color: var(--color-error-inverse);
       box-shadow: var(--component-button-danger-shadow);
@@ -35,9 +20,20 @@
       color: var(--color-error-inverse);
       background-color: var(--color-error-alternative);
     }
+  }
 
-    &.mm-button--disabled:active {
-      background-color: var(--color-error-default);
+  // Disabled
+  &--disabled {
+    &:hover {
+      box-shadow: none;
     }
+
+    &:active {
+      background-color: var(--color-primary-default);
+    }
+  }
+  // Disabled danger
+  &--type-danger#{&}--disabled:active {
+    background-color: var(--color-error-default);
   }
 }
