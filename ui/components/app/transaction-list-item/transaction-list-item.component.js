@@ -192,7 +192,7 @@ function TransactionListItemInner({
               <SiteOrigin siteOrigin={subtitle} />
             ) : (
               <span className="transaction-list-item__address" title={subtitle}>
-                {subtitle}
+                {subtitle}+
               </span>
             )}
           </h3>
