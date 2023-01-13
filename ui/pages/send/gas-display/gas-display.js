@@ -38,6 +38,7 @@ import {
   getIsBuyableChain,
   transactionFeeSelector,
   getIsMainnet,
+  getIsTestnet,
   getUseCurrencyRateCheck,
 } from '../../../selectors';
 
@@ -54,12 +55,15 @@ export default function GasDisplay({ gasError }) {
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
   const [showDepositPopover, setShowDepositPopover] = useState(false);
+
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
+  const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
+    useSelector(getPreferences);
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
@@ -111,6 +115,9 @@ export default function GasDisplay({ gasError }) {
   );
 
   const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
+
+  const showCurrencyRateCheck =
+    useCurrencyRateCheck && (!isTestnet || showFiatInTestnets);
 
   let detailTotal, maxAmount;
 
@@ -199,7 +206,7 @@ export default function GasDisplay({ gasError }) {
               }
               detailTitleColor={COLORS.TEXT_DEFAULT}
               detailText={
-                useCurrencyRateCheck && (
+                showCurrencyRateCheck && (
                   <Box className="gas-display__currency-container">
                     <LoadingHeartBeat estimateUsed={estimateUsed} />
                     <UserPreferencedCurrencyDisplay
@@ -267,7 +274,7 @@ export default function GasDisplay({ gasError }) {
                 key="total-item"
                 detailTitle={t('total')}
                 detailText={
-                  useCurrencyRateCheck && (
+                  showCurrencyRateCheck && (
                     <Box
                       height={BLOCK_SIZES.MAX}
                       display={DISPLAY.FLEX}
