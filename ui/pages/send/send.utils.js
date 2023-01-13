@@ -182,5 +182,9 @@ function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
 }
 
 function ellipsify(text, first = 6, last = 4) {
+  if (!text) {
+    return '';
+  }
+
   return `${text.slice(0, first)}...${text.slice(-last)}`;
 }

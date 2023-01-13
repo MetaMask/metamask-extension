@@ -33,6 +33,7 @@ describe('Test Snap Installed', function () {
         await driver.delay(1000);
         const confirmButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(confirmButton);
+        await driver.delay(1000);
         await driver.clickElement('#connectDialogSnap');
         await driver.delay(1000);
 
