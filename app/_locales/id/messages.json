@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "Permintaan tanda tangan"
   },
-  "signatureRequest1": {
-    "message": "Pesan"
-  },
   "signatureRequestGuidance": {
     "message": "Tandatangani pesan ini hanya jika Anda benar-benar memahami isinya dan memercayai situs yang memintanya."
   },
