@@ -78,6 +78,7 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
     dispatch(removeAndIgnoreNft(address, tokenId));
@@ -237,15 +238,26 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
               variant={TYPOGRAPHY.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
               className="collectible-details__image-source"
+              color={isDataURI ? COLORS.TEXT_DEFAULT : COLORS.PRIMARY_DEFAULT}
             >
-              {collectibleImageURL}
+              {isDataURI ? (
+                <>{collectibleImageURL}</>
+              ) : (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={collectibleImageURL}
+                  title={collectibleImageURL}
+                >
+                  {collectibleImageURL}
+                </a>
+              )}
             </Typography>
             <button
               className="collectible-details__contract-copy-button"

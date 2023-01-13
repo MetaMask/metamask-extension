@@ -226,7 +226,6 @@ export default function CollectiblesItems({
                         name={name}
                         tokenId={tokenId}
                         handleImageClick={handleImageClick}
-                        handleImageKeyPress={handleImageKeyPress}
                       />
                     )}
                   </Card>
