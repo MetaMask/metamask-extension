@@ -14677,21 +14677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "eth-json-rpc-filters@npm:5.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": ^2.0.0
-    async-mutex: ^0.2.6
-    eth-json-rpc-middleware: ^6.0.0
-    eth-query: ^2.1.2
-    json-rpc-engine: ^6.1.0
-    pify: ^5.0.0
-  checksum: 5ae22c40aaa477e5784e1dd274612e4abd8d649f5c6030704c54899435d56c31fe6d911f60abe2867878141a6f20cdf0024b1c2a0ddc0173b8b40b53e92060e2
-  languageName: node
-  linkType: hard
-
-"eth-json-rpc-filters@npm:^5.1.0":
+"eth-json-rpc-filters@npm:^5.0.0, eth-json-rpc-filters@npm:^5.1.0":
   version: 5.1.0
   resolution: "eth-json-rpc-filters@npm:5.1.0"
   dependencies:
