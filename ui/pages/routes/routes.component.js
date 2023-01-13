@@ -174,9 +174,7 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-        {process.env.ONBOARDING_V2 && (
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-        )}
+        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
@@ -307,7 +305,7 @@ export default class Routes extends Component {
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: process.env.ONBOARDING_V2 ? ONBOARDING_ROUTE : INITIALIZE_ROUTE,
+        path: ONBOARDING_ROUTE,
         exact: false,
       }),
     );
@@ -436,9 +434,7 @@ export default class Routes extends Component {
             }
           />
         )}
-        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
-          <OnboardingAppHeader />
-        )}
+        {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
         <AccountMenu />
         <div className="main-container-wrapper">
