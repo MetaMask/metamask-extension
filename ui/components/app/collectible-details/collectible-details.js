@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -26,7 +27,6 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -259,18 +259,18 @@ export default function CollectibleDetails({ collectible }) {
                 </a>
               )}
             </Typography>
-            <button
+            <ButtonIcon
+              ariaLabel="copy"
               className="collectible-details__contract-copy-button"
               onClick={() => {
                 handleSourceCopy(collectibleImageURL);
               }}
-            >
-              {sourceCopied ? (
-                t('copiedExclamation')
-              ) : (
-                <Copy size={15} color="var(--color-icon-alternative)" />
-              )}
-            </button>
+              iconName={
+                sourceCopied
+                  ? ICON_NAMES.COPY_SUCCESS_FILLED
+                  : ICON_NAMES.COPY_FILLED
+              }
+            />
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
@@ -316,18 +316,18 @@ export default function CollectibleDetails({ collectible }) {
                   {inPopUp ? shortenAddress(address) : address}
                 </a>
               </Typography>
-              <button
+              <ButtonIcon
+                ariaLabel="copy"
                 className="collectible-details__contract-copy-button"
                 onClick={() => {
                   handleAddressCopy(address);
                 }}
-              >
-                {addressCopied ? (
-                  t('copiedExclamation')
-                ) : (
-                  <Copy size={15} color="var(--color-icon-alternative)" />
-                )}
-              </button>
+                iconName={
+                  addressCopied
+                    ? ICON_NAMES.COPY_SUCCESS_FILLED
+                    : ICON_NAMES.COPY_FILLED
+                }
+              />
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
