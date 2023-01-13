@@ -162,8 +162,8 @@ describe('Custom network', function () {
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement('.network__add-network-button');
 
-        let networks = await driver.findElements({ tag: 'button', text: 'Add' });
-        let addNetwork = networks[0];
+        const networks = await driver.findElements({ tag: 'button', text: 'Add' });
+        const addNetwork = networks[0];
         addNetwork.click();
 
         await driver.clickElement({ tag: 'button', text: 'Approve' });
