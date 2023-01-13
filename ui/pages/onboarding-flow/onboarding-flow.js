@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
@@ -27,8 +27,10 @@ import {
   verifySeedPhrase,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { EVENT_NAMES, EVENT } from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IN
@@ -44,6 +46,8 @@ import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 
+const TWITTER_URL = 'https://twitter.com/MetaMask';
+
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
@@ -53,6 +57,8 @@ export default function OnboardingFlow() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
+  const trackEvent = useContext(MetaMetricsContext);
+
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
@@ -182,7 +188,18 @@ export default function OnboardingFlow() {
         <Button
           className="onboarding-flow__twitter-button"
           type="link"
-          href="https://twitter.com/MetaMask"
+          href={TWITTER_URL}
+          onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event: EVENT_NAMES.ONBOARDING_TWITTER_CLICK,
+              properties: {
+                text: t('followUsOnTwitter'),
+                location: EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+                url: TWITTER_URL,
+              },
+            });
+          }}
           target="_blank"
         >
           <span>{t('followUsOnTwitter')}</span>
