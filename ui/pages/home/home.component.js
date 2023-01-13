@@ -729,7 +729,8 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {showWhatsNew &&
+          {process.env.TRANSACTION_SECURITY_PROVIDER &&
+          showWhatsNew &&
           !openSeaTransactionSecurityProviderPopoverHasBeenShown
             ? this.renderOpenSeaProviderPopover()
             : null}
