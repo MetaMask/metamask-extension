@@ -2087,6 +2087,14 @@
       "comment_id": 1380132262,
       "created_at": "2023-01-12T10:39:24Z",
       "repoId": 42009758
+    },
+    {
+      "id": 120601632,
+      "name": "aleksandar-mihajlovic",
+      "pullRequestNo": 17171,
+      "comment_id": 1381707207,
+      "created_at": "2023-01-13T11:21:42Z",
+      "repoId": 42009758
     }
   ]
 }
