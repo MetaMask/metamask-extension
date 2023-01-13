@@ -171,6 +171,10 @@
 
   &__subheader--break {
     margin-inline-start: 4px;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__sub-header {

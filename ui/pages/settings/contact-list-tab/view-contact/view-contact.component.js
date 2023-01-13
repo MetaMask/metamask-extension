@@ -11,10 +11,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
 function quadSplit(address) {
-  return `0x ${address
+  return `0x${address
     .slice(2)
     .match(/.{1,4}/gu)
-    .join(' ')}`;
+    .join('')}`;
 }
 
 function ViewContact({
@@ -38,7 +38,7 @@ function ViewContact({
       <div className="settings-page__content-item">
         <div className="settings-page__header address-book__header">
           <Identicon address={address} diameter={60} />
-          <div className="address-book__header__name">{name}</div>
+          <div className="address-book__header__name">{name || address}</div>
         </div>
         <div className="address-book__view-contact__group">
           <Button
