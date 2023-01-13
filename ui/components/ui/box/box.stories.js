@@ -67,7 +67,7 @@ export default {
     },
     width: {
       options: Object.values(BLOCK_SIZES),
-      control: 'select',
+      control: 'multi-select',
       table: { category: 'display' },
     },
     height: {
@@ -711,4 +711,276 @@ export const As = (args) => {
       <Box as="header">header</Box>
     </>
   );
+};
+
+export const Width = (args) => {
+  const getColumns = () => {
+    const content = [];
+    for (let i = 0; i < 12; i++) {
+      content.push(
+        <Box
+          key={i}
+          backgroundColor={
+            i % 2 === 0 ? COLORS.ERROR_MUTED : COLORS.WARNING_MUTED
+          }
+          width={BLOCK_SIZES.ONE_TWELFTH}
+        ></Box>,
+      );
+    }
+    return content;
+  };
+
+  return (
+    <>
+      <p>
+        <b>Working demo</b>
+      </p>
+
+      <Box
+        borderColor={COLORS.BORDER_MUTED}
+        borderWidth={6}
+        marginBottom={6}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        {...args}
+      >
+        {args.width.map((item, i) => {
+          return `${item} ${args.width.length === i + 1 ? '' : ', '}`;
+        })}
+      </Box>
+
+      <p>
+        <b>Static widths</b>
+      </p>
+      <Box
+        display={DISPLAY.FLEX}
+        borderColor={COLORS.BACKGROUND_ALTERNATIVE}
+        style={{
+          height: '100vh',
+          position: 'relative',
+        }}
+        marginBottom={6}
+      >
+        {getColumns()}
+
+        <Box
+          width={BLOCK_SIZES.FULL}
+          display={DISPLAY.FLEX}
+          flexWrap={FLEX_WRAP.WRAP}
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.FULL}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.FULL
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.HALF}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.HALF
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.HALF}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.HALF
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.ONE_THIRD}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_THIRD
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.ONE_THIRD}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_THIRD
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            marginBottom={6}
+            width={BLOCK_SIZES.ONE_THIRD}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_THIRD
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={BLOCK_SIZES.ONE_FOURTH}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_FOURTH
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={BLOCK_SIZES.ONE_FOURTH}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_FOURTH
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={BLOCK_SIZES.ONE_FOURTH}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_FOURTH
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={BLOCK_SIZES.ONE_FOURTH}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.ONE_FOURTH
+          </Box>
+        </Box>
+      </Box>
+      <p>
+        <b>Responsive widths</b>
+      </p>
+      <Box
+        display={DISPLAY.FLEX}
+        borderColor={COLORS.BACKGROUND_ALTERNATIVE}
+        style={{ height: '100vh', position: 'relative', textAlign: 'center' }}
+      >
+        {getColumns()}
+
+        <Box
+          width={BLOCK_SIZES.FULL}
+          display={DISPLAY.FLEX}
+          flexWrap={FLEX_WRAP.WRAP}
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={[
+              BLOCK_SIZES.FULL,
+              BLOCK_SIZES.HALF,
+              BLOCK_SIZES.ONE_THIRD,
+              BLOCK_SIZES.ONE_FOURTH,
+            ]}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_FOURTH,
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={[
+              BLOCK_SIZES.FULL,
+              BLOCK_SIZES.HALF,
+              BLOCK_SIZES.ONE_THIRD,
+              BLOCK_SIZES.ONE_FOURTH,
+            ]}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_FOURTH,
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={[
+              BLOCK_SIZES.FULL,
+              BLOCK_SIZES.HALF,
+              BLOCK_SIZES.ONE_THIRD,
+              BLOCK_SIZES.ONE_FOURTH,
+            ]}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_FOURTH,
+          </Box>
+          <Box
+            borderColor={COLORS.BORDER_MUTED}
+            borderWidth={6}
+            width={[
+              BLOCK_SIZES.FULL,
+              BLOCK_SIZES.HALF,
+              BLOCK_SIZES.ONE_THIRD,
+              BLOCK_SIZES.ONE_FOURTH,
+            ]}
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+          >
+            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
+            BLOCK_SIZES.ONE_FOURTH,
+          </Box>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+Width.args = {
+  width: [
+    BLOCK_SIZES.HALF,
+    BLOCK_SIZES.ONE_FIFTH,
+    BLOCK_SIZES.THREE_FOURTHS,
+    BLOCK_SIZES.ONE_FOURTH,
+  ],
 };

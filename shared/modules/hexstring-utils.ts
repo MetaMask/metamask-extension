@@ -10,7 +10,7 @@ import {
 
 export const BURN_ADDRESS = zeroAddress();
 
-export function isBurnAddress(address) {
+export function isBurnAddress(address: string) {
   return address === BURN_ADDRESS;
 }
 
@@ -23,17 +23,17 @@ export function isBurnAddress(address) {
  * Finally, if the mixedCaseUseChecksum flag is true and a mixed case string is
  * provided this method will validate it has the proper checksum formatting.
  *
- * @param {string} possibleAddress - Input parameter to check against
- * @param {object} [options] - options bag
- * @param {boolean} [options.allowNonPrefixed] - If true will first ensure '0x'
- *  is prepended to the string
- * @param {boolean} [options.mixedCaseUseChecksum] - If true will treat mixed
- *  case addresses as checksum addresses and validate that proper checksum
- *  format is used
- * @returns {boolean} whether or not the input is a valid hex address
+ * @param possibleAddress - Input parameter to check against
+ * @param [options] - options bag
+ * @param [options.allowNonPrefixed] - If true will first ensure '0x'
+ * is prepended to the string
+ * @param [options.mixedCaseUseChecksum] - If true will treat mixed
+ * case addresses as checksum addresses and validate that proper checksum
+ * format is used
+ * @returns whether or not the input is a valid hex address
  */
 export function isValidHexAddress(
-  possibleAddress,
+  possibleAddress: string,
   { allowNonPrefixed = true, mixedCaseUseChecksum = false } = {},
 ) {
   const addressToCheck = allowNonPrefixed
@@ -56,7 +56,7 @@ export function isValidHexAddress(
   return isValidAddress(addressToCheck);
 }
 
-export function toChecksumHexAddress(address) {
+export function toChecksumHexAddress(address: string) {
   if (!address) {
     // our internal checksumAddress function that this method replaces would
     // return an empty string for nullish input. If any direct usages of
@@ -75,7 +75,7 @@ export function toChecksumHexAddress(address) {
   return toChecksumAddress(hexPrefixed);
 }
 
-export function stripHexPrefix(str) {
+export function stripHexPrefix(str: string) {
   if (typeof str !== 'string') {
     return str;
   }

@@ -38,6 +38,7 @@ describe('Test Snap manageState', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectManageState');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -68,6 +69,9 @@ describe('Test Snap manageState', function () {
           text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // fill and click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);

@@ -190,21 +190,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#getAccounts', function () {
-    it('returns first address when dapp calls web3.eth.getAccounts', async function () {
-      const password = 'a-fake-password';
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-
-      metamaskController.networkController._baseProviderParams.getAccounts(
-        (err, res) => {
-          assert.ifError(err);
-          assert.equal(res.length, 1);
-          assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-        },
-      );
-    });
-  });
-
   describe('#importAccountWithStrategy', function () {
     const importPrivkey =
       '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
