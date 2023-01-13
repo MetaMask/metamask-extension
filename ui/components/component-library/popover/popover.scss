@@ -1,3 +1,29 @@
 .mm-popover {
   // TODO
 }
+
+#arrow {
+  display: inline-block;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform: rotate(-45deg);
+  transform-origin: 100% 0;
+}
+
+
+#tooltip[data-popper-placement^='top'] > #arrow {
+  bottom: -4px;
+}
+
+#tooltip[data-popper-placement^='bottom'] > #arrow {
+  top: -4px;
+}
+
+#tooltip[data-popper-placement^='left'] > #arrow {
+  right: -4px;
+}
+
+#tooltip[data-popper-placement^='right'] > #arrow {
+  left: -4px;
+}

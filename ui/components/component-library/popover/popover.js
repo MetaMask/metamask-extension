@@ -23,24 +23,33 @@ export const Popover = ({ children, className, ...props }) => {
   return (
     <>
       <button type="button" ref={setReferenceElement}>
-        Reference element
+        Popper Trigger
       </button>
+
       <Box
         className={classnames('mm-popover', className)}
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JUSTIFY_CONTENT.CENTER}
         alignItems={ALIGN_ITEMS.CENTER}
         borderColor={COLORS.BORDER_DEFAULT}
+        backgroundColor={COLORS.BACKGROUND_DEFAULT}
         borderRadius={BORDER_RADIUS.XL}
         padding={4}
         {...props}
+        id="tooltip"
+        ref={setPopperElement}
+        style={styles.popper}
+        {...attributes.popper}
       >
-        {children}
+        {children} - This is the popper content
+        <Box
+          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={COLORS.BACKGROUND_DEFAULT}
+          id="arrow"
+          ref={setArrowElement}
+          style={styles.arrow}
+        />
       </Box>
-      <div ref={setPopperElement} style={styles.popper} {...attributes.popper}>
-        Popper element
-        <div ref={setArrowElement} style={styles.arrow} />
-      </div>
     </>
   );
 };
