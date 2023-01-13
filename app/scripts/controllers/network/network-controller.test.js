@@ -1,9 +1,6 @@
 import nock from 'nock';
 import { deferredPromise } from '../../lib/util';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import NetworkController, { NETWORK_EVENTS } from './network-controller';
-
-const getNetworkDisplayName = (key) => NETWORK_TO_NAME_MAP[key];
 
 /**
  * Construct a successful RPC response.
@@ -196,29 +193,6 @@ describe('NetworkController', () => {
           networkController.networkDetails.getState().EIPS[1559],
         ).toStrictEqual(false);
       });
-    });
-  });
-
-  describe('utils', () => {
-    it('getNetworkDisplayName should return the correct network name', () => {
-      const tests = [
-        {
-          input: 'mainnet',
-          expected: 'Ethereum Mainnet',
-        },
-        {
-          input: 'goerli',
-          expected: 'Goerli',
-        },
-        {
-          input: 'sepolia',
-          expected: 'Sepolia',
-        },
-      ];
-
-      tests.forEach(({ input, expected }) =>
-        expect(getNetworkDisplayName(input)).toStrictEqual(expected),
-      );
     });
   });
 });
