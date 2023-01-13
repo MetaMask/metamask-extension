@@ -217,7 +217,7 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
-    featureFlag: 'COLLECTIBLES_V1',
+    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),

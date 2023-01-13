@@ -84,17 +84,6 @@ export default class ConfirmPageContainer extends Component {
     origin: PropTypes.string.isRequired,
     ethGasPriceWarning: PropTypes.string,
     networkIdentifier: PropTypes.string,
-    // Navigation
-    totalTx: PropTypes.number,
-    positionOfCurrentTx: PropTypes.number,
-    nextTxId: PropTypes.string,
-    prevTxId: PropTypes.string,
-    showNavigation: PropTypes.bool,
-    onNextTx: PropTypes.func,
-    firstTx: PropTypes.string,
-    lastTx: PropTypes.string,
-    ofText: PropTypes.string,
-    requestsWaitingText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -161,16 +150,6 @@ export default class ConfirmPageContainer extends Component {
       nonce,
       unapprovedTxCount,
       warning,
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      onNextTx,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
       origin,
@@ -212,18 +191,7 @@ export default class ConfirmPageContainer extends Component {
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container" data-testid="page-container">
-          <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
-          />
+          <ConfirmPageContainerNavigation />
           {assetStandard === ERC20 ||
           assetStandard === ERC721 ||
           assetStandard === ERC1155 ? (

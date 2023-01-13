@@ -1,0 +1,121 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { BannerBase } from './banner-base';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# BannerBase
+
+The `BannerBase` is the base component for banners
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `BannerBase` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={BannerBase} />
+
+### Title
+
+Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--title" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../../component-library';
+
+<BannerBase title="Title is sentence case no period">
+  Pass only a string through the title prop
+</BannerBase>;
+```
+
+### Children
+
+The `children` is the description area of the `BannerBase` that can be a text or react node. Description shouldn't repeat title and only 1-3 lines.
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--children" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { BannerBase } from '../../component-library';
+
+<BannerBase>
+  {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+  <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+    hyperlink.
+  </ButtonLink>
+</BannerBase>;
+```
+
+### Action Button Label, onClick, & Props
+
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) for the action
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--action-button" />
+</Canvas>
+
+```jsx
+import { BannerBase, ICON_NAMES } from '../../component-library';
+
+<BannerBase
+  title="Action prop demo"
+  actionButtonLabel="Action"
+  actionButtonProps={{
+    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconPositionRight: true,
+  }}
+  actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
+>
+  Use actionButtonLabel for action text, actionButtonOnClick for the onClick
+  handler, and actionButtonProps to pass any ButtonLink prop types such as
+  iconName
+</BannerBase>;
+```
+
+### On Close
+
+Use the `onClose` prop to pass a function to the close button. The close button will appear when this prop is used.
+
+Additional props can be passed to the close button with `closeButtonProps`
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--on-close" />
+</Canvas>
+
+```jsx
+import { BannerBase } from '../../component-library';
+
+<BannerBase
+  title="onClose demo"
+  onClose={() => console.log('close button clicked')}
+>
+  Click the close button icon to hide this notifcation
+</BannerBase>;
+```
+
+### Start Accessory
+
+Use the `startAccessory` prop to add components such as icons or fox image to the start (default: left) of the `BannerBase` content
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--start-accessory" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { BannerBase, Icon, ICON_NAMES } from '../../component-library';
+
+<BannerBase
+  title="Start accessory demo"
+  startAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
+>
+  The info icon on the left is passed through the startAccessory prop
+</BannerBase>;
+```

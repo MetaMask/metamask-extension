@@ -220,7 +220,6 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
     customGas: {
       gasLimit,
       gasPrice,

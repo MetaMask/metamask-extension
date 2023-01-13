@@ -285,7 +285,6 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       tokenListController: this.tokenListController,
       provider: this.provider,
-      migrateAddressBookState: this.migrateAddressBookState.bind(this),
     });
 
     this.tokensController = new TokensController({
@@ -1046,9 +1045,17 @@ export default class MetamaskController extends EventEmitter {
     });
     this.smartTransactionsController = new SmartTransactionsController(
       {
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) => {
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          });
+        },
         getNetwork: this.networkController.getNetworkState.bind(
           this.networkController,
         ),
@@ -2170,7 +2177,7 @@ export default class MetamaskController extends EventEmitter {
   async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
-    this.preferencesController.addToFrequentRpcList(
+    this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
@@ -3867,7 +3874,7 @@ export default class MetamaskController extends EventEmitter {
           chainName,
           rpcUrl,
         } = {}) => {
-          await this.preferencesController.addToFrequentRpcList(
+          await this.preferencesController.upsertToFrequentRpcList(
             rpcUrl,
             chainId,
             ticker,
@@ -4244,43 +4251,6 @@ export default class MetamaskController extends EventEmitter {
     return nonceLock.nextNonce;
   }
 
-  /**
-   * Migrate address book state from old to new chainId.
-   *
-   * Address book state is keyed by the `networkStore` state from the network controller. This value is set to the
-   * `networkId` for our built-in Infura networks, but it's set to the `chainId` for custom networks.
-   * When this `chainId` value is changed for custom RPC endpoints, we need to migrate any contacts stored under the
-   * old key to the new key.
-   *
-   * The `duplicate` parameter is used to specify that the contacts under the old key should not be removed. This is
-   * useful in the case where two RPC endpoints shared the same set of contacts, and we're not sure which one each
-   * contact belongs under. Duplicating the contacts under both keys is the only way to ensure they are not lost.
-   *
-   * @param {string} oldChainId - The old chainId
-   * @param {string} newChainId - The new chainId
-   * @param {boolean} [duplicate] - Whether to duplicate the addresses on both chainIds (default: false)
-   */
-  async migrateAddressBookState(oldChainId, newChainId, duplicate = false) {
-    const { addressBook } = this.addressBookController.state;
-
-    if (!addressBook[oldChainId]) {
-      return;
-    }
-
-    for (const address of Object.keys(addressBook[oldChainId])) {
-      const entry = addressBook[oldChainId][address];
-      this.addressBookController.set(
-        address,
-        entry.name,
-        newChainId,
-        entry.memo,
-      );
-      if (!duplicate) {
-        this.addressBookController.delete(oldChainId, address);
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -4312,13 +4282,13 @@ export default class MetamaskController extends EventEmitter {
       nickname,
       rpcPrefs,
     );
-    await this.preferencesController.updateRpc({
+    await this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
       nickname,
       rpcPrefs,
-    });
+    );
     return rpcUrl;
   }
 
@@ -4361,7 +4331,7 @@ export default class MetamaskController extends EventEmitter {
         nickname,
         rpcPrefs,
       );
-      await this.preferencesController.addToFrequentRpcList(
+      await this.preferencesController.upsertToFrequentRpcList(
         rpcUrl,
         chainId,
         ticker,

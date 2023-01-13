@@ -1826,8 +1826,8 @@ export function addNftVerifyOwnership(
       ]);
     } catch (error) {
       if (
-        error.message.includes('This collectible is not owned by the user') ||
-        error.message.includes('Unable to verify ownership.')
+        error.message.includes('This NFT is not owned by the user') ||
+        error.message.includes('Unable to verify ownership')
       ) {
         throw error;
       } else {

@@ -1,4 +1,5 @@
 const { merge } = require('lodash');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 
 function defaultFixture() {
   return {
@@ -134,14 +135,14 @@ function defaultFixture() {
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
-          '0x1': true,
-          '0x5': true,
-          '0x539': true,
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.GOERLI]: true,
+          [CHAIN_IDS.LOCALHOST]: true,
         },
       },
       CachedBalancesController: {
         cachedBalances: {
-          '0x539': {},
+          [CHAIN_IDS.LOCALHOST]: {},
         },
       },
       CurrencyController: {
@@ -159,9 +160,9 @@ function defaultFixture() {
       IncomingTransactionsController: {
         incomingTransactions: {},
         incomingTxLastFetchedBlockByChainId: {
-          '0x1': null,
-          '0x5': null,
-          '0xaa36a7': null,
+          [CHAIN_IDS.MAINNET]: null,
+          [CHAIN_IDS.GOERLI]: null,
+          [CHAIN_IDS.SEPOLIA]: null,
         },
       },
       KeyringController: {
@@ -178,7 +179,7 @@ function defaultFixture() {
       NetworkController: {
         network: '1337',
         provider: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -205,7 +206,7 @@ function defaultFixture() {
         forgottenPassword: false,
         frequentRpcListDetail: [
           {
-            chainId: '0x539',
+            chainId: CHAIN_IDS.LOCALHOST,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -246,7 +247,7 @@ function defaultFixture() {
           fees: {},
           liveness: true,
           smartTransactions: {
-            '0x1': [],
+            [CHAIN_IDS.MAINNET]: [],
           },
         },
       },
@@ -301,9 +302,9 @@ function onboardingFixture() {
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
-          '0x1': true,
-          '0x5': true,
-          '0x539': true,
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.GOERLI]: true,
+          [CHAIN_IDS.LOCALHOST]: true,
         },
       },
       NetworkController: {
@@ -312,7 +313,7 @@ function onboardingFixture() {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
         },
       },
@@ -326,7 +327,7 @@ function onboardingFixture() {
         forgottenPassword: false,
         frequentRpcListDetail: [
           {
-            chainId: '0x539',
+            chainId: CHAIN_IDS.LOCALHOST,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -360,7 +361,7 @@ function onboardingFixture() {
           fees: {},
           liveness: true,
           smartTransactions: {
-            '0x1': [],
+            [CHAIN_IDS.MAINNET]: [],
           },
         },
       },
@@ -452,7 +453,7 @@ class FixtureBuilder {
       incomingTransactions: {
         '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab': {
           blockNumber: '1',
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
           id: 5748272735958807,
           metamaskNetworkId: '1337',
@@ -658,14 +659,14 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         7911313280012623: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             gasPrice: '0x4a817c800',
           },
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 gasPrice: '0x4a817c800',
@@ -711,14 +712,14 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012624: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             gasPrice: '0x4a817c800',
           },
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 gasPrice: '0x4a817c800',
@@ -764,14 +765,14 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012625: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             gasPrice: '0x4a817c800',
           },
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 gasPrice: '0x4a817c800',
@@ -817,14 +818,14 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012626: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             gasPrice: '0x4a817c800',
           },
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 gasPrice: '0x4a817c800',
@@ -877,10 +878,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -911,7 +912,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            chainId: '0x539',
+            chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -946,10 +947,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -982,7 +983,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            chainId: '0x539',
+            chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -1021,10 +1022,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
-              chainId: '0x539',
+              chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -1093,7 +1094,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            chainId: '0x539',
+            chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -1132,10 +1133,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         5748272735958801: {
-          chainId: '0x539',
+          chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
-              chainId: 0x539,
+              chainId: CHAIN_IDS.LOCALHOST,
               id: 5748272735958801,
               loadingDefaults: true,
               metamaskNetworkId: '1337',

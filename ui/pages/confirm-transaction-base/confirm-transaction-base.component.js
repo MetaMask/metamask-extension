@@ -7,10 +7,7 @@ import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import { addHexes } from '../../helpers/utils/conversions.util';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -116,7 +113,6 @@ export default class ConfirmTransactionBase extends Component {
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
-    currentNetworkUnapprovedTxs: PropTypes.object,
     customGas: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
@@ -1019,33 +1015,6 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleNextTx(txId) {
-    const { history, clearConfirmTransaction } = this.props;
-
-    if (txId) {
-      clearConfirmTransaction();
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
-    }
-  }
-
-  getNavigateTxData() {
-    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props;
-    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
-    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '');
-
-    return {
-      totalTx: enumUnapprovedTxs.length,
-      positionOfCurrentTx: currentPosition + 1,
-      nextTxId: enumUnapprovedTxs[currentPosition + 1],
-      prevTxId: enumUnapprovedTxs[currentPosition - 1],
-      showNavigation: enumUnapprovedTxs.length > 1,
-      firstTx: enumUnapprovedTxs[0],
-      lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
-      ofText: this.context.t('ofTextNofM'),
-      requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
-    };
-  }
-
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -1154,17 +1123,6 @@ export default class ConfirmTransactionBase extends Component {
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
-    const {
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
-    } = this.getNavigateTxData();
 
     // This `isTokenApproval` case is added to handle possible rendering of this component from
     // confirm-approve.js when `assetStandard` is `undefined`. That will happen if the request to
@@ -1226,16 +1184,6 @@ export default class ConfirmTransactionBase extends Component {
           errorKey={errorKey}
           hasSimulationError={hasSimulationError}
           warning={submitWarning}
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => this.handleNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={ofText}
-          requestsWaitingText={requestsWaitingText}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
@@ -1259,6 +1207,7 @@ export default class ConfirmTransactionBase extends Component {
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
+          txData={txData}
         />
       </TransactionModalContextProvider>
     );

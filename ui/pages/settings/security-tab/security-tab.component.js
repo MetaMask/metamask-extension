@@ -429,7 +429,7 @@ export default class SecurityTab extends PureComponent {
   }
 
   renderCollectibleDetectionToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
+    if (!process.env.NFTS_V1) {
       return null;
     }
 
