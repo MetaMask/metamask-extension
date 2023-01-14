@@ -36,6 +36,7 @@ describe('Test Snap TxInsights', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectInsightsSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -55,6 +56,7 @@ describe('Test Snap TxInsights', function () {
           10000,
         );
 
+        // delay for npm installation
         await driver.delay(2000);
 
         // switch to metamask extension

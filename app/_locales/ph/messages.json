@@ -1544,9 +1544,6 @@
   "signatureRequest": {
     "message": "Request ng Signature"
   },
-  "signatureRequest1": {
-    "message": "Mensahe"
-  },
   "signed": {
     "message": "Nilagdaan"
   },
