@@ -1462,6 +1462,7 @@ const state = {
         version: '0.6.0',
       },
     },
+    notifications: {},
   },
   appState: {
     shouldClose: false,
