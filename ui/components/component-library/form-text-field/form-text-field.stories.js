@@ -401,7 +401,7 @@ export const FormExample = () => {
         </Box>
       </Box>
       <ButtonSecondary
-        icon={ICON_NAMES.CLOSE_OUTLINE}
+        iconName={ICON_NAMES.CLOSE_OUTLINE}
         onClick={handleClearForm}
         danger
       >

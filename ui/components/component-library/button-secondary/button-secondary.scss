@@ -1,8 +1,4 @@
 .mm-button-secondary {
-  color: var(--color-primary-default);
-  border: 1px solid var(--color-primary-default);
-  background-color: transparent;
-
   &:hover {
     color: var(--color-primary-inverse);
     background-color: var(--color-primary-default);
@@ -15,18 +11,7 @@
     border-color: var(--color-primary-alternative);
   }
 
-  &.mm-button--disabled {
-    &:hover {
-      color: var(--color-primary-default);
-      box-shadow: none;
-      background-color: transparent;
-    }
-
-    &:active {
-      background-color: transparent;
-    }
-  }
-
+  // Danger type
   &--type-danger {
     color: var(--color-error-default);
     border: 1px solid var(--color-error-default);
@@ -43,9 +28,23 @@
       background-color: var(--color-error-alternative);
       border-color: var(--color-error-alternative);
     }
+  }
 
-    &.mm-button--disabled:hover {
-      color: var(--color-error-default);
+  // Disabled
+  &--disabled {
+    &:hover {
+      color: var(--color-primary-default);
+      box-shadow: none;
+      background-color: transparent;
     }
+
+    &:active {
+      background-color: transparent;
+    }
+  }
+
+  // Disabled danger
+  &--type-danger#{&}--disabled:hover {
+    color: var(--color-error-default);
   }
 }

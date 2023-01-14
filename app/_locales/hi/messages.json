@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"
   },
-  "signatureRequest1": {
-    "message": "संदेश"
-  },
   "signatureRequestGuidance": {
     "message": "यदि आप सामग्री को पूरी तरह से समझते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं तो ही इस संदेश पर हस्ताक्षर करें।"
   },

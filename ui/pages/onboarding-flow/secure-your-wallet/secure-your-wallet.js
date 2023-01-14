@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
@@ -16,8 +16,10 @@ import {
   threeStepStages,
 } from '../../../components/app/step-progress-bar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentLocale } from '../../../ducks/metamask/metamask';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
@@ -32,11 +34,21 @@ export default function SecureYourWallet() {
     ? '/?isFromReminder=true'
     : '';
 
+  const trackEvent = useContext(MetaMetricsContext);
+
   const handleClickRecommended = () => {
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_STARTED,
+    });
     history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_SKIP_INITIATED,
+    });
     setShowSkipSRPBackupPopover(true);
   };
 
@@ -86,7 +98,16 @@ export default function SecureYourWallet() {
         </Typography>
       </Box>
       <Box>
-        <video className="secure-your-wallet__video" controls>
+        <video
+          className="secure-your-wallet__video"
+          onPlay={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event: EVENT_NAMES.ONBOARDING_WALLET_VIDEO_PLAY,
+            });
+          }}
+          controls
+        >
           <source
             type="video/webm"
             src="./images/videos/recovery-onboarding/video.webm"

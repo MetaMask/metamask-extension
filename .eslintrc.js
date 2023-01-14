@@ -42,6 +42,8 @@ module.exports = {
         'test/e2e/**/*.js',
         'test/helpers/*.js',
         'test/lib/wait-until-called.js',
+        'test/run-unit-tests.js',
+        'test/merge-coverage.js',
       ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -337,6 +339,8 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/benchmark.js',
         'test/helpers/setup-helper.js',
+        'test/run-unit-tests.js',
+        'test/merge-coverage.js',
       ],
       rules: {
         'node/no-process-exit': 'off',
