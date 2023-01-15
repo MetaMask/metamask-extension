@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "签名请求"
   },
-  "signatureRequest1": {
-    "message": "消息"
-  },
   "signatureRequestGuidance": {
     "message": "只有在您完全理解内容并信任请求网站的情况下，才能签署此消息。"
   },

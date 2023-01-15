@@ -3403,51 +3403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controllers@npm:^32.0.2":
-  version: 32.0.2
-  resolution: "@metamask/controllers@npm:32.0.2"
-  dependencies:
-    "@ethereumjs/common": ^2.3.1
-    "@ethereumjs/tx": ^3.2.1
-    "@ethersproject/abi": ^5.7.0
-    "@ethersproject/contracts": ^5.7.0
-    "@ethersproject/providers": ^5.7.0
-    "@keystonehq/metamask-airgapped-keyring": ^0.6.1
-    "@metamask/contract-metadata": ^1.35.0
-    "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/types": ^1.1.0
-    "@types/uuid": ^8.3.0
-    abort-controller: ^3.0.0
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    deep-freeze-strict: ^1.1.1
-    eth-ens-namehash: ^2.0.8
-    eth-json-rpc-infura: ^5.1.0
-    eth-keyring-controller: ^7.0.2
-    eth-method-registry: 1.1.0
-    eth-phishing-detect: ^1.2.0
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.0
-    eth-sig-util: ^3.0.0
-    ethereumjs-util: ^7.0.10
-    ethereumjs-wallet: ^1.0.1
-    ethjs-unit: ^0.1.6
-    fast-deep-equal: ^3.1.3
-    immer: ^9.0.6
-    isomorphic-fetch: ^3.0.0
-    json-rpc-engine: ^6.1.0
-    jsonschema: ^1.2.4
-    multiformats: ^9.5.2
-    nanoid: ^3.1.31
-    punycode: ^2.1.1
-    single-call-balance-checker-abi: ^1.0.0
-    uuid: ^8.3.2
-    web3: ^0.20.7
-    web3-provider-engine: ^16.0.3
-  checksum: 05da9eb32c7c1c28b99157cb99bf3744bb77dbb221e5d2662413b3f1fb839b1981b0fd3f2bf517b79c71803c7a78b6a369132a81ca9e3b4f84b2282139ad3679
-  languageName: node
-  linkType: hard
-
 "@metamask/design-tokens@npm:^1.6.0, @metamask/design-tokens@npm:^1.9.0":
   version: 1.11.1
   resolution: "@metamask/design-tokens@npm:1.11.1"
@@ -3668,6 +3623,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/network-controller@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-json-rpc-infura: ^5.1.0
+    eth-query: ^2.1.2
+    immer: ^9.0.6
+    web3-provider-engine: ^16.0.3
+  checksum: b3622ce63f79c35f02ab69690c5337ae7a70ba243efb6a188cdbbcdfeccd303bd7e73ea73bf29540a83a3903ae1462c6998670952b5aef8ae570cebff6628b4e
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:~1.0.0":
   version: 1.0.0
   resolution: "@metamask/network-controller@npm:1.0.0"
@@ -3870,20 +3841,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:3.0.0"
+"@metamask/smart-transactions-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/smart-transactions-controller@npm:3.1.0"
   dependencies:
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/bytes": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/controllers": ^32.0.2
+    "@metamask/base-controller": ^1.0.0
+    "@metamask/controller-utils": ^1.0.0
+    "@metamask/network-controller": ^2.0.0
     "@types/lodash": ^4.14.176
     bignumber.js: ^9.0.1
     fast-json-patch: ^3.1.0
     isomorphic-fetch: ^3.0.0
     lodash: ^4.17.21
-  checksum: 3d9c33f699127c01ac56ccbfdf106ba617db21aed1be2c6c7f05f540d718bf08d962fcb2d6060fd1e63de69821608e7b3c800bc3d4b51522a6218b022caebacc
+  checksum: 19de00145937b021c81742457e9686fd7e6e4b2cae490452afac9d063cb5df4a64849ac78ec1b9735dc295235fa39f4ac0970f8848fdc5f697f2aab96e51db49
   languageName: node
   linkType: hard
 
@@ -9570,13 +9543,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git":
-  version: 2.0.7
-  resolution: "bignumber.js@https://github.com/frozeman/bignumber.js-nolookahead.git#commit=57692b3ecfc98bbdd6b3a516cb2353652ea49934"
-  checksum: 8f9d21a8c7ef04b70098c49760679ee469e84f5469595c08aa01af47e1bae7703ae474f02abc89aa106e034e3b3faca0c0fd4faae72a037f2d45f4b26cbd6c3d
-  languageName: node
-  linkType: hard
-
 "bignumber.js@npm:^4.1.0":
   version: 4.1.0
   resolution: "bignumber.js@npm:4.1.0"
@@ -9966,15 +9932,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-passworder@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "browser-passworder@npm:2.0.3"
-  dependencies:
-    browserify-unibabel: ^3.0.0
-  checksum: df3ec46e1069f995e24f56979e825fd719a368187e307bd37f0440ac10833fbfb2fd02be02add9da2da991476ef9b146fd1480b04acbb8d96d4e4123af333667
-  languageName: node
-  linkType: hard
-
 "browser-process-hrtime@npm:^0.1.2":
   version: 0.1.2
   resolution: "browser-process-hrtime@npm:0.1.2"
@@ -10079,13 +10036,6 @@ __metadata:
     inherits: ^2.0.1
     parse-asn1: ^5.0.0
   checksum: b1e6f6383f6abbbd5e0f4eb0161cd211cb79af636dd14b5f038db7f3a309b3e026e7e8d7428e3f072a9baace57051a2f45cff311f3b26a901e8be921c3dab847
-  languageName: node
-  linkType: hard
-
-"browserify-unibabel@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "browserify-unibabel@npm:3.0.0"
-  checksum: fe1b502c098fe5f22d12023ec971791a00c910575712782b611917b1aea6e2311ac5adad2f1dbfaa26555346bc0f74ed5b3d8773b493d3ec5bc1928d90619c42
   languageName: node
   linkType: hard
 
@@ -11853,7 +11803,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookiejar@npm:^2.1.0, cookiejar@npm:^2.1.1":
+"cookiejar@npm:^2.1.0":
   version: 2.1.3
   resolution: "cookiejar@npm:2.1.3"
   checksum: 88259983ebc52ceb23cdacfa48762b6a518a57872eff1c7ed01d214fff5cf492e2660d7d5c04700a28f1787a76811df39e8639f8e17670b3cf94ecd86e161f07
@@ -12199,13 +12149,6 @@ __metadata:
     randombytes: ^2.0.0
     randomfill: ^1.0.3
   checksum: c1609af82605474262f3eaa07daa0b2140026bd264ab316d4bf1170272570dbe02f0c49e29407fe0d3634f96c507c27a19a6765fb856fed854a625f9d15618e2
-  languageName: node
-  linkType: hard
-
-"crypto-js@npm:^3.1.4":
-  version: 3.1.8
-  resolution: "crypto-js@npm:3.1.8"
-  checksum: 9c827948c55877a058a5b15fe0581319c339debb3308aff5adb35fe15782c83e11daf159aa8518963755efc1390c5769bf667fa30834a7095123618ea3cedbed
   languageName: node
   linkType: hard
 
@@ -14734,17 +14677,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "eth-json-rpc-filters@npm:4.2.1"
+"eth-json-rpc-filters@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "eth-json-rpc-filters@npm:5.0.0"
   dependencies:
-    await-semaphore: ^0.1.3
+    "@metamask/safe-event-emitter": ^2.0.0
+    async-mutex: ^0.2.6
     eth-json-rpc-middleware: ^6.0.0
     eth-query: ^2.1.2
-    json-rpc-engine: ^5.3.0
-    lodash.flatmap: ^4.5.0
-    safe-event-emitter: ^1.0.1
-  checksum: 3eef7867c3f1ce4f8a27767586f736ce8031fae49da6ba0454e3a5c9231174aadc1380716d901ccede1f0c2b278a7c7cb0b2bf93869783f0fc417389051a6b2e
+    json-rpc-engine: ^6.1.0
+    pify: ^5.0.0
+  checksum: 5ae22c40aaa477e5784e1dd274612e4abd8d649f5c6030704c54899435d56c31fe6d911f60abe2867878141a6f20cdf0024b1c2a0ddc0173b8b40b53e92060e2
   languageName: node
   linkType: hard
 
@@ -14816,20 +14759,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-keyring-controller@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "eth-keyring-controller@npm:7.0.2"
-  dependencies:
-    "@metamask/bip39": ^4.0.0
-    "@metamask/eth-hd-keyring": ^4.0.2
-    browser-passworder: ^2.0.3
-    eth-sig-util: ^3.0.1
-    eth-simple-keyring: ^4.2.0
-    obs-store: ^4.0.3
-  checksum: e00c6d3b3e01ac19aa69e34538a24377ea9239929c7da8d355b62bb89e83c1e2c72ed60fd84fb86566c141f751f259f35aa7749dd204d669dc1e310a581aef56
-  languageName: node
-  linkType: hard
-
 "eth-keyring-controller@npm:^8.1.0":
   version: 8.1.0
   resolution: "eth-keyring-controller@npm:8.1.0"
@@ -14855,15 +14784,6 @@ __metadata:
     gridplus-sdk: ^2.2.9
     rlp: ^3.0.0
   checksum: a477240eea9927c85cc5d485b9f640a00a172f395b00591843120fb0f4bc7d62221d0dc27f237c7e0c2c741e8198d3f49428dbc2be5b4afcf112e1038192e733
-  languageName: node
-  linkType: hard
-
-"eth-method-registry@npm:1.1.0":
-  version: 1.1.0
-  resolution: "eth-method-registry@npm:1.1.0"
-  dependencies:
-    ethjs: ^0.3.0
-  checksum: 3529e06e67740572d5771761d425faf5197695df06035e3c085213e45492eb1fad71f26df36c733769f4ceaa3d0f3d7e91065d42806f800e8ddc4b44b232c614
   languageName: node
   linkType: hard
 
@@ -15428,7 +15348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethjs@npm:^0.3.0, ethjs@npm:^0.3.6":
+"ethjs@npm:^0.3.6":
   version: 0.3.9
   resolution: "ethjs@npm:0.3.9"
   dependencies:
@@ -22035,13 +21955,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.flatmap@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.flatmap@npm:4.5.0"
-  checksum: c01a47d32e99f8fce75409f0a4a9bd12fbb2d3a46519a0dde14deedb1e527b5ddccc2bf997705c67bdecb915f47749e8a9ffefa7a91c41f0c448e06348ec81c7
-  languageName: node
-  linkType: hard
-
 "lodash.flattendeep@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.flattendeep@npm:4.4.0"
@@ -22904,7 +22817,7 @@ __metadata:
     "@metamask/rate-limit-controller": ^1.0.0
     "@metamask/rpc-methods": ^0.27.1
     "@metamask/slip44": ^2.1.0
-    "@metamask/smart-transactions-controller": ^3.0.0
+    "@metamask/smart-transactions-controller": ^3.1.0
     "@metamask/snaps-controllers": ^0.27.1
     "@metamask/snaps-ui": ^0.27.1
     "@metamask/snaps-utils": ^0.27.1
@@ -23009,7 +22922,7 @@ __metadata:
     eslint-plugin-storybook: ^0.6.4
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
-    eth-json-rpc-filters: ^4.2.1
+    eth-json-rpc-filters: ^5.0.0
     eth-json-rpc-middleware: ^9.0.1
     eth-keyring-controller: ^8.1.0
     eth-lattice-keyring: ^0.12.3
@@ -32756,13 +32669,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utf8@npm:^2.1.1":
-  version: 2.1.2
-  resolution: "utf8@npm:2.1.2"
-  checksum: de5d18adb219cae7871e1c105249e2fc7e6cae0e01c2b4c2eb6b099851b3bf62d1db6be6d83b5e4dea09036f8d16dd7222ad46eb326b38940a988e86743c1a61
-  languageName: node
-  linkType: hard
-
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:^1.0.2, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -33358,32 +33264,6 @@ __metadata:
     randombytes: ^2.1.0
     utf8: 3.0.0
   checksum: 08bb2df9cd19672f034bb82a27b857e0571b836a620f83de2214377457c6e52446e8dedcf916f8f10a13c86b5a02674dd4f45c60c45698b388368601cce9cf5e
-  languageName: node
-  linkType: hard
-
-"web3@npm:0.20.7":
-  version: 0.20.7
-  resolution: "web3@npm:0.20.7"
-  dependencies:
-    bignumber.js: "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
-    crypto-js: ^3.1.4
-    utf8: ^2.1.1
-    xhr2-cookies: ^1.1.0
-    xmlhttprequest: "*"
-  checksum: acec4beac2265a7ff864f35df5a709d086d2bdb4c0e1dbf323e07b963bee5662c1b18fd26c7f11595006a3a9288d769b75f6e43c5aa3bfc36e957650cd2ac4b6
-  languageName: node
-  linkType: hard
-
-"web3@patch:web3@npm%3A0.20.7#./.yarn/patches/web3-npm-0.20.7-ee7ef00c57.patch::locator=metamask-crx%40workspace%3A.":
-  version: 0.20.7
-  resolution: "web3@patch:web3@npm%3A0.20.7#./.yarn/patches/web3-npm-0.20.7-ee7ef00c57.patch::version=0.20.7&hash=302657&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    bignumber.js: "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
-    crypto-js: ^3.1.4
-    utf8: ^2.1.1
-    xhr2-cookies: ^1.1.0
-    xmlhttprequest: "*"
-  checksum: 2c6035eb18f8fd9214b5f560a169b344828818b61ae36c30b708de71b186a55319a6750644009a8b4e063a4014725668e04a30c13d54f9bee78d4de9ad71b69e
   languageName: node
   linkType: hard
 
@@ -33999,15 +33879,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xhr2-cookies@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "xhr2-cookies@npm:1.1.0"
-  dependencies:
-    cookiejar: ^2.1.1
-  checksum: 6a9fc45f3490cc53e6a308bd7164dab07ecb94f6345e78951ed4a1e8f8c4c7707a1b039a6b4ef7c9d611d9465d6f94d7d4260c43bc34eed8d6f9210a775eb719
-  languageName: node
-  linkType: hard
-
 "xhr2@npm:0.1.3":
   version: 0.1.3
   resolution: "xhr2@npm:0.1.3"
@@ -34052,13 +33923,6 @@ __metadata:
   version: 2.2.0
   resolution: "xmlchars@npm:2.2.0"
   checksum: 8c70ac94070ccca03f47a81fcce3b271bd1f37a591bf5424e787ae313fcb9c212f5f6786e1fa82076a2c632c0141552babcd85698c437506dfa6ae2d58723062
-  languageName: node
-  linkType: hard
-
-"xmlhttprequest@npm:*":
-  version: 1.8.0
-  resolution: "xmlhttprequest@npm:1.8.0"
-  checksum: c891cf0d7884b4f5cce835aa01f1965727cd352cbd2d7a2e0605bf11ec99ae2198364cca54656ec8b2581a5704dee6c2bf9911922a0ff2a71b613455d32e81b7
   languageName: node
   linkType: hard
 
