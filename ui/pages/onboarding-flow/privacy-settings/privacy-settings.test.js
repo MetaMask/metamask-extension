@@ -11,6 +11,7 @@ import PrivacySettings from './privacy-settings';
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
+      frequentRpcListDetail: [],
       provider: {
         type: 'test',
       },

@@ -459,6 +459,53 @@ const state = {
         decimals: 18,
       },
     ],
+    allDetectedTokens: {
+      '0x5' : {
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
+          {
+            address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+            decimals: 18,
+            symbol: 'LINK',
+            image: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+            aggregators: ['coinGecko', 'oneInch', 'paraswap', 'zapper', 'zerion'],
+          },
+          {
+            address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
+            decimals: 18,
+            symbol: 'COMP',
+            image: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+            aggregators: [
+              'bancor',
+              'cmc',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'pmm',
+              'zapper',
+              'zerion',
+              'zeroEx',
+            ],
+          },
+          {
+            address: '0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB',
+            decimals: 18,
+            symbol: 'FSW',
+            image:
+              'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+            aggregators: [
+              'aave',
+              'cmc',
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'zapper',
+              'zerion',
+            ],
+          },
+        ]
+      }
+    },
     detectedTokens: [
       {
         address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',

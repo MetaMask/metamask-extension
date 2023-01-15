@@ -80,5 +80,5 @@ DefaultStory.args = {
   networkOrAccountNotSupports1559: false,
   getIsBalanceInsufficient: false,
   to: 'string to',
-  assetError: 'newAccountDetectedDialogMessage',
+  assetError: null,
 };

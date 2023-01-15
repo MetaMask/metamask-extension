@@ -3,7 +3,7 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap onOff', function () {
+describe('Test Snap Management', function () {
   it('tests install disable enable and removal of a snap', async function () {
     const ganacheOptions = {
       accounts: [
@@ -30,12 +30,14 @@ describe('Test Snap onOff', function () {
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
 
         // find and scroll to the correct card and click first
         const snapButton = await driver.findElement('#connectNotification');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectNotification');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -67,6 +69,9 @@ describe('Test Snap onOff', function () {
           text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // switch to the original MM tab
         const extensionPage = windowHandles[0];

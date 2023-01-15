@@ -5,6 +5,7 @@ ignores:
   #
 
   - '@lavamoat/snow'
+  - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
@@ -34,8 +35,8 @@ ignores:
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   # development tool
-  - 'yarn-deduplicate'
   - 'improved-yarn-audit'
+  - 'nyc'
   # storybook
   - '@storybook/core'
   - '@storybook/addon-essentials'

@@ -1018,7 +1018,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
+    NFTS_V1: config.NFTS_V1 === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
@@ -1032,7 +1032,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    ONBOARDING_V2: config.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',

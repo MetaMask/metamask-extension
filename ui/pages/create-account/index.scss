@@ -84,12 +84,17 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);
-    color: var(--color-text-muted);
+    color: var(--color-text-default);
     margin-top: 15px;
     padding: 0 20px;
 
     &__error {
       border: 1px solid var(--color-error-alternative);
+    }
+
+    &::placeholder {
+      color: var(--color-text-muted);
+      opacity: 1;
     }
   }
 
@@ -105,7 +110,7 @@
   }
 
   &__buttons {
-    margin-top: 39px;
+    margin-top: 22px;
     display: flex;
     width: 100%;
     justify-content: space-between;

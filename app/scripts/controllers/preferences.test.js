@@ -12,7 +12,6 @@ describe('preferences controller', function () {
   let currentChainId;
   let provider;
   let tokenListController;
-  const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
@@ -20,8 +19,7 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController();
-    network.setInfuraProjectId('foo');
+    network = new NetworkController({ infuraProjectId: 'foo' });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -36,7 +34,7 @@ describe('preferences controller', function () {
     });
 
     sandbox
-      .stub(network, 'getLatestBlock')
+      .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
     sandbox
@@ -45,7 +43,6 @@ describe('preferences controller', function () {
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      migrateAddressBookState,
       network,
       provider,
       tokenListController,
@@ -181,40 +178,9 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '0x1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/1',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/2',
-        chainId: '0x1',
-      });
-      await preferencesController.updateRpc({
-        rpcUrl: 'test/3',
-        chainId: '0x1',
-      });
-      const list = preferencesController.getFrequentRpcListDetail();
-      assert.deepEqual(list[1], { rpcUrl: 'test', chainId: '0x1' });
-    });
-
-    it('should migrate address book entries if chainId changes', async function () {
-      preferencesController.store.updateState({
-        frequentRpcListDetail: [{}, { rpcUrl: 'test', chainId: '1' }, {}],
-      });
-      await preferencesController.updateRpc({ rpcUrl: 'test', chainId: '0x1' });
-      assert(migrateAddressBookState.calledWith('1', '0x1'));
-    });
-  });
-
   describe('adding and removing from frequentRpcListDetail', function () {
     it('should add custom RPC url to state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
@@ -227,7 +193,7 @@ describe('preferences controller', function () {
           },
         ],
       );
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
@@ -244,12 +210,12 @@ describe('preferences controller', function () {
 
     it('should throw if chainId is invalid', function () {
       assert.throws(() => {
-        preferencesController.addToFrequentRpcList('rpc_url', '1');
+        preferencesController.upsertToFrequentRpcList('rpc_url', '1');
       }, 'should throw on invalid chainId');
     });
 
     it('should remove custom RPC url from state', function () {
-      preferencesController.addToFrequentRpcList('rpc_url', '0x1');
+      preferencesController.upsertToFrequentRpcList('rpc_url', '0x1');
       assert.deepEqual(
         preferencesController.store.getState().frequentRpcListDetail,
         [
@@ -389,14 +355,14 @@ describe('preferences controller', function () {
   });
 
   describe('setTheme', function () {
-    it('should default to value "light"', function () {
+    it('should default to value "OS"', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
     });
 
     it('should set the setTheme property in state', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.theme, 'light');
+      assert.equal(state.theme, 'os');
       preferencesController.setTheme('dark');
       assert.equal(preferencesController.store.getState().theme, 'dark');
     });

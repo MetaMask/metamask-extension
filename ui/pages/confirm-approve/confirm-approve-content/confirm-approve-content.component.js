@@ -71,7 +71,7 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
@@ -97,7 +97,7 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559V2 } = this.props;
+    const { supportsEIP1559 } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -108,7 +108,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
+            {supportsEIP1559 && title === t('transactionFee') ? null : (
               <>
                 <div className="confirm-approve-content__card-header__symbol">
                   {symbol}
@@ -118,7 +118,7 @@ export default class ConfirmApproveContent extends Component {
                 </div>
               </>
             )}
-            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -129,7 +129,7 @@ export default class ConfirmApproveContent extends Component {
                 </Button>
               </Box>
             )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
               <EditGasFeeButton />
             )}
           </div>
@@ -151,9 +151,9 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       txData,
       isMultiLayerFeeNetwork,
-      supportsEIP1559V2,
+      supportsEIP1559,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
+    if (!isMultiLayerFeeNetwork && supportsEIP1559) {
       return <GasDetailsItem />;
     }
     return (

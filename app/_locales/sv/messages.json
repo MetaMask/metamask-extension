@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avancerat"
   },
-  "advancedOptions": {
-    "message": "Avancerade alternativ"
-  },
   "amount": {
     "message": "Belopp"
   },
@@ -544,9 +541,6 @@
   },
   "newAccount": {
     "message": "Nytt konto"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adress upptäckt! Klicka här för att lägga till i din adressbok."
   },
   "newAccountNumberName": {
     "message": "Konto $1",

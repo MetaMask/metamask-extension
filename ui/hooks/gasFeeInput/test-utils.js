@@ -12,7 +12,6 @@ import {
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
-  getEIP1559V2Enabled,
   getSelectedAccount,
   getShouldShowFiat,
   getPreferences,
@@ -100,7 +99,6 @@ export const generateUseSelectorRouter =
   ({
     checkNetworkAndAccountSupports1559Response,
     shouldShowFiat = true,
-    eip1559V2Enabled = false,
   } = {}) =>
   (selector) => {
     if (selector === getConversionRate) {
@@ -140,9 +138,6 @@ export const generateUseSelectorRouter =
     }
     if (selector === checkNetworkAndAccountSupports1559) {
       return checkNetworkAndAccountSupports1559Response;
-    }
-    if (selector === getEIP1559V2Enabled) {
-      return eip1559V2Enabled;
     }
     if (selector === getCurrentKeyring) {
       return { type: '' };

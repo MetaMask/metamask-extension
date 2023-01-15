@@ -15,18 +15,14 @@ const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
 }) => {
-  const { estimateUsed, hasSimulationError, supportsEIP1559V2, isNetworkBusy } =
+  const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
 
-  if (!supportsEIP1559V2) {
-    return null;
-  }
-
   return (
     <div className="transaction-alerts">
-      {hasSimulationError && (
+      {supportsEIP1559 && hasSimulationError && (
         <ActionableMessage
           message={t('simulationErrorMessageV2')}
           useIcon
@@ -42,7 +38,7 @@ const TransactionAlerts = ({
           }
         />
       )}
-      {pendingTransactions?.length > 0 && (
+      {supportsEIP1559 && pendingTransactions?.length > 0 && (
         <ActionableMessage
           message={
             <Typography
@@ -95,7 +91,7 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {isNetworkBusy ? (
+      {supportsEIP1559 && isNetworkBusy ? (
         <ActionableMessage
           message={
             <Typography

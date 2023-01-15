@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Lisäasetukset"
   },
-  "advancedOptions": {
-    "message": "Tarkemmat vaihtoehdot"
-  },
   "amount": {
     "message": "Summa"
   },
@@ -560,9 +557,6 @@
   },
   "newAccount": {
     "message": "Uusi tili"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Uusi osoitettu tunnistettu! Lisää se osoitekirjaasi napsauttamalla tästä."
   },
   "newAccountNumberName": {
     "message": "Tili $1",

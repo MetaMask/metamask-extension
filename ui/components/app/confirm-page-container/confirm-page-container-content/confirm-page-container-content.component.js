@@ -48,7 +48,7 @@ export default class ConfirmPageContainerContent extends Component {
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
@@ -153,7 +153,7 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      supportsEIP1559V2,
+      supportsEIP1559,
       hasTopBorder,
       nativeCurrency,
       networkName,
@@ -165,7 +165,7 @@ export default class ConfirmPageContainerContent extends Component {
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559V2 &&
+      supportsEIP1559 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
@@ -200,7 +200,7 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559V2 && (errorKey || errorMessage) && (
+        {!supportsEIP1559 && (errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>

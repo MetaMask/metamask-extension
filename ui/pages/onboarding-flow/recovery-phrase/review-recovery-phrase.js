@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
@@ -18,14 +18,22 @@ import {
   ThreeStepProgressBar,
   threeStepStages,
 } from '../../../components/app/step-progress-bar';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
+  const { search } = useLocation();
   const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [hiddenPhrase, setHiddenPhrase] = useState(false);
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <div className="recovery-phrase" data-testid="recovery-phrase">
@@ -122,7 +130,14 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
-                history.push(ONBOARDING_CONFIRM_SRP_ROUTE);
+                trackEvent({
+                  category: EVENT.CATEGORIES.ONBOARDING,
+                  event:
+                    EVENT_NAMES.ONBOARDING_WALLET_SECURITY_PHRASE_WRITTEN_DOWN,
+                });
+                history.push(
+                  `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
+                );
               }}
             >
               {t('next')}
@@ -134,6 +149,10 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.ONBOARDING,
+                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_PHRASE_REVEALED,
+              });
               setPhraseRevealed(true);
             }}
           >

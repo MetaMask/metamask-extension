@@ -7,10 +7,7 @@ import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import { addHexes } from '../../helpers/utils/conversions.util';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -116,7 +113,6 @@ export default class ConfirmTransactionBase extends Component {
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
-    currentNetworkUnapprovedTxs: PropTypes.object,
     customGas: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
@@ -158,7 +154,6 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -466,7 +461,7 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return this.supportsEIP1559V2 ? (
+      return this.supportsEIP1559 ? (
         <GasDetailsItem
           key="gas_details"
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -626,7 +621,7 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning &&
-              !this.supportsEIP1559V2 &&
+              !this.supportsEIP1559 &&
               simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
@@ -1016,33 +1011,6 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleNextTx(txId) {
-    const { history, clearConfirmTransaction } = this.props;
-
-    if (txId) {
-      clearConfirmTransaction();
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
-    }
-  }
-
-  getNavigateTxData() {
-    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props;
-    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
-    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '');
-
-    return {
-      totalTx: enumUnapprovedTxs.length,
-      positionOfCurrentTx: currentPosition + 1,
-      nextTxId: enumUnapprovedTxs[currentPosition + 1],
-      prevTxId: enumUnapprovedTxs[currentPosition - 1],
-      showNavigation: enumUnapprovedTxs.length > 1,
-      firstTx: enumUnapprovedTxs[0],
-      lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
-      ofText: this.context.t('ofTextNofM'),
-      requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
-    };
-  }
-
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -1103,10 +1071,8 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
-  supportsEIP1559V2 =
-    this.props.eip1559V2Enabled &&
-    this.props.supportsEIP1559 &&
-    !isLegacyTransaction(this.props.txData);
+  supportsEIP1559 =
+    this.props.supportsEIP1559 && !isLegacyTransaction(this.props.txData);
 
   render() {
     const { t } = this.context;
@@ -1153,20 +1119,22 @@ export default class ConfirmTransactionBase extends Component {
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
-    const {
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
-    } = this.getNavigateTxData();
+
+    // This `isTokenApproval` case is added to handle possible rendering of this component from
+    // confirm-approve.js when `assetStandard` is `undefined`. That will happen if the request to
+    // get the asset standard fails. In that scenario, confirm-approve.js returns the `<ConfirmContractInteraction />`
+    // component, which in turn returns this `<ConfirmTransactionBase />` component. We meed to prevent
+    // the user from editing the transaction in those cases.
+
+    const isTokenApproval =
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL ||
+      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+
+    const isContractInteraction =
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
 
     const isContractInteractionFromDapp =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      (isTokenApproval || isContractInteraction) &&
       txData.origin !== 'metamask';
     let functionType;
     if (isContractInteractionFromDapp) {
@@ -1212,16 +1180,6 @@ export default class ConfirmTransactionBase extends Component {
           errorKey={errorKey}
           hasSimulationError={hasSimulationError}
           warning={submitWarning}
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => this.handleNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={ofText}
-          requestsWaitingText={requestsWaitingText}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
@@ -1241,10 +1199,11 @@ export default class ConfirmTransactionBase extends Component {
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={this.supportsEIP1559V2}
+          supportsEIP1559={this.supportsEIP1559}
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
+          txData={txData}
         />
       </TransactionModalContextProvider>
     );

@@ -15,6 +15,7 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 
 /**
  * @see {@link getEnvironmentType}
@@ -245,4 +246,56 @@ export function previousValueComparator(comparator, initialValue) {
       cache = value;
     }
   };
+}
+
+export function addUrlProtocolPrefix(urlString) {
+  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+    return `https://${urlString}`;
+  }
+  return urlString;
+}
+
+export function formatTxMetaForRpcResult(txMeta) {
+  const { r, s, v, hash, txReceipt, txParams } = txMeta;
+  const {
+    to,
+    data,
+    nonce,
+    gas,
+    from,
+    value,
+    gasPrice,
+    accessList,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  } = txParams;
+
+  const formattedTxMeta = {
+    v,
+    r,
+    s,
+    to,
+    gas,
+    from,
+    hash,
+    nonce,
+    input: data || '0x',
+    value: value || '0x0',
+    accessList: accessList || null,
+    blockHash: txReceipt?.blockHash || null,
+    blockNumber: txReceipt?.blockNumber || null,
+    transactionIndex: txReceipt?.transactionIndex || null,
+  };
+
+  if (maxFeePerGas && maxPriorityFeePerGas) {
+    formattedTxMeta.gasPrice = maxFeePerGas;
+    formattedTxMeta.maxFeePerGas = maxFeePerGas;
+    formattedTxMeta.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+  } else {
+    formattedTxMeta.gasPrice = gasPrice;
+    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+  }
+
+  return formattedTxMeta;
 }

@@ -12,6 +12,7 @@ import {
   generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  ellipsify,
 } from './send.utils';
 
 jest.mock('../../../shared/modules/conversion.utils', () => ({
@@ -152,6 +153,18 @@ describe('send utils', () => {
       );
 
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('ellipsify()', () => {
+    it('should ellipsify a contract address', () => {
+      expect(
+        ellipsify('0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'),
+      ).toStrictEqual('0xCcCC...cccC');
+    });
+
+    it('should return an empty string if the passed text is not defined', () => {
+      expect(ellipsify(undefined)).toStrictEqual('');
     });
   });
 });

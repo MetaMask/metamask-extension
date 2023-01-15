@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-import {
-  UNLOCK_ROUTE,
-  INITIALIZE_ROUTE,
-  ONBOARDING_ROUTE,
-} from '../../constants/routes';
+import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
 
 export default function Authenticated(props) {
   const { isUnlocked, completedOnboarding } = props;
@@ -16,9 +12,7 @@ export default function Authenticated(props) {
       return (
         <Redirect
           to={{
-            pathname: process.env.ONBOARDING_V2
-              ? ONBOARDING_ROUTE
-              : INITIALIZE_ROUTE,
+            pathname: ONBOARDING_ROUTE,
           }}
         />
       );

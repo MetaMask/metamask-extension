@@ -197,10 +197,6 @@ export default class TypedMessageManager extends EventEmitter {
           data = JSON.parse(params.data);
         }, '"data" must be a valid JSON string.');
         const validation = jsonschema.validate(data, TYPED_MESSAGE_SCHEMA);
-        assert.ok(
-          data.primaryType in data.types,
-          `Primary type of "${data.primaryType}" has no type definition.`,
-        );
         if (validation.errors.length !== 0) {
           throw ethErrors.rpc.invalidParams({
             message:
@@ -208,6 +204,10 @@ export default class TypedMessageManager extends EventEmitter {
             data: validation.errors.map((v) => v.message.toString()),
           });
         }
+        assert.ok(
+          data.primaryType in data.types,
+          `Primary type of "${data.primaryType}" has no type definition.`,
+        );
         let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);

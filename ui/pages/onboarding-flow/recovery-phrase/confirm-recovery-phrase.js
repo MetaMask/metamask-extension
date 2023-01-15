@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
@@ -17,14 +18,19 @@ import {
 } from '../../../components/app/step-progress-bar';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { setSeedPhraseBackedUp } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   // Removes seed phrase words from chips corresponding to the
   // indicesToCheck so that user has to complete the phrase and confirm
@@ -93,7 +99,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           type="primary"
           large
           className="recovery-phrase__footer__confirm--button"
-          onClick={() => {
+          onClick={async () => {
+            await dispatch(setSeedPhraseBackedUp(true));
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_PHRASE_CONFIRMED,
+            });
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
           disabled={!matching}

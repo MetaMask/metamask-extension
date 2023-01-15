@@ -1,0 +1,68 @@
+diff --git a/index.ts b/index.ts
+deleted file mode 100644
+index 69ce92ac081f182b5123409021e1b1028255c7f3..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
+--- a/index.ts
++++ /dev/null
+@@ -1,62 +0,0 @@
+-export class Semaphore {
+-    private tasks: (() => void)[] = [];
+-    count: number;
+-
+-    constructor(count: number) {
+-        this.count = count;
+-    }
+-
+-    private sched() {
+-        if (this.count > 0 && this.tasks.length > 0) {
+-            this.count--;
+-            let next = this.tasks.shift();
+-            if (next === undefined) {
+-                throw "Unexpected undefined value in tasks list";
+-            }
+-
+-            next();
+-        }
+-    }
+-
+-    public acquire() {
+-        return new Promise<() => void>((res, rej) => {
+-            var task = () => {
+-                var released = false;
+-                res(() => {
+-                    if (!released) {
+-                        released = true;
+-                        this.count++;
+-                        this.sched();
+-                    }
+-                });
+-            };
+-            this.tasks.push(task);
+-            if (process && process.nextTick) {
+-                process.nextTick(this.sched.bind(this));
+-            } else {
+-                setImmediate(this.sched.bind(this));
+-            }
+-        });
+-    }
+-
+-    public use<T>(f: () => Promise<T>) {
+-        return this.acquire()
+-        .then(release => {
+-            return f()
+-            .then((res) => {
+-                release();
+-                return res;
+-            })
+-            .catch((err) => {
+-                release();
+-                throw err;
+-            });
+-        });
+-    }
+-}
+-
+-export class Mutex extends Semaphore {
+-    constructor() {
+-        super(1);
+-    }
+-}

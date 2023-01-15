@@ -117,6 +117,21 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          whitelist: [],
+          blacklist: ['127.0.0.1'],
+        }),
+      )
+      .get('/api/v1/lists/phishfort_hotlist.json')
+      .reply(200, JSON.stringify(['127.0.0.1']));
 
     sandbox.replace(browser, 'runtime', {
       sendMessage: sandbox.stub().rejects(),
@@ -172,21 +187,6 @@ describe('MetaMaskController', function () {
     it('should not reset states if already set', function () {
       // global.isFirstTime should also remain false
       assert.equal(globalThis.isFirstTimeProfileLoaded, false);
-    });
-  });
-
-  describe('#getAccounts', function () {
-    it('returns first address when dapp calls web3.eth.getAccounts', async function () {
-      const password = 'a-fake-password';
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-
-      metamaskController.networkController._baseProviderParams.getAccounts(
-        (err, res) => {
-          assert.ifError(err);
-          assert.equal(res.length, 1);
-          assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-        },
-      );
     });
   });
 
@@ -709,7 +709,7 @@ describe('MetaMaskController', function () {
       );
       const getNetworkstub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetwork',
+        'getNetworkState',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');

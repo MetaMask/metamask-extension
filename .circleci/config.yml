@@ -16,6 +16,7 @@ executors:
 
 orbs:
   gh: circleci/github-cli@2.0
+  codecov: codecov/codecov@3.2.2
 
 workflows:
   test_and_release:
@@ -93,9 +94,20 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
-      - test-unit:
+      - test-unit-mocha:
           requires:
             - prep-deps
+      - test-unit-jest-main:
+          requires:
+            - prep-deps
+      - test-unit-jest-development:
+          requires:
+            - prep-deps
+      - upload-and-validate-coverage:
+          requires:
+            - test-unit-jest-main
+            - test-unit-jest-development
+            - test-unit-mocha
       - test-unit-global:
           requires:
             - prep-deps
@@ -127,8 +139,11 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit
+            - test-unit-jest-main
+            - test-unit-jest-development
             - test-unit-global
+            - test-unit-mocha
+            - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -208,7 +223,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          keys:
+            # First try to get the specific cache for the checksum of the yarn.lock file.
+            # This cache key lookup will fail if the lock file is modified and a cache
+            # has not yet been persisted for the new checksum.
+            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            # To prevent having to do a full install of every node_module when
+            # dependencies change, restore from the last known cache of any
+            # branch/checksum, the install step will remove cached items that are no longer
+            # required and add the new dependencies, and the cache will be persisted.
+            - dependency-cache-v1-
       - gh/install
       - run:
           name: Set IS_DRAFT environment variable
@@ -237,12 +261,7 @@ jobs:
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules/
-            - build-artifacts/yarn-install-har/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
+            - .yarn/cache
       - persist_to_workspace:
           root: .
           paths:
@@ -316,9 +335,9 @@ jobs:
                 command: yarn build --build-type beta dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod
@@ -356,9 +375,9 @@ jobs:
                 command: yarn build --build-type flask dist
       - when:
           condition:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
           steps:
             - run:
                 name: build:prod
@@ -477,7 +496,7 @@ jobs:
           at: .
       - run:
           name: Detect yarn lock deduplications
-          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
+          command: yarn dedupe --check
 
   test-lint:
     executor: node-browsers
@@ -820,9 +839,6 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
-          path: jest-coverage
-          destination: jest-coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -886,7 +902,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - checkout
       - attach_workspace:
           at: .
@@ -898,8 +914,8 @@ jobs:
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
-  test-unit:
-    executor: node-browsers
+  test-unit-mocha:
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -907,24 +923,60 @@ jobs:
       - run:
           name: test:coverage:mocha
           command: yarn test:coverage:mocha
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - run:
-          name: Validate coverage thresholds
-          command: |
-            if ! git diff --exit-code jest.config.js development/jest.config.js; then
-              echo "Detected changes in coverage thresholds"
-              exit 1
-            fi
       - persist_to_workspace:
           root: .
           paths:
             - .nyc_output
             - coverage
-            - jest-coverage
+
+  test-unit-jest-development:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: jest development unit tests
+          command: yarn test:coverage:jest:dev
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
       - store_test_results:
           path: test/test-results/junit.xml
+
+  test-unit-jest-main:
+    executor: node-browsers-medium-plus
+    parallelism: 12
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:coverage:jest
+          command: yarn test:coverage:jest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: test/test-results/junit.xml
+
+  upload-and-validate-coverage:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - codecov/upload
+      - run:
+          name: test:coverage:validate
+          command: yarn test:coverage:validate
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+
   test-unit-global:
     executor: node-browsers
     steps:
