@@ -4,7 +4,6 @@ import { ethers } from 'ethers';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { getInitLedgerTransportType } from '../../../shared/lib/preferences-utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
 import { NETWORK_EVENTS } from './network';
 
