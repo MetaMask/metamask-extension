@@ -30,6 +30,7 @@ import {
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   TOKEN_ALLOWANCE_VALUE_REGEX,
+  DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
@@ -54,13 +55,6 @@ export default function CustomSpendingCap({
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
-  };
-
-  const countDecimals = (inputValue) => {
-    if (replaceCommaToDot(inputValue).toString().split('.')[1] !== undefined) {
-      return replaceCommaToDot(inputValue).toString().split('.')[1].length;
-    }
-    return 0;
   };
 
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
@@ -113,8 +107,8 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
-
-    if (countDecimals(valueInput) > decimals) {
+    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+    if (match?.[1]?.length > decimals) {
       return;
     }
 
