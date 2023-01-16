@@ -5,7 +5,7 @@ const fs = require('fs');
 const dependencyTree = require('dependency-tree');
 
 const stories = fs.readFileSync(
-  path.join(__dirname, '..', 'storybook-build', 'stories.json'),
+  path.join(__dirname, '..', '..', 'storybook-build', 'stories.json'),
   'utf8',
 );
 
