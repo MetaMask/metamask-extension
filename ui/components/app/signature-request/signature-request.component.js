@@ -134,9 +134,11 @@ export default class SignatureRequest extends PureComponent {
       nativeCurrency,
     } = this.props;
     const { trackEvent } = this.context;
-    const { sanitizedMessage, domain, primaryType } =
-      this.memoizedParseMessage(data);
-
+    const {
+      sanitizedMessage,
+      domain: { verifyingContract },
+      primaryType,
+    } = this.memoizedParseMessage(data);
     const currentNetwork = this.getNetworkName();
 
     const balanceInBaseAsset = conversionUtil(balance, {
@@ -223,20 +225,23 @@ export default class SignatureRequest extends PureComponent {
           >
             {this.context.t('signatureRequestGuidance')}
           </Typography>
-          <div>
-            <Button
-              type="link"
-              onClick={() => this.setState({ showContractDetails: true })}
-              className="signature-request-content__verify-contract-details"
-            >
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.PRIMARY_DEFAULT}
+          {verifyingContract ? (
+            <div>
+              <Button
+                type="link"
+                onClick={() => this.setState({ showContractDetails: true })}
+                className="signature-request-content__verify-contract-details"
+                data-testid="verify-contract-details"
               >
-                {this.context.t('verifyContractDetails')}
-              </Typography>
-            </Button>
-          </div>
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  color={COLORS.PRIMARY_DEFAULT}
+                >
+                  {this.context.t('verifyContractDetails')}
+                </Typography>
+              </Button>
+            </div>
+          ) : null}
         </div>
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
@@ -261,7 +266,7 @@ export default class SignatureRequest extends PureComponent {
         />
         {this.state.showContractDetails && (
           <ContractDetailsModal
-            toAddress={domain.verifyingContract}
+            toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             origin={origin}

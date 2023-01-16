@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import {
-  getEthConversionFromWeiHex,
-  getValueFromWeiHex,
-} from '../../../helpers/utils/conversions.util';
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
@@ -90,21 +87,13 @@ export default class TransactionActivityLog extends PureComponent {
   renderActivity(activity, index) {
     const { conversionRate, nativeCurrency } = this.props;
     const { eventKey, value, timestamp } = activity;
-    const ethValue =
-      index === 0
-        ? `${getValueFromWeiHex({
-            value,
-            fromCurrency: 'ETH',
-            toCurrency: 'ETH',
-            conversionRate,
-            numberOfDecimals: 6,
-          })} ${nativeCurrency}`
-        : getEthConversionFromWeiHex({
-            value,
-            fromCurrency: 'ETH',
-            conversionRate,
-            numberOfDecimals: 3,
-          });
+    const ethValue = `${getValueFromWeiHex({
+      value,
+      fromCurrency: 'ETH',
+      toCurrency: 'ETH',
+      conversionRate,
+      numberOfDecimals: 6,
+    })} ${nativeCurrency}`;
     const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y");
     const activityText = this.context.t(eventKey, [
       ethValue,

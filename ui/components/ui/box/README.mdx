@@ -23,11 +23,18 @@ Box is a utility component that can be used for layout or as a base for other UI
 | marginBottom    | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
 | marginRight     | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
 | marginLeft      | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
+| marginInline    | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
+| marginInlineStart| 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
+| marginInlineEnd | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                           | -                  |
 | padding         | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
 | paddingTop      | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
 | paddingBottom   | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
 | paddingRight    | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
 | paddingLeft     | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
+| paddingInline   | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
+| paddingInlineStart    | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
+| paddingInlineEnd  | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
+
 | display         | DISPLAY values or array of DISPLAY values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                     | -                  |
 | flexDirection   | FLEX_DIRECTION values or array of FLEX_DIRECTION values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)       | FLEX_DIRECTION.ROW |
 | flexWrap        | FLEX_WRAP values or array of FLEX_WRAP values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                 | -                  |
@@ -51,7 +58,7 @@ The following describes the props and example usage for this component.
 
 ### Margin
 
-The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, and `marginLeft` can be used to set the margins of the `Box` component. All of the margin props accept [responsive props](#responsive-props) in the form of array props
+The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLeft`, `marginInline`, `marginInlineStart`, and `marginInlineEnd` can be used to set the margins of the `Box` component. All of the margin props accept [responsive props](#responsive-props) in the form of array props
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
 
@@ -65,6 +72,9 @@ Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these value
 <Box marginRight={4} />
 <Box marginBottom={4} />
 <Box marginLeft={'auto'} />
+<Box marginInline={4} />
+<Box marginInlineStart={4} />
+<Box marginInlineEnd={4} />
 
 // Responsive props
 <Box margin={[4, 8]} />
@@ -72,11 +82,14 @@ Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these value
 <Box marginRight={[4, 8]} />
 <Box marginBottom={[4, 8]} />
 <Box marginLeft={['auto', 8]} />
+<Box marginInline={['auto', 8]} />
+<Box marginInlineStart={['auto', 8]} />
+<Box marginInlineEnd={['auto', 8]} />
 ```
 
 ### Padding
 
-The padding props work very similarly to margin. The padding props `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, and `paddingLeft` can be used to set the paddings of the `Box` component. All of the padding props accept [responsive props](#responsive-props) in the form of array props
+The padding props work very similarly to margin. The padding props `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`, `paddingInline`, `paddingInlineStart`, and `paddingInlineEnd` can be used to set the paddings of the `Box` component. All of the padding props accept [responsive props](#responsive-props) in the form of array props
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
 
