@@ -9,6 +9,7 @@ import { BUTTON_LINK_SIZES } from './button-link.constants';
 export const ButtonLink = ({
   className,
   danger,
+  disabled,
   size = BUTTON_LINK_SIZES.MD,
   ...props
 }) => {
@@ -16,10 +17,12 @@ export const ButtonLink = ({
     <ButtonBase
       className={classnames(className, 'mm-button-link', {
         'mm-button-link--type-danger': danger,
+        'mm-button-link--disabled': disabled,
       })}
       size={size}
+      color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
       backgroundColor={COLORS.TRANSPARENT}
-      {...props}
+      {...{ disabled, ...props }}
     />
   );
 };
@@ -33,6 +36,10 @@ ButtonLink.propTypes = {
    * Boolean to change button type to Danger when true
    */
   danger: PropTypes.bool,
+  /**
+   * Boolean to disable button
+   */
+  disabled: PropTypes.bool,
   /**
    * Possible size values: 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px).
    * Default value is 'SIZES.MD'.

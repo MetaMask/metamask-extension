@@ -149,7 +149,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+export const Href = (args) => <ButtonLink {...args}>Anchor Element</ButtonLink>;
 
 Href.args = {
   href: '/metamask',

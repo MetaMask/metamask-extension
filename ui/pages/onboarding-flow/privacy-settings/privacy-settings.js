@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +27,8 @@ import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/route
 import { Icon, TextField } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -43,6 +45,7 @@ export default function PrivacySettings() {
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
   const [ipfsError, setIPFSError] = useState(null);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const networks = useSelector(
     (state) => state.metamask.frequentRpcListDetail || [],
@@ -63,6 +66,16 @@ export default function PrivacySettings() {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
       dispatch(setIpfsGateway(host));
     }
+
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_ADVANCED_SETTINGS,
+      properties: {
+        show_incoming_tx: showIncomingTransactions,
+        use_phising_detection: usePhishingDetection,
+        turnon_token_detection: turnOnTokenDetection,
+      },
+    });
 
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
