@@ -83,7 +83,8 @@ describe('Signature Request Component', () => {
       expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
       const messageWrapper = wrapper.find(Message);
       expect(messageWrapper).toHaveLength(1);
-      const { data } = messageWrapper.props();
+      const { data, primaryType } = messageWrapper.props();
+      expect(primaryType).toStrictEqual('Mail');
       expect(data.contents).toStrictEqual('Hello, Bob!');
       expect(data.from.name).toStrictEqual('Cow');
       expect(data.from.wallets).toBeDefined();

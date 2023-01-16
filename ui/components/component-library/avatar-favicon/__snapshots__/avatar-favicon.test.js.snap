@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvatarFavicon should render correctly 1`] = `
+<div>
+  <div
+    class="box mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+    data-testid="avatar-favicon"
+  >
+    <div
+      class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-icon-default"
+      style="mask-image: url('./images/icons/icon-global-filled.svg');"
+    />
+  </div>
+</div>
+`;
