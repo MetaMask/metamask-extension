@@ -20,9 +20,8 @@
 
   &__close {
     position: absolute;
-    right: 16px
+    right: 16px;
   }
-  
 
   &__content {
     display: flex;
@@ -34,6 +33,6 @@
   &__footer {
     display: flex;
     justify-content: center;
-    margin: 16px 24px  0px 16px;
+    margin: 16px 24px  0 16px;
   }
 }
