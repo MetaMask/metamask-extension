@@ -92,7 +92,12 @@ export default function CollectiblesItems({
     collectionName,
   ) => {
     if (isPreviouslyOwnedCollection) {
-      return null;
+      return (
+        <img
+          src={collectionImage}
+          className="collectibles-items__collection-image"
+        />
+      );
     }
     if (collectionImage) {
       return (
@@ -257,6 +262,7 @@ export default function CollectiblesItems({
           {renderCollection({
             collectibles: previouslyOwnedCollection.collectibles,
             collectionName: previouslyOwnedCollection.collectionName,
+            collectionImage: previouslyOwnedCollection.collectibles[0]?.image,
             isPreviouslyOwnedCollection: true,
             key: PREVIOUSLY_OWNED_KEY,
           })}
@@ -286,6 +292,7 @@ CollectiblesItems.propTypes = {
       }),
     ),
     collectionName: PropTypes.string,
+    collectionImage: PropTypes.string,
   }),
   collections: PropTypes.shape({
     collectibles: PropTypes.arrayOf(
