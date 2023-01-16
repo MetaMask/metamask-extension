@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box/box';
@@ -74,11 +75,10 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPreCompleteContent = useCallback(() => {
     return (
       <Box
-        className={`hold-to-reveal-button__absolute-fill ${
-          isUnlocking ? 'hold-to-reveal-button__invisible' : null
-        } ${
-          hasTriggeredUnlock ? 'hold-to-reveal-button__main-icon-show' : null
-        }`}
+        className={classnames('hold-to-reveal-button__absolute-fill', {
+          'hold-to-reveal-button__absolute-fill': isUnlocking,
+          'hold-to-reveal-button__main-icon-show': hasTriggeredUnlock,
+        })}
       >
         <Box className="hold-to-reveal-button__absolute-fill">
           <svg className="hold-to-reveal-button__circle-svg">
@@ -120,9 +120,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPostCompleteContent = useCallback(() => {
     return isUnlocking ? (
       <div
-        className={`hold-to-reveal-button__absolute-fill ${
-          hasTriggeredUnlock ? 'hold-to-reveal-button__unlock-icon-hide' : null
-        }`}
+        className={classnames('hold-to-reveal-button__absolute-fill', {
+          'hold-to-reveal-button__unlock-icon-hide': hasTriggeredUnlock,
+        })}
         onAnimationEnd={resetAnimationStates}
       >
         <div
