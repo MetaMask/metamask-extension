@@ -2385,7 +2385,7 @@ export function exportAccount(password, address) {
         log.debug(`background.exportAccount`);
         callBackgroundMethod(
           'exportAccount',
-          [address],
+          [address, password],
           function (err2, result) {
             dispatch(hideLoadingIndication());
 
@@ -2421,7 +2421,7 @@ export function exportAccounts(password, addresses) {
             new Promise((resolve2, reject2) =>
               callBackgroundMethod(
                 'exportAccount',
-                [address],
+                [address, password],
                 function (err2, result) {
                   if (err2) {
                     log.error(err2);

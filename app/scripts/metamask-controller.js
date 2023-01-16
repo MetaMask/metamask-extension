@@ -1593,7 +1593,6 @@ export default class MetamaskController extends EventEmitter {
       detectTokensController,
       ensController,
       gasFeeController,
-      keyringController,
       metaMetricsController,
       networkController,
       announcementController,
@@ -1813,7 +1812,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
@@ -2054,6 +2053,11 @@ export default class MetamaskController extends EventEmitter {
           assetsContractController,
         ),
     };
+  }
+
+  async exportAccount(address, password) {
+    await this.verifyPassword(password);
+    return this.keyringController.exportAccount(address, password);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
