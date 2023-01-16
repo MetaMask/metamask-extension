@@ -200,15 +200,15 @@ describe('NFT Items', () => {
     jest.clearAllMocks();
   });
 
-  describe('Nfts Detection Notice', () => {
-    it('should render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
+  describe('NFTs Detection Notice', () => {
+    it('should render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs', () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
       expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
     });
-    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has nfts', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -226,7 +226,7 @@ describe('NFT Items', () => {
         `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       );
     });
-    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts but use NFT autodetection preference is set to true', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -234,7 +234,7 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
-    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts but user has dismissed the notice before', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -255,7 +255,7 @@ describe('NFT Items', () => {
   });
 
   describe('Collections', () => {
-    it('should render the name of the collections and number of nfts in each collection if current account/chainId combination has nfts', () => {
+    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -275,7 +275,7 @@ describe('NFT Items', () => {
     });
   });
   describe('Nfts options', () => {
-    it('should render a link "Refresh list" when some nfts are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNfts and checkAndUpdateNftsOwnershipStatus', () => {
+    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNfts and checkAndUpdateNftsOwnershipStatus', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -288,7 +288,7 @@ describe('NFT Items', () => {
       expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
     });
 
-    it('should render a link "Refresh list" when some nfts are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
+    it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
       render({
         chainId: '0x5',
         selectedAddress: ACCOUNT_1,
@@ -300,7 +300,7 @@ describe('NFT Items', () => {
       expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable autodetect" when some nfts are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -310,7 +310,7 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });
-    it('should render a link "Import NFTs" when some nfts are present, which, when clicked calls the passed in onAddNFT method', () => {
+    it('should render a link "Import NFTs" when some NFTs are present, which, when clicked calls the passed in onAddNFT method', () => {
       const onAddNFTStub = jest.fn();
       render({
         selectedAddress: ACCOUNT_1,

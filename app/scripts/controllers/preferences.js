@@ -150,7 +150,7 @@ export default class PreferencesController {
   /**
    * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect nfts.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect NFTs.
    */
   setUseNftDetection(useNftDetection) {
     this.store.updateState({ useNftDetection });
@@ -159,7 +159,7 @@ export default class PreferencesController {
   /**
    * Setter for the `openSeaEnabled` property
    *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for nfts data.
+   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFT data.
    */
   setOpenSeaEnabled(openSeaEnabled) {
     this.store.updateState({

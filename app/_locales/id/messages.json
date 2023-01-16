@@ -1206,7 +1206,7 @@
     "message": "Aktifkan API OpenSea"
   },
   "enableOpenSeaAPIDescription": {
-    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
+    "message": "Gunakan API OpenSea untuk mengambil datan NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableSmartTransactions": {
     "message": "Aktifkan transaksi pintar"
@@ -1671,7 +1671,7 @@
     "message": "Impor halaman NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "ID koleksi merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
+    "message": "ID koleksi merupakan pengenal unik karena tidak ada duan NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
   "importNFTs": {
     "message": "Impor NFT"
@@ -2274,7 +2274,7 @@
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
   },
   "nftWarningContentBold": {
-    "message": "semua NFT $1 Anda",
+    "message": "semuan NFT $1 Anda",
     "description": "$1 is name of the collection"
   },
   "nftWarningContentGrey": {
@@ -2302,7 +2302,7 @@
     "message": "Nilai konversi tidak tersedia"
   },
   "noNFTs": {
-    "message": "Belum ada NFT"
+    "message": "Belum adan NFT"
   },
   "noSnaps": {
     "message": "Belum ada Snap yang diinstal"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Tidak mendukung pengiriman token koleksi (ERC-721) untuk saat ini",
-    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Kami tidak dapat memverifikasi kontrak ini. Pastikan alamat ini aman."
@@ -4380,13 +4380,13 @@
     "message": "Deteksi otomatis NFT"
   },
   "useNftDetectionDescription": {
-    "message": "Menampilkan media & data NFT dapat mengekspos alamat IP Anda ke server terpusat. API pihak ketiga (seperti OpenSea) digunakan untuk mendeteksi NFT di dompet Anda. API memperlihatkan alamat akun Anda dengan layanan tersebut. Biarkan nonaktif jika Anda tidak ingin aplikasi memakai data dari layanan tersebut."
+    "message": "Menampilkan media & datan NFT dapat mengekspos alamat IP Anda ke server terpusat. API pihak ketiga (seperti OpenSea) digunakan untuk mendeteksi NFT di dompet Anda. API memperlihatkan alamat akun Anda dengan layanan tersebut. Biarkan nonaktif jika Anda tidak ingin aplikasi memakai data dari layanan tersebut."
   },
   "useNftDetectionDescriptionLine2": {
     "message": "Selain itu, ketahuilah bahwa:"
   },
   "useNftDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
+    "message": "Metadatan NFT dapat berisi tautan ke situs penipuan atau pencurian."
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."

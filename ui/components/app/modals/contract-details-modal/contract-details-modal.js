@@ -352,7 +352,7 @@ ContractDetailsModal.propTypes = {
    */
   siteImage: PropTypes.string,
   /**
-   * The token id of the nft
+   * The token ID of the NFT
    */
   tokenId: PropTypes.string,
   /**

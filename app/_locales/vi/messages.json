@@ -1665,7 +1665,7 @@
     "message": "Nhập NFT"
   },
   "importNFTAddressToolTip": {
-    "message": "Ví dụ: trên OpenSea, trên trang của NFT bên dưới mục Chi tiết, có một giá trị siêu liên kết màu xanh dương gắn nhãn 'Địa chỉ hợp đồng'. Nếu bạn nhấn vào đây, nó sẽ dẫn bạn đến địa chỉ của hợp đồng trên Etherscan; ở phía trên cùng bên trái của trang đó, sẽ có một biểu tượng gắn nhãn 'Hợp đồng', và ở bên phải là một chuỗi dài các chữ cái và số. Đây là địa chỉ của hợp đồng đã tạo NFT của bạn. Nhấn vào biểu tượng 'sao chép' ở bên phải của địa chỉ và bạn sẽ sao chép nó vào bộ nhớ đệm."
+    "message": "Ví dụ: trên OpenSea, trên trang củan NFT bên dưới mục Chi tiết, có một giá trị siêu liên kết màu xanh dương gắn nhãn 'Địa chỉ hợp đồng'. Nếu bạn nhấn vào đây, nó sẽ dẫn bạn đến địa chỉ của hợp đồng trên Etherscan; ở phía trên cùng bên trái của trang đó, sẽ có một biểu tượng gắn nhãn 'Hợp đồng', và ở bên phải là một chuỗi dài các chữ cái và số. Đây là địa chỉ của hợp đồng đã tạo NFT của bạn. Nhấn vào biểu tượng 'sao chép' ở bên phải của địa chỉ và bạn sẽ sao chép nó vào bộ nhớ đệm."
   },
   "importNFTPage": {
     "message": "Nhập trang NFT"
@@ -3000,7 +3000,7 @@
     "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Hãy đảm bảo rằng bạn có Cụm mật khẩu khôi phục bí mật ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
   },
   "removeNFT": {
-    "message": "Xóa NFT"
+    "message": "Xóan NFT"
   },
   "removeSnap": {
     "message": "Xóa Snap"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token sưu tập (ERC-721)",
-    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Chúng tôi không thể xác minh hợp đồng này. Hãy chắc chắn bạn tin tưởng địa chỉ này."

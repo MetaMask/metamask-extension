@@ -2497,7 +2497,7 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should set up the appropriate state for editing a nft asset transaction', async () => {
+      it('should set up the appropriate state for editing an NFT asset transaction', async () => {
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({
             standard: 'ERC721',

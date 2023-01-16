@@ -379,7 +379,7 @@
     "description": "The token symbol that is being approved"
   },
   "approveTokenDescription": {
-    "message": "Nagbibigay-daan ito sa third party na i-access at ilipat ang mga sumusunod na NFT nang walang karagdagang abiso hanggang sa bawiin mo ang pag-access nito."
+    "message": "Nagbibigay-daan ito sa third party na i-access at ilipat ang mga sumusunod nan NFT nang walang karagdagang abiso hanggang sa bawiin mo ang pag-access nito."
   },
   "approveTokenTitle": {
     "message": "Payagan ang pag-access at paglipat ng iyong $1?",
@@ -846,7 +846,7 @@
     "message": "Kontrata ng token"
   },
   "convertTokenToNFTDescription": {
-    "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
+    "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mgan NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Napansin namin na naidagdag ang asset na ito bilang NFT. Gusto mo ba itong alisin mula sa listahan ng iyong token?"
@@ -1674,7 +1674,7 @@
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
   "importNFTs": {
-    "message": "I-import ang mga NFT"
+    "message": "I-import ang mgan NFT"
   },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
@@ -1935,7 +1935,7 @@
     "message": "Nilo-load..."
   },
   "loadingNFTs": {
-    "message": "Nilo-load ang mga NFT..."
+    "message": "Nilo-load ang mgan NFT..."
   },
   "loadingTokens": {
     "message": "Nilo-load ang Mga Token..."
@@ -2222,7 +2222,7 @@
     "message": "Bagong Kontrata"
   },
   "newNFTDetectedMessage": {
-    "message": "Payagan ang MetaMask na awtomatikong makita ang mga NFT mula sa Opensea at ipakita sa iyong wallet."
+    "message": "Payagan ang MetaMask na awtomatikong makita ang mgan NFT mula sa Opensea at ipakita sa iyong wallet."
   },
   "newNFTsDetected": {
     "message": "Bago! Pag-detect ng NFT"
@@ -2270,7 +2270,7 @@
     "message": "Ilagay ang token id"
   },
   "nftWarningContent": {
-    "message": "Nagbibigay ka ng access sa $1, kabilang ang anumang maaaring maging pag-aari mo sa hinaharap. Ang partido sa kabilang panig ay maaaring maglipat ng mga NFT mula sa iyong wallet sa anumang oras nang hindi ka tinatanong hanggang sa bawiin mo ang pag-aprubang ito. $2",
+    "message": "Nagbibigay ka ng access sa $1, kabilang ang anumang maaaring maging pag-aari mo sa hinaharap. Ang partido sa kabilang panig ay maaaring maglipat ng mgan NFT mula sa iyong wallet sa anumang oras nang hindi ka tinatanong hanggang sa bawiin mo ang pag-aprubang ito. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
   },
   "nftWarningContentBold": {
@@ -2281,7 +2281,7 @@
     "message": "Magpatuloy nang may pag-iingat."
   },
   "nfts": {
-    "message": "Mga NFT"
+    "message": "Mgan NFT"
   },
   "nickname": {
     "message": "Palayaw"
@@ -2302,7 +2302,7 @@
     "message": "Hindi available ang rate ng conversion"
   },
   "noNFTs": {
-    "message": "Wala pang mga NFT"
+    "message": "Wala pang mgan NFT"
   },
   "noSnaps": {
     "message": "Walang mga Snap na naka-install"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Ang pagpapadala ng NFT (ERC-721) token ay kasalukuyang hindi magagamit",
-    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Hindi namin ma-verify ang kontratang ito. Tiyaking pinagkakatiwalaan mo ang address na ito."
@@ -4377,10 +4377,10 @@
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
   },
   "useNftDetection": {
-    "message": "Autodetect ng mga NFT"
+    "message": "Autodetect ng mgan NFT"
   },
   "useNftDetectionDescription": {
-    "message": "Ang pagpapakita ng media at data ng mga NFT ay maaaring maglantad sa IP address sa iyong mga centralized server. Ang mga Third-party API (tulad ng OpenSea) ay ginagamit upang ma-detect ang mga NFT sa iyong wallet. Maglalantad ito sa iyong account address sa mga serbisyong iyon. Hayaan itong naka-disable kung ayaw mong kunin ng app ang data mula sa mga serbisyong iyon."
+    "message": "Ang pagpapakita ng media at data ng mgan NFT ay maaaring maglantad sa IP address sa iyong mga centralized server. Ang mga Third-party API (tulad ng OpenSea) ay ginagamit upang ma-detect ang mgan NFT sa iyong wallet. Maglalantad ito sa iyong account address sa mga serbisyong iyon. Hayaan itong naka-disable kung ayaw mong kunin ng app ang data mula sa mga serbisyong iyon."
   },
   "useNftDetectionDescriptionLine2": {
     "message": "Bilang karagdagan, tandaan na:"
@@ -4389,7 +4389,7 @@
     "message": "Ang NFT metadata ay maaaring maglaman ng mga link sa mga scam o phishing site."
   },
   "useNftDetectionDescriptionLine4": {
-    "message": "Kahit sino ay maaaring mag-airdrop ng mga NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
+    "message": "Kahit sino ay maaaring mag-airdrop ng mgan NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
   },
   "useDefault": {
     "message": "Gamitin ang default"

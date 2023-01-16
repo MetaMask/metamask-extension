@@ -846,7 +846,7 @@
     "message": "Contrato do token"
   },
   "convertTokenToNFTDescription": {
-    "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
+    "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo an NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Detectamos que esse ativo foi adicionado como NFT. Deseja removê-lo da sua lista de tokens?"
@@ -1771,7 +1771,7 @@
     "message": "Não é uma rede de ETH; configurar em minúsculas"
   },
   "invalidAssetType": {
-    "message": "Esse ativo é um NFT e precisa ser adicionado novamente à página Importar NFT, encontrada na aba NFTs."
+    "message": "Esse ativo é um NFT e precisa ser adicionado novamente à página Importar NFT, encontrada na aban NFTs."
   },
   "invalidBlockExplorerURL": {
     "message": "URL inválido do explorador de blocos"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
-    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Não conseguimos verificar esse contrato. Certifique-se de que você confia nesse endereço."
