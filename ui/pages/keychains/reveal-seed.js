@@ -1,15 +1,20 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
+import qrCode from 'qrcode-generator';
 import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { TEXT, COLORS } from '../../helpers/constants/design-system';
 
 import Button from '../../components/ui/button';
+import { Text, Label, Icon } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { Tabs, Tab } from '../../components/ui/tabs';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -23,6 +28,7 @@ const RevealSeedPage = () => {
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState(null);
+  const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -33,9 +39,17 @@ const RevealSeedPage = () => {
     }
   }, []);
 
+  const renderQR = () => {
+    const qrImage = qrCode(0, 'L');
+    qrImage.addData(seedWords);
+    qrImage.make();
+    return qrImage;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setSeedWords(null);
+    setCompletedLongPress(false);
     setError(null);
     try {
       dispatch(requestRevealSeedWords(password)).then((revealedSeedWords) => {
@@ -47,8 +61,16 @@ const RevealSeedPage = () => {
           },
         });
         setSeedWords(revealedSeedWords);
-        setScreen(REVEAL_SEED_SCREEN);
       });
+      dispatch(
+        showModal({
+          name: 'HOLD_TO_REVEAL_SRP',
+          onLongPressed: () => {
+            setCompletedLongPress(true);
+            setScreen(REVEAL_SEED_SCREEN);
+          },
+        }),
+      );
     } catch (e) {
       trackEvent({
         category: EVENT.CATEGORIES.KEYS,
@@ -64,13 +86,22 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <div className="page-container__warning-container">
-        <i className="fa fa-exclamation-triangle fa-2x page-container__warning-icon" />
-        <div className="page-container__warning-message">
-          <div className="page-container__warning-title">
-            {t('revealSeedWordsWarningTitle')}
-          </div>
-          <div>{t('revealSeedWordsWarning')}</div>
+      <div className="srp__warning-container">
+        <div className="srp__warning-icon">
+          <Icon name="warning-filled" color={COLORS.ERROR_DEFAULT} />
+        </div>
+        <div className="srp__warning-message">
+          <Text variant={TEXT.BODY_MD}>
+            {t('revealSeedWordsWarning', [
+              <Text
+                key="reveal-seed-words-warning-2"
+                variant={TEXT.BODY_MD_BOLD}
+                as="span"
+              >
+                {t('revealSeedWordsWarning2')}
+              </Text>,
+            ])}
+          </Text>
         </div>
       </div>
     );
@@ -79,14 +110,14 @@ const RevealSeedPage = () => {
   const renderPasswordPromptContent = () => {
     return (
       <form onSubmit={(event) => handleSubmit(event)}>
-        <label className="input-label" htmlFor="password-box">
+        <Label htmlFor="password-box" variant={TEXT.BODY_MD_BOLD}>
           {t('enterPasswordContinue')}
-        </label>
+        </Label>
         <div className="input-group">
           <input
             data-testid="input-password"
             type="password"
-            placeholder={t('password')}
+            placeholder={t('makeSureNoOneWatching')}
             id="password-box"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -103,39 +134,53 @@ const RevealSeedPage = () => {
   const renderRevealSeedContent = () => {
     return (
       <div>
-        <label className="reveal-seed__label">
-          {t('yourPrivateSeedPhrase')}
-        </label>
-        <ExportTextContainer
-          text={seedWords}
-          onClickCopy={() => {
-            trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_COPIED,
-              properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
-                copy_method: 'clipboard',
-              },
-            });
-          }}
-          onClickDownload={() => {
-            trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_COPIED,
-              properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
-                copy_method: 'file_download',
-              },
-            });
-          }}
-        />
+        <Tabs defaultActiveTabName={t('revealSeedWordsText')}>
+          <Tab
+            name={t('revealSeedWordsText')}
+            className="reveal-seed__tab"
+            activeClassName="reveal-seed__active-tab"
+          >
+            <div className="reveal-seed__text-container">
+              <Label variant={TEXT.BODY_MD_BOLD}>
+                {t('yourPrivateSeedPhrase')}
+              </Label>
+              <ExportTextContainer
+                text={seedWords}
+                onClickCopy={() => {
+                  trackEvent({
+                    category: EVENT.CATEGORIES.KEYS,
+                    event: EVENT_NAMES.KEY_EXPORT_COPIED,
+                    properties: {
+                      key_type: EVENT.KEY_TYPES.SRP,
+                      copy_method: 'clipboard',
+                    },
+                  });
+                }}
+              />
+            </div>
+          </Tab>
+          <Tab
+            name={t('revealSeedWordsQR')}
+            className="reveal-seed__tab"
+            activeClassName="reveal-seed__active-tab"
+          >
+            <div className="reveal-seed__qr-container">
+              <div
+                className="qr-code__wrapper"
+                dangerouslySetInnerHTML={{
+                  __html: renderQR().createTableTag(7),
+                }}
+              />
+            </div>
+          </Tab>
+        </Tabs>
       </div>
     );
   };
 
   const renderPasswordPromptFooter = () => {
     return (
-      <div className="page-container__footer">
+      <div className="page-container__footer srp__footer">
         <footer>
           <Button
             type="secondary"
@@ -179,63 +224,81 @@ const RevealSeedPage = () => {
 
   const renderRevealSeedFooter = () => {
     return (
-      <div className="page-container__footer">
+      <div className="page-container__footer srp__footer-revealed">
         <Button
           type="secondary"
           large
-          className="page-container__footer-single-button"
+          className="page-container__footer-button"
           onClick={() => history.push(mostRecentOverviewPage)}
         >
-          {t('close')}
+          <Text variant={TEXT.BODY_MD} color={COLORS.PRIMARY_DEFAULT}>
+            {t('close')}
+          </Text>
         </Button>
       </div>
     );
   };
 
   const renderContent = () => {
-    if (screen === PASSWORD_PROMPT_SCREEN) {
-      return renderPasswordPromptContent();
-    }
-    return renderRevealSeedContent();
+    return screen === PASSWORD_PROMPT_SCREEN || !completedLongPress
+      ? renderPasswordPromptContent()
+      : renderRevealSeedContent();
   };
 
   const renderFooter = () => {
-    return screen === PASSWORD_PROMPT_SCREEN
+    return screen === PASSWORD_PROMPT_SCREEN || !completedLongPress
       ? renderPasswordPromptFooter()
       : renderRevealSeedFooter();
   };
 
   return (
     <div className="page-container">
-      <div className="page-container__header">
-        <div className="page-container__title">{t('secretRecoveryPhrase')}</div>
-        <div className="page-container__subtitle">
-          {t('revealSeedWordsDescription')}
-        </div>
+      <div className="srp__header">
+        <Text variant={TEXT.HEADING_LG}>{t('secretRecoveryPhrase')}</Text>
       </div>
-      <div className="page-container__content">
+      <div className="srp__content">
+        <Text variant={TEXT.BODY_MD}>
+          {t('revealSeedWordsDescription1', [
+            <Button
+              key="srp-learn-more-non-custodial"
+              type="link"
+              href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="srp__inline-link"
+            >
+              {t('revealSeedWordsSRPName')}
+            </Button>,
+            <Text
+              key="reveal-seed-word-part-3"
+              variant={TEXT.BODY_MD_BOLD}
+              as="span"
+            >
+              {t('revealSeedWordsDescription3')}
+            </Text>,
+          ])}
+        </Text>
+        <br />
+        <Text variant={TEXT.BODY_MD}>
+          {t('revealSeedWordsDescription2', [
+            <Button
+              key="srp-learn-more-non-custodial"
+              type="link"
+              href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="srp__inline-link"
+            >
+              {t('revealSeedWordsNonCustodialWallet')}
+            </Button>,
+          ])}
+        </Text>
         {renderWarning()}
-        <div className="reveal-seed__content">{renderContent()}</div>
+        <div className="reveal-seed__content"> {renderContent()}</div>
       </div>
       {renderFooter()}
     </div>
   );
 };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     requestRevealSeedWords: (password) =>
-//       dispatch(requestRevealSeedWords(password)),
-//     showLongPressWarningModal: ({ target, onConfirm }) => {
-//       return dispatch(
-//         showModal({
-//           name: '',
-//           target,
-//           onConfirm,
-//         }),
-//       );
-//     },
-//   };
-// };
 
 export default RevealSeedPage;

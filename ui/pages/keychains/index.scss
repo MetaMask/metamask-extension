@@ -75,7 +75,7 @@
 
 .reveal-seed {
   &__content {
-    padding: 20px;
+    padding: 0 4px 0 4px;
   }
 
   &__label {
@@ -90,9 +90,73 @@
     color: var(--color-error-default);
     padding-top: 5px;
   }
+
+  &__tab{
+    display: flex;
+    flex: 1;
+  }
+
+  &__active-tab{
+    color: var(--color-primary-default);
+  }
+
+  &__text-container {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  &__qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.srp {
+  &__header {
+    margin: 20px 16px 16px 16px;
+  }
+
+  &__content {
+    margin: 8px 16px 20px 16px;
+  }
+
+  &__inline-link {
+    display: initial;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  &__warning-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    // height: 90px;
+    margin: 24px 0 24px 0;
+    padding: 8px 12px 8px 12px;
+    border-radius: 4px;
+    border-left: 4px solid var(--color-error-default);
+    background: var(--color-error-muted);
+  }
+
+  &__warning-icon {
+    margin-right: 8px;
+  }
+
+  &__footer {
+    margin: auto 0px 0px 0px;
+    border: 0px;
+  }
+
+  &__footer-revealed {
+    margin: auto 16px 16px 16px;
+    border: 0px;
+  }
 }
 
 .page-container__footer-single-button {
-  width: 40%;
-  margin: 8px auto;
+  margin: 16px;
 }
