@@ -1,5 +1,5 @@
 {
-  "content_security_policy": "frame-ancestors 'none'",
+  "content_security_policy": "script-src 'self'; object-src 'self'; frame-ancestors 'none'",
   "externally_connectable": {
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
