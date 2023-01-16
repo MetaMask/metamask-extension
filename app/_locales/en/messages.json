@@ -865,7 +865,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "Copied!"
+    "message": "Copied. It will be stored for one minute."
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -1656,6 +1656,27 @@
   "history": {
     "message": "History"
   },
+  "holdToReveal": {
+    "message": "Hold to reveal SRP"
+  },
+  "holdToRevealContent1": {
+    "message": "Your Secret Recovery Phrase provides $1"
+  },
+  "holdToRevealContent2": {
+    "message": "full access to your wallet and funds."
+  },
+  "holdToRevealContent3": {
+    "message": "Do not share this with anyone. $1 $2"
+  },
+  "holdToRevealContent4": {
+    "message": "MetaMask Support will not request this,"
+  },
+  "holdToRevealContent5": {
+    "message": "but phishers might."
+  },
+  "holdToRevealTitle": {
+    "message": "Keep your SRP safe"
+  },
   "ignoreAll": {
     "message": "Ignore all"
   },
@@ -1996,7 +2017,7 @@
     "message": "Create a new swap"
   },
   "makeSureNoOneWatching": {
-    "message": "Make sure no one is watching your screen",
+    "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "malformedData": {
@@ -3091,11 +3112,32 @@
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret."
+  "revealSeedWordsDescription1": {
+    "message": "The $1 provides $2"
+  },
+  "revealSeedWordsDescription2": {
+    "message": "MetaMask is a $1. That means you're the owner of your SRP."
+  },
+  "revealSeedWordsDescription3": {
+    "message": "full access to your wallet and funds.\n"
+  },
+  "revealSeedWordsNonCustodialWallet": {
+    "message": "non-custodial wallet"
+  },
+  "revealSeedWordsQR": {
+    "message": "QR"
+  },
+  "revealSeedWordsSRPName": {
+    "message": "Secret Recovery Phrase (SRP)"
+  },
+  "revealSeedWordsText": {
+    "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "These words can be used to steal all your accounts."
+    "message": "Make sure no one is looking at your screen. $1"
+  },
+  "revealSeedWordsWarning2": {
+    "message": "MetaMask Support will never request this."
   },
   "revealSeedWordsWarningTitle": {
     "message": "DO NOT share this phrase with anyone!"
@@ -4613,7 +4655,7 @@
     "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Your private Secret Recovery Phrase"
+    "message": "Your Secret Recovery Phrase"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
