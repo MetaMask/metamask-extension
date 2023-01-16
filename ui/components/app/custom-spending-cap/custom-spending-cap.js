@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -55,6 +56,13 @@ export default function CustomSpendingCap({
     return inputValue.replace(/,/gu, '.');
   };
 
+  const countDecimals = (inputValue) => {
+    if (replaceCommaToDot(inputValue).toString().split('.')[1] !== undefined) {
+      return replaceCommaToDot(inputValue).toString().split('.')[1].length;
+    }
+    return 0;
+  };
+
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
     return conversionGreaterThan(
       { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
@@ -105,6 +113,10 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+
+    if (countDecimals(valueInput) > decimals) {
+      return;
+    }
 
     if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
@@ -230,7 +242,9 @@ export default function CustomSpendingCap({
               paddingRight={4}
               paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
-              className="custom-spending-cap__max"
+              className={classnames('custom-spending-cap__max', {
+                'custom-spending-cap__max--with-error-message': error,
+              })}
             >
               <ButtonLink
                 size={SIZES.AUTO}
@@ -242,16 +256,21 @@ export default function CustomSpendingCap({
                 {t('max')}
               </ButtonLink>
             </Box>
-            <Typography
-              className="custom-spending-cap__description"
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H7}
-              boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+            <Box
+              className={classnames('custom-spending-cap__description', {
+                'custom-spending-cap__description--with-error-message': error,
+              })}
             >
-              {replaceCommaToDot(value)
-                ? customSpendingCapText
-                : inputLogicEmptyStateText}
-            </Typography>
+              <Typography
+                color={COLORS.TEXT_DEFAULT}
+                variant={TYPOGRAPHY.H7}
+                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+              >
+                {replaceCommaToDot(value)
+                  ? customSpendingCapText
+                  : inputLogicEmptyStateText}
+              </Typography>
+            </Box>
           </label>
         </Box>
       </Box>
