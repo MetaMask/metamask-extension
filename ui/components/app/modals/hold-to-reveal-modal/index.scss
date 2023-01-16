@@ -1,0 +1,39 @@
+.hold-to-reveal-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  margin: 16px 0 16px 0;
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 16px 24px 16px;
+  }
+
+  &__title {
+    margin-left: auto;
+  }
+
+  &__close {
+    position: absolute;
+    right: 16px
+  }
+  
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 0 16px;
+  }
+
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    margin: 16px 24px  0px 16px;
+  }
+}
