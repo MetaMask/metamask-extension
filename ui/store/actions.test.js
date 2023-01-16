@@ -1245,6 +1245,7 @@ describe('Actions', () => {
     });
   });
 
+  // eslint-disable-next-line jest/no-focused-tests
   describe('#exportAccount', () => {
     afterEach(() => {
       sinon.restore();
@@ -1290,7 +1291,7 @@ describe('Actions', () => {
 
       const verifyPasswordStub = sinon
         .stub()
-        .callsFake((_, _2, cb) => cb(new Error('error')));
+        .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
@@ -1318,7 +1319,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
+        .callsFake((_, _2, cb) => cb(new Error('error')));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
