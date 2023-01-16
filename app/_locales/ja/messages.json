@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "コレクティブル (ERC-721) トークンの送信は現在サポートされていません",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "このコントラクトを検証できません。このアドレスが信頼できることを確認してください。"

@@ -2231,7 +2231,7 @@
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
   "newNftAddedMessage": {
-    "message": "Το Nft προστέθηκε με επιτυχία!"
+    "message": "Το NFT προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Η αποστολή συλλεκτικών (ERC-721) δεν υποστηρίζεται προς το παρόν",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Δεν μπορούμε να επαληθεύσουμε αυτή τη σύμβαση. Βεβαιωθείτε ότι εμπιστεύεστε αυτήν τη διεύθυνση."

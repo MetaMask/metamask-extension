@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token sưu tập (ERC-721)",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Chúng tôi không thể xác minh hợp đồng này. Hãy chắc chắn bạn tin tưởng địa chỉ này."

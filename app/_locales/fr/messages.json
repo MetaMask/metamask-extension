@@ -1671,7 +1671,7 @@
     "message": "page Importer des NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "L’ID d’un nft est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
+    "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
   "importNFTs": {
     "message": "Importer des NFT"
@@ -2231,7 +2231,7 @@
     "message": "« $1 » a été ajouté avec succès !"
   },
   "newNftAddedMessage": {
-    "message": "Le nft a été ajouté avec succès !"
+    "message": "Le NFT a été ajouté avec succès !"
   },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
@@ -4359,7 +4359,7 @@
   },
   "unsendableAsset": {
     "message": "L’envoi de jetons nfts (ERC-721) n’est pas pris en charge actuellement",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Nous ne pouvons pas vérifier ce contrat. Assurez-vous que vous faites confiance à cette adresse."

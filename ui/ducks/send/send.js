@@ -2109,7 +2109,7 @@ export function updateSendAsset(
             asset.balance = '0x1';
           } else {
             throw new Error(
-              'Send slice initialized as nft send with a nft not currently owned by the select account',
+              'Send slice initialized as NFT send with a NFT not currently owned by the select account',
             );
           }
           await dispatch(

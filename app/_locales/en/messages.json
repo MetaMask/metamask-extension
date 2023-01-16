@@ -1671,7 +1671,7 @@
     "message": "Import NFT page"
   },
   "importNFTTokenIdToolTip": {
-    "message": "A nft's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
+    "message": "A NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
   "importNFTs": {
     "message": "Import NFTs"
@@ -2234,7 +2234,7 @@
     "message": "“$1” was successfully added!"
   },
   "newNftAddedMessage": {
-    "message": "Nft was successfully added!"
+    "message": "NFT was successfully added!"
   },
   "newPassword": {
     "message": "New password (8 characters min)"
@@ -4370,8 +4370,8 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "Sending nft (ERC-721) tokens is not currently supported",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "message": "Sending NFT (ERC-721) tokens is not currently supported",
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "We cannot verify this contract. Make sure you trust this address."

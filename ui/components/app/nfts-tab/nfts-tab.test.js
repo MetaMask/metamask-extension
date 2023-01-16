@@ -175,7 +175,7 @@ const render = ({
   return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
 };
 
-describe('Nft Items', () => {
+describe('NFT Items', () => {
   const detectNftsStub = jest.fn();
   const setNftsDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
@@ -226,7 +226,7 @@ describe('Nft Items', () => {
         `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       );
     });
-    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts but use nft autodetection preference is set to true', () => {
+    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts but use NFT autodetection preference is set to true', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -275,7 +275,7 @@ describe('Nft Items', () => {
     });
   });
   describe('Nfts options', () => {
-    it('should render a link "Refresh list" when some nfts are present on mainnet and nft auto-detection preference is set to true, which, when clicked calls methods DetectNfts and checkAndUpdateNftsOwnershipStatus', () => {
+    it('should render a link "Refresh list" when some nfts are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNfts and checkAndUpdateNftsOwnershipStatus', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -300,7 +300,7 @@ describe('Nft Items', () => {
       expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable autodetect" when some nfts are present and nft auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some nfts are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,

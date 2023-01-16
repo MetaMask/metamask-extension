@@ -893,7 +893,7 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta;
 
-        // if this is a transferFrom method generated from within the app it may be a nft transfer transaction
+        // if this is a transferFrom method generated from within the app it may be a NFT transfer transaction
         // in which case we will want to check and update ownership status of the transferred nft.
         if (
           txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&

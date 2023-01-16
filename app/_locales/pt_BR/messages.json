@@ -3030,7 +3030,7 @@
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
-    "description": "This is an error message we show the user if they attempt to send a nft asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send a NFT asset type, for which currently don't support sending"
   },
   "updatedWithDate": {
     "message": "Atualizado em $1"
