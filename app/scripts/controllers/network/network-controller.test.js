@@ -1,5 +1,6 @@
 import nock from 'nock';
 import { deferredPromise } from '../../lib/util';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import NetworkController, { NETWORK_EVENTS } from './network-controller';
 
 /**
@@ -80,26 +81,32 @@ async function withController(...args) {
   }
 }
 
+/**
+ * Setup Nock mocks for the block tracker.
+ *
+ * @param {object} options - Options.
+ * @param {NETWORK_TYPES} options.networkType - The network type to mock.
+ * @param {object} options.block - The mock block to return.
+ */
+function setupMockRpcBlockResponses({
+  networkType = NETWORK_TYPES.RPC,
+  block = BLOCK,
+} = {}) {
+  if (networkType === NETWORK_TYPES.RPC) {
+    nock('http://localhost:8545')
+      .persist()
+      .post(/.*/u)
+      .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)));
+  } else {
+    nock(`https://${networkType}.infura.io`)
+      .persist()
+      .post(`/v3/${defaultControllerOptions.infuraProjectId}`)
+      .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)));
+  }
+}
+
 describe('NetworkController', () => {
   describe('controller', () => {
-    let latestBlock;
-
-    beforeEach(() => {
-      latestBlock = BLOCK;
-      nock('http://localhost:8545')
-        .persist()
-        .post(/.*/u)
-        .reply(200, () =>
-          JSON.stringify(constructSuccessfulRpcResponse(latestBlock)),
-        );
-      nock('https://mainnet.infura.io')
-        .persist()
-        .post('/v3/foo')
-        .reply(200, () =>
-          JSON.stringify(constructSuccessfulRpcResponse(latestBlock)),
-        );
-    });
-
     afterEach(() => {
       nock.cleanAll();
     });
@@ -107,6 +114,7 @@ describe('NetworkController', () => {
     describe('#provider', () => {
       it('provider should be updatable without reassignment', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
           await controller.initializeProvider();
           const providerProxy =
             controller.getProviderAndBlockTracker().provider;
@@ -127,6 +135,7 @@ describe('NetworkController', () => {
 
       it('should stop the block tracker for the current selected network', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
           await controller.initializeProvider();
           const { blockTracker } = controller.getProviderAndBlockTracker();
           // The block tracker starts running after a listener is attached
@@ -154,6 +163,8 @@ describe('NetworkController', () => {
     describe('#setProviderType', () => {
       it('should update provider.type', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.MAINNET });
           await controller.initializeProvider();
           controller.setProviderType('mainnet');
           const { type } = controller.getProviderConfig();
@@ -163,6 +174,8 @@ describe('NetworkController', () => {
 
       it('should set the network to loading', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.MAINNET });
           await controller.initializeProvider();
 
           controller.setProviderType('mainnet');
@@ -179,7 +192,7 @@ describe('NetworkController', () => {
     describe('#getEIP1559Compatibility', () => {
       it('should return false when baseFeePerGas is not in the block header', async () => {
         await withController(async ({ controller }) => {
-          latestBlock = PRE_1559_BLOCK;
+          setupMockRpcBlockResponses({ block: PRE_1559_BLOCK });
           await controller.initializeProvider();
           const supportsEIP1559 = await controller.getEIP1559Compatibility();
           expect(supportsEIP1559).toStrictEqual(false);
@@ -188,6 +201,7 @@ describe('NetworkController', () => {
 
       it('should return true when baseFeePerGas is in block header', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
           await controller.initializeProvider();
           const supportsEIP1559 = await controller.getEIP1559Compatibility();
           expect(supportsEIP1559).toStrictEqual(true);
@@ -196,6 +210,7 @@ describe('NetworkController', () => {
 
       it('should store EIP1559 support in state to reduce calls to _getLatestBlock', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
           await controller.initializeProvider();
           await controller.getEIP1559Compatibility();
           const supportsEIP1559 = await controller.getEIP1559Compatibility();
@@ -205,12 +220,16 @@ describe('NetworkController', () => {
 
       it('should clear stored EIP1559 support when changing networks', async () => {
         await withController(async ({ controller }) => {
+          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({
+            networkType: NETWORK_TYPES.MAINNET,
+            block: PRE_1559_BLOCK,
+          });
           await controller.initializeProvider();
           await controller.getEIP1559Compatibility();
           expect(controller.networkDetails.getState().EIPS[1559]).toStrictEqual(
             true,
           );
-          latestBlock = PRE_1559_BLOCK;
           await new Promise((resolve) => {
             controller.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
               resolve();
