@@ -91,12 +91,12 @@
     padding-top: 5px;
   }
 
-  &__tab{
+  &__tab {
     display: flex;
     flex: 1;
   }
 
-  &__active-tab{
+  &__active-tab {
     color: var(--color-primary-default);
   }
 
@@ -147,13 +147,13 @@
   }
 
   &__footer {
-    margin: auto 0px 0px 0px;
-    border: 0px;
+    margin: auto 0 0 0;
+    border: 0;
   }
 
   &__footer-revealed {
     margin: auto 16px 16px 16px;
-    border: 0px;
+    border: 0;
   }
 }
 
