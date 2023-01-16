@@ -31,7 +31,7 @@ $text-variants: (
 .mm-text {
   // Set default styles
   color: var(--color-text-default);
-  font-family: var(----font-family-sans);
+  font-family: var(--font-family-sans);
 
   @each $type, $size-options in $text-variants {
     &--#{$type} {
