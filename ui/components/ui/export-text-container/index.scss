@@ -37,6 +37,7 @@
 
     padding: 10px;
     flex: 1;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,6 +46,10 @@
 
     &--copy {
       border-right: 1px solid var(--color-border-default);
+    }
+
+    &--copy-only {
+      border-right: 0px;
     }
   }
 

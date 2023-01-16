@@ -2,25 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { exportAsFile } from '../../../helpers/utils/export-utils';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { ButtonSecondary } from '../../component-library';
 
-function ExportTextContainer({
-  text = '',
-  onClickCopy = null,
-  onClickDownload = null,
-}) {
+function ExportTextContainer({ text = '', onClickCopy = null }) {
+  const ONE_MINUTE = 1000 * 60;
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [copied, handleCopy] = useCopyToClipboard(ONE_MINUTE);
 
   return (
     <div className="export-text-container">
       <div className="export-text-container__text-container">
         <div className="export-text-container__text notranslate">{text}</div>
       </div>
-      <div className="export-text-container__buttons-container">
+      <div className="export-text-container__button">
         <div
-          className="export-text-container__button export-text-container__button--copy"
+          className="export-text-container__button export-text-container__button--copy-only"
           onClick={() => {
             if (onClickCopy) {
               onClickCopy();
@@ -28,24 +24,9 @@ function ExportTextContainer({
             handleCopy(text);
           }}
         >
-          <Icon name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY} />
-          <div className="export-text-container__button-text">
+          <ButtonSecondary className="export-text-container__button">
             {copied ? t('copiedExclamation') : t('copyToClipboard')}
-          </div>
-        </div>
-        <div
-          className="export-text-container__button"
-          onClick={() => {
-            if (onClickDownload) {
-              onClickDownload();
-            }
-            exportAsFile('', text);
-          }}
-        >
-          <img src="images/download.svg" alt="" />
-          <div className="export-text-container__button-text">
-            {t('saveAsCsvFile')}
-          </div>
+          </ButtonSecondary>
         </div>
       </div>
     </div>
@@ -55,7 +36,6 @@ function ExportTextContainer({
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
   onClickCopy: PropTypes.func,
-  onClickDownload: PropTypes.func,
 };
 
 export default React.memo(ExportTextContainer);
