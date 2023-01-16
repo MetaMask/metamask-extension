@@ -23058,7 +23058,6 @@ __metadata:
     stylelint: ^13.6.1
     swappable-obj-proxy: ^1.1.0
     terser: ^5.7.0
-    textarea-caret: ^3.0.1
     through2: ^4.0.2
     ts-node: ^10.5.0
     ttest: ^2.1.1
@@ -31382,13 +31381,6 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: b6937a38c80c7f84d9c11dd75e49d5c44f71d95e810a3250bd1f1797fc7117c57698204adf676b71497acc205d769d65c16ae8fa10afad832ae1322630aef10a
-  languageName: node
-  linkType: hard
-
-"textarea-caret@npm:^3.0.1":
-  version: 3.0.2
-  resolution: "textarea-caret@npm:3.0.2"
-  checksum: 804d391177969ecbbdbb303cbe6cabfb7d04b1a5fbb6b33860539ac775cd702687947815bd0f6422db8887a59b21333b5a1b9b1d8c50e3ab37187c3b3163e4ea
   languageName: node
   linkType: hard
 

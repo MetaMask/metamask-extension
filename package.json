@@ -330,7 +330,6 @@
     "ses": "^0.12.4",
     "single-call-balance-checker-abi": "^1.0.0",
     "swappable-obj-proxy": "^1.1.0",
-    "textarea-caret": "^3.0.1",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
