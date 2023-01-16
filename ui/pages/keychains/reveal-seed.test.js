@@ -5,10 +5,15 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import RevealSeedPage from './reveal-seed';
 
-const mockRequestRevealSeedWords = jest.fn().mockResolvedValue();
+const mockRequestRevealSeedWords = jest
+  .fn()
+  .mockResolvedValue('test seed words');
+
+const mockShowModal = jest.fn().mockResolvedValue('test seed words');
 
 jest.mock('../../store/actions.js', () => ({
   requestRevealSeedWords: () => mockRequestRevealSeedWords,
+  showModal: () => mockShowModal,
 }));
 
 describe('Reveal Seed Page', () => {
@@ -16,6 +21,8 @@ describe('Reveal Seed Page', () => {
     history: {
       mostRecentOverviewPage: '/',
     },
+    metamask: { currentLocale: 'en' },
+    appState: { isLoading: false },
   };
   const mockStore = configureMockStore([thunk])(mockState);
 
@@ -38,5 +45,21 @@ describe('Reveal Seed Page', () => {
     fireEvent.click(queryByText('Next'));
 
     expect(mockRequestRevealSeedWords).toHaveBeenCalled();
+  });
+
+  it('shows hold to reveal', async () => {
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
+
+    fireEvent.change(queryByTestId('input-password'), {
+      target: { value: 'password' },
+    });
+
+    fireEvent.click(queryByText('Next'));
+
+    expect(mockRequestRevealSeedWords).toHaveBeenCalled();
+    expect(mockShowModal).toHaveBeenCalled();
   });
 });
