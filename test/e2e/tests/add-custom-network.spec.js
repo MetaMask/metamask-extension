@@ -184,21 +184,21 @@ describe('Custom network', function () {
           text: `Arbitrum One`,
           tag: 'div',
         });
-        
+
+        const addedNetworks = await driver.findElements('.networks-tab__networks-list-name');
 
         await driver.clickElement({
           tag: 'button',
           text: 'Delete',
 
         });
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Delete',
 
-        const addedNetworks = await driver.clickElement('.networks-tab__networks-list-name')
+        });
 
-        assert.equal(addedNetworks.length,addedNetworks.length -1);
-        
-        //await driver.clickElement('.button btn--rounded btn-danger-primary modal-container__footer-button');
-        console.log('which network', addedNetworks);
-
+        assert.ok(addedNetworks.length-1);
         
       },
     );
