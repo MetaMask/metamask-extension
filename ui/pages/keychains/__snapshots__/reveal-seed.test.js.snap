@@ -6,47 +6,99 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     class="page-container"
   >
     <div
-      class="page-container__header"
+      class="srp__header"
     >
-      <div
-        class="page-container__title"
+      <h2
+        class="box mm-text mm-text--heading-lg mm-text--color-text-default box--flex-direction-row"
       >
         Secret Recovery Phrase
-      </div>
-      <div
-        class="page-container__subtitle"
-      >
-        If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret.
-      </div>
+      </h2>
     </div>
     <div
-      class="page-container__content"
+      class="srp__content"
     >
-      <div
-        class="page-container__warning-container"
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
       >
-        <i
-          class="fa fa-exclamation-triangle fa-2x page-container__warning-icon"
-        />
+        <span>
+           
+          The 
+          <a
+            class="button btn-link srp__inline-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Secret Recovery Phrase (SRP)
+          </a>
+           provides 
+          <span
+            class="box mm-text mm-text--body-md-bold mm-text--color-text-default box--flex-direction-row"
+          >
+            full access to your wallet and funds.
+
+          </span>
+          
+           
+        </span>
+      </p>
+      <br />
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        <span>
+           
+          MetaMask is a 
+          <a
+            class="button btn-link srp__inline-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            non-custodial wallet
+          </a>
+          . That means you're the owner of your SRP.
+           
+        </span>
+      </p>
+      <div
+        class="srp__warning-container"
+      >
         <div
-          class="page-container__warning-message"
+          class="srp__warning-icon"
         >
           <div
-            class="page-container__warning-title"
+            class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/icon-warning-filled.svg');"
+          />
+        </div>
+        <div
+          class="srp__warning-message"
+        >
+          <p
+            class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
           >
-            DO NOT share this phrase with anyone!
-          </div>
-          <div>
-            These words can be used to steal all your accounts.
-          </div>
+            <span>
+               
+              Make sure no one is looking at your screen. 
+              <span
+                class="box mm-text mm-text--body-md-bold mm-text--color-text-default box--flex-direction-row"
+              >
+                MetaMask Support will never request this.
+              </span>
+              
+               
+            </span>
+          </p>
         </div>
       </div>
       <div
         class="reveal-seed__content"
       >
+         
         <form>
           <label
-            class="input-label"
+            class="box mm-text mm-label mm-label--html-for mm-text--body-md-bold mm-text--font-weight-bold mm-text--color-text-default box--display-inline-flex box--flex-direction-row box--align-items-center"
             for="password-box"
           >
             Enter password to continue
@@ -58,7 +110,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
               class="form-control"
               data-testid="input-password"
               id="password-box"
-              placeholder="Password"
+              placeholder="Make sure nobody is looking"
               type="password"
               value=""
             />
@@ -67,7 +119,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="page-container__footer"
+      class="page-container__footer srp__footer"
     >
       <footer>
         <button
