@@ -4382,13 +4382,13 @@
   "useNftDetectionDescription": {
     "message": "L’affichage des médias et des données des NFT peut exposer votre adresse IP à des serveurs centralisés. Des API tierces (comme OpenSea) sont utilisées pour détecter les NFT dans votre portefeuille. Cela expose donc l’adresse de votre compte à ces services. Désactivez cette option si vous ne souhaitez pas que l’application récupère des données auprès de ces services."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "De plus, veuillez noter que :"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Les métadonnées des NFT peuvent contenir des liens vers des sites d’arnaques ou d’hameçonnage."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "N’importe qui peut déposer des NFT sur votre compte. Les NFT peuvent contenir du contenu offensant qui pourrait s’afficher automatiquement dans votre portefeuille."
   },
   "useDefault": {

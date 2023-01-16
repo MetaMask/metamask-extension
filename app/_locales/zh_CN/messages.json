@@ -4382,13 +4382,13 @@
   "useNftDetectionDescription": {
     "message": "显示 NFT 媒体和数据可能会将您的 IP 地址暴露给集中式服务器。第三方 API（例如 OpenSea）用于在您的钱包中检测 NFT。这会通过这些服务暴露您的账户地址。如果您不希望该应用程序从这些服务中提取数据，请禁用此功能。"
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "此外，请注意："
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
   },
   "useDefault": {

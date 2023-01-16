@@ -4388,19 +4388,19 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Autodetect NFTs"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to their servers. Leave this feature off if you don't want the app to pull data from those services."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Additionally, be aware that:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT metadata may contain links to scams or phishing sites."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
   },
   "useDefault": {

@@ -213,8 +213,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'NFTS_V1',

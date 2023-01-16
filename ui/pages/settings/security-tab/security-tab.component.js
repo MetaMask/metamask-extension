@@ -423,7 +423,7 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderCollectibleDetectionToggle() {
+  renderNftDetectionToggle() {
     if (!process.env.NFTS_V1) {
       return null;
     }
@@ -439,14 +439,14 @@ export default class SecurityTab extends PureComponent {
     return (
       <div ref={this.settingsRefs[9]} className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
+          <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
+            {t('useNftDetectionDescription')}
             <br />
-            {t('useCollectibleDetectionDescriptionLine2')}
+            {t('useNftDetectionDescriptionLine2')}
             <ul className="settings-page__content-unordered-list">
-              <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
-              <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
+              <li>{t('useNftDetectionDescriptionLine3')}</li>
+              <li>{t('useNftDetectionDescriptionLine4')}</li>
             </ul>
           </div>
         </div>
@@ -457,9 +457,9 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
+                  event: 'Nft Detection',
                   properties: {
-                    action: 'Collectible Detection',
+                    action: 'Nft Detection',
                     legacy_event: true,
                   },
                 });
@@ -518,7 +518,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderAutoDectectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
-          {this.renderCollectibleDetectionToggle()}
+          {this.renderNftDetectionToggle()}
         </div>
         {this.renderMetaMetricsOptIn()}
       </div>

@@ -4382,13 +4382,13 @@
   "useNftDetectionDescription": {
     "message": "NFT'lerin medya ve verilerinin görüntülenmesi IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Üçüncü taraf API'ler (OpenSea gibi) cüzdanınızda NFT'leri algılamak için kullanılır. Bu, hesap adresinizin bu hizmetlere açıklanmasını sağlar. Uygulamanın bu sunuculardan veri çekmesini istemiyorsanız bunu devre dışı bırakın."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Ayrıca, şunları unutmayın:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT meta verileri dolandırıcılık veya kimlik hırsızlığı sitelerine bağlantılar içerebilir."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Hesabınıza herkes NFT atabilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
   },
   "useDefault": {

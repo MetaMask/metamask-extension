@@ -4382,13 +4382,13 @@
   "useNftDetectionDescription": {
     "message": "Durch die Anzeige von NFTs-Medien und -Daten kann deine IP-Adresse an zentrale Server weitergegeben werden. APIs von Drittanbietern (wie OpenSea) werden verwendet, um NFTs in deiner Wallet zu erkennen. Dadurch wird deine Kontoadresse bei diesen Diensten offengelegt. Lass diese Option deaktiviert, wenn du nicht möchtest, dass die App Daten von diesen Diensten abruft."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Beachten Sie außerdem Folgendes:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrem Wallet angezeigt werden könnten."
   },
   "useDefault": {
