@@ -681,11 +681,11 @@
         "@eth-optimism/contracts>@ethersproject/contracts": true,
         "@metamask/assets-controllers>@ethersproject/abi": true,
         "@metamask/assets-controllers>@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/base-controller": true,
+        "@metamask/assets-controllers>@metamask/contract-metadata": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
@@ -756,6 +756,11 @@
       "packages": {
         "@ethersproject/bignumber>@ethersproject/bytes": true,
         "@ethersproject/bignumber>@ethersproject/logger": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
