@@ -1,28 +1,37 @@
-diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-index 2c6a7de..c7f331a 100644
---- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-+++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
-@@ -20,6 +20,10 @@ const NETWORK_API_URLS = {
- 
+diff --git a/index.js b/index.js
+index 2c6a7def1a0320c7928e5fdafcc7fdcdbc44432b..f8fe3b37944fcb4bb7c1613b02e27433c483f825 100644
+--- a/index.js
++++ b/index.js
+@@ -19,6 +19,15 @@ const NETWORK_API_URLS = {
+ }
+
  const CONNECTION_EVENT = 'ledger-connection-change'
- 
-+// A function that sleeps for x ms
-+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
++const TIMEOUT_DURATION_MS = 10 * 1000
 +
-+
++/**
++ * A promise that resolves in x milliseconds
++ *
++ * @param {number} ms
++ * @returns {Promise<number>}
++ */
++const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
  class LedgerBridgeKeyring extends EventEmitter {
    constructor (opts = {}) {
-     super()
-@@ -34,29 +38,51 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -29,6 +38,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+     this.page = 0
+     this.perPage = 5
+     this.unlockedAccount = 0
++    this.delayedPromises = []
+     this.hdk = new HDKey()
+     this.paths = {}
      this.iframe = null
-     this.network = 'mainnet'
-     this.implementFullBIP44 = false
-+    this.delayedPromises = [];
+@@ -37,26 +47,45 @@ class LedgerBridgeKeyring extends EventEmitter {
      this.deserialize(opts)
- 
+
      this.iframeLoaded = false
 -    this._setupIframe()
--
+
      this.currentMessageId = 0
      this.messageCallbacks = {}
 +
@@ -34,9 +43,8 @@ index 2c6a7de..c7f331a 100644
 +  init(opts){
 +    this._setupIframe()
      this._setupListener()
-+    return this.updateTransportMethod('webhid');
    }
- 
+
    serialize () {
      return Promise.resolve({
 +      hdk: this.isUnlocked() ? {
@@ -44,18 +52,16 @@ index 2c6a7de..c7f331a 100644
 +        chainCode: this.hdk.chainCode.toString('hex'),
 +      } : null,
        hdPath: this.hdPath,
-       accounts: this.accounts,
 +      page: this.page,
+       accounts: this.accounts,
        accountDetails: this.accountDetails,
        bridgeUrl: this.bridgeUrl,
        implementFullBIP44: false,
 +      unlockedAccount: this.unlockedAccount,
      })
    }
- 
+
    deserialize (opts = {}) {
-+    console.log('Updating ledger state', opts);
-+
 +    if(opts.hdk){
 +      this.setHdk(opts.hdk);
 +    }
@@ -63,50 +69,44 @@ index 2c6a7de..c7f331a 100644
      this.hdPath = opts.hdPath || hdPathString
 +    this.page = opts.page || 0
      this.bridgeUrl = opts.bridgeUrl || BRIDGE_URL
-+    this.unlockedAccount = opts.unlockedAccount || 0;
++    this.unlockedAccount = opts.unlockedAccount || 0
      this.accounts = opts.accounts || []
      this.accountDetails = opts.accountDetails || {}
      if (!opts.accountDetails) {
-@@ -99,6 +125,11 @@ class LedgerBridgeKeyring extends EventEmitter {
-     }
+@@ -72,6 +101,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+     return Promise.resolve()
    }
- 
+
 +  setHdk ({ publicKey, chainCode }) {
 +    this.hdk.publicKey = Buffer.from(publicKey, 'hex')
 +    this.hdk.chainCode = Buffer.from(chainCode, 'hex')
 +  }
 +
-   isUnlocked () {
-     return Boolean(this.hdk && this.hdk.publicKey)
-   }
-@@ -119,12 +150,16 @@ class LedgerBridgeKeyring extends EventEmitter {
+   _migrateAccountDetails (opts) {
+     if (this._isLedgerLiveHdPath() && opts.accountIndexes) {
+       for (const account of Object.keys(opts.accountIndexes)) {
+@@ -119,12 +153,12 @@ class LedgerBridgeKeyring extends EventEmitter {
      this.hdPath = hdPath
    }
- 
+
 -  unlock (hdPath, updateHdk = true) {
 +  async unlock (hdPath, updateHdk = true) {
      if (this.isUnlocked() && !hdPath) {
        return Promise.resolve('already unlocked')
      }
-+
      const path = hdPath ? this._toLedgerPath(hdPath) : this.hdPath
 -    return new Promise((resolve, reject) => {
-+
-+    await sleep(10000);
-+
 +    return new Promise(async (resolve, reject) => {
        this._sendMessage({
          action: 'ledger-unlock',
          params: {
-@@ -133,15 +168,18 @@ class LedgerBridgeKeyring extends EventEmitter {
-       },
+@@ -134,14 +168,17 @@ class LedgerBridgeKeyring extends EventEmitter {
        ({ success, payload }) => {
          if (success) {
--          if (updateHdk) {
+           if (updateHdk) {
 -            this.hdk.publicKey = Buffer.from(payload.publicKey, 'hex')
 -            this.hdk.chainCode = Buffer.from(payload.chainCode, 'hex')
-+          if(updateHdk) {
-+            this.setHdk(payload);
++            this.setHdk(payload)
            }
            resolve(payload.address)
          } else {
@@ -114,13 +114,13 @@ index 2c6a7de..c7f331a 100644
          }
        })
 +
-+      await sleep(10000);
-+
-+      reject('timeout');
++      // Prevent infinite promise hanging
++      await sleep(TIMEOUT_DURATION_MS)
++      reject('Ledger Bridge unlock timeout');
      })
    }
- 
-@@ -222,11 +260,11 @@ class LedgerBridgeKeyring extends EventEmitter {
+
+@@ -222,11 +259,11 @@ class LedgerBridgeKeyring extends EventEmitter {
        // If the iframe isn't loaded yet, let's store the desired transportType value and
        // optimistically return a successful promise
        if (!this.iframeLoaded) {
@@ -133,8 +133,8 @@ index 2c6a7de..c7f331a 100644
 +        })
          return
        }
- 
-@@ -235,6 +273,7 @@ class LedgerBridgeKeyring extends EventEmitter {
+
+@@ -235,6 +272,7 @@ class LedgerBridgeKeyring extends EventEmitter {
          params: { transportType },
        }, ({ success }) => {
          if (success) {
@@ -142,53 +142,7 @@ index 2c6a7de..c7f331a 100644
            resolve(true)
          } else {
            reject(new Error('Ledger transport could not be updated'))
-@@ -336,11 +375,14 @@ class LedgerBridgeKeyring extends EventEmitter {
-   }
- 
-   // For personal_sign, we need to prefix the message:
--  signPersonalMessage (withAccount, message) {
--    return new Promise((resolve, reject) => {
--      this.unlockAccountByAddress(withAccount)
--        .then((hdPath) => {
--          this._sendMessage({
-+  async signPersonalMessage (withAccount, message) {
-+
-+    try {
-+      const hdPath = await this.unlockAccountByAddress(withAccount);
-+
-+
-+      return new Promise((resolve, reject) => {
-+        this._sendMessage({
-             action: 'ledger-sign-personal-message',
-             params: {
-               hdPath,
-@@ -348,6 +390,7 @@ class LedgerBridgeKeyring extends EventEmitter {
-             },
-           },
-           ({ success, payload }) => {
-+
-             if (success) {
-               let v = payload.v - 27
-               v = v.toString(16)
-@@ -364,9 +407,14 @@ class LedgerBridgeKeyring extends EventEmitter {
-               reject(payload.error || new Error('Ledger: Unknown error while signing message'))
-             }
-           })
--        })
--        .catch(reject)
--    })
-+
-+        sleep(1000);
-+      });
-+
-+
-+    } catch (e) {
-+      throw e;
-+    }
-   }
- 
-   async unlockAccountByAddress (address) {
-@@ -455,18 +503,14 @@ class LedgerBridgeKeyring extends EventEmitter {
+@@ -455,18 +493,13 @@ class LedgerBridgeKeyring extends EventEmitter {
        // If the ledger live preference was set before the iframe is loaded,
        // set it after the iframe has loaded
        this.iframeLoaded = true
@@ -203,7 +157,6 @@ index 2c6a7de..c7f331a 100644
 -        } finally {
 -          delete this.delayedPromise
 -        }
-+
 +      for (const delayedPromise of this.delayedPromises) {
 +        this.updateTransportMethod(delayedPromise.transportType)
 +          .then((res) => delayedPromise.resolve(res))

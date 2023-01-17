@@ -1,13 +1,11 @@
-diff --git a/node_modules/eth-keyring-controller/index.js b/node_modules/eth-keyring-controller/index.js
-index f210ce2..ebdee34 100644
---- a/node_modules/eth-keyring-controller/index.js
-+++ b/node_modules/eth-keyring-controller/index.js
-@@ -238,7 +238,12 @@ class KeyringController extends EventEmitter {
-    */
+diff --git a/index.js b/index.js
+index f210ce203391f4a875cfcd4b3be6817d418df5bd..f63621066e35541c05d6975ee259cc9e37d979cb 100644
+--- a/index.js
++++ b/index.js
+@@ -239,6 +239,11 @@ class KeyringController extends EventEmitter {
    async addNewKeyring(type, opts) {
      const Keyring = this.getKeyringClassForType(type);
--    const keyring = new Keyring(opts);
-+    const keyring = new Keyring();
+     const keyring = new Keyring(opts);
 +
 +    if(keyring.init){
 +      await keyring.init();
@@ -16,20 +14,18 @@ index f210ce2..ebdee34 100644
      if ((!opts || !opts.mnemonic) && type === KEYRINGS_TYPE_MAP.HD_KEYRING) {
        keyring.generateRandomMnemonic();
        keyring.addAccounts();
-@@ -429,7 +434,11 @@ class KeyringController extends EventEmitter {
+@@ -429,7 +434,9 @@ class KeyringController extends EventEmitter {
    async signPersonalMessage(msgParams, opts = {}) {
      const address = normalizeAddress(msgParams.from);
      const keyring = await this.getKeyringForAccount(address);
 -    return await keyring.signPersonalMessage(address, msgParams.data, opts);
 +    const msgBuffer = await keyring.signPersonalMessage(address, msgParams.data, opts);
 +
-+    debugger;
-+
 +    return msgBuffer;
    }
  
    /**
-@@ -706,6 +715,11 @@ class KeyringController extends EventEmitter {
+@@ -706,6 +713,11 @@ class KeyringController extends EventEmitter {
        return undefined;
      }
      const keyring = new Keyring();
@@ -37,7 +33,7 @@ index f210ce2..ebdee34 100644
 +    if(keyring.init) {
 +      await keyring.init();
 +    }
-+
++    
      await keyring.deserialize(data);
      // getAccounts also validates the accounts for some keyrings
      await keyring.getAccounts();

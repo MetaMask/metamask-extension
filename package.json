@@ -190,7 +190,10 @@
     "improved-yarn-audit@^3.0.0": "patch:improved-yarn-audit@npm%3A3.0.0#./.yarn/patches/improved-yarn-audit-npm-3.0.0-3e37ee431a.patch",
     "lockfile-lint-api@^5.4.6": "patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch",
     "symbol-observable": "^2.0.3",
-    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch"
+    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
+    "eth-trezor-keyring@^0.10.0": "patch:eth-trezor-keyring@npm%3A0.10.0#./.yarn/patches/eth-trezor-keyring-npm-0.10.0-1bf9aa3f4d.patch",
+    "eth-keyring-controller@^8.1.0": "patch:eth-keyring-controller@npm%3A8.1.0#./.yarn/patches/eth-keyring-controller-npm-8.1.0-6d30bff8ae.patch",
+    "@metamask/eth-ledger-bridge-keyring@^0.13.0": "patch:@metamask/eth-ledger-bridge-keyring@npm%3A0.13.0#./.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-0.13.0-189684913d.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
