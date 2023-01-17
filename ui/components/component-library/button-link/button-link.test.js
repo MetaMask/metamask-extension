@@ -45,10 +45,16 @@ describe('ButtonLink', () => {
         <ButtonLink size={SIZES.LG} data-testid={SIZES.LG} />
       </>,
     );
-    
-    expect(getByTestId(SIZES.SM)).toHaveClass(`mm-button-base--size-${SIZES.SM}`);
-    expect(getByTestId(SIZES.MD)).toHaveClass(`mm-button-base--size-${SIZES.MD}`);
-    expect(getByTestId(SIZES.LG)).toHaveClass(`mm-button-base--size-${SIZES.LG}`);
+
+    expect(getByTestId(SIZES.SM)).toHaveClass(
+      `mm-button-base--size-${SIZES.SM}`,
+    );
+    expect(getByTestId(SIZES.MD)).toHaveClass(
+      `mm-button-base--size-${SIZES.MD}`,
+    );
+    expect(getByTestId(SIZES.LG)).toHaveClass(
+      `mm-button-base--size-${SIZES.LG}`,
+    );
   });
 
   it('should render ButtonLink inherit size', () => {

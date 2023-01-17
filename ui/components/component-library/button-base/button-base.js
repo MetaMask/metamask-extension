@@ -74,7 +74,7 @@ export const ButtonBase = ({
         color={TEXT_COLORS.INHERIT}
         {...textProps}
       >
-        {icon && <Icon name={icon} size={SIZES.SM} {...iconProps} />}
+        {iconName && <Icon name={iconName} size={SIZES.SM} {...iconProps} />}
         {children}
       </Text>
       {loading && (
