@@ -26,7 +26,6 @@ import {
   removePollingTokenFromAppState,
 } from '../../store/actions';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
-import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
   static contextTypes = {
@@ -181,11 +180,6 @@ export default class ConfirmTransaction extends Component {
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
           component={ConfirmContractInteraction}
-        />
-        <Route
-          exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-          component={ConfTx}
         />
         <Route
           exact
