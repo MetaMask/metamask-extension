@@ -54,7 +54,7 @@ import { valuesFor } from '../../helpers/utils/util';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
-  TOKEN_ALLOWANCE_VALUE_REGEX,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 
@@ -105,7 +105,7 @@ export default function TokenAllowance({
     return inputValue.replace(/,/gu, '.');
   };
 
-  let customPermissionAmount = TOKEN_ALLOWANCE_VALUE_REGEX.test(
+  let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
     customTokenAmount,
   )
     ? replaceCommaToDot(customTokenAmount).toString()
