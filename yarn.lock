@@ -3293,20 +3293,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/assets-controllers@npm:1.0.1"
+"@metamask/assets-controllers@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/assets-controllers@npm:3.0.1"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/base-controller": ~1.1.0
-    "@metamask/contract-metadata": ^1.35.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/controller-utils": ^1.0.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ~1.0.0
-    "@metamask/preferences-controller": ~1.0.0
+    "@metamask/network-controller": ^2.0.0
+    "@metamask/preferences-controller": ^1.0.1
     "@types/uuid": ^8.3.0
     abort-controller: ^3.0.0
     async-mutex: ^0.2.6
@@ -3318,7 +3318,9 @@ __metadata:
     multiformats: ^9.5.2
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
-  checksum: 678f32126aa84de769065581661218a247166ef2e4918290a8e082dd9c7b175d84c5a4d4f431c884dc83201b183f324c2b5047bc69a2ea7825d710470cae5f87
+  peerDependencies:
+    "@metamask/network-controller": ^2.0.0
+  checksum: c356a820929738e3ad83a5cfe20993a1e7c4dac6835b308d8cb32efe8542c339664ae3046a1dedce6ee2a4c45cec5528015309366fa96674837dca7ea001998f
   languageName: node
   linkType: hard
 
@@ -3336,7 +3338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:~1.1.0":
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
@@ -3372,13 +3374,6 @@ __metadata:
   version: 4.0.2
   resolution: "@metamask/browser-passworder@npm:4.0.2"
   checksum: 997c330b1c72f7135d0fd2a7f4b0dce37b3c2e6b30e92f048fa8d4f8c949f5b669dcc3064790f41df30ee2e53a9e64a812df72e00527736be704cce2cf4f6e49
-  languageName: node
-  linkType: hard
-
-"@metamask/contract-metadata@npm:^1.35.0":
-  version: 1.36.0
-  resolution: "@metamask/contract-metadata@npm:1.36.0"
-  checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
   languageName: node
   linkType: hard
 
@@ -3767,13 +3762,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/preferences-controller@npm:1.0.0"
+"@metamask/preferences-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/preferences-controller@npm:1.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
-  checksum: dad15bf468031df470ebeb18fa71c8181f247f9c9fd2eac52f6ee71f77bda61d8b0b7f8dc492d4f4f1602e249dedc38360b5e90ca2902adbcbd7c56bbaec8282
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
+  checksum: 3ad7dcf40cc1dc6679d37f705418d4d18da2acce120ce6bd09b0e6755484d193139fd85cf2c0b7374d867ab8a03d7f5bc74ebc8c2cdc003d5872f33d34c1e965
   languageName: node
   linkType: hard
 
@@ -22758,7 +22753,7 @@ __metadata:
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
     "@metamask/approval-controller": ^1.0.0
-    "@metamask/assets-controllers": ^1.0.1
+    "@metamask/assets-controllers": ^3.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
     "@metamask/contract-metadata": ^2.1.0

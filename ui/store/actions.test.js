@@ -1259,7 +1259,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(null, testPrivKey));
+        .callsFake((_, _2, cb) => cb(null, testPrivKey));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
@@ -1318,7 +1318,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
+        .callsFake((_, _2, cb) => cb(new Error('error')));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
