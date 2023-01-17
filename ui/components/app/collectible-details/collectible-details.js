@@ -313,6 +313,9 @@ export default function CollectibleDetails({ collectible }) {
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
+          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H7}>
+            {t('nftDisclaimer')}
+          </Typography>
         </Box>
       </Box>
     </>

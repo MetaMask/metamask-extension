@@ -2285,6 +2285,9 @@
   "nft": {
     "message": "NFT"
   },
+  "nftDisclaimer": {
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
