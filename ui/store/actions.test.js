@@ -1245,7 +1245,6 @@ describe('Actions', () => {
     });
   });
 
-  // eslint-disable-next-line jest/no-focused-tests
   describe('#exportAccount', () => {
     afterEach(() => {
       sinon.restore();
