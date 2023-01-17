@@ -2787,21 +2787,21 @@
     immer "^9.0.6"
     nanoid "^3.1.31"
 
-"@metamask/assets-controllers@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-1.0.0.tgz#10ee4e0bd005a2d26b78562641250a153cba5618"
-  integrity sha512-QUTtp4xJrh6sSkAByh0c7U7x2n50zU5wF++tkutsVyoQGwSurX8ZQwvf8W3l+3ARzHxy/l+Zc3JFhysJ9dn2Xw==
+"@metamask/assets-controllers@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/assets-controllers/-/assets-controllers-3.0.1.tgz#0dff14dd0b9f5be5037b45eab9669f16ae5fd302"
+  integrity sha512-QyqLMArbDfQ+YnLmr9CN/dekWI6IZ/D4wf3jpJxPVRrzi1GszHraNBcj1mKxiR4kLSZymLP4Gq3WZlRvMtGopQ==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/contract-metadata" "^1.35.0"
-    "@metamask/controller-utils" "~1.0.0"
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/contract-metadata" "^2.1.0"
+    "@metamask/controller-utils" "^1.0.0"
     "@metamask/metamask-eth-abis" "3.0.0"
-    "@metamask/network-controller" "~1.0.0"
-    "@metamask/preferences-controller" "~1.0.0"
+    "@metamask/network-controller" "^2.0.0"
+    "@metamask/preferences-controller" "^1.0.1"
     "@types/uuid" "^8.3.0"
     abort-controller "^3.0.0"
     async-mutex "^0.2.6"
@@ -2832,6 +2832,14 @@
     "@metamask/controller-utils" "~1.0.0"
     immer "^9.0.6"
 
+"@metamask/base-controller@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.1.1.tgz#34c2db471328b92a3a46f9c2547bbb9d37803258"
+  integrity sha512-erDfd+OcHnixSZObPNHuDn2G3rRT2B9J/JaOmjjQN64o9RqDYid87Zb0z03wK8cbJ/pEHhhDIBn6t2gMWcdwrQ==
+  dependencies:
+    "@metamask/controller-utils" "^1.0.0"
+    immer "^9.0.6"
+
 "@metamask/bip39@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/bip39/-/bip39-4.0.0.tgz#1cb867a8454e3d45d065107b4e070d58bdb64aac"
@@ -2851,6 +2859,11 @@
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.36.0.tgz#8e277190195e9c26733752457d2004d149fd7e0e"
   integrity sha512-weTsrXfDQHOgYaiI5giMcOAsD3ChcwnoryasT7xmAfLSKIbKP3RTTUu63VWYBoFCBZugHrhKD6z+N+nm8qAWBQ==
+
+"@metamask/contract-metadata@^2.1.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-2.2.0.tgz#277764d0d56e37180ae7644a9d11eb96295b36fc"
+  integrity sha512-SM6A4C7vXNbVpgMTX67kfW8QWvu3eSXxMZlY5PqZBTkvri1s9zgQ0uwRkK5r2VXNEoVmXCDnnEX/tX5EzzgNUQ==
 
 "@metamask/controller-utils@^1.0.0", "@metamask/controller-utils@~1.0.0":
   version "1.0.0"
@@ -3064,6 +3077,20 @@
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
 
+"@metamask/network-controller@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/network-controller/-/network-controller-2.0.0.tgz#ccc90b42c298e93ef42995e16b3e0d5858cffdeb"
+  integrity sha512-R5fWgDpitCJqyqXEno1d9fl4CpxQZdATORxk+VBoQk88IfmMqKRY/4fPlD3VP9uZl+UnHVqKCZfJEbski3VuMw==
+  dependencies:
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/controller-utils" "^1.0.0"
+    async-mutex "^0.2.6"
+    babel-runtime "^6.26.0"
+    eth-json-rpc-infura "^5.1.0"
+    eth-query "^2.1.2"
+    immer "^9.0.6"
+    web3-provider-engine "^16.0.3"
+
 "@metamask/network-controller@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/network-controller/-/network-controller-1.0.0.tgz#35180bdc56c918719eaa1e00455faa55ecf87824"
@@ -3170,13 +3197,13 @@
     "@metamask/utils" "^2.0.0"
     readable-stream "2.3.3"
 
-"@metamask/preferences-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/preferences-controller/-/preferences-controller-1.0.0.tgz#39c246d78a892712bfc0b82f9eb3ecc4053950ef"
-  integrity sha512-Kg/HslnPqtSkPOeDLDApBDBl6128LxO3aEYBxGiNWRJpzPWZvgAuwGufPkvKABuw5JnYq4L/MJWv4w+cpOfqTg==
+"@metamask/preferences-controller@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/preferences-controller/-/preferences-controller-1.0.1.tgz#20f2187be103a1e7f49df4021e39afb12ee422a0"
+  integrity sha512-6fAruDd9sag/hwJGKIP0eSdYC92J/wkDnigQo7ONpu7n94giot7vvsR5+4zNjC32tLa5GpHG50PynZaHfYzK0Q==
   dependencies:
-    "@metamask/base-controller" "~1.0.0"
-    "@metamask/controller-utils" "~1.0.0"
+    "@metamask/base-controller" "^1.1.1"
+    "@metamask/controller-utils" "^1.0.0"
 
 "@metamask/providers@^10.2.0", "@metamask/providers@^10.2.1":
   version "10.2.1"
@@ -17186,7 +17213,7 @@ ltgt@~2.2.0:
   resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.1.tgz#f35ca91c493f7b73da0e07495304f17b31f87ee5"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
 
-luxon@^3.2.1:
+luxon@^3.0.1, luxon@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.2.1.tgz#14f1af209188ad61212578ea7e3d518d18cee45f"
   integrity sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==
