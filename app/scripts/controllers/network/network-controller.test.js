@@ -73,7 +73,7 @@ const defaultControllerOptions = {
  * @returns Whatever the callback returns.
  */
 async function withController(...args) {
-  const [{ ...constructorArgs }, fn] = args.length === 2 ? args : [{}, args[0]];
+  const [constructorArgs, fn] = args.length === 2 ? args : [{}, args[0]];
   const controller = new NetworkController({
     ...defaultControllerOptions,
     ...constructorArgs,
