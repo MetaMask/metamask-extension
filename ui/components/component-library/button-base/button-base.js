@@ -45,12 +45,12 @@ export const ButtonBase = ({
       paddingLeft={4}
       paddingRight={4}
       className={classnames(
-        'mm-button',
+        'mm-button-base',
         {
-          [`mm-button--size-${size}`]: size,
-          'mm-button--loading': loading,
-          'mm-button--disabled': disabled,
-          'mm-button--block': block,
+          [`mm-button-base--size-${size}`]: size,
+          'mm-button-base--loading': loading,
+          'mm-button-base--disabled': disabled,
+          'mm-button-base--block': block,
         },
         className,
       )}
