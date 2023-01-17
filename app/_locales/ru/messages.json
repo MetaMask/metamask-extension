@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "Показать секретную фразу для восстановления"
   },
-  "revealSeedWordsDescription": {
-    "message": "Если вы меняете браузер или переходите на другой компьютер, вам понадобится эта секретная фраза для восстановления для доступа к своим счетам. Сохраните ее в безопасном потайном месте."
-  },
   "revealSeedWordsWarning": {
     "message": "Эти слова можно использовать для кражи всех ваших счетов."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "НЕ сообщайте никому эту фразу!"
   },
   "revealTheSeedPhrase": {
     "message": "Показать сид-фразу"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "Сохранить"
-  },
-  "saveAsCsvFile": {
-    "message": "Сохранить как файл CSV"
   },
   "scanInstructions": {
     "message": "Поместите QR-код перед камерой"

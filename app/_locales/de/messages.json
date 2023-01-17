@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "Seed-Wörterfolge anzeigen"
   },
-  "revealSeedWordsDescription": {
-    "message": "Wenn Sie einmal Ihren Browser oder Computer wechseln, benötigen Sie diesen Seed-Schlüssel, um auf Ihre Konten zuzugreifen. Bewahren Sie ihn an einem sicheren und geheimen Ort auf."
-  },
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Zeigen Sie diesen Schlüssel KEINER ANDEREN PERSON!"
   },
   "revealTheSeedPhrase": {
     "message": "Seed-Phrase anzeigen"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "Speichern"
-  },
-  "saveAsCsvFile": {
-    "message": "Als CSV-Datei speichern"
   },
   "scanInstructions": {
     "message": "Platzieren Sie den QR-Code vor Ihrer Kamera."

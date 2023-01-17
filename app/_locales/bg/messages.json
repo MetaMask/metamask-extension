@@ -719,23 +719,14 @@
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ако някога смените браузъра или компютъра си, тази ключова фраза ще Ви трябва за достъп до Вашите акаунти. Запазете я някъде на сигурно и тайно място."
-  },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "НЕ споделяйте тази фраза с никого!"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"
   },
   "save": {
     "message": "Запазване"
-  },
-  "saveAsCsvFile": {
-    "message": "Запазване като CSV файл"
   },
   "scanInstructions": {
     "message": "Поставете QR кода пред камерата"

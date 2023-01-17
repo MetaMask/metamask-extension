@@ -3139,9 +3139,6 @@
   "revealSeedWordsWarning2": {
     "message": "MetaMask Support will never request this."
   },
-  "revealSeedWordsWarningTitle": {
-    "message": "DO NOT share this phrase with anyone!"
-  },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
@@ -3171,9 +3168,6 @@
   },
   "save": {
     "message": "Save"
-  },
-  "saveAsCsvFile": {
-    "message": "Save as CSV file"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"

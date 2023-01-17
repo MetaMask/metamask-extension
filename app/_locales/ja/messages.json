@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを公開"
   },
-  "revealSeedWordsDescription": {
-    "message": "ブラウザを変更した場合や、コンピューターを移動した場合は、アカウントにアクセスするためにこのシークレットリカバリーフレーズが必要になります。安全な秘密の場所に保管してください。"
-  },
   "revealSeedWordsWarning": {
     "message": "これらの単語を使用すると、すべてのアカウントを窃取することができます。"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "このフレーズは誰にも教えないでください。"
   },
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "保存"
-  },
-  "saveAsCsvFile": {
-    "message": "CSVファイルとして保存"
   },
   "scanInstructions": {
     "message": "QRコードにカメラを向けてください"

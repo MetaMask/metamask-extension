@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "Gizli Kurtarma İfadesini Göster"
   },
-  "revealSeedWordsDescription": {
-    "message": "Tarayıcı değiştirirseniz veya başka bir bilgisayar kullanmaya başlarsanız hesaplarınıza erişim sağlamak için bu Gizli Kurtarma İfadesine ihtiyacınız olacaktır. Güvenli ve gizli bir yerde saklayın."
-  },
   "revealSeedWordsWarning": {
     "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Bu ifadeyi hiç kimseyle PAYLAŞMAYIN!"
   },
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "Kaydet"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV dosyası olarak kaydet"
   },
   "scanInstructions": {
     "message": "QR kodu kameranızın önüne getirin"

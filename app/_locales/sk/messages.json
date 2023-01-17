@@ -695,23 +695,14 @@
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ak niekedy zmeníte prehliadač alebo presuniete počítače, budete potrebovať túto seed frázu na prístup k svojim účtom. Uložte ich niekde v bezpečí a v tajnosti."
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Túto frázu s nikým NEZDIEĽAJTE!"
   },
   "rpcUrl": {
     "message": "Nová RPC URL"
   },
   "save": {
     "message": "Uložit"
-  },
-  "saveAsCsvFile": {
-    "message": "Uložiť ako súbor CSV"
   },
   "scanInstructions": {
     "message": "Umiestnite QR kód pred kameru"

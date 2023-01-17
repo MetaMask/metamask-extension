@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "Revelar frase secreta de recuperación"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
-  },
   "revealSeedWordsWarning": {
     "message": "Estas palabras pueden usarse para robar todas sus cuentas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparta esta frase con nadie."
   },
   "revealTheSeedPhrase": {
     "message": "Revelar frase semilla"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "Guardar"
-  },
-  "saveAsCsvFile": {
-    "message": "Guardar como archivo CSV"
   },
   "scanInstructions": {
     "message": "Ponga el código QR frente a la cámara"

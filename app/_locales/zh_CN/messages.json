@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "显示助记词"
   },
-  "revealSeedWordsDescription": {
-    "message": "如果更改浏览器或移动计算机，您将需要此助记词才能访问账户。将它们保存在安全、秘密的地方。"
-  },
   "revealSeedWordsWarning": {
     "message": "这些账户助记词可以用来窃取您的所有账户。"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "切勿与任何人分享此账户助记词！"
   },
   "revealTheSeedPhrase": {
     "message": "显示助记词"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "保存"
-  },
-  "saveAsCsvFile": {
-    "message": "保存为 CSV 文件"
   },
   "scanInstructions": {
     "message": "将二维码放在摄像头前"

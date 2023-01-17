@@ -713,23 +713,14 @@
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
-  },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
   "save": {
     "message": "Salvesta"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvesta CSV-failina"
   },
   "scanInstructions": {
     "message": "Asetage QR-kood kaamera ette"

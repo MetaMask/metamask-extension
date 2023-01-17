@@ -1263,23 +1263,14 @@
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
-  "revealSeedWordsDescription": {
-    "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
-  },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "請勿將助憶詞洩漏予他人！"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"
   },
   "save": {
     "message": "儲存"
-  },
-  "saveAsCsvFile": {
-    "message": "儲存為 CSV 格式檔案"
   },
   "scanInstructions": {
     "message": "請將 QR code 放在攝影鏡頭前面"

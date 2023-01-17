@@ -704,23 +704,14 @@
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
-  "revealSeedWordsDescription": {
-    "message": "Hvis du nogensinde skifter browsere eller flytter computere, har du brug for denne backupsætning for at få adgang til dine konti. Gem den et sted sikkert og hemmeligt."
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "DEL IKKE denne sætning med nogen!"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"
   },
   "save": {
     "message": "Gem"
-  },
-  "saveAsCsvFile": {
-    "message": "Gem som CSV-fil"
   },
   "scanInstructions": {
     "message": "Placer QR-koden foran dit kamera"

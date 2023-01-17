@@ -724,23 +724,14 @@
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
-  "revealSeedWordsDescription": {
-    "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
-  },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
   },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
   },
   "save": {
     "message": "حفظ"
-  },
-  "saveAsCsvFile": {
-    "message": "حفظ كملف CSV"
   },
   "scanInstructions": {
     "message": "ضع رمز الاستجابة السريعة أمام الكاميرا"

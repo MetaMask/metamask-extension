@@ -467,20 +467,11 @@
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
-  },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
-  "revealSeedWordsWarningTitle": {
-    "message": "PA pataje fraz sa a avèk nenpòt moun!"
-  },
   "save": {
     "message": "Sove"
-  },
-  "saveAsCsvFile": {
-    "message": "Sove kòm dosye CSV"
   },
   "scanInstructions": {
     "message": "Mete kòd QR la devan kamera ou"

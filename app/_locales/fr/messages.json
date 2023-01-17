@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si jamais vous changez de navigateur ou d’ordinateur, vous aurez besoin de cette phrase secrète de récupération pour accéder à vos comptes. Sauvegardez-la dans un emplacement sûr et secret."
-  },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Ne communiquez PAS cette phrase à quelqu’un !"
   },
   "revealTheSeedPhrase": {
     "message": "Révéler la phrase mnémonique"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "Enregistrer"
-  },
-  "saveAsCsvFile": {
-    "message": "Enregistrer comme fichier CSV"
   },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"

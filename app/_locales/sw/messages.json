@@ -701,23 +701,14 @@
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
-  },
   "revealSeedWordsWarning": {
     "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "USISHIRIKI kirai hiki na mtu yeyote!"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
   "save": {
     "message": "Hifadhi"
-  },
-  "saveAsCsvFile": {
-    "message": "Hifadhi kama Faili la CSV"
   },
   "scanInstructions": {
     "message": "Weka msimbo wa QR mbele ya kamera yako"

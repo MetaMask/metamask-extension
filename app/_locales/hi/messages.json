@@ -3069,14 +3069,8 @@
   "revealSeedWords": {
     "message": "गुप्त रिकवरी फ्रेज प्रकट करें"
   },
-  "revealSeedWordsDescription": {
-    "message": "यदि आप कभी ब्राउजर बदलते हैं या कंप्यूटर को स्थानांतरित करते हैं, तो आपको अपने खातों तक पहुंचने के लिए इस गुप्त रिकवरी फ्रेज की आवश्यकता होगी। उन्हें कहीं सुरक्षित और गोपनीय तरीके से सहेजें।"
-  },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "इस फ्रेज को किसी के साथ साझा न करें!"
   },
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"
@@ -3107,9 +3101,6 @@
   },
   "save": {
     "message": "सहेजें"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV फाइल के रूप में सहेजें"
   },
   "scanInstructions": {
     "message": "QR कोड को अपने कैमरे के सामने रखें"

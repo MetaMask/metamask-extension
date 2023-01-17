@@ -714,23 +714,14 @@
   "revealSeedWords": {
     "message": "Otkrivanje početnih reči"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ukoliko ikad promenite pregledač ili kompjuter, trebaće vam ova šifra za oporavak naloga (seed phrase) kako biste pristupili svojim nalozima. Čuvajte je na bezbednom i tajnom mestu."
-  },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE delite ovu frazu ni sa kim!"
   },
   "rpcUrl": {
     "message": "Novi RPC URL"
   },
   "save": {
     "message": "Сачувај"
-  },
-  "saveAsCsvFile": {
-    "message": "Sačuvajte u formi CSV datoteke"
   },
   "scanInstructions": {
     "message": "Stavite QR kod ispred vaše kamere"

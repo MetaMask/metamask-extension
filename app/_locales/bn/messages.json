@@ -723,23 +723,14 @@
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
-  "revealSeedWordsDescription": {
-    "message": "আপনি কখনও ব্রাউজার পরিবর্তন করলে বা এক কম্পিউটার থেকে অন্য কম্পিউটারে গেলে, আপনাকে আপনার অ্যাকাউন্ট অ্যাক্সেস করার জন্য এই সীড ফ্রেজটি লাগবে। সেগুলি নিরাপদ ও গোপনীয় কোনো স্থানে সংরক্ষণ করুন।  "
-  },
   "revealSeedWordsWarning": {
     "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "এই ফ্রেজটি কারোর সাথে শেয়ার করবেন না!"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"
   },
   "save": {
     "message": "সেভ করুন"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV ফাইল হিসাবে সংরক্ষণ করুন"
   },
   "scanInstructions": {
     "message": "QR কোডটি আপনার ক্যামেরার সামনে ধরুন"
