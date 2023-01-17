@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "Unterschriftsanfrage"
   },
-  "signatureRequest1": {
-    "message": "Nachricht"
-  },
   "signatureRequestGuidance": {
     "message": "Unterschreiben Sie diese Nachricht nur, wenn Sie den Inhalt vollständig verstehen und der anfragenden Seite vertrauen."
   },

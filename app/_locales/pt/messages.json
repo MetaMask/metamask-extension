@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "Pedido de assinatura"
   },
-  "signatureRequest1": {
-    "message": "Mensagem"
-  },
   "signatureRequestGuidance": {
     "message": "Assine essa mensagem apenas se entende integralmente o conteúdo e confia no site solicitante."
   },

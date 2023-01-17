@@ -215,7 +215,6 @@ export default class ConfirmPageContainerContent extends Component {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
-
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"

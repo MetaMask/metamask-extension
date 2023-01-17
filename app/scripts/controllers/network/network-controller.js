@@ -132,7 +132,7 @@ export default class NetworkController extends EventEmitter {
    * In-progress requests will not be aborted.
    */
   async destroy() {
-    await this._blockTracker.destroy();
+    await this._blockTracker?.destroy();
   }
 
   async initializeProvider() {

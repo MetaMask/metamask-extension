@@ -90,94 +90,53 @@ describe('MetaMask', function () {
   });
 
   describe('Going through the first time flow', function () {
-    it('clicks the continue button on the welcome screen', async function () {
-      await driver.findElement('.welcome-page__header');
-      await driver.clickElement({
-        text: enLocaleMessages.getStarted.message,
-        tag: 'button',
-      });
-      await driver.delay(largeDelayMs);
+    it('clicks the "Create New Wallet" button on the welcome screen', async function () {
+      await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
-      await driver.clickElement('.btn-secondary');
-      await driver.delay(largeDelayMs);
-    });
-
-    it('clicks the "Create New Wallet" option', async function () {
-      await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
-      await driver.delay(largeDelayMs);
+      await driver.clickElement('[data-testid="metametrics-no-thanks"]');
     });
 
     it('accepts a secure password', async function () {
-      await driver.fill(
-        '.first-time-flow__form #create-password',
-        'correct horse battery staple',
-      );
-      await driver.fill(
-        '.first-time-flow__form #confirm-password',
-        'correct horse battery staple',
-      );
-
-      await driver.clickElement('.first-time-flow__checkbox');
-
-      await driver.clickElement('.first-time-flow__form button');
-      await driver.delay(regularDelayMs);
+      const password = 'correct horse battery staple';
+      await driver.fill('[data-testid="create-password-new"]', password);
+      await driver.fill('[data-testid="create-password-confirm"]', password);
+      await driver.clickElement('[data-testid="create-password-terms"]');
+      await driver.clickElement('[data-testid="create-password-wallet"]');
     });
-
-    let seedPhrase;
 
     it('renders the Secret Recovery Phrase intro screen', async function () {
-      await driver.clickElement('.seed-phrase-intro__left button');
-      await driver.delay(regularDelayMs);
+      await driver.clickElement('[data-testid="secure-wallet-recommended"]');
     });
+
+    let chipTwo, chipThree, chipSeven;
 
     it('reveals the Secret Recovery Phrase', async function () {
-      const byRevealButton =
-        '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button';
-      await driver.findElement(byRevealButton);
-      await driver.clickElement(byRevealButton);
-      await driver.delay(regularDelayMs);
-
-      const revealedSeedPhrase = await driver.findElement(
-        '.reveal-seed-phrase__secret-words',
-      );
-      seedPhrase = await revealedSeedPhrase.getText();
-      assert.equal(seedPhrase.split(' ').length, 12);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({
-        text: enLocaleMessages.next.message,
-        tag: 'button',
-      });
-      await driver.delay(regularDelayMs);
+      await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+      chipTwo = await (
+        await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
+      ).getText();
+      chipThree = await (
+        await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
+      ).getText();
+      chipSeven = await (
+        await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
+      ).getText();
+      await driver.clickElement('[data-testid="recovery-phrase-next"]');
     });
 
-    async function clickWordAndWait(word) {
-      await driver.clickElement(
-        `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`,
-      );
-      await driver.delay(tinyDelayMs);
-    }
-
     it('can retype the Secret Recovery Phrase', async function () {
-      const words = seedPhrase.split(' ');
-
-      for (const word of words) {
-        await clickWordAndWait(word);
-      }
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(regularDelayMs);
+      await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
+      await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
+      await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+      await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
     });
 
     it('clicks through the success screen', async function () {
-      await driver.findElement({ text: 'Congratulations', tag: 'div' });
-      await driver.clickElement({
-        text: enLocaleMessages.endOfFlowMessage10.message,
-        tag: 'button',
-      });
-      await driver.delay(regularDelayMs);
+      await driver.clickElement('[data-testid="onboarding-complete-done"]');
+      await driver.clickElement('[data-testid="pin-extension-next"]');
+      await driver.clickElement('[data-testid="pin-extension-done"]');
     });
   });
 
