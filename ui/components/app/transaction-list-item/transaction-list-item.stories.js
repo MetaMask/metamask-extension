@@ -173,7 +173,7 @@ Swap.args = {
 SwapApproval.storyName = 'swapApproval';
 SwapApproval.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swap_APPROVAL],
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swapApproval],
   },
 };
 

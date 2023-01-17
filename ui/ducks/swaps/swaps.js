@@ -993,7 +993,7 @@ export const signAndSendSwapsSmartTransaction = ({
         await dispatch(
           updateSmartTransaction(approvalTxUuid, {
             origin: ORIGIN_METAMASK,
-            type: TransactionType.swap_APPROVAL,
+            type: TransactionType.swapApproval,
             sourceTokenSymbol,
           }),
         );
@@ -1203,12 +1203,12 @@ export const signAndSendTransactions = (
       }
       const approveTxMeta = await addUnapprovedTransaction(
         { ...approveTxParams, amount: '0x0' },
-        TransactionType.swap_APPROVAL,
+        TransactionType.swapApproval,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
         updateSwapApprovalTransaction(approveTxMeta.id, {
-          type: TransactionType.swap_APPROVAL,
+          type: TransactionType.swapApproval,
           sourceTokenSymbol: sourceTokenInfo.symbol,
         }),
       );
