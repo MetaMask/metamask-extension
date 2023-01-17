@@ -723,23 +723,14 @@
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
-  "revealSeedWordsDescription": {
-    "message": "در صورتیکه شما معمولًا براوزر ها را تغییر داده یا کمپیوتر ها را انتقال میدهید، شما این عبارت آغازین را نیاز خواهید داشت تا به حساب های تان دسترسی داشته باشید. آنها را در یکجای مصؤن و مخفی نگهدارید."
-  },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "این عبارت را با هیچکس شریک نسازید!"
   },
   "rpcUrl": {
     "message": "RPC URL جدید"
   },
   "save": {
     "message": "ذخیره"
-  },
-  "saveAsCsvFile": {
-    "message": "ذخیره منحیث فایل CSV"
   },
   "scanInstructions": {
     "message": "رمز QR را در مقابل کمره تان قرار دهید"

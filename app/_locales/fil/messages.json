@@ -650,23 +650,14 @@
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kung lilipat ka ng browser o magpapalit ka ng computer, kakailanganin mo ang seed phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang lugar na ligtas at lihim."
-  },
   "revealSeedWordsWarning": {
     "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "HUWAG ibahagi ang pariralang ito sa kahit sino!"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"
   },
   "save": {
     "message": "I-save"
-  },
-  "saveAsCsvFile": {
-    "message": "I-save bilang CSV File"
   },
   "scanInstructions": {
     "message": "Ilagay ang QR code sa harap ng iyong camera"

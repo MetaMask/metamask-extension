@@ -720,23 +720,14 @@
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
-  },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "אין לשתף צירוף מילים זה עם אף אחד!"
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
   "save": {
     "message": "שמור"
-  },
-  "saveAsCsvFile": {
-    "message": "שמירה כקובץ CSV"
   },
   "scanInstructions": {
     "message": "הצב/י את קוד ה-QR שלך מול המצלמה"

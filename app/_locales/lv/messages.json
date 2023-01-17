@@ -719,23 +719,14 @@
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ja mainīsiet pārlūku vai datoru, jūsu kontu piekļuvei būs nepieciešama šī atkopšanas frāze. Saglabājiet to drošā un slepenā vietā!"
-  },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NEDALIETIES ar šo frāzi!"
   },
   "rpcUrl": {
     "message": "Jauns RPC URL"
   },
   "save": {
     "message": "Saglabāt"
-  },
-  "saveAsCsvFile": {
-    "message": "Saglabāt kā CSV failu"
   },
   "scanInstructions": {
     "message": "Novietojiet QR kodu kameras priekšā"

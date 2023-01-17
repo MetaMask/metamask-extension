@@ -703,23 +703,14 @@
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jika anda pernah menukar pelayar atau berpindah komputer, anda memerlukan ungkapan benih ini untuk mengakses akaun anda. Simpan ungkapan di tempat yang selamat dan rahsia."
-  },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "JANGAN berkongsi ungkapan ini dengan orang lain!"
   },
   "rpcUrl": {
     "message": "URL RPC baru"
   },
   "save": {
     "message": "Simpan"
-  },
-  "saveAsCsvFile": {
-    "message": "Simpan sebagai Fail CSV"
   },
   "scanInstructions": {
     "message": "Bawa kod QR ke hadapan kamera anda"

@@ -701,23 +701,14 @@
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
-  },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparteixis aquesta frase amb ningú!"
   },
   "rpcUrl": {
     "message": "Nova URL de RPC"
   },
   "save": {
     "message": "Desa"
-  },
-  "saveAsCsvFile": {
-    "message": "Guarda com a Arxiu CSV"
   },
   "scanInstructions": {
     "message": "Col·loca el codi QR davant la teva càmera"

@@ -716,23 +716,14 @@
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ha valamikor böngészőt váltasz, vagy számítógépet cserélsz, a fiókjaid használatához szükséged lesz erre a kulcsszóláncra. Őrizd őket egy biztonságos és titkos helyen."
-  },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE ossza meg ezt a mondatot senkivel!"
   },
   "rpcUrl": {
     "message": "Új RPC URL"
   },
   "save": {
     "message": "Mentés"
-  },
-  "saveAsCsvFile": {
-    "message": "Mentés CSV-fájlként"
   },
   "scanInstructions": {
     "message": "Helyezze a QR-kódot a fényképezőgép elé"

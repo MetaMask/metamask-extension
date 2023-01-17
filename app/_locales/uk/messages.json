@@ -723,23 +723,14 @@
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
-  "revealSeedWordsDescription": {
-    "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
-  },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "НЕ передавайте цю фразу нікому!"
   },
   "rpcUrl": {
     "message": "Новий RPC URL"
   },
   "save": {
     "message": "Зберегти"
-  },
-  "saveAsCsvFile": {
-    "message": "Зберегти як файл CSV"
   },
   "scanInstructions": {
     "message": "Розташуйте QR-код перед вашою камерою"
