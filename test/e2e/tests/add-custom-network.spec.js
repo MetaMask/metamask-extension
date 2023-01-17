@@ -188,6 +188,8 @@ describe('Custom network', function () {
           tag: 'button',
           text: 'Delete',
         });
+        
+        await driver.findElement('.modal-container__footer');
 
         await driver.clickElement({
           tag: 'button',
