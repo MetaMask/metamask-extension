@@ -190,7 +190,7 @@ describe('Custom network', function () {
         });
 
         await driver.findElement('.modal-container__footer');
-
+        // should be deleted from the modal shown again to complete  deletion custom network
         await driver.clickElement({
           tag: 'button',
           text: 'Delete',
