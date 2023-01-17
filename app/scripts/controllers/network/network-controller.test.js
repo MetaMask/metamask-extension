@@ -55,22 +55,37 @@ const BLOCK = {
   baseFeePerGas: '0x63c498a46',
 };
 
+const defaultControllerOptions = {
+  infuraProjectId: 'foo',
+};
+
+/**
+ * Builds a controller based on the given options, and calls the given function
+ * with that controller.
+ *
+ * @param args - Either a function, or constructor options + a function. The
+ * function will be called with the built controller.
+ * @returns Whatever the callback returns.
+ */
+async function withController(...args) {
+  const [constructorArgs, fn] = args.length === 2 ? args : [{}, args[0]];
+  const controller = new NetworkController({
+    ...defaultControllerOptions,
+    ...constructorArgs,
+  });
+  try {
+    return await fn({ controller });
+  } finally {
+    await controller.destroy();
+  }
+}
+
 describe('NetworkController', () => {
   describe('controller', () => {
-    let networkController;
-    let setProviderTypeAndWait;
     let latestBlock;
 
     beforeEach(() => {
       latestBlock = BLOCK;
-      networkController = new NetworkController({ infuraProjectId: 'foo' });
-      setProviderTypeAndWait = () =>
-        new Promise((resolve) => {
-          networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-            resolve();
-          });
-          networkController.setProviderType('mainnet');
-        });
       nock('http://localhost:8545')
         .persist()
         .post(/.*/u)
@@ -86,112 +101,130 @@ describe('NetworkController', () => {
     });
 
     afterEach(() => {
-      networkController.destroy();
       nock.cleanAll();
     });
 
     describe('#provider', () => {
       it('provider should be updatable without reassignment', async () => {
-        await networkController.initializeProvider();
-        const providerProxy =
-          networkController.getProviderAndBlockTracker().provider;
-        expect(providerProxy.test).toBeUndefined();
-        providerProxy.setTarget({ test: true });
-        expect(providerProxy.test).toStrictEqual(true);
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          const providerProxy =
+            controller.getProviderAndBlockTracker().provider;
+          expect(providerProxy.test).toBeUndefined();
+
+          providerProxy.setTarget({ test: true });
+
+          expect(providerProxy.test).toStrictEqual(true);
+        });
       });
     });
 
     describe('destroy', () => {
       it('should not throw if called before initialization', async () => {
-        await expect(
-          async () => await networkController.destroy(),
-        ).not.toThrow();
+        const controller = new NetworkController(defaultControllerOptions);
+        await expect(controller.destroy()).resolves.toBe(undefined);
       });
 
       it('should stop the block tracker for the current selected network', async () => {
-        await networkController.initializeProvider();
-        const { blockTracker } = networkController.getProviderAndBlockTracker();
-        // The block tracker starts running after a listener is attached
-        blockTracker.addListener('latest', () => {
-          // do nothing
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          const { blockTracker } = controller.getProviderAndBlockTracker();
+          // The block tracker starts running after a listener is attached
+          blockTracker.addListener('latest', () => {
+            // do nothing
+          });
+          expect(blockTracker.isRunning()).toBe(true);
+
+          await controller.destroy();
+
+          expect(blockTracker.isRunning()).toBe(false);
         });
-        expect(blockTracker.isRunning()).toBe(true);
-
-        networkController.destroy();
-
-        expect(blockTracker.isRunning()).toBe(false);
       });
     });
 
     describe('#getNetworkState', () => {
-      it('should return "loading" when new', () => {
-        const networkState = networkController.getNetworkState();
-        expect(networkState).toStrictEqual('loading');
+      it('should return "loading" when uninitialized', async () => {
+        await withController(async ({ controller }) => {
+          const networkState = controller.getNetworkState();
+          expect(networkState).toStrictEqual('loading');
+        });
       });
     });
 
     describe('#setProviderType', () => {
       it('should update provider.type', async () => {
-        await networkController.initializeProvider();
-        networkController.setProviderType('mainnet');
-        const { type } = networkController.getProviderConfig();
-        expect(type).toStrictEqual('mainnet');
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          controller.setProviderType('mainnet');
+          const { type } = controller.getProviderConfig();
+          expect(type).toStrictEqual('mainnet');
+        });
       });
 
       it('should set the network to loading', async () => {
-        await networkController.initializeProvider();
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
 
-        networkController.setProviderType('mainnet');
-        const { promise: networkIdChanged, resolve } = deferredPromise();
-        networkController.networkStore.subscribe(resolve);
+          controller.setProviderType('mainnet');
+          const { promise: networkIdChanged, resolve } = deferredPromise();
+          controller.networkStore.subscribe(resolve);
 
-        expect(networkController.networkStore.getState()).toBe('loading');
-        await networkIdChanged;
-        expect(networkController.networkStore.getState()).toBe('1');
+          expect(controller.networkStore.getState()).toBe('loading');
+          await networkIdChanged;
+          expect(controller.networkStore.getState()).toBe('1');
+        });
       });
     });
 
     describe('#getEIP1559Compatibility', () => {
       it('should return false when baseFeePerGas is not in the block header', async () => {
-        latestBlock = PRE_1559_BLOCK;
-        await networkController.initializeProvider();
-        const supportsEIP1559 =
-          await networkController.getEIP1559Compatibility();
-        expect(supportsEIP1559).toStrictEqual(false);
+        await withController(async ({ controller }) => {
+          latestBlock = PRE_1559_BLOCK;
+          await controller.initializeProvider();
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
+          expect(supportsEIP1559).toStrictEqual(false);
+        });
       });
 
       it('should return true when baseFeePerGas is in block header', async () => {
-        await networkController.initializeProvider();
-        const supportsEIP1559 =
-          await networkController.getEIP1559Compatibility();
-        expect(supportsEIP1559).toStrictEqual(true);
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
+          expect(supportsEIP1559).toStrictEqual(true);
+        });
       });
 
       it('should store EIP1559 support in state to reduce calls to _getLatestBlock', async () => {
-        await networkController.initializeProvider();
-        await networkController.getEIP1559Compatibility();
-        const supportsEIP1559 =
-          await networkController.getEIP1559Compatibility();
-        expect(supportsEIP1559).toStrictEqual(true);
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          await controller.getEIP1559Compatibility();
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
+          expect(supportsEIP1559).toStrictEqual(true);
+        });
       });
 
       it('should clear stored EIP1559 support when changing networks', async () => {
-        await networkController.initializeProvider();
-        await networkController.getEIP1559Compatibility();
-        expect(
-          networkController.networkDetails.getState().EIPS[1559],
-        ).toStrictEqual(true);
-        latestBlock = PRE_1559_BLOCK;
-
-        await setProviderTypeAndWait('mainnet');
-
-        expect(
-          networkController.networkDetails.getState().EIPS[1559],
-        ).toBeUndefined();
-        await networkController.getEIP1559Compatibility();
-        expect(
-          networkController.networkDetails.getState().EIPS[1559],
-        ).toStrictEqual(false);
+        await withController(async ({ controller }) => {
+          await controller.initializeProvider();
+          await controller.getEIP1559Compatibility();
+          expect(controller.networkDetails.getState().EIPS[1559]).toStrictEqual(
+            true,
+          );
+          latestBlock = PRE_1559_BLOCK;
+          await new Promise((resolve) => {
+            controller.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+              resolve();
+            });
+            controller.setProviderType('mainnet');
+          });
+          expect(
+            controller.networkDetails.getState().EIPS[1559],
+          ).toBeUndefined();
+          await controller.getEIP1559Compatibility();
+          expect(controller.networkDetails.getState().EIPS[1559]).toStrictEqual(
+            false,
+          );
+        });
       });
     });
   });
