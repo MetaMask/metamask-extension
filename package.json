@@ -262,7 +262,7 @@
     "end-of-stream": "^1.4.4",
     "eth-block-tracker": "^6.0.0",
     "eth-ens-namehash": "^2.0.8",
-    "eth-json-rpc-filters": "^5.0.0",
+    "eth-json-rpc-filters": "^5.1.0",
     "eth-json-rpc-middleware": "^9.0.1",
     "eth-keyring-controller": "^8.1.0",
     "eth-lattice-keyring": "^0.12.3",

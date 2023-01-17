@@ -2171,12 +2171,10 @@
     },
     "eth-json-rpc-filters": {
       "globals": {
-        "console.error": true,
-        "results": "write"
+        "console.error": true
       },
       "packages": {
         "eth-json-rpc-filters>async-mutex": true,
-        "eth-json-rpc-filters>eth-json-rpc-middleware": true,
         "eth-query": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -2189,11 +2187,6 @@
       },
       "packages": {
         "enzyme>cheerio>tslib": true
-      }
-    },
-    "eth-json-rpc-filters>eth-json-rpc-middleware": {
-      "packages": {
-        "eth-json-rpc-filters>eth-json-rpc-middleware>json-rpc-engine": true
       }
     },
     "eth-json-rpc-middleware": {
