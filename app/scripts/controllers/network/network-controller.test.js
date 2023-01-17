@@ -125,7 +125,7 @@ describe('NetworkController', () => {
     describe('destroy', () => {
       it('should not throw if called before initialization', async () => {
         const controller = new NetworkController(defaultControllerOptions);
-        await expect(controller.destroy()).not.toThrow();
+        await expect(controller.destroy()).resolves.toBe(undefined);
       });
 
       it('should stop the block tracker for the current selected network', async () => {
