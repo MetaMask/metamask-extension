@@ -14,6 +14,9 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   CONSENSYS_PRIVACY_LINK,
   ETHERSCAN_PRIVACY_LINK,
@@ -45,6 +48,8 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useCurrencyRateCheck: PropTypes.bool.isRequired,
+    setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
@@ -348,7 +353,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
       >
@@ -395,7 +400,7 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
@@ -437,7 +442,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[7]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -477,6 +482,57 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderCurrencyRateCheckToggle() {
+    const { t } = this.context;
+    const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
+
+    return (
+      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('currencyRateCheckToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href={COINGECKO_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingecko')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href={CRYPTOCOMPARE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptoCompare')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href={PRIVACY_POLICY_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useCurrencyRateCheck}
+              onToggle={(value) => setUseCurrencyRateCheck(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -503,6 +559,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('transactions')}
         </span>
         <div className="settings-page__content-padded">
+          {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
         <span className="settings-page__security-tab-sub-header">

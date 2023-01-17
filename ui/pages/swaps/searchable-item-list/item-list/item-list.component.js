@@ -10,6 +10,7 @@ import { I18nContext } from '../../../../contexts/i18n';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getUseCurrencyRateCheck,
 } from '../../../../selectors';
 import { EVENT } from '../../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
@@ -36,7 +37,7 @@ export default function ItemList({
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
-
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const blockExplorerHostName = getURLHostName(blockExplorerLink);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -124,7 +125,7 @@ export default function ItemList({
                         {rightPrimaryLabel}
                       </span>
                     ) : null}
-                    {rightSecondaryLabel ? (
+                    {rightSecondaryLabel && useCurrencyRateCheck ? (
                       <span className="searchable-item-list__right-secondary-label">
                         {rightSecondaryLabel}
                       </span>

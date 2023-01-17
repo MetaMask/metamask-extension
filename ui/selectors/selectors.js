@@ -586,9 +586,12 @@ export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
-    (isMainNet || isCustomNetwork || showFiatInTestnets) && conversionRate,
+    (isMainNet || isCustomNetwork || showFiatInTestnets) &&
+      useCurrencyRateCheck &&
+      conversionRate,
   );
 }
 
@@ -1390,4 +1393,14 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+/**
+ * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCurrencyRateCheck(state) {
+  return Boolean(state.metamask.useCurrencyRateCheck);
 }

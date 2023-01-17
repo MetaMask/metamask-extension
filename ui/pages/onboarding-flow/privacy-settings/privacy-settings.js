@@ -22,13 +22,20 @@ import {
   showModal,
   setIpfsGateway,
   showNetworkDropdown,
+  setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Icon, TextField } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
+import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -37,6 +44,7 @@ export default function PrivacySettings() {
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
     useState(true);
   const [
@@ -60,6 +68,7 @@ export default function PrivacySettings() {
     dispatch(
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
+    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
 
     if (ipfsURL && !ipfsError) {
@@ -253,6 +262,37 @@ export default function PrivacySettings() {
                 </Box>
               </>
             }
+          />
+          <Setting
+            value={turnOnCurrencyRateCheck}
+            setValue={setTurnOnCurrencyRateCheck}
+            title={t('currencyRateCheckToggle')}
+            description={t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href={COINGECKO_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingecko')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href={CRYPTOCOMPARE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptoCompare')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href={PRIVACY_POLICY_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>

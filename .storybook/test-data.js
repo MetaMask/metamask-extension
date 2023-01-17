@@ -1178,6 +1178,7 @@ const state = {
     useNonceField: false,
     usePhishDetect: true,
     useTokenDetection: true,
+    useCurrencyRateCheck: true,
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',

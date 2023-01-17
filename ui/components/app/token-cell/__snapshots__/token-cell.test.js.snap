@@ -3,7 +3,7 @@
 exports[`Token Cell should match snapshot 1`] = `
 <div>
   <div
-    class="list-item asset-list-item token-cell"
+    class="list-item asset-list-item token-cell list-item--single-content-row"
     role="button"
     tabindex="0"
   >
@@ -76,15 +76,6 @@ exports[`Token Cell should match snapshot 1`] = `
           </span>
         </h2>
       </button>
-    </div>
-    <div
-      class="list-item__subheading"
-    >
-      <h3
-        title="$0.52 USD"
-      >
-        $0.52 USD
-      </h3>
     </div>
     <div
       class="list-item__right-content"

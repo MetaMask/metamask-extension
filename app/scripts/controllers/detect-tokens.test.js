@@ -11,8 +11,9 @@ import {
 } from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
 import DetectTokensController from './detect-tokens';
-import NetworkController from './network';
+import NetworkController, { NETWORK_EVENTS } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
@@ -65,14 +66,34 @@ describe('DetectTokensController', function () {
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: network.store.subscribe.bind(network.store),
+      onNetworkStateChange: (cb) =>
+        network.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
     });
 
     assetsContractController = new AssetsContractController({
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: network.store.subscribe.bind(network.store),
+      onNetworkStateChange: (cb) =>
+        network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+          const networkState = network.store.getState();
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
     });
 
     sandbox
