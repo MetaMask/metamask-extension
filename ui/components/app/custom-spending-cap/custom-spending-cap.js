@@ -30,6 +30,7 @@ import {
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   TOKEN_ALLOWANCE_VALUE_REGEX,
+  DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
@@ -106,6 +107,10 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+    if (match?.[1]?.length > decimals) {
+      return;
+    }
 
     if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');

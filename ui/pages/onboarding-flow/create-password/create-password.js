@@ -138,6 +138,12 @@ export default function CreatePassword({
     if (!isValid) {
       return;
     }
+
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_ATTEMPTED,
+    });
+
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
@@ -151,10 +157,6 @@ export default function CreatePassword({
         if (createNewAccount) {
           await createNewAccount(password);
         }
-        trackEvent({
-          event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
-          category: EVENT.CATEGORIES.ONBOARDING,
-        });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
         setPasswordError(error.message);
