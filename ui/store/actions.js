@@ -1,8 +1,12 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
+import { AddressType } from '@metamask/address-book-controller';
 import getBuyUrl from '../../app/scripts/lib/buy-url';
-import { getMethodDataAsync } from '../helpers/utils/transactions.util';
+import {
+  getMethodDataAsync,
+  isSmartContractAddress,
+} from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -2216,16 +2220,15 @@ export function delRpcTarget(oldRpc) {
 }
 
 // Calls the addressBookController to add a new address.
-export function addToAddressBook(
-  recipient,
-  nickname = '',
-  memo = '',
-  addressType,
-) {
+export function addToAddressBook(recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
     const { chainId } = getState().metamask.provider;
+
+    const addressType = (await isSmartContractAddress(recipient))
+      ? AddressType.nonAccounts
+      : AddressType.externallyOwnedAccounts;
 
     let set;
     try {

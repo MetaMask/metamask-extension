@@ -9,11 +9,6 @@ import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import IconCaretLeft from '../../../../components/ui/icon/icon-caret-left';
 import Confusable from '../../../../components/ui/confusable';
-import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util';
-import {
-  CONTRACT_ACCOUNTS,
-  EXTERNALLY_OWNED_ACCOUNTS,
-} from '../../../../../shared/constants/app';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -78,10 +73,7 @@ export default class AddRecipient extends Component {
     );
     this.props.updateRecipient({ address, nickname });
     this.props.updateRecipientUserInput(address);
-    const addressType = (await isSmartContractAddress(address))
-      ? CONTRACT_ACCOUNTS
-      : EXTERNALLY_OWNED_ACCOUNTS;
-    await this.props.addToAddressBook(address, nickname, type, addressType);
+    await this.props.addToAddressBook(address, nickname, type);
   };
 
   searchForContacts = () => {

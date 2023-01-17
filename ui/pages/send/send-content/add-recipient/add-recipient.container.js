@@ -57,8 +57,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     addHistoryEntry: (entry) => dispatch(addHistoryEntry(entry)),
-    addToAddressBook: (recipient, nickname, memo, addressType) =>
-      dispatch(addToAddressBook(recipient, nickname, memo, addressType)),
+    addToAddressBook: (recipient, nickname, memo) =>
+      dispatch(addToAddressBook(recipient, nickname, memo)),
     updateRecipient: ({ address, nickname }) =>
       dispatch(updateRecipient({ address, nickname })),
     updateRecipientUserInput: (newInput) =>

@@ -45,8 +45,8 @@ const NicknamePopovers = ({ address, onClose }) => {
         nickname={recipientNickname || null}
         memo={addressBookEntryObject?.memo || null}
         onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
-        onAdd={(recipient, nickname, memo, addressType) => {
-          dispatch(addToAddressBook(recipient, nickname, memo, addressType));
+        onAdd={(recipient, nickname, memo) => {
+          dispatch(addToAddressBook(recipient, nickname, memo));
         }}
       />
     );
