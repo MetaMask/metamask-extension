@@ -147,7 +147,7 @@ describe('Custom network', function () {
       },
     );
   });
-  it('add a custom network and then delete that same network', async function () {
+  it('Add a custom network and then delete that same network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -162,44 +162,41 @@ describe('Custom network', function () {
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement('.network__add-network-button');
 
-        const networks = await driver.findElements({ tag: 'button', text: 'Add' });
+        const networks = await driver.findElements({ 
+          tag: 'button', 
+          text: 'Add',
+        });
+
         const addNetwork = networks[0];
         addNetwork.click();
 
         await driver.clickElement({ tag: 'button', text: 'Approve' });
 
-        await driver.clickElement({
-            tag: 'h6',
-            text: 'Dismiss',
-  
-          });
+        await driver.clickElement({ tag: 'h6', text: 'Dismiss' });
 
-          // goes to the settings screen
+        // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-
         await driver.clickElement({ text: 'Networks', tag: 'div' });
 
-        const arbitrumNetwork = await driver.clickElement({
-          text: `Arbitrum One`,
+        const arbitrumNetwork = await driver.clickElement({ 
+          text: `Arbitrum One`, 
           tag: 'div',
         });
 
-        const addedNetworks = await driver.findElements('.networks-tab__networks-list-name');
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Delete',
+        });
 
         await driver.clickElement({
           tag: 'button',
           text: 'Delete',
-
-        });
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Delete',
-
         });
 
-        assert.ok(addedNetworks.length-1);
-        
+        // it checks if custom network is delete 
+        const existNetwork = await driver.isElementPresent(arbitrumNetwork);
+        assert.equal(existNetwork, false, 'Network is not deleted');
       },
     );
   });
