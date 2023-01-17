@@ -3,11 +3,11 @@
 exports[`ButtonPrimary should render button element correctly 1`] = `
 <div>
   <button
-    class="box mm-button mm-button--size-md mm-button-primary box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+    class="box mm-button-base mm-button-base--size-md mm-button-primary box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
     data-testid="button-primary"
   >
     <span
-      class="box mm-text mm-button__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+      class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
       Button Primary
     </span>

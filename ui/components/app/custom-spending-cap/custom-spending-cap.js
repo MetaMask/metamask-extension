@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -29,6 +30,7 @@ import {
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   TOKEN_ALLOWANCE_VALUE_REGEX,
+  DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
@@ -105,6 +107,10 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+    if (match?.[1]?.length > decimals) {
+      return;
+    }
 
     if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
@@ -230,7 +236,9 @@ export default function CustomSpendingCap({
               paddingRight={4}
               paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
-              className="custom-spending-cap__max"
+              className={classnames('custom-spending-cap__max', {
+                'custom-spending-cap__max--with-error-message': error,
+              })}
             >
               <ButtonLink
                 size={SIZES.AUTO}
@@ -242,16 +250,21 @@ export default function CustomSpendingCap({
                 {t('max')}
               </ButtonLink>
             </Box>
-            <Typography
-              className="custom-spending-cap__description"
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H7}
-              boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+            <Box
+              className={classnames('custom-spending-cap__description', {
+                'custom-spending-cap__description--with-error-message': error,
+              })}
             >
-              {replaceCommaToDot(value)
-                ? customSpendingCapText
-                : inputLogicEmptyStateText}
-            </Typography>
+              <Typography
+                color={COLORS.TEXT_DEFAULT}
+                variant={TYPOGRAPHY.H7}
+                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+              >
+                {replaceCommaToDot(value)
+                  ? customSpendingCapText
+                  : inputLogicEmptyStateText}
+              </Typography>
+            </Box>
           </label>
         </Box>
       </Box>
