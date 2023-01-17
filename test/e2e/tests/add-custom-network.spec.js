@@ -162,8 +162,8 @@ describe('Custom network', function () {
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement('.network__add-network-button');
 
-        const networks = await driver.findElements({ 
-          tag: 'button', 
+        const networks = await driver.findElements({
+          tag: 'button',
           text: 'Add',
         });
 
@@ -179,8 +179,8 @@ describe('Custom network', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Networks', tag: 'div' });
 
-        const arbitrumNetwork = await driver.clickElement({ 
-          text: `Arbitrum One`, 
+        const arbitrumNetwork = await driver.clickElement({
+          text: `Arbitrum One`,
           tag: 'div',
         });
 
@@ -188,7 +188,7 @@ describe('Custom network', function () {
           tag: 'button',
           text: 'Delete',
         });
-        
+
         await driver.findElement('.modal-container__footer');
 
         await driver.clickElement({
@@ -196,7 +196,7 @@ describe('Custom network', function () {
           text: 'Delete',
         });
 
-        // it checks if custom network is delete 
+        // it checks if custom network is delete
         const existNetwork = await driver.isElementPresent(arbitrumNetwork);
         assert.equal(existNetwork, false, 'Network is not deleted');
       },
