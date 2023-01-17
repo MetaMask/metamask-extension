@@ -6,8 +6,8 @@ import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import Typography from '../../../components/ui/typography';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 

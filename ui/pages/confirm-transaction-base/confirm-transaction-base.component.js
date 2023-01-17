@@ -70,7 +70,7 @@ import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/network';
-import TransactionAlerts from './transaction-alerts';
+import TransactionAlerts from '../../components/app/transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
