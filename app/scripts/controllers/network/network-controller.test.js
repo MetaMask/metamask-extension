@@ -138,7 +138,7 @@ describe('NetworkController', () => {
           });
           expect(blockTracker.isRunning()).toBe(true);
 
-          controller.destroy();
+          await controller.destroy();
 
           expect(blockTracker.isRunning()).toBe(false);
         });
