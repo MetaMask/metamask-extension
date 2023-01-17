@@ -217,7 +217,7 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction();
-          setDefaultHomeActiveTabName('Activity').then(() => {
+          setDefaultHomeActiveTabName(this.context.t('activity')).then(() => {
             history.push(DEFAULT_ROUTE);
           });
         },

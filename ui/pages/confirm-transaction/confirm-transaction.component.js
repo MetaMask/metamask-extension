@@ -31,6 +31,7 @@ import ConfTx from './conf-tx';
 export default class ConfirmTransaction extends Component {
   static contextTypes = {
     metricsEvent: PropTypes.func,
+    t: PropTypes.func,
   };
 
   static propTypes = {
@@ -135,7 +136,7 @@ export default class ConfirmTransaction extends Component {
       !transactionId &&
       !totalUnapprovedCount
     ) {
-      setDefaultHomeActiveTabName('Activity').then(() => {
+      setDefaultHomeActiveTabName(this.context.t('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });
     } else if (
