@@ -125,27 +125,29 @@ export default function AddCollectible() {
             <CollectiblesDetectionNotice />
           ) : null}
           {collectibleAddFailed && (
-            <ActionableMessage
-              type="danger"
-              useIcon
-              iconFillColor="var(--color-error-default)"
-              message={
-                <Box display={DISPLAY.INLINE_FLEX}>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    margin={0}
-                  >
-                    {t('collectibleAddFailedMessage')}
-                  </Typography>
-                  <button
-                    className="fas fa-times add-collectible__close"
-                    title={t('close')}
-                    onClick={() => setCollectibleAddFailed(false)}
-                  />
-                </Box>
-              }
-            />
+            <Box marginLeft={4} marginRight={4}>
+              <ActionableMessage
+                type="danger"
+                useIcon
+                iconFillColor="var(--color-error-default)"
+                message={
+                  <Box display={DISPLAY.INLINE_FLEX}>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontWeight={FONT_WEIGHT.NORMAL}
+                      margin={0}
+                    >
+                      {t('collectibleAddFailedMessage')}
+                    </Typography>
+                    <button
+                      className="fas fa-times add-collectible__close"
+                      title={t('close')}
+                      onClick={() => setCollectibleAddFailed(false)}
+                    />
+                  </Box>
+                }
+              />
+            </Box>
           )}
           <Box margin={4}>
             <FormField

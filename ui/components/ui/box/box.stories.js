@@ -163,17 +163,17 @@ export default {
       table: { category: 'margin' },
     },
     marginInline: {
-      options: sizeControlOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginInlineStart: {
-      options: sizeControlOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginInlineEnd: {
-      options: sizeControlOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
