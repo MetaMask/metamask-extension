@@ -42,12 +42,12 @@
   }
 
   &__item {
-    border-radius: 4px;
     width: 100%;
     display: flex;
     justify-content: center;
     cursor: pointer;
     align-self: center;
+    padding: 0;
 
     &-image {
       border-radius: 4px;

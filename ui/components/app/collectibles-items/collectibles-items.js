@@ -189,11 +189,6 @@ export default function CollectiblesItems({
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-              const handleImageKeyPress = (event) => {
-                if (event.key === 'Enter') {
-                  handleImageClick();
-                }
-              };
 
               return (
                 <Box
@@ -207,20 +202,18 @@ export default function CollectiblesItems({
                     className="collectibles-items__item-wrapper__card"
                   >
                     {collectibleImage ? (
-                      <div
+                      <button
                         className="collectibles-items__item"
                         style={{
                           backgroundColor,
                         }}
+                        onClick={handleImageClick}
                       >
                         <img
-                          tabIndex={0}
-                          onClick={handleImageClick}
                           className="collectibles-items__item-image"
                           src={collectibleImage}
-                          onKeyPress={handleImageKeyPress}
                         />
-                      </div>
+                      </button>
                     ) : (
                       <CollectibleDefaultImage
                         name={name}
