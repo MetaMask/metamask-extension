@@ -2824,20 +2824,20 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/base-controller@^1.0.0", "@metamask/base-controller@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
-  integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
-  dependencies:
-    "@metamask/controller-utils" "~1.0.0"
-    immer "^9.0.6"
-
-"@metamask/base-controller@^1.1.1":
+"@metamask/base-controller@^1.0.0", "@metamask/base-controller@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.1.1.tgz#34c2db471328b92a3a46f9c2547bbb9d37803258"
   integrity sha512-erDfd+OcHnixSZObPNHuDn2G3rRT2B9J/JaOmjjQN64o9RqDYid87Zb0z03wK8cbJ/pEHhhDIBn6t2gMWcdwrQ==
   dependencies:
     "@metamask/controller-utils" "^1.0.0"
+    immer "^9.0.6"
+
+"@metamask/base-controller@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/base-controller/-/base-controller-1.0.0.tgz#9de86efafdf88b46f6d3710f8708a9515fd8ecf6"
+  integrity sha512-bZnv/P3Zb247vVS4HT3lvlNdi0JNT5mt3dWBtWj6c9C/AVR9LDeTUz7nIPxzvm9lwDZktYgp+GXDDr/LfDKkAQ==
+  dependencies:
+    "@metamask/controller-utils" "~1.0.0"
     immer "^9.0.6"
 
 "@metamask/bip39@^4.0.0":
