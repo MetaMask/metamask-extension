@@ -520,7 +520,12 @@ export default class SecurityTab extends PureComponent {
           {this.renderBatchAccountBalanceRequestsToggle()}
           {this.renderCollectibleDetectionToggle()}
         </div>
-        {this.renderMetaMetricsOptIn()}
+        <span className="settings-page__security-tab-sub-header">
+          {this.context.t('metrics')}
+        </span>
+        <div className="settings-page__content-padded">
+          {this.renderMetaMetricsOptIn()}
+        </div>
       </div>
     );
   }
