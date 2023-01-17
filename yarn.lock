@@ -3496,7 +3496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^0.13.0":
+"@metamask/eth-ledger-bridge-keyring@npm:0.13.0":
   version: 0.13.0
   resolution: "@metamask/eth-ledger-bridge-keyring@npm:0.13.0"
   dependencies:
@@ -3505,6 +3505,18 @@ __metadata:
     ethereumjs-util: ^7.0.9
     hdkey: 0.8.0
   checksum: 6aa98c17cefad9b8d3b879d9b0ab2357a500a932a57c54ba8dadabf9e1153469346b929e49853523f2ff300293746ceb07c7941f2c17adaf3feef3f30e95619a
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-ledger-bridge-keyring@patch:@metamask/eth-ledger-bridge-keyring@npm%3A0.13.0#./.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-0.13.0-189684913d.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.13.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@patch:@metamask/eth-ledger-bridge-keyring@npm%3A0.13.0#./.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-0.13.0-189684913d.patch::version=0.13.0&hash=6b7bd4&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethereumjs/tx": ^3.2.0
+    eth-sig-util: ^2.0.0
+    ethereumjs-util: ^7.0.9
+    hdkey: 0.8.0
+  checksum: 1abfeac0d401c663025061cb841f43d04c630fbd9d7c78fd29c5087b5f3de9ee6abef16134f847fadabfaac54f74b0ecbffa5ec05b5fa7d3ebc440e2c474473b
   languageName: node
   linkType: hard
 
@@ -14759,7 +14771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-keyring-controller@npm:^8.1.0":
+"eth-keyring-controller@npm:8.1.0":
   version: 8.1.0
   resolution: "eth-keyring-controller@npm:8.1.0"
   dependencies:
@@ -14770,6 +14782,20 @@ __metadata:
     eth-simple-keyring: ^4.2.0
     obs-store: ^4.0.3
   checksum: 71872cac6e0583dbebbc29e3eec337164f823ccc4f78ecd63c6d770f8f84a08390f240c33128bdc6139ddadf8ca2a2e850d2285e3bc1621a7743d6a7ffcb6f4c
+  languageName: node
+  linkType: hard
+
+"eth-keyring-controller@patch:eth-keyring-controller@npm%3A8.1.0#./.yarn/patches/eth-keyring-controller-npm-8.1.0-6d30bff8ae.patch::locator=metamask-crx%40workspace%3A.":
+  version: 8.1.0
+  resolution: "eth-keyring-controller@patch:eth-keyring-controller@npm%3A8.1.0#./.yarn/patches/eth-keyring-controller-npm-8.1.0-6d30bff8ae.patch::version=8.1.0&hash=4fbc4b&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/bip39": ^4.0.0
+    "@metamask/browser-passworder": ^4.0.1
+    "@metamask/eth-hd-keyring": ^4.0.2
+    eth-sig-util: ^3.0.1
+    eth-simple-keyring: ^4.2.0
+    obs-store: ^4.0.3
+  checksum: 2c226920107d5754ee518bd19eb7a10d4ab4eb3b4b19441da0a7fd9ea70061490cdbe7614b3b3c799fd8a64f69ca26baa26f494e604dcc2e15035030bf7cea28
   languageName: node
   linkType: hard
 
@@ -14889,7 +14915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-trezor-keyring@npm:^0.10.0":
+"eth-trezor-keyring@npm:0.10.0":
   version: 0.10.0
   resolution: "eth-trezor-keyring@npm:0.10.0"
   dependencies:
@@ -14899,6 +14925,19 @@ __metadata:
     hdkey: 0.8.0
     trezor-connect: 8.2.6-extended
   checksum: 19af3aa2b855aafd02f342367a17c33536ea2627a5b034e728c4dc0d80091da8b8bd44eaad84b1613a803c9b4850b877976bae7b56f34d24f22170750cdba2a0
+  languageName: node
+  linkType: hard
+
+"eth-trezor-keyring@patch:eth-trezor-keyring@npm%3A0.10.0#./.yarn/patches/eth-trezor-keyring-npm-0.10.0-1bf9aa3f4d.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.10.0
+  resolution: "eth-trezor-keyring@patch:eth-trezor-keyring@npm%3A0.10.0#./.yarn/patches/eth-trezor-keyring-npm-0.10.0-1bf9aa3f4d.patch::version=0.10.0&hash=df5094&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethereumjs/tx": ^3.2.1
+    "@metamask/eth-sig-util": ^4.0.0
+    ethereumjs-util: ^7.0.9
+    hdkey: 0.8.0
+    trezor-connect: 8.2.6-extended
+  checksum: 4bdc41d3aad8677f40c4da10ebd47282ed3cd792f98c7b46fa05672fdc9db0f570d824198612c33a5a0ead18032e9d886d376bac3e0362c35af85f64a42c50e2
   languageName: node
   linkType: hard
 
