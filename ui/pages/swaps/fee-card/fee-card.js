@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
@@ -13,6 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { getUseCurrencyRateCheck } from '../../../selectors';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -30,6 +32,7 @@ export default function FeeCard({
   isBestQuote,
 }) {
   const t = useContext(I18nContext);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
@@ -112,9 +115,10 @@ export default function FeeCard({
                 </>
               }
               detailText={primaryFee.fee}
-              detailTotal={secondaryFee.fee}
+              detailTotal={useCurrencyRateCheck && secondaryFee.fee}
               subText={
-                secondaryFee?.maxFee !== undefined && (
+                (secondaryFee?.maxFee !== undefined ||
+                  primaryFee?.maxFee !== undefined) && (
                   <>
                     <Typography
                       as="span"
@@ -124,7 +128,9 @@ export default function FeeCard({
                     >
                       {t('maxFee')}
                     </Typography>
-                    {`: ${secondaryFee.maxFee}`}
+                    {useCurrencyRateCheck
+                      ? `: ${secondaryFee.maxFee}`
+                      : `: ${primaryFee.maxFee}`}
                   </>
                 )
               }

@@ -8,6 +8,7 @@ import {
   setUseTokenDetection,
   setIpfsGateway,
   setUseMultiAccountBalanceChecker,
+  setUseCurrencyRateCheck,
   setUseNftDetection,
   setOpenSeaEnabled,
 } from '../../../store/actions';
@@ -26,6 +27,7 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useCurrencyRateCheck,
   } = metamask;
 
   return {
@@ -36,6 +38,7 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useCurrencyRateCheck,
     useNftDetection: getUseNftDetection(state),
     openSeaEnabled: getOpenSeaEnabled(state),
   };
@@ -48,6 +51,7 @@ const mapDispatchToProps = (dispatch) => {
     setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
+    setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (value) => {
       return dispatch(setUseTokenDetection(value));
     },

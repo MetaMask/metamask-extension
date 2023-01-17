@@ -266,7 +266,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
             ...networkState,
-            provider: {
+            providerConfig: {
               ...networkState.provider,
               chainId: hexToDecimal(networkState.provider.chainId),
             },
@@ -291,9 +291,16 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -307,7 +314,7 @@ export default class MetamaskController extends EventEmitter {
             const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -327,9 +334,16 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -504,7 +518,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -512,8 +526,28 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           }),
       },
-      undefined,
+      {
+        disabled:
+          !this.preferencesController.store.getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
+    );
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+          this.currencyRateController.start();
+          this.tokenRatesController.configure(
+            { disabled: false },
+            false,
+            false,
+          );
+        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+          this.currencyRateController.stop();
+          this.tokenRatesController.configure({ disabled: true }, false, false);
+        }
+      }, this.preferencesController.store.getState()),
     );
 
     this.ensController = new EnsController({
@@ -1245,7 +1279,9 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.incomingTransactionsController.start();
-    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.start();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -1254,7 +1290,9 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.incomingTransactionsController.stop();
-    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.stop();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
     }
@@ -1633,6 +1671,10 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUseCurrencyRateCheck:
+        preferencesController.setUseCurrencyRateCheck.bind(
+          preferencesController,
+        ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
