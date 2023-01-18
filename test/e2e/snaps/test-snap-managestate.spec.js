@@ -72,9 +72,15 @@ describe('Test Snap manageState', function () {
         // fill and click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.waitForSelector({
+          css: '#connectManageState',
+          text: 'Reconnect to Manage State Snap',
+        });
         await driver.fill('#dataManageState', '23');
         await driver.delay(1000);
-        await driver.clickElement('#sendManageState');
+        const sendButton = await driver.findElement('#sendManageState');
+        await driver.scrollToElement(sendButton);
+        await sendButton.click();
 
         // check the results of the public key test
         await driver.delay(1000);
@@ -94,7 +100,9 @@ describe('Test Snap manageState', function () {
         );
 
         // click clear results
-        await driver.clickElement('#clearManageState');
+        const clearButton = await driver.findElement('#clearManageState');
+        await driver.scrollToElement(clearButton);
+        await clearButton.click();
 
         // check if true
         await driver.delay(1000);

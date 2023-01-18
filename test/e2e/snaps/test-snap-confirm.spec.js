@@ -71,6 +71,10 @@ describe('Test Snap Confirm', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // click send inputs on test snap page
+        await driver.waitForSelector({
+          css: '#connectConfirmSnap',
+          text: 'Reconnect to Confirm Snap',
+        });
         const snapButton2 = await driver.findElement('#sendConfirmButton');
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
