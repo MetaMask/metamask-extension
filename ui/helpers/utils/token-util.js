@@ -6,7 +6,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC20 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
@@ -278,7 +278,7 @@ export async function getAssetDetails(
   const decimals =
     tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
 
-  if (tokenDetails?.standard === ERC20) {
+  if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
   }
 

@@ -59,9 +59,9 @@ import {
 
 import browser from 'webextension-polyfill';
 import {
-  ASSET_TYPES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  AssetType,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
@@ -266,7 +266,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
             ...networkState,
-            provider: {
+            providerConfig: {
               ...networkState.provider,
               chainId: hexToDecimal(networkState.provider.chainId),
             },
@@ -291,9 +291,16 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -307,7 +314,7 @@ export default class MetamaskController extends EventEmitter {
             const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -327,9 +334,16 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -359,7 +373,7 @@ export default class MetamaskController extends EventEmitter {
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: ASSET_TYPES.NFT,
+              asset_type: AssetType.NFT,
               token_standard: standard,
               source,
             },
@@ -504,7 +518,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -512,8 +526,28 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           }),
       },
-      undefined,
+      {
+        disabled:
+          !this.preferencesController.store.getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
+    );
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+          this.currencyRateController.start();
+          this.tokenRatesController.configure(
+            { disabled: false },
+            false,
+            false,
+          );
+        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+          this.currencyRateController.stop();
+          this.tokenRatesController.configure({ disabled: true }, false, false);
+        }
+      }, this.preferencesController.store.getState()),
     );
 
     this.ensController = new EnsController({
@@ -876,8 +910,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
-        status === TRANSACTION_STATUSES.CONFIRMED ||
-        status === TRANSACTION_STATUSES.FAILED
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail =
@@ -896,7 +930,7 @@ export default class MetamaskController extends EventEmitter {
         // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
         // in which case we will want to check and update ownership status of the transferred collectible.
         if (
-          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
         ) {
           const {
@@ -1093,7 +1127,7 @@ export default class MetamaskController extends EventEmitter {
         this.txController.getTransactions({
           searchCriteria: {
             hash,
-            status: TRANSACTION_STATUSES.SUBMITTED,
+            status: TransactionStatus.submitted,
           },
         })[0],
     });
@@ -1245,7 +1279,9 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.incomingTransactionsController.start();
-    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.start();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -1254,7 +1290,9 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.incomingTransactionsController.stop();
-    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.stop();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
     }
@@ -1593,7 +1631,6 @@ export default class MetamaskController extends EventEmitter {
       detectTokensController,
       ensController,
       gasFeeController,
-      keyringController,
       metaMetricsController,
       networkController,
       announcementController,
@@ -1634,6 +1671,10 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUseCurrencyRateCheck:
+        preferencesController.setUseCurrencyRateCheck.bind(
+          preferencesController,
+        ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
@@ -1813,7 +1854,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
@@ -2054,6 +2095,11 @@ export default class MetamaskController extends EventEmitter {
           assetsContractController,
         ),
     };
+  }
+
+  async exportAccount(address, password) {
+    await this.verifyPassword(password);
+    return this.keyringController.exportAccount(address, password);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {

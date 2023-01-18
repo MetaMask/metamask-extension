@@ -25,7 +25,7 @@ import { getIsMainnet, getUseNftDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default function AddCollectible() {
@@ -84,7 +84,7 @@ export default function AddCollectible() {
         token_contract_address: address,
         token_symbol: tokenDetails?.symbol,
         tokenId: tokenId.toString(),
-        asset_type: ASSET_TYPES.NFT,
+        asset_type: AssetType.NFT,
         token_standard: tokenDetails?.standard,
         source: EVENT.SOURCE.TOKEN.CUSTOM,
       },
@@ -125,27 +125,29 @@ export default function AddCollectible() {
             <CollectiblesDetectionNotice />
           ) : null}
           {collectibleAddFailed && (
-            <ActionableMessage
-              type="danger"
-              useIcon
-              iconFillColor="var(--color-error-default)"
-              message={
-                <Box display={DISPLAY.INLINE_FLEX}>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    margin={0}
-                  >
-                    {t('collectibleAddFailedMessage')}
-                  </Typography>
-                  <button
-                    className="fas fa-times add-collectible__close"
-                    title={t('close')}
-                    onClick={() => setCollectibleAddFailed(false)}
-                  />
-                </Box>
-              }
-            />
+            <Box marginLeft={4} marginRight={4}>
+              <ActionableMessage
+                type="danger"
+                useIcon
+                iconFillColor="var(--color-error-default)"
+                message={
+                  <Box display={DISPLAY.INLINE_FLEX}>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontWeight={FONT_WEIGHT.NORMAL}
+                      margin={0}
+                    >
+                      {t('collectibleAddFailedMessage')}
+                    </Typography>
+                    <button
+                      className="fas fa-times add-collectible__close"
+                      title={t('close')}
+                      onClick={() => setCollectibleAddFailed(false)}
+                    />
+                  </Box>
+                }
+              />
+            </Box>
           )}
           <Box margin={4}>
             <FormField

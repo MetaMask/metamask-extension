@@ -37,6 +37,7 @@ export default class PreferencesController {
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       useNftDetection: false,
+      useCurrencyRateCheck: true,
       openSeaEnabled: false,
       advancedGasFee: null,
 
@@ -154,6 +155,15 @@ export default class PreferencesController {
    */
   setUseNftDetection(useNftDetection) {
     this.store.updateState({ useNftDetection });
+  }
+
+  /**
+   * Setter for the `useCurrencyRateCheck` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use currency rate check for ETH and tokens.
+   */
+  setUseCurrencyRateCheck(val) {
+    this.store.updateState({ useCurrencyRateCheck: val });
   }
 
   /**

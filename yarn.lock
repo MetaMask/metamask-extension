@@ -3067,35 +3067,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@lavamoat/lavapack@npm:3.1.0"
+"@lavamoat/lavapack@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@lavamoat/lavapack@npm:3.3.0"
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
     convert-source-map: ^1.7.0
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.2.0
+    lavamoat-core: ^12.4.0
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 01d87fe76194591e3542171c6f7eccd0efadcbe27213af5d251480a5ca3cc95a77724de103995ee7c96a4b7e7a269c8dfe446a0a3028f8cf4952d7168817fa4a
+  checksum: 77f6588d38d53f0feba1856de409829969dc3592b9b4d1e722fd395a1eabae6a8983648e2929ef9243fd6ead6919683cb87e65433325601bafabcf8b46dc83be
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.1.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch::version=3.1.0&hash=8c39c8&locator=metamask-crx%40workspace%3A."
+"@lavamoat/lavapack@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@lavamoat/lavapack@npm:4.0.0"
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
     convert-source-map: ^1.7.0
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.2.0
+    lavamoat-core: ^13.0.0
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: cef044f3dfba68455ed1b17b80d58fa3fcbd42e5d576c0ed0fad126f27e15592ae69c213b4537626a053c8a2f5a0f6bcf80bbb3e7e7ab6722ea6743d4e54820c
+  checksum: 869718c26912216f158001cf2b9ae02611d47218123f2dec86b7e9ae08c5a288129994ec5f3e219737c4ad604f9d5e75e8c9204631474e4ea04d341613949b91
   languageName: node
   linkType: hard
 
@@ -3293,20 +3293,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/assets-controllers@npm:1.0.1"
+"@metamask/assets-controllers@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/assets-controllers@npm:3.0.1"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/base-controller": ~1.1.0
-    "@metamask/contract-metadata": ^1.35.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/controller-utils": ^1.0.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ~1.0.0
-    "@metamask/preferences-controller": ~1.0.0
+    "@metamask/network-controller": ^2.0.0
+    "@metamask/preferences-controller": ^1.0.1
     "@types/uuid": ^8.3.0
     abort-controller: ^3.0.0
     async-mutex: ^0.2.6
@@ -3318,7 +3318,9 @@ __metadata:
     multiformats: ^9.5.2
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
-  checksum: 678f32126aa84de769065581661218a247166ef2e4918290a8e082dd9c7b175d84c5a4d4f431c884dc83201b183f324c2b5047bc69a2ea7825d710470cae5f87
+  peerDependencies:
+    "@metamask/network-controller": ^2.0.0
+  checksum: c356a820929738e3ad83a5cfe20993a1e7c4dac6835b308d8cb32efe8542c339664ae3046a1dedce6ee2a4c45cec5528015309366fa96674837dca7ea001998f
   languageName: node
   linkType: hard
 
@@ -3336,7 +3338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:~1.1.0":
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
@@ -3375,17 +3377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^1.35.0":
-  version: 1.36.0
-  resolution: "@metamask/contract-metadata@npm:1.36.0"
-  checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
-  languageName: node
-  linkType: hard
-
-"@metamask/contract-metadata@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/contract-metadata@npm:2.1.0"
-  checksum: eebe2fb7c16c0f585f08e0de446efe5c7866316e3f663b409691aaf69333deead53fcc9f3f0a67db7d0d84309dc52a620512c441b5d020ad08baf2fed7ed773f
+"@metamask/contract-metadata@npm:^2.1.0, @metamask/contract-metadata@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/contract-metadata@npm:2.2.0"
+  checksum: 31b94274c7c0a2d03377f3fa5e46574cde6607fd3a3b571cb7ffa4f7ce6dc90e2bfe2a4b2eb9eb4ebcd07cb7d6918da893356b699e91bc6e005b472ca7279370
   languageName: node
   linkType: hard
 
@@ -3767,13 +3762,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/preferences-controller@npm:1.0.0"
+"@metamask/preferences-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/preferences-controller@npm:1.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
-  checksum: dad15bf468031df470ebeb18fa71c8181f247f9c9fd2eac52f6ee71f77bda61d8b0b7f8dc492d4f4f1602e249dedc38360b5e90ca2902adbcbd7c56bbaec8282
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
+  checksum: 3ad7dcf40cc1dc6679d37f705418d4d18da2acce120ce6bd09b0e6755484d193139fd85cf2c0b7374d867ab8a03d7f5bc74ebc8c2cdc003d5872f33d34c1e965
   languageName: node
   linkType: hard
 
@@ -8891,7 +8886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-done@npm:^1.2.0, async-done@npm:^1.2.2, async-done@npm:~1.3.2":
+"async-done@npm:1.3.2":
   version: 1.3.2
   resolution: "async-done@npm:1.3.2"
   dependencies:
@@ -8900,6 +8895,18 @@ __metadata:
     process-nextick-args: ^2.0.0
     stream-exhaust: ^1.0.1
   checksum: 2e46e294826782e1b7a7ff051d75abfeb7735d4d970de8d630d6aac154090479bcc523dbb8ddb2bc16c94e9886024df2c312edc1bb901c331938fa782923c1d8
+  languageName: node
+  linkType: hard
+
+"async-done@patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch::locator=metamask-crx%40workspace%3A.":
+  version: 1.3.2
+  resolution: "async-done@patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch::version=1.3.2&hash=198701&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    end-of-stream: ^1.1.0
+    once: ^1.3.2
+    process-nextick-args: ^2.0.0
+    stream-exhaust: ^1.0.1
+  checksum: cf43b3e1e8530a09144d6614f5b7f3429921cf338a1d36c07854cc381241cc22e001fcbf6a845a65bf76726653951ae12bba3ec221278508345629e47d880329
   languageName: node
   linkType: hard
 
@@ -14662,17 +14669,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "eth-json-rpc-filters@npm:5.0.0"
+"eth-json-rpc-filters@npm:^5.0.0, eth-json-rpc-filters@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "eth-json-rpc-filters@npm:5.1.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     async-mutex: ^0.2.6
-    eth-json-rpc-middleware: ^6.0.0
     eth-query: ^2.1.2
     json-rpc-engine: ^6.1.0
     pify: ^5.0.0
-  checksum: 5ae22c40aaa477e5784e1dd274612e4abd8d649f5c6030704c54899435d56c31fe6d911f60abe2867878141a6f20cdf0024b1c2a0ddc0173b8b40b53e92060e2
+  checksum: 864092e96277953c399a139df66572b864bd41247c5c1d18e6529973804d4fd8962658d8b10571152554802fa8daaa1003588aee79ffce754e0bc57c39b771d5
   languageName: node
   linkType: hard
 
@@ -21390,63 +21396,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^15.2.0":
-  version: 15.2.0
-  resolution: "lavamoat-browserify@npm:15.2.0"
+"lavamoat-browserify@npm:^15.5.0":
+  version: 15.5.0
+  resolution: "lavamoat-browserify@npm:15.5.0"
   dependencies:
     "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^3.1.0
+    "@lavamoat/lavapack": ^3.3.0
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.8.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.2.0
+    lavamoat-core: ^12.4.0
     pify: ^4.0.1
     readable-stream: ^3.6.0
     source-map: ^0.7.3
     through2: ^3.0.0
-  checksum: 510e09ac05ac2b3492815b6ce9060255cd6d8cc372073c437dfc634818b729fd0cf87a00f70c96deeb15496d090c611248101d13c117a4454247464d9f0f1a91
+  checksum: b9d4ccbe6dd09aa63145f89f99f0b3ac269930a5e419cc836659f8c6a7e26b78d2dd3722e44055e6436d2334b044c348895f512d134ee8b5dc4ee87adc890b6f
   languageName: node
   linkType: hard
 
 "lavamoat-core@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "lavamoat-core@npm:10.0.1"
+  version: 10.1.2
+  resolution: "lavamoat-core@npm:10.1.2"
   dependencies:
     fromentries: ^1.2.0
     json-stable-stringify: ^1.0.1
-    lavamoat-tofu: ^5.1.3
+    lavamoat-tofu: ^6.0.0
     merge-deep: ^3.0.2
     resolve: ^1.15.1
-  checksum: 6d64663da2661ac550095e762ed71be2e99a58fa33bc7c9ae35a1cf7476d3cea8e08986dbb04c7decf9169e71b39c9377eaf8c8005a687e0a5675443aa124a40
+  checksum: 848621677537df346536f049996940516ad24d723ffd0ba84c291b5d75975b77b344d4300a575cba4b821a52d3c8cb30cf8b7d14ca5ab46811ec382d62cf503c
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^12.2.0":
-  version: 12.2.0
-  resolution: "lavamoat-core@npm:12.2.0"
+"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
+  version: 12.4.0
+  resolution: "lavamoat-core@npm:12.4.0"
   dependencies:
     fromentries: ^1.2.0
     json-stable-stringify: ^1.0.1
-    lavamoat-tofu: ^6.0.1
+    lavamoat-tofu: ^6.0.2
     merge-deep: ^3.0.2
-  checksum: 8aff8ba92fad737b1194aefa25f3e8a51055963c0d68a4c4eef6cf2f36155690c8ddc30d881e23c466d3084a420c5ddab3d82eedc5630eecfc714849ca2c0c75
+  checksum: 432a8968035370feb51e50f35306e7f85015e3b56440dbd41b6d3eec7f4bc82c3d1f16c6a627549df2665499c49bcb6e55fa697bccc6839bac1de12804019c1d
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "lavamoat-tofu@npm:5.1.3"
+"lavamoat-core@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "lavamoat-core@npm:13.0.0"
   dependencies:
-    "@babel/parser": ^7.10.1
-    "@babel/traverse": ^7.10.1
-  checksum: d8a04fb8db04a5a731ad02974f9e6d8771fb8679525745e3edf9e35b369aa4bc0c3df14fb49e9380594f24e5603fd8e06645675212611b4982977de1b9aab60b
+    fromentries: ^1.2.0
+    json-stable-stringify: ^1.0.1
+    lavamoat-tofu: ^6.0.2
+    merge-deep: ^3.0.2
+  checksum: afeb8014f8c21613e65eaff5676cc3cf893ff351de3930845c6141126f896a063456794806d6c9b9a97be92f444dc23aaa3f28bb4d35b8af20691dfd0296e59c
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^6.0.1":
+"lavamoat-tofu@npm:^6.0.0, lavamoat-tofu@npm:^6.0.2":
   version: 6.0.2
   resolution: "lavamoat-tofu@npm:6.0.2"
   dependencies:
@@ -21472,9 +21480,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "lavamoat@npm:6.2.0"
+"lavamoat@npm:^6.3.0":
+  version: 6.4.0
+  resolution: "lavamoat@npm:6.4.0"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/highlight": ^7.10.4
@@ -21482,15 +21490,16 @@ __metadata:
     bindings: ^1.5.0
     htmlescape: ^1.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.2.0
-    lavamoat-tofu: ^6.0.1
+    lavamoat-core: ^12.3.0
+    lavamoat-tofu: ^6.0.2
     node-gyp-build: ^4.2.3
     object.fromentries: ^2.0.2
     resolve: ^1.17.0
     yargs: ^16.0.0
   bin:
-    lavamoat: src/index.js
-  checksum: 4824d5459647dfe8352ce913295fa6d01343e6715bf3da8dc27956bf5876ed466572d9d50b66401a8a7896168f969f3667b33721bb4e276441ee3bedf2192bca
+    lavamoat: src/cli.js
+    lavamoat-run-command: src/run-command.js
+  checksum: 5a058b0b62fa4d6baa477775dc03433c0064e7ab0f14f4a540aa033154c3484cd9b59ec66e2968e387087c24531b09cbd6a70a3a11f4b52e3b4519cd3672c54c
   languageName: node
   linkType: hard
 
@@ -22752,16 +22761,16 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": ^0.12.1
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
-    "@lavamoat/lavapack": ^3.1.0
+    "@lavamoat/lavapack": ^4.0.0
     "@lavamoat/snow": ^1.3.0
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
     "@metamask/approval-controller": ^1.0.0
-    "@metamask/assets-controllers": ^1.0.1
+    "@metamask/assets-controllers": ^3.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
-    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/contract-metadata": ^2.2.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/eslint-config": ^9.0.0
@@ -22893,7 +22902,7 @@ __metadata:
     eslint-plugin-storybook: ^0.6.4
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
-    eth-json-rpc-filters: ^5.0.0
+    eth-json-rpc-filters: ^5.1.0
     eth-json-rpc-middleware: ^9.0.1
     eth-keyring-controller: ^8.1.0
     eth-lattice-keyring: ^0.12.3
@@ -22952,8 +22961,8 @@ __metadata:
     jsonschema: ^1.2.4
     koa: ^2.7.0
     labeled-stream-splicer: ^2.0.2
-    lavamoat: ^6.2.0
-    lavamoat-browserify: ^15.2.0
+    lavamoat: ^6.3.0
+    lavamoat-browserify: ^15.5.0
     lavamoat-viz: ^6.0.9
     localforage: ^1.9.0
     lockfile-lint: ^4.9.6

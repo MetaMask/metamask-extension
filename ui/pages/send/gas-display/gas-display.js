@@ -21,11 +21,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -38,6 +34,7 @@ import {
   getIsBuyableChain,
   transactionFeeSelector,
   getIsMainnet,
+  getUseCurrencyRateCheck,
 } from '../../../selectors';
 
 import {
@@ -57,6 +54,7 @@ export default function GasDisplay({ gasError }) {
   const isMainnet = useSelector(getIsMainnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
@@ -94,11 +92,13 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === ERC721 ||
-    draftTransaction?.asset.details?.standard === ERC1155
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
   ) {
     title = draftTransaction?.asset.details?.name;
-  } else if (draftTransaction?.asset.details?.standard === ERC20) {
+  } else if (
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+  ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
       draftTransaction?.asset.details?.symbol
     }`;
@@ -197,14 +197,16 @@ export default function GasDisplay({ gasError }) {
               }
               detailTitleColor={COLORS.TEXT_DEFAULT}
               detailText={
-                <Box className="gas-display__currency-container">
-                  <LoadingHeartBeat estimateUsed={estimateUsed} />
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                  />
-                </Box>
+                useCurrencyRateCheck && (
+                  <Box className="gas-display__currency-container">
+                    <LoadingHeartBeat estimateUsed={estimateUsed} />
+                    <UserPreferencedCurrencyDisplay
+                      type={SECONDARY}
+                      value={hexMinimumTransactionFee}
+                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                    />
+                  </Box>
+                )
               }
               detailTotal={
                 <Box className="gas-display__currency-container">
@@ -263,22 +265,24 @@ export default function GasDisplay({ gasError }) {
                 key="total-item"
                 detailTitle={t('total')}
                 detailText={
-                  <Box
-                    height={BLOCK_SIZES.MAX}
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
-                    className="gas-display__total-value"
-                  >
-                    <LoadingHeartBeat
-                      estimateUsed={transactionData?.userFeeLevel}
-                    />
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      key="total-detail-text"
-                      value={hexTransactionTotal}
-                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                    />
-                  </Box>
+                  useCurrencyRateCheck && (
+                    <Box
+                      height={BLOCK_SIZES.MAX}
+                      display={DISPLAY.FLEX}
+                      flexDirection={FLEX_DIRECTION.COLUMN}
+                      className="gas-display__total-value"
+                    >
+                      <LoadingHeartBeat
+                        estimateUsed={transactionData?.userFeeLevel}
+                      />
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        key="total-detail-text"
+                        value={hexTransactionTotal}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    </Box>
+                  )
                 }
                 detailTotal={detailTotal}
                 subTitle={t('transactionDetailGasTotalSubtitle')}

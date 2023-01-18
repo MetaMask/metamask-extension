@@ -35,7 +35,7 @@ import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
@@ -142,9 +142,12 @@ export default function ConfirmApprove({
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   let tokensText;
-  if (assetStandard === ERC20) {
+  if (assetStandard === TokenStandard.ERC20) {
     tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
-  } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  } else if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     tokensText = assetName;
   }
 
@@ -168,7 +171,7 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
+  if (improvedTokenAllowanceEnabled && assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
