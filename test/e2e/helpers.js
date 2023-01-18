@@ -233,7 +233,10 @@ const completeImportSRPOnboardingFlow = async (
 
   // create password
   await driver.pasteIntoField('[data-testid="create-password-new"]', password);
-  await driver.pasteIntoField('[data-testid="create-password-confirm"]', password);
+  await driver.pasteIntoField(
+    '[data-testid="create-password-confirm"]',
+    password,
+  );
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
 
