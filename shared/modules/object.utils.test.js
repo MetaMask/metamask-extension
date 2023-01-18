@@ -294,7 +294,7 @@ describe('object utils', function () {
         a: 1,
         b: 2,
       };
-      const values = memoize((obj) => Object.keys(obj).map(key => obj[key]));
+      const values = memoize((obj) => Object.keys(obj).map((key) => obj[key]));
       expect(values(object)).toStrictEqual([1, 2]);
       object.a = 2;
       expect(values(object)).toStrictEqual([1, 2]);
