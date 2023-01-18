@@ -1264,14 +1264,8 @@
     "message": "Titik akhir memberikan hasil ID rantai yang berbeda: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Deteksi token yang ditingkatkan"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini deteksi token yang ditingkatkan tersedia di $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "API token ConsenSys mengumpulkan daftar token dari berbagai daftar token pihak ketiga. Saat diaktifkan, token akan secara otomatis terdeteksi, dan dapat dicari, di mainnet Ethereum, Binance, Polygon, dan Avalanche. Saat dinonaktifkan, deteksi dan pencarian otomatis hanya dapat dilakukan di mainnet Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Karakter tidak sah untuk ENS."
