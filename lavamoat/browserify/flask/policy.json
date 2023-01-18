@@ -501,6 +501,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.info": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -508,14 +509,14 @@
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/contract-metadata": true,
         "@metamask/assets-controllers>abort-controller": true,
-        "@metamask/assets-controllers>async-mutex": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
+        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true,
@@ -527,14 +528,6 @@
     "@metamask/assets-controllers>abort-controller": {
       "globals": {
         "AbortController": true
-      }
-    },
-    "@metamask/assets-controllers>async-mutex": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "enzyme>cheerio>tslib": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -1150,7 +1143,6 @@
     "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
-        "assert": true,
         "clearTimeout": true,
         "console.error": true,
         "console.info": true,
@@ -2504,22 +2496,22 @@
     },
     "eth-json-rpc-filters": {
       "globals": {
-        "console.error": true,
-        "results": "write"
+        "console.error": true
       },
       "packages": {
-        "await-semaphore": true,
-        "eth-json-rpc-filters>eth-json-rpc-middleware": true,
-        "eth-json-rpc-filters>eth-json-rpc-middleware>pify": true,
-        "eth-json-rpc-filters>json-rpc-engine": true,
-        "eth-json-rpc-filters>lodash.flatmap": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
-        "safe-event-emitter": true
+        "json-rpc-engine": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "pify": true
       }
     },
-    "eth-json-rpc-filters>eth-json-rpc-middleware": {
+    "eth-json-rpc-filters>async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
-        "eth-json-rpc-filters>json-rpc-engine": true
+        "enzyme>cheerio>tslib": true
       }
     },
     "eth-json-rpc-middleware": {

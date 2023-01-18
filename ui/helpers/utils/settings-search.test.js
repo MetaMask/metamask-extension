@@ -137,6 +137,10 @@ const t = (key) => {
       return 'Contact us';
     case 'snaps':
       return 'Snaps';
+    case 'currencyRateCheckToggle':
+      return 'Show balance and token price checker';
+    case 'currencyRateCheckToggleDescription':
+      return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
     default:
       return '';
   }
@@ -165,7 +169,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(9);
+      ).toStrictEqual(10);
     });
 
     it('should get good alerts section number', () => {

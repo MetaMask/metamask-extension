@@ -93,7 +93,10 @@ function isValidSize(type, value) {
       type === 'margin-top' ||
       type === 'margin-right' ||
       type === 'margin-bottom' ||
-      type === 'margin-left') &&
+      type === 'margin-left' ||
+      type === 'margin-inline' ||
+      type === 'margin-inline-start' ||
+      type === 'margin-inline-end') &&
       value === 'auto')
   );
 }
@@ -320,9 +323,9 @@ Box.propTypes = {
   marginBottom: MultipleSizesAndAuto,
   marginRight: MultipleSizesAndAuto,
   marginLeft: MultipleSizesAndAuto,
-  marginInline: MultipleSizes,
-  marginInlineStart: MultipleSizes,
-  marginInlineEnd: MultipleSizes,
+  marginInline: MultipleSizesAndAuto,
+  marginInlineStart: MultipleSizesAndAuto,
+  marginInlineEnd: MultipleSizesAndAuto,
   padding: MultipleSizes,
   paddingTop: MultipleSizes,
   paddingBottom: MultipleSizes,

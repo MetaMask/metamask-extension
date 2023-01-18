@@ -73,7 +73,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },

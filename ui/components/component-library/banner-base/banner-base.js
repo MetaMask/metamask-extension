@@ -18,7 +18,6 @@ export const BannerBase = ({
   title,
   titleProps,
   children,
-
   actionButtonLabel,
   actionButtonOnClick,
   actionButtonProps,
