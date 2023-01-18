@@ -493,8 +493,13 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.phishingController = new PhishingController();
-    this.phishingController.updatePhishingLists();
+    this.phishingController = new PhishingController(
+      {},
+      initState.PhishingController,
+    );
+
+    this.phishingController.maybeUpdatePhishingLists();
+
     if (process.env.IN_TEST) {
       this.phishingController.setRefreshInterval(5 * SECOND);
     }
@@ -1176,6 +1181,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: this.tokensController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      PhishingController: this.phishingController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -3523,10 +3529,7 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
-      if (phishingListsAreOutOfDate) {
-        this.phishingController.updatePhishingLists();
-      }
+      this.phishingController.maybeUpdatePhishingLists();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
