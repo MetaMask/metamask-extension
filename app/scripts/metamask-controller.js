@@ -9,7 +9,7 @@ import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import {
   KeyringController,
   keyringBuilderFactory,
-} from 'eth-keyring-controller';
+} from '@metamask/eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,

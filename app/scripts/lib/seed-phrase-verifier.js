@@ -1,4 +1,4 @@
-import { KeyringController } from 'eth-keyring-controller';
+import { KeyringController } from '@metamask/eth-keyring-controller';
 import log from 'loglevel';
 
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';

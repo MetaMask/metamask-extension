@@ -3479,15 +3479,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-hd-keyring@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/eth-hd-keyring@npm:5.0.1"
+"@metamask/eth-hd-keyring@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/eth-hd-keyring@npm:6.0.0"
   dependencies:
     "@ethereumjs/util": ^8.0.2
     "@metamask/eth-sig-util": ^5.0.2
     "@metamask/scure-bip39": ^2.0.3
     ethereum-cryptography: ^1.1.2
-  checksum: 4a406a8b2f613d33e1c8c0bd3eb4ff6ccf9a4d4556501639636e660fa0fa86a290401fc2e5a1a410672bb0b32a0755a60ed8d596eb56a0088fd45d7031d4ceeb
+  checksum: 2f1b05c1bdb001f1529bedcd05ef4bcca43af5c8d64742ec1b2feed341edab565bff7f66ef3834ae1a451b23532bda20ac3579c62dde2201330af01025d1497a
   languageName: node
   linkType: hard
 
@@ -3501,6 +3501,19 @@ __metadata:
     json-rpc-engine: ^6.1.0
     node-fetch: ^2.6.7
   checksum: 6230cb289b66db39d27f08ffc72cfb79274e632e4e14eb52ca72d19167d17bbf22c58718d80f801818058631dec0638bcc21ef4b229fa8d53e7f9328be870fc6
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-keyring-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/eth-keyring-controller@npm:10.0.0"
+  dependencies:
+    "@metamask/browser-passworder": ^4.0.2
+    "@metamask/eth-hd-keyring": ^6.0.0
+    "@metamask/eth-sig-util": 5.0.2
+    "@metamask/eth-simple-keyring": ^5.0.0
+    obs-store: ^4.0.3
+  checksum: 6b06a74ae5da610289a4f5a7018b55d17d55b3d533fcd2d1675704902575d435373e4c2b3f4a019f6c14492f326e0dbfe7c04bd94ae8ebc38382fbe3b9c86b7c
   languageName: node
   linkType: hard
 
@@ -14775,19 +14788,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-keyring-controller@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "eth-keyring-controller@npm:9.0.0"
-  dependencies:
-    "@metamask/browser-passworder": ^4.0.2
-    "@metamask/eth-hd-keyring": ^5.0.1
-    "@metamask/eth-sig-util": 5.0.2
-    "@metamask/eth-simple-keyring": ^5.0.0
-    obs-store: ^4.0.3
-  checksum: 553ae159d46eed66a0498bd2b9964d87bd390a304e1f4eae1a9ff13990f5ffae86575f52156e4b1b43efc5b938d9f7ce85ad2607e901e07abcd7f3e1772bbde1
-  languageName: node
-  linkType: hard
-
 "eth-lattice-keyring@npm:^0.12.3":
   version: 0.12.3
   resolution: "eth-lattice-keyring@npm:0.12.3"
@@ -22803,6 +22803,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/eth-json-rpc-infura": ^7.0.0
+    "@metamask/eth-keyring-controller": ^10.0.0
     "@metamask/eth-ledger-bridge-keyring": ^0.13.0
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/etherscan-link": ^2.2.0
@@ -22929,7 +22930,6 @@ __metadata:
     eth-ens-namehash: ^2.0.8
     eth-json-rpc-filters: ^5.1.0
     eth-json-rpc-middleware: ^9.0.1
-    eth-keyring-controller: ^9.0.0
     eth-lattice-keyring: ^0.12.3
     eth-method-registry: ^2.0.0
     eth-query: ^2.1.2
