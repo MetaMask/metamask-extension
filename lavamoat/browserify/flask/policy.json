@@ -1035,19 +1035,16 @@
       "globals": {
         "WorkerGlobalScope": true,
         "addEventListener": true,
+        "browser": true,
+        "chrome": true,
         "location.origin": true,
         "onmessage": "write",
         "postMessage": true,
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true
+        "@metamask/post-message-stream>readable-stream": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -1114,10 +1111,10 @@
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-ui": true,
-        "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/utils": true,
+        "@metamask/utils>superstruct": true,
         "eth-rpc-errors": true
       }
     },
@@ -1139,7 +1136,7 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "@metamask/scure-bip39": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/utils": true
@@ -1159,12 +1156,6 @@
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
-      "packages": {
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1216,13 +1207,13 @@
     "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
+        "chrome.offscreen.createDocument": true,
+        "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
         "console.error": true,
         "console.info": true,
         "console.log": true,
         "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
         "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
@@ -1406,23 +1397,25 @@
     },
     "@metamask/snaps-ui": {
       "packages": {
-        "@metamask/snaps-ui>superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/utils>superstruct": true
       }
     },
     "@metamask/snaps-utils": {
       "globals": {
         "TextDecoder": true,
-        "URL": true
+        "URL": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
       },
       "packages": {
-        "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "@metamask/utils": true,
+        "@metamask/utils>superstruct": true,
         "semver": true
       }
     },
