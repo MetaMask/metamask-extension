@@ -2864,16 +2864,14 @@ export default class MetamaskController extends EventEmitter {
 
     const serialized = await primaryKeyring.serialize();
     const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
+
     const accounts = await primaryKeyring.getAccounts();
     if (accounts.length < 1) {
       throw new Error('MetamaskController - No accounts found');
     }
+
     try {
       await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      // const recoveredIndices = Array.from(
-      //   new Uint16Array(new Uint8Array(serialized.mnemonic).buffer),
-      // );
-      // return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
       return Array.from(seedPhraseAsBuffer.values());
     } catch (err) {
       log.error(err.message);
