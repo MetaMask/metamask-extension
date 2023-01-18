@@ -55,7 +55,7 @@ export default {
     disabled: {
       control: 'boolean',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },

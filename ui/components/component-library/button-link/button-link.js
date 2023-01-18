@@ -23,6 +23,7 @@ export const ButtonLink = ({
       paddingRight={0}
       size={size === BUTTON_LINK_SIZES.INHERIT ? null : size}
       backgroundColor={COLORS.TRANSPARENT}
+      color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
       borderRadius={null}
       {...props}
       textProps={{
