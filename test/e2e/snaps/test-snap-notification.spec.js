@@ -72,7 +72,10 @@ describe('Test Snap Notification', function () {
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          css: '#connectNotification',
+          text: 'Reconnect to Notification Snap',
+        });
         await driver.clickElement('#sendInAppNotification');
 
         // switch back to the extension page
