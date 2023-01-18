@@ -1197,14 +1197,8 @@
     "message": "RPC 端点使用链不同的链 ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "增强型代币检测"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2目前提供增强型代币检测"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys的代币API汇集了来自各种第三方代币列表的一系列代币。启用后，代币即可在以太坊主网、Binance、Polygon和Avalanche上被自动检测，并可搜索。关闭后，自动检测和搜索仅可在以太坊主网上进行。"
   },
   "ensIllegalCharacter": {
     "message": "ENS 的非法字符。"

@@ -1197,14 +1197,8 @@
     "message": "Le point terminal a renvoyé un ID de chaîne différent : $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Détection améliorée des jetons"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "La détection améliorée des jetons est actuellement disponible sur $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "L’API de jetons de ConsenSys agrège une liste de jetons provenant de diverses listes de jetons tierces. Lorsqu’elle est activée, les jetons sont automatiquement détectés et peuvent être recherchés sur le réseau principal Ethereum, Binance, Polygon et Avalanche. Lorsqu’elle est désactivée, la détection automatique et la recherche ne peuvent être effectuées que sur le réseau principal Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Caractère invalide pour l’ENS."

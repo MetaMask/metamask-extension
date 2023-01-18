@@ -1197,14 +1197,8 @@
     "message": "Bitiş noktası farklı bir zincir kimliğine ulaştı: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Gelişmiş token algılama"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys token API, çeşitli üçüncü taraf token listelerinden token listesi toplar. Açıldığında, tokenler Ethereum ana ağı, Binance, Polygon ve Avalanche üzerinde otomatik olarak algılanır ve aratılabilir. Kapatıldığında otomatik algılama ve arama sadece Ethereum ana ağı üzerinde yapılabilir."
   },
   "ensIllegalCharacter": {
     "message": "ENS için Uygun Olmayan Karakter."

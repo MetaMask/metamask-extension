@@ -1197,14 +1197,8 @@
     "message": "엔드포인트에서 다른 체인 ID를 반환했습니다. $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "향상된 토큰 감지"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2에서 향상된 토큰 감지를 사용할 수 있습니다."
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys 토큰 API는 다양한 타사 토큰 목록을 활용해 토큰 목록을 집계합니다. 이 기능이 켜져 있으면 이더리움 메인넷, Binance, 폴리곤 및 아발란체에서 토큰이 자동으로 감지되며 검색이 가능합니다. 이 기능을 끄면 이더리움 메인넷에서만 자동 탐지 및 검색이 가능합니다."
   },
   "ensIllegalCharacter": {
     "message": "ENS에 맞지 않는 문자입니다."

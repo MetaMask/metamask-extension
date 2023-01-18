@@ -178,13 +178,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${SECURITY_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
     descriptionMessage: (t) => t('chooseYourNetworkDescription'),
     route: `${SECURITY_ROUTE}#-chose-your-network`,
@@ -341,13 +334,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('enableEIP1559V2Description'),
     route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
     icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${ADVANCED_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
   },
   {
     tabMessage: (t) => t('experimental'),

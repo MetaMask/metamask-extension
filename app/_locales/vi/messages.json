@@ -1197,14 +1197,8 @@
     "message": "Điểm cuối đã trả về một mã chuỗi khác: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Phát hiện token nâng cao"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "API token của ConsenSys sẽ tổng hợp danh sách token từ các danh sách token khác nhau của bên thứ ba. Khi bật, các token sẽ tự động được phát hiện và có thể tìm kiếm được trên mạng chính thức của Ethereum, Binance, Polygon và Avalanche. Khi tắt, tính năng tìm kiếm và tự động phát hiện chỉ có thể được thực hiện trên mạng chính thức của Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."

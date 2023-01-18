@@ -1197,14 +1197,8 @@
     "message": "エンドポイントが別のチェーン ID を返してきました。$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "改善されたトークン検出"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在 $1 で利用可能です。$2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys のトークン API は、さまざまなサードパーティトークンリストからトークンを集約し、リスト化します。有効にすると、トークンが自動的に検出され、Ethereum メインネット、Binance、Polygon、Avalanche で検索可能になります。無効にすると、自動検出と検索は Ethereum メインネットでのみ可能になります。"
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"

@@ -1197,14 +1197,8 @@
     "message": "Die von Ihnen eingegebene RPC-URL hat eine andere Chain-ID ($1) zurückgegeben. Bitte aktualisieren Sie die Chain-ID, damit sie mit der RPC-URL des Netzwerks übereinstimmt, das Sie hinzufügen möchten.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Erweiterte Token-Erkennung"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Erweiterte Token-Erkennung ist derzeit über $1 verfügbar. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "Die Token-API von ConsenSys aggregiert eine Liste von Token aus verschiedenen Tokenlisten von Drittanbietern. Wenn diese Option aktiviert ist, werden die Token automatisch erkannt und es kann im Ethereum-Mainnet sowie in Binance, Polygon und Avalanche danach gesucht werden. Ist sie deaktiviert, können die automatische Token-Erkennung und -Suche nur im Ethereum-Mainnet verwendet werden."
   },
   "ensIllegalCharacter": {
     "message": "Unzulässiges Zeichen für ENS."
