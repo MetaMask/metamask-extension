@@ -1054,9 +1054,11 @@ export function getShowRecoveryPhraseReminder(state) {
 
 export function getShowOutdatedBrowserWarning(state) {
   const { outdatedBrowserWarningLastShown } = state.metamask;
-
+  if (!outdatedBrowserWarningLastShown) {
+    return true;
+  }
   const currentTime = new Date().getTime();
-  return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+  return (currentTime - outdatedBrowserWarningLastShown) >= (DAY * 2);
 }
 
 export function getShowPortfolioTooltip(state) {
