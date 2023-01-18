@@ -178,13 +178,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${SECURITY_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
     descriptionMessage: (t) => t('chooseYourNetworkDescription'),
     route: `${SECURITY_ROUTE}#-chose-your-network`,
@@ -334,13 +327,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     icon: 'fa fa-info-circle',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${ADVANCED_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
   },
   {
     tabMessage: (t) => t('experimental'),

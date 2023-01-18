@@ -1,5 +1,5 @@
 import firstTimeState from '../first-time-state';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration27 from './027';
 
 const oldStorage = {
@@ -14,9 +14,9 @@ const oldStorage = {
 const transactions = [];
 
 while (transactions.length < 9) {
-  transactions.push({ status: TRANSACTION_STATUSES.REJECTED });
-  transactions.push({ status: TRANSACTION_STATUSES.UNAPPROVED });
-  transactions.push({ status: TRANSACTION_STATUSES.APPROVED });
+  transactions.push({ status: TransactionStatus.rejected });
+  transactions.push({ status: TransactionStatus.unapproved });
+  transactions.push({ status: TransactionStatus.approved });
 }
 
 oldStorage.data.TransactionController.transactions = transactions;
@@ -30,7 +30,7 @@ describe('migration #27', () => {
     expect(newTransactions).toHaveLength(6);
 
     newTransactions.forEach((txMeta) => {
-      if (txMeta.status === TRANSACTION_STATUSES.REJECTED) {
+      if (txMeta.status === TransactionStatus.rejected) {
         throw new Error('transaction was found with a status of rejected');
       }
     });

@@ -21,7 +21,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
@@ -125,7 +125,7 @@ class ImportToken extends Component {
     customDecimals: 0,
     searchResults: [],
     selectedTokens: {},
-    standard: TOKEN_STANDARDS.NONE,
+    standard: TokenStandard.NONE,
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
