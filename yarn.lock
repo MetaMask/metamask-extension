@@ -3293,20 +3293,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/assets-controllers@npm:1.0.1"
+"@metamask/assets-controllers@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/assets-controllers@npm:3.0.1"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
-    "@metamask/base-controller": ~1.1.0
-    "@metamask/contract-metadata": ^1.35.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/controller-utils": ^1.0.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ~1.0.0
-    "@metamask/preferences-controller": ~1.0.0
+    "@metamask/network-controller": ^2.0.0
+    "@metamask/preferences-controller": ^1.0.1
     "@types/uuid": ^8.3.0
     abort-controller: ^3.0.0
     async-mutex: ^0.2.6
@@ -3318,7 +3318,9 @@ __metadata:
     multiformats: ^9.5.2
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
-  checksum: 678f32126aa84de769065581661218a247166ef2e4918290a8e082dd9c7b175d84c5a4d4f431c884dc83201b183f324c2b5047bc69a2ea7825d710470cae5f87
+  peerDependencies:
+    "@metamask/network-controller": ^2.0.0
+  checksum: c356a820929738e3ad83a5cfe20993a1e7c4dac6835b308d8cb32efe8542c339664ae3046a1dedce6ee2a4c45cec5528015309366fa96674837dca7ea001998f
   languageName: node
   linkType: hard
 
@@ -3336,7 +3338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:~1.1.0":
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
@@ -3375,17 +3377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^1.35.0":
-  version: 1.36.0
-  resolution: "@metamask/contract-metadata@npm:1.36.0"
-  checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
-  languageName: node
-  linkType: hard
-
-"@metamask/contract-metadata@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/contract-metadata@npm:2.1.0"
-  checksum: eebe2fb7c16c0f585f08e0de446efe5c7866316e3f663b409691aaf69333deead53fcc9f3f0a67db7d0d84309dc52a620512c441b5d020ad08baf2fed7ed773f
+"@metamask/contract-metadata@npm:^2.1.0, @metamask/contract-metadata@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/contract-metadata@npm:2.2.0"
+  checksum: 31b94274c7c0a2d03377f3fa5e46574cde6607fd3a3b571cb7ffa4f7ce6dc90e2bfe2a4b2eb9eb4ebcd07cb7d6918da893356b699e91bc6e005b472ca7279370
   languageName: node
   linkType: hard
 
@@ -3767,13 +3762,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/preferences-controller@npm:1.0.0"
+"@metamask/preferences-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/preferences-controller@npm:1.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
-  checksum: dad15bf468031df470ebeb18fa71c8181f247f9c9fd2eac52f6ee71f77bda61d8b0b7f8dc492d4f4f1602e249dedc38360b5e90ca2902adbcbd7c56bbaec8282
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
+  checksum: 3ad7dcf40cc1dc6679d37f705418d4d18da2acce120ce6bd09b0e6755484d193139fd85cf2c0b7374d867ab8a03d7f5bc74ebc8c2cdc003d5872f33d34c1e965
   languageName: node
   linkType: hard
 
@@ -9074,13 +9069,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.27.2":
-  version: 0.27.2
-  resolution: "axios@npm:0.27.2"
+"axios@npm:^1.2.1":
+  version: 1.2.2
+  resolution: "axios@npm:1.2.2"
   dependencies:
-    follow-redirects: ^1.14.9
+    follow-redirects: ^1.15.0
     form-data: ^4.0.0
-  checksum: 38cb7540465fe8c4102850c4368053c21683af85c5fdf0ea619f9628abbcb59415d1e22ebc8a6390d2bbc9b58a9806c874f139767389c862ec9b772235f06854
+    proxy-from-env: ^1.1.0
+  checksum: 6e357491b38426c5720f7328ecbafca3c643b03952c052d787570672ce7a9365717c2d64db4ce97cfbee3f830fa405101e360e14d0857ef7f96a9f4d814c4e03
   languageName: node
   linkType: hard
 
@@ -10977,21 +10973,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^107.0.0":
-  version: 107.0.1
-  resolution: "chromedriver@npm:107.0.1"
+"chromedriver@npm:^109.0.0":
+  version: 109.0.0
+  resolution: "chromedriver@npm:109.0.0"
   dependencies:
     "@testim/chrome-version": ^1.1.3
-    axios: ^0.27.2
+    axios: ^1.2.1
     compare-versions: ^5.0.1
-    del: ^6.1.1
     extract-zip: ^2.0.1
     https-proxy-agent: ^5.0.1
     proxy-from-env: ^1.1.0
     tcp-port-used: ^1.0.1
   bin:
     chromedriver: bin/chromedriver
-  checksum: f1cebf41b2e453dcbbda46fb1c00b32de20741f4fcb99d04f77fcb88c76aef55351bc91120373f5041965486abb924f99e42e533e9693f2a0dff2bd58acbea9f
+  checksum: a81347eb8c7dab021f8d94ce6962d1b9eaf5134230dfc589bab01b8db5e97e0120abd0b5df2a6f68c5e0126f9b5c7ae361874c26215d65ba673f6c3b33da8d0b
   languageName: node
   linkType: hard
 
@@ -12802,22 +12797,6 @@ __metadata:
     pify: ^3.0.0
     rimraf: ^2.2.8
   checksum: 88192c10411b55ba644456ac4881c6ed92029b53b882bb6067011af05e8da8d9c87f5ddacf2999cc45a05a9f03af345b83f17f341a88f456417c7daa04458d38
-  languageName: node
-  linkType: hard
-
-"del@npm:^6.1.1":
-  version: 6.1.1
-  resolution: "del@npm:6.1.1"
-  dependencies:
-    globby: ^11.0.1
-    graceful-fs: ^4.2.4
-    is-glob: ^4.0.1
-    is-path-cwd: ^2.2.0
-    is-path-inside: ^3.0.2
-    p-map: ^4.0.0
-    rimraf: ^3.0.2
-    slash: ^3.0.0
-  checksum: 563288b73b8b19a7261c47fd21a330eeab6e2acd7c6208c49790dfd369127120dd7836cdf0c1eca216b77c94782a81507eac6b4734252d3bef2795cb366996b6
   languageName: node
   linkType: hard
 
@@ -14678,17 +14657,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "eth-json-rpc-filters@npm:5.0.0"
+"eth-json-rpc-filters@npm:^5.0.0, eth-json-rpc-filters@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "eth-json-rpc-filters@npm:5.1.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     async-mutex: ^0.2.6
-    eth-json-rpc-middleware: ^6.0.0
     eth-query: ^2.1.2
     json-rpc-engine: ^6.1.0
     pify: ^5.0.0
-  checksum: 5ae22c40aaa477e5784e1dd274612e4abd8d649f5c6030704c54899435d56c31fe6d911f60abe2867878141a6f20cdf0024b1c2a0ddc0173b8b40b53e92060e2
+  checksum: 864092e96277953c399a139df66572b864bd41247c5c1d18e6529973804d4fd8962658d8b10571152554802fa8daaa1003588aee79ffce754e0bc57c39b771d5
   languageName: node
   linkType: hard
 
@@ -16363,7 +16341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.9":
+"follow-redirects@npm:^1.15.0":
   version: 1.15.2
   resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
@@ -19501,13 +19479,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-path-cwd@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "is-path-cwd@npm:2.2.0"
-  checksum: 46a840921bb8cc0dc7b5b423a14220e7db338072a4495743a8230533ce78812dc152548c86f4b828411fe98c5451959f07cf841c6a19f611e46600bd699e8048
-  languageName: node
-  linkType: hard
-
 "is-path-in-cwd@npm:^1.0.0":
   version: 1.0.0
   resolution: "is-path-in-cwd@npm:1.0.0"
@@ -19523,13 +19494,6 @@ __metadata:
   dependencies:
     path-is-inside: ^1.0.1
   checksum: 07e52c81163937ff89b4700b7ad474de3b396846b55ed87530fb0a22cb9103926152939f673bc1a0592448e7e4e9d75eb734be21b4ad411311065c6a509fae54
-  languageName: node
-  linkType: hard
-
-"is-path-inside@npm:^3.0.2":
-  version: 3.0.3
-  resolution: "is-path-inside@npm:3.0.3"
-  checksum: abd50f06186a052b349c15e55b182326f1936c89a78bf6c8f2b707412517c097ce04bc49a0ca221787bc44e1049f51f09a2ffb63d22899051988d3a618ba13e9
   languageName: node
   linkType: hard
 
@@ -22788,10 +22752,10 @@ __metadata:
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
     "@metamask/approval-controller": ^1.0.0
-    "@metamask/assets-controllers": ^1.0.1
+    "@metamask/assets-controllers": ^3.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
-    "@metamask/contract-metadata": ^2.1.0
+    "@metamask/contract-metadata": ^2.2.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/eslint-config": ^9.0.0
@@ -22889,7 +22853,7 @@ __metadata:
     browserify: ^16.5.1
     chalk: ^3.0.0
     chokidar: ^3.5.3
-    chromedriver: ^107.0.0
+    chromedriver: ^109.0.0
     classnames: ^2.2.6
     concurrently: ^7.6.0
     copy-to-clipboard: ^3.0.8
@@ -22923,7 +22887,7 @@ __metadata:
     eslint-plugin-storybook: ^0.6.4
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
-    eth-json-rpc-filters: ^5.0.0
+    eth-json-rpc-filters: ^5.1.0
     eth-json-rpc-middleware: ^9.0.1
     eth-keyring-controller: ^8.1.0
     eth-lattice-keyring: ^0.12.3

@@ -32,7 +32,6 @@ export default {
         content: 'Snaps',
         key: 'snaps',
       },
-
       {
         icon: <i className="fa fa-lock" />,
         content: 'SecurityAndPrivacy',
