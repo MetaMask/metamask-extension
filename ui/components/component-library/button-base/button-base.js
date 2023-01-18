@@ -47,7 +47,8 @@ export const ButtonBase = ({
       className={classnames(
         'mm-button-base',
         {
-          [`mm-button-base--size-${size}`]: size,
+          [`mm-button-base--size-${size}`]:
+            Object.values(BUTTON_BASE_SIZES).includes(size),
           'mm-button-base--loading': loading,
           'mm-button-base--disabled': disabled,
           'mm-button-base--block': block,
