@@ -4496,11 +4496,12 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4512,9 +4513,12 @@ export function setFirstTimeUsedNetwork(chainId: string) {
 }
 
 export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown() {
-  return submitRequestToBackground(
-    'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
-  );
+  return async (dispatch) => {
+    await submitRequestToBackground(
+      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 // QR Hardware Wallets

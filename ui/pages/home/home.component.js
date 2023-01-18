@@ -49,6 +49,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -143,8 +144,6 @@ export default class Home extends PureComponent {
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
-    openSeaTransactionSecurityProviderPopoverHasBeenShown: PropTypes.bool,
-    setTransactionSecurityCheckEnabled: PropTypes.func,
   };
 
   state = {
@@ -597,94 +596,6 @@ export default class Home extends PureComponent {
     );
   };
 
-  renderOpenSeaProviderPopover() {
-    const { t } = this.context;
-    const { setTransactionSecurityCheckEnabled } = this.props;
-
-    return (
-      <Popover
-        title={
-          <Typography
-            variant={TYPOGRAPHY.H4}
-            color={COLORS.TEXT_ALTERNATIVE}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
-            {t('staySafeWithOpenSea')}
-          </Typography>
-        }
-        footer={
-          <>
-            <Button
-              type="primary"
-              onClick={() => {
-                setTransactionSecurityCheckEnabled();
-                setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
-              }}
-              className="home__enable-security-provider-button"
-            >
-              {t('enableOpenSeaSecurityProvider')}
-            </Button>
-            <Box marginTop={2}>
-              <Typography variant={TYPOGRAPHY.H6}>
-                <Button
-                  type="link"
-                  onClick={() =>
-                    setOpenSeaTransactionSecurityProviderPopoverHasBeenShown()
-                  }
-                >
-                  {t('notNow')}
-                </Button>
-              </Typography>
-            </Box>
-          </>
-        }
-        footerClassName="smart-transactions-popover__footer"
-        className="smart-transactions-popover"
-        onClose={() =>
-          setOpenSeaTransactionSecurityProviderPopoverHasBeenShown()
-        }
-      >
-        <Box
-          paddingRight={6}
-          paddingLeft={6}
-          paddingTop={0}
-          paddingBottom={0}
-          display={DISPLAY.FLEX}
-          className="smart-transactions-popover__content"
-        >
-          <Box
-            marginTop={1}
-            marginBottom={1}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-          >
-            <img
-              src="./images/open-sea-security-provider.svg"
-              alt={t('openSeaAltText')}
-            />
-          </Box>
-          <Typography variant={TYPOGRAPHY.H6}>
-            {t('getWarningsFromOpenSea')}
-          </Typography>
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            marginTop={4}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
-            {t('openSeaDescription')}
-          </Typography>
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            color={COLORS.TEXT_ALTERNATIVE}
-            marginTop={4}
-          >
-            {t('alwaysBeSureTo')}
-          </Typography>
-        </Box>
-      </Popover>
-    );
-  }
-
   render() {
     const { t } = this.context;
     const {
@@ -703,7 +614,6 @@ export default class Home extends PureComponent {
       completedOnboarding,
       onboardedInThisUISession,
       newCustomNetworkAdded,
-      openSeaTransactionSecurityProviderPopoverHasBeenShown,
     } = this.props;
 
     if (forgottenPassword) {
@@ -729,11 +639,7 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {process.env.TRANSACTION_SECURITY_PROVIDER &&
-          showWhatsNew &&
-          !openSeaTransactionSecurityProviderPopoverHasBeenShown
-            ? this.renderOpenSeaProviderPopover()
-            : null}
+          {showWhatsNew ? <OpenSeaWhatsNewPopover /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
