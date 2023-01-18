@@ -23,8 +23,8 @@ import ActionableMessage from '../../components/ui/actionable-message';
 import Disclosure from '../../components/ui/disclosure';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
@@ -198,8 +198,8 @@ export default class ConfirmTransactionBase extends Component {
     } = prevProps;
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
-      transactionStatus === TRANSACTION_STATUSES.DROPPED ||
-      transactionStatus === TRANSACTION_STATUSES.CONFIRMED;
+      transactionStatus === TransactionStatus.dropped ||
+      transactionStatus === TransactionStatus.confirmed;
 
     if (
       nextNonce !== prevNextNonce ||
@@ -305,7 +305,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType:
           actionKey ||
           getMethodName(methodData.name) ||
-          TRANSACTION_TYPES.CONTRACT_INTERACTION,
+          TransactionType.contractInteraction,
         origin,
       },
     });
@@ -762,11 +762,11 @@ export default class ConfirmTransactionBase extends Component {
     );
 
     const allowedTransactionTypes =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-      txData.type === TRANSACTION_TYPES.SIMPLE_SEND ||
-      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
-      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+      txData.type === TransactionType.contractInteraction ||
+      txData.type === TransactionType.simpleSend ||
+      txData.type === TransactionType.tokenMethodSafeTransferFrom ||
+      txData.type === TransactionType.tokenMethodTransferFrom ||
+      txData.type === TransactionType.tokenMethodTransfer;
 
     const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
@@ -833,7 +833,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType:
           actionKey ||
           getMethodName(methodData.name) ||
-          TRANSACTION_TYPES.CONTRACT_INTERACTION,
+          TransactionType.contractInteraction,
         origin,
       },
     });
@@ -986,7 +986,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     const isContractInteraction =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      txData.type === TransactionType.contractInteraction;
 
     return (
       <UserPreferencedCurrencyDisplay
@@ -1131,11 +1131,11 @@ export default class ConfirmTransactionBase extends Component {
     // the user from editing the transaction in those cases.
 
     const isTokenApproval =
-      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL ||
-      txData.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+      txData.type === TransactionType.tokenMethodSetApprovalForAll ||
+      txData.type === TransactionType.tokenMethodApprove;
 
     const isContractInteraction =
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      txData.type === TransactionType.contractInteraction;
 
     const isContractInteractionFromDapp =
       (isTokenApproval || isContractInteraction) &&

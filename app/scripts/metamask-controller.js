@@ -59,9 +59,9 @@ import {
 
 import browser from 'webextension-polyfill';
 import {
-  ASSET_TYPES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  AssetType,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
@@ -373,7 +373,7 @@ export default class MetamaskController extends EventEmitter {
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: ASSET_TYPES.NFT,
+              asset_type: AssetType.NFT,
               token_standard: standard,
               source,
             },
@@ -910,8 +910,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
-        status === TRANSACTION_STATUSES.CONFIRMED ||
-        status === TRANSACTION_STATUSES.FAILED
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail =
@@ -930,7 +930,7 @@ export default class MetamaskController extends EventEmitter {
         // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
         // in which case we will want to check and update ownership status of the transferred collectible.
         if (
-          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
         ) {
           const {
@@ -1127,7 +1127,7 @@ export default class MetamaskController extends EventEmitter {
         this.txController.getTransactions({
           searchCriteria: {
             hash,
-            status: TRANSACTION_STATUSES.SUBMITTED,
+            status: TransactionStatus.submitted,
           },
         })[0],
     });

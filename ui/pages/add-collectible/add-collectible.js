@@ -25,7 +25,7 @@ import { getIsMainnet, getUseNftDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default function AddCollectible() {
@@ -84,7 +84,7 @@ export default function AddCollectible() {
         token_contract_address: address,
         token_symbol: tokenDetails?.symbol,
         tokenId: tokenId.toString(),
-        asset_type: ASSET_TYPES.NFT,
+        asset_type: AssetType.NFT,
         token_standard: tokenDetails?.standard,
         source: EVENT.SOURCE.TOKEN.CUSTOM,
       },

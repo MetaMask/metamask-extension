@@ -7,7 +7,7 @@ import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/keyrings';
@@ -718,24 +718,24 @@ describe('MetaMaskController', function () {
       metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({
           id: 1,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
           id: 1,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
           id: 2,
-          status: TRANSACTION_STATUSES.REJECTED,
+          status: TransactionStatus.rejected,
           metamaskNetworkId: '32',
         }),
         createTxMeta({
           id: 3,
-          status: TRANSACTION_STATUSES.SUBMITTED,
+          status: TransactionStatus.submitted,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
         }),
@@ -865,7 +865,7 @@ describe('MetaMaskController', function () {
     });
 
     it('sets the status to unapproved', function () {
-      assert.equal(metamaskMsgs[msgId].status, TRANSACTION_STATUSES.UNAPPROVED);
+      assert.equal(metamaskMsgs[msgId].status, TransactionStatus.unapproved);
     });
 
     it('sets the type to eth_sign', function () {
@@ -875,7 +875,7 @@ describe('MetaMaskController', function () {
     it('rejects the message', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelMessage(msgIdInt, noop);
-      assert.equal(messages[0].status, TRANSACTION_STATUSES.REJECTED);
+      assert.equal(messages[0].status, TransactionStatus.rejected);
     });
 
     it('checks message length', async function () {
@@ -961,7 +961,7 @@ describe('MetaMaskController', function () {
     it('sets the status to unapproved', function () {
       assert.equal(
         metamaskPersonalMsgs[msgId].status,
-        TRANSACTION_STATUSES.UNAPPROVED,
+        TransactionStatus.unapproved,
       );
     });
 
@@ -972,7 +972,7 @@ describe('MetaMaskController', function () {
     it('rejects the message', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelPersonalMessage(msgIdInt, noop);
-      assert.equal(personalMessages[0].status, TRANSACTION_STATUSES.REJECTED);
+      assert.equal(personalMessages[0].status, TransactionStatus.rejected);
     });
 
     it('errors when signing a message', async function () {
@@ -981,7 +981,7 @@ describe('MetaMaskController', function () {
       );
       assert.equal(
         metamaskPersonalMsgs[msgId].status,
-        TRANSACTION_STATUSES.SIGNED,
+        TransactionStatus.signed,
       );
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,

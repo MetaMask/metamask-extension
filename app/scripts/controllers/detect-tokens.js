@@ -5,8 +5,8 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
+  AssetType,
+  TokenStandard,
 } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
@@ -171,8 +171,8 @@ export default class DetectTokensController {
             category: EVENT.CATEGORIES.WALLET,
             properties: {
               tokens: eventTokensDetails,
-              token_standard: TOKEN_STANDARDS.ERC20,
-              asset_type: ASSET_TYPES.TOKEN,
+              token_standard: TokenStandard.ERC20,
+              asset_type: AssetType.token,
             },
           });
           await this.tokensController.addDetectedTokens(tokensWithBalance, {

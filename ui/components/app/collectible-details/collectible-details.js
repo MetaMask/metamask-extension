@@ -43,7 +43,10 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {
@@ -105,13 +108,13 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== ERC721;
+  const sendDisabled = standard !== TokenStandard.ERC721;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
     await dispatch(
       startNewDraftTransaction({
-        type: ASSET_TYPES.NFT,
+        type: AssetType.NFT,
         details: collectible,
       }),
     );

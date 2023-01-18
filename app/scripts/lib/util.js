@@ -15,7 +15,7 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
 
 /**
  * @see {@link getEnvironmentType}
@@ -291,10 +291,10 @@ export function formatTxMetaForRpcResult(txMeta) {
     formattedTxMeta.gasPrice = maxFeePerGas;
     formattedTxMeta.maxFeePerGas = maxFeePerGas;
     formattedTxMeta.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+    formattedTxMeta.type = TransactionEnvelopeType.feeMarket;
   } else {
     formattedTxMeta.gasPrice = gasPrice;
-    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    formattedTxMeta.type = TransactionEnvelopeType.legacy;
   }
 
   return formattedTxMeta;
