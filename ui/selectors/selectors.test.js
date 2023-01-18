@@ -278,7 +278,7 @@ describe('Selectors', () => {
       selectors.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(false);
   });
-  
+
   it('#getShowOutdatedBrowserWarning returns true if outdatedBrowserWarningLastShown is more than 2 days ago', () => {
     mockState.metamask.showOutdatedBrowserWarning = true;
     const timestamp = new Date();
