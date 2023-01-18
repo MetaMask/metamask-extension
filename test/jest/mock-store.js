@@ -218,6 +218,7 @@ export const createSwapsMockStore = () => {
           postTxBalance: '19a61aaaf06e4bd1',
         },
       ],
+      useCurrencyRateCheck: true,
       conversionRate: 1,
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,

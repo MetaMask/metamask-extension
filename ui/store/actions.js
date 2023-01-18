@@ -2385,7 +2385,7 @@ export function exportAccount(password, address) {
         log.debug(`background.exportAccount`);
         callBackgroundMethod(
           'exportAccount',
-          [address],
+          [address, password],
           function (err2, result) {
             dispatch(hideLoadingIndication());
 
@@ -2421,7 +2421,7 @@ export function exportAccounts(password, addresses) {
             new Promise((resolve2, reject2) =>
               callBackgroundMethod(
                 'exportAccount',
-                [address],
+                [address, password],
                 function (err2, result) {
                   if (err2) {
                     log.error(err2);
@@ -2740,6 +2740,19 @@ export function setUseNftDetection(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
     callBackgroundMethod('setUseNftDetection', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setUseCurrencyRateCheck(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCurrencyRateCheck`);
+    callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));

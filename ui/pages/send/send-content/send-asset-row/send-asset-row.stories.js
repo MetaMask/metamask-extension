@@ -31,6 +31,7 @@ export const DefaultStory = () => {
       updateSendErrors={() => undefined}
       updateSendAsset={() => undefined}
       updateTokenType={(type) => action(`Selected Token: ${type}`)()}
+      sendAsset={{}}
     />
   );
 };

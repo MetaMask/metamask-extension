@@ -40,6 +40,7 @@ export default function CancelButton({
           detailsModal,
       })}
       disabled={!hasEnoughCancelGas}
+      data-testid="cancel-button"
     >
       {t('cancel')}
     </Button>
