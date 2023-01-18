@@ -228,7 +228,7 @@
     "@metamask/notification-controller": "^1.0.0",
     "@metamask/obs-store": "^5.0.0",
     "@metamask/permission-controller": "^1.0.0",
-    "@metamask/phishing-controller": "^1.0.0",
+    "@metamask/phishing-controller": "^1.1.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.2.1",
     "@metamask/rate-limit-controller": "^1.0.0",
@@ -572,7 +572,8 @@
       "web3>web3-shh": false,
       "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": false,
       "@metamask/base-controller>simple-git-hooks": false,
-      "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false
+      "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
+      "resolve-url-loader>es6-iterator>es5-ext": false
     }
   },
   "packageManager": "yarn@3.2.4"

@@ -950,16 +950,11 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
-        "@metamask/phishing-controller>@metamask/base-controller": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/phishing-controller>eth-phishing-detect": {

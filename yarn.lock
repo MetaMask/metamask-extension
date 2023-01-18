@@ -3714,17 +3714,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/phishing-controller@npm:1.0.0"
+"@metamask/phishing-controller@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/phishing-controller@npm:1.1.0"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
     "@types/punycode": ^2.1.0
     eth-phishing-detect: ^1.2.0
     isomorphic-fetch: ^3.0.0
     punycode: ^2.1.1
-  checksum: e5e31f68611c14b30cfd639b99a97921cac1d13af534fa1586bce63075895486d89c554aaa5f5201245f51981a0a8a1f9aeeea8652e22c9523b01f8880de4de6
+  checksum: bc8c066dd9ed3fff9456ffd2d888c5c78e45a4f4b8e19903caa47b07f42bb298c95956d5df22aef805dbbf2dac6dfb5291f605636fb0725417ae6e0d1c14528a
   languageName: node
   linkType: hard
 
@@ -22790,7 +22790,7 @@ __metadata:
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^5.0.0
     "@metamask/permission-controller": ^1.0.0
-    "@metamask/phishing-controller": ^1.0.0
+    "@metamask/phishing-controller": ^1.1.0
     "@metamask/phishing-warning": ^1.2.1
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.1
