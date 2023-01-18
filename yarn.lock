@@ -5870,16 +5870,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react-hooks@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@testing-library/react-hooks@npm:3.2.1"
+"@testing-library/react-hooks@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@testing-library/react-hooks@npm:8.0.1"
   dependencies:
-    "@babel/runtime": ^7.5.4
-    "@types/testing-library__react-hooks": ^3.0.0
+    "@babel/runtime": ^7.12.5
+    react-error-boundary: ^3.1.0
   peerDependencies:
-    react: ">=16.9.0"
-    react-test-renderer: ">=16.9.0"
-  checksum: 58aadc787ad04289885e2fb58efecfd394eb0a1393154619377ef1dfe0659f285f8a26d1a9411725efd62aeb26f77956c01746b593a4f9b18d21b0a90e7355b4
+    "@types/react": ^16.9.0 || ^17.0.0
+    react: ^16.9.0 || ^17.0.0
+    react-dom: ^16.9.0 || ^17.0.0
+    react-test-renderer: ^16.9.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react-dom:
+      optional: true
+    react-test-renderer:
+      optional: true
+  checksum: 7fe44352e920deb5cb1876f80d64e48615232072c9d5382f1e0284b3aab46bb1c659a040b774c45cdf084a5257b8fe463f7e08695ad8480d8a15635d4d3d1f6d
   languageName: node
   linkType: hard
 
@@ -6832,15 +6841,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:*":
-  version: 16.9.2
-  resolution: "@types/react-test-renderer@npm:16.9.2"
-  dependencies:
-    "@types/react": "*"
-  checksum: 6b179e07615cffac36784811f8a051bdbf01d3168236b3b780e32fcce3abee392883c775211c4626996fe5eb473e767124178b4e2de71313a604e19863ceb5f8
-  languageName: node
-  linkType: hard
-
 "@types/react-transition-group@npm:^4.2.0":
   version: 4.4.0
   resolution: "@types/react-transition-group@npm:4.4.0"
@@ -6923,16 +6923,6 @@ __metadata:
   dependencies:
     "@types/jest": "*"
   checksum: f2ed81103acb52d54f992d826e3854551294618628997dc01f8955efd8c1d476d64715b79187371b09ec3e61e44cc10a7ffe1e427d1bda798552f83d18309056
-  languageName: node
-  linkType: hard
-
-"@types/testing-library__react-hooks@npm:^3.0.0":
-  version: 3.2.0
-  resolution: "@types/testing-library__react-hooks@npm:3.2.0"
-  dependencies:
-    "@types/react": "*"
-    "@types/react-test-renderer": "*"
-  checksum: 6ebd5d0a95945fa9577a51902543c8e38d0f89730bd3306c100796f2d2c0f6269bfd2f38b536a25a5219018e10d45abebbe48694b410365b4adbd44d59252762
   languageName: node
   linkType: hard
 
@@ -22830,7 +22820,7 @@ __metadata:
     "@storybook/theming": ^6.5.13
     "@testing-library/jest-dom": ^5.11.10
     "@testing-library/react": ^10.4.8
-    "@testing-library/react-hooks": ^3.2.1
+    "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^14.4.3
     "@truffle/codec": ^0.14.12
     "@truffle/decoder": ^5.3.5
@@ -27225,6 +27215,17 @@ __metadata:
     react: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1
     react-dom: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1
   checksum: 42bcd4423f12e9ee21b2d3f0c2a28805ff4953bd82b6be4c1f5b5f9a371115aafa36a6f3d82726d43b4912179b79e99550c2b9a772c7fe6a5cd8f7e93ff34ceb
+  languageName: node
+  linkType: hard
+
+"react-error-boundary@npm:^3.1.0":
+  version: 3.1.4
+  resolution: "react-error-boundary@npm:3.1.4"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: f36270a5d775a25c8920f854c0d91649ceea417b15b5bc51e270a959b0476647bb79abb4da3be7dd9a4597b029214e8fe43ea914a7f16fa7543c91f784977f1b
   languageName: node
   linkType: hard
 

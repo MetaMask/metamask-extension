@@ -4610,17 +4610,6 @@
         "browserify>buffer": true
       }
     },
-    "textarea-caret": {
-      "globals": {
-        "document.body.appendChild": true,
-        "document.body.removeChild": true,
-        "document.createElement": true,
-        "document.querySelector": true,
-        "getCaretCoordinates": "write",
-        "getComputedStyle": true,
-        "mozInnerScreenX": true
-      }
-    },
     "uuid": {
       "globals": {
         "crypto": true,
