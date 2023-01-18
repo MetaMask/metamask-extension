@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Reject Transactions modal to be present in the footer of the Approve screen ([#16832](https://github.com/MetaMask/metamask-extension/pull/16832))
 - [FLASK] Add snap alerts and prompts via `snap_dialog` RPC method ([#16048](https://github.com/MetaMask/metamask-extension/pull/16048))
 - [FLASK] Expose transaction origin to transaction insight snaps ([#16671](https://github.com/MetaMask/metamask-extension/pull/16671))
+- Toggle option to enable/disable balance and Token rate checking for using third-party API ([#16772](https://github.com/MetaMask/metamask-extension/pull/16772))
+- Onboarding v2: Implement requested metrics ([#17090](https://github.com/MetaMask/metamask-extension/pull/17090))
 
 ### Changed
 - Update secondary copy and remove the Address component from SetApprovalForAll and NFT Approve screens ([#16292](https://github.com/MetaMask/metamask-extension/pull/16292))
@@ -51,10 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ethereum` is an EIP-1193 provider and can be accessed by requesting the `endowment:ethereum-provider` permission
   - `snap` is always exposed and can be used to access snap specific functions using `snap.request()`
 - [FLASK] **BREAKING:** Named parameters are now required in all Snaps RPC methods ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
+- Security and Privacy Settings Re-org ([#16756](https://github.com/MetaMask/metamask-extension/pull/16756))
 
 ### Removed
 - [FLASK] **BREAKING:** Removed `snap_getAppKey` ([#16525](https://github.com/MetaMask/metamask-extension/pull/16525))
   - Snaps that need snap-specific entropy can use `snap_getEntropy` instead
+- Remove ONBOARDING_V2 flag for release ([#16865](https://github.com/MetaMask/metamask-extension/pull/16865))
 
 ### Fixed
 - Fix resolving to the Account nickname or contact name when scanning the QR code in the Send screen ([#16204](https://github.com/MetaMask/metamask-extension/pull/16204))
@@ -70,6 +74,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Clear notification state on restore ([#16503](https://github.com/MetaMask/metamask-extension/pull/16503))
 - [FLASK] Fix a crash that happens after snap install ([#16526](https://github.com/MetaMask/metamask-extension/pull/16526))
 - [FLASK] Fix usage of wrong `ethereum` global for `ethereum` endowment ([#16932](https://github.com/MetaMask/metamask-extension/pull/16932))
+- Validating or restricting the number of digits on token allowance flow ([#17234](https://github.com/MetaMask/metamask-extension/pull/17234))
+- Fixed navigation through multiple unapproved transactions for ERC20 tokens ([#16822](https://github.com/MetaMask/metamask-extension/pull/16822))
+- Display large and small numbers as decimals instead of scientific notation on token allowance confirmation screens ([#16676](https://github.com/MetaMask/metamask-extension/pull/16676))
+- Fix #16959 - Don't allow user to see welcome or password creation screen after a keyring has been created ([#17024](https://github.com/MetaMask/metamask-extension/pull/17024))
+- Fix 'Back' navigation from Restore Vault page when accessed from popup window ([#17095](https://github.com/MetaMask/metamask-extension/pull/17095))
+- Align custom spending cap Max button in approve screen for multiple languages ([#16927](https://github.com/MetaMask/metamask-extension/pull/16927))
 
 ## [10.23.3]
 ### Removed
