@@ -118,7 +118,6 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
-
 function wrapAgainstScuttling(content, bag = {}) {
   return `
 {
