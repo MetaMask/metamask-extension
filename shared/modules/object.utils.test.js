@@ -9,6 +9,7 @@ import {
   omitBy,
   pick,
   pickBy,
+  size,
 } from './object.utils';
 
 describe('object utils', function () {
@@ -261,6 +262,28 @@ describe('object utils', function () {
       expect(result[1]).toStrictEqual('test');
       expect(result[2]).toStrictEqual(3);
       expect(result).toHaveLength(3);
+    });
+  });
+
+  describe('size', function () {
+    it('should correctly calculate size of an array', function () {
+      const array = ['hello', 'ola', 'ciao'];
+      const result = size(array);
+      expect(result).toStrictEqual(3);
+    });
+
+    it('should correctly calculate size of a string', function () {
+      expect(size('ciao')).toStrictEqual(4);
+    });
+
+    it('should correctly calculate size of an object', function () {
+      const object = {
+        en: 'hello',
+        es: 'ola',
+        it: 'ciao',
+      };
+      const result = size(object);
+      expect(result).toStrictEqual(3);
     });
   });
 });

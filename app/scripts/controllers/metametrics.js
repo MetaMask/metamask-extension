@@ -1,4 +1,4 @@
-import { memoize, size, sum } from 'lodash';
+import { memoize, sum } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,7 @@ import {
   omitBy,
   pickBy,
   isEqual,
+  size,
 } from '../../../shared/modules/object.utils';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {

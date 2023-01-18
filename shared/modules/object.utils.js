@@ -1,3 +1,9 @@
+const MAX_SAFE_INTEGER = 9007199254740991;
+
+/** `Object#toString` result references. */
+const mapTag = '[object Map]';
+const setTag = '[object Set]';
+
 /**
  * Return a "masked" copy of the given object.
  *
@@ -283,6 +289,31 @@ export function isEqual(value, other) {
 }
 
 /**
+ * Gets the size of `collection` by returning its length for array-like
+ * values or the number of own enumerable string keyed properties for objects.
+ *
+ * @param {*} collection
+ * @returns {number} Returns the collection size.
+ */
+export function size(collection) {
+  if (isArrayLike(collection)) {
+    return collection.length;
+  }
+
+  if ([mapTag, setTag].includes(getTag(collection))) {
+    return collection.size;
+  }
+
+  return Object.keys(collection).length;
+}
+
+export function isArrayLike(value) {
+  return (
+    value !== null && typeof value !== 'function' && isLength(value.length)
+  );
+}
+
+/**
  * Checks if `value` has typeof equal to `object` and is
  * not null
  *
@@ -293,6 +324,11 @@ export function isObjectLike(value) {
   return !isNullish(value) && typeof value === 'object';
 }
 
+export function isObject(value) {
+  const type = typeof value;
+  return value !== null && (type === 'object' || type === 'function');
+}
+
 /**
  * Checks if a value is null or undefined
  *
@@ -301,4 +337,26 @@ export function isObjectLike(value) {
  */
 export function isNullish(value) {
   return value === undefined || value === null;
+}
+
+export function isLength(value) {
+  return (
+    typeof value === 'number' &&
+    value > -1 &&
+    value % 1 === 0 &&
+    value <= MAX_SAFE_INTEGER
+  );
+}
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @param {*} value - The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+export function getTag(value) {
+  if (isNullish(value)) {
+    return value === undefined ? '[object Undefined]' : '[object Null]';
+  }
+  return Object.prototype.toString.call(value);
 }
