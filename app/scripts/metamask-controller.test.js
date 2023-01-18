@@ -6,8 +6,8 @@ import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import {
@@ -718,11 +718,8 @@ describe('MetaMaskController', function () {
       }
     });
 
-    beforeEach(async function () {
-      await metamaskController.createNewVaultAndKeychain('password');
-    });
-
     it('#addNewAccount', async function () {
+      await metamaskController.createNewVaultAndKeychain('password');
       await metamaskController.addNewAccount(1);
       const getAccounts =
         await metamaskController.keyringController.getAccounts();
