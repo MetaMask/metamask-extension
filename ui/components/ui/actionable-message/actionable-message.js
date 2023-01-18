@@ -33,17 +33,22 @@ export default function ActionableMessage({
   autoHideTime = 0,
 }) {
   const [shouldDisplay, setShouldDisplay] = useState(true);
-  useEffect(() => {
-    if (autoHideTime === 0) {
-      return;
-    }
+  useEffect(
+    function () {
+      if (autoHideTime === 0) {
+        return undefined;
+      }
 
-    const timeout = setTimeout(() => {
-      setShouldDisplay(false);
-    }, autoHideTime);
+      const timeout = setTimeout(() => {
+        setShouldDisplay(false);
+      }, autoHideTime);
 
-    return () => clearTimeout(timeout);
-  }, [autoHideTime]);
+      return function () {
+        clearTimeout(timeout);
+      };
+    },
+    [autoHideTime],
+  );
 
   const actionableMessageClassName = classnames(
     'actionable-message',
