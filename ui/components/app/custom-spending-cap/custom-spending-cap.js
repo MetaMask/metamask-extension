@@ -29,7 +29,7 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
-  TOKEN_ALLOWANCE_VALUE_REGEX,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
   DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
@@ -112,7 +112,7 @@ export default function CustomSpendingCap({
       return;
     }
 
-    if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
+    if (valueInput && !NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
