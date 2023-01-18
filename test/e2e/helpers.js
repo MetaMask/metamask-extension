@@ -232,8 +232,8 @@ const completeImportSRPOnboardingFlow = async (
   await driver.clickElement('[data-testid="import-srp-confirm"]');
 
   // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
+  await driver.pasteIntoField('[data-testid="create-password-new"]', password);
+  await driver.pasteIntoField('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
 
