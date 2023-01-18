@@ -3359,18 +3359,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bip39@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/bip39@npm:4.0.0"
-  dependencies:
-    "@types/node": 11.11.6
-    create-hash: ^1.1.0
-    pbkdf2: ^3.0.9
-    randombytes: ^2.0.1
-  checksum: 0d629de806dd0a6c6ea2ff4ab4752931b15eda5abcf2975f3beed8b4161bcc4765ec97bd8ba0146059b10178f6cf1753f74223655908bc585a76b565f26d4f16
-  languageName: node
-  linkType: hard
-
 "@metamask/browser-passworder@npm:^4.0.2":
   version: 4.0.2
   resolution: "@metamask/browser-passworder@npm:4.0.2"
@@ -3463,19 +3451,6 @@ __metadata:
     eslint-plugin-prettier: ^3.3.1
     prettier: ^2.2.1
   checksum: e44768e5f674e61743f1b147c589932e11f6d717b3f52b4b44ee3ab6b0b1078d379aea93473204c740fdff4b309393fc361c1e63c9cecc59ed5c8ab704eb6d20
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-hd-keyring@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "@metamask/eth-hd-keyring@npm:4.0.2"
-  dependencies:
-    "@metamask/bip39": ^4.0.0
-    "@metamask/eth-sig-util": ^4.0.0
-    eth-simple-keyring: ^4.2.0
-    ethereumjs-util: ^7.0.9
-    ethereumjs-wallet: ^1.0.1
-  checksum: a390fe8baa71fa1e8416e20038c6d3e2b435ae0e7089d48f9ac5067e257971282d3cf2b8e7fcc0985c6cf0aa2839ea678ec92bc32aba02b764b18081f1f28d5e
   languageName: node
   linkType: hard
 
@@ -6754,13 +6729,6 @@ __metadata:
   version: 18.7.18
   resolution: "@types/node@npm:18.7.18"
   checksum: 8aec61f0f96e2a69ce51f1f40f949ca578bbb4fe05d7c0b8ce3aeeb848e90f755837f17f6ac132ca404d974fe9b2974150ad3b4984fc9dc7c3ceddb10bae0167
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:11.11.6":
-  version: 11.11.6
-  resolution: "@types/node@npm:11.11.6"
-  checksum: 075f1c011cf568e49701419acbcb55c24906b3bb5a34d9412a3b88f228a7a78401a5ad4d3e1cd6855c99aaea5ef96e37fc86ca097e50f06da92cf822befc1fff
   languageName: node
   linkType: hard
 
@@ -14880,7 +14848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-sig-util@npm:^3.0.0, eth-sig-util@npm:^3.0.1":
+"eth-sig-util@npm:^3.0.0":
   version: 3.0.1
   resolution: "eth-sig-util@npm:3.0.1"
   dependencies:
@@ -14889,18 +14857,6 @@ __metadata:
     tweetnacl: ^1.0.3
     tweetnacl-util: ^0.15.0
   checksum: 614bf7011b30f78c3532f53e3f80919fe5502b0fa7a3656e6e7dae56d26bc9f559c5b6480c2bcc66d63cd9f72b489732df3b7f1daa0ac9a1fe3b6878347ab4c6
-  languageName: node
-  linkType: hard
-
-"eth-simple-keyring@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "eth-simple-keyring@npm:4.2.0"
-  dependencies:
-    eth-sig-util: ^3.0.1
-    ethereumjs-util: ^7.0.9
-    ethereumjs-wallet: ^1.0.1
-    events: ^1.1.1
-  checksum: 5c6e03b2641905c3d58c0343e0d28d1192cdfd7da43ff8924c02ed50ff88cf1c66bb5e7057dec2fba9fe84ec467291e86c9ec0a8c72457214f7fe6a85984a259
   languageName: node
   linkType: hard
 
@@ -15163,22 +15119,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-wallet@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "ethereumjs-wallet@npm:1.0.1"
-  dependencies:
-    aes-js: ^3.1.1
-    bs58check: ^2.1.2
-    ethereum-cryptography: ^0.1.3
-    ethereumjs-util: ^7.0.2
-    randombytes: ^2.0.6
-    scrypt-js: ^3.0.1
-    utf8: ^3.0.0
-    uuid: ^3.3.2
-  checksum: 1b95529e7e03403728a452668a3d95b44eb69def49a5d00ce8a2f01e64f9efeacc1742c8531ddf967612075dcd1843c1fdc160a68d351a121da07732d0112963
-  languageName: node
-  linkType: hard
-
 "ethers@npm:^5.0.13, ethers@npm:^5.6.4":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
@@ -15435,13 +15375,6 @@ __metadata:
   version: 3.1.2
   resolution: "eventemitter3@npm:3.1.2"
   checksum: 81e4e82b8418f5cfd986d2b4a2fa5397ac4eb8134e09bcb47005545e22fdf8e9e61d5c053d34651112245aae411bdfe6d0ad5511da0400743fef5fc38bfcfbe3
-  languageName: node
-  linkType: hard
-
-"events@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "events@npm:1.1.1"
-  checksum: 40431eb005cc4c57861b93d44c2981a49e7feb99df84cf551baed299ceea4444edf7744733f6a6667e942af687359b1f4a87ec1ec4f21d5127dac48a782039b9
   languageName: node
   linkType: hard
 
@@ -25663,7 +25596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9":
+"pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3":
   version: 3.1.2
   resolution: "pbkdf2@npm:3.1.2"
   dependencies:
@@ -29175,7 +29108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scrypt-js@npm:3.0.1, scrypt-js@npm:^3.0.0, scrypt-js@npm:^3.0.1":
+"scrypt-js@npm:3.0.1, scrypt-js@npm:^3.0.0":
   version: 3.0.1
   resolution: "scrypt-js@npm:3.0.1"
   checksum: b7c7d1a68d6ca946f2fbb0778e0c4ec63c65501b54023b2af7d7e9f48fdb6c6580d6f7675cd53bda5944c5ebc057560d5a6365079752546865defb3b79dea454
