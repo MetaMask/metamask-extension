@@ -215,6 +215,30 @@ export function merge(original, source) {
   }, original || {});
 }
 
+export function memoize(func, resolver) {
+  if (
+    typeof func !== 'function' ||
+    (!isNullish(resolver) && typeof resolver !== 'function')
+  ) {
+    throw new TypeError('Expected a function');
+  }
+  const memoized = function (...args) {
+    const key = resolver ? resolver.apply(memoized, args) : args[0];
+    const { cache } = memoized;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = func.apply(memoized, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || Map)();
+  return memoized;
+}
+
+memoize.Cache = Map;
+
 /**
  * Fills `array` with `value` provided from index `start`
  * to index `end`.

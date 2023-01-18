@@ -4,6 +4,7 @@ import {
   isEqual,
   isPlainObject,
   mapValues,
+  memoize,
   merge,
   omit,
   omitBy,
@@ -284,6 +285,21 @@ describe('object utils', function () {
       };
       const result = size(object);
       expect(result).toStrictEqual(3);
+    });
+  });
+
+  describe('memoize', function () {
+    it('should cache memoized object', function () {
+      const object = {
+        a: 1,
+        b: 2,
+      };
+      const values = memoize((obj) => Object.keys(obj).map(key => obj[key]));
+      expect(values(object)).toStrictEqual([1, 2]);
+      object.a = 2;
+      expect(values(object)).toStrictEqual([1, 2]);
+      values.cache.set(object, [1, 1]);
+      expect(values(object)).toStrictEqual([1, 1]);
     });
   });
 });

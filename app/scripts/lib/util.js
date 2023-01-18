@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import BN from 'bn.js';
-import { memoize } from 'lodash';
+import { memoize } from '../../../shared/modules/object.utils';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {

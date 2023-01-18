@@ -1,5 +1,5 @@
-import { cloneDeep } from '../../../shared/modules/object.utils';
 import BigNumber from 'bignumber.js';
+import { cloneDeep } from '../../../shared/modules/object.utils';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
 const hexNumberIsGreaterThanZero = (hexNumber) =>
