@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Approuver"
   },
-  "approveSpendLimit": {
-    "message": "Approuver la limite de dépenses de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Accélérez cette transaction"
-  },
-  "spendLimitAmount": {
-    "message": "Montant limite de dépenses"
   },
   "spendLimitInsufficient": {
     "message": "Limite de dépenses insuffisante"

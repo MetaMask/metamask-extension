@@ -133,10 +133,6 @@
   "approveButtonText": {
     "message": "批准"
   },
-  "approveSpendLimit": {
-    "message": "批准 $1 花費限額",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "已許可"
   },
@@ -1461,9 +1457,6 @@
   },
   "speedUpTransaction": {
     "message": "加速這筆交易"
-  },
-  "spendLimitAmount": {
-    "message": "花費額度上限"
   },
   "spendLimitInsufficient": {
     "message": "花費額度上限不足"

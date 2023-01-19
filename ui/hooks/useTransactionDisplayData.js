@@ -222,7 +222,7 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.tokenMethodApprove) {
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('approveSpendLimit', [token?.symbol || t('token')]);
+    title = t('approveSpendingCap', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
