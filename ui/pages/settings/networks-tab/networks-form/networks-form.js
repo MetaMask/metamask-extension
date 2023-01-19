@@ -78,6 +78,7 @@ const isValidWhenAppended = (url) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
   selectedNetwork,
@@ -588,6 +589,7 @@ const NetworksForm = ({
       className={classnames({
         'networks-tab__network-form': !addNewNetwork,
         'networks-tab__add-network-form': addNewNetwork,
+        'networks-tab__restrict-height': restrictHeight,
       })}
     >
       {addNewNetwork ? (
@@ -708,6 +710,7 @@ NetworksForm.propTypes = {
   selectedNetwork: PropTypes.object,
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
+  restrictHeight: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {
