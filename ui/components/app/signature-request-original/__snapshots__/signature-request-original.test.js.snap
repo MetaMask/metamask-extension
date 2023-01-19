@@ -9,16 +9,16 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       class="request-signature__navigation"
     >
       <div
-        class="confirm-page-container-navigation"
+        class="navigation"
         style="display: none;"
       >
         <div
-          class="confirm-page-container-navigation__container"
+          class="navigation__container"
           data-testid="navigation-container"
           style="visibility: hidden;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            class="navigation__arrow"
             data-testid="first-page"
           >
             <i
@@ -26,7 +26,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            class="navigation__arrow"
             data-testid="previous-page"
           >
             <i
@@ -35,10 +35,10 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           </button>
         </div>
         <div
-          class="confirm-page-container-navigation__textcontainer"
+          class="navigation__textcontainer"
         >
           <div
-            class="confirm-page-container-navigation__navtext"
+            class="navigation__navtext"
           >
             0
              
@@ -47,17 +47,17 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             0
           </div>
           <div
-            class="confirm-page-container-navigation__longtext"
+            class="navigation__longtext"
           >
             requests waiting to be acknowledged
           </div>
         </div>
         <div
-          class="confirm-page-container-navigation__container"
+          class="navigation__container"
           style="visibility: hidden;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            class="navigation__arrow"
             data-testid="next-page"
           >
             <i
@@ -65,7 +65,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            class="navigation__arrow"
             data-testid="last-page"
           >
             <i
