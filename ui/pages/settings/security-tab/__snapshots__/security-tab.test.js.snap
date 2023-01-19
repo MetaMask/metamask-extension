@@ -438,7 +438,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services. 
+              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
               <a
                 href="https://consensys.net/privacy-policy/"
                 rel="noopener noreferrer"
