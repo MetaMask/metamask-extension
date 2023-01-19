@@ -115,6 +115,10 @@
   "amount": {
     "message": "數量"
   },
+  "appDescription": {
+    "message": "以太坊瀏覽器擴充插件",
+    "description": "The description of the application"
+  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -126,10 +130,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "appDescription": {
-    "message": "以太坊瀏覽器擴充插件",
-    "description": "The description of the application"
   },
   "approve": {
     "message": "批准花費上限"
