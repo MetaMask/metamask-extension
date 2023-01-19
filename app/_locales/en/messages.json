@@ -144,6 +144,10 @@
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
+  "accountNameReserved": {
+    "message": "This account name is reserved",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
   "accountOptions": {
     "message": "Account options"
   },
@@ -182,6 +186,15 @@
   },
   "addContact": {
     "message": "Add contact"
+  },
+  "addCustomIPFSGateway": {
+    "message": "Add custom IPFS gateway"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "addCustomNetwork": {
+    "message": "Add custom network"
   },
   "addCustomToken": {
     "message": "Add custom token"
@@ -415,6 +428,13 @@
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
   },
+  "autoDetectTokens": {
+    "message": "Autodetect tokens"
+  },
+  "autoDetectTokensDescription": {
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services. $1",
+    "description": "$1 is a link to a support article"
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -639,6 +659,13 @@
     "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
+  "chooseYourNetwork": {
+    "message": "Choose your network"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
+    "description": "$1 is a link to the privacy policy"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -654,6 +681,9 @@
   },
   "close": {
     "message": "Close"
+  },
+  "coingecko": {
+    "message": "CoinGecko"
   },
   "collectibleAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
@@ -867,8 +897,18 @@
   "createPassword": {
     "message": "Create password"
   },
+  "cryptoCompare": {
+    "message": "CryptoCompare"
+  },
   "currencyConversion": {
     "message": "Currency conversion"
+  },
+  "currencyRateCheckToggle": {
+    "message": "Show balance and token price checker"
+  },
+  "currencyRateCheckToggleDescription": {
+    "message": "We use $1 and $2 APIs to display your balance and token price. $3",
+    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Currency symbol"
@@ -1237,14 +1277,8 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Enhanced token detection"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
@@ -1797,12 +1831,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2048,6 +2076,9 @@
   "metametricsOptInDescription": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
+  "metrics": {
+    "message": "Metrics"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2079,6 +2110,9 @@
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
+  },
+  "moreComingSoon": {
+    "message": "More coming soon..."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -2158,6 +2192,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkProvider": {
+    "message": "Network provider"
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
@@ -2241,6 +2278,9 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftDisclaimer": {
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
@@ -2662,6 +2702,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openSea": {
+    "message": "OpenSea (Beta)"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -2856,6 +2899,9 @@
   },
   "priorityFeeProperCase": {
     "message": "Priority Fee"
+  },
+  "privacy": {
+    "message": "Privacy"
   },
   "privacyMsg": {
     "message": "Privacy policy"
@@ -3123,6 +3169,9 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "security": {
+    "message": "Security"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -3206,6 +3255,9 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
+  },
+  "selectProvider": {
+    "message": "Select providers:"
   },
   "selectType": {
     "message": "Select Type"
@@ -3295,7 +3347,8 @@
     "message": "Show incoming transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+    "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Show permissions"
@@ -3317,9 +3370,6 @@
   },
   "signatureRequest": {
     "message": "Signature request"
-  },
-  "signatureRequest1": {
-    "message": "Message"
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
@@ -4054,6 +4104,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisServiceIsExperimental": {
+    "message": "This service is experimental"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -4103,6 +4156,9 @@
   },
   "tokenList": {
     "message": "Token lists:"
+  },
+  "tokenNftAutoDetection": {
+    "message": "Token and NFT autodetection"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -4220,16 +4276,19 @@
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Transaction security check"
+    "message": "Enable transaction security providers"
   },
   "transactionSecurityCheckDescription": {
-    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
+  },
+  "transactions": {
+    "message": "Transactions"
   },
   "transfer": {
     "message": "Transfer"
@@ -4346,7 +4405,16 @@
     "message": "Autodetect NFTs"
   },
   "useCollectibleDetectionDescription": {
-    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to their servers. Leave this feature off if you don't want the app to pull data from those services."
+  },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "Additionally, be aware that:"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "NFT metadata may contain links to scams or phishing sites."
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
   },
   "useDefault": {
     "message": "Use default"

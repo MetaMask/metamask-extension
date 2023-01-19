@@ -79,9 +79,9 @@ import {
   SLIPPAGE,
 } from '../../../shared/constants/swaps';
 import {
-  TRANSACTION_TYPES,
+  TransactionType,
   IN_PROGRESS_TRANSACTION_STATUSES,
-  SMART_TRANSACTION_STATUSES,
+  SmartTransactionStatus,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -434,7 +434,7 @@ export const getPendingSmartTransactions = (state) => {
     return [];
   }
   return currentSmartTransactions.filter(
-    (stx) => stx.status === SMART_TRANSACTION_STATUSES.PENDING,
+    (stx) => stx.status === SmartTransactionStatus.pending,
   );
 };
 
@@ -986,14 +986,14 @@ export const signAndSendSwapsSmartTransaction = ({
           sourceTokenSymbol,
           swapMetaData,
           swapTokenValue,
-          type: TRANSACTION_TYPES.SWAP,
+          type: TransactionType.swap,
         }),
       );
       if (approvalTxUuid) {
         await dispatch(
           updateSmartTransaction(approvalTxUuid, {
             origin: ORIGIN_METAMASK,
-            type: TRANSACTION_TYPES.SWAP_APPROVAL,
+            type: TransactionType.swapApproval,
             sourceTokenSymbol,
           }),
         );
@@ -1203,12 +1203,12 @@ export const signAndSendTransactions = (
       }
       const approveTxMeta = await addUnapprovedTransaction(
         { ...approveTxParams, amount: '0x0' },
-        TRANSACTION_TYPES.SWAP_APPROVAL,
+        TransactionType.swapApproval,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
         updateSwapApprovalTransaction(approveTxMeta.id, {
-          type: TRANSACTION_TYPES.SWAP_APPROVAL,
+          type: TransactionType.swapApproval,
           sourceTokenSymbol: sourceTokenInfo.symbol,
         }),
       );
@@ -1223,7 +1223,7 @@ export const signAndSendTransactions = (
 
     const tradeTxMeta = await addUnapprovedTransaction(
       usedTradeTxParams,
-      TRANSACTION_TYPES.SWAP,
+      TransactionType.swap,
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 
@@ -1247,7 +1247,7 @@ export const signAndSendTransactions = (
         estimatedBaseFee: decEstimatedBaseFee,
         sourceTokenSymbol: sourceTokenInfo.symbol,
         destinationTokenSymbol: destinationTokenInfo.symbol,
-        type: TRANSACTION_TYPES.SWAP,
+        type: TransactionType.swap,
         destinationTokenDecimals: destinationTokenInfo.decimals,
         destinationTokenAddress: destinationTokenInfo.address,
         swapMetaData,

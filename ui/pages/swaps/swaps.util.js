@@ -361,7 +361,7 @@ export function quotesToRenderableData(
   chainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
-  multiLayerL1FeeTotal,
+  multiLayerL1ApprovalFeeTotal,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -376,7 +376,20 @@ export function quotesToRenderableData(
       averageGas,
       fee,
       trade,
+      multiLayerL1TradeFeeTotal,
     } = quote;
+    let multiLayerL1FeeTotal = null;
+    if (
+      multiLayerL1TradeFeeTotal !== null &&
+      multiLayerL1ApprovalFeeTotal !== null
+    ) {
+      multiLayerL1FeeTotal = sumHexes(
+        multiLayerL1TradeFeeTotal || '0x0',
+        multiLayerL1ApprovalFeeTotal || '0x0',
+      );
+    } else if (multiLayerL1TradeFeeTotal !== null) {
+      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
+    }
     const sourceValue = calcTokenAmount(
       sourceAmount,
       sourceTokenInfo.decimals,

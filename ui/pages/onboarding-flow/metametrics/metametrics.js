@@ -43,10 +43,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.METRICS_OPT_IN,
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: true,
             },
           },
           {
@@ -88,10 +87,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.METRICS_OPT_OUT,
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: false,
             },
           },
           {

@@ -559,7 +559,7 @@
     "message": "حساب جدید"
   },
   "newAccountNumberName": {
-    "message": "حساب 1$1",
+    "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {

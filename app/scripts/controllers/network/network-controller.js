@@ -2,13 +2,18 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine } from 'eth-json-rpc-middleware';
+import {
+  providerFromEngine,
+  providerFromMiddleware,
+} from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
+import createFilterMiddleware from 'eth-json-rpc-filters';
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import {
   INFURA_PROVIDER_TYPES,
   BUILT_IN_NETWORKS,
@@ -22,7 +27,6 @@ import {
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
@@ -122,8 +126,16 @@ export default class NetworkController extends EventEmitter {
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
-  async initializeProvider(providerParams) {
-    this._baseProviderParams = providerParams;
+  /**
+   * Destroy the network controller, stopping any ongoing polling.
+   *
+   * In-progress requests will not be aborted.
+   */
+  async destroy() {
+    await this._blockTracker?.destroy();
+  }
+
+  async initializeProvider() {
     const { type, rpcUrl, chainId } = this.getProviderConfig();
     this._configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
@@ -447,13 +459,26 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setNetworkClient({ networkMiddleware, blockTracker }) {
-    const metamaskMiddleware = createMetamaskMiddleware(
-      this._baseProviderParams,
-    );
+    const networkProvider = providerFromMiddleware(networkMiddleware);
+    const filterMiddleware = createFilterMiddleware({
+      provider: networkProvider,
+      blockTracker,
+    });
+    const subscriptionManager = createSubscriptionManager({
+      provider: networkProvider,
+      blockTracker,
+    });
+
     const engine = new JsonRpcEngine();
-    engine.push(metamaskMiddleware);
+    subscriptionManager.events.on('notification', (message) =>
+      engine.emit('notification', message),
+    );
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
     engine.push(networkMiddleware);
+
     const provider = providerFromEngine(engine);
+
     this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 

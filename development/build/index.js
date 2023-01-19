@@ -9,6 +9,7 @@ const livereload = require('gulp-livereload');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
+const lavapack = require('@lavamoat/lavapack');
 const { getVersion } = require('../lib/get-version');
 const { BuildType } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -71,6 +72,9 @@ async function defineAndRunBuildTasks() {
     skipStats,
     version,
   } = await parseArgv();
+
+  // build lavamoat runtime file
+  await lavapack.buildRuntime({ scuttleGlobalThis: false });
 
   const browserPlatforms = ['firefox', 'chrome'];
 

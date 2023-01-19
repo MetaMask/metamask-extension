@@ -36,6 +36,7 @@ describe('Test Snap TxInsights', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectInsightsSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -55,6 +56,7 @@ describe('Test Snap TxInsights', function () {
           10000,
         );
 
+        // delay for npm installation
         await driver.delay(2000);
 
         // switch to metamask extension
@@ -115,9 +117,9 @@ describe('Test Snap TxInsights', function () {
         // check that txinsightstest tab contains the right info
         await driver.delay(1000);
         const txInsightsResult = await driver.findElement(
-          '[data-testid="Test-0"]',
+          '.snap-ui-renderer__content',
         );
-        assert.equal(await txInsightsResult.getText(), 'Test\nSuccessful');
+        assert.equal(await txInsightsResult.getText(), 'Test: Successful');
       },
     );
   });

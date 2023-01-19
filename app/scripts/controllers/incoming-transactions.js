@@ -6,8 +6,8 @@ import { bnToHex, previousValueComparator } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import {
   CHAIN_IDS,
@@ -277,8 +277,8 @@ export default class IncomingTransactionsController {
     const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
       etherscanTransaction.isError === '0'
-        ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED;
+        ? TransactionStatus.confirmed
+        : TransactionStatus.failed;
     const txParams = {
       from: etherscanTransaction.from,
       gas: bnToHex(new BN(etherscanTransaction.gas)),
@@ -307,7 +307,7 @@ export default class IncomingTransactionsController {
       time,
       txParams,
       hash: etherscanTransaction.hash,
-      type: TRANSACTION_TYPES.INCOMING,
+      type: TransactionType.incoming,
     };
   }
 }

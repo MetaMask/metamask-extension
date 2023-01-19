@@ -1,4 +1,5 @@
 const { promises: fs } = require('fs');
+const path = require('path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -79,7 +80,7 @@ async function main() {
     process.env.E2E_DEBUG = 'true';
   }
 
-  let testTimeoutInMilliseconds = 60 * 1000;
+  let testTimeoutInMilliseconds = 80 * 1000;
   let exit = '--exit';
 
   if (leaveRunning) {
@@ -88,10 +89,12 @@ async function main() {
     exit = '--no-exit';
   }
 
+  const configFile = path.join(__dirname, '.mocharc.js');
+
   await retry({ retries }, async () => {
     await runInShell('yarn', [
       'mocha',
-      '--no-config',
+      `--config=${configFile}`,
       '--timeout',
       testTimeoutInMilliseconds,
       e2eTestPath,

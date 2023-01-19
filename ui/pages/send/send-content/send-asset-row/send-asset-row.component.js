@@ -9,9 +9,8 @@ import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
-  ASSET_TYPES,
-  ERC20,
-  ERC721,
+  AssetType,
+  TokenStandard,
 } from '../../../../../shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
@@ -64,7 +63,8 @@ export default class SendAssetRow extends Component {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
     const sendableCollectibles = this.props.collectibles.filter(
       (collectible) =>
-        collectible.isCurrentlyOwned && collectible.standard === ERC721,
+        collectible.isCurrentlyOwned &&
+        collectible.standard === TokenStandard.ERC721,
     );
     this.setState({ sendableTokens, sendableCollectibles });
   }
@@ -75,11 +75,11 @@ export default class SendAssetRow extends Component {
 
   getAssetSelected = (type, token) => {
     switch (type) {
-      case ASSET_TYPES.NATIVE:
+      case AssetType.native:
         return this.props.nativeCurrency;
-      case ASSET_TYPES.TOKEN:
-        return ERC20;
-      case ASSET_TYPES.NFT:
+      case AssetType.token:
+        return TokenStandard.ERC20;
+      case AssetType.NFT:
         return token?.standard;
       default:
         return null;
@@ -103,7 +103,7 @@ export default class SendAssetRow extends Component {
         });
         this.props.updateSendAsset({
           type,
-          details: type === ASSET_TYPES.NATIVE ? null : token,
+          details: type === AssetType.native ? null : token,
         });
       },
     );
@@ -137,14 +137,14 @@ export default class SendAssetRow extends Component {
       collectibles,
     } = this.props;
 
-    if (type === ASSET_TYPES.TOKEN) {
+    if (type === AssetType.token) {
       const token = tokens.find(({ address }) =>
         isEqualCaseInsensitive(address, details.address),
       );
       if (token) {
         return this.renderToken(token);
       }
-    } else if (type === ASSET_TYPES.NFT) {
+    } else if (type === AssetType.NFT) {
       const collectible = collectibles.find(
         ({ address, tokenId }) =>
           isEqualCaseInsensitive(address, details.address) &&
@@ -168,9 +168,7 @@ export default class SendAssetRow extends Component {
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
             <TokenListDisplay
-              clickHandler={(token) =>
-                this.selectToken(ASSET_TYPES.TOKEN, token)
-              }
+              clickHandler={(token) => this.selectToken(AssetType.token, token)}
             />
 
             {this.state.sendableCollectibles.map((collectible) =>
@@ -201,7 +199,7 @@ export default class SendAssetRow extends Component {
             ? 'send-v2__asset-dropdown__asset'
             : 'send-v2__asset-dropdown__single-asset'
         }
-        onClick={() => this.selectToken(ASSET_TYPES.NATIVE)}
+        onClick={() => this.selectToken(AssetType.native)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon
@@ -239,7 +237,7 @@ export default class SendAssetRow extends Component {
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(ASSET_TYPES.TOKEN, token)}
+        onClick={() => this.selectToken(AssetType.token, token)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} image={image} />
@@ -268,7 +266,7 @@ export default class SendAssetRow extends Component {
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(ASSET_TYPES.NFT, collectible)}
+        onClick={() => this.selectToken(AssetType.NFT, collectible)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} image={image} />

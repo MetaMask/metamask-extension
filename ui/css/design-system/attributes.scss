@@ -41,7 +41,7 @@ $sizes-numeric: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 $sizes-strings: xs, sm, md, lg, xl;
 
 $border-style: solid, double, none, dashed, dotted;
-$directions: top, right, bottom, left;
+$directions: top, right, bottom, left, inline, inline-start, inline-end;
 $display: block, flex, grid, inline-block, inline-grid, inline-flex, list-item, none;
 $text-align: left, right, center, justify, end;
 $overflow-wrap: normal, break-word, anywhere;

@@ -9,7 +9,7 @@ import {
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
-import { AvatarFavicon } from './avatar-favicon';
+import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon',
@@ -23,9 +23,9 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(AVATAR_FAVICON_SIZES),
     },
-    imageSource: {
+    src: {
       control: 'text',
     },
     borderColor: {
@@ -34,7 +34,7 @@ export default {
     },
   },
   args: {
-    imageSource: 'https://uniswap.org/favicon.ico',
+    src: 'https://uniswap.org/favicon.ico',
     size: SIZES.MD,
   },
 };
@@ -53,5 +53,15 @@ export const Size = (args) => (
     <AvatarFavicon {...args} size={SIZES.MD} />
     <AvatarFavicon {...args} size={SIZES.LG} />
     <AvatarFavicon {...args} size={SIZES.XL} />
+  </Box>
+);
+
+export const Src = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX} gap={1}>
+    <AvatarFavicon {...args} src="https://uniswap.org/favicon.ico" />
+    <AvatarFavicon
+      {...args}
+      src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+    />
   </Box>
 );

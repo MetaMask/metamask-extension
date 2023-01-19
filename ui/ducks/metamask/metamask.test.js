@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -84,7 +84,7 @@ describe('MetaMask Reducers', () => {
           4768706228115573: {
             id: 4768706228115573,
             time: 1487363153561,
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            status: TransactionStatus.unapproved,
             gasMultiplier: 1,
             metamaskNetworkId: '5',
             txParams: {
@@ -364,7 +364,7 @@ describe('MetaMask Reducers', () => {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           gasMultiplier: 1,
           metamaskNetworkId: '5',
           txParams: {

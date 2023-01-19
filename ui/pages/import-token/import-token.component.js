@@ -10,7 +10,7 @@ import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
   ADD_COLLECTIBLE_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  ADVANCED_ROUTE,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
@@ -21,7 +21,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
@@ -125,7 +125,7 @@ class ImportToken extends Component {
     customDecimals: 0,
     searchResults: [],
     selectedTokens: {},
-    standard: TOKEN_STANDARDS.NONE,
+    standard: TokenStandard.NONE,
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
@@ -445,7 +445,7 @@ class ImportToken extends Component {
                 key="import-token-token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('inYourSettings')}
@@ -588,7 +588,7 @@ class ImportToken extends Component {
                 key="token-detection-announcement"
                 className="import-token__link"
                 onClick={() =>
-                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                  history.push(`${SECURITY_ROUTE}#token-description`)
                 }
               >
                 {t('enableFromSettings')}

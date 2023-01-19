@@ -83,7 +83,7 @@ async function confirmTx() {
         return confirmedTxes.length === 1;
       }, 10000);
 
-      await driver.waitForSelector('.transaction-status--confirmed');
+      await driver.waitForSelector('.transaction-status-label--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes = timestampAfterAction - timestampBeforeAction;
     },
