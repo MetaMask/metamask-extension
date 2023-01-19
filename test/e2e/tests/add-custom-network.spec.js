@@ -159,8 +159,8 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement('.network__add-network-button');
+        await driver.clickElement('.network-display');
+        await driver.clickElement({ tag: 'button', text: 'Add network' });
 
         const networks = await driver.findElements({
           tag: 'button',
