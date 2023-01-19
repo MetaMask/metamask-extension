@@ -90,6 +90,7 @@ export default function CollectiblesItems({
     if (collectionImage) {
       return (
         <img
+          alt={collectionName}
           src={collectionImage}
           className="collectibles-items__collection-image"
         />
@@ -172,8 +173,14 @@ export default function CollectiblesItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
-              const { image, address, tokenId, backgroundColor, name } =
-                collectible;
+              const {
+                image,
+                address,
+                tokenId,
+                backgroundColor,
+                name,
+                description,
+              } = collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
@@ -200,6 +207,7 @@ export default function CollectiblesItems({
                         <img
                           className="collectibles-items__item-image"
                           src={collectibleImage}
+                          alt={description}
                         />
                       </button>
                     ) : (

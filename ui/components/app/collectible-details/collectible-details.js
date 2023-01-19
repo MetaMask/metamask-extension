@@ -178,6 +178,7 @@ export default function CollectibleDetails({ collectible }) {
               <img
                 className="collectible-details__image"
                 src={collectibleImageURL}
+                alt={description}
               />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
