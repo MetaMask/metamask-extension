@@ -16,6 +16,7 @@ export default {
     handleTokenSelection: { control: 'func' },
     onImport: { control: 'func' },
     onIgnoreAll: { control: 'func' },
+    sortingBasedOnTokenSelection: { control: 'func' },
   },
   args: {
     tokensListDetected: {
@@ -57,6 +58,7 @@ export default {
         selected: true,
       },
     },
+    sortingBasedOnTokenSelection: () => [],
   },
 };
 

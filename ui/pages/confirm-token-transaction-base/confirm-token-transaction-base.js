@@ -21,7 +21,7 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { hexWEIToDecETH } from '../../../shared/lib/transactions-controller-utils';
 
 export default function ConfirmTokenTransactionBase({
@@ -49,10 +49,13 @@ export default function ConfirmTokenTransactionBase({
   );
 
   let title, subtitle;
-  if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     title = assetName;
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 

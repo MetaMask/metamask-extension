@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { TRANSACTION_ENVELOPE_TYPES } from '../constants/transaction';
+import { TransactionEnvelopeType } from '../constants/transaction';
 import {
   conversionUtil,
   multiplyCurrencies,
@@ -53,7 +53,7 @@ export function getSwapsTokensReceivedFromTxMeta(
 ) {
   const txReceipt = txMeta?.txReceipt;
   const networkAndAccountSupports1559 =
-    txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+    txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||

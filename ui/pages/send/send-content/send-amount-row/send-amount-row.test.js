@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();
@@ -47,7 +47,7 @@ describe('SendAmountRow Component', () => {
                   standard: 'ERC20',
                 },
                 error: null,
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
               },
             },
           },
@@ -74,7 +74,7 @@ describe('SendAmountRow Component', () => {
                   balance: '',
                   details: null,
                   error: null,
-                  type: ASSET_TYPES.COLLECTIBLE,
+                  type: AssetType.NFT,
                 },
               },
             },

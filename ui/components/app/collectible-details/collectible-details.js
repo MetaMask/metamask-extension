@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -26,7 +27,6 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -43,7 +43,10 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {
@@ -64,7 +67,8 @@ export default function CollectibleDetails({ collectible }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [sourceCopied, handleSourceCopy] = useCopyToClipboard();
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -77,6 +81,7 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
     dispatch(removeAndIgnoreNft(address, tokenId));
@@ -105,13 +110,13 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== ERC721;
+  const sendDisabled = standard !== TokenStandard.ERC721;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
     await dispatch(
       startNewDraftTransaction({
-        type: ASSET_TYPES.NFT,
+        type: AssetType.NFT,
         details: collectible,
       }),
     );
@@ -236,23 +241,39 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.PRIMARY_DEFAULT}
               variant={TYPOGRAPHY.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
-              className="collectible-details__image-link"
+              className="collectible-details__image-source"
+              color={isDataURI ? COLORS.TEXT_DEFAULT : COLORS.PRIMARY_DEFAULT}
             >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={collectibleImageURL}
-                title={collectibleImageURL}
-              >
-                {collectibleImageURL}
-              </a>
+              {isDataURI ? (
+                <>{collectibleImageURL}</>
+              ) : (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={collectibleImageURL}
+                  title={collectibleImageURL}
+                >
+                  {collectibleImageURL}
+                </a>
+              )}
             </Typography>
+            <ButtonIcon
+              ariaLabel="copy"
+              className="collectible-details__contract-copy-button"
+              onClick={() => {
+                handleSourceCopy(collectibleImageURL);
+              }}
+              iconName={
+                sourceCopied
+                  ? ICON_NAMES.COPY_SUCCESS_FILLED
+                  : ICON_NAMES.COPY_FILLED
+              }
+            />
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
@@ -298,21 +319,24 @@ export default function CollectibleDetails({ collectible }) {
                   {inPopUp ? shortenAddress(address) : address}
                 </a>
               </Typography>
-              <button
+              <ButtonIcon
+                ariaLabel="copy"
                 className="collectible-details__contract-copy-button"
                 onClick={() => {
-                  handleCopy(address);
+                  handleAddressCopy(address);
                 }}
-              >
-                {copied ? (
-                  t('copiedExclamation')
-                ) : (
-                  <Copy size={15} color="var(--color-icon-alternative)" />
-                )}
-              </button>
+                iconName={
+                  addressCopied
+                    ? ICON_NAMES.COPY_SUCCESS_FILLED
+                    : ICON_NAMES.COPY_FILLED
+                }
+              />
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
+          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H7}>
+            {t('nftDisclaimer')}
+          </Typography>
         </Box>
       </Box>
     </>
