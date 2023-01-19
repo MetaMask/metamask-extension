@@ -5,8 +5,6 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import {
@@ -61,9 +59,9 @@ import {
 
 import browser from 'webextension-polyfill';
 import {
-  ASSET_TYPES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  AssetType,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
@@ -98,7 +96,7 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
+import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -148,6 +146,7 @@ import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
+import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 
 import {
   CaveatMutatorFactories,
@@ -244,11 +243,11 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: opts.showUserConfirmation,
     });
 
-    this.networkController = new NetworkController(initState.NetworkController);
-    this.networkController.setInfuraProjectId(opts.infuraProjectId);
-
-    // now we can initialize the RPC provider, which other controllers require
-    this.initializeProvider();
+    this.networkController = new NetworkController({
+      state: initState.NetworkController,
+      infuraProjectId: opts.infuraProjectId,
+    });
+    this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -286,7 +285,6 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       tokenListController: this.tokenListController,
       provider: this.provider,
-      migrateAddressBookState: this.migrateAddressBookState.bind(this),
     });
 
     this.tokensController = new TokensController({
@@ -375,7 +373,7 @@ export default class MetamaskController extends EventEmitter {
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: ASSET_TYPES.NFT,
+              asset_type: AssetType.NFT,
               token_standard: standard,
               source,
             },
@@ -390,16 +388,24 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    process.env.COLLECTIBLES_V1 &&
+    process.env.NFTS_V1 &&
       (this.nftDetectionController = new NftDetectionController({
         onNftsStateChange: (listener) => this.nftController.subscribe(listener),
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
         getBalancesInSingleCall:
           this.assetsContractController.getBalancesInSingleCall.bind(
@@ -495,8 +501,13 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.phishingController = new PhishingController();
-    this.phishingController.updatePhishingLists();
+    this.phishingController = new PhishingController(
+      {},
+      initState.PhishingController,
+    );
+
+    this.phishingController.maybeUpdatePhishingLists();
+
     if (process.env.IN_TEST) {
       this.phishingController.setRefreshInterval(5 * SECOND);
     }
@@ -758,11 +769,6 @@ export default class MetamaskController extends EventEmitter {
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      // Prefix subject with appKeyType to generate separate keys for separate uses
-      getAppKey: async (subject, appKeyType) => {
-        await this.appStateController.getUnlockPromise(true);
-        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
-      },
       checkBlockList: async (snapsToCheck) => {
         return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
       },
@@ -870,7 +876,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      networkStore: this.networkController.networkStore,
+      getNetworkState: () => this.networkController.networkStore.getState(),
+      onNetworkStateChange: (listener) =>
+        this.networkController.networkStore.subscribe(listener),
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
@@ -915,8 +923,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
-        status === TRANSACTION_STATUSES.CONFIRMED ||
-        status === TRANSACTION_STATUSES.FAILED
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail =
@@ -935,7 +943,7 @@ export default class MetamaskController extends EventEmitter {
         // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
         // in which case we will want to check and update ownership status of the transferred collectible.
         if (
-          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
         ) {
           const {
@@ -1050,9 +1058,17 @@ export default class MetamaskController extends EventEmitter {
     });
     this.smartTransactionsController = new SmartTransactionsController(
       {
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) => {
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          });
+        },
         getNetwork: this.networkController.getNetworkState.bind(
           this.networkController,
         ),
@@ -1085,6 +1101,48 @@ export default class MetamaskController extends EventEmitter {
       this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
       this.messageManager.clearUnapproved();
+    });
+
+    this.metamaskMiddleware = createMetamaskMiddleware({
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      version,
+      // account mgmt
+      getAccounts: async (
+        { origin: innerOrigin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
+        if (innerOrigin === ORIGIN_METAMASK) {
+          const selectedAddress =
+            this.preferencesController.getSelectedAddress();
+          return selectedAddress ? [selectedAddress] : [];
+        } else if (this.isUnlocked()) {
+          return await this.getPermittedAccounts(innerOrigin, {
+            suppressUnauthorizedError,
+          });
+        }
+        return []; // changing this is a breaking change
+      },
+      // tx signing
+      processTransaction: this.newUnapprovedTransaction.bind(this),
+      // msg signing
+      processEthSignMessage: this.newUnsignedMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
+      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingTransactionByHash: (hash) =>
+        this.txController.getTransactions({
+          searchCriteria: {
+            hash,
+            status: TransactionStatus.submitted,
+          },
+        })[0],
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -1131,6 +1189,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: this.tokensController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      PhishingController: this.phishingController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1299,11 +1358,11 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
             requestData: confirmationData,
           }),
-        showDialog: (origin, type, requestData) =>
+        showDialog: (origin, type, content, placeholder) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: SNAP_DIALOG_TYPES[type],
-            requestData,
+            requestData: { content, placeholder },
           }),
         showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
@@ -1484,57 +1543,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Constructor helper: initialize a provider.
-   */
-  initializeProvider() {
-    const version = this.platform.getVersion();
-    const providerOpts = {
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      version,
-      // account mgmt
-      getAccounts: async (
-        { origin },
-        { suppressUnauthorizedError = true } = {},
-      ) => {
-        if (origin === ORIGIN_METAMASK) {
-          const selectedAddress =
-            this.preferencesController.getSelectedAddress();
-          return selectedAddress ? [selectedAddress] : [];
-        } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin, {
-            suppressUnauthorizedError,
-          });
-        }
-        return []; // changing this is a breaking change
-      },
-      // tx signing
-      processTransaction: this.newUnapprovedTransaction.bind(this),
-      // msg signing
-      processEthSignMessage: this.newUnsignedMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
-      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
-      getPendingNonce: this.getPendingNonce.bind(this),
-      getPendingTransactionByHash: (hash) =>
-        this.txController.getTransactions({
-          searchCriteria: {
-            hash,
-            status: TRANSACTION_STATUSES.SUBMITTED,
-          },
-        })[0],
-    };
-    const providerProxy =
-      this.networkController.initializeProvider(providerOpts);
-    return providerProxy;
-  }
-
-  /**
    * TODO:LegacyProvider: Delete
    * Constructor helper: initialize a public config store.
    * This store is used to make some config info available to Dapps synchronously.
@@ -1637,7 +1645,6 @@ export default class MetamaskController extends EventEmitter {
       detectTokensController,
       ensController,
       gasFeeController,
-      keyringController,
       metaMetricsController,
       networkController,
       announcementController,
@@ -1780,9 +1787,6 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
-      setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
-        preferencesController,
-      ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
       setImprovedTokenAllowanceEnabled:
         preferencesController.setImprovedTokenAllowanceEnabled.bind(
@@ -1850,10 +1854,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setCollectiblesDetectionNoticeDismissed.bind(
           appStateController,
         ),
-      setEnableEIP1559V2NoticeDismissed:
-        appStateController.setEnableEIP1559V2NoticeDismissed.bind(
-          appStateController,
-        ),
       updateCollectibleDropDownState:
         appStateController.updateCollectibleDropDownState.bind(
           appStateController,
@@ -1868,7 +1868,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
@@ -2095,7 +2095,7 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // DetectCollectibleController
-      detectNfts: process.env.COLLECTIBLES_V1
+      detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
 
@@ -2109,6 +2109,11 @@ export default class MetamaskController extends EventEmitter {
           assetsContractController,
         ),
     };
+  }
+
+  async exportAccount(address, password) {
+    await this.verifyPassword(password);
+    return this.keyringController.exportAccount(address, password);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -2190,7 +2195,7 @@ export default class MetamaskController extends EventEmitter {
   async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
-    this.preferencesController.addToFrequentRpcList(
+    this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
@@ -3532,10 +3537,7 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
-      if (phishingListsAreOutOfDate) {
-        this.phishingController.updatePhishingLists();
-      }
+      this.phishingController.maybeUpdatePhishingLists();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
@@ -3779,21 +3781,19 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
+    const { provider } = this;
+
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
 
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
-
-    // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
+    // forward notifications from network provider
+    provider.on('data', (error, message) => {
+      if (error) {
+        // This should never happen, this error parameter is never set
+        throw error;
+      }
+      engine.emit('notification', message);
     });
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
@@ -3889,7 +3889,7 @@ export default class MetamaskController extends EventEmitter {
           chainName,
           rpcUrl,
         } = {}) => {
-          await this.preferencesController.addToFrequentRpcList(
+          await this.preferencesController.upsertToFrequentRpcList(
             rpcUrl,
             chainId,
             ticker,
@@ -3964,9 +3964,6 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    // filter and subscription polyfills
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
     if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(
@@ -3975,6 +3972,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    engine.push(this.metamaskMiddleware);
 
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));
@@ -4267,43 +4266,6 @@ export default class MetamaskController extends EventEmitter {
     return nonceLock.nextNonce;
   }
 
-  /**
-   * Migrate address book state from old to new chainId.
-   *
-   * Address book state is keyed by the `networkStore` state from the network controller. This value is set to the
-   * `networkId` for our built-in Infura networks, but it's set to the `chainId` for custom networks.
-   * When this `chainId` value is changed for custom RPC endpoints, we need to migrate any contacts stored under the
-   * old key to the new key.
-   *
-   * The `duplicate` parameter is used to specify that the contacts under the old key should not be removed. This is
-   * useful in the case where two RPC endpoints shared the same set of contacts, and we're not sure which one each
-   * contact belongs under. Duplicating the contacts under both keys is the only way to ensure they are not lost.
-   *
-   * @param {string} oldChainId - The old chainId
-   * @param {string} newChainId - The new chainId
-   * @param {boolean} [duplicate] - Whether to duplicate the addresses on both chainIds (default: false)
-   */
-  async migrateAddressBookState(oldChainId, newChainId, duplicate = false) {
-    const { addressBook } = this.addressBookController.state;
-
-    if (!addressBook[oldChainId]) {
-      return;
-    }
-
-    for (const address of Object.keys(addressBook[oldChainId])) {
-      const entry = addressBook[oldChainId][address];
-      this.addressBookController.set(
-        address,
-        entry.name,
-        newChainId,
-        entry.memo,
-      );
-      if (!duplicate) {
-        this.addressBookController.delete(oldChainId, address);
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -4335,13 +4297,13 @@ export default class MetamaskController extends EventEmitter {
       nickname,
       rpcPrefs,
     );
-    await this.preferencesController.updateRpc({
+    await this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
       nickname,
       rpcPrefs,
-    });
+    );
     return rpcUrl;
   }
 
@@ -4384,7 +4346,7 @@ export default class MetamaskController extends EventEmitter {
         nickname,
         rpcPrefs,
       );
-      await this.preferencesController.addToFrequentRpcList(
+      await this.preferencesController.upsertToFrequentRpcList(
         rpcUrl,
         chainId,
         ticker,

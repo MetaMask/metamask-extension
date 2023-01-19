@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { hexWEIToDecGWEI } from '../../../../shared/lib/transactions-controller-utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import GasTiming from '../../../components/app/gas-timing';
@@ -22,11 +21,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -39,8 +34,7 @@ import {
   getIsBuyableChain,
   transactionFeeSelector,
   getIsMainnet,
-  getEIP1559V2Enabled,
-  checkNetworkAndAccountSupports1559,
+  getIsTestnet,
   getUseCurrencyRateCheck,
 } from '../../../selectors';
 
@@ -57,30 +51,23 @@ export default function GasDisplay({ gasError }) {
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
   const [showDepositPopover, setShowDepositPopover] = useState(false);
+
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
+  const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
+    useSelector(getPreferences);
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
-  const { confirmTransaction } = useSelector((state) => state);
-  const { txData } = confirmTransaction;
-  const { txParams = {} } = txData;
-  const supportsEIP1559 =
-    networkAndAccountSupports1559 && !isLegacyTransaction(txParams);
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const supportsEIP1559V2 = eip1559V2Enabled && supportsEIP1559;
   const currentNetworkName = networkName || currentProvider.nickname;
 
   const transactionData = {
@@ -109,11 +96,13 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === ERC721 ||
-    draftTransaction?.asset.details?.standard === ERC1155
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
   ) {
     title = draftTransaction?.asset.details?.name;
-  } else if (draftTransaction?.asset.details?.standard === ERC20) {
+  } else if (
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+  ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
       draftTransaction?.asset.details?.symbol
     }`;
@@ -124,6 +113,9 @@ export default function GasDisplay({ gasError }) {
   );
 
   const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
+
+  const showCurrencyRateCheck =
+    useCurrencyRateCheck && (!isTestnet || showFiatInTestnets);
 
   let detailTotal, maxAmount;
 
@@ -169,196 +161,91 @@ export default function GasDisplay({ gasError }) {
         <TransactionDetail
           userAcknowledgedGasMissing={false}
           rows={[
-            supportsEIP1559V2 ? (
-              <TransactionDetailItem
-                key="gas-item"
-                detailTitle={
-                  <Box display={DISPLAY.FLEX}>
-                    <Box marginRight={1}>{t('gas')}</Box>
-                    <Typography
-                      as="span"
-                      marginTop={0}
-                      color={COLORS.TEXT_MUTED}
-                      fontStyle={FONT_STYLE.ITALIC}
-                      fontWeight={FONT_WEIGHT.NORMAL}
-                      className="gas-display__title__estimate"
-                    >
-                      ({t('transactionDetailGasInfoV2')})
-                    </Typography>
-                    <InfoTooltip
-                      contentText={
-                        <>
-                          <Typography variant={TYPOGRAPHY.H7}>
-                            {t('transactionDetailGasTooltipIntro', [
-                              isMainnet ? t('networkNameEthereum') : '',
-                            ])}
-                          </Typography>
-                          <Typography variant={TYPOGRAPHY.H7}>
-                            {t('transactionDetailGasTooltipExplanation')}
-                          </Typography>
-                          <Typography variant={TYPOGRAPHY.H7}>
-                            <a
-                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('transactionDetailGasTooltipConversion')}
-                            </a>
-                          </Typography>
-                        </>
-                      }
-                      position="right"
-                    />
-                  </Box>
-                }
-                detailTitleColor={COLORS.TEXT_DEFAULT}
-                detailText={
-                  useCurrencyRateCheck && (
-                    <Box className="gas-display__currency-container">
-                      <LoadingHeartBeat estimateUsed={estimateUsed} />
-                      <UserPreferencedCurrencyDisplay
-                        type={SECONDARY}
-                        value={hexMinimumTransactionFee}
-                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                      />
-                    </Box>
-                  )
-                }
-                detailTotal={
+            <TransactionDetailItem
+              key="gas-item"
+              detailTitle={
+                <Box display={DISPLAY.FLEX}>
+                  <Box marginRight={1}>{t('gas')}</Box>
+                  <Typography
+                    as="span"
+                    marginTop={0}
+                    color={COLORS.TEXT_MUTED}
+                    fontStyle={FONT_STYLE.ITALIC}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    className="gas-display__title__estimate"
+                  >
+                    ({t('transactionDetailGasInfoV2')})
+                  </Typography>
+                  <InfoTooltip
+                    contentText={
+                      <>
+                        <Typography variant={TYPOGRAPHY.H7}>
+                          {t('transactionDetailGasTooltipIntro', [
+                            isMainnet ? t('networkNameEthereum') : '',
+                          ])}
+                        </Typography>
+                        <Typography variant={TYPOGRAPHY.H7}>
+                          {t('transactionDetailGasTooltipExplanation')}
+                        </Typography>
+                        <Typography variant={TYPOGRAPHY.H7}>
+                          <a
+                            href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t('transactionDetailGasTooltipConversion')}
+                          </a>
+                        </Typography>
+                      </>
+                    }
+                    position="right"
+                  />
+                </Box>
+              }
+              detailTitleColor={COLORS.TEXT_DEFAULT}
+              detailText={
+                showCurrencyRateCheck && (
                   <Box className="gas-display__currency-container">
                     <LoadingHeartBeat estimateUsed={estimateUsed} />
-                    <UserPreferencedCurrencyDisplay
-                      type={PRIMARY}
-                      value={hexMinimumTransactionFee}
-                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                    />
-                  </Box>
-                }
-                subText={
-                  <>
-                    <Box
-                      key="editGasSubTextFeeLabel"
-                      display={DISPLAY.INLINE_FLEX}
-                      className={classNames('gas-display__gas-fee-label', {
-                        'gas-display__gas-fee-warning': estimateUsed === 'high',
-                      })}
-                    >
-                      <LoadingHeartBeat estimateUsed={estimateUsed} />
-                      <Box marginRight={1}>
-                        <strong>
-                          {estimateUsed === 'high' && '⚠ '}
-                          {t('editGasSubTextFeeLabel')}
-                        </strong>
-                      </Box>
-                      <Box
-                        key="editGasSubTextFeeValue"
-                        className="gas-display__currency-container"
-                      >
-                        <LoadingHeartBeat estimateUsed={estimateUsed} />
-                        <UserPreferencedCurrencyDisplay
-                          key="editGasSubTextFeeAmount"
-                          type={PRIMARY}
-                          value={hexMaximumTransactionFee}
-                          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                        />
-                      </Box>
-                    </Box>
-                  </>
-                }
-                subTitle={
-                  <GasTiming
-                    maxPriorityFeePerGas={hexWEIToDecGWEI(
-                      draftTransaction.gas.maxPriorityFeePerGas,
-                    )}
-                    maxFeePerGas={hexWEIToDecGWEI(
-                      draftTransaction.gas.maxFeePerGas,
-                    )}
-                  />
-                }
-              />
-            ) : (
-              <TransactionDetailItem
-                key="gas-item"
-                detailTitle={
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={
-                        <>
-                          <p>
-                            {t('transactionDetailGasTooltipIntro', [
-                              isMainnet ? t('networkNameEthereum') : '',
-                            ])}
-                          </p>
-                          <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                          <p>
-                            <a
-                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('transactionDetailGasTooltipConversion')}
-                            </a>
-                          </p>
-                        </>
-                      }
-                      position="right"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                }
-                detailText={
-                  <Box
-                    height={BLOCK_SIZES.MAX}
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
-                    className="gas-display__currency-container"
-                  >
-                    <LoadingHeartBeat
-                      estimateUsed={transactionData?.userFeeLevel}
-                    />
                     <UserPreferencedCurrencyDisplay
                       type={SECONDARY}
                       value={hexMinimumTransactionFee}
                       hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                     />
                   </Box>
-                }
-                detailTotal={
+                )
+              }
+              detailTotal={
+                <Box className="gas-display__currency-container">
+                  <LoadingHeartBeat estimateUsed={estimateUsed} />
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </Box>
+              }
+              subText={
+                <>
                   <Box
-                    height={BLOCK_SIZES.MAX}
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
-                    className="gas-display__currency-container"
+                    key="editGasSubTextFeeLabel"
+                    display={DISPLAY.INLINE_FLEX}
+                    className={classNames('gas-display__gas-fee-label', {
+                      'gas-display__gas-fee-warning': estimateUsed === 'high',
+                    })}
                   >
-                    <LoadingHeartBeat
-                      estimateUsed={transactionData?.userFeeLevel}
-                    />
-                    <UserPreferencedCurrencyDisplay
-                      type={PRIMARY}
-                      value={hexMinimumTransactionFee}
-                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                      numberOfDecimals={6}
-                    />
-                  </Box>
-                }
-                subText={
-                  <>
-                    <strong key="editGasSubTextFeeLabel">
-                      {t('editGasSubTextFeeLabel')}
-                    </strong>
+                    <LoadingHeartBeat estimateUsed={estimateUsed} />
+                    <Box marginRight={1}>
+                      <strong>
+                        {estimateUsed === 'high' && '⚠ '}
+                        {t('editGasSubTextFeeLabel')}
+                      </strong>
+                    </Box>
                     <Box
-                      height={BLOCK_SIZES.MAX}
-                      display={DISPLAY.FLEX}
-                      flexDirection={FLEX_DIRECTION.COLUMN}
+                      key="editGasSubTextFeeValue"
                       className="gas-display__currency-container"
                     >
-                      <LoadingHeartBeat
-                        estimateUsed={
-                          transactionData?.userFeeLevel ?? estimateUsed
-                        }
-                      />
+                      <LoadingHeartBeat estimateUsed={estimateUsed} />
                       <UserPreferencedCurrencyDisplay
                         key="editGasSubTextFeeAmount"
                         type={PRIMARY}
@@ -366,28 +253,26 @@ export default function GasDisplay({ gasError }) {
                         hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                       />
                     </Box>
-                  </>
-                }
-                subTitle={
-                  <>
-                    <GasTiming
-                      maxPriorityFeePerGas={hexWEIToDecGWEI(
-                        draftTransaction.gas.maxPriorityFeePerGas,
-                      )}
-                      maxFeePerGas={hexWEIToDecGWEI(
-                        draftTransaction.gas.maxFeePerGas,
-                      )}
-                    />
-                  </>
-                }
-              />
-            ),
+                  </Box>
+                </>
+              }
+              subTitle={
+                <GasTiming
+                  maxPriorityFeePerGas={hexWEIToDecGWEI(
+                    draftTransaction.gas.maxPriorityFeePerGas,
+                  )}
+                  maxFeePerGas={hexWEIToDecGWEI(
+                    draftTransaction.gas.maxFeePerGas,
+                  )}
+                />
+              }
+            />,
             (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
                 detailText={
-                  useCurrencyRateCheck && (
+                  showCurrencyRateCheck && (
                     <Box
                       height={BLOCK_SIZES.MAX}
                       display={DISPLAY.FLEX}

@@ -1,10 +1,10 @@
 import React from 'react';
-import SmartTransactionStatus from './smart-transaction-status';
+import SmartTransactionStatusLabel from './smart-transaction-status';
 
 export default {
-  title: 'Pages/Swaps/SmartTransactionStatus',
+  title: 'Pages/Swaps/SmartTransactionStatusLabel',
 };
 
-export const SmartTransactionStatusComponent = () => {
-  return <SmartTransactionStatus />;
+export const SmartTransactionStatusLabelComponent = () => {
+  return <SmartTransactionStatusLabel />;
 };

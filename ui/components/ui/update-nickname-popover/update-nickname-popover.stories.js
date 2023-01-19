@@ -15,14 +15,16 @@ export default {
   argTypes: {
     address: {
       control: { type: 'text' },
-      defaultValue: '0xdeDbcA0156308960E3bBa2f5a273E72179940788',
     },
     showPopover: {
       control: { type: 'boolean' },
-      defaultValue: false,
     },
     onAdd: { action: 'onAdd' },
     onClose: { action: 'onClose' },
+  },
+  args: {
+    address: '0xdeDbcA0156308960E3bBa2f5a273E72179940788',
+    showPopover: false,
   },
 };
 

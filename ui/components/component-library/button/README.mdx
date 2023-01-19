@@ -1,9 +1,11 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { Button } from './button';
+import { ButtonBase } from '../button-base';
+import { ButtonLink } from '../button-link';
 
 # Button
 
-The `Button` is used for user actions it unifies `ButtonPrimary`, `ButtonSecondary` and `ButtonLink`
+The `Button` is used for user actions. It unifies `ButtonPrimary`, `ButtonSecondary` and `ButtonLink`.
 
 <Canvas>
   <Story id="ui-components-component-library-button-button-stories-js--default-story" />
@@ -11,9 +13,17 @@ The `Button` is used for user actions it unifies `ButtonPrimary`, `ButtonSeconda
 
 ## Props
 
-The `Button` accepts all props below as well as all [ButtonPrimary](/ui-components-component-library-button-primary-button-primary-stories-js--default-story), [ButtonSecondary](/ui-components-component-library-button-secondary-button-secondary-stories-js--default-story), [ButtonLink](/ui-components-component-library-button-link-button-link-stories-js--default-story), and [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `Button` accepts all props below as well as [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={Button} />
+
+The `Button` accepts all [ButtonBase](/docs/ui-components-component-library-button-base-button-base-stories-js--default-story) component props
+
+<ArgsTable of={ButtonBase} />
+
+The `Button` accepts all [ButtonPrimary](/docs/ui-components-component-library-button-primary-button-primary-stories-js--default-story), [ButtonSecondary](/docs/ui-components-component-library-button-secondary-button-secondary-stories-js--default-story), and [ButtonLink](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) component props
+
+<ArgsTable of={ButtonLink} />
 
 ### Type
 
@@ -45,7 +55,7 @@ Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
+- `SIZES.AUTO` inherits the font-size of the parent element. (Only used for `ButtonLink`)
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
@@ -56,7 +66,7 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library/button/button/button';
+import { Button } from '../ui/component-library';
 
 <Button size={SIZES.AUTO} />
 <Button size={SIZES.SM} />
@@ -73,7 +83,7 @@ Use the `danger` boolean prop to change the `Button` to danger color.
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library/button/button/button';
+import { Button } from '../ui/component-library';
 
 <Button>Normal</Button>
 <Button danger>Danger</Button>
@@ -81,16 +91,16 @@ import { Button } from '../ui/component-library/button/button/button';
 
 ### Href
 
-When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
 <Canvas>
   <Story id="ui-components-component-library-button-button-stories-js--href" />
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library/button/button/button';
+import { Button } from '../ui/component-library';
 
-<Button href="/">Href Example</Button>;
+<Button href="/">Anchor Element</Button>;
 ```
 
 ### Block
@@ -162,17 +172,19 @@ import { Button } from '../ui/component-library';
 <Button loading>Loading Button</Button>;
 ```
 
-### Icon
+### Icon Name
 
-Use the `icon` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/component-library/icon` to select icon.
+
+Use the [IconSearch](/story/ui-components-component-library-icon-icon-stories-js--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-button-stories-js--icon" />
+  <Story id="ui-components-component-library-button-button-stories-js--icon-name" />
 </Canvas>
 
 ```jsx
 import { Button } from '../ui/component-library';
 import { ICON_NAMES } from '../icon';
 
-<Button icon={ICON_NAMES.ADD_SQUARE_FILLED}>Button</Button>;
+<Button iconName={ICON_NAMES.ADD_SQUARE_FILLED}>Button</Button>;
 ```

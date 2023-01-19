@@ -9,7 +9,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
@@ -165,13 +165,13 @@ function generateERC721TransferData({
 
 function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
   switch (sendToken.standard) {
-    case ERC721:
+    case TokenStandard.ERC721:
       return generateERC721TransferData({
         toAddress,
         fromAddress,
         tokenId: sendToken.tokenId,
       });
-    case ERC20:
+    case TokenStandard.ERC20:
     default:
       return generateERC20TransferData({
         toAddress,
@@ -182,5 +182,9 @@ function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
 }
 
 function ellipsify(text, first = 6, last = 4) {
+  if (!text) {
+    return '';
+  }
+
   return `${text.slice(0, first)}...${text.slice(-last)}`;
 }

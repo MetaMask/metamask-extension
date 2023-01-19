@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import {
+  getCollectibleContracts,
   getCollectibles,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
@@ -15,6 +16,7 @@ function mapStateToProps(state) {
     tokens: state.metamask.tokens,
     selectedAddress: state.metamask.selectedAddress,
     collectibles: getCollectibles(state),
+    collections: getCollectibleContracts(state),
     sendAsset: getSendAsset(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),

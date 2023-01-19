@@ -28,6 +28,7 @@ import {
   getSnap,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
+  getUnapprovedTxCount,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -169,6 +170,7 @@ export default function ConfirmationPage({
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const unnaprovedTxsCount = useSelector(getUnapprovedTxCount);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -176,9 +178,12 @@ export default function ConfirmationPage({
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const {
-    manifest: { proposedName },
-  } = useSelector((state) => getSnap(state, pendingConfirmation?.origin));
+  const snap = useSelector((state) =>
+    getSnap(state, pendingConfirmation?.origin),
+  );
+
+  // When pendingConfirmation is undefined, this will also be undefined
+  const proposedName = snap?.manifest.proposedName;
 
   const SNAP_DIALOG_TYPE = [
     MESSAGE_TYPE.SNAP_DIALOG_ALERT,
@@ -224,19 +229,6 @@ export default function ConfirmationPage({
     ///: END:ONLY_INCLUDE_IN
   ]);
 
-  const hasInputState = (type) => {
-    return INPUT_STATE_CONFIRMATIONS.includes(type);
-  };
-
-  const handleSubmit = () =>
-    templateState[pendingConfirmation.id]?.useWarningModal
-      ? setShowWarningModal(true)
-      : templatedValues.onSubmit(
-          hasInputState(pendingConfirmation.type)
-            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
-            : null,
-        );
-
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -256,9 +248,23 @@ export default function ConfirmationPage({
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
+
   if (!pendingConfirmation) {
     return null;
   }
+
+  const hasInputState = (type) => {
+    return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const handleSubmit = () =>
+    templateState[pendingConfirmation.id]?.useWarningModal
+      ? setShowWarningModal(true)
+      : templatedValues.onSubmit(
+          hasInputState(pendingConfirmation.type)
+            ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+            : null,
+        );
 
   return (
     <div className="confirmation-page">
@@ -335,6 +341,7 @@ export default function ConfirmationPage({
       <ConfirmationFooter
         alerts={
           alertState[pendingConfirmation.id] &&
+          unnaprovedTxsCount > 0 &&
           Object.values(alertState[pendingConfirmation.id])
             .filter((alert) => alert.dismissed === false)
             .map((alert, idx, filtered) => (

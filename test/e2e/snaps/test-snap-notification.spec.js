@@ -35,8 +35,9 @@ describe('Test Snap Notification', function () {
         // find and scroll down to snapId5 and connect
         const snapButton = await driver.findElement('#connectNotification');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
+        await driver.delay(1000);
         await driver.clickElement('#connectNotification');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -68,6 +69,9 @@ describe('Test Snap Notification', function () {
           text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);

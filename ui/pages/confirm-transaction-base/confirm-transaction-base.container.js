@@ -32,7 +32,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -61,8 +60,8 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
@@ -122,7 +121,7 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   let toAddress = txParamsToAddress;
-  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+  if (type !== TransactionType.simpleSend) {
     toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
   }
 
@@ -171,7 +170,7 @@ const mapStateToProps = (state, ownProps) => {
   const fullTxData = getFullTxData(
     state,
     txId,
-    TRANSACTION_STATUSES.UNAPPROVED,
+    TransactionStatus.unapproved,
     customTxParamsData,
   );
 
@@ -195,7 +194,6 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const insightSnaps = getInsightSnaps(state);
@@ -250,7 +248,6 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
-    eip1559V2Enabled,
     isBuyableChain,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps,

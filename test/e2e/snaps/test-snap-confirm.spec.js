@@ -30,10 +30,12 @@ describe('Test Snap Confirm', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const snapButton1 = await driver.findElement('#connectConfirmSnap');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectConfirmSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -65,6 +67,9 @@ describe('Test Snap Confirm', function () {
           text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // switch back to test snaps page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);

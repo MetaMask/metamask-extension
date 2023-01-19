@@ -30,10 +30,12 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const snapButton1 = await driver.findElement('#connectBip44Snap');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectBip44Snap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -74,10 +76,14 @@ describe('Test Snap bip-44', function () {
           text: 'Are you sure?',
         });
         await driver.clickElement('#key-access-bip44-1-0');
+        await driver.delay(1000);
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);

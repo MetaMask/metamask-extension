@@ -37,8 +37,8 @@ export const PickerNetwork = ({
     >
       <AvatarNetwork
         className="mm-picker-network__avatar-network"
-        networkImageUrl={src}
-        networkName={label}
+        src={src}
+        name={label}
         size={SIZES.XS}
         {...avatarNetworkProps}
       />
