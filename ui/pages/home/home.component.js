@@ -637,6 +637,7 @@ export default class Home extends PureComponent {
               <EthOverview />
             </div>
             <Tabs
+              t={this.context.t}
               defaultActiveTabName={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
@@ -714,7 +715,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={t('assets')}
+                name={this.context.t('assets')}
+                tabKey="assets"
               >
                 <AssetList
                   onClickAsset={(asset) =>
@@ -727,7 +729,8 @@ export default class Home extends PureComponent {
                   activeClassName="home__tab--active"
                   className="home__tab"
                   data-testid="home__nfts-tab"
-                  name={t('nfts')}
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
                 >
                   <CollectiblesTab
                     onAddNFT={() => {
@@ -740,7 +743,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={t('activity')}
+                name={this.context.t('activity')}
+                tabKey="activity"
               >
                 <TransactionList />
               </Tab>
