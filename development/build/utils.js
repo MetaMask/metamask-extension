@@ -118,6 +118,31 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
+/**
+ * This function wrapAgainstScuttling() tries to generically wrap given code
+ * with an environment that allows it to still function under a scuttled environment.
+ *
+ * It's only (current) use is for sentry code which runs before scuttling happens but
+ * later on still leans on properties of the global object which at that point are scuttled.
+ *
+ * To accomplish that, we wrap the entire provided code with the good old with-proxy trick,
+ * which helps us capture access attempts like (1) window.fetch/globalThis.fetch and (2) fetch.
+ *
+ * wrapAgainstScuttling() function also accepts a bag of the global object's properties the
+ * code needs in order to properly function, and within our proxy we make sure to
+ * return those whenever the code goes through our proxy asking for them.
+ *
+ * Specifically when the code tries to set properties to the global object,
+ * in addition to the preconfigured properties, we also accept any property
+ * starting with on to support global event handlers settings.
+ *
+ * Also, sentry invokes functions dynamically using Function.prototype's call and apply,
+ * and our proxy messes with their this when that happens, so these two required a tailor-made patch.
+ *
+ * @param content - contents of the js code to wrap
+ * @param bag - bag of global object properties to provide to the wrapped js code
+ * @returns {string} wrapped js code
+ */
 function wrapAgainstScuttling(content, bag = {}) {
   return `
 {
