@@ -975,9 +975,9 @@ function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
     pipeline.get('scuttle').push(
       through.obj(
         callbackify(async (file, _enc) => {
-          const bag = scuttlingConfig[file.relative];
-          if (applyLavaMoat && bag) {
-            const wrapped = wrapAgainstScuttling(file.contents.toString(), bag);
+          const configForFile = scuttlingConfig[file.relative];
+          if (applyLavaMoat && configForFile) {
+            const wrapped = wrapAgainstScuttling(file.contents.toString(), configForFile);
             file.contents = Buffer.from(wrapped, 'utf8');
           }
           return file;
