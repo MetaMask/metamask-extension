@@ -52,7 +52,7 @@ const {
 } = require('./transforms/remove-fenced-code');
 
 // map dist files to bag of needed native APIs against LM scuttling
-const scuttlingBagConfig = {
+const scuttlingConfig = {
   'sentry-install.js': {
     // globals sentry need to function
     window: '',
@@ -975,7 +975,7 @@ function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
     pipeline.get('scuttle').push(
       through.obj(
         callbackify(async (file, _enc) => {
-          const bag = scuttlingBagConfig[file.relative];
+          const bag = scuttlingConfig[file.relative];
           if (applyLavaMoat && bag) {
             const wrapped = wrapAgainstScuttling(file.contents.toString(), bag);
             file.contents = Buffer.from(wrapped, 'utf8');
