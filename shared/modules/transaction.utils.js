@@ -1,5 +1,5 @@
 import { isHexString } from 'ethereumjs-util';
-import { ethers } from 'ethers';
+import { Interface } from '@ethersproject/abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
 import {
@@ -35,9 +35,9 @@ import { isEqualCaseInsensitive } from './string-utils';
  * representation of the function.
  */
 
-const erc20Interface = new ethers.utils.Interface(abiERC20);
-const erc721Interface = new ethers.utils.Interface(abiERC721);
-const erc1155Interface = new ethers.utils.Interface(abiERC1155);
+const erc20Interface = new Interface(abiERC20);
+const erc721Interface = new Interface(abiERC721);
+const erc1155Interface = new Interface(abiERC1155);
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {

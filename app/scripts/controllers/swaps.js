@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
@@ -134,12 +135,12 @@ export default class SwapsController {
 
     this.indexOfNewestCallInFlight = 0;
 
-    this.ethersProvider = new ethers.providers.Web3Provider(provider);
+    this.ethersProvider = new Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
     networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
       if (network !== 'loading' && network !== this._currentNetwork) {
         this._currentNetwork = network;
-        this.ethersProvider = new ethers.providers.Web3Provider(provider);
+        this.ethersProvider = new Web3Provider(provider);
       }
     });
   }
@@ -895,11 +896,7 @@ export default class SwapsController {
   }
 
   async _getERC20Allowance(contractAddress, walletAddress, chainId) {
-    const contract = new ethers.Contract(
-      contractAddress,
-      abi,
-      this.ethersProvider,
-    );
+    const contract = new Contract(contractAddress, abi, this.ethersProvider);
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
