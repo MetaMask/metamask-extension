@@ -3204,6 +3204,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
+export function setRemoveCollectibleMessage(removeCollectibleMessage) {
+  return {
+    type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
+    value: removeCollectibleMessage,
+  };
+}
+
 export function setNewTokensImported(newTokensImported) {
   return {
     type: actionConstants.SET_NEW_TOKENS_IMPORTED,

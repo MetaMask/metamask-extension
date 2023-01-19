@@ -135,6 +135,8 @@ export default class Home extends PureComponent {
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    removeCollectibleMessage: PropTypes.string,
+    setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -263,6 +265,8 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      removeCollectibleMessage,
+      setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
@@ -325,6 +329,29 @@ export default class Home extends PureComponent {
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+
+        {removeCollectibleMessage === 'success' ? (
+          <ActionableMessage
+            type="success"
+            className="home__new-network-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {t('removeCollectibleMessage')}
+                </Typography>
+                <button
+                  className="fas fa-times home__new-nft-notification-close"
+                  title={t('close')}
+                  onClick={() => setRemoveCollectibleMessage('')}
                 />
               </Box>
             }
@@ -549,7 +576,6 @@ export default class Home extends PureComponent {
 
   render() {
     const { t } = this.context;
-
     const {
       defaultHomeActiveTabName,
       onTabClick,
@@ -611,8 +637,7 @@ export default class Home extends PureComponent {
               <EthOverview />
             </div>
             <Tabs
-              t={this.context.t}
-              defaultActiveTabKey={defaultHomeActiveTabName}
+              defaultActiveTabName={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
@@ -689,8 +714,7 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={this.context.t('assets')}
-                tabKey="assets"
+                name={t('assets')}
               >
                 <AssetList
                   onClickAsset={(asset) =>
@@ -703,8 +727,7 @@ export default class Home extends PureComponent {
                   activeClassName="home__tab--active"
                   className="home__tab"
                   data-testid="home__nfts-tab"
-                  name={this.context.t('nfts')}
-                  tabKey="nfts"
+                  name={t('nfts')}
                 >
                   <CollectiblesTab
                     onAddNFT={() => {
@@ -717,8 +740,7 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={this.context.t('activity')}
-                tabKey="activity"
+                name={t('activity')}
               >
                 <TransactionList />
               </Tab>
