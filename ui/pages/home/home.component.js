@@ -638,7 +638,7 @@ export default class Home extends PureComponent {
             </div>
             <Tabs
               t={this.context.t}
-              defaultActiveTabName={defaultHomeActiveTabName}
+              defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
