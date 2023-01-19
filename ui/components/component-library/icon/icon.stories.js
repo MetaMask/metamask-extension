@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   SIZES,
   ALIGN_ITEMS,
-  BLOCK_SIZES,
   DISPLAY,
   COLORS,
   ICON_COLORS,
